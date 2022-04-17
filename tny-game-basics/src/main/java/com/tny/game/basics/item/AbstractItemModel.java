@@ -4,7 +4,6 @@ import com.google.common.collect.*;
 import com.tny.game.basics.exception.*;
 import com.tny.game.basics.item.behavior.*;
 import com.tny.game.basics.item.behavior.simple.*;
-import com.tny.game.basics.item.model.BaseDemand.*;
 import com.tny.game.basics.item.model.*;
 import com.tny.game.basics.item.xml.*;
 import com.tny.game.common.collection.empty.*;

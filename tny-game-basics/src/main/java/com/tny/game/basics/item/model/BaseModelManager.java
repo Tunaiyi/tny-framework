@@ -1,6 +1,5 @@
 package com.tny.game.basics.item.model;
 
-import com.thoughtworks.xstream.converters.SingleValueConverter;
 import com.tny.game.basics.item.*;
 
 import static com.tny.game.common.utils.ObjectAide.*;
@@ -11,7 +10,7 @@ import static com.tny.game.common.utils.ObjectAide.*;
  * @param <M>
  * @author KGTny
  */
-public abstract class BaseModelManager<M extends Model> extends AbstractModelManager<M> implements SingleValueConverter {
+public abstract class BaseModelManager<M extends Model> extends AbstractModelManager<M> {
 
 	protected void initModel(Object context, M model) {
 		if (model instanceof BaseModel) {

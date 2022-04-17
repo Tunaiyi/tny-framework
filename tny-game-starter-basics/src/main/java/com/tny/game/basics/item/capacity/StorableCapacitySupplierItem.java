@@ -11,6 +11,15 @@ public abstract class StorableCapacitySupplierItem<IM extends CapacitySupplierIt
 
 	private transient CapacityContainer container;
 
+	protected StorableCapacitySupplierItem(CapacityObjectStorer storer) {
+		this.storer = storer;
+	}
+
+	protected StorableCapacitySupplierItem(long playerId, IM model, CapacityObjectStorer storer) {
+		super(playerId, model);
+		this.storer = storer;
+	}
+
 	@Override
 	protected void setModel(IM model) {
 		super.setModel(model);

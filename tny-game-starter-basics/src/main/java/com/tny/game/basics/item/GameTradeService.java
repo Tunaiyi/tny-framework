@@ -82,7 +82,7 @@ public class GameTradeService implements TradeService {
 		if (warehouse == null) {
 			return ItemResultCode.ROLE_NO_EXIST;
 		}
-		for (TradeItem<StuffModel> item : trade.getAllTradeItem()) {
+		for (TradeItem<StuffModel> item : trade.getAllTradeItems()) {
 			if (!(item.getItemModel() instanceof StuffModel)) {
 				continue;
 			}
@@ -114,7 +114,7 @@ public class GameTradeService implements TradeService {
 
 	private void deduct(Warehouse warehouse, Trade trade, AttrEntry<?>... entries) {
 		Attributes attributes = ContextAttributes.create(entries);
-		for (TradeItem<StuffModel> item : trade.getAllTradeItem()) {
+		for (TradeItem<StuffModel> item : trade.getAllTradeItems()) {
 			this.doDeduct(warehouse, item, trade.getAction(), attributes);
 		}
 		TradeEvents.CONSUME_EVENT.notify(warehouse, trade, attributes);
@@ -131,7 +131,7 @@ public class GameTradeService implements TradeService {
 
 	private void reward(Warehouse warehouse, Trade trade, AttrEntry<?>... entries) {
 		Attributes attributes = ContextAttributes.create(entries);
-		for (TradeItem<StuffModel> item : trade.getAllTradeItem()) {
+		for (TradeItem<StuffModel> item : trade.getAllTradeItems()) {
 			this.doReward(warehouse, item, trade.getAction(), attributes);
 		}
 		TradeEvents.REWARD_EVENT.notify(warehouse, trade, attributes);

@@ -8,6 +8,13 @@ import com.tny.game.basics.item.*;
  */
 public abstract class CapacitySupplierItem<IM extends CapacitySupplierItemModel> extends BaseItem<IM> implements CapacitySupplier {
 
+	protected CapacitySupplierItem() {
+	}
+
+	protected CapacitySupplierItem(long playerId, IM model) {
+		super(playerId, model);
+	}
+
 	@Override
 	public CapacitySupplierType getSupplierType() {
 		return model.getSupplierType();

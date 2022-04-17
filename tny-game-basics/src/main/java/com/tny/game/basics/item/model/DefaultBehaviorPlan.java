@@ -12,12 +12,12 @@ import java.util.*;
  *
  * @author KGTny
  */
-public class BaseBehaviorPlan extends AbstractBehaviorPlan {
+public class DefaultBehaviorPlan extends BaseBehaviorPlan {
 
 	/**
 	 * 行为方案列表,作为映射用
 	 */
-	protected List<AbstractActionPlan> actionPlanList;
+	protected List<BaseActionPlan> actionPlanList;
 
 	@Override
 	public void doInit(ItemModel itemModel, ItemModelContext context) {
@@ -29,7 +29,7 @@ public class BaseBehaviorPlan extends AbstractBehaviorPlan {
 		}
 
 		Map<Action, ActionPlan> actionPlanMap = new HashMap<>();
-		for (AbstractActionPlan actionPlan : actionPlanList) {
+		for (BaseActionPlan actionPlan : actionPlanList) {
 			actionPlan.init(itemModel, context);
 			for (Action action : actionPlan.getActions()) {
 				actionPlanMap.put(action, actionPlan);

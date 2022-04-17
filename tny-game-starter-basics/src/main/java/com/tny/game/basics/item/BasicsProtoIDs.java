@@ -19,7 +19,7 @@ public interface BasicsProtoIDs {
 
 	int DEMAND_RESULT_DTO = 2_10_00;
 	int TRY_TO_DO_FAIL_DTO = 2_10_01;
-	int TRY_TO_DO_FULL_FAIL_DTO = 2_11_00;
+	int TRY_TO_DO_ALL_FAIL_DTO = 2_11_00;
 	int ACTION_RESULT_DTO = 2_12_00;
 	int AWARD_DTO = 2_13_00;
 	int AWARD_LIST_DTO = 2_14_00;

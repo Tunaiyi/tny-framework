@@ -22,7 +22,7 @@ public interface Trade extends TradeInfo {
 	 */
 	default Trade merge() {
 		Map<StuffModel, Number> itemNumMap = new HashMap<>();
-		for (TradeItem<StuffModel> item : this.getAllTradeItem()) {
+		for (TradeItem<StuffModel> item : this.getAllTradeItems()) {
 			Number value = itemNumMap.get(item.getItemModel());
 			if (value == null) {
 				value = 0L;
@@ -43,7 +43,7 @@ public interface Trade extends TradeInfo {
 	 */
 	default Trade alter(Function<TradeItem<StuffModel>, Number> fun) {
 		return new SimpleTrade(this.getAction(), this.getTradeType(),
-				this.getAllTradeItem().stream()
+				this.getAllTradeItems().stream()
 						.map(i -> {
 							Number number = fun.apply(i);
 							if (number != null && number.doubleValue() > 0) {

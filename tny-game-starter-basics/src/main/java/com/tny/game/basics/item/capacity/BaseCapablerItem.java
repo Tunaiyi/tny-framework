@@ -10,6 +10,13 @@ import java.util.Collection;
  */
 public abstract class BaseCapablerItem<IM extends ItemModel> extends BaseItem<IM> implements Capabler {
 
+	protected BaseCapablerItem() {
+	}
+
+	protected BaseCapablerItem(long playerId, IM model) {
+		super(playerId, model);
+	}
+
 	protected abstract void accept(CapacitySupplier supplier);
 
 	protected abstract void accept(Collection<? extends CapacitySupplier> suppliers);

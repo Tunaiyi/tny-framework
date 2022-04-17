@@ -7,6 +7,13 @@ public abstract class IntMultipleStuff<SM extends MultipleStuffModel> extends Ba
 
 	protected int number;
 
+	protected IntMultipleStuff() {
+	}
+
+	protected IntMultipleStuff(long playerId, SM model) {
+		super(playerId, model);
+	}
+
 	@Override
 	public Integer getNumberLimit() {
 		Number number = this.model.countNumberLimit(this);

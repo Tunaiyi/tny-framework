@@ -12,7 +12,7 @@ import static com.tny.game.basics.item.ItemsImportKey.*;
  *
  * @author KGTny
  */
-public abstract class AbstractAward extends DemandParamsObject implements Award {
+public abstract class BaseAward extends DemandParamsObject implements Award {
 
 	public abstract void init();
 

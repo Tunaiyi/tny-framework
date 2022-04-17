@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableSet;
 import com.tny.game.basics.item.behavior.*;
 import com.tny.game.common.utils.*;
 
-import java.io.*;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -50,12 +49,14 @@ public abstract class GameItemModelManager<IM extends ItemModel> extends GameMod
 	}
 
 	@Override
-	protected void loadAndInitModel(String path, InputStream inputStream, boolean reload)
-			throws IOException, InstantiationException, IllegalAccessException {
-		super.loadAndInitModel(path, inputStream, reload);
+	protected void parseAllComplete() {
 		this.itemTypes = ImmutableSet.copyOf(this.modelMap.values().stream()
 				.map(m -> Asserts.checkNotNull(m.getItemType(), "{}.getItemType() is null", m))
 				.collect(Collectors.toSet()));
+		this.parseAllItemModelComplete();
+	}
+
+	protected void parseAllItemModelComplete() {
 	}
 
 	@Override

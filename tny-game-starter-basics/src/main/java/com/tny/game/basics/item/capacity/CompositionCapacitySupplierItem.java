@@ -15,6 +15,15 @@ public abstract class CompositionCapacitySupplierItem<IM extends CapacitySupplie
 		this.composition = composition;
 	}
 
+	protected CompositionCapacitySupplierItem(long playerId, IM model) {
+		this(playerId, model, new DefaultCapacitySupplierComposition());
+	}
+
+	protected CompositionCapacitySupplierItem(long playerId, IM model, CapacitySupplierComposition composition) {
+		super(playerId, model);
+		this.composition = composition;
+	}
+
 	@Override
 	public CapacitySupplierComposition composition() {
 		return composition;

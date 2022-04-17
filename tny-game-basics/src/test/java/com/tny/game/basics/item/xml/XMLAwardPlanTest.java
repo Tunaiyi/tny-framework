@@ -103,7 +103,7 @@ public class XMLAwardPlanTest {
 		this.treeSet.add(new TestAwardGroup(2, 100, context, new TeatAward(this.alias2)));
 	}
 
-	AwardPlan awardPlan = new SimpleAwardPlan(this.randomer, this.treeSet);
+	AwardPlan awardPlan = new DefaultAwardPlan(this.randomer, this.treeSet);
 
 	//    @Test
 	//    public void testCreateTradeResult() {

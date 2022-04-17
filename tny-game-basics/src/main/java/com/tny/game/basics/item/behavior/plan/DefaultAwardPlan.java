@@ -13,7 +13,7 @@ import java.util.*;
  *
  * @author KGTny
  */
-public class SimpleAwardPlan extends AbstractAwardPlan {
+public class DefaultAwardPlan extends BaseAwardPlan {
 
 	/**
 	 * 随机范围
@@ -35,15 +35,10 @@ public class SimpleAwardPlan extends AbstractAwardPlan {
 	 */
 	protected ExprHolder number;
 
-	// /*
-	//  * 产生奖励总类最大个数 -1为无限 默认值为 -1
-	//  */
-	// protected FormulaHolder drawNumber = MvelFormulaFactory.create("-1", FormulaType.EXPRESSION);
-
 	/**
 	 *
 	 */
-	protected List<AwardGroup> awardGroupSet;
+	protected List<AwardGroup> awardGroupList;
 
 	/**
 	 * 附加参数
@@ -52,9 +47,12 @@ public class SimpleAwardPlan extends AbstractAwardPlan {
 
 	protected ItemModelContext context;
 
-	public SimpleAwardPlan(RandomCreator<AwardPlan, AwardGroup> randomer, TreeSet<AwardGroup> treeSet) {
+	public DefaultAwardPlan() {
+	}
+
+	public DefaultAwardPlan(RandomCreator<AwardPlan, AwardGroup> randomer, TreeSet<AwardGroup> treeSet) {
 		this.randomer = randomer;
-		this.awardGroupSet = new ArrayList<>(treeSet);
+		this.awardGroupList = new ArrayList<>(treeSet);
 	}
 
 	// public int getDrawNumber(int awardNum, Map<String, Object> attributeMap) {
@@ -69,9 +67,9 @@ public class SimpleAwardPlan extends AbstractAwardPlan {
 	@Override
 	public int getNumber(Map<String, Object> attributeMap) {
 		Integer awardNum = this.number.createExpr().putAll(attributeMap).execute(Integer.class);
-        if (awardNum == null) {
-            awardNum = 1;
-        }
+		if (awardNum == null) {
+			awardNum = 1;
+		}
 		return awardNum;
 	}
 
@@ -79,9 +77,9 @@ public class SimpleAwardPlan extends AbstractAwardPlan {
 	public Trade createTrade(long playerId, Action action, Map<String, Object> attributeMap) {
 		countAndSetDemandParams(ItemsImportKey.$AWARD_PLAN_DEMAND_PARAMS, attributeMap);
 		List<AwardGroup> groupList = this.randomer.random(this, attributeMap);
-        if (groupList == null || groupList.isEmpty()) {
-            return new SimpleTrade(action, TradeType.AWARD);
-        }
+		if (groupList == null || groupList.isEmpty()) {
+			return new SimpleTrade(action, TradeType.AWARD);
+		}
 		// int drawNumber = getDrawNumber(groupList.size(), attributeMap);
 		List<TradeItem<StuffModel>> tradeItems = new ArrayList<>();
 		for (AwardGroup group : groupList) {
@@ -94,9 +92,9 @@ public class SimpleAwardPlan extends AbstractAwardPlan {
 			}
 		}
 		SimpleTrade trade = new SimpleTrade(action, TradeType.AWARD, tradeItems);
-        if (this.merge) {
-            return trade.merge();
-        }
+		if (this.merge) {
+			return trade.merge();
+		}
 		return trade;
 	}
 
@@ -105,7 +103,7 @@ public class SimpleAwardPlan extends AbstractAwardPlan {
 		countAndSetDemandParams(ItemsImportKey.$AWARD_PLAN_DEMAND_PARAMS, attributeMap);
 		this.setAttrMap(playerId, this.attrAliasSet, attributeMap);
 		List<AwardDetail> resultList = new ArrayList<>();
-		for (AwardGroup group : this.awardGroupSet) {
+		for (AwardGroup group : this.awardGroupList) {
 			AwardDetail detail = new AwardDetail(group.countAwardNumber(this.merge, attributeMap));
 			resultList.add(detail);
 		}
@@ -115,34 +113,34 @@ public class SimpleAwardPlan extends AbstractAwardPlan {
 	@Override
 	public void init(ItemModel itemModel, ItemModelContext context) {
 		this.init(context);
-        if (this.randomer == null) {
-            this.randomer = SequenceRandomCreatorFactory.<AwardPlan, AwardGroup>getInstance().getRandomCreator();
-        }
-        if (this.awardGroupSet == null) {
-            this.awardGroupSet = new ArrayList<>();
-        }
-		for (AwardGroup awardGroup : this.awardGroupSet) {
-            if (awardGroup instanceof AbstractAwardGroup) {
-                ((AbstractAwardGroup)awardGroup).init(context);
-            }
+		if (this.randomer == null) {
+			this.randomer = SequenceRandomCreatorFactory.<AwardPlan, AwardGroup>getInstance().getRandomCreator();
+		}
+		if (this.awardGroupList == null) {
+			this.awardGroupList = new ArrayList<>();
+		}
+		for (AwardGroup awardGroup : this.awardGroupList) {
+			if (awardGroup instanceof BaseAwardGroup) {
+				((BaseAwardGroup)awardGroup).init(context);
+			}
 		}
 		ExprHolderFactory exprHolderFactory = context.getExprHolderFactory();
-        if (this.number == null) {
-            this.number = exprHolderFactory.create("1");
-        }
+		if (this.number == null) {
+			this.number = exprHolderFactory.create("1");
+		}
 		// if (this.drawNumber == null)
 		//     this.drawNumber = MvelFormulaFactory.create("-1", FormulaType.EXPRESSION);
 		//        Collections.sort(this.awardGroupSet);
-		this.awardGroupSet = Collections.unmodifiableList(this.awardGroupSet);
-        if (this.attrAliasSet == null) {
-            this.attrAliasSet = new HashSet<>(0);
-        }
+		this.awardGroupList = Collections.unmodifiableList(this.awardGroupList);
+		if (this.attrAliasSet == null) {
+			this.attrAliasSet = new HashSet<>(0);
+		}
 		this.attrAliasSet = Collections.unmodifiableSet(this.attrAliasSet);
 	}
 
 	@Override
 	public List<AwardGroup> probabilities() {
-		return this.awardGroupSet;
+		return this.awardGroupList;
 	}
 
 	@Override

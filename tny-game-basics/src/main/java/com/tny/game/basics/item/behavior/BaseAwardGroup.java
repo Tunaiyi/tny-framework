@@ -12,7 +12,7 @@ import java.util.*;
  *
  * @author KGTny
  */
-public abstract class AbstractAwardGroup implements AwardGroup {
+public abstract class BaseAwardGroup implements AwardGroup {
 
 	//	/**
 	//	 * 奖励创建方式 默认_ABSOLUTE
@@ -174,8 +174,8 @@ public abstract class AbstractAwardGroup implements AwardGroup {
 			this.randomer = AllRandomCreatorFactory.<AwardGroup, Award>getInstance().getRandomCreator();
 		}
 		for (Award award : this.awardList) {
-			if (award instanceof AbstractAward) {
-				((AbstractAward)award).init();
+			if (award instanceof BaseAward) {
+				((BaseAward)award).init();
 			}
 		}
 		ExprHolderFactory exprHolderFactory = context.getExprHolderFactory();

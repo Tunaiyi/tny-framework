@@ -17,14 +17,6 @@ public class TryToDoFailDTO extends DemandResultDTO implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@VarDoc("玩家ID")
-	@ProtoExField(101)
-	private int playerId;
-
-	@VarDoc("玩家名字")
-	@ProtoExField(102)
-	private String playerName;
-
 	@VarDoc("操作")
 	@ProtoExField(103)
 	private int action;

@@ -1,13 +1,14 @@
 package com.tny.game.basics.item.xml;
 
 import com.tny.game.basics.item.*;
+import com.tny.game.basics.item.loader.xstream.*;
 import com.tny.game.expr.*;
 import com.tny.game.expr.groovy.*;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class AbstractBaseItemModelManagerTest {
+public class XStreamItemModelManagerTest {
 
 	TempExplorer explorer = new TempExplorer();
 
@@ -15,11 +16,12 @@ public class AbstractBaseItemModelManagerTest {
 
 	private ItemModelContext context = new DefaultItemModelContext(this.explorer, this.explorer, exprHolderFactory);
 
-	TestItemModelManager manager = new TestItemModelManager("ItemExample.xml", this.context);
+	private TestItemModelManager manager =
+			new TestItemModelManager("ItemExample.xml", this.context, new XStreamModelLoaderFactory(exprHolderFactory));
 
 	ItemModel itemModel = null;
 
-	public AbstractBaseItemModelManagerTest() throws Exception {
+	public XStreamItemModelManagerTest() throws Exception {
 		this.manager.initManager();
 		this.itemModel = this.manager.getModel(1);
 		System.out.println(this.itemModel);

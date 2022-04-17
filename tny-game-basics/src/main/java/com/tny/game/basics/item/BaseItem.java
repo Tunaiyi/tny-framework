@@ -23,6 +23,14 @@ public abstract class BaseItem<IM extends ItemModel> implements Item<IM> {
 	 */
 	private transient volatile AnyId unid;
 
+	protected BaseItem() {
+	}
+
+	protected BaseItem(long playerId, IM model) {
+		this.setPlayerId(playerId);
+		this.setModel(model);
+	}
+
 	/**
 	 * @return 全局唯一id
 	 */

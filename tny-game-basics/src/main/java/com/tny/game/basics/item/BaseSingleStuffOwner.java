@@ -18,6 +18,13 @@ public abstract class BaseSingleStuffOwner<IM extends ItemModel, SM extends Stuf
 	 */
 	private AtomicInteger idIndexCounter;
 
+	protected BaseSingleStuffOwner() {
+	}
+
+	protected BaseSingleStuffOwner(long playerId, IM model) {
+		super(playerId, model);
+	}
+
 	@Override
 	public S getItemById(long id) {
 		return this.stuffMap().get(id);
@@ -31,7 +38,7 @@ public abstract class BaseSingleStuffOwner<IM extends ItemModel, SM extends Stuf
 	protected abstract Map<Long, S> stuffMap();
 
 	protected long createStuffId(SM model) {
-		return model.getItemType().createItemId(this.idIndexCounter.getAndIncrement());
+		return model.getItemType().itemIdOf(this.idIndexCounter.getAndIncrement());
 	}
 
 	protected Collection<S> getAllStuffs() {

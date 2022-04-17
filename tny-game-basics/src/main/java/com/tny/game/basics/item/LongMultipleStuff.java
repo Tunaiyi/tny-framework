@@ -7,6 +7,13 @@ public abstract class LongMultipleStuff<SM extends MultipleStuffModel> extends B
 
 	protected long number;
 
+	protected LongMultipleStuff() {
+	}
+
+	protected LongMultipleStuff(long playerId, SM model) {
+		super(playerId, model);
+	}
+
 	@Override
 	public Long getNumberLimit() {
 		Number number = this.model.countNumberLimit(this);

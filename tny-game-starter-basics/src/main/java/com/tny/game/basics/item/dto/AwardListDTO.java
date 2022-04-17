@@ -14,9 +14,6 @@ import java.util.*;
 @DTODoc(value = "奖励列表DTO")
 public class AwardListDTO implements Serializable {
 
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@VarDoc("奖励DTO")
@@ -45,7 +42,7 @@ public class AwardListDTO implements Serializable {
 	}
 
 	public static AwardListDTO trade2DTO(TradeInfo awardTrade) {
-		return tradeItemList2DTO(awardTrade.getAllTradeItem());
+		return tradeItemList2DTO(awardTrade.getAllTradeItems());
 	}
 
 	public static AwardListDTO trade2DTO(List<AwardDetail> awardDetail) {
@@ -87,7 +84,7 @@ public class AwardListDTO implements Serializable {
 		AwardListDTO dto = new AwardListDTO();
 		List<AwardDTO> awardList = new ArrayList<>();
 		for (TradeInfo trade : tradeList) {
-			for (TradeItem<?> entry : trade.getAllTradeItem())
+			for (TradeItem<?> entry : trade.getAllTradeItems())
 				awardList.add(AwardDTO.tradeItem2DTO(entry));
 		}
 		dto.awardList = awardList;
@@ -109,7 +106,7 @@ public class AwardListDTO implements Serializable {
 
 	public static AwardListDTO awardList2DTO(Trade countTradeAward) {
 		Collection<TradeItem<?>> tradeItemList = new ArrayList<>();
-		tradeItemList.addAll(countTradeAward.getAllTradeItem());
+		tradeItemList.addAll(countTradeAward.getAllTradeItems());
 		return tradeItemList2DTO(tradeItemList);
 	}
 

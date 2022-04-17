@@ -9,8 +9,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@ProtoEx(BasicsProtoIDs.TRY_TO_DO_FULL_FAIL_DTO)
-@DTODoc("判断结果DTO")
+@ProtoEx(BasicsProtoIDs.TRY_TO_DO_ALL_FAIL_DTO)
+@DTODoc("判断所有结果DTO")
 public class TryToDoFullFailDTO implements Serializable {
 
 	/**

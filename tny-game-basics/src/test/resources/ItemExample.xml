@@ -72,7 +72,7 @@
                             </costList>
                         </costPlan>
                         <awardPlan>
-                            <awardGroupSet>
+                            <awardGroupList>
                                 <awardGroup>
                                     <probability>30</probability>
                                     <awardList>
@@ -100,7 +100,7 @@
                                         </award>
                                     </awardList>
                                 </awardGroup>
-                            </awardGroupSet>
+                            </awardGroupList>
                         </awardPlan>
                     </actionPlan>
                 </actionPlanList>

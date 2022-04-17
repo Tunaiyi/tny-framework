@@ -11,12 +11,12 @@ import java.util.*;
  *
  * @author KGTny
  */
-public class SimpleCostPlan extends AbstractCostPlan {
+public class DefaultCostPlan extends BaseCostPlan {
 
 	/**
 	 * 消费条件
 	 */
-	protected List<AbstractDemand> costList;
+	protected List<BaseDemand> costList;
 
 	@Override
 	public Trade createTrade(long playerId, Action action, Map<String, Object> attributeMap) {
@@ -65,7 +65,7 @@ public class SimpleCostPlan extends AbstractCostPlan {
 			this.costList = new ArrayList<>(0);
 		}
 		this.demandList = this.costList = Collections.unmodifiableList(this.costList);
-		for (AbstractDemand demand : this.costList) {
+		for (BaseDemand demand : this.costList) {
 			demand.init(itemModel, context);
 		}
 		this.costList = Collections.unmodifiableList(this.costList);

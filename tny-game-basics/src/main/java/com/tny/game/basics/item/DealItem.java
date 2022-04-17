@@ -11,9 +11,17 @@ import java.util.Map;
  */
 public interface DealItem<I extends StuffModel> {
 
+	long getId();
+
 	<SI extends I> SI getItemModel();
 
-	long getId();
+	default ItemType getItemType() {
+		return getItemModel().getItemType();
+	}
+
+	default int getModelId() {
+		return getItemModel().getId();
+	}
 
 	Number getNumber();
 

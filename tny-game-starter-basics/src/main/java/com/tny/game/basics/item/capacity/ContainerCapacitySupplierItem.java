@@ -9,6 +9,13 @@ public abstract class ContainerCapacitySupplierItem<IM extends CapacitySupplierI
 
 	private transient CapacityContainer container;
 
+	protected ContainerCapacitySupplierItem() {
+	}
+
+	protected ContainerCapacitySupplierItem(long playerId, IM model) {
+		super(playerId, model);
+	}
+
 	@Override
 	protected void setModel(IM model) {
 		super.setModel(model);

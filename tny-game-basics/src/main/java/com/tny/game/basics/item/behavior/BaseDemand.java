@@ -2,7 +2,7 @@ package com.tny.game.basics.item.behavior;
 
 import com.tny.game.basics.exception.*;
 import com.tny.game.basics.item.*;
-import com.tny.game.basics.item.model.BaseDemand.*;
+import com.tny.game.basics.item.model.*;
 import com.tny.game.basics.item.xml.*;
 import com.tny.game.expr.*;
 
@@ -15,7 +15,7 @@ import static com.tny.game.common.utils.ObjectAide.*;
  *
  * @author KGTny
  */
-public abstract class AbstractDemand extends DemandParamsObject implements Demand, ItemsImportKey {
+public abstract class BaseDemand extends DemandParamsObject implements Demand, ItemsImportKey {
 
 	/**
 	 * 条件所涉及的item ID

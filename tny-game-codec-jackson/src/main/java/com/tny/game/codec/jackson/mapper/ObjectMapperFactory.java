@@ -1,6 +1,7 @@
 package com.tny.game.codec.jackson.mapper;
 
 import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
@@ -67,6 +68,16 @@ public class ObjectMapperFactory {
 	@StaticInit
 	private static void init() {
 		defaultMapper();
+	}
+
+	public ObjectMapper create(JsonFactory factory) {
+		ObjectMapper mapper = new ObjectMapper(factory);
+		mapperGlobalExtension(mapper);
+		mapper.registerModules(modules);
+		for (ObjectMapperCustomizer customizer : customizers) {
+			customizer.customize(mapper);
+		}
+		return mapper;
 	}
 
 	public ObjectMapper create() {

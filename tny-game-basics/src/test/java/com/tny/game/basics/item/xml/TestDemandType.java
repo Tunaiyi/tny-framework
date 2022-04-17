@@ -3,7 +3,7 @@ package com.tny.game.basics.item.xml;
 import com.tny.game.basics.item.behavior.*;
 import com.tny.game.common.result.*;
 
-public enum TestDemandType implements DemandType {
+public enum TestDemandType implements DemandType, DemandParam {
 
 	PLAYER_LEVEL,
 

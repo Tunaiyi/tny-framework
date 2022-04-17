@@ -5,6 +5,13 @@ import com.tny.game.common.context.*;
 
 public abstract class BaseMultipleStuff<SM extends MultipleStuffModel, N extends Number> extends BaseItem<SM> implements MultipleStuff<SM, N> {
 
+	protected BaseMultipleStuff() {
+	}
+
+	protected BaseMultipleStuff(long playerId, SM model) {
+		super(playerId, model);
+	}
+
 	@Override
 	public boolean isNumberLimit() {
 		return this.model.isNumberLimit();

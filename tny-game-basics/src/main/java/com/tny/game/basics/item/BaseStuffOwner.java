@@ -12,6 +12,13 @@ public abstract class BaseStuffOwner<IM extends ItemModel, SM extends StuffModel
 		extends BaseItem<IM>
 		implements StuffOwner<IM, S> {
 
+	protected BaseStuffOwner() {
+	}
+
+	protected BaseStuffOwner(long playerId, IM model) {
+		super(playerId, model);
+	}
+
 	/**
 	 * 扣除事物
 	 *

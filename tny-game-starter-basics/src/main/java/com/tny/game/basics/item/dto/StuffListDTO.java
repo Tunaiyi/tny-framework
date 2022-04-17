@@ -65,7 +65,7 @@ public class StuffListDTO implements Serializable {
 		if (trade == null) {
 			return null;
 		}
-		return tradeItemList2DTO(trade.getAllTradeItem());
+		return tradeItemList2DTO(trade.getAllTradeItems());
 	}
 
 	public static StuffListDTO awardDetails2DTO(List<AwardDetail> costDetail) {
@@ -95,7 +95,7 @@ public class StuffListDTO implements Serializable {
 		StuffListDTO dto = new StuffListDTO();
 		List<StuffDTO> stuffList = new ArrayList<>();
 		for (TradeInfo trade : tradeList) {
-			for (TradeItem<StuffModel> entry : trade.getAllTradeItem())
+			for (TradeItem<StuffModel> entry : trade.getAllTradeItems())
 				stuffList.add(StuffDTO.tradeItem2DTO(entry));
 		}
 		dto.stuffs = stuffList;
@@ -109,7 +109,7 @@ public class StuffListDTO implements Serializable {
 			if (trade == null) {
 				continue;
 			}
-			for (TradeItem<StuffModel> entry : trade.getAllTradeItem())
+			for (TradeItem<StuffModel> entry : trade.getAllTradeItems())
 				stuffList.add(StuffDTO.tradeItem2DTO(entry));
 		}
 		dto.stuffs = stuffList;
@@ -120,7 +120,7 @@ public class StuffListDTO implements Serializable {
 		if (countTradeAward == null) {
 			return null;
 		}
-		return tradeItemList2DTO(new ArrayList<>(countTradeAward.getAllTradeItem()));
+		return tradeItemList2DTO(new ArrayList<>(countTradeAward.getAllTradeItems()));
 	}
 
 	public static StuffListDTO stuffList2DTO(List<StuffDTO> stuffs) {

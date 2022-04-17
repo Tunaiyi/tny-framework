@@ -1,17 +1,21 @@
 package com.tny.game.basics.item;
 
 import com.tny.game.basics.item.behavior.*;
+import com.tny.game.basics.item.loader.*;
 import com.tny.game.basics.item.xml.*;
 
 import javax.annotation.Resource;
 
-public abstract class GameModelManager<M extends Model> extends XMLModelManager<M> {
+public abstract class GameModelManager<M extends Model> extends LoadableModelManager<M> {
 
 	/**
 	 * 事物对象管理器
 	 */
 	@Resource
 	protected ItemModelContext context;
+
+	@Resource
+	protected ModelLoaderFactory modelLoaderFactory;
 
 	@Override
 	protected ItemModelContext context() {
@@ -28,12 +32,14 @@ public abstract class GameModelManager<M extends Model> extends XMLModelManager<
 		DemandParams.enumerator().allEnumClasses().forEach(this::addEnumClass);
 	}
 
-	protected GameModelManager(Class<? extends M> modelClass, Class<? extends Enum<? extends Option>> optionClass, String... paths) {
+	protected GameModelManager(Class<? extends M> modelClass, Class<? extends Enum<? extends Option>> optionClass,
+			String... paths) {
 		this(modelClass, paths);
 		this.addEnumClass(optionClass);
 	}
 
 	protected GameModelManager(Class<? extends M> modelClass,
+			ModelLoaderFactory loaderFactory,
 			Class<? extends Enum<? extends DemandType>> demandTypeClass,
 			Class<? extends Enum<? extends Ability>> abilityClass,
 			Class<? extends Enum<? extends Option>> optionClass, String... paths) {
@@ -59,6 +65,11 @@ public abstract class GameModelManager<M extends Model> extends XMLModelManager<
 		for (Class<? extends Enum<?>> clazz : enumClasses) {
 			this.addEnumClass(clazz);
 		}
+	}
+
+	@Override
+	protected ModelLoaderFactory loaderFactory() {
+		return this.modelLoaderFactory;
 	}
 
 }

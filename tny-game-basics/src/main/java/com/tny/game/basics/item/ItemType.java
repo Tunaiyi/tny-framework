@@ -16,16 +16,34 @@ public interface ItemType extends IntEnumerable {
 	 */
 	String getAliasHead();
 
+	/**
+	 * @return 描述 秒速
+	 */
 	String getDesc();
 
+	/**
+	 * @return id前缀
+	 */
 	default int getIdHead() {
 		return getId() / ID_TAIL_SIZE;
 	}
 
-	default long createItemId(int index) {
+	/**
+	 * 创建 itemId
+	 *
+	 * @param index 索引
+	 * @return 返回 itemID
+	 */
+	default long itemIdOf(int index) {
 		return Long.parseLong(this.getIdHead() + "" + index);
 	}
 
+	/**
+	 * 创建 item别名
+	 *
+	 * @param alisa 别名
+	 * @return 返回创建别名
+	 */
 	default String alisaOf(String alisa) {
 		return getAliasHead() + "$" + alisa;
 	}

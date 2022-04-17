@@ -38,7 +38,7 @@ public class GameStuffOwnerService<SM extends StuffModel, S extends Stuff<? exte
 			}
 			if (owner instanceof MultipleStuffOwner) {
 				MultipleStuffOwner<?, ?, ?> multipleStuffOwner = as(owner);
-				return multipleStuffOwner.isOverflow(as(model), check, number);
+				return multipleStuffOwner.isOverage(as(model), check, number);
 			} else {
 				LOGGER.warn("{} 玩家 {} Owner对象非 {}", warehouse.getPlayerId(), model.getItemType(), MultipleStuffOwner.class);
 			}
@@ -58,7 +58,7 @@ public class GameStuffOwnerService<SM extends StuffModel, S extends Stuff<? exte
 			}
 			if (owner instanceof MultipleStuffOwner) {
 				MultipleStuffOwner<?, ?, ?> countableStuffOwner = as(owner);
-				return countableStuffOwner.isNotEnough(as(model), check, number);
+				return countableStuffOwner.isLack(as(model), check, number);
 			} else {
 				LOGGER.warn("{} 玩家 {} Owner对象非 {}", warehouse.getPlayerId(), model.getItemType(), MultipleStuffOwner.class);
 			}

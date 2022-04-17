@@ -52,7 +52,7 @@ public class StuffDTO implements Serializable {
 		if (trade.getTradeType() != TradeType.AWARD) {
 			return;
 		}
-		for (TradeItem<?> tradItem : trade.getAllTradeItem()) {
+		for (TradeItem<?> tradItem : trade.getAllTradeItems()) {
 			mergeAward(awardMap, tradItem);
 		}
 	}

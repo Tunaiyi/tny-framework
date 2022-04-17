@@ -1,15 +1,18 @@
 package com.tny.game.basics.item.xml;
 
-import com.thoughtworks.xstream.XStream;
 import com.tny.game.basics.item.*;
+import com.tny.game.basics.item.loader.*;
 
-public class TestItemModelManager extends XMLModelManager<TestItemModel> {
+public class TestItemModelManager extends LoadableModelManager<TestItemModel> {
 
 	private final ItemModelContext context;
 
-	protected TestItemModelManager(String PATH, ItemModelContext context) {
+	private final ModelLoaderFactory factory;
+
+	protected TestItemModelManager(String PATH, ItemModelContext context, ModelLoaderFactory factory) {
 		super(TestItemModelImpl.class, TestBehavior.class, TestDemandType.class, TestAction.class, TestAbility.class,
 				TestOption.class, PATH);
+		this.factory = factory;
 		this.context = context;
 	}
 
@@ -18,12 +21,13 @@ public class TestItemModelManager extends XMLModelManager<TestItemModel> {
 	}
 
 	@Override
-	protected ItemModelContext context() {
-		return context;
+	protected ModelLoaderFactory loaderFactory() {
+		return factory;
 	}
 
 	@Override
-	protected void initXStream(XStream xStream) {
+	protected ItemModelContext context() {
+		return context;
 	}
 
 }

@@ -1,7 +1,6 @@
 package com.tny.game.basics.item;
 
 import javax.annotation.PostConstruct;
-import java.io.InputStream;
 import java.util.List;
 
 public abstract class MemoryItemModelManager<IM extends ItemModel> extends GameItemModelManager<IM> {
@@ -14,18 +13,13 @@ public abstract class MemoryItemModelManager<IM extends ItemModel> extends GameI
 	@PostConstruct
 	protected void initManager() {
 		try {
-			this.loadAndInitModel(null, null, false);
+			this.loadAndInitModel(loadAllModels(), ".", false);
 		} catch (Exception e) {
 			throw new IllegalArgumentException(e);
 		}
 		synchronized (this) {
 			this.parseAllComplete();
 		}
-	}
-
-	@Override
-	protected List<IM> loadAllModels(String path, InputStream inputStream) {
-		return loadAllModels();
 	}
 
 	protected abstract List<IM> loadAllModels();

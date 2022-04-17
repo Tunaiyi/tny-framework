@@ -70,6 +70,7 @@ ext.libs = [
         jackson_annotations                      : "com.fasterxml.jackson.core:jackson-annotations",
         jackson_dataformat_yaml                  : "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml",
         jackson_dataformat_xml                   : "com.fasterxml.jackson.dataformat:jackson-dataformat-xml",
+        jackson_datatype_jsr310                  : "com.fasterxml.jackson.datatype:jackson-datatype-jsr310",
         jackson_datatype_guava                   : "com.fasterxml.jackson.datatype:jackson-datatype-guava",
         jackson_datatype_java8                   : "com.fasterxml.jackson.datatype:jackson-datatype-jdk8",
 

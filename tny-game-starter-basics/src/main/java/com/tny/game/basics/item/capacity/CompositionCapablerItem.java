@@ -20,6 +20,11 @@ public abstract class CompositionCapablerItem<IM extends ItemModel> extends Base
 		this.composition = composition;
 	}
 
+	protected CompositionCapablerItem(long playerId, IM model, CapacitySupplierComposition composition) {
+		super(playerId, model);
+		this.composition = composition;
+	}
+
 	@Override
 	public CapableComposition composition() {
 		return composition;

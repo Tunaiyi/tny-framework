@@ -3,11 +3,14 @@ package com.tny.game.basics.configuration;
 import com.tny.game.basics.develop.*;
 import com.tny.game.basics.item.*;
 import com.tny.game.basics.item.common.*;
+import com.tny.game.basics.item.loader.*;
+import com.tny.game.basics.item.loader.xstream.*;
 import com.tny.game.basics.item.mapper.*;
 import com.tny.game.basics.persistent.*;
 import com.tny.game.basics.transaction.*;
 import com.tny.game.expr.*;
 import com.tny.game.expr.mvel.*;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
@@ -41,10 +44,16 @@ public class BasicsAutoConfiguration {
 	}
 
 	@Bean
-	public GameItemModelContext itemModelContext(GameExplorer gameExplorer, Optional<ExprHolderFactoryInitiator> initiatorOpt) {
+	public ItemModelContext itemModelContext(GameExplorer gameExplorer, Optional<ExprHolderFactoryInitiator> initiatorOpt) {
 		ExprHolderFactory exprHolderFactory = new MvelExpressionHolderFactory();
 		initiatorOpt.ifPresent(initiator -> initiator.init(exprHolderFactory));
 		return new GameItemModelContext(gameExplorer, exprHolderFactory);
+	}
+
+	@Bean
+	@ConditionalOnMissingBean(ModelLoaderFactory.class)
+	public ModelLoaderFactory modelLoaderFactory(ItemModelContext context) {
+		return new XStreamModelLoaderFactory(context.getExprHolderFactory());
 	}
 
 	@Bean

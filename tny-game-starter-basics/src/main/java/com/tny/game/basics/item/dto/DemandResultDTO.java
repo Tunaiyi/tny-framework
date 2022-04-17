@@ -2,7 +2,7 @@ package com.tny.game.basics.item.dto;
 
 import com.tny.game.basics.item.*;
 import com.tny.game.basics.item.behavior.*;
-import com.tny.game.basics.item.model.BaseDemand.*;
+import com.tny.game.basics.item.model.*;
 import com.tny.game.doc.annotation.*;
 import com.tny.game.protoex.annotations.*;
 
@@ -60,14 +60,12 @@ public class DemandResultDTO implements Serializable {
 		dto.modelId = result.getModelId();
 		dto.itemType = ItemTypes.ofModelId(result.getModelId()).getId();
 		dto.demandType = result.getDemandType().getId();
-		//        dto.currentValue = result.getCurrentValue(Long.class);
 		dto.expectValue = result.getExpectValue(Long.class);
-		//        dto.satisfy = result.isSatisfy();
 	}
 
 	public static List<DemandResultDTO> tradeInfo2DTOList(TradeInfo trade) {
-		Collection<TradeItem<StuffModel>> tradeItemList = trade.getAllTradeItem();
-		List<DemandResultDTO> list = new ArrayList<>(trade.getAllTradeItem().size());
+		Collection<TradeItem<StuffModel>> tradeItemList = trade.getAllTradeItems();
+		List<DemandResultDTO> list = new ArrayList<>(trade.getAllTradeItems().size());
 		for (TradeItem<StuffModel> item : tradeItemList) {
 			list.add(itemModel2DTO(trade.getTradeType(), item.getItemModel(), item.getNumber()));
 		}
@@ -75,8 +73,8 @@ public class DemandResultDTO implements Serializable {
 	}
 
 	public static List<DemandResultDTO> trade2DTOList(Trade trade) {
-		Collection<TradeItem<StuffModel>> tradeItemList = trade.getAllTradeItem();
-		List<DemandResultDTO> list = new ArrayList<>(trade.getAllTradeItem().size());
+		Collection<TradeItem<StuffModel>> tradeItemList = trade.getAllTradeItems();
+		List<DemandResultDTO> list = new ArrayList<>(trade.getAllTradeItems().size());
 		for (TradeItem<StuffModel> item : tradeItemList) {
 			list.add(itemModel2DTO(trade.getTradeType(), item.getItemModel(), item.getNumber()));
 		}

@@ -4,6 +4,7 @@ import com.google.common.collect.*;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.SingleValueConverter;
 import com.tny.game.basics.item.*;
+import com.tny.game.basics.item.loader.*;
 import com.tny.game.basics.mould.*;
 import com.tny.game.common.lifecycle.*;
 import com.tny.game.common.version.*;
@@ -42,6 +43,7 @@ public class FeatureModelManager<FM extends DefaultFeatureModel> extends GameMod
 		public boolean canConvert(Class aClass) {
 			return aClass == Version.class;
 		}
+		
 	};
 
 	public FeatureModelManager(String path, Class<? extends FM> modelClass) {
@@ -52,12 +54,17 @@ public class FeatureModelManager<FM extends DefaultFeatureModel> extends GameMod
 	}
 
 	@Override
-	protected void initXStream(XStream xStream) {
-		xStream.alias("feature", Feature.class);
-		xStream.alias("mould", Mould.class);
-		xStream.alias("mode", FeatureOpenMode.class);
-		xStream.alias("openPlan", FeatureOpenPlan.class);
-		xStream.registerConverter(versionConverter);
+	protected void onLoadCreate(ModelLoader<FM> loader) {
+		loader.setContextHandler((context) -> {
+			if (context instanceof XStream) {
+				XStream xStream = (XStream)context;
+				xStream.alias("feature", Feature.class);
+				xStream.alias("mould", Mould.class);
+				xStream.alias("mode", FeatureOpenMode.class);
+				xStream.alias("openPlan", FeatureOpenPlan.class);
+				xStream.registerConverter(versionConverter);
+			}
+		});
 	}
 
 	private static class FeatureComparator<FM extends FeatureModel> implements Comparator<FM> {

@@ -23,11 +23,6 @@ public class AwardDTO implements Serializable {
 	@JsonProperty
 	private int modelId;
 
-	// @VarDoc("条件相关的ItemType")
-	// @ProtoExField(2)
-	// @JsonProperty
-	// private int itemType;
-
 	@VarDoc("条件相关的数量")
 	@ProtoExField(3)
 	@JsonProperty
@@ -64,7 +59,7 @@ public class AwardDTO implements Serializable {
 		if (trade.getTradeType() != TradeType.AWARD) {
 			return;
 		}
-		for (TradeItem<?> tradItem : trade.getAllTradeItem()) {
+		for (TradeItem<?> tradItem : trade.getAllTradeItems()) {
 			mergeAward(awardMap, tradItem);
 		}
 	}

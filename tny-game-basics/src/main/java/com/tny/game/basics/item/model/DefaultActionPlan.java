@@ -7,6 +7,6 @@ import com.tny.game.basics.item.behavior.*;
  *
  * @author KGTny
  */
-public class BaseActionPlan extends AbstractActionPlan {
+public class DefaultActionPlan extends BaseActionPlan {
 
 }

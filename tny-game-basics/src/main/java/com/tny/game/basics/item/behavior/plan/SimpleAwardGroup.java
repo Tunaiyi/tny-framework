@@ -7,6 +7,6 @@ import com.tny.game.basics.item.behavior.*;
  *
  * @author KGTny
  */
-public class SimpleAwardGroup extends AbstractAwardGroup {
+public class SimpleAwardGroup extends BaseAwardGroup {
 
 }

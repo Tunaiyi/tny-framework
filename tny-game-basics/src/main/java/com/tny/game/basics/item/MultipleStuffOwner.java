@@ -19,7 +19,7 @@ public interface MultipleStuffOwner<IM extends ItemModel, SM extends MultipleStu
 	 * @param number 添加数量
 	 * @return 溢出返回 true 否则返回 false
 	 */
-	boolean isOverflow(SM model, AlterType type, Number number);
+	boolean isOverage(SM model, AlterType type, Number number);
 
 	/**
 	 * 检测是否足够
@@ -28,6 +28,6 @@ public interface MultipleStuffOwner<IM extends ItemModel, SM extends MultipleStu
 	 * @param number 扣除数量
 	 * @return 不足返回 true 否则返回 false
 	 */
-	boolean isNotEnough(SM model, AlterType type, Number number);
+	boolean isLack(SM model, AlterType type, Number number);
 
 }

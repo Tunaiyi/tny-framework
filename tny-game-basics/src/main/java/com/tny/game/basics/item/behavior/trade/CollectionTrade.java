@@ -62,7 +62,7 @@ public class CollectionTrade implements Trade {
 
 	public void collectTrade(Trade trade) {
 		if (trade.getTradeType() == this.tradeType) {
-			this.collectItem(trade.getAllTradeItem());
+			this.collectItem(trade.getAllTradeItems());
 		}
 	}
 
@@ -91,7 +91,7 @@ public class CollectionTrade implements Trade {
 	}
 
 	@Override
-	public List<TradeItem<StuffModel>> getAllTradeItem() {
+	public List<TradeItem<StuffModel>> getAllTradeItems() {
 		return new ArrayList<>(this.tradeMap.values());
 	}
 
@@ -101,14 +101,14 @@ public class CollectionTrade implements Trade {
 	}
 
 	@Override
-	public Collection<TradeItem<StuffModel>> getTradeItemBy(ItemType... itemType) {
-		return this.getTradeItemBy(Arrays.asList(itemType));
+	public Collection<TradeItem<StuffModel>> getTradeItemsBy(ItemType... itemType) {
+		return this.getTradeItemsBy(Arrays.asList(itemType));
 	}
 
 	@Override
-	public Collection<TradeItem<StuffModel>> getTradeItemBy(Collection<ItemType> itemType) {
+	public Collection<TradeItem<StuffModel>> getTradeItemsBy(Collection<ItemType> itemType) {
 		List<TradeItem<StuffModel>> tradeItemList = new ArrayList<>();
-		for (TradeItem<StuffModel> tradeItem : this.getAllTradeItem()) {
+		for (TradeItem<StuffModel> tradeItem : this.getAllTradeItems()) {
 			if (tradeItem.getItemModel().getItemType() == itemType) {
 				tradeItemList.add(tradeItem);
 			}

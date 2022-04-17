@@ -46,7 +46,7 @@ public interface TradeInfo {
 	 *
 	 * @return 返沪所有<消费项ID, 数量>
 	 */
-	Collection<TradeItem<StuffModel>> getAllTradeItem();
+	Collection<TradeItem<StuffModel>> getAllTradeItems();
 
 	/**
 	 * 获取指定itemType的tradeItem
@@ -54,7 +54,7 @@ public interface TradeInfo {
 	 * @param itemType 指定类型
 	 * @return 获取的tradeItem
 	 */
-	Collection<TradeItem<StuffModel>> getTradeItemBy(ItemType... itemType);
+	Collection<TradeItem<StuffModel>> getTradeItemsBy(ItemType... itemType);
 
 	/**
 	 * 获取指定itemType的tradeItem
@@ -62,7 +62,7 @@ public interface TradeInfo {
 	 * @param itemType 指定类型
 	 * @return 获取的tradeItem
 	 */
-	Collection<TradeItem<StuffModel>> getTradeItemBy(Collection<ItemType> itemType);
+	Collection<TradeItem<StuffModel>> getTradeItemsBy(Collection<ItemType> itemType);
 
 	/**
 	 * 是否有itemType的交易物品

@@ -22,6 +22,12 @@ public abstract class StorableCapablerItem<IM extends ItemModel> extends BaseCap
 		this.composition = composition;
 	}
 
+	protected StorableCapablerItem(long playerId, IM model, CapacityObjectStorer storer, CapacitySupplierComposition composition) {
+		super(playerId, model);
+		this.storer = storer;
+		this.composition = composition;
+	}
+
 	protected CapacityObjectStorer getStorer() {
 		return storer;
 	}

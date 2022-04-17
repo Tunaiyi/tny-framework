@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.*;
 
 class BaseDemandTest {
 
@@ -94,9 +94,9 @@ class BaseDemandTest {
 
 	private ItemModelContext context = new DefaultItemModelContext(this.explorer, this.explorer, exprHolderFactory);
 
-	private BaseDemand stuffDemand = new BaseDemand(this.itemAlias, ITEM_NAME, 100 + "", exprHolderFactory);
+	private DefaultDemand stuffDemand = new DefaultDemand(this.itemAlias, ITEM_NAME, 100 + "", exprHolderFactory);
 
-	private BaseDemand demand = new BaseDemand("pl$player", null, this.demandType,
+	private DefaultDemand demand = new DefaultDemand("pl$player", null, this.demandType,
 			"pl$player != null ? pl$player.level : 0",
 			"10",
 			"pl$player != null && pl$player.level >= " + ItemsImportKey.EXPECT_VALUE, exprHolderFactory);
@@ -122,7 +122,7 @@ class BaseDemandTest {
 	@Test
 	void testGetDemandType() {
 		assertEquals(this.demandType, this.demand.getDemandType());
-		assertEquals(BaseDemand.TradeDemandType.COST_DEMAND_GE, this.stuffDemand.getDemandType());
+		assertEquals(TradeDemandType.COST_DEMAND_GE, this.stuffDemand.getDemandType());
 	}
 
 	private MapRef<String, Object> ref = new MapRef<String, Object>() {
