@@ -37,6 +37,7 @@ public abstract class JacksonModelLoader<M extends Model> implements ModelLoader
 	private final JsonFactory factory;
 
 	private static final List<Class<?>> classes = Arrays.asList(
+			ItemType.class,
 			Behavior.class,
 			Action.class,
 			Ability.class,
@@ -167,7 +168,7 @@ public abstract class JacksonModelLoader<M extends Model> implements ModelLoader
 		module.addAbstractTypeMapping(Collection.class, EmptyImmutableList.class);
 		module.addAbstractTypeMapping(Set.class, EmptyImmutableSet.class);
 		module.addAbstractTypeMapping(Map.class, EmptyImmutableMap.class);
-		module.addDeserializer(ExprHolder.class, new ExprHolderDeserialize(exprHolderFactory));
+		module.addDeserializer(ExprHolder.class, new ExprHolderDeserializer(exprHolderFactory));
 		module.addDeserializer(RandomCreator.class, RandomCreatorDeserializer.deserializer());
 
 		module.addAbstractTypeMapping(BaseDemand.class, DefaultDemand.class)

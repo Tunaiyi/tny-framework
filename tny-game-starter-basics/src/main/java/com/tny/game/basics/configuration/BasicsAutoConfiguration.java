@@ -28,6 +28,7 @@ import java.util.Optional;
 public class BasicsAutoConfiguration {
 
 	@Bean
+	@ConditionalOnMissingBean(DefaultItemModelManager.class)
 	DefaultItemModelManager defaultItemModelManager(DefaultItemModelProperties setting) {
 		return new DefaultItemModelManager(setting.getPaths());
 	}

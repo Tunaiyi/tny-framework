@@ -8,13 +8,13 @@ import org.slf4j.*;
 
 import java.io.IOException;
 
-public class ExprHolderDeserialize extends JsonDeserializer<ExprHolder> {
+public class ExprHolderDeserializer extends JsonDeserializer<ExprHolder> {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ExprHolderDeserialize.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ExprHolderDeserializer.class);
 
 	private final ExprHolderFactory exprHolderFactory;
 
-	public ExprHolderDeserialize(ExprHolderFactory exprHolderFactory) {
+	public ExprHolderDeserializer(ExprHolderFactory exprHolderFactory) {
 		this.exprHolderFactory = exprHolderFactory;
 	}
 

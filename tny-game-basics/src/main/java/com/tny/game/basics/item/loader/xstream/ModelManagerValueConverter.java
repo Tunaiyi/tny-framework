@@ -1,4 +1,4 @@
-package com.tny.game.basics.item.loader;
+package com.tny.game.basics.item.loader.xstream;
 
 import com.thoughtworks.xstream.converters.SingleValueConverter;
 import com.tny.game.basics.item.xml.*;
