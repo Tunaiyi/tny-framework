@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.tny.game.basics.exception.*;
 import com.tny.game.basics.item.*;
 import com.tny.game.basics.log.*;
+import com.tny.game.common.collection.empty.*;
 import com.tny.game.expr.*;
 import org.slf4j.*;
 
@@ -20,7 +21,7 @@ public class DemandParamsObject {
     /**
      * 参数
      */
-    protected Map<DemandParam, ExprHolder> paramMap;
+    protected Map<DemandParam, ExprHolder> paramMap = new EmptyImmutableMap<>();
 
     /**
      * 事物总管理器
@@ -35,8 +36,9 @@ public class DemandParamsObject {
     private void setAttrMap(long playerId, String alias, Map<String, Object> attributeMap) {
         ModelExplorer itemModelExplorer = this.context.getItemModelExplorer();
         ItemModel model = itemModelExplorer.getModelByAlias(alias);
-        if (model == null)
+        if (model == null) {
             throw new GameRuningException(ItemResultCode.MODEL_NO_EXIST, alias);
+        }
         ItemExplorer itemExplorer = this.context.getItemExplorer();
         if (itemExplorer.hasItemManager(model.getItemType())) {
             Item<?> item = itemExplorer.getItem(playerId, model.getId());
@@ -63,10 +65,11 @@ public class DemandParamsObject {
 
     protected void init(ItemModelContext context) {
         this.context = context;
-        if (this.paramMap == null)
+        if (this.paramMap == null) {
             this.paramMap = ImmutableMap.of();
-        else
+        } else {
             this.paramMap = ImmutableMap.copyOf(this.paramMap);
+        }
     }
 
 }

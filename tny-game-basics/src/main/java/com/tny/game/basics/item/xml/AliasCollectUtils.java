@@ -1,10 +1,11 @@
 package com.tny.game.basics.item.xml;
 
-import java.util.*;
+import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 public class AliasCollectUtils {
 
-    private static HashSet<String> aliasSet = new HashSet<String>();
+    private static Set<String> aliasSet = new ConcurrentSkipListSet<>();
 
     public static void addAlias(String alias) {
         if (alias == null || alias.equalsIgnoreCase("null")) {

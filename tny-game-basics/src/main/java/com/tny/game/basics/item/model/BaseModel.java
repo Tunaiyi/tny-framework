@@ -12,30 +12,30 @@ import java.util.Set;
  */
 public abstract class BaseModel<C> implements Model {
 
-	protected boolean init = false;
+    protected boolean init = false;
 
-	protected Set<Object> tags;
+    protected Set<Object> tags;
 
-	protected String currentFormula(String alias) {
-		return null;
-	}
+    protected String currentFormula(String alias) {
+        return null;
+    }
 
-	protected void init(C context) {
-		if (init) {
-			return;
-		}
-		if (this.tags == null) {
-			this.tags = ImmutableSet.of();
-		}
-		this.doInit(context);
-		init = true;
-	}
+    protected void init(C context) {
+        if (init) {
+            return;
+        }
+        if (this.tags == null) {
+            this.tags = ImmutableSet.of();
+        }
+        this.doInit(context);
+        init = true;
+    }
 
-	@Override
-	public Set<Object> tags() {
-		return tags;
-	}
+    @Override
+    public Set<Object> tags() {
+        return tags;
+    }
 
-	protected abstract void doInit(C context);
+    protected abstract void doInit(C context);
 
 }

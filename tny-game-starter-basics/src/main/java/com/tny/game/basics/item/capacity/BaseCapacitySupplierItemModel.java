@@ -11,27 +11,28 @@ import java.util.stream.Collectors;
  */
 public abstract class BaseCapacitySupplierItemModel extends BaseItemModel implements CapacitySupplierItemModel {
 
-	private Set<Capacity> capacities;
+    private Set<Capacity> capacities;
 
-	private Set<CapacityGroup> capacityGroups;
+    private Set<CapacityGroup> capacityGroups;
 
-	@Override
-	protected void onItemInit(ItemModelContext context) {
-		capacities = Collections.unmodifiableSet(this.getAbilityTypes(Capacity.class));
-		capacityGroups = Collections.unmodifiableSet(this.capacities.stream()
-				.map(Capacity::getGroup)
-				.collect(Collectors.toSet()));
+    @Override
+    protected void onItemInit(ItemModelContext context) {
+        super.onItemInit(context);
+        capacities = Collections.unmodifiableSet(this.getAbilityTypes(Capacity.class));
+        capacityGroups = Collections.unmodifiableSet(this.capacities.stream()
+                .map(Capacity::getGroup)
+                .collect(Collectors.toSet()));
 
-	}
+    }
 
-	@Override
-	public Set<Capacity> getCapacities() {
-		return capacities;
-	}
+    @Override
+    public Set<Capacity> getCapacities() {
+        return capacities;
+    }
 
-	@Override
-	public Set<CapacityGroup> getCapacityGroups() {
-		return capacityGroups;
-	}
+    @Override
+    public Set<CapacityGroup> getCapacityGroups() {
+        return capacityGroups;
+    }
 
 }
