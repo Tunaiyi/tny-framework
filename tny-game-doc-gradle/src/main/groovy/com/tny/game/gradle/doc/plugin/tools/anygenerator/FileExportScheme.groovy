@@ -4,6 +4,7 @@ import com.tny.game.doc.LangTypeFormatter
 import com.tny.game.doc.TypeFormatter
 import com.tny.game.doc.controller.ModuleTableAttribute
 import com.tny.game.doc.enums.EnumTableAttribute
+import com.tny.game.doc.general.ClassesTableAttribute
 import com.tny.game.doc.output.ExportTask
 import com.tny.game.doc.output.OutputType
 import com.tny.game.doc.table.TableAttributeFactory
@@ -195,7 +196,7 @@ class FileExportScheme {
     void dtoAttributeFactory(Action<DTOTableAttributeSpec> action) {
         def spec = objectFactory.newInstance(DTOTableAttributeSpec.class)
         action.execute(spec)
-        this.attributeFactory = spec.createFactory()
+        this.attributeFactory = spec.createFactory(null);
     }
 
     void serviceAttributeFactory() {
@@ -204,6 +205,10 @@ class FileExportScheme {
 
     void enumAttributeFactory() {
         this.attributeFactory = { new EnumTableAttribute() }
+    }
+
+    void classesAttributeFactory() {
+        this.attributeFactory = { new ClassesTableAttribute() }
     }
 
     void setAttributeFactory(TableAttributeFactory attributeFactory) {
