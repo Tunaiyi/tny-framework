@@ -9,24 +9,24 @@ import com.tny.game.net.command.*;
  */
 public interface Communicator<UID> {
 
-	/**
-	 * @return 用户ID
-	 */
-	UID getUserId();
+    /**
+     * @return 用户ID
+     */
+    UID getUserId();
 
-	/**
-	 * @return 用户组
-	 */
-	String getUserType();
+    /**
+     * @return 用户组
+     */
+    String getUserType();
 
-	/**
-	 * @return 登陆凭证
-	 */
-	Certificate<UID> getCertificate();
+    /**
+     * @return 登陆凭证
+     */
+    Certificate<UID> getCertificate();
 
-	/**
-	 * @return 是否登陆认证
-	 */
-	boolean isAuthenticated();
+    /**
+     * @return 是否登陆认证
+     */
+    boolean isAuthenticated();
 
 }

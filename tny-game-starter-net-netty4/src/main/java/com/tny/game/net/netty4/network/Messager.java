@@ -6,8 +6,10 @@ package com.tny.game.net.netty4.network;
  * @author Kun Yang
  * @date 2019-11-17 02:38
  */
-public interface Identifier {
+public interface Messager {
 
-    long getPlayerId();
+    long getIdentity();
+
+    String getUserType();
 
 }

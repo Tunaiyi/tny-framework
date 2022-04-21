@@ -6,10 +6,11 @@ package com.tny.game.common.enums;
 
 public interface IntEnumerable extends Enumerable<Integer> {
 
-	int id();
+    int id();
 
-	default Integer getId() {
-		return id();
-	}
+    @Override
+    default Integer getId() {
+        return id();
+    }
 
 }
