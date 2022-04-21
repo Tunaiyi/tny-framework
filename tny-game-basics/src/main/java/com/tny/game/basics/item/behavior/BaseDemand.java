@@ -110,7 +110,7 @@ public abstract class BaseDemand extends DemandParamsObject implements Demand, I
         Object current = currentFormula != null ? currentFormula.putAll(attributeMap).execute(Object.class) : null;
         Object expect = this.expect != null ? this.expect.createExpr().putAll(attributeMap).execute(Object.class) : null;
         boolean satisfy = this.checkSatisfy(current, expect, demandModel, attributeMap);
-        if (this.getDemandType() == TradeDemandType.COST_DEMAND_GE) {
+        if (this.getDemandType() == TradeDemandType.DEDUCT_DEMAND_GE) {
             Number costId = (Number)attributeMap.getOrDefault(ItemModel.ATTRIBUTE_KEY_COST_ITEM_ID, 0L);
             return new CostDemandResult(costId.longValue(), as(demandModel), this.demandType, current, expect, satisfy, this.alertType, paramMap);
         } else {
@@ -185,7 +185,7 @@ public abstract class BaseDemand extends DemandParamsObject implements Demand, I
             this.itemAlias = itemModel.getAlias();
         }
         if (this.demandType == null) {
-            this.demandType = TradeDemandType.COST_DEMAND_GE;
+            this.demandType = TradeDemandType.DEDUCT_DEMAND_GE;
         }
     }
 

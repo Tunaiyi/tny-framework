@@ -13,9 +13,9 @@ public enum TradeType {
     AWARD(1),
 
     /**
-     * 消耗
+     * 扣除
      */
-    COST(2);
+    DEDUCT(2);
 
     private final int id;
 
@@ -28,10 +28,11 @@ public enum TradeType {
     }
 
     public static TradeType get(int id) {
-        if (AWARD.id == id)
+        if (AWARD.id == id) {
             return AWARD;
-        else if (COST.id == id)
-            return COST;
+        } else if (DEDUCT.id == id) {
+            return DEDUCT;
+        }
         throw new NullPointerException("不存在TradeType id 为" + id);
     }
 }

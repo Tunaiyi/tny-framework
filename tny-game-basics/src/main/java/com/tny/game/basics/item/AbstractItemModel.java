@@ -126,8 +126,8 @@ public abstract class AbstractItemModel extends BaseModel<ItemModelContext> impl
         return new SimpleTryToDoResult(action, award ?
                 behaviorPlan.countAward(playerId, action, attributeMap) :
                 new SimpleTrade(action, TradeType.AWARD),
-                new SimpleTrade(action, TradeType.COST, collector.getCostDemands().stream()
-                        .filter(d -> d.getDemandType() == TradeDemandType.COST_DEMAND_GE)
+                new SimpleTrade(action, TradeType.DEDUCT, collector.getCostDemands().stream()
+                        .filter(d -> d.getDemandType() == TradeDemandType.DEDUCT_DEMAND_GE)
                         .map(d -> new SimpleTradeItem<>(d, d.getAlterType(), d.getParamMap()))
                         .collect(Collectors.toList())));
     }
@@ -605,7 +605,7 @@ public abstract class AbstractItemModel extends BaseModel<ItemModelContext> impl
         ExprHolderFactory exprHolderFactory = context.getExprHolderFactory();
         this.currentFormulaHolder = as(exprHolderFactory.create(this.getCurrentFormula()));
         this.demandFormulaHolder = as(exprHolderFactory.create(this.getDemandFormula()));
-        
+
         if (this.actionBehaviorPlanMap == null) {
             this.actionBehaviorPlanMap = new EmptyImmutableMap<>();
         }

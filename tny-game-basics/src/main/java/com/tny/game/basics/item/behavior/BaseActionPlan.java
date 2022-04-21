@@ -130,7 +130,7 @@ public abstract class BaseActionPlan extends DemandHolderObject implements Actio
     public Trade createCost(long playerId, Action action, Map<String, Object> attributes) {
         action = checkAction(action);
         if (this.costPlan == null) {
-            return new SimpleTrade(action, TradeType.COST);
+            return new SimpleTrade(action, TradeType.DEDUCT);
         }
         setAttrMap(playerId, this.attrAliasSet, attributes);
         this.countAndSetDemandParams(ItemsImportKey.$ACTION_DEMAND_PARAMS, attributes);

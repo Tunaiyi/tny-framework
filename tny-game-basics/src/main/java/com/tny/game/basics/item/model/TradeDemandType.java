@@ -12,41 +12,28 @@ import com.tny.game.common.result.*;
  **/
 public enum TradeDemandType implements DemandType {
 
-	COST_DEMAND_GE(1) {
-		@Override
-		public ResultCode getResultCode() {
-			return ItemResultCode.TRY_TO_DO_FAIL;
-		}
+    DEDUCT_DEMAND_GE(1) {
+        @Override
+        public ResultCode getResultCode() {
+            return ItemResultCode.TRY_TO_DO_FAIL;
+        }
 
-		@Override
-		public boolean isCost() {
-			return true;
-		}
+        @Override
+        public boolean isCost() {
+            return true;
+        }
 
-	},
+    };
 
-	RECV_DEMAND(2) {
-		@Override
-		public ResultCode getResultCode() {
-			return ItemResultCode.TRY_TO_DO_FAIL;
-		}
+    private final int id;
 
-		@Override
-		public boolean isCost() {
-			return true;
-		}
+    TradeDemandType(int id) {
+        this.id = id;
+    }
 
-	};
-
-	private final int id;
-
-	TradeDemandType(int id) {
-		this.id = id;
-	}
-
-	@Override
-	public int id() {
-		return this.id;
-	}
+    @Override
+    public int id() {
+        return this.id;
+    }
 
 }

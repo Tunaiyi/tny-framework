@@ -20,7 +20,7 @@ public class DefaultCostPlan extends BaseCostPlan {
 
     @Override
     public Trade createTrade(long playerId, Action action, Map<String, Object> attributeMap) {
-        return new SimpleTrade(action, TradeType.COST, this.createTradeItem(playerId, attributeMap));
+        return new SimpleTrade(action, TradeType.DEDUCT, this.createTradeItem(playerId, attributeMap));
     }
 
     private List<TradeItem<StuffModel>> createTradeItem(long playerId, Map<String, Object> attributeMap) {

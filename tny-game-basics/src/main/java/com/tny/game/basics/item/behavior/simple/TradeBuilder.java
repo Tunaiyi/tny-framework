@@ -13,53 +13,53 @@ import java.util.*;
  */
 public class TradeBuilder {
 
-	private Action action;
+    private Action action;
 
-	private TradeType tradeType;
+    private TradeType tradeType;
 
-	private List<TradeItem<?>> tradeItems = new ArrayList<>();
+    private List<TradeItem<?>> tradeItems = new ArrayList<>();
 
-	public static TradeBuilder awardBuilder(Action action) {
-		return new TradeBuilder(action, TradeType.AWARD);
-	}
+    public static TradeBuilder awardBuilder(Action action) {
+        return new TradeBuilder(action, TradeType.AWARD);
+    }
 
-	public static TradeBuilder costBuilder(Action action) {
-		return new TradeBuilder(action, TradeType.COST);
-	}
+    public static TradeBuilder costBuilder(Action action) {
+        return new TradeBuilder(action, TradeType.DEDUCT);
+    }
 
-	private TradeBuilder(Action action, TradeType tradeType) {
-		this.action = action;
-		this.tradeType = tradeType;
-	}
+    private TradeBuilder(Action action, TradeType tradeType) {
+        this.action = action;
+        this.tradeType = tradeType;
+    }
 
-	public TradeBuilder addItem(StuffModel itemModel, Number number, AlterType alertType) {
-		this.tradeItems.add(new SimpleTradeItem<>(itemModel, number, alertType));
-		return this;
-	}
+    public TradeBuilder addItem(StuffModel itemModel, Number number, AlterType alertType) {
+        this.tradeItems.add(new SimpleTradeItem<>(itemModel, number, alertType));
+        return this;
+    }
 
-	public TradeBuilder addItem(StuffModel itemModel, Number number) {
-		this.tradeItems.add(new SimpleTradeItem<>(itemModel, number));
-		return this;
-	}
+    public TradeBuilder addItem(StuffModel itemModel, Number number) {
+        this.tradeItems.add(new SimpleTradeItem<>(itemModel, number));
+        return this;
+    }
 
-	public TradeBuilder addItem(TradeItem<?> item) {
-		this.tradeItems.add(item);
-		return this;
-	}
+    public TradeBuilder addItem(TradeItem<?> item) {
+        this.tradeItems.add(item);
+        return this;
+    }
 
-	public TradeBuilder addItem(TradeItem<?>... items) {
-		for (TradeItem<?> item : items)
-			this.tradeItems.add(item);
-		return this;
-	}
+    public TradeBuilder addItem(TradeItem<?>... items) {
+        for (TradeItem<?> item : items)
+            this.tradeItems.add(item);
+        return this;
+    }
 
-	public TradeBuilder addItems(Collection<TradeItem<?>> items) {
-		this.tradeItems.addAll(items);
-		return this;
-	}
+    public TradeBuilder addItems(Collection<TradeItem<?>> items) {
+        this.tradeItems.addAll(items);
+        return this;
+    }
 
-	public Trade build() {
-		return new SimpleTrade(action, tradeType, this.tradeItems);
-	}
+    public Trade build() {
+        return new SimpleTrade(action, tradeType, this.tradeItems);
+    }
 
 }
