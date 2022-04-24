@@ -22,15 +22,16 @@
 DROP TABLE IF EXISTS `CPlayer0`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `CPlayer0` (
-  `key` varchar(200) NOT NULL,
-  `flags` int(11) NOT NULL,
-  `data` mediumblob,
-  `expire` bigint(20) NOT NULL,
-  `version` bigint(20) NOT NULL DEFAULT '0',
-  `saveAt` bigint(20) NOT NULL,
-  PRIMARY KEY (`key`),
-  KEY `index_flags` (`flags`)
+CREATE TABLE `CPlayer0`
+(
+    `key`     varchar(200) NOT NULL,
+    `flags`   int(11) NOT NULL,
+    `data`    mediumblob,
+    `expire`  bigint(20) NOT NULL,
+    `version` bigint(20) NOT NULL DEFAULT '0',
+    `saveAt`  bigint(20) NOT NULL,
+    PRIMARY KEY (`key`),
+    KEY       `index_flags` (`flags`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -41,15 +42,16 @@ CREATE TABLE `CPlayer0` (
 DROP TABLE IF EXISTS `CPlayer1`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `CPlayer1` (
-  `key` varchar(200) NOT NULL,
-  `flags` int(11) NOT NULL,
-  `data` mediumblob,
-  `expire` bigint(20) NOT NULL,
-  `version` bigint(20) NOT NULL DEFAULT '0',
-  `saveAt` bigint(20) NOT NULL,
-  PRIMARY KEY (`key`),
-  KEY `index_flags` (`flags`)
+CREATE TABLE `CPlayer1`
+(
+    `key`     varchar(200) NOT NULL,
+    `flags`   int(11) NOT NULL,
+    `data`    mediumblob,
+    `expire`  bigint(20) NOT NULL,
+    `version` bigint(20) NOT NULL DEFAULT '0',
+    `saveAt`  bigint(20) NOT NULL,
+    PRIMARY KEY (`key`),
+    KEY       `index_flags` (`flags`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -60,15 +62,16 @@ CREATE TABLE `CPlayer1` (
 DROP TABLE IF EXISTS `CPlayer2`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `CPlayer2` (
-  `key` varchar(200) NOT NULL,
-  `flags` int(11) NOT NULL,
-  `data` mediumblob,
-  `expire` bigint(20) NOT NULL,
-  `version` bigint(20) NOT NULL DEFAULT '0',
-  `saveAt` bigint(20) NOT NULL,
-  PRIMARY KEY (`key`),
-  KEY `index_flags` (`flags`)
+CREATE TABLE `CPlayer2`
+(
+    `key`     varchar(200) NOT NULL,
+    `flags`   int(11) NOT NULL,
+    `data`    mediumblob,
+    `expire`  bigint(20) NOT NULL,
+    `version` bigint(20) NOT NULL DEFAULT '0',
+    `saveAt`  bigint(20) NOT NULL,
+    PRIMARY KEY (`key`),
+    KEY       `index_flags` (`flags`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -79,15 +82,16 @@ CREATE TABLE `CPlayer2` (
 DROP TABLE IF EXISTS `CPlayer3`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `CPlayer3` (
-  `key` varchar(200) NOT NULL,
-  `flags` int(11) NOT NULL,
-  `data` mediumblob,
-  `expire` bigint(20) NOT NULL,
-  `version` bigint(20) NOT NULL DEFAULT '0',
-  `saveAt` bigint(20) NOT NULL,
-  PRIMARY KEY (`key`),
-  KEY `index_flags` (`flags`)
+CREATE TABLE `CPlayer3`
+(
+    `key`     varchar(200) NOT NULL,
+    `flags`   int(11) NOT NULL,
+    `data`    mediumblob,
+    `expire`  bigint(20) NOT NULL,
+    `version` bigint(20) NOT NULL DEFAULT '0',
+    `saveAt`  bigint(20) NOT NULL,
+    PRIMARY KEY (`key`),
+    KEY       `index_flags` (`flags`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -98,15 +102,16 @@ CREATE TABLE `CPlayer3` (
 DROP TABLE IF EXISTS `CPlayer4`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `CPlayer4` (
-  `key` varchar(200) NOT NULL,
-  `flags` int(11) NOT NULL,
-  `data` mediumblob,
-  `expire` bigint(20) NOT NULL,
-  `version` bigint(20) NOT NULL DEFAULT '0',
-  `saveAt` bigint(20) NOT NULL,
-  PRIMARY KEY (`key`),
-  KEY `index_flags` (`flags`)
+CREATE TABLE `CPlayer4`
+(
+    `key`     varchar(200) NOT NULL,
+    `flags`   int(11) NOT NULL,
+    `data`    mediumblob,
+    `expire`  bigint(20) NOT NULL,
+    `version` bigint(20) NOT NULL DEFAULT '0',
+    `saveAt`  bigint(20) NOT NULL,
+    PRIMARY KEY (`key`),
+    KEY       `index_flags` (`flags`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -117,15 +122,16 @@ CREATE TABLE `CPlayer4` (
 DROP TABLE IF EXISTS `CPlayer5`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `CPlayer5` (
-  `key` varchar(200) NOT NULL,
-  `flags` int(11) NOT NULL,
-  `data` mediumblob,
-  `expire` bigint(20) NOT NULL,
-  `version` bigint(20) NOT NULL DEFAULT '0',
-  `saveAt` bigint(20) NOT NULL,
-  PRIMARY KEY (`key`),
-  KEY `index_flags` (`flags`)
+CREATE TABLE `CPlayer5`
+(
+    `key`     varchar(200) NOT NULL,
+    `flags`   int(11) NOT NULL,
+    `data`    mediumblob,
+    `expire`  bigint(20) NOT NULL,
+    `version` bigint(20) NOT NULL DEFAULT '0',
+    `saveAt`  bigint(20) NOT NULL,
+    PRIMARY KEY (`key`),
+    KEY       `index_flags` (`flags`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -136,15 +142,16 @@ CREATE TABLE `CPlayer5` (
 DROP TABLE IF EXISTS `CPlayer6`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `CPlayer6` (
-  `key` varchar(200) NOT NULL,
-  `flags` int(11) NOT NULL,
-  `data` mediumblob,
-  `expire` bigint(20) NOT NULL,
-  `version` bigint(20) NOT NULL DEFAULT '0',
-  `saveAt` bigint(20) NOT NULL,
-  PRIMARY KEY (`key`),
-  KEY `index_flags` (`flags`)
+CREATE TABLE `CPlayer6`
+(
+    `key`     varchar(200) NOT NULL,
+    `flags`   int(11) NOT NULL,
+    `data`    mediumblob,
+    `expire`  bigint(20) NOT NULL,
+    `version` bigint(20) NOT NULL DEFAULT '0',
+    `saveAt`  bigint(20) NOT NULL,
+    PRIMARY KEY (`key`),
+    KEY       `index_flags` (`flags`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -155,15 +162,16 @@ CREATE TABLE `CPlayer6` (
 DROP TABLE IF EXISTS `CPlayer7`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `CPlayer7` (
-  `key` varchar(200) NOT NULL,
-  `flags` int(11) NOT NULL,
-  `data` mediumblob,
-  `expire` bigint(20) NOT NULL,
-  `version` bigint(20) NOT NULL DEFAULT '0',
-  `saveAt` bigint(20) NOT NULL,
-  PRIMARY KEY (`key`),
-  KEY `index_flags` (`flags`)
+CREATE TABLE `CPlayer7`
+(
+    `key`     varchar(200) NOT NULL,
+    `flags`   int(11) NOT NULL,
+    `data`    mediumblob,
+    `expire`  bigint(20) NOT NULL,
+    `version` bigint(20) NOT NULL DEFAULT '0',
+    `saveAt`  bigint(20) NOT NULL,
+    PRIMARY KEY (`key`),
+    KEY       `index_flags` (`flags`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -174,15 +182,16 @@ CREATE TABLE `CPlayer7` (
 DROP TABLE IF EXISTS `CPlayer8`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `CPlayer8` (
-  `key` varchar(200) NOT NULL,
-  `flags` int(11) NOT NULL,
-  `data` mediumblob,
-  `expire` bigint(20) NOT NULL,
-  `version` bigint(20) NOT NULL DEFAULT '0',
-  `saveAt` bigint(20) NOT NULL,
-  PRIMARY KEY (`key`),
-  KEY `index_flags` (`flags`)
+CREATE TABLE `CPlayer8`
+(
+    `key`     varchar(200) NOT NULL,
+    `flags`   int(11) NOT NULL,
+    `data`    mediumblob,
+    `expire`  bigint(20) NOT NULL,
+    `version` bigint(20) NOT NULL DEFAULT '0',
+    `saveAt`  bigint(20) NOT NULL,
+    PRIMARY KEY (`key`),
+    KEY       `index_flags` (`flags`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -193,15 +202,16 @@ CREATE TABLE `CPlayer8` (
 DROP TABLE IF EXISTS `CPlayer9`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `CPlayer9` (
-  `key` varchar(200) NOT NULL,
-  `flags` int(11) NOT NULL,
-  `data` mediumblob,
-  `expire` bigint(20) NOT NULL,
-  `version` bigint(20) NOT NULL DEFAULT '0',
-  `saveAt` bigint(20) NOT NULL,
-  PRIMARY KEY (`key`),
-  KEY `index_flags` (`flags`)
+CREATE TABLE `CPlayer9`
+(
+    `key`     varchar(200) NOT NULL,
+    `flags`   int(11) NOT NULL,
+    `data`    mediumblob,
+    `expire`  bigint(20) NOT NULL,
+    `version` bigint(20) NOT NULL DEFAULT '0',
+    `saveAt`  bigint(20) NOT NULL,
+    PRIMARY KEY (`key`),
+    KEY       `index_flags` (`flags`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -212,26 +222,29 @@ CREATE TABLE `CPlayer9` (
 DROP TABLE IF EXISTS `UpObject`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `UpObject` (
-  `id` int(11) NOT NULL,
-  `name` varchar(45) NOT NULL,
-  `age` tinyint(4) NOT NULL,
-  `gender` tinyint(4) NOT NULL,
-  PRIMARY KEY (`id`)
+CREATE TABLE `UpObject`
+(
+    `id`     int(11) NOT NULL,
+    `name`   varchar(45) NOT NULL,
+    `age`    tinyint(4) NOT NULL,
+    `gender` tinyint(4) NOT NULL,
+    PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 
 DROP PROCEDURE IF EXISTS `createTablesByName`;
-DELIMITER $$
+DELIMITER
+$$
 
-CREATE PROCEDURE `createTablesByName`(tableName varchar(45))
+CREATE PROCEDURE `createTablesByName`(tableName varchar (45))
 BEGIN
 --    set @delSql = concat('DROP TABLE IF EXISTS `', tableName, '`;');
 --    PREPARE delTable from  @delSql;
 --    EXECUTE delTable;
     
-    set @crtSql = concat(
+    set
+@crtSql = concat(
         'create table `', tableName, '`',
         ' (`key` varchar(200) NOT NULL,',
         '`flags` int NOT NULL,',
@@ -241,8 +254,8 @@ BEGIN
         '`saveAt` bigint(20) NOT NULL,',
         'PRIMARY KEY (`key`)',
         ') ENGINE=InnoDB DEFAULT CHARSET=utf8');
-    PREPARE crtTable from  @crtSql;
-    EXECUTE crtTable;
+PREPARE crtTable from @crtSql;
+EXECUTE crtTable;
 END;
 
 $$

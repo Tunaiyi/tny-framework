@@ -34,7 +34,7 @@ class ApplicationLifecycleProcessor {
         RunChecker.trace(this.getClass());
         LOGGER.info("开始初始化 Class Scan ...");
         ClassScanner.instance(loader, true).scan(paths);
-        LOGGER.info("初始化 Class Scan 完成! 耗时 {} ms", RunChecker.end(this.getClass()).costMillisTime());
+        LOGGER.info("初始化 Class Scan 完成! 耗时 {} ms", RunChecker.end(this.getClass()).costTime());
         //		AsLifecycle
         Set<Class<?>> lifecycleClass = AutoClassScanConfigure.getClasses(AsLifecycle.class);
         lifecycleClass.forEach(LifecycleLoader::register);

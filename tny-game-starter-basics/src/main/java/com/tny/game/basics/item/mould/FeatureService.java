@@ -85,7 +85,7 @@ public abstract class FeatureService implements AppPrepareStart, ApplicationCont
                         launcher.openFeature(model, handler);
                     }
                     if (this.LOGGER.isInfoEnabled()) {
-                        long time = RunChecker.end(model.getFeature()).costMicroTime();
+                        long time = RunChecker.end(model.getFeature()).costTime();
                         this.LOGGER.debug("{} 玩家开启 {} 功能成功! 耗时 {} ms", launcher.getPlayerId(), feature, time);
                     }
                 }

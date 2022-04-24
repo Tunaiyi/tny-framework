@@ -24,7 +24,7 @@ public final class EventListenerLoader {
     @ClassSelectorProvider
     public static ClassSelector controllerSelector() {
         return ClassSelector.create()
-                .addFilter(AnnotationClassFilter.ofInclude(EventBusListener.class))
+                .addFilter(AnnotationClassFilter.ofInclude(EventListener.class))
                 .setHandler((classes) -> classes.stream()
                         .filter((c) -> !c.isInterface() && !Modifier.isAbstract(c.getModifiers()))
                         .forEach(CLASSES::add)

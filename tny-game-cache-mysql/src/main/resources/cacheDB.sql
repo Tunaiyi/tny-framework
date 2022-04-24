@@ -1,18 +1,23 @@
 DROP PROCEDURE IF EXISTS `createTables`;
 
-DELIMITER $$
+DELIMITER
+$$
 
 CREATE PROCEDURE `createTables`(total int)
 BEGIN
-    declare i int;
-    set i = 0;
-    while i<total do
+    declare
+i int;
+    set
+i = 0;
+    while
+i<total do
     
         set @delSql = concat('DROP TABLE IF EXISTS Cache_', i, ';');
-        PREPARE delTable from  @delSql;
-        EXECUTE delTable;
-        
-        set @crtSql = concat(
+PREPARE delTable from @delSql;
+EXECUTE delTable;
+
+set
+@crtSql = concat(
             'create table Cache_', i,
 	        ' (`key` varchar(200) NOT NULL,',
 	        '`flags` int NOT NULL,',
@@ -23,26 +28,29 @@ BEGIN
 	        'PRIMARY KEY (`key`),',
 	 		 'INDEX `index_flags` (`flags` ASC)',
 	        ') ENGINE=InnoDB DEFAULT CHARSET=utf8');
-        PREPARE crtTable from  @crtSql;
-        EXECUTE crtTable;
-        
-        set i = i + 1;
-    end while;
+PREPARE crtTable from @crtSql;
+EXECUTE crtTable;
+
+set
+i = i + 1;
+end while;
 END;$$
 
 CALL createTables(10);
 
 
 DROP PROCEDURE IF EXISTS `createTablesByName`;
-DELIMITER $$
+DELIMITER
+$$
 
-CREATE PROCEDURE `createTablesByName`(tableName varchar(45))
+CREATE PROCEDURE `createTablesByName`(tableName varchar (45))
 BEGIN
 --    set @delSql = concat('DROP TABLE IF EXISTS `', tableName, '`;');
 --    PREPARE delTable from  @delSql;
 --    EXECUTE delTable;
     
-    set @crtSql = concat(
+    set
+@crtSql = concat(
         'create table `', tableName, '`',
         ' (`key` varchar(200) NOT NULL,',
         '`flags` int NOT NULL,',
@@ -53,8 +61,8 @@ BEGIN
         'PRIMARY KEY (`key`),',
  		 'INDEX `index_flags` (`flags` ASC)',
         ') ENGINE=InnoDB DEFAULT CHARSET=utf8');
-    PREPARE crtTable from  @crtSql;
-    EXECUTE crtTable;
+PREPARE crtTable from @crtSql;
+EXECUTE crtTable;
 END;
 
 $$
