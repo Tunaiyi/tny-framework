@@ -8,22 +8,22 @@ import com.tny.game.net.rpc.*;
  * @author : kgtny
  * @date : 2021/11/5 1:42 上午
  */
-public class RpcToken extends RpcLinkerId {
+public class RpcToken extends RpcAccessId {
 
-    private RpcLinkerId user;
+    private RpcAccessId user;
 
     private long issueAt;
 
     public RpcToken() {
     }
 
-    public RpcToken(String service, long serverId, long id, RpcLinkerId user) {
+    public RpcToken(String service, long serverId, long id, RpcAccessId user) {
         super(service, serverId, id);
         this.user = user;
         this.issueAt = System.currentTimeMillis();
     }
 
-    public RpcLinkerId getUser() {
+    public RpcAccessId getUser() {
         return user;
     }
 
@@ -36,7 +36,7 @@ public class RpcToken extends RpcLinkerId {
         return this;
     }
 
-    public RpcToken setUser(RpcLinkerId user) {
+    public RpcToken setUser(RpcAccessId user) {
         this.user = user;
         return this;
     }

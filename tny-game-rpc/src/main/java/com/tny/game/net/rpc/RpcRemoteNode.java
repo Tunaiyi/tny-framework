@@ -16,9 +16,9 @@ public class RpcRemoteNode {
 
     private final long serverId;
 
-    private final Map<Long, Endpoint<RpcLinkerId>> realEndpointMap = new ConcurrentHashMap<>();
+    private final Map<Long, RpcAccessEndpoint> realEndpointMap = new ConcurrentHashMap<>();
 
-    private volatile List<Endpoint<RpcLinkerId>> orderEndpoints = ImmutableList.of();
+    private volatile List<RpcAccessPoint> orderEndpoints = ImmutableList.of();
 
     ;
 
@@ -33,7 +33,7 @@ public class RpcRemoteNode {
         return serverId;
     }
 
-    public List<Endpoint<RpcLinkerId>> getOrderEndpoints() {
+    public List<RpcAccessPoint> getOrderEndpoints() {
         return orderEndpoints;
     }
 
@@ -41,13 +41,13 @@ public class RpcRemoteNode {
         return !orderEndpoints.isEmpty();
     }
 
-    protected void addEndpoint(Endpoint<RpcLinkerId> endpoint) {
+    protected void addEndpoint(Endpoint<RpcAccessId> endpoint) {
         synchronized (this) {
             boolean activate = this.realEndpointMap.isEmpty();
-            RpcLinkerId nodeId = endpoint.getUserId();
-            this.realEndpointMap.put(nodeId.getId(), endpoint);
+            RpcAccessId nodeId = endpoint.getUserId();
+            this.realEndpointMap.put(nodeId.getId(), new RpcAccessEndpoint(endpoint));
             this.orderEndpoints = ImmutableList.sortedCopyOf(
-                    Comparator.comparing(Endpoint::getUserId),
+                    Comparator.comparing(RpcAccessPoint::getAccessId),
                     realEndpointMap.values());
             if (!activate && !this.realEndpointMap.isEmpty()) {
                 service.onNodeActivate(this);
@@ -55,13 +55,13 @@ public class RpcRemoteNode {
         }
     }
 
-    protected void removeEndpoint(Endpoint<RpcLinkerId> endpoint) {
+    protected void removeEndpoint(Endpoint<RpcAccessId> endpoint) {
         synchronized (this) {
-            RpcLinkerId nodeId = endpoint.getUserId();
+            RpcAccessId nodeId = endpoint.getUserId();
             boolean activate = this.realEndpointMap.isEmpty();
             if (this.realEndpointMap.remove(nodeId.getId(), endpoint)) {
                 this.orderEndpoints = ImmutableList.sortedCopyOf(
-                        Comparator.comparing(Endpoint::getUserId),
+                        Comparator.comparing(RpcAccessPoint::getAccessId),
                         realEndpointMap.values());
                 if (activate && this.realEndpointMap.isEmpty()) {
                     service.onNodeUnactivated(this);

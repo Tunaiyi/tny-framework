@@ -11,9 +11,9 @@ import com.tny.game.net.rpc.*;
  */
 public interface RpcAuthService {
 
-    DoneResult<RpcLinkerId> authenticate(String service, long serverId, long instance, String password);
+    DoneResult<RpcAccessId> authenticate(String service, long serverId, long instance, String password);
 
-    String createToken(String serviceName, RpcLinkerId id);
+    String createToken(String serviceName, RpcAccessId id);
 
     DoneResult<RpcToken> verifyToken(String token);
 

@@ -44,13 +44,13 @@ public class RpcRemoteServicer {
         version.incrementAndGet();
     }
 
-    protected void addEndpoint(Endpoint<RpcLinkerId> endpoint) {
+    protected void addEndpoint(Endpoint<RpcAccessId> endpoint) {
         RpcRemoteNode node = loadOrCreate(endpoint);
         node.addEndpoint(endpoint);
         refreshNodes(node);
     }
 
-    protected void removeEndpoint(Endpoint<RpcLinkerId> endpoint) {
+    protected void removeEndpoint(Endpoint<RpcAccessId> endpoint) {
         RpcRemoteNode node = loadOrCreate(endpoint);
         node.removeEndpoint(endpoint);
         refreshNodes(node);
@@ -64,8 +64,8 @@ public class RpcRemoteServicer {
         refreshNodes(rpcNode);
     }
 
-    private RpcRemoteNode loadOrCreate(Endpoint<RpcLinkerId> endpoint) {
-        RpcLinkerId nodeId = endpoint.getUserId();
+    private RpcRemoteNode loadOrCreate(Endpoint<RpcAccessId> endpoint) {
+        RpcAccessId nodeId = endpoint.getUserId();
         return remoteNodeMap.computeIfAbsent(nodeId.getServerId(), (serverId) -> new RpcRemoteNode(serverId, this));
     }
 

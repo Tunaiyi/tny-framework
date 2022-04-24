@@ -36,18 +36,18 @@ public class DefaultRpcRemoteService implements RpcRemoteService, EndpointKeeper
     }
 
     @Override
-    public void onCreate(EndpointKeeper<RpcLinkerId, Endpoint<RpcLinkerId>> keeper) {
+    public void onCreate(EndpointKeeper<RpcAccessId, Endpoint<RpcAccessId>> keeper) {
         RpcRemoteServicer servicer = getServicer(keeper.getUserType());
         if (servicer != null) {
-            keeper.addListener(new EndpointKeeperListener<RpcLinkerId>() {
+            keeper.addListener(new EndpointKeeperListener<RpcAccessId>() {
 
                 @Override
-                public void onAddEndpoint(EndpointKeeper<RpcLinkerId, Endpoint<RpcLinkerId>> keeper, Endpoint<RpcLinkerId> endpoint) {
+                public void onAddEndpoint(EndpointKeeper<RpcAccessId, Endpoint<RpcAccessId>> keeper, Endpoint<RpcAccessId> endpoint) {
                     servicer.addEndpoint(endpoint);
                 }
 
                 @Override
-                public void onRemoveEndpoint(EndpointKeeper<RpcLinkerId, Endpoint<RpcLinkerId>> keeper, Endpoint<RpcLinkerId> endpoint) {
+                public void onRemoveEndpoint(EndpointKeeper<RpcAccessId, Endpoint<RpcAccessId>> keeper, Endpoint<RpcAccessId> endpoint) {
                     servicer.removeEndpoint(endpoint);
                 }
             });

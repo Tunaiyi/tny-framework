@@ -19,7 +19,7 @@ import static com.tny.game.net.rpc.auth.RpcAuthMessageContexts.*;
 /**
  * <p>
  */
-public class RpcPasswordValidator implements AuthenticateValidator<RpcLinkerId> {
+public class RpcPasswordValidator implements AuthenticateValidator<RpcAccessId> {
 
     private final RpcAuthService rpcAuthService;
 
@@ -31,7 +31,7 @@ public class RpcPasswordValidator implements AuthenticateValidator<RpcLinkerId> 
     }
 
     @Override
-    public Certificate<RpcLinkerId> validate(Tunnel<RpcLinkerId> tunnel, Message message, CertificateFactory<RpcLinkerId> factory)
+    public Certificate<RpcAccessId> validate(Tunnel<RpcAccessId> tunnel, Message message, CertificateFactory<RpcAccessId> factory)
             throws CommandException, ValidationException {
         Optional<MessageParamList> paramListOptional = MessageParamList.of(message.bodyAs(List.class));
         if (!paramListOptional.isPresent()) {
@@ -42,7 +42,7 @@ public class RpcPasswordValidator implements AuthenticateValidator<RpcLinkerId> 
         long serverId = getServerIdParam(paramList);
         long instanceId = getInstanceIdParam(paramList);
         String password = getPasswordParam(paramList);
-        DoneResult<RpcLinkerId> result = rpcAuthService.authenticate(service, serverId, instanceId, password);
+        DoneResult<RpcAccessId> result = rpcAuthService.authenticate(service, serverId, instanceId, password);
         if (result.isSuccess()) {
             return factory.certificate(idCreator.createId(), result.get(), service, Instant.now());
         }

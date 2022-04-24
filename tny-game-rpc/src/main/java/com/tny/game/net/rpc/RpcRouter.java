@@ -1,7 +1,5 @@
 package com.tny.game.net.rpc;
 
-import com.tny.game.net.endpoint.*;
-
 import java.util.List;
 
 /**
@@ -12,6 +10,6 @@ import java.util.List;
  */
 public interface RpcRouter<T> {
 
-    Endpoint<?> route(List<RpcRemoteNode> nodes, RpcMethod invoker, T routeValue, Object... params);
+    RpcAccessPoint route(List<RpcRemoteNode> nodes, RpcMethod invoker, T routeValue, Object... params);
 
 }

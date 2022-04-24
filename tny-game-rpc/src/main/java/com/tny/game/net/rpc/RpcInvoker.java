@@ -3,7 +3,6 @@ package com.tny.game.net.rpc;
 import com.tny.game.common.exception.*;
 import com.tny.game.common.result.*;
 import com.tny.game.net.base.*;
-import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.rpc.exception.*;
 import com.tny.game.net.transport.*;
@@ -81,17 +80,17 @@ public class RpcInvoker {
     public <T> Object invoke(Object... params) {
         Object routeValue = getRouteParam(params);
         List<RpcRemoteNode> nodes = servicer.getOrderRemoteNodes();
-        Endpoint<?> endpoint = router().route(nodes, method, routeValue, params);
-        if (endpoint == null) {
+        RpcAccessPoint accessPoint = router().route(nodes, method, routeValue, params);
+        if (accessPoint == null) {
             throw new RpcInvokeException(NetResultCode.REMOTE_EXCEPTION, "调用 {} 异常, 未找到有效的远程服务节点", this.method);
         }
         long timeout = timeout();
         switch (method.getMode()) {
             case PUSH:
-                push(endpoint, timeout, params);
+                push(accessPoint, timeout, params);
                 return null;
             case REQUEST:
-                return request(endpoint, timeout, params);
+                return request(accessPoint, timeout, params);
         }
         throw new RpcInvokeException(NetResultCode.REMOTE_EXCEPTION, "调用 {} 异常, 非法 rpc 模式", this.method);
     }
@@ -100,9 +99,9 @@ public class RpcInvoker {
         return Protocols.protocol(this.method.getProtocol(), this.method.getLine());
     }
 
-    private Object request(Endpoint<?> endpoint, long timeout, Object... params) {
+    private Object request(RpcAccessPoint accessPoint, long timeout, Object... params) {
         RequestContext requestContext = createRequest(protocol(), params).willRespondAwaiter(timeout);
-        endpoint.send(requestContext);
+        accessPoint.send(requestContext);
         MessageRespondAwaiter awaiter = requestContext.getResponseAwaiter();
         if (this.method.isAsync()) {
             switch (this.method.getReturnMode()) {
@@ -165,11 +164,11 @@ public class RpcInvoker {
         throw new RpcInvokeException(NetResultCode.REMOTE_EXCEPTION, "返回类型错误");
     }
 
-    private void push(Endpoint<?> endpoint, long timeout, Object... params) {
+    private void push(RpcAccessPoint accessPoint, long timeout, Object... params) {
         List<Integer> parameterIndexes = method.getParameterIndexes();
         MessageContext messageContext = MessageContexts.push(protocol())
                 .withBody(parameterIndexes.size() == 0 ? null : params[parameterIndexes.get(0)]);
-        endpoint.send(messageContext);
+        accessPoint.send(messageContext);
         if (this.method.isAsync()) {
             return;
         }

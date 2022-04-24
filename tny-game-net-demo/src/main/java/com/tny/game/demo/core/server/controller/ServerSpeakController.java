@@ -32,7 +32,7 @@ public class ServerSpeakController {
     }
 
     @Rpc(CtrlerIds.SPEAK$SAY_FOR_RPC)
-    public SayContentDTO say(@UserId RpcLinkerId id, @MsgParam String message) {
+    public SayContentDTO say(@UserId RpcAccessId id, @MsgParam String message) {
         return new SayContentDTO(id.getId(), "respond " + message);
     }
 

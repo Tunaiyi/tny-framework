@@ -16,7 +16,7 @@ import static com.tny.game.common.utils.StringAide.*;
 /**
  * <p>
  */
-public class RpcTokenValidator implements AuthenticateValidator<RpcLinkerId> {
+public class RpcTokenValidator implements AuthenticateValidator<RpcAccessId> {
 
     private final RpcAuthService rpcAuthService;
 
@@ -28,7 +28,7 @@ public class RpcTokenValidator implements AuthenticateValidator<RpcLinkerId> {
     }
 
     @Override
-    public Certificate<RpcLinkerId> validate(Tunnel<RpcLinkerId> tunnel, Message message, CertificateFactory<RpcLinkerId> factory)
+    public Certificate<RpcAccessId> validate(Tunnel<RpcAccessId> tunnel, Message message, CertificateFactory<RpcAccessId> factory)
             throws CommandException, ValidationException {
         String token = message.bodyAs(String.class);
         try {
@@ -36,7 +36,7 @@ public class RpcTokenValidator implements AuthenticateValidator<RpcLinkerId> {
             if (result.isSuccess()) {
                 RpcToken rpcToken = result.get();
                 return factory.certificate(idCreator.createId(),
-                        new RpcLinkerId(rpcToken.getService(), rpcToken.getServerId(), rpcToken.getId()),
+                        new RpcAccessId(rpcToken.getService(), rpcToken.getServerId(), rpcToken.getId()),
                         rpcToken.getService(), Instant.now());
             } else {
                 ResultCode resultCode = result.getCode();
