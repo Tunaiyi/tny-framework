@@ -20,11 +20,15 @@ public class FeatureVersionHolder {
             EventBuses.of(FeatureVersionChangeListener.class, FeatureVersionChangeListener::onChange);
 
     private volatile Version version;
+
     private volatile Version devVersion;
+
     private volatile Version defVersion;
 
     private final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
+
     private final Lock readLock = this.readWriteLock.readLock();
+
     private final Lock writeLock = this.readWriteLock.writeLock();
 
     FeatureVersionHolder() {

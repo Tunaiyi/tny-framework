@@ -11,6 +11,6 @@ import com.tny.game.net.transport.*;
 @FunctionalInterface
 public interface TunnelCloseListener<UID> extends TunnelListener {
 
-	void onClose(Tunnel<UID> tunnel);
+    void onClose(Tunnel<UID> tunnel);
 
 }

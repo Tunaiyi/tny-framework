@@ -32,6 +32,7 @@ public class MemCacheClientTest {
     @BeforeEach
     public void setUp() throws Exception {
         task = new ClientTestTask(this.client) {
+
             @Override
             protected void doFlushAll() {
                 MemCacheClientTest.this.client.flushAll();

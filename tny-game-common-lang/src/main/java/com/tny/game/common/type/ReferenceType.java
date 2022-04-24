@@ -32,7 +32,7 @@ public abstract class ReferenceType<T> {
     @Override
     public boolean equals(Object other) {
         return (this == other || (other instanceof ReferenceType &&
-                                          this.type.equals(((ReferenceType<?>)other).type)));
+                this.type.equals(((ReferenceType<?>)other).type)));
     }
 
     @Override
@@ -56,6 +56,7 @@ public abstract class ReferenceType<T> {
      */
     public static <T> ReferenceType<T> forType(Type type) {
         return new ReferenceType<T>(type) {
+
         };
     }
 

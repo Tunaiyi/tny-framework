@@ -46,7 +46,6 @@ public class CapacityGoalListDTO {
         return goals2RemoveDTO(goals.stream());
     }
 
-
     public CapacityGoalListDTO addGoal(CapacityGoal goal) {
         goals.add(CapacityGoalDTO.goal2DTO(goal));
         return this;
@@ -76,6 +75,5 @@ public class CapacityGoalListDTO {
         goalDTOs.forEach(this::addDTO);
         return this;
     }
-
 
 }

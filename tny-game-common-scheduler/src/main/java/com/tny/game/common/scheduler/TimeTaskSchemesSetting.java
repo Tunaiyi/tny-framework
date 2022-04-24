@@ -10,6 +10,6 @@ import java.util.List;
  */
 public interface TimeTaskSchemesSetting {
 
-	List<TimeTaskScheme> getTimeTaskSchemeList();
+    List<TimeTaskScheme> getTimeTaskSchemeList();
 
 }

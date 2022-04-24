@@ -17,11 +17,12 @@ public class WeightOnRepeatRandomCreatorFactory<G extends ProbabilityGroup<P>, P
     @Override
     @SuppressWarnings("unchecked")
     public RandomCreator<G, P> getRandomCreator() {
-        return (RandomCreator<G, P>) CREATOR;
+        return (RandomCreator<G, P>)CREATOR;
     }
 
     @Override
     public String getName() {
         return NAME;
     }
+
 }

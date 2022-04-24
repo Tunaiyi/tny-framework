@@ -8,140 +8,140 @@ import org.apache.commons.lang3.builder.*;
  */
 public class CommonMessageHead extends AbstractNetMessageHead {
 
-	private long id = -1L;
+    private long id = -1L;
 
-	private int line;
+    private int line;
 
-	private int protocol = -1;
+    private int protocol = -1;
 
-	private long time;
+    private long time;
 
-	private long toMessage;
+    private long toMessage;
 
-	private int code;
+    private int code;
 
-	// protected CommonMessageHead() {
-	// }
+    // protected CommonMessageHead() {
+    // }
 
-	public CommonMessageHead(long id, MessageMode mode, int line, int protocol, int code, long toMessage, long time) {
-		super(mode);
-		this.id = id;
-		this.line = line;
-		this.protocol = protocol;
-		this.time = time;
-		this.toMessage = toMessage;
-		this.code = code;
-	}
+    public CommonMessageHead(long id, MessageMode mode, int line, int protocol, int code, long toMessage, long time) {
+        super(mode);
+        this.id = id;
+        this.line = line;
+        this.protocol = protocol;
+        this.time = time;
+        this.toMessage = toMessage;
+        this.code = code;
+    }
 
-	public CommonMessageHead(long id, MessageContent subject) {
-		super(subject.getMode());
-		this.id = id;
-		this.protocol = subject.getProtocolId();
-		this.code = subject.getCode();
-		this.toMessage = subject.getToMessage();
-		this.time = System.currentTimeMillis();
-	}
+    public CommonMessageHead(long id, MessageContent subject) {
+        super(subject.getMode());
+        this.id = id;
+        this.protocol = subject.getProtocolId();
+        this.code = subject.getCode();
+        this.toMessage = subject.getToMessage();
+        this.time = System.currentTimeMillis();
+    }
 
-	@Override
-	public long getId() {
-		return this.id;
-	}
+    @Override
+    public long getId() {
+        return this.id;
+    }
 
-	@Override
-	public int getCode() {
-		return this.code;
-	}
+    @Override
+    public int getCode() {
+        return this.code;
+    }
 
-	@Override
-	public long getTime() {
-		return this.time;
-	}
+    @Override
+    public long getTime() {
+        return this.time;
+    }
 
-	@Override
-	public long getToMessage() {
-		return this.toMessage;
-	}
+    @Override
+    public long getToMessage() {
+        return this.toMessage;
+    }
 
-	@Override
-	public int getProtocolId() {
-		return this.protocol;
-	}
+    @Override
+    public int getProtocolId() {
+        return this.protocol;
+    }
 
-	@Override
-	public int getLine() {
-		return this.line;
-	}
+    @Override
+    public int getLine() {
+        return this.line;
+    }
 
-	@Override
-	public void allotMessageId(long id) {
-		if (this.id <= -1) {
-			this.id = id;
-		}
-	}
+    @Override
+    public void allotMessageId(long id) {
+        if (this.id <= -1) {
+            this.id = id;
+        }
+    }
 
-	CommonMessageHead setId(long id) {
-		this.id = id;
-		return this;
-	}
+    CommonMessageHead setId(long id) {
+        this.id = id;
+        return this;
+    }
 
-	CommonMessageHead setCode(int code) {
-		this.code = code;
-		return this;
-	}
+    CommonMessageHead setCode(int code) {
+        this.code = code;
+        return this;
+    }
 
-	CommonMessageHead setTime(long time) {
-		this.time = time;
-		return this;
-	}
+    CommonMessageHead setTime(long time) {
+        this.time = time;
+        return this;
+    }
 
-	CommonMessageHead setToMessage(long toMessage) {
-		this.toMessage = toMessage;
-		return this;
-	}
+    CommonMessageHead setToMessage(long toMessage) {
+        this.toMessage = toMessage;
+        return this;
+    }
 
-	CommonMessageHead setProtocol(int protocol) {
-		this.protocol = protocol;
-		return this;
-	}
+    CommonMessageHead setProtocol(int protocol) {
+        this.protocol = protocol;
+        return this;
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (!(o instanceof CommonMessageHead)) {
-			return false;
-		}
-		CommonMessageHead that = (CommonMessageHead)o;
-		return new EqualsBuilder()
-				.append(getId(), that.getId())
-				.append(this.protocol, that.protocol)
-				.append(this.line, that.line)
-				.append(getTime(), that.getTime())
-				.append(getToMessage(), that.getToMessage())
-				.append(getCode(), that.getCode())
-				.isEquals();
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof CommonMessageHead)) {
+            return false;
+        }
+        CommonMessageHead that = (CommonMessageHead)o;
+        return new EqualsBuilder()
+                .append(getId(), that.getId())
+                .append(this.protocol, that.protocol)
+                .append(this.line, that.line)
+                .append(getTime(), that.getTime())
+                .append(getToMessage(), that.getToMessage())
+                .append(getCode(), that.getCode())
+                .isEquals();
+    }
 
-	@Override
-	public String toString() {
-		return new ToStringBuilder(this)
-				.append("id", id)
-				.append("mode", mode)
-				.append("protocol", protocol)
-				.toString();
-	}
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("id", id)
+                .append("mode", mode)
+                .append("protocol", protocol)
+                .toString();
+    }
 
-	@Override
-	public int hashCode() {
-		return new HashCodeBuilder(17, 37)
-				.append(getId())
-				.append(this.protocol)
-				.append(this.line)
-				.append(getTime())
-				.append(getToMessage())
-				.append(getCode())
-				.toHashCode();
-	}
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(getId())
+                .append(this.protocol)
+                .append(this.line)
+                .append(getTime())
+                .append(getToMessage())
+                .append(getCode())
+                .toHashCode();
+    }
 
 }

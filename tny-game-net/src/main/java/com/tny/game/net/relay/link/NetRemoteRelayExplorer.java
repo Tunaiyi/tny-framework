@@ -13,10 +13,10 @@ import java.util.List;
  */
 public interface NetRemoteRelayExplorer extends RemoteRelayExplorer {
 
-	void putInstance(ServeNode node);
+    void putInstance(ServeNode node);
 
-	void removeInstance(ServeNode node);
+    void removeInstance(ServeNode node);
 
-	void updateInstance(ServeNode node, List<ServeNodeChangeStatus> statuses);
+    void updateInstance(ServeNode node, List<ServeNodeChangeStatus> statuses);
 
 }

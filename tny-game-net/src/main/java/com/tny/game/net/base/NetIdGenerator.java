@@ -11,6 +11,6 @@ import com.tny.game.common.lifecycle.unit.annotation.*;
 @UnitInterface
 public interface NetIdGenerator {
 
-	long generate();
+    long generate();
 
 }

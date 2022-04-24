@@ -10,6 +10,7 @@ public class CacheUtils {
     public static final String SEPARATOR = ":";
 
     private static final String KEY_SEPARATOR = "tny.cache.key.separator";
+
     private static final String KEY_HEAD_PR_KEY = "tny.cache.key.pr";
 
     public static String getSeparator() {
@@ -30,15 +31,13 @@ public class CacheUtils {
         String separator = getSeparator();
         for (Object value : keyValues) {
             builder.append(separator)
-                   .append(value);
+                    .append(value);
         }
         return builder.toString();
     }
 
-
     public static String[] key2Params(String key) {
         return StringUtils.split(key, getSeparator());
     }
-
 
 }

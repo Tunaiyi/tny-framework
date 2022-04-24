@@ -114,14 +114,16 @@ public class ServerOutline {
     }
 
     public List<InetConnector> getPublicConnectors() {
-        if (this.publicConnectors == null)
+        if (this.publicConnectors == null) {
             return ImmutableList.of();
+        }
         return this.publicConnectors;
     }
 
     public List<InetConnector> getPrivateConnectors() {
-        if (this.privateConnectors == null)
+        if (this.privateConnectors == null) {
             return ImmutableList.of();
+        }
         return this.privateConnectors;
     }
 
@@ -218,15 +220,17 @@ public class ServerOutline {
     }
 
     public LocalDate getOpenLocalDate() {
-        if (this.openLocalDate != null)
+        if (this.openLocalDate != null) {
             return this.openLocalDate;
+        }
         this.openLocalDate = LocalDate.from(this.getOpenDateTime());
         return this.openLocalDate;
     }
 
     public Instant getOpenDateTime() {
-        if (this.openDateTime != null)
+        if (this.openDateTime != null) {
             return this.openDateTime;
+        }
         this.openDateTime = Instant.from(DateTimeAide.DATE_TIME_MIN_FORMAT.parse(this.openDate));
         return this.openDateTime;
     }
@@ -250,30 +254,29 @@ public class ServerOutline {
 
     public InetConnector getPublicConnector(String... ids) {
         return this.getPublicConnectors()
-                   .stream()
-                   .filter(c -> ArrayUtils.contains(ids, c.getId()))
-                   .findFirst()
-                   .orElse(null);
+                .stream()
+                .filter(c -> ArrayUtils.contains(ids, c.getId()))
+                .findFirst()
+                .orElse(null);
     }
 
     public InetConnector getPrivateConnector(String... ids) {
         return this.getPrivateConnectors()
-                   .stream()
-                   .filter(c -> ArrayUtils.contains(ids, c.getId()))
-                   .findFirst()
-                   .orElse(null);
+                .stream()
+                .filter(c -> ArrayUtils.contains(ids, c.getId()))
+                .findFirst()
+                .orElse(null);
     }
 
     @Override
     public String toString() {
         return "ServerOutline [serverId=" + this.serverId + ", publicIP=" + this.publicIP + ", privateIP=" + this.privateIP + ", serverPort=" +
-               this.serverPort + ", rmiPort=" + this.rmiPort + ", openDate=" + this.openDate + "]";
+                this.serverPort + ", rmiPort=" + this.rmiPort + ", openDate=" + this.openDate + "]";
     }
 
     public boolean isHasDB() {
         return this.db != null && this.dbHost != null;
     }
-
 
     public static void main(String[] args) throws IOException {
         Map<String, LongAdder> count = new HashMap<>();

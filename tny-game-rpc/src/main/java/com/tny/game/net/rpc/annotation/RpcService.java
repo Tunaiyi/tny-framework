@@ -10,14 +10,14 @@ import java.lang.annotation.*;
 @Documented
 public @interface RpcService {
 
-	/**
-	 * @return 服务名
-	 */
-	String value();
+    /**
+     * @return 服务名
+     */
+    String value();
 
-	/**
-	 * @return 路由器类
-	 */
-	Class<? extends RpcRouter> router() default FirstRpcRouter.class;
+    /**
+     * @return 路由器类
+     */
+    Class<? extends RpcRouter> router() default FirstRpcRouter.class;
 
 }

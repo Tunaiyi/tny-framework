@@ -11,18 +11,18 @@ import com.tny.game.data.storage.*;
  */
 public class SpringForkJoinAsyncObjectStoreExecutor extends ForkJoinAsyncObjectStoreExecutor implements AppClosed {
 
-	public SpringForkJoinAsyncObjectStoreExecutor(AsyncObjectStoreExecutorSetting setting) {
-		super(setting);
-	}
+    public SpringForkJoinAsyncObjectStoreExecutor(AsyncObjectStoreExecutorSetting setting) {
+        super(setting);
+    }
 
-	@Override
-	public PostCloser getPostCloser() {
-		return PostCloser.value(this.getClass(), LifecycleLevel.POST_SYSTEM_LEVEL_1);
-	}
+    @Override
+    public PostCloser getPostCloser() {
+        return PostCloser.value(this.getClass(), LifecycleLevel.POST_SYSTEM_LEVEL_1);
+    }
 
-	@Override
-	public void onClosed() throws InterruptedException {
-		this.shutdown();
-	}
+    @Override
+    public void onClosed() throws InterruptedException {
+        this.shutdown();
+    }
 
 }

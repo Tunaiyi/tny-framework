@@ -6,7 +6,9 @@ import com.tny.game.cache.mysql.*;
 public class DomainDBItem<R> extends DBCacheItem<R> {
 
     private Long uid;
+
     private Integer itemId;
+
     private Integer number;
 
     public DomainDBItem(String key, Object data, long version, long millisecond) {

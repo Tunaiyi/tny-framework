@@ -60,7 +60,6 @@ public interface CapacityGather extends Capacitiable {
         return getBaseCapacity(type, capacity).shortValue();
     }
 
-
     /**
      * 获取指定能力值提供器类型的基础能力值
      *
@@ -414,6 +413,5 @@ public interface CapacityGather extends Capacitiable {
     default Stream<? extends CapacitySupplier> suppliersStream() {
         return suppliers().stream();
     }
-
 
 }

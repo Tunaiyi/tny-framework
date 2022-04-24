@@ -14,20 +14,20 @@ import java.text.MessageFormat;
  **/
 public class EnumDeserializer<T> extends JsonDeserializer<T> {
 
-	private final EnumMapper<T> enumMapper;
+    private final EnumMapper<T> enumMapper;
 
-	public EnumDeserializer(EnumMapper<T> enumMapper) {
-		this.enumMapper = enumMapper;
-	}
+    public EnumDeserializer(EnumMapper<T> enumMapper) {
+        this.enumMapper = enumMapper;
+    }
 
-	@Override
-	public T deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
-		String value = p.getValueAsString();
-		T enumObject = this.enumMapper.getEnum(value);
-		if (enumObject == null) {
-			throw new NullPointerException(MessageFormat.format("无法找到{0}枚举类型", value));
-		}
-		return enumObject;
-	}
+    @Override
+    public T deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+        String value = p.getValueAsString();
+        T enumObject = this.enumMapper.getEnum(value);
+        if (enumObject == null) {
+            throw new NullPointerException(MessageFormat.format("无法找到{0}枚举类型", value));
+        }
+        return enumObject;
+    }
 
 }

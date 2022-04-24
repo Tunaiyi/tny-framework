@@ -25,49 +25,80 @@ public class ConfigTest {
     private static final int TYPE_SIZE = 4;
 
     private static final String NUM_TYPE = "num_key";
+
     private static final String STRING_TYPE = "string_key";
+
     private static final String BOOLEAN_TYPE = "boolean_key";
+
     private static final String EUMN_TYPE = "eumn_key";
 
     private static final String NUM_KEY = "." + NUM_TYPE;
+
     private static final String STRING_KEY = "." + STRING_TYPE;
+
     private static final String BOOLEAN_KEY = "." + BOOLEAN_TYPE;
+
     private static final String EUMN_KEY = "." + EUMN_TYPE;
 
     public static final List<String> TYPES = Arrays.asList(
             NUM_TYPE, STRING_TYPE, BOOLEAN_TYPE, EUMN_TYPE);
 
     private static final String L1_NUM_1 = "10";
+
     private static final String L1_STR_2 = "L1value2";
+
     private static final String L1_BOOLEAN_3 = "true";
+
     private static final String L1_EUMN_4 = Type.ENUM_OBJECT_1.name();
+
     private static final String L2_NUM_1 = "20";
+
     private static final String L2_STR_2 = "L2value2";
+
     private static final String L2_BOOLEAN_3 = "false";
+
     private static final String L2_EUMN_4 = Type.ENUM_OBJECT_2.name();
+
     private static final String L3_NUM_1 = "30";
+
     private static final String L3_STR_2 = "L3value2";
+
     private static final String L3_BOOLEAN_3 = "true";
+
     private static final String L3_EUMN_4 = Type.ENUM_OBJECT_3.name();
+
     private static final String L4_NUM_1 = "40";
+
     private static final String L4_STR_2 = "L4value2";
+
     private static final String L4_BOOLEAN_3 = "false";
+
     private static final String L4_EUMN_4 = Type.ENUM_OBJECT_4.name();
+
     private static final String L5_NUM_1 = "50";
+
     private static final String L5_STR_2 = "L5value2";
+
     private static final String L5_BOOLEAN_3 = "true";
+
     private static final String L5_EUMN_4 = Type.ENUM_OBJECT_5.name();
 
     private static final String HEAD_1 = "l1";
+
     private static final String HEAD_2 = HEAD_1 + ".l2";
+
     private static final String HEAD_3 = HEAD_2 + ".l3";
+
     private static final String HEAD_4 = HEAD_3 + ".l4";
+
     private static final String HEAD_5 = HEAD_4 + ".l5";
 
     private static final String FIND_TEST_KEY = HEAD_4 + "al5";
+
     private static final String FIND_TEST_VALUE = "find_test_value";
 
     private Config config;
+
     private final Map<Object, Object> map = MapBuilder.newBuilder()
             .put(HEAD_1 + NUM_KEY, L1_NUM_1)
             .put(HEAD_1 + STRING_KEY, L1_STR_2)

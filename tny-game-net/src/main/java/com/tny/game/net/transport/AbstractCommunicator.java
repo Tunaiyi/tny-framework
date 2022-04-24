@@ -10,22 +10,22 @@ import com.tny.game.common.context.*;
  */
 public abstract class AbstractCommunicator<UID> extends AttributesHolder implements Communicator<UID> {
 
-	protected AbstractCommunicator() {
-	}
+    protected AbstractCommunicator() {
+    }
 
-	@Override
-	public UID getUserId() {
-		return getCertificate().getUserId();
-	}
+    @Override
+    public UID getUserId() {
+        return getCertificate().getUserId();
+    }
 
-	@Override
-	public String getUserType() {
-		return getCertificate().getUserType();
-	}
+    @Override
+    public String getUserType() {
+        return getCertificate().getUserType();
+    }
 
-	@Override
-	public boolean isAuthenticated() {
-		return this.getCertificate().isAuthenticated();
-	}
+    @Override
+    public boolean isAuthenticated() {
+        return this.getCertificate().isAuthenticated();
+    }
 
 }

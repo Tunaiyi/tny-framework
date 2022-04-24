@@ -2,10 +2,10 @@ package com.tny.game.basics.item.capacity;
 
 public interface CapacityUsage {
 
-	<V> V aggregate(V one, V other);
+    <V> V aggregate(V one, V other);
 
-	String name();
+    String name();
 
-	<V> V defaultValue();
+    <V> V defaultValue();
 
 }

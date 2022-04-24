@@ -19,33 +19,33 @@ import static com.tny.game.common.utils.ObjectAide.*;
  */
 public class TunnelRelayArgumentsCodecor implements RelayPacketArgumentsCodecor<TunnelRelayArguments> {
 
-	private final NettyMessageCodec messageCodec;
+    private final NettyMessageCodec messageCodec;
 
-	public TunnelRelayArgumentsCodecor(NettyMessageCodec messageCodec) {
-		this.messageCodec = messageCodec;
-	}
+    public TunnelRelayArgumentsCodecor(NettyMessageCodec messageCodec) {
+        this.messageCodec = messageCodec;
+    }
 
-	@Override
-	public Class<TunnelRelayArguments> getArgumentsClass() {
-		return TunnelRelayArguments.class;
-	}
+    @Override
+    public Class<TunnelRelayArguments> getArgumentsClass() {
+        return TunnelRelayArguments.class;
+    }
 
-	@Override
-	public void encode(ChannelHandlerContext ctx, TunnelRelayArguments arguments, ByteBuf out) throws Exception {
-		NettyVarIntCoder.writeFixed64(arguments.getInstanceId(), out);
-		NettyVarIntCoder.writeFixed64(arguments.getTunnelId(), out);
-		Message message = arguments.getMessage();
-		messageCodec.encode(as(message), out);
-	}
+    @Override
+    public void encode(ChannelHandlerContext ctx, TunnelRelayArguments arguments, ByteBuf out) throws Exception {
+        NettyVarIntCoder.writeFixed64(arguments.getInstanceId(), out);
+        NettyVarIntCoder.writeFixed64(arguments.getTunnelId(), out);
+        Message message = arguments.getMessage();
+        messageCodec.encode(as(message), out);
+    }
 
-	@Override
-	public TunnelRelayArguments decode(ChannelHandlerContext ctx, ByteBuf out) throws Exception {
-		RelayTransporter transporter = ctx.channel().attr(NettyRelayAttrKeys.RELAY_TRANSPORTER).get();
-		NetworkContext context = transporter.getContext();
-		long instanceId = NettyVarIntCoder.readFixed64(out);
-		long tunnelId = NettyVarIntCoder.readFixed64(out);
-		NetMessage message = messageCodec.decode(out, context.getMessageFactory());
-		return new TunnelRelayArguments(instanceId, tunnelId, message);
-	}
+    @Override
+    public TunnelRelayArguments decode(ChannelHandlerContext ctx, ByteBuf out) throws Exception {
+        RelayTransporter transporter = ctx.channel().attr(NettyRelayAttrKeys.RELAY_TRANSPORTER).get();
+        NetworkContext context = transporter.getContext();
+        long instanceId = NettyVarIntCoder.readFixed64(out);
+        long tunnelId = NettyVarIntCoder.readFixed64(out);
+        NetMessage message = messageCodec.decode(out, context.getMessageFactory());
+        return new TunnelRelayArguments(instanceId, tunnelId, message);
+    }
 
 }

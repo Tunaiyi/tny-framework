@@ -13,9 +13,9 @@ import java.util.List;
  */
 public interface ServeCluster extends Serve {
 
-	/**
-	 * @return 集群实例列表
-	 */
-	List<ServeInstance> getInstances();
+    /**
+     * @return 集群实例列表
+     */
+    List<ServeInstance> getInstances();
 
 }

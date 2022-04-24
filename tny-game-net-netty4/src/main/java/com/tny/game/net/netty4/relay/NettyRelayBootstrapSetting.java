@@ -4,6 +4,6 @@ import com.tny.game.net.base.*;
 
 public interface NettyRelayBootstrapSetting extends NetBootstrapSetting {
 
-	NettyRelayChannelSetting getChannel();
+    NettyRelayChannelSetting getChannel();
 
 }

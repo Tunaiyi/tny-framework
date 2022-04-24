@@ -120,7 +120,9 @@ public class LocalWordsFilter extends FileLoader implements WordsFilter {
     private static class Node implements Comparable<Node> {
 
         private final char c;
+
         private int flag;
+
         private final Map<Character, Node> nodes = new HashMap<>();
 
         private Node findNode(char c) {

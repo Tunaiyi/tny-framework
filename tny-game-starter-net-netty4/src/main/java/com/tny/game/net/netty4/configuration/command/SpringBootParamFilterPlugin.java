@@ -10,10 +10,10 @@ import static com.tny.game.common.utils.ObjectAide.*;
 
 public class SpringBootParamFilterPlugin<UID> extends ParamFilterPlugin<UID> implements ApplicationContextAware {
 
-	@Override
-	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-		Map<String, ParamFilter<?>> appFilter = as(applicationContext.getBeansOfType(ParamFilter.class));
-		this.addParamFilters(appFilter.values());
-	}
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        Map<String, ParamFilter<?>> appFilter = as(applicationContext.getBeansOfType(ParamFilter.class));
+        this.addParamFilters(appFilter.values());
+    }
 
 }

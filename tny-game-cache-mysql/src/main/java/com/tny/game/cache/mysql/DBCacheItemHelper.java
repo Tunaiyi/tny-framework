@@ -10,12 +10,13 @@ class DBCacheItemHelper {
 
     @SuppressWarnings("unchecked")
     static List<DBCacheItem<?>> cacheItem2Item(Collection<? extends CacheItem<?>> cacheItems) {
-        if (cacheItems.isEmpty())
+        if (cacheItems.isEmpty()) {
             return Collections.emptyList();
+        }
         List<DBCacheItem<?>> items = new ArrayList<>();
         for (CacheItem<?> item : cacheItems) {
             if (item instanceof DBCacheItem) {
-                items.add((DBCacheItem<Object>) item);
+                items.add((DBCacheItem<Object>)item);
             } else {
                 items.add(new DBCacheItem<>(item));
             }
@@ -24,8 +25,9 @@ class DBCacheItemHelper {
     }
 
     static <T> List<DBCacheItem<T>> map2Item(Map<String, T> valueMap, long millisecond) {
-        if (valueMap.isEmpty())
+        if (valueMap.isEmpty()) {
             return Collections.emptyList();
+        }
         List<DBCacheItem<T>> items = new ArrayList<>();
         for (Entry<String, T> item : valueMap.entrySet()) {
             items.add(new DBCacheItem<>(item.getKey(), item.getValue(), 0L, millisecond));
@@ -40,7 +42,7 @@ class DBCacheItemHelper {
             if (results[index] <= 0 && results[index] != Statement.SUCCESS_NO_INFO) {
                 DBCacheItem<?> item = items.get(index);
                 fails = CacheItemHelper.getAndCreate(fails);
-                fails.add((C) item);
+                fails.add((C)item);
             }
         }
         return CacheItemHelper.checkEmpty(fails);

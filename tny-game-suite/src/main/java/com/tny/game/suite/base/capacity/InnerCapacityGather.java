@@ -20,8 +20,9 @@ public interface InnerCapacityGather extends CapacityGather {
     default boolean accept(Collection<? extends CapacitySupplier> suppliers) {
         boolean acc = false;
         for (CapacitySupplier supplier : suppliers) {
-            if (this.doAccept(supplier))
+            if (this.doAccept(supplier)) {
                 acc = true;
+            }
         }
         return acc;
     }

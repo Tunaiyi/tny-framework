@@ -11,7 +11,7 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
  */
 public class SpringNetSessionKeeperSetting extends CommonSessionKeeperSetting {
 
-	@NestedConfigurationProperty
-	private CommonSessionSetting session;
+    @NestedConfigurationProperty
+    private CommonSessionSetting session;
 
 }

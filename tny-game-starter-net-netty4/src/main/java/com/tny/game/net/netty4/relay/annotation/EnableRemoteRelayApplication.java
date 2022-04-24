@@ -19,12 +19,12 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @ImportAutoConfiguration({
-		NetAutoConfiguration.class,
-		RemoteRelayAutoConfiguration.class,
+        NetAutoConfiguration.class,
+        RemoteRelayAutoConfiguration.class,
 })
 @Import({
-		ImportRelayBootstrapDefinitionRegistrar.class,
-		ImportRelayServeClusterBootstrapDefinitionRegistrar.class,
+        ImportRelayBootstrapDefinitionRegistrar.class,
+        ImportRelayServeClusterBootstrapDefinitionRegistrar.class,
 })
 public @interface EnableRemoteRelayApplication {
 

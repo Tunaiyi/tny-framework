@@ -10,23 +10,23 @@ import com.tny.game.net.base.configuration.*;
  */
 public class NettyRelayClientBootstrapSetting extends CommonClientBootstrapSetting implements NettyRelayBootstrapSetting {
 
-	private NettyRelayChannelSetting channel;
+    private NettyRelayChannelSetting channel;
 
-	public NettyRelayClientBootstrapSetting() {
-	}
+    public NettyRelayClientBootstrapSetting() {
+    }
 
-	public NettyRelayClientBootstrapSetting(NettyRelayChannelSetting channel) {
-		this.channel = channel;
-	}
+    public NettyRelayClientBootstrapSetting(NettyRelayChannelSetting channel) {
+        this.channel = channel;
+    }
 
-	@Override
-	public NettyRelayChannelSetting getChannel() {
-		return channel;
-	}
+    @Override
+    public NettyRelayChannelSetting getChannel() {
+        return channel;
+    }
 
-	public NettyRelayClientBootstrapSetting setChannel(NettyRelayChannelSetting channel) {
-		this.channel = channel;
-		return this;
-	}
+    public NettyRelayClientBootstrapSetting setChannel(NettyRelayChannelSetting channel) {
+        this.channel = channel;
+        return this;
+    }
 
 }

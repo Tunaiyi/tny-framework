@@ -10,14 +10,14 @@ import com.tny.game.net.serve.*;
  */
 public interface RemoteServeClusterSetting extends Serve {
 
-	String getUsername();
+    String getUsername();
 
-	long getLinkMaxIdleTime();
+    long getLinkMaxIdleTime();
 
-	long getLinkHeartbeatInterval();
+    long getLinkHeartbeatInterval();
 
-	int getLinkConnectionSize();
+    int getLinkConnectionSize();
 
-	boolean isDiscovery();
+    boolean isDiscovery();
 
 }

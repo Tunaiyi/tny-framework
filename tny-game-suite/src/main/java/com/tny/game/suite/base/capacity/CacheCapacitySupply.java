@@ -56,10 +56,10 @@ public class CacheCapacitySupply implements InnerCapacitySupply {
     @Override
     public Map<Capacity, Number> getAllValues() {
         return this.cache.getAll(Capacity.class).entrySet()
-                         .stream()
-                         .collect(Collectors.toMap(
-                            e -> (Capacity) e.getKey(),
-                            Entry::getValue));
+                .stream()
+                .collect(Collectors.toMap(
+                        e -> (Capacity)e.getKey(),
+                        Entry::getValue));
     }
 
     @Override

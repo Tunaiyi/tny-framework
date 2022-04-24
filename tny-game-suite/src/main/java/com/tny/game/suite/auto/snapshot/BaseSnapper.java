@@ -2,7 +2,6 @@ package com.tny.game.suite.auto.snapshot;
 
 import com.tny.game.oplog.*;
 
-
 public abstract class BaseSnapper<O, S extends Snapshot> implements Snapper<O, S> {
 
     protected SnapperType snapperType;

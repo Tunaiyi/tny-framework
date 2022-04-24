@@ -8,6 +8,7 @@ import com.tny.game.common.result.*;
 public class TickMessageHead extends AbstractNetMessageHead {
 
     private final int protocol;
+
     private final long time;
 
     public static TickMessageHead ping() {

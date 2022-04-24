@@ -54,15 +54,15 @@ public class ZKMonitorNode<D> {
     }
 
     public byte[] getDataBytes() {
-        if (this.data == null)
+        if (this.data == null) {
             return EMPTY_BYTES;
+        }
         return formatter.data2Bytes(this.data);
     }
 
     public Stat getKeeperStat() {
         return keeperStat;
     }
-
 
     protected void change(D data) {
         stateUpdater.set(this, SyncStat.NEW);
@@ -86,4 +86,5 @@ public class ZKMonitorNode<D> {
     protected void setKeeperStat(Stat stat) {
         this.keeperStat = stat;
     }
+
 }

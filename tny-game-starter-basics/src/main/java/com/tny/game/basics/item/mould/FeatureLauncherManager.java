@@ -5,6 +5,6 @@ package com.tny.game.basics.item.mould;
  */
 public interface FeatureLauncherManager {
 
-	GameFeatureLauncher getLauncher(long playerId);
+    GameFeatureLauncher getLauncher(long playerId);
 
 }

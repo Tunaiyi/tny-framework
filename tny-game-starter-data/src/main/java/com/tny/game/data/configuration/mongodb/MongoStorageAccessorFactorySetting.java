@@ -11,37 +11,37 @@ import com.tny.game.data.mongodb.*;
  */
 public class MongoStorageAccessorFactorySetting {
 
-	private String idConverterFactory = BeanNameUtils.lowerCamelName(MongoEntityIdConverterFactory.class);
+    private String idConverterFactory = BeanNameUtils.lowerCamelName(MongoEntityIdConverterFactory.class);
 
-	private String entityObjectConverter = BeanNameUtils.lowerCamelName(JsonMongoEntityConverter.class);
+    private String entityObjectConverter = BeanNameUtils.lowerCamelName(JsonMongoEntityConverter.class);
 
-	private String dataSource = "";
+    private String dataSource = "";
 
-	public String getIdConverterFactory() {
-		return idConverterFactory;
-	}
+    public String getIdConverterFactory() {
+        return idConverterFactory;
+    }
 
-	public MongoStorageAccessorFactorySetting setIdConverterFactory(String idConverterFactory) {
-		this.idConverterFactory = idConverterFactory;
-		return this;
-	}
+    public MongoStorageAccessorFactorySetting setIdConverterFactory(String idConverterFactory) {
+        this.idConverterFactory = idConverterFactory;
+        return this;
+    }
 
-	public String getEntityObjectConverter() {
-		return entityObjectConverter;
-	}
+    public String getEntityObjectConverter() {
+        return entityObjectConverter;
+    }
 
-	public MongoStorageAccessorFactorySetting setEntityObjectConverter(String entityObjectConverter) {
-		this.entityObjectConverter = entityObjectConverter;
-		return this;
-	}
+    public MongoStorageAccessorFactorySetting setEntityObjectConverter(String entityObjectConverter) {
+        this.entityObjectConverter = entityObjectConverter;
+        return this;
+    }
 
-	public String getDataSource() {
-		return dataSource;
-	}
+    public String getDataSource() {
+        return dataSource;
+    }
 
-	public MongoStorageAccessorFactorySetting setDataSource(String dataSource) {
-		this.dataSource = dataSource;
-		return this;
-	}
+    public MongoStorageAccessorFactorySetting setDataSource(String dataSource) {
+        this.dataSource = dataSource;
+        return this;
+    }
 
 }

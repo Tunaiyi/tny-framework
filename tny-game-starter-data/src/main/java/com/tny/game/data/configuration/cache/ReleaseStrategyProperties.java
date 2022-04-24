@@ -14,27 +14,27 @@ import java.util.*;
 @ConfigurationProperties(prefix = "tny.data.object-cache.release.timeout-strategy")
 public class ReleaseStrategyProperties {
 
-	@NestedConfigurationProperty
-	private TimeoutReleaseStrategySetting strategy = new TimeoutReleaseStrategySetting();
+    @NestedConfigurationProperty
+    private TimeoutReleaseStrategySetting strategy = new TimeoutReleaseStrategySetting();
 
-	private Map<String, TimeoutReleaseStrategySetting> strategies = new HashMap<>();
+    private Map<String, TimeoutReleaseStrategySetting> strategies = new HashMap<>();
 
-	public TimeoutReleaseStrategySetting getStrategy() {
-		return strategy;
-	}
+    public TimeoutReleaseStrategySetting getStrategy() {
+        return strategy;
+    }
 
-	public ReleaseStrategyProperties setStrategy(TimeoutReleaseStrategySetting strategy) {
-		this.strategy = strategy;
-		return this;
-	}
+    public ReleaseStrategyProperties setStrategy(TimeoutReleaseStrategySetting strategy) {
+        this.strategy = strategy;
+        return this;
+    }
 
-	public Map<String, TimeoutReleaseStrategySetting> getStrategies() {
-		return strategies;
-	}
+    public Map<String, TimeoutReleaseStrategySetting> getStrategies() {
+        return strategies;
+    }
 
-	public ReleaseStrategyProperties setStrategies(Map<String, TimeoutReleaseStrategySetting> strategies) {
-		this.strategies = strategies;
-		return this;
-	}
+    public ReleaseStrategyProperties setStrategies(Map<String, TimeoutReleaseStrategySetting> strategies) {
+        this.strategies = strategies;
+        return this;
+    }
 
 }

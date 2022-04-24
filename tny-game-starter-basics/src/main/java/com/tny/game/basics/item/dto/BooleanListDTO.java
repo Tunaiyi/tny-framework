@@ -10,35 +10,35 @@ import java.util.*;
 @DTODoc("通用Boolean List DTO")
 public class BooleanListDTO {
 
-	@VarDoc("值列表")
-	@ProtoExField(1)
-	protected List<Boolean> values = new ArrayList<>();
+    @VarDoc("值列表")
+    @ProtoExField(1)
+    protected List<Boolean> values = new ArrayList<>();
 
-	public BooleanListDTO() {
-	}
+    public BooleanListDTO() {
+    }
 
-	public static BooleanListDTO values2DTO(List<Boolean> values) {
-		BooleanListDTO dto = new BooleanListDTO();
-		dto.values.addAll(values);
-		return dto;
-	}
+    public static BooleanListDTO values2DTO(List<Boolean> values) {
+        BooleanListDTO dto = new BooleanListDTO();
+        dto.values.addAll(values);
+        return dto;
+    }
 
-	public static BooleanListDTO values2DTO(Boolean... values) {
-		BooleanListDTO dto = new BooleanListDTO();
-		dto.values.addAll(Arrays.asList(values));
-		return dto;
-	}
+    public static BooleanListDTO values2DTO(Boolean... values) {
+        BooleanListDTO dto = new BooleanListDTO();
+        dto.values.addAll(Arrays.asList(values));
+        return dto;
+    }
 
-	public List<Boolean> getValues() {
-		return values;
-	}
+    public List<Boolean> getValues() {
+        return values;
+    }
 
-	@Override
-	public String toString() {
-		String text = "";
-		for (Object value : values)
-			text += value;
-		return text;
-	}
+    @Override
+    public String toString() {
+        String text = "";
+        for (Object value : values)
+            text += value;
+        return text;
+    }
 
 }

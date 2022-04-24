@@ -7,8 +7,8 @@ package com.tny.game.asyndb;
  */
 public interface SyncDBExecutor {
 
-	boolean summit(PersistentObject object);
+    boolean summit(PersistentObject object);
 
-	boolean shutdown() throws InterruptedException;
+    boolean shutdown() throws InterruptedException;
 
 }

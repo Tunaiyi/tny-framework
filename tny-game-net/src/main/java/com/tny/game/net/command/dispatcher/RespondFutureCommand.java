@@ -9,23 +9,23 @@ import com.tny.game.net.transport.*;
  */
 public class RespondFutureCommand implements Command {
 
-	private final MessageRespondAwaiter future;
+    private final MessageRespondAwaiter future;
 
-	private final Message message;
+    private final Message message;
 
-	public RespondFutureCommand(Message message, MessageRespondAwaiter future) {
-		this.message = message;
-		this.future = future;
-	}
+    public RespondFutureCommand(Message message, MessageRespondAwaiter future) {
+        this.message = message;
+        this.future = future;
+    }
 
-	@Override
-	public void execute() {
-		this.future.complete(this.message);
-	}
+    @Override
+    public void execute() {
+        this.future.complete(this.message);
+    }
 
-	@Override
-	public boolean isDone() {
-		return this.future.isDone();
-	}
+    @Override
+    public boolean isDone() {
+        return this.future.isDone();
+    }
 
 }

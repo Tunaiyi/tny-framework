@@ -32,13 +32,15 @@ public final class ScaleCharacterSets {
     public static ScaleCharacterSet of(CharSequence characterSet) {
         Set<Character> filterSet = new HashSet<>();
         ScaleCharacterSet set = CHARACTER_SET_MAP.get(characterSet);
-        if (set != null)
+        if (set != null) {
             return set;
+        }
         char[] characters = new char[characterSet.length()];
         for (int index = 0; index < characters.length; index++) {
             char c = characterSet.charAt(index);
-            if (!filterSet.add(c))
+            if (!filterSet.add(c)) {
                 throw new IllegalArgumentException("characterSet " + characterSet + " char " + c + " is exist");
+            }
             characters[index] = c;
         }
         set = new DefaultScaleCharacterSet(characters);
@@ -59,8 +61,9 @@ public final class ScaleCharacterSets {
         private DefaultScaleCharacterSet(char[] characters) {
             this.characters = characters.clone();
             this.key = new String(this.characters);
-            if (this.characters.length > 0)
-                this.length = (byte) this.characters.length;
+            if (this.characters.length > 0) {
+                this.length = (byte)this.characters.length;
+            }
         }
 
         @Override

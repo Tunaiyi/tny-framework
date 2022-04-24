@@ -8,14 +8,14 @@ import com.tny.game.common.lifecycle.unit.annotation.*;
 @UnitInterface
 public interface SessionKeeperSetting extends EndpointKeeperSetting {
 
-	long getOfflineCloseDelay();
+    long getOfflineCloseDelay();
 
-	int getOfflineMaxSize();
+    int getOfflineMaxSize();
 
-	long getClearInterval();
+    long getClearInterval();
 
-	String getSessionFactory();
+    String getSessionFactory();
 
-	SessionSetting getSession();
+    SessionSetting getSession();
 
 }

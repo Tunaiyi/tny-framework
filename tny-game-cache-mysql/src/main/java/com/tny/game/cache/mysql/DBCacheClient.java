@@ -26,11 +26,12 @@ public class DBCacheClient implements CacheClient {
 
     @SuppressWarnings("unchecked")
     public DBCacheClient(String name, CacheDAO dao, RawCacheItemFactory<?, ? extends DBCacheItem<?>> dbCacheItemFactory) {
-        if (name == null)
+        if (name == null) {
             this.name = "default";
+        }
         this.name = name;
         this.dao = dao;
-        this.dbCacheItemFactory = (RawCacheItemFactory<Object, ? extends DBCacheItem<?>>) dbCacheItemFactory;
+        this.dbCacheItemFactory = (RawCacheItemFactory<Object, ? extends DBCacheItem<?>>)dbCacheItemFactory;
     }
 
     @Override
@@ -53,8 +54,9 @@ public class DBCacheClient implements CacheClient {
 
     @Override
     public Collection<Object> getMultis(Collection<String> keys) {
-        if (keys == null || keys.isEmpty())
+        if (keys == null || keys.isEmpty()) {
             return Collections.emptyList();
+        }
         Collection<DBCacheItem> items = this.dao.get(keys);
         List<Object> objects = new ArrayList<>();
         for (DBCacheItem item : items)
@@ -64,8 +66,9 @@ public class DBCacheClient implements CacheClient {
 
     @Override
     public Map<String, Object> getMultiMap(Collection<String> keys) {
-        if (keys == null || keys.isEmpty())
+        if (keys == null || keys.isEmpty()) {
             return Collections.emptyMap();
+        }
         Collection<DBCacheItem> items = this.dao.get(keys);
         Map<String, Object> data = new HashMap<>();
         for (DBCacheItem item : items)
@@ -88,8 +91,9 @@ public class DBCacheClient implements CacheClient {
     public boolean add(String key, Object value, long millisecond) {
         try {
             Object object = this.get(key);
-            if (object != null)
+            if (object != null) {
                 return false;
+            }
             return this.dao.add(this.dbCacheItemFactory.create(key, value, 0L, millisecond)) > 0;
         } catch (DataIntegrityViolationException e) {
             logger.error("add", e);
@@ -102,8 +106,9 @@ public class DBCacheClient implements CacheClient {
     @Override
     public <C extends CacheItem<?>> List<C> addMultis(Collection<C> cacheItems) {
         List<DBCacheItem<?>> items = DBCacheItemHelper.cacheItem2Item(cacheItems);
-        if (items.isEmpty())
+        if (items.isEmpty()) {
             return Collections.emptyList();
+        }
         int[] results = this.dao.add(items);
         return DBCacheItemHelper.checkResult(items, results);
     }
@@ -111,8 +116,9 @@ public class DBCacheClient implements CacheClient {
     @Override
     public <T> List<CacheItem<T>> addMultis(Map<String, T> valueMap, long millisecond) {
         List<DBCacheItem<T>> items = DBCacheItemHelper.map2Item(valueMap, millisecond);
-        if (items.isEmpty())
+        if (items.isEmpty()) {
             return Collections.emptyList();
+        }
         int[] results = this.dao.add(items);
         return DBCacheItemHelper.checkResult(items, results);
     }
@@ -137,8 +143,9 @@ public class DBCacheClient implements CacheClient {
     @Override
     public <C extends CacheItem<?>> List<C> setMultis(Collection<C> cacheItems) {
         List<DBCacheItem<?>> items = DBCacheItemHelper.cacheItem2Item(cacheItems);
-        if (items.isEmpty())
+        if (items.isEmpty()) {
             return Collections.emptyList();
+        }
         int[] results = this.dao.set(items);
         return DBCacheItemHelper.checkResult(items, results);
     }
@@ -146,8 +153,9 @@ public class DBCacheClient implements CacheClient {
     @Override
     public <T> List<CacheItem<T>> setMultis(Map<String, T> valueMap, long millisecond) {
         List<DBCacheItem<T>> items = DBCacheItemHelper.map2Item(valueMap, millisecond);
-        if (items.isEmpty())
+        if (items.isEmpty()) {
             return Collections.emptyList();
+        }
         int[] results = this.dao.set(items);
         return DBCacheItemHelper.checkResult(items, results);
     }
@@ -160,8 +168,9 @@ public class DBCacheClient implements CacheClient {
     @Override
     public <C extends CacheItem<?>> List<C> updateMultis(Collection<C> cacheItems) {
         List<DBCacheItem<?>> items = DBCacheItemHelper.cacheItem2Item(cacheItems);
-        if (items.isEmpty())
+        if (items.isEmpty()) {
             return Collections.emptyList();
+        }
         int[] results = this.dao.update(items);
         return DBCacheItemHelper.checkResult(items, results);
     }
@@ -169,8 +178,9 @@ public class DBCacheClient implements CacheClient {
     @Override
     public <T> List<CacheItem<T>> updateMultis(Map<String, T> valueMap, long millisecond) {
         List<DBCacheItem<T>> items = DBCacheItemHelper.map2Item(valueMap, millisecond);
-        if (items.isEmpty())
+        if (items.isEmpty()) {
             return Collections.emptyList();
+        }
         int[] results = this.dao.update(items);
         return DBCacheItemHelper.checkResult(items, results);
     }
@@ -202,6 +212,5 @@ public class DBCacheClient implements CacheClient {
     @Override
     public void shutdown() {
     }
-
 
 }

@@ -8,6 +8,7 @@ import java.time.Duration;
 public class TimeAwait {
 
     private Duration duration;
+
     private long timeout = -1;
 
     TimeAwait(Duration duration) {
@@ -15,8 +16,9 @@ public class TimeAwait {
     }
 
     public boolean get() {
-        if (this.timeout < 0)
+        if (this.timeout < 0) {
             this.timeout = System.currentTimeMillis() + duration.toMillis();
+        }
         return System.currentTimeMillis() > this.timeout;
     }
 

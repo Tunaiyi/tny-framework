@@ -8,7 +8,7 @@ package com.tny.game.net.relay.packet.arguments;
  */
 public interface RelayPacketArguments {
 
-	default void release() {
-	}
+    default void release() {
+    }
 
 }

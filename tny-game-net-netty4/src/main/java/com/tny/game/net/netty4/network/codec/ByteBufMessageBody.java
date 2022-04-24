@@ -14,36 +14,36 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class ByteBufMessageBody implements OctetMessageBody {
 
-	/**
-	 * 消息体 buf
-	 */
-	private ByteBuf buffer;
+    /**
+     * 消息体 buf
+     */
+    private ByteBuf buffer;
 
-	private final AtomicBoolean released = new AtomicBoolean(false);
+    private final AtomicBoolean released = new AtomicBoolean(false);
 
-	public ByteBufMessageBody(ByteBuf buffer) {
-		this.buffer = buffer;
-	}
+    public ByteBufMessageBody(ByteBuf buffer) {
+        this.buffer = buffer;
+    }
 
-	@Override
-	protected void finalize() throws Throwable {
-		this.release();
-	}
+    @Override
+    protected void finalize() throws Throwable {
+        this.release();
+    }
 
-	@Override
-	public ByteBuf getBody() {
-		return buffer;
-	}
+    @Override
+    public ByteBuf getBody() {
+        return buffer;
+    }
 
-	@Override
-	public void release() {
-		if (released.compareAndSet(false, true)) {
-			ByteBuf buffer = this.buffer;
-			if (buffer != null) {
-				this.buffer = null;
-				ReferenceCountUtil.release(buffer);
-			}
-		}
-	}
+    @Override
+    public void release() {
+        if (released.compareAndSet(false, true)) {
+            ByteBuf buffer = this.buffer;
+            if (buffer != null) {
+                this.buffer = null;
+                ReferenceCountUtil.release(buffer);
+            }
+        }
+    }
 
 }

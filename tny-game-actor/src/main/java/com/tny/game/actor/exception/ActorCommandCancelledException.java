@@ -19,4 +19,5 @@ public class ActorCommandCancelledException extends ActorCommandException {
     public ActorCommandCancelledException(ActorCommand<?> command, String message, Throwable cause) {
         super(command, message, cause);
     }
+
 }

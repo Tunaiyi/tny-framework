@@ -6,7 +6,6 @@ import com.tny.game.suite.*;
 
 import java.util.*;
 
-
 @ProtoEx(SuiteProtoIDs.BOOL_LIST_DTO)
 @DTODoc("通用Boolean List DTO")
 public class BooleanListDTO {

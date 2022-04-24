@@ -8,21 +8,21 @@ package com.tny.game.net.message;
  */
 public interface MessageSchema extends Protocol {
 
-	/**
-	 * @return 响应消息 -1 为无
-	 */
-	long getToMessage();
+    /**
+     * @return 响应消息 -1 为无
+     */
+    long getToMessage();
 
-	/**
-	 * @return 消息类型
-	 */
-	default MessageType getType() {
-		return getMode().getType();
-	}
+    /**
+     * @return 消息类型
+     */
+    default MessageType getType() {
+        return getMode().getType();
+    }
 
-	/**
-	 * @return 获取消息模式
-	 */
-	MessageMode getMode();
+    /**
+     * @return 获取消息模式
+     */
+    MessageMode getMode();
 
 }

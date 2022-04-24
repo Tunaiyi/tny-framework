@@ -8,14 +8,14 @@ import java.lang.annotation.*;
 @Documented
 public @interface ModifiableParam {
 
-	/**
-	 * @return 立即执行
-	 */
-	boolean immediately() default false;
+    /**
+     * @return 立即执行
+     */
+    boolean immediately() default false;
 
-	/**
-	 * @return 操作
-	 */
-	Modify modify() default Modify.SAVE;
+    /**
+     * @return 操作
+     */
+    Modify modify() default Modify.SAVE;
 
 }

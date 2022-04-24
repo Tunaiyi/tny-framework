@@ -16,9 +16,9 @@ import java.lang.annotation.*;
 @DocAnnotationClass
 public @interface ProtoEx {
 
-	/**
-	 * 自定义ProtoEx类型ID 取值范围 1 - 536870911
-	 */
-	int value();
+    /**
+     * 自定义ProtoEx类型ID 取值范围 1 - 536870911
+     */
+    int value();
 
 }

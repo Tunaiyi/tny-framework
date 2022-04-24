@@ -20,8 +20,11 @@ public abstract class Lifecycle<L extends Lifecycle<?, ?>, P extends LifecycleHa
             = new CopyOnWriteMap<>();
 
     private Class<? extends P> processorClass;
+
     private LifecyclePriority priority;
+
     private L next;
+
     private L prev;
 
     private Lifecycle() {

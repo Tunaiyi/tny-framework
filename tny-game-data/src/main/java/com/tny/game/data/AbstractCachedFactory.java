@@ -14,22 +14,22 @@ import static com.tny.game.common.utils.ObjectAide.*;
  */
 public class AbstractCachedFactory<K, O> {
 
-	private final Map<K, O> cached = new ConcurrentHashMap<>();
+    private final Map<K, O> cached = new ConcurrentHashMap<>();
 
-	protected <T extends O> T loadOrCreate(K key, Function<K, O> creator) {
-		O object = cached.get(key);
-		if (object != null) {
-			return as(object);
-		}
-		synchronized (this) {
-			object = cached.get(key);
-			if (object != null) {
-				return as(object);
-			}
-			O value = creator.apply(key);
-			cached.put(key, value);
-			return as(value);
-		}
-	}
+    protected <T extends O> T loadOrCreate(K key, Function<K, O> creator) {
+        O object = cached.get(key);
+        if (object != null) {
+            return as(object);
+        }
+        synchronized (this) {
+            object = cached.get(key);
+            if (object != null) {
+                return as(object);
+            }
+            O value = creator.apply(key);
+            cached.put(key, value);
+            return as(value);
+        }
+    }
 
 }

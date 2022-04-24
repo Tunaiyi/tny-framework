@@ -13,6 +13,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 public class RedisKey {
 
     public static final String TAG_LEFT = "{";
+
     public static final String TAG_RIGHT = "}";
 
     private final String key;

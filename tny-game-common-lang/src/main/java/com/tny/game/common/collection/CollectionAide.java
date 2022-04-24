@@ -9,12 +9,19 @@ import java.util.function.Supplier;
 public class CollectionAide {
 
     public final static char[] CHAR_EMPTY_ARRAY = new char[0];
+
     public final static byte[] BYTE_EMPTY_ARRAY = new byte[0];
+
     public final static int[] INT_EMPTY_ARRAY = new int[0];
+
     public final static short[] SHORT_EMPTY_ARRAY = new short[0];
+
     public final static long[] LONG_EMPTY_ARRAY = new long[0];
+
     public final static float[] FLOAT_EMPTY_ARRAY = new float[0];
+
     public final static double[] DOUBLE_EMPTY_ARRAY = new double[0];
+
     public final static boolean[] BOOLEAN_EMPTY_ARRAY = new boolean[0];
 
     private final static HashMap<Class<?>, Object> EMPTY_ARRAY_MAP = new HashMap<>();

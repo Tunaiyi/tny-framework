@@ -17,41 +17,41 @@ import static com.tny.game.common.utils.ObjectAide.*;
  */
 public class RedissonStorageAccessorFactory implements StorageAccessorFactory {
 
-	public static final String ACCESSOR_NAME = "redissonStorageAccessorFactory";
+    public static final String ACCESSOR_NAME = "redissonStorageAccessorFactory";
 
-	private String tableHead;
+    private String tableHead;
 
-	private String dataSource;
+    private String dataSource;
 
-	private EntityIdConverterFactory entityIdConverterFactory;
+    private EntityIdConverterFactory entityIdConverterFactory;
 
-	public RedissonStorageAccessorFactory(String dataSource, String tableHead) {
-		this.tableHead = ifNull(tableHead, "");
-		this.dataSource = dataSource;
-	}
+    public RedissonStorageAccessorFactory(String dataSource, String tableHead) {
+        this.tableHead = ifNull(tableHead, "");
+        this.dataSource = dataSource;
+    }
 
-	@Override
-	public <A extends StorageAccessor<?, ?>> A createAccessor(EntityScheme scheme, EntityKeyMaker<?, ?> keyMaker) {
-		Class<?> entityClass = scheme.getEntityClass();
-		TypedRedisson<?> redisson = RedissonFactory.createTypedRedisson(entityClass);
-		String tableKey = StringUtils.isEmpty(tableHead) ? entityClass.getSimpleName() : tableHead + ":" + entityClass.getSimpleName();
-		EntityIdConverter<?, ?, ?> idConverter = entityIdConverterFactory.createConverter(scheme, keyMaker);
-		return as(new RedissonStorageAccessor<>(dataSource, tableKey, idConverter, as(redisson)));
-	}
+    @Override
+    public <A extends StorageAccessor<?, ?>> A createAccessor(EntityScheme scheme, EntityKeyMaker<?, ?> keyMaker) {
+        Class<?> entityClass = scheme.getEntityClass();
+        TypedRedisson<?> redisson = RedissonFactory.createTypedRedisson(entityClass);
+        String tableKey = StringUtils.isEmpty(tableHead) ? entityClass.getSimpleName() : tableHead + ":" + entityClass.getSimpleName();
+        EntityIdConverter<?, ?, ?> idConverter = entityIdConverterFactory.createConverter(scheme, keyMaker);
+        return as(new RedissonStorageAccessor<>(dataSource, tableKey, idConverter, as(redisson)));
+    }
 
-	public RedissonStorageAccessorFactory setTableHead(String tableHead) {
-		this.tableHead = tableHead;
-		return this;
-	}
+    public RedissonStorageAccessorFactory setTableHead(String tableHead) {
+        this.tableHead = tableHead;
+        return this;
+    }
 
-	public RedissonStorageAccessorFactory setDataSource(String dataSource) {
-		this.dataSource = dataSource;
-		return this;
-	}
+    public RedissonStorageAccessorFactory setDataSource(String dataSource) {
+        this.dataSource = dataSource;
+        return this;
+    }
 
-	public RedissonStorageAccessorFactory setEntityIdConverterFactory(EntityIdConverterFactory entityIdConverterFactory) {
-		this.entityIdConverterFactory = entityIdConverterFactory;
-		return this;
-	}
+    public RedissonStorageAccessorFactory setEntityIdConverterFactory(EntityIdConverterFactory entityIdConverterFactory) {
+        this.entityIdConverterFactory = entityIdConverterFactory;
+        return this;
+    }
 
 }

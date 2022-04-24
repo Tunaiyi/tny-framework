@@ -13,18 +13,18 @@ import com.tny.game.codec.typeprotobuf.annotation.*;
 @TypeProtobuf(1000_00_00)
 public class LoginResultDTO {
 
-	@Protobuf
-	private long userId;
+    @Protobuf
+    private long userId;
 
-	public LoginResultDTO() {
-	}
+    public LoginResultDTO() {
+    }
 
-	public LoginResultDTO(long userId) {
-		this.userId = userId;
-	}
+    public LoginResultDTO(long userId) {
+        this.userId = userId;
+    }
 
-	public long getUserId() {
-		return this.userId;
-	}
+    public long getUserId() {
+        return this.userId;
+    }
 
 }

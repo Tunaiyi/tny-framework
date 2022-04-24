@@ -15,50 +15,50 @@ import java.net.InetSocketAddress;
  */
 public class GeneralLocalRelayTunnel<UID> extends ServerTunnel<UID, NetSession<UID>, MessageTransporter> implements LocalRelayTunnel<UID> {
 
-	private final long instanceId;
+    private final long instanceId;
 
-	private final InetSocketAddress remoteAddress;
+    private final InetSocketAddress remoteAddress;
 
-	private final LocalRelayMessageTransporter transporter;
+    private final LocalRelayMessageTransporter transporter;
 
-	public GeneralLocalRelayTunnel(long instanceId, long id, LocalRelayMessageTransporter transporter,
-			InetSocketAddress remoteAddress, NetworkContext context) {
-		super(id, transporter, context);
-		this.transporter = transporter;
-		this.instanceId = instanceId;
-		this.remoteAddress = remoteAddress;
-	}
+    public GeneralLocalRelayTunnel(long instanceId, long id, LocalRelayMessageTransporter transporter,
+            InetSocketAddress remoteAddress, NetworkContext context) {
+        super(id, transporter, context);
+        this.transporter = transporter;
+        this.instanceId = instanceId;
+        this.remoteAddress = remoteAddress;
+    }
 
-	@Override
-	public long getInstanceId() {
-		return instanceId;
-	}
+    @Override
+    public long getInstanceId() {
+        return instanceId;
+    }
 
-	@Override
-	public InetSocketAddress getRemoteAddress() {
-		return remoteAddress;
-	}
+    @Override
+    public InetSocketAddress getRemoteAddress() {
+        return remoteAddress;
+    }
 
-	@Override
-	public MessageWriteAwaiter relay(Message message, boolean needPromise) {
-		MessageWriteAwaiter promise = needPromise ? new MessageWriteAwaiter() : null;
-		this.write(message, promise);
-		return promise;
-	}
+    @Override
+    public MessageWriteAwaiter relay(Message message, boolean needPromise) {
+        MessageWriteAwaiter promise = needPromise ? new MessageWriteAwaiter() : null;
+        this.write(message, promise);
+        return promise;
+    }
 
-	@Override
-	public boolean switchLink(LocalRelayLink link) {
-		return this.transporter.switchLink(link);
-	}
+    @Override
+    public boolean switchLink(LocalRelayLink link) {
+        return this.transporter.switchLink(link);
+    }
 
-	//	@Override
-	//	public void onLinkDisconnect(NetRelayLink link) {
-	//		this.close();
-	//	}
-	//
-	//	@Override
-	//	public void disconnectOnLink(NetRelayLink link) {
-	//		this.disconnect();
-	//	}
+    //	@Override
+    //	public void onLinkDisconnect(NetRelayLink link) {
+    //		this.close();
+    //	}
+    //
+    //	@Override
+    //	public void disconnectOnLink(NetRelayLink link) {
+    //		this.disconnect();
+    //	}
 
 }

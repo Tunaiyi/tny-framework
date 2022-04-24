@@ -87,7 +87,6 @@ interface InnerFlow<R> extends VoidFlow, TypeFlow<R> {
         return add(new ThenSuccessStage<>(name, new SupplyFragment<>(fn)));
     }
 
-
     @Override
     default <N> TypeFlow<N> thenApply(Object name, Function<R, N> fn) {
         return add(new ThenSuccessStage<>(name, new ApplyFragment<>(fn)));

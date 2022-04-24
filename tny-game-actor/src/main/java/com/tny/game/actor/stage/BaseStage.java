@@ -1,6 +1,5 @@
 package com.tny.game.actor.stage;
 
-
 import com.tny.game.actor.stage.exception.*;
 import com.tny.game.common.utils.*;
 
@@ -50,7 +49,7 @@ public abstract class BaseStage<R> implements InnerStage<R> {
 
     @Override
     public void interrupt() {
-        Fragment<Object, ?> fragment = (Fragment<Object, ?>) getFragment();
+        Fragment<Object, ?> fragment = (Fragment<Object, ?>)getFragment();
         if (!fragment.isDone()) {
             fragment.fail(new StageInterruptedException("stage was interrupted"));
         }
@@ -59,7 +58,7 @@ public abstract class BaseStage<R> implements InnerStage<R> {
     @Override
     @SuppressWarnings("unchecked")
     public void run(Object returnVal, Throwable e) {
-        Fragment<Object, ?> fragment = (Fragment<Object, ?>) getFragment();
+        Fragment<Object, ?> fragment = (Fragment<Object, ?>)getFragment();
         if (!fragment.isDone()) {
             fragment.execute(returnVal, e);
         }

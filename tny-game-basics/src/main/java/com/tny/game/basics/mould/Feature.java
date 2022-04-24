@@ -6,14 +6,14 @@ import java.util.Collection;
 
 public interface Feature extends IntEnumerable {
 
-	String name();
+    String name();
 
-	Collection<Mould> dependMoulds();
+    Collection<Mould> dependMoulds();
 
-	String getDesc();
+    String getDesc();
 
-	boolean isValid();
+    boolean isValid();
 
-	boolean isHasHandler();
+    boolean isHasHandler();
 
 }

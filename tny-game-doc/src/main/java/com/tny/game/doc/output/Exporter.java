@@ -9,14 +9,14 @@ import java.io.IOException;
  */
 interface Exporter {
 
-	String output(OutputScheme table) throws IOException;
+    String output(OutputScheme table) throws IOException;
 
-	default String getHead() {
-		return "";
-	}
+    default String getHead() {
+        return "";
+    }
 
-	default String getTail() {
-		return "";
-	}
+    default String getTail() {
+        return "";
+    }
 
 }

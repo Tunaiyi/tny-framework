@@ -38,4 +38,5 @@ public class TradeExcpetion extends GameException {
     public int getAlertNumber() {
         return alertNumber;
     }
+
 }

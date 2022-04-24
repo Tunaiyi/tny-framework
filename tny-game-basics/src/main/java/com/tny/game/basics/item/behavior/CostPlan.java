@@ -33,4 +33,5 @@ public interface CostPlan extends TradePlan {
      * @return 返回奖励列表
      */
     CostList getCostList(long playerId, Action action, Map<String, Object> attributeMap);
+
 }

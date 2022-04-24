@@ -13,30 +13,30 @@ import com.tny.game.net.transport.*;
  */
 public class MessageCommandTask implements CommandTask {
 
-	private final Message message;
+    private final Message message;
 
-	private final NetTunnel<?> tunnel;
+    private final NetTunnel<?> tunnel;
 
-	private final MessageDispatcher messageDispatcher;
+    private final MessageDispatcher messageDispatcher;
 
-	public MessageCommandTask(NetTunnel<?> tunnel, Message message, MessageDispatcher messageDispatcher) {
-		this.message = message;
-		this.messageDispatcher = messageDispatcher;
-		this.tunnel = tunnel;
-	}
+    public MessageCommandTask(NetTunnel<?> tunnel, Message message, MessageDispatcher messageDispatcher) {
+        this.message = message;
+        this.messageDispatcher = messageDispatcher;
+        this.tunnel = tunnel;
+    }
 
-	@Override
-	public Command createCommand() {
-		switch (this.message.getMode()) {
-			case PUSH:
-			case REQUEST:
-			case RESPONSE:
-				return this.messageDispatcher.dispatch(this.tunnel, this.message);
-			case PING:
-				return new RunnableCommand(this.tunnel::pong);
-			default:
-		}
-		return null;
-	}
+    @Override
+    public Command createCommand() {
+        switch (this.message.getMode()) {
+            case PUSH:
+            case REQUEST:
+            case RESPONSE:
+                return this.messageDispatcher.dispatch(this.tunnel, this.message);
+            case PING:
+                return new RunnableCommand(this.tunnel::pong);
+            default:
+        }
+        return null;
+    }
 
 }

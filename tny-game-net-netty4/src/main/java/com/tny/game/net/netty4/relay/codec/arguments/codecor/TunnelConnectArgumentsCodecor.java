@@ -12,8 +12,8 @@ import com.tny.game.net.relay.packet.arguments.*;
  */
 public class TunnelConnectArgumentsCodecor extends BaseProtobufPacketArgumentsCodecor<TunnelConnectArguments, TunnelConnectArgumentsProto> {
 
-	public TunnelConnectArgumentsCodecor() {
-		super(TunnelConnectArguments.class, TunnelConnectArgumentsProto.class, TunnelConnectArgumentsProto::new);
-	}
+    public TunnelConnectArgumentsCodecor() {
+        super(TunnelConnectArguments.class, TunnelConnectArgumentsProto.class, TunnelConnectArgumentsProto::new);
+    }
 
 }

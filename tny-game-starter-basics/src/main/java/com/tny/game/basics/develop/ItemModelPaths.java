@@ -5,9 +5,9 @@ package com.tny.game.basics.develop;
  */
 public interface ItemModelPaths {
 
-	String DEFAULT_ITEM_MODEL_CONFIG_PATH = "config/base/DefaultItemModel.xml";
-	String FEATURE_MODEL_CONFIG_PATH = "config/base/FeatureModel.xml";
+    String DEFAULT_ITEM_MODEL_CONFIG_PATH = "config/base/DefaultItemModel.xml";
+    String FEATURE_MODEL_CONFIG_PATH = "config/base/FeatureModel.xml";
 
-	String DEVELOP_MOULD_TIME_CONSUMING /* */ = "mould.time_consuming";
+    String DEVELOP_MOULD_TIME_CONSUMING /* */ = "mould.time_consuming";
 
 }

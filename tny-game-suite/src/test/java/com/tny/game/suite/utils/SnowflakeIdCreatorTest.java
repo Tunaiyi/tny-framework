@@ -12,11 +12,14 @@ import java.util.concurrent.*;
 public class SnowflakeIdCreatorTest {
 
     private static final int createSize = 1000000;
-    private static final int threadSize = 8;
-    private static final SnowflakeIdCreator creator = new SnowflakeIdCreator(1);
-    private static final CountDownLatch startLatch = new CountDownLatch(threadSize);
-    private static final CountDownLatch finishLatch = new CountDownLatch(threadSize);
 
+    private static final int threadSize = 8;
+
+    private static final SnowflakeIdCreator creator = new SnowflakeIdCreator(1);
+
+    private static final CountDownLatch startLatch = new CountDownLatch(threadSize);
+
+    private static final CountDownLatch finishLatch = new CountDownLatch(threadSize);
 
     static class Task {
 
@@ -42,10 +45,11 @@ public class SnowflakeIdCreatorTest {
         SortedSet<Long> ids = new TreeSet<>();
         for (int index = 0; index < 10000; index++) {
             long id;
-            if (!ids.add(id = creator.createId()))
+            if (!ids.add(id = creator.createId())) {
                 System.out.println("fail : " + id);
-            else
+            } else {
                 System.out.println(id);
+            }
         }
     }
 
@@ -62,8 +66,9 @@ public class SnowflakeIdCreatorTest {
         finishLatch.await();
         for (Task task : tasks) {
             task.ids.forEach(id -> {
-                if (!ids.add(id))
+                if (!ids.add(id)) {
                     System.out.println("fail : " + id);
+                }
             });
         }
     }

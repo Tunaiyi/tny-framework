@@ -4,7 +4,6 @@ import com.tny.game.asyndb.*;
 
 import java.lang.annotation.*;
 
-
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited

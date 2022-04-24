@@ -23,8 +23,9 @@ class CipherHolder {
     public Cipher getCipher() throws Exception {
         if (this.reference != null) {
             Cipher cipher = this.reference.get();
-            if (cipher != null)
+            if (cipher != null) {
                 return cipher;
+            }
         }
         Cipher cipher = this.cipherSupplier.call();
         this.reference = new WeakReference<>(cipher);

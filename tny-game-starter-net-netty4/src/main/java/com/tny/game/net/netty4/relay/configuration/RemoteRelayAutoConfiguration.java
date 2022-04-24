@@ -21,73 +21,73 @@ import java.util.List;
  */
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties({
-		FixedRelayMessageRoutersProperties.class,
-		SpringRelayServeClustersProperties.class,
-		SpringBootRelayBootstrapProperties.class
+        FixedRelayMessageRoutersProperties.class,
+        SpringRelayServeClustersProperties.class,
+        SpringBootRelayBootstrapProperties.class
 })
 public class RemoteRelayAutoConfiguration {
 
-	@Bean
-	public PollingRelayAllotStrategy pollingRelayAllotStrategy() {
-		return new PollingRelayAllotStrategy();
-	}
+    @Bean
+    public PollingRelayAllotStrategy pollingRelayAllotStrategy() {
+        return new PollingRelayAllotStrategy();
+    }
 
-	@Bean
-	public RandomRelayAllotStrategy randomRelayAllotStrategy() {
-		return new RandomRelayAllotStrategy();
-	}
+    @Bean
+    public RandomRelayAllotStrategy randomRelayAllotStrategy() {
+        return new RandomRelayAllotStrategy();
+    }
 
-	@Bean
-	@ConditionalOnProperty(value = "tny.net.relay.router.fixed-message-router.cluster-id")
-	public RelayMessageRouter fixedRelayMessageRouter(FixedRelayMessageRoutersProperties properties) {
-		return new FixedRelayMessageRouter(properties.getService());
-	}
+    @Bean
+    @ConditionalOnProperty(value = "tny.net.relay.router.fixed-message-router.cluster-id")
+    public RelayMessageRouter fixedRelayMessageRouter(FixedRelayMessageRoutersProperties properties) {
+        return new FixedRelayMessageRouter(properties.getService());
+    }
 
-	@Bean
-	@ConditionalOnMissingBean(RelayMessageRouter.class)
-	public RelayMessageRouter firstRelayMessageRouter() {
-		return new FirstRelayMessageRouter();
-	}
+    @Bean
+    @ConditionalOnMissingBean(RelayMessageRouter.class)
+    public RelayMessageRouter firstRelayMessageRouter() {
+        return new FirstRelayMessageRouter();
+    }
 
-	@Bean
-	@ConditionalOnBean(NetAppContext.class)
-	public RemoteRelayContext remoteRelayContext(
-			NetAppContext appContext, RelayMessageRouter relayMessageRouter, ServeClusterFilter serveClusterFilter) {
-		return new NettyRemoteRelayContext(appContext, relayMessageRouter, serveClusterFilter);
-	}
+    @Bean
+    @ConditionalOnBean(NetAppContext.class)
+    public RemoteRelayContext remoteRelayContext(
+            NetAppContext appContext, RelayMessageRouter relayMessageRouter, ServeClusterFilter serveClusterFilter) {
+        return new NettyRemoteRelayContext(appContext, relayMessageRouter, serveClusterFilter);
+    }
 
-	@Bean
-	@ConditionalOnMissingBean(ServeNodeClient.class)
-	public ServeNodeClient noopServeNodeClient() {
-		return new NoopServeNodeClient();
-	}
+    @Bean
+    @ConditionalOnMissingBean(ServeNodeClient.class)
+    public ServeNodeClient noopServeNodeClient() {
+        return new NoopServeNodeClient();
+    }
 
-	@Bean
-	public RemoteRelayServeNodeWatchService remoteRelayServeNodeWatchService(
-			ServeNodeClient serveNodeClient, NetRemoteRelayExplorer remoteRelayExplorer) {
-		return new RemoteRelayServeNodeWatchService(serveNodeClient, remoteRelayExplorer);
-	}
+    @Bean
+    public RemoteRelayServeNodeWatchService remoteRelayServeNodeWatchService(
+            ServeNodeClient serveNodeClient, NetRemoteRelayExplorer remoteRelayExplorer) {
+        return new RemoteRelayServeNodeWatchService(serveNodeClient, remoteRelayExplorer);
+    }
 
-	@Bean
-	public NettyRemoteRelayExplorer remoteRelayExplorer(RemoteRelayContext remoteRelayContext,
-			List<NettyRemoteServeClusterContext> clusterContexts) {
-		return new NettyRemoteRelayExplorer(remoteRelayContext, clusterContexts);
-	}
+    @Bean
+    public NettyRemoteRelayExplorer remoteRelayExplorer(RemoteRelayContext remoteRelayContext,
+            List<NettyRemoteServeClusterContext> clusterContexts) {
+        return new NettyRemoteRelayExplorer(remoteRelayContext, clusterContexts);
+    }
 
-	@Bean
-	public RelayTunnelFactory relayTunnelFactory(RemoteRelayExplorer remoteRelayExplorer) {
-		return new RelayTunnelFactory(remoteRelayExplorer);
-	}
+    @Bean
+    public RelayTunnelFactory relayTunnelFactory(RemoteRelayExplorer remoteRelayExplorer) {
+        return new RelayTunnelFactory(remoteRelayExplorer);
+    }
 
-	@Bean
-	public RelayNettyMessageHandler relayNettyMessageHandler() {
-		return new RelayNettyMessageHandler();
-	}
+    @Bean
+    public RelayNettyMessageHandler relayNettyMessageHandler() {
+        return new RelayNettyMessageHandler();
+    }
 
-	@Bean
-	@ConditionalOnMissingBean(ServeClusterFilter.class)
-	public AllRequiredServeClusterFilter allRequiredServeClusterFilter() {
-		return new AllRequiredServeClusterFilter();
-	}
+    @Bean
+    @ConditionalOnMissingBean(ServeClusterFilter.class)
+    public AllRequiredServeClusterFilter allRequiredServeClusterFilter() {
+        return new AllRequiredServeClusterFilter();
+    }
 
 }

@@ -59,29 +59,44 @@ import com.tny.game.protoex.field.*;
  * @author David Yu
  */
 public final class WireFormat {
+
     // Do not allow instantiation.
     private WireFormat() {
     }
 
     public final static int MAX_PROTO_EX_ID = 536870911;
+
     public final static int MIN_PROTO_EX_ID = 1;
+
     public final static int MAX_FIELD_NUMBER = 536870911;
+
     public final static int MIN_FIELD_NUMBER = 1;
 
     public final static int PROTO_ID_CHAR = 1;
-    public final static int PROTO_ID_SHORT = 2;
-    public final static int PROTO_ID_BYTE = 3;
-    public final static int PROTO_ID_INT = 4;
-    public final static int PROTO_ID_LONG = 5;
-    public final static int PROTO_ID_FLOAT = 6;
-    public final static int PROTO_ID_DOUBLE = 7;
-    public final static int PROTO_ID_BOOLEAN = 8;
-    public final static int PROTO_ID_STRING = 9;
-    public final static int PROTO_ID_BYTES = 10;
-    public final static int PROTO_ID_MAP = 11;
-    public final static int PROTO_ID_REPEAT = 12;
-    public final static int PROTO_ID_ENUM = 13;
 
+    public final static int PROTO_ID_SHORT = 2;
+
+    public final static int PROTO_ID_BYTE = 3;
+
+    public final static int PROTO_ID_INT = 4;
+
+    public final static int PROTO_ID_LONG = 5;
+
+    public final static int PROTO_ID_FLOAT = 6;
+
+    public final static int PROTO_ID_DOUBLE = 7;
+
+    public final static int PROTO_ID_BOOLEAN = 8;
+
+    public final static int PROTO_ID_STRING = 9;
+
+    public final static int PROTO_ID_BYTES = 10;
+
+    public final static int PROTO_ID_MAP = 11;
+
+    public final static int PROTO_ID_REPEAT = 12;
+
+    public final static int PROTO_ID_ENUM = 13;
 
     // public final static AtomicInteger PROTO_ID_ATOMIC_INT = 24;
     // public final static AtomicLong PROTO_ID_ATOMIC_LONG = 25;
@@ -98,16 +113,23 @@ public final class WireFormat {
     //	public static final int WIRETYPE_TAIL_DELIMITER = 7;
 
     private static final int TYPE_TAG_KIND_BITS = 1;
+
     private static final int TYPE_TAG_KIND_MASK = 1 << 1;
+
     private static final int TYPE_TAG_MARK_BITS = 1;
+
     private static final int TYPE_TAG_MARK_MASK = 1;
 
     private static final int REPEAT_OPTION_PACKED_BITS = 1;
+
     private static final int REPEAT_OPTION_RAW_BITS = 1;
+
     private static final int REPEAT_OPTION_PACKED_MASK = 1;
+
     private static final int REPEAT_OPTION_RAW_MASK = 1 << 1;
 
     private static final int FIELD_TAG_FORMAT_BITS = 2;
+
     private static final int FIELD_TAG_FORMAT_MASK = 1 << 1 | 1;
 
     public static boolean checkProtoExId(int protoExID) {
@@ -173,7 +195,14 @@ public final class WireFormat {
      */
     public enum JavaType {
         //		BYTE_STRING(ByteString.EMPTY),
-        INT(0), LONG(0L), FLOAT(0F), DOUBLE(0D), BOOLEAN(false), STRING(""), ENUM(null), MESSAGE(null);
+        INT(0),
+        LONG(0L),
+        FLOAT(0F),
+        DOUBLE(0D),
+        BOOLEAN(false),
+        STRING(""),
+        ENUM(null),
+        MESSAGE(null);
 
         JavaType(final Object defaultDefault) {
             this.defaultDefault = defaultDefault;

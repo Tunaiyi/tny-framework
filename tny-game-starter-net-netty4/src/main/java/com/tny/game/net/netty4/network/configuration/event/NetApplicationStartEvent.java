@@ -10,8 +10,8 @@ import com.tny.game.net.netty4.configuration.application.*;
  */
 public class NetApplicationStartEvent extends NetApplicationEvent {
 
-	public NetApplicationStartEvent(NetApplication application) {
-		super(application);
-	}
+    public NetApplicationStartEvent(NetApplication application) {
+        super(application);
+    }
 
 }

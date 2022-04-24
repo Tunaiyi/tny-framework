@@ -14,13 +14,19 @@ public class DBCacheItem<T> extends RawCacheItem<T, Blob> {
     private final static Logger logger = LoggerFactory.getLogger(DBCacheClient.class);
 
     private static final int OBJECT = 0;
+
     private static final int BYTE_ARRAY = 1;
 
     private String key;
+
     private int flags;
+
     private Blob data;
+
     private long expire;
+
     private long version;
+
     private long saveAt;
 
     private volatile Object dataObject;
@@ -44,7 +50,7 @@ public class DBCacheItem<T> extends RawCacheItem<T, Blob> {
         if (data != null) {
             byte[] bytes = null;
             if (data instanceof byte[]) {
-                bytes = (byte[]) data;
+                bytes = (byte[])data;
                 this.flags = BYTE_ARRAY;
             } else {
                 bytes = this.object2Bytes(data);
@@ -79,18 +85,21 @@ public class DBCacheItem<T> extends RawCacheItem<T, Blob> {
     }
 
     public Object getObject() {
-        if (this.data == null)
+        if (this.data == null) {
             return null;
-        if (this.dataObject != null)
+        }
+        if (this.dataObject != null) {
             return this.dataObject;
+        }
         synchronized (this) {
-            if (this.dataObject != null)
+            if (this.dataObject != null) {
                 return this.dataObject;
+            }
             if (this.flags == OBJECT) {
                 this.dataObject = this.bytes2Object();
             } else {
                 try {
-                    this.dataObject = this.data.getBytes(1, (int) this.data.length());
+                    this.dataObject = this.data.getBytes(1, (int)this.data.length());
                 } catch (SQLException e) {
                     logger.error("SerialBlob getBytes exception", e);
                 }
@@ -160,8 +169,9 @@ public class DBCacheItem<T> extends RawCacheItem<T, Blob> {
     }
 
     private Object bytes2Object() {
-        if (this.data == null)
+        if (this.data == null) {
             return null;
+        }
         try (ObjectInputStream objectIn = new ObjectInputStream(this.data.getBinaryStream())) {
             Object result = objectIn.readObject();
             return result;

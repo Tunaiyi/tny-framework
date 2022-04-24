@@ -13,39 +13,39 @@ import com.tny.game.net.transport.*;
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class TunnelEventBuses extends BaseEventBuses<TunnelListener> {
 
-	// @SuppressWarnings("unchecked")
-	// private final BindVoidEventBus<TunnelAuthenticateListener, Tunnel> ON_AUTHENTICATE =
-	//         EventBuses.of(TunnelAuthenticateListener.class, TunnelAuthenticateListener::onAuthenticate);
+    // @SuppressWarnings("unchecked")
+    // private final BindVoidEventBus<TunnelAuthenticateListener, Tunnel> ON_AUTHENTICATE =
+    //         EventBuses.of(TunnelAuthenticateListener.class, TunnelAuthenticateListener::onAuthenticate);
 
-	private final BindVoidEventBus<TunnelActivateListener, Tunnel> ON_ACTIVATE =
-			EventBuses.of(TunnelActivateListener.class, TunnelActivateListener::onActivate);
+    private final BindVoidEventBus<TunnelActivateListener, Tunnel> ON_ACTIVATE =
+            EventBuses.of(TunnelActivateListener.class, TunnelActivateListener::onActivate);
 
-	private final BindVoidEventBus<TunnelUnactivatedListener, Tunnel> ON_UNACTIVATED =
-			EventBuses.of(TunnelUnactivatedListener.class, TunnelUnactivatedListener::onUnactivated);
+    private final BindVoidEventBus<TunnelUnactivatedListener, Tunnel> ON_UNACTIVATED =
+            EventBuses.of(TunnelUnactivatedListener.class, TunnelUnactivatedListener::onUnactivated);
 
-	private final BindVoidEventBus<TunnelCloseListener, Tunnel> ON_CLOSE =
-			EventBuses.of(TunnelCloseListener.class, TunnelCloseListener::onClose);
+    private final BindVoidEventBus<TunnelCloseListener, Tunnel> ON_CLOSE =
+            EventBuses.of(TunnelCloseListener.class, TunnelCloseListener::onClose);
 
-	private final static TunnelEventBuses eventBuses = new TunnelEventBuses();
+    private final static TunnelEventBuses eventBuses = new TunnelEventBuses();
 
-	private TunnelEventBuses() {
-		super();
-	}
+    private TunnelEventBuses() {
+        super();
+    }
 
-	public static TunnelEventBuses buses() {
-		return eventBuses;
-	}
+    public static TunnelEventBuses buses() {
+        return eventBuses;
+    }
 
-	public BindVoidEventBus<TunnelActivateListener, Tunnel> activateEvent() {
-		return this.ON_ACTIVATE;
-	}
+    public BindVoidEventBus<TunnelActivateListener, Tunnel> activateEvent() {
+        return this.ON_ACTIVATE;
+    }
 
-	public BindVoidEventBus<TunnelUnactivatedListener, Tunnel> unactivatedEvent() {
-		return this.ON_UNACTIVATED;
-	}
+    public BindVoidEventBus<TunnelUnactivatedListener, Tunnel> unactivatedEvent() {
+        return this.ON_UNACTIVATED;
+    }
 
-	public BindVoidEventBus<TunnelCloseListener, Tunnel> closeEvent() {
-		return this.ON_CLOSE;
-	}
+    public BindVoidEventBus<TunnelCloseListener, Tunnel> closeEvent() {
+        return this.ON_CLOSE;
+    }
 
 }

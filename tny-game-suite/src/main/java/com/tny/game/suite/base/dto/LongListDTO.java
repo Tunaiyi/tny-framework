@@ -6,7 +6,6 @@ import com.tny.game.suite.*;
 
 import java.util.*;
 
-
 @ProtoEx(SuiteProtoIDs.LONG_LIST_DTO)
 @DTODoc("通用Long List DTO")
 public class LongListDTO {
@@ -41,4 +40,5 @@ public class LongListDTO {
             text += value;
         return text;
     }
+
 }

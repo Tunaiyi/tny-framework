@@ -10,6 +10,6 @@ import com.tny.game.common.scheduler.*;
  */
 public interface GameTaskReceiverFactory {
 
-	GameTaskReceiver create(TaskReceiverType type, long userId);
+    GameTaskReceiver create(TaskReceiverType type, long userId);
 
 }

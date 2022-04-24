@@ -12,21 +12,21 @@ import org.slf4j.*;
  */
 public class NettyRemoteServeInstance extends BaseRemoteServeInstance {
 
-	public static final Logger LOGGER = LoggerFactory.getLogger(NettyRemoteServeInstance.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(NettyRemoteServeInstance.class);
 
-	/**
-	 * 连接任务
-	 */
-	private final NettyServeInstanceConnectMonitor monitor;
+    /**
+     * 连接任务
+     */
+    private final NettyServeInstanceConnectMonitor monitor;
 
-	public NettyRemoteServeInstance(NetRemoteServeCluster cluster, ServeNode node, NettyServeInstanceConnectMonitor monitor) {
-		super(cluster, node);
-		this.monitor = monitor;
-	}
+    public NettyRemoteServeInstance(NetRemoteServeCluster cluster, ServeNode node, NettyServeInstanceConnectMonitor monitor) {
+        super(cluster, node);
+        this.monitor = monitor;
+    }
 
-	@Override
-	protected void prepareClose() {
-		monitor.stop();
-	}
+    @Override
+    protected void prepareClose() {
+        monitor.stop();
+    }
 
 }

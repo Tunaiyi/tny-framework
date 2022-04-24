@@ -11,34 +11,34 @@ import com.tny.game.net.relay.cluster.*;
  */
 public interface NetRemoteServeCluster extends RemoteServeCluster {
 
-	/**
-	 * 关闭本地集群连接
-	 */
-	void close();
+    /**
+     * 关闭本地集群连接
+     */
+    void close();
 
-	/**
-	 * 注册 LocaleServeInstance, 如果存在返回旧的 instance
-	 *
-	 * @param instance 注册的 instance
-	 * @return 返回 instance
-	 */
-	RemoteServeInstance registerInstance(NetRemoteServeInstance instance);
+    /**
+     * 注册 LocaleServeInstance, 如果存在返回旧的 instance
+     *
+     * @param instance 注册的 instance
+     * @return 返回 instance
+     */
+    RemoteServeInstance registerInstance(NetRemoteServeInstance instance);
 
-	/**
-	 * 刷新实例
-	 */
-	void refreshInstances();
+    /**
+     * 刷新实例
+     */
+    void refreshInstances();
 
-	/**
-	 * 卸载指定 instanceId 的 Instance
-	 *
-	 * @param instanceId 指定的Instance id
-	 */
-	void unregisterInstance(long instanceId);
+    /**
+     * 卸载指定 instanceId 的 Instance
+     *
+     * @param instanceId 指定的Instance id
+     */
+    void unregisterInstance(long instanceId);
 
-	/**
-	 * @param node 更新节点信息
-	 */
-	void updateInstance(ServeNode node);
+    /**
+     * @param node 更新节点信息
+     */
+    void updateInstance(ServeNode node);
 
 }

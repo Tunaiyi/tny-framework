@@ -15,13 +15,13 @@ import java.io.IOException;
 
 public class ItemModelJsonSerializer extends JsonSerializer<ItemModel> {
 
-	@Override
-	public void serialize(ItemModel value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-		if (value == null) {
-			gen.writeObject(null);
-		} else {
-			gen.writeNumber(value.getId());
-		}
-	}
+    @Override
+    public void serialize(ItemModel value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+        if (value == null) {
+            gen.writeObject(null);
+        } else {
+            gen.writeNumber(value.getId());
+        }
+    }
 
 }

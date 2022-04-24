@@ -14,19 +14,19 @@ import org.springframework.context.annotation.*;
 //@Import(ImportEventListenerBeanDefinitionRegistrar.class)
 public class TnyFrameworkAutoConfiguration {
 
-	@Bean
-	public UnitLoadInitiator unitLoadInitiator() {
-		return new UnitLoadInitiator();
-	}
+    @Bean
+    public UnitLoadInitiator unitLoadInitiator() {
+        return new UnitLoadInitiator();
+    }
 
-	@Bean
-	public EventListenerInitiator eventListenerInitiator() {
-		return new EventListenerInitiator();
-	}
+    @Bean
+    public EventListenerInitiator eventListenerInitiator() {
+        return new EventListenerInitiator();
+    }
 
-	@Bean
-	public ApplicationLauncherLifecycle applicationLauncherLifecycle() {
-		return new ApplicationLauncherLifecycle();
-	}
+    @Bean
+    public ApplicationLauncherLifecycle applicationLauncherLifecycle() {
+        return new ApplicationLauncherLifecycle();
+    }
 
 }

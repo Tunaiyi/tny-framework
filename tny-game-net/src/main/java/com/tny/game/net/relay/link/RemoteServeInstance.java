@@ -13,9 +13,9 @@ import java.util.List;
  */
 public interface RemoteServeInstance extends ServeInstance {
 
-	/**
-	 * @return 获取本地服务实例所有转发连接
-	 */
-	List<RemoteRelayLink> getActiveRelayLinks();
+    /**
+     * @return 获取本地服务实例所有转发连接
+     */
+    List<RemoteRelayLink> getActiveRelayLinks();
 
 }

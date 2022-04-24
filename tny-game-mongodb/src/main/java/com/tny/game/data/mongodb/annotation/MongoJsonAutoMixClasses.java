@@ -13,6 +13,6 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface MongoJsonAutoMixClasses {
 
-	Class<?>[] value();
+    Class<?>[] value();
 
 }

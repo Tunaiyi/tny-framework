@@ -9,6 +9,6 @@ import com.tny.game.net.command.*;
 @UnitInterface
 public interface EndpointFactory<UID, E extends Endpoint<UID>, S extends EndpointSetting> {
 
-	E create(S setting, EndpointContext endpointContext, CertificateFactory<UID> certificateFactory);
+    E create(S setting, EndpointContext endpointContext, CertificateFactory<UID> certificateFactory);
 
 }

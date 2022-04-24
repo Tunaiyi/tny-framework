@@ -10,16 +10,16 @@ import com.tny.game.net.relay.link.*;
  */
 public class TunnelVoidArguments extends BaseTunnelPacketArguments {
 
-	public TunnelVoidArguments(TunnelPacketArguments arguments) {
-		super(arguments.getInstanceId(), arguments.getTunnelId());
-	}
+    public TunnelVoidArguments(TunnelPacketArguments arguments) {
+        super(arguments.getInstanceId(), arguments.getTunnelId());
+    }
 
-	public TunnelVoidArguments(RelayTunnel<?> tunnel) {
-		super(tunnel.getInstanceId(), tunnel.getId());
-	}
+    public TunnelVoidArguments(RelayTunnel<?> tunnel) {
+        super(tunnel.getInstanceId(), tunnel.getId());
+    }
 
-	public TunnelVoidArguments(long instanceId, long tunnelId) {
-		super(instanceId, tunnelId);
-	}
+    public TunnelVoidArguments(long instanceId, long tunnelId) {
+        super(instanceId, tunnelId);
+    }
 
 }

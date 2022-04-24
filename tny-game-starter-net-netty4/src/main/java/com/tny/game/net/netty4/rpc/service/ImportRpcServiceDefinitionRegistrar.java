@@ -15,23 +15,23 @@ import javax.annotation.Nonnull;
  */
 public class ImportRpcServiceDefinitionRegistrar extends ImportConfigurationBeanDefinitionRegistrar {
 
-	public static final Logger LOGGER = LoggerFactory.getLogger(ImportRpcServiceDefinitionRegistrar.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(ImportRpcServiceDefinitionRegistrar.class);
 
-	@Override
-	public void registerBeanDefinitions(@Nonnull AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
-		RpcInstanceFactory factory = beanFactory.getBean(RpcInstanceFactory.class);
-		for (Class<?> serviceClass : RpcServiceLoader.getServiceClasses()) {
-			registerRpcInstance(registry, factory, serviceClass);
-		}
-	}
+    @Override
+    public void registerBeanDefinitions(@Nonnull AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
+        RpcInstanceFactory factory = beanFactory.getBean(RpcInstanceFactory.class);
+        for (Class<?> serviceClass : RpcServiceLoader.getServiceClasses()) {
+            registerRpcInstance(registry, factory, serviceClass);
+        }
+    }
 
-	private <T> void registerRpcInstance(BeanDefinitionRegistry registry, RpcInstanceFactory factory, Class<T> serviceClass) {
-		T rpcInstance = factory.create(serviceClass);
-		LOGGER.debug("Register RpcService instance : {}", serviceClass);
-		String beanName = BeanNameUtils.lowerCamelName(serviceClass);
-		registry.registerBeanDefinition(beanName, BeanDefinitionBuilder
-				.genericBeanDefinition(serviceClass, () -> rpcInstance)
-				.getBeanDefinition());
-	}
+    private <T> void registerRpcInstance(BeanDefinitionRegistry registry, RpcInstanceFactory factory, Class<T> serviceClass) {
+        T rpcInstance = factory.create(serviceClass);
+        LOGGER.debug("Register RpcService instance : {}", serviceClass);
+        String beanName = BeanNameUtils.lowerCamelName(serviceClass);
+        registry.registerBeanDefinition(beanName, BeanDefinitionBuilder
+                .genericBeanDefinition(serviceClass, () -> rpcInstance)
+                .getBeanDefinition());
+    }
 
 }

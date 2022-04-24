@@ -10,10 +10,10 @@ import org.bson.Document;
  */
 public interface MongoDocumentEnhance<T> {
 
-	Class<T> type();
+    Class<T> type();
 
-	void onRead(Document source, T target);
+    void onRead(Document source, T target);
 
-	void onWrite(T source, Document target);
+    void onWrite(T source, Document target);
 
 }

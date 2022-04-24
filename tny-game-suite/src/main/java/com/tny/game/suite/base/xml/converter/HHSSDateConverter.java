@@ -7,21 +7,21 @@ import java.util.Date;
 
 public class HHSSDateConverter extends AbstractSingleValueConverter {
 
-	private final DateFormat format = new SimpleDateFormat("HH:mm");
+    private final DateFormat format = new SimpleDateFormat("HH:mm");
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public boolean canConvert(Class clazz) {
-		return clazz.isAssignableFrom(Date.class);
-	}
+    @Override
+    @SuppressWarnings("unchecked")
+    public boolean canConvert(Class clazz) {
+        return clazz.isAssignableFrom(Date.class);
+    }
 
-	@Override
-	public Object fromString(String value) {
-		try {
-			return this.format.parse(value);
-		} catch (ParseException e) {
-			throw new RuntimeException(e);
-		}
-	}
+    @Override
+    public Object fromString(String value) {
+        try {
+            return this.format.parse(value);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }

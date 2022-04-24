@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 public abstract class ActorURL {
 
     public static String ELEMENT_REGEX_STR = "(?:[-\\w:@&=+,.!~*'_;]|%\\p{XDigit}{2})(?:[-\\w:@&=+,.!~*'$_;]|%\\p{XDigit}{2})*";
+
     public static Pattern ELEMENT_REGEX = Pattern.compile(ELEMENT_REGEX_STR);
 
     /**
@@ -103,18 +104,21 @@ public abstract class ActorURL {
      */
     public abstract ActorAddress getAddress();
 
-
     @Override
     public boolean equals(Object o) {
-        if (this == o)
+        if (this == o) {
             return true;
-        if (o == null)
+        }
+        if (o == null) {
             return false;
-        if (!(o instanceof ActorURL))
+        }
+        if (!(o instanceof ActorURL)) {
             return false;
-        ActorURL actorPath = (ActorURL) o;
-        if (!getName().equals(actorPath.getName()))
+        }
+        ActorURL actorPath = (ActorURL)o;
+        if (!getName().equals(actorPath.getName())) {
             return false;
+        }
         return getParent().equals(actorPath.getParent());
 
     }
@@ -125,4 +129,5 @@ public abstract class ActorURL {
         result = 31 * result + getParent().hashCode();
         return result;
     }
+
 }

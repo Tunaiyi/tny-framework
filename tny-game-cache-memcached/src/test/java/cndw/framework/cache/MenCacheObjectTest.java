@@ -28,6 +28,7 @@ public class MenCacheObjectTest {
     @BeforeEach
     public void setUp() throws Exception {
         this.task = new CacheTestTask(this.cache) {
+
             @Override
             protected void doFlushAll() {
                 MenCacheObjectTest.this.client.flushAll();

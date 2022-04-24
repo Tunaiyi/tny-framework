@@ -8,6 +8,6 @@ package com.tny.game.data;
  */
 public interface EntityOnLoad<K, E> {
 
-	void onLoad(K key, E entity);
+    void onLoad(K key, E entity);
 
 }

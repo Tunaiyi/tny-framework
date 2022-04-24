@@ -10,28 +10,28 @@ import java.util.List;
  */
 public class DefaultTimeTaskScheme implements TimeTaskScheme {
 
-	private String cron;
+    private String cron;
 
-	private List<String> tasks;
+    private List<String> tasks;
 
-	@Override
-	public String getCron() {
-		return cron;
-	}
+    @Override
+    public String getCron() {
+        return cron;
+    }
 
-	public DefaultTimeTaskScheme setCron(String cron) {
-		this.cron = cron;
-		return this;
-	}
+    public DefaultTimeTaskScheme setCron(String cron) {
+        this.cron = cron;
+        return this;
+    }
 
-	@Override
-	public List<String> getTasks() {
-		return tasks;
-	}
+    @Override
+    public List<String> getTasks() {
+        return tasks;
+    }
 
-	public DefaultTimeTaskScheme setTasks(List<String> tasks) {
-		this.tasks = tasks;
-		return this;
-	}
+    public DefaultTimeTaskScheme setTasks(List<String> tasks) {
+        this.tasks = tasks;
+        return this;
+    }
 
 }

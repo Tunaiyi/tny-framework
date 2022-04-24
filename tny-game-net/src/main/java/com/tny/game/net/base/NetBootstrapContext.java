@@ -16,60 +16,60 @@ import static com.tny.game.common.utils.ObjectAide.*;
  */
 public class NetBootstrapContext implements NetworkContext {
 
-	private final NetBootstrapSetting setting;
+    private final NetBootstrapSetting setting;
 
-	private final MessageFactory messageFactory;
+    private final MessageFactory messageFactory;
 
-	private final CertificateFactory<?> certificateFactory;
+    private final CertificateFactory<?> certificateFactory;
 
-	private final MessageDispatcher messageDispatcher;
+    private final MessageDispatcher messageDispatcher;
 
-	private final CommandTaskBoxProcessor commandTaskProcessor;
+    private final CommandTaskBoxProcessor commandTaskProcessor;
 
-	public NetBootstrapContext() {
-		this.messageFactory = new CommonMessageFactory();
-		this.certificateFactory = new DefaultCertificateFactory<>();
-		this.setting = null;
-		this.messageDispatcher = null;
-		this.commandTaskProcessor = null;
-	}
+    public NetBootstrapContext() {
+        this.messageFactory = new CommonMessageFactory();
+        this.certificateFactory = new DefaultCertificateFactory<>();
+        this.setting = null;
+        this.messageDispatcher = null;
+        this.commandTaskProcessor = null;
+    }
 
-	public NetBootstrapContext(
-			NetBootstrapSetting setting,
-			MessageDispatcher messageDispatcher,
-			CommandTaskBoxProcessor commandTaskProcessor,
-			MessageFactory messageFactory,
-			CertificateFactory<?> certificateFactory) {
-		this.setting = setting;
-		this.messageDispatcher = messageDispatcher;
-		this.commandTaskProcessor = commandTaskProcessor;
-		this.messageFactory = messageFactory;
-		this.certificateFactory = certificateFactory;
-	}
+    public NetBootstrapContext(
+            NetBootstrapSetting setting,
+            MessageDispatcher messageDispatcher,
+            CommandTaskBoxProcessor commandTaskProcessor,
+            MessageFactory messageFactory,
+            CertificateFactory<?> certificateFactory) {
+        this.setting = setting;
+        this.messageDispatcher = messageDispatcher;
+        this.commandTaskProcessor = commandTaskProcessor;
+        this.messageFactory = messageFactory;
+        this.certificateFactory = certificateFactory;
+    }
 
-	@Override
-	public NetBootstrapSetting getSetting() {
-		return setting;
-	}
+    @Override
+    public NetBootstrapSetting getSetting() {
+        return setting;
+    }
 
-	@Override
-	public MessageFactory getMessageFactory() {
-		return this.messageFactory;
-	}
+    @Override
+    public MessageFactory getMessageFactory() {
+        return this.messageFactory;
+    }
 
-	@Override
-	public <I> CertificateFactory<I> getCertificateFactory() {
-		return as(this.certificateFactory);
-	}
+    @Override
+    public <I> CertificateFactory<I> getCertificateFactory() {
+        return as(this.certificateFactory);
+    }
 
-	@Override
-	public MessageDispatcher getMessageDispatcher() {
-		return this.messageDispatcher;
-	}
+    @Override
+    public MessageDispatcher getMessageDispatcher() {
+        return this.messageDispatcher;
+    }
 
-	@Override
-	public CommandTaskBoxProcessor getCommandTaskProcessor() {
-		return this.commandTaskProcessor;
-	}
+    @Override
+    public CommandTaskBoxProcessor getCommandTaskProcessor() {
+        return this.commandTaskProcessor;
+    }
 
 }

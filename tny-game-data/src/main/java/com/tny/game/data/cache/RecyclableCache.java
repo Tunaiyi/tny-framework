@@ -8,6 +8,6 @@ package com.tny.game.data.cache;
  */
 public interface RecyclableCache {
 
-	void recycle();
+    void recycle();
 
 }

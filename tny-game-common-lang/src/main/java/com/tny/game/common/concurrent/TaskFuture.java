@@ -10,8 +10,8 @@ import java.util.concurrent.Future;
  */
 public interface TaskFuture<V> extends Future<V> {
 
-	void success(V value);
+    void success(V value);
 
-	void failure(Throwable throwable);
+    void failure(Throwable throwable);
 
 }

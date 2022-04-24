@@ -10,20 +10,20 @@ import com.tny.game.common.result.*;
  */
 public class ResultCodeExceptionAide {
 
-	private ResultCodeExceptionAide() {
-	}
+    private ResultCodeExceptionAide() {
+    }
 
-	public static ResultCode codeOf(Throwable cause) {
-		return codeOf(cause, null);
-	}
+    public static ResultCode codeOf(Throwable cause) {
+        return codeOf(cause, null);
+    }
 
-	public static ResultCode codeOf(Throwable cause, ResultCode defaultCode) {
-		if (cause instanceof ResultCodeException) {
-			return ((ResultCodeException)cause).getCode();
-		} else if (cause instanceof ResultCodeRuntimeException) {
-			return ((ResultCodeRuntimeException)cause).getCode();
-		}
-		return defaultCode;
-	}
+    public static ResultCode codeOf(Throwable cause, ResultCode defaultCode) {
+        if (cause instanceof ResultCodeException) {
+            return ((ResultCodeException)cause).getCode();
+        } else if (cause instanceof ResultCodeRuntimeException) {
+            return ((ResultCodeRuntimeException)cause).getCode();
+        }
+        return defaultCode;
+    }
 
 }

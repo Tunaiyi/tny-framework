@@ -8,6 +8,6 @@ package com.tny.game.common.scheduler;
  */
 public interface SchedulerBackupFactory {
 
-	SchedulerBackup create(TimeTaskScheduler scheduler);
+    SchedulerBackup create(TimeTaskScheduler scheduler);
 
 }

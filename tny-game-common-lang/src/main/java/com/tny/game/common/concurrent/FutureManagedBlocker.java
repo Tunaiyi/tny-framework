@@ -35,4 +35,5 @@ public class FutureManagedBlocker implements ManagedBlocker {
     public boolean isReleasable() {
         return future.isDone();
     }
+
 }

@@ -11,13 +11,13 @@ import org.springframework.context.annotation.*;
  */
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties({
-		SpringBootRelayBootstrapProperties.class,
+        SpringBootRelayBootstrapProperties.class,
 })
 public class LocalRelayAutoConfiguration {
 
-	@Bean
-	public LocalRelayExplorer localRelayExplorer() {
-		return new DefaultLocalRelayExplorer();
-	}
+    @Bean
+    public LocalRelayExplorer localRelayExplorer() {
+        return new DefaultLocalRelayExplorer();
+    }
 
 }

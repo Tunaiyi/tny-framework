@@ -23,6 +23,7 @@ public class OpLogMapper {
     private CountDownLatch latch = new CountDownLatch(1);
 
     private static final String ALTER_VALUE_FAILED = "v";
+
     private static final String ALTER_LATELY_FAILED = "l";
 
     public static ObjectMapper getMapper() {
@@ -61,8 +62,9 @@ public class OpLogMapper {
         private Alter<Object> parserAlter(JsonParser jsonParser) throws IOException {
             Object[] values = new Object[2];
             JsonToken token = null;
-            while (token == null || token != JsonToken.END_OBJECT)
+            while (token == null || token != JsonToken.END_OBJECT) {
                 token = this.parserAlterValue(jsonParser, values);
+            }
             return Alter.of(values[0], values[1]);
         }
 
@@ -107,7 +109,7 @@ public class OpLogMapper {
             } else if (value instanceof Number) {
                 generator.writeNumber(value.toString());
             } else if (value instanceof Boolean) {
-                generator.writeBoolean((Boolean) value);
+                generator.writeBoolean((Boolean)value);
             } else if (value instanceof String) {
                 generator.writeString(value.toString());
             } else {

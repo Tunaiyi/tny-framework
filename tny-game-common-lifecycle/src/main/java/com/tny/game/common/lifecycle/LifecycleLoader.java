@@ -14,40 +14,40 @@ import java.util.concurrent.ConcurrentSkipListSet;
  */
 public final class LifecycleLoader {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(LifecycleLoader.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LifecycleLoader.class);
 
-	public static final Comparator<Class<?>> LIFECYCLE_COMPARATOR = (one, other) -> {
-		AsLifecycle oneLifecycle = one
-				.getAnnotation(
-						AsLifecycle.class);
-		AsLifecycle otherLifecycle = other
-				.getAnnotation(
-						AsLifecycle.class);
-		return otherLifecycle.order() -
-				oneLifecycle.order();
-	};
+    public static final Comparator<Class<?>> LIFECYCLE_COMPARATOR = (one, other) -> {
+        AsLifecycle oneLifecycle = one
+                .getAnnotation(
+                        AsLifecycle.class);
+        AsLifecycle otherLifecycle = other
+                .getAnnotation(
+                        AsLifecycle.class);
+        return otherLifecycle.order() -
+                oneLifecycle.order();
+    };
 
-	private static final Set<StaticInitiator> INITIATORS = new ConcurrentSkipListSet<>();
+    private static final Set<StaticInitiator> INITIATORS = new ConcurrentSkipListSet<>();
 
-	private static final ClassSelector SELECTOR = ClassSelector.create()
-			.addFilter(AnnotationClassFilter.ofInclude(AsLifecycle.class))
-			.setHandler(classes -> classes.forEach(LifecycleLoader::register));
+    private static final ClassSelector SELECTOR = ClassSelector.create()
+            .addFilter(AnnotationClassFilter.ofInclude(AsLifecycle.class))
+            .setHandler(classes -> classes.forEach(LifecycleLoader::register));
 
-	@ClassSelectorProvider
-	private static ClassSelector selector() {
-		return SELECTOR;
-	}
+    @ClassSelectorProvider
+    private static ClassSelector selector() {
+        return SELECTOR;
+    }
 
-	private LifecycleLoader() {
-	}
+    private LifecycleLoader() {
+    }
 
-	public static void register(Class<?> clazz) {
-		StaticInitiator initiator = StaticInitiator.instance(clazz);
-		INITIATORS.add(initiator);
-	}
+    public static void register(Class<?> clazz) {
+        StaticInitiator initiator = StaticInitiator.instance(clazz);
+        INITIATORS.add(initiator);
+    }
 
-	public static Set<StaticInitiator> getStaticInitiators() {
-		return Collections.unmodifiableSet(INITIATORS);
-	}
+    public static Set<StaticInitiator> getStaticInitiators() {
+        return Collections.unmodifiableSet(INITIATORS);
+    }
 
 }

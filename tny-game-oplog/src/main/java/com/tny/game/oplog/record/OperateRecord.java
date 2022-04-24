@@ -48,16 +48,17 @@ public class OperateRecord extends AbstractLog {
     @Override
     public String toString() {
         return "OperateLogDTO [uid=" + this.getUserId() + ", name=" + this.getName() + ", acid=" + this.getActionId() + ", sid=" +
-               this.getServerId() + ", at=" + this.getLogAt() + ", op=" + this.getOperation()
-               + ", level=" + this.getLevel()
-               + ", revs=" + this.getReceiveLog() + ", coss=" + this.getConsumeLogs() + ", snaps=" + this.getSnapshots() + "]";
+                this.getServerId() + ", at=" + this.getLogAt() + ", op=" + this.getOperation()
+                + ", level=" + this.getLevel()
+                + ", revs=" + this.getReceiveLog() + ", coss=" + this.getConsumeLogs() + ", snaps=" + this.getSnapshots() + "]";
     }
 
     public List<Snapshot> getSnapshotsByType(SnapshotType type) {
         List<Snapshot> snapshots = new ArrayList<>();
         for (Snapshot snapshot : this.getSnapshots()) {
-            if (snapshot.getType() == type)
+            if (snapshot.getType() == type) {
                 snapshots.add(snapshot);
+            }
         }
         return snapshots;
     }

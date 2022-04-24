@@ -49,8 +49,9 @@ public abstract class GameStorageManager<O> extends GameCacheManager<O> {
     }
 
     public O getStorage(long playerId) {
-        if (playerId == 0L)
+        if (playerId == 0L) {
             return null;
+        }
         return this.get(playerId);
     }
 
@@ -61,16 +62,18 @@ public abstract class GameStorageManager<O> extends GameCacheManager<O> {
 
     @Override
     public boolean save(O item) {
-        if (this.entityClass.isInstance(item))
+        if (this.entityClass.isInstance(item)) {
             return super.save(item);
+        }
         if (!this.isSaveItem(item)) {
             LOGGER.error("{} 无法存储 {} 类型对象", this.getClass(), item.getClass(), new WrongClassException());
             return false;
         }
         if (item instanceof Item) {
-            O storage = this.getStorage(((Item<?>) item).getPlayerId());
-            if (storage != null)
+            O storage = this.getStorage(((Item<?>)item).getPlayerId());
+            if (storage != null) {
                 return super.save(storage);
+            }
         }
         return false;
     }
@@ -79,16 +82,18 @@ public abstract class GameStorageManager<O> extends GameCacheManager<O> {
     public Collection<O> save(Collection<O> itemCollection) {
         Collection<O> saveCollection = new ArrayList<>();
         for (O item : itemCollection) {
-            if (this.entityClass.isInstance(item))
+            if (this.entityClass.isInstance(item)) {
                 saveCollection.add(item);
+            }
             if (!this.isSaveItem(item)) {
                 LOGGER.error("{} 无法存储 {} 类型对象", this.getClass(), item.getClass(), new WrongClassException());
                 continue;
             }
             if (item instanceof Item) {
-                O storage = this.getStorage(((Item<?>) item).getPlayerId());
-                if (storage != null)
+                O storage = this.getStorage(((Item<?>)item).getPlayerId());
+                if (storage != null) {
                     saveCollection.add(storage);
+                }
             }
         }
         return super.save(saveCollection);
@@ -96,8 +101,9 @@ public abstract class GameStorageManager<O> extends GameCacheManager<O> {
 
     private boolean isSaveItem(Object object) {
         for (Class<?> clazz : this.saveItemClasses) {
-            if (clazz.isInstance(object))
+            if (clazz.isInstance(object)) {
                 return true;
+            }
         }
         return false;
     }

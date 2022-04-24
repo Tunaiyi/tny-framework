@@ -7,10 +7,15 @@ public class LogAide {
     public static final Logger LOGGER = LoggerFactory.getLogger(LogAide.class);
 
     public static final String LOADER = "configLoader";
+
     public static final String EVENT = "commonEvent";
+
     public static final String LOCK = "commonLock";
+
     public static final String FILE_MONITOR = "fileMonitor";
+
     public static final String TIME_TASK = "timeTask";
+
     public static final String WORKER = "worker";
 
     public static Object[] msg(Object... objects) {
@@ -29,10 +34,10 @@ public class LogAide {
         return trace(LOGGER, key, value);
     }
 
-
     public static byte trace(Logger logger, Object key, byte value) {
-        if (logger.isDebugEnabled())
+        if (logger.isDebugEnabled()) {
             logger.debug(key == null ? "{}" : key + " = {}", value);
+        }
         return value;
     }
 
@@ -48,10 +53,10 @@ public class LogAide {
         return trace(LOGGER, key, value);
     }
 
-
     public static short trace(Logger logger, Object key, short value) {
-        if (logger.isDebugEnabled())
+        if (logger.isDebugEnabled()) {
             logger.debug(key == null ? "{}" : key + " = {}", value);
+        }
         return value;
     }
 
@@ -68,8 +73,9 @@ public class LogAide {
     }
 
     public static int trace(Logger logger, Object key, int value) {
-        if (logger.isDebugEnabled())
+        if (logger.isDebugEnabled()) {
             logger.debug(key == null ? "{}" : key + " = {}", value);
+        }
         return value;
     }
 
@@ -86,8 +92,9 @@ public class LogAide {
     }
 
     public static long trace(Logger logger, Object key, long value) {
-        if (logger.isDebugEnabled())
+        if (logger.isDebugEnabled()) {
             logger.debug(key == null ? "{}" : key + " = {}", value);
+        }
         return value;
     }
 
@@ -103,13 +110,12 @@ public class LogAide {
         return trace(LOGGER, key, value);
     }
 
-
     public static float trace(Logger logger, Object key, float value) {
-        if (logger.isDebugEnabled())
+        if (logger.isDebugEnabled()) {
             logger.debug(key == null ? "{}" : key + " = {}", value);
+        }
         return value;
     }
-
 
     public static double trace(double value) {
         return trace(LOGGER, null, value);
@@ -123,10 +129,10 @@ public class LogAide {
         return trace(LOGGER, key, value);
     }
 
-
     public static double trace(Logger logger, Object key, double value) {
-        if (logger.isDebugEnabled())
+        if (logger.isDebugEnabled()) {
             logger.debug(key == null ? "{}" : key + " = {}", value);
+        }
         return value;
     }
 
@@ -143,8 +149,9 @@ public class LogAide {
     }
 
     public static boolean trace(Logger logger, Object key, boolean value) {
-        if (logger.isDebugEnabled())
+        if (logger.isDebugEnabled()) {
             logger.debug(key == null ? "{}" : key + " = {}", value);
+        }
         return value;
     }
 
@@ -161,8 +168,9 @@ public class LogAide {
     }
 
     public static <T> T trace(Logger logger, Object key, T value) {
-        if (logger.isDebugEnabled())
+        if (logger.isDebugEnabled()) {
             logger.debug(key == null ? "{}" : key + " = {}", value);
+        }
         return value;
     }
 

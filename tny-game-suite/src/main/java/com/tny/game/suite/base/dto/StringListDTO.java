@@ -6,7 +6,6 @@ import com.tny.game.suite.*;
 
 import java.util.*;
 
-
 @ProtoEx(SuiteProtoIDs.STRING_LIST_DTO)
 @DTODoc("通用String List DTO")
 public class StringListDTO {

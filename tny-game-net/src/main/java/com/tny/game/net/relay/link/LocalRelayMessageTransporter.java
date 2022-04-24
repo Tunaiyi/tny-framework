@@ -10,12 +10,12 @@ import com.tny.game.net.transport.*;
  */
 public interface LocalRelayMessageTransporter extends MessageTransporter {
 
-	/**
-	 * 切换 link
-	 *
-	 * @param link 新 link
-	 * @return 返回是否切换成功
-	 */
-	boolean switchLink(LocalRelayLink link);
+    /**
+     * 切换 link
+     *
+     * @param link 新 link
+     * @return 返回是否切换成功
+     */
+    boolean switchLink(LocalRelayLink link);
 
 }

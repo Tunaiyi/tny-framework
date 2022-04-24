@@ -27,4 +27,5 @@ public abstract class ActorCommandException extends ActorException {
     public ActorCommand<?> getCommand() {
         return command;
     }
+
 }

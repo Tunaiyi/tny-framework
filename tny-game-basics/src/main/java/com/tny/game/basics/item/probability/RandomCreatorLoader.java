@@ -13,28 +13,28 @@ import java.util.Collection;
  */
 public final class RandomCreatorLoader {
 
-	private RandomCreatorLoader() {
-	}
+    private RandomCreatorLoader() {
+    }
 
-	@ClassSelectorProvider
-	public static ClassSelector selector() {
-		return ClassSelector.create()
-				.addFilter(SubOfClassFilter.ofInclude(RandomCreatorFactory.class))
-				.setHandler(RandomCreatorLoader::handle);
-	}
+    @ClassSelectorProvider
+    public static ClassSelector selector() {
+        return ClassSelector.create()
+                .addFilter(SubOfClassFilter.ofInclude(RandomCreatorFactory.class))
+                .setHandler(RandomCreatorLoader::handle);
+    }
 
-	private static void handle(Collection<Class<?>> classes) {
-		for (Class<?> clazz : classes) {
-			if (clazz.isInterface() || Modifier.isAbstract(clazz.getModifiers()) || RandomCreators.isDefault(clazz)) {
-				continue;
-			}
-			try {
-				RandomCreatorFactory factory = (RandomCreatorFactory)clazz.newInstance();
-				factory.registerSelf();
-			} catch (Exception e) {
-				Asserts.throwWith(IllegalArgumentException::new, e, "创建 {} 异常", clazz);
-			}
-		}
-	}
+    private static void handle(Collection<Class<?>> classes) {
+        for (Class<?> clazz : classes) {
+            if (clazz.isInterface() || Modifier.isAbstract(clazz.getModifiers()) || RandomCreators.isDefault(clazz)) {
+                continue;
+            }
+            try {
+                RandomCreatorFactory factory = (RandomCreatorFactory)clazz.newInstance();
+                factory.registerSelf();
+            } catch (Exception e) {
+                Asserts.throwWith(IllegalArgumentException::new, e, "创建 {} 异常", clazz);
+            }
+        }
+    }
 
 }

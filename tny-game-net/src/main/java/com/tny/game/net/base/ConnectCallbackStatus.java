@@ -8,21 +8,21 @@ package com.tny.game.net.base;
  */
 public enum ConnectCallbackStatus {
 
-	CONNECTED(true),
+    CONNECTED(true),
 
-	CONNECTING(false),
+    CONNECTING(false),
 
-	EXCEPTION(false),
+    EXCEPTION(false),
 
-	;
+    ;
 
-	private final boolean success;
+    private final boolean success;
 
-	ConnectCallbackStatus(boolean success) {
-		this.success = success;
-	}
+    ConnectCallbackStatus(boolean success) {
+        this.success = success;
+    }
 
-	public boolean isSuccess() {
-		return success;
-	}
+    public boolean isSuccess() {
+        return success;
+    }
 }

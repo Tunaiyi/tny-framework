@@ -13,37 +13,37 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "tny.data.entity-manager")
 public class EntityCacheManagerProperties {
 
-	private String keyMakerFactory = AnnotationEntityKeyMakerFactory.MAKER_NAME;
+    private String keyMakerFactory = AnnotationEntityKeyMakerFactory.MAKER_NAME;
 
-	private String cacheFactory = LocalObjectCacheFactory.CACHE_NAME;
+    private String cacheFactory = LocalObjectCacheFactory.CACHE_NAME;
 
-	private String storageFactory = QueueObjectStorageFactory.STORAGE_NAME;
+    private String storageFactory = QueueObjectStorageFactory.STORAGE_NAME;
 
-	public String getKeyMakerFactory() {
-		return keyMakerFactory;
-	}
+    public String getKeyMakerFactory() {
+        return keyMakerFactory;
+    }
 
-	public EntityCacheManagerProperties setKeyMakerFactory(String keyMakerFactory) {
-		this.keyMakerFactory = keyMakerFactory;
-		return this;
-	}
+    public EntityCacheManagerProperties setKeyMakerFactory(String keyMakerFactory) {
+        this.keyMakerFactory = keyMakerFactory;
+        return this;
+    }
 
-	public String getCacheFactory() {
-		return cacheFactory;
-	}
+    public String getCacheFactory() {
+        return cacheFactory;
+    }
 
-	public EntityCacheManagerProperties setCacheFactory(String cacheFactory) {
-		this.cacheFactory = cacheFactory;
-		return this;
-	}
+    public EntityCacheManagerProperties setCacheFactory(String cacheFactory) {
+        this.cacheFactory = cacheFactory;
+        return this;
+    }
 
-	public String getStorageFactory() {
-		return storageFactory;
-	}
+    public String getStorageFactory() {
+        return storageFactory;
+    }
 
-	public EntityCacheManagerProperties setStorageFactory(String storageFactory) {
-		this.storageFactory = storageFactory;
-		return this;
-	}
+    public EntityCacheManagerProperties setStorageFactory(String storageFactory) {
+        this.storageFactory = storageFactory;
+        return this;
+    }
 
 }

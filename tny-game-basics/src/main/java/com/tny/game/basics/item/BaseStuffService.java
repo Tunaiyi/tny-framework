@@ -12,19 +12,19 @@ import java.util.Set;
  */
 public abstract class BaseStuffService<SM extends StuffModel> implements StuffService<SM> {
 
-	private final Set<ItemType> stuffItemTypes;
+    private final Set<ItemType> stuffItemTypes;
 
-	protected BaseStuffService(Set<ItemType> stuffItemTypes) {
-		this.stuffItemTypes = ImmutableSet.copyOf(stuffItemTypes);
-	}
+    protected BaseStuffService(Set<ItemType> stuffItemTypes) {
+        this.stuffItemTypes = ImmutableSet.copyOf(stuffItemTypes);
+    }
 
-	protected BaseStuffService(ItemType... stuffItemTypes) {
-		this.stuffItemTypes = ImmutableSet.copyOf(stuffItemTypes);
-	}
+    protected BaseStuffService(ItemType... stuffItemTypes) {
+        this.stuffItemTypes = ImmutableSet.copyOf(stuffItemTypes);
+    }
 
-	@Override
-	public Set<ItemType> getDealStuffTypes() {
-		return stuffItemTypes;
-	}
+    @Override
+    public Set<ItemType> getDealStuffTypes() {
+        return stuffItemTypes;
+    }
 
 }

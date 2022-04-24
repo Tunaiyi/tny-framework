@@ -40,29 +40,33 @@ public class CacheSynchronizer<T> implements Synchronizer<T> {
 
     @Override
     public boolean insert(T object) {
-        if (!this.toDB)
+        if (!this.toDB) {
             return true;
+        }
         return this.cache.addObject(object);
     }
 
     @Override
     public boolean update(T object) {
-        if (!this.toDB)
+        if (!this.toDB) {
             return true;
+        }
         return this.cache.updateObject(object);
     }
 
     @Override
     public boolean delete(T object) {
-        if (!this.toDB)
+        if (!this.toDB) {
             return true;
+        }
         return this.cache.deleteObject(object);
     }
 
     @Override
     public boolean save(T object) {
-        if (!this.toDB)
+        if (!this.toDB) {
             return true;
+        }
         return this.cache.setObject(object);
     }
 
@@ -72,29 +76,33 @@ public class CacheSynchronizer<T> implements Synchronizer<T> {
 
     @Override
     public Collection<T> insert(Collection<T> objects) {
-        if (!this.toDB)
+        if (!this.toDB) {
             return Collections.emptyList();
+        }
         return this.cache.addObject(objects);
     }
 
     @Override
     public Collection<T> update(Collection<T> objects) {
-        if (!this.toDB)
+        if (!this.toDB) {
             return Collections.emptyList();
+        }
         return this.cache.updateObject(objects);
     }
 
     @Override
     public Collection<T> delete(Collection<T> objects) {
-        if (!this.toDB)
+        if (!this.toDB) {
             return Collections.emptyList();
+        }
         return this.cache.deleteObject(objects);
     }
 
     @Override
     public Collection<T> save(Collection<T> objects) {
-        if (!this.toDB)
+        if (!this.toDB) {
             return Collections.emptyList();
+        }
         return this.cache.setObject(objects);
     }
 

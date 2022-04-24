@@ -15,8 +15,8 @@ public interface ProxyVisitorCapacitySupplier extends CapacitySupplier {
     @Override
     default boolean isHasValue(Capacity capacity) {
         return isSupplying() && visitor().findSupplier(this.getId())
-                                         .map(s -> s.isHasValue(capacity))
-                                         .orElse(false);
+                .map(s -> s.isHasValue(capacity))
+                .orElse(false);
     }
 
     @Override
@@ -26,32 +26,35 @@ public interface ProxyVisitorCapacitySupplier extends CapacitySupplier {
 
     @Override
     default Number getValue(Capacity capacity, Number defaultNum) {
-        if (!isSupplying())
+        if (!isSupplying()) {
             return null;
+        }
         return visitor().findSupplier(this.getId())
-                        .map(s -> s.getValue(capacity))
-                        .orElse(defaultNum);
+                .map(s -> s.getValue(capacity))
+                .orElse(defaultNum);
     }
 
     @Override
     default Map<Capacity, Number> getAllValues() {
-        if (!isSupplying())
+        if (!isSupplying()) {
             return ImmutableMap.of();
+        }
         return visitor().findSupplier(this.getId())
-                        .map(CapacitySupplier::getAllValues)
-                        .orElse(ImmutableMap.of());
+                .map(CapacitySupplier::getAllValues)
+                .orElse(ImmutableMap.of());
     }
 
     @Override
     default void collectValues(CapacityCollector collector, Collection<? extends Capacity> capacities) {
         visitor().findSupplier(this.getId())
-                 .ifPresent(s -> s.collectValues(collector, capacities));
+                .ifPresent(s -> s.collectValues(collector, capacities));
     }
 
     @Override
     default Set<CapacityGroup> getAllCapacityGroups() {
         return visitor().findSupplier(this.getId())
-                        .map(CapacitySupply::getAllCapacityGroups)
-                        .orElse(ImmutableSet.of());
+                .map(CapacitySupply::getAllCapacityGroups)
+                .orElse(ImmutableSet.of());
     }
+
 }

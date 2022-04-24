@@ -11,37 +11,37 @@ import com.tny.game.net.transport.*;
  */
 public class CommonSession<UID> extends BaseNetEndpoint<UID> implements NetSession<UID> {
 
-	public CommonSession(SessionSetting setting, Certificate<UID> certificate, EndpointContext endpointContext) {
-		super(setting, certificate, endpointContext);
-	}
+    public CommonSession(SessionSetting setting, Certificate<UID> certificate, EndpointContext endpointContext) {
+        super(setting, certificate, endpointContext);
+    }
 
-	@Override
-	public void onUnactivated(NetTunnel<UID> tunnel) {
-		if (isOffline()) {
-			return;
-		}
-		synchronized (this) {
-			if (isOffline()) {
-				return;
-			}
-			Tunnel<UID> currentTunnel = this.currentTunnel();
-			if (currentTunnel.isActive()) {
-				return;
-			}
-			if (isClosed()) {
-				return;
-			}
-			setOffline();
-		}
-	}
+    @Override
+    public void onUnactivated(NetTunnel<UID> tunnel) {
+        if (isOffline()) {
+            return;
+        }
+        synchronized (this) {
+            if (isOffline()) {
+                return;
+            }
+            Tunnel<UID> currentTunnel = this.currentTunnel();
+            if (currentTunnel.isActive()) {
+                return;
+            }
+            if (isClosed()) {
+                return;
+            }
+            setOffline();
+        }
+    }
 
-	@Override
-	public String toString() {
-		return MoreObjects.toStringHelper(this)
-				.add("userGroup", this.getUserType())
-				.add("userId", this.getUserId())
-				.add("tunnel", this.currentTunnel())
-				.toString();
-	}
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("userGroup", this.getUserType())
+                .add("userId", this.getUserId())
+                .add("tunnel", this.currentTunnel())
+                .toString();
+    }
 
 }

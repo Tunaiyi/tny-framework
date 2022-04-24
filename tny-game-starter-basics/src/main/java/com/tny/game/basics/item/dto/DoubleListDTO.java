@@ -10,35 +10,35 @@ import java.util.*;
 @DTODoc("通用Double List DTO")
 public class DoubleListDTO {
 
-	@VarDoc("值列表")
-	@ProtoExField(1)
-	protected List<Double> values = new ArrayList<>();
+    @VarDoc("值列表")
+    @ProtoExField(1)
+    protected List<Double> values = new ArrayList<>();
 
-	public DoubleListDTO() {
-	}
+    public DoubleListDTO() {
+    }
 
-	public static DoubleListDTO values2DTO(List<Double> values) {
-		DoubleListDTO dto = new DoubleListDTO();
-		dto.values.addAll(values);
-		return dto;
-	}
+    public static DoubleListDTO values2DTO(List<Double> values) {
+        DoubleListDTO dto = new DoubleListDTO();
+        dto.values.addAll(values);
+        return dto;
+    }
 
-	public static DoubleListDTO values2DTO(Double... values) {
-		DoubleListDTO dto = new DoubleListDTO();
-		dto.values.addAll(Arrays.asList(values));
-		return dto;
-	}
+    public static DoubleListDTO values2DTO(Double... values) {
+        DoubleListDTO dto = new DoubleListDTO();
+        dto.values.addAll(Arrays.asList(values));
+        return dto;
+    }
 
-	public List<Double> getValues() {
-		return values;
-	}
+    public List<Double> getValues() {
+        return values;
+    }
 
-	@Override
-	public String toString() {
-		String text = "";
-		for (Object value : values)
-			text += value;
-		return text;
-	}
+    @Override
+    public String toString() {
+        String text = "";
+        for (Object value : values)
+            text += value;
+        return text;
+    }
 
 }

@@ -5,7 +5,9 @@ import java.util.concurrent.atomic.AtomicReference;
 public class CLHLock {
 
     private AtomicReference<QNode> tail;
+
     private ThreadLocal<QNode> myPred;
+
     private ThreadLocal<QNode> myNode;
 
     public CLHLock() {
@@ -30,7 +32,9 @@ public class CLHLock {
     }
 
     static class QNode {
+
         volatile boolean locked = false;
+
     }
 
     static int value = 0;

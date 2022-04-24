@@ -10,19 +10,19 @@ import com.tny.game.common.exception.*;
  */
 public class LinkBufferException extends CommonRuntimeException {
 
-	public LinkBufferException() {
-	}
+    public LinkBufferException() {
+    }
 
-	public LinkBufferException(String message, Object... messageParams) {
-		super(message, messageParams);
-	}
+    public LinkBufferException(String message, Object... messageParams) {
+        super(message, messageParams);
+    }
 
-	public LinkBufferException(Throwable cause) {
-		super(cause);
-	}
+    public LinkBufferException(Throwable cause) {
+        super(cause);
+    }
 
-	public LinkBufferException(Throwable cause, String message, Object... messageParams) {
-		super(cause, message, messageParams);
-	}
+    public LinkBufferException(Throwable cause, String message, Object... messageParams) {
+        super(cause, message, messageParams);
+    }
 
 }

@@ -11,15 +11,15 @@ import java.io.IOException;
  */
 public class ResultCodeJsonSerializer extends JsonSerializer<ResultCode> {
 
-	private static final ResultCodeJsonSerializer INSTANT = new ResultCodeJsonSerializer();
+    private static final ResultCodeJsonSerializer INSTANT = new ResultCodeJsonSerializer();
 
-	public static ResultCodeJsonSerializer getDefault() {
-		return INSTANT;
-	}
+    public static ResultCodeJsonSerializer getDefault() {
+        return INSTANT;
+    }
 
-	@Override
-	public void serialize(ResultCode value, JsonGenerator gen, SerializerProvider serializers) throws IOException, JsonProcessingException {
-		gen.writeNumber(value.getCode());
-	}
+    @Override
+    public void serialize(ResultCode value, JsonGenerator gen, SerializerProvider serializers) throws IOException, JsonProcessingException {
+        gen.writeNumber(value.getCode());
+    }
 
 }

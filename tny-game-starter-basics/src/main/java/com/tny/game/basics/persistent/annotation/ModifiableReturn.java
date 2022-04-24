@@ -8,8 +8,8 @@ import java.lang.annotation.*;
 @Documented
 public @interface ModifiableReturn {
 
-	boolean immediately() default false;
+    boolean immediately() default false;
 
-	Modify modify() default Modify.SAVE;
+    Modify modify() default Modify.SAVE;
 
 }

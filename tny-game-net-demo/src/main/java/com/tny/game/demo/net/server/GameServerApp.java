@@ -13,25 +13,25 @@ import org.springframework.context.ApplicationContext;
  */
 @EnableNetApplication
 @SpringBootApplication(
-		scanBasePackages = {
-				"com.tny.game.demo.net.server",
-				"com.tny.game.demo.core.common",
-				"com.tny.game.demo.core.server",
-		})
+        scanBasePackages = {
+                "com.tny.game.demo.net.server",
+                "com.tny.game.demo.core.common",
+                "com.tny.game.demo.core.server",
+        })
 public class GameServerApp {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(GameServerApp.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GameServerApp.class);
 
-	public static void main(String[] args) {
-		try {
-			ApplicationLauncherContext.register(GameServerApp.class);
-			ApplicationContext context = SpringApplication.run(GameServerApp.class, args);
-			NetApplication application = context.getBean(NetApplication.class);
-			application.waitForConsole("q");
-		} catch (Throwable e) {
-			LOGGER.error("{} start exception", GameServerApp.class.getSimpleName(), e);
-			System.exit(1);
-		}
-	}
+    public static void main(String[] args) {
+        try {
+            ApplicationLauncherContext.register(GameServerApp.class);
+            ApplicationContext context = SpringApplication.run(GameServerApp.class, args);
+            NetApplication application = context.getBean(NetApplication.class);
+            application.waitForConsole("q");
+        } catch (Throwable e) {
+            LOGGER.error("{} start exception", GameServerApp.class.getSimpleName(), e);
+            System.exit(1);
+        }
+    }
 
 }

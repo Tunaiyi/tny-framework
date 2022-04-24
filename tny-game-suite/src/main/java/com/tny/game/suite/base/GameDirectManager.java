@@ -34,17 +34,17 @@ public abstract class GameDirectManager<O> extends GameManager<O> {
     @SuppressWarnings("unchecked")
     protected Collection<O> gets(long playerId, Collection<?> ids) {
         List<String> keys = ids.stream().map(id -> this.cache.getKey(this.entityClass, playerId, id)).collect(Collectors.toList());
-        return onLoad((Collection<O>) this.cache.getObjectsByKeys(this.entityClass, keys));
+        return onLoad((Collection<O>)this.cache.getObjectsByKeys(this.entityClass, keys));
     }
 
     @SuppressWarnings("unchecked")
     protected Collection<O> getByKeys(String... keys) {
-        return onLoad((Collection<O>) this.cache.getObjectsByKeys(this.entityClass, Arrays.asList(keys)));
+        return onLoad((Collection<O>)this.cache.getObjectsByKeys(this.entityClass, Arrays.asList(keys)));
     }
 
     @SuppressWarnings("unchecked")
     protected Collection<O> getByKeys(Collection<String> keys) {
-        return onLoad((Collection<O>) this.cache.getObjectsByKeys(this.entityClass, keys));
+        return onLoad((Collection<O>)this.cache.getObjectsByKeys(this.entityClass, keys));
     }
 
     @SuppressWarnings("unchecked")
@@ -68,8 +68,9 @@ public abstract class GameDirectManager<O> extends GameManager<O> {
     }
 
     private O onLoad(O o) {
-        if (o == null || this.onLoad == null)
+        if (o == null || this.onLoad == null) {
             return o;
+        }
         try {
             this.onLoad.accept(o);
         } catch (Throwable e) {
@@ -79,8 +80,9 @@ public abstract class GameDirectManager<O> extends GameManager<O> {
     }
 
     private Collection<O> onLoad(Collection<O> os) {
-        if (os == null || os.isEmpty() || this.onLoad == null)
+        if (os == null || os.isEmpty() || this.onLoad == null) {
             return os;
+        }
         for (O o : os) {
             try {
                 this.onLoad.accept(o);

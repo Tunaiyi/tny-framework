@@ -8,6 +8,7 @@ import java.util.*;
 public class AnnotationClassFilter implements ClassFilter {
 
     private Set<Class<? extends Annotation>> includes = new HashSet<>();
+
     private Set<Class<? extends Annotation>> excludes = new HashSet<>();
 
     public static ClassFilter ofInclude(Collection<Class<? extends Annotation>> includes) {

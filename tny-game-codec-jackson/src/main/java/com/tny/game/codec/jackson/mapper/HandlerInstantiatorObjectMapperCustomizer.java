@@ -18,55 +18,55 @@ import java.util.stream.Collectors;
  */
 public class HandlerInstantiatorObjectMapperCustomizer implements ObjectMapperCustomizer {
 
-	private final Map<Class<?>, JsonSerializer<?>> serializers;
+    private final Map<Class<?>, JsonSerializer<?>> serializers;
 
-	private final Map<Class<?>, JsonDeserializer<?>> deserializers;
+    private final Map<Class<?>, JsonDeserializer<?>> deserializers;
 
-	private final Map<Class<?>, KeyDeserializer> keyDeserializers;
+    private final Map<Class<?>, KeyDeserializer> keyDeserializers;
 
-	public HandlerInstantiatorObjectMapperCustomizer(
-			List<JsonSerializer<?>> serializers,
-			List<JsonDeserializer<?>> deserializers,
-			List<KeyDeserializer> keyDeserializers) {
-		this.serializers = ImmutableMap.copyOf(serializers.stream().collect(Collectors.toMap(
-				JsonSerializer::getClass, ObjectAide::self)));
-		this.deserializers = ImmutableMap.copyOf(deserializers.stream().collect(Collectors.toMap(
-				JsonDeserializer::getClass, ObjectAide::self)));
-		this.keyDeserializers = ImmutableMap.copyOf(keyDeserializers.stream().collect(Collectors.toMap(
-				KeyDeserializer::getClass, ObjectAide::self)));
-	}
+    public HandlerInstantiatorObjectMapperCustomizer(
+            List<JsonSerializer<?>> serializers,
+            List<JsonDeserializer<?>> deserializers,
+            List<KeyDeserializer> keyDeserializers) {
+        this.serializers = ImmutableMap.copyOf(serializers.stream().collect(Collectors.toMap(
+                JsonSerializer::getClass, ObjectAide::self)));
+        this.deserializers = ImmutableMap.copyOf(deserializers.stream().collect(Collectors.toMap(
+                JsonDeserializer::getClass, ObjectAide::self)));
+        this.keyDeserializers = ImmutableMap.copyOf(keyDeserializers.stream().collect(Collectors.toMap(
+                KeyDeserializer::getClass, ObjectAide::self)));
+    }
 
-	private final HandlerInstantiator instantiator = new HandlerInstantiator() {
+    private final HandlerInstantiator instantiator = new HandlerInstantiator() {
 
-		@Override
-		public JsonDeserializer<?> deserializerInstance(DeserializationConfig config, Annotated annotated, Class<?> deserClass) {
-			return deserializers.get(deserClass);
-		}
+        @Override
+        public JsonDeserializer<?> deserializerInstance(DeserializationConfig config, Annotated annotated, Class<?> deserClass) {
+            return deserializers.get(deserClass);
+        }
 
-		@Override
-		public KeyDeserializer keyDeserializerInstance(DeserializationConfig config, Annotated annotated, Class<?> keyDeserClass) {
-			return keyDeserializers.get(keyDeserClass);
-		}
+        @Override
+        public KeyDeserializer keyDeserializerInstance(DeserializationConfig config, Annotated annotated, Class<?> keyDeserClass) {
+            return keyDeserializers.get(keyDeserClass);
+        }
 
-		@Override
-		public JsonSerializer<?> serializerInstance(SerializationConfig config, Annotated annotated, Class<?> serClass) {
-			return serializers.get(serClass);
-		}
+        @Override
+        public JsonSerializer<?> serializerInstance(SerializationConfig config, Annotated annotated, Class<?> serClass) {
+            return serializers.get(serClass);
+        }
 
-		@Override
-		public TypeResolverBuilder<?> typeResolverBuilderInstance(MapperConfig<?> config, Annotated annotated, Class<?> builderClass) {
-			return null;
-		}
+        @Override
+        public TypeResolverBuilder<?> typeResolverBuilderInstance(MapperConfig<?> config, Annotated annotated, Class<?> builderClass) {
+            return null;
+        }
 
-		@Override
-		public TypeIdResolver typeIdResolverInstance(MapperConfig<?> config, Annotated annotated, Class<?> resolverClass) {
-			return null;
-		}
-	};
+        @Override
+        public TypeIdResolver typeIdResolverInstance(MapperConfig<?> config, Annotated annotated, Class<?> resolverClass) {
+            return null;
+        }
+    };
 
-	@Override
-	public void customize(ObjectMapper mapper) {
-		mapper.setHandlerInstantiator(instantiator);
-	}
+    @Override
+    public void customize(ObjectMapper mapper) {
+        mapper.setHandlerInstantiator(instantiator);
+    }
 
 }

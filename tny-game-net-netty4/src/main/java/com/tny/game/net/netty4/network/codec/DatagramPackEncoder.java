@@ -8,6 +8,6 @@ import io.netty.channel.ChannelHandlerContext;
 @UnitInterface
 public interface DatagramPackEncoder {
 
-	void encodeObject(ChannelHandlerContext ctx, Message message, ByteBuf out) throws Exception;
+    void encodeObject(ChannelHandlerContext ctx, Message message, ByteBuf out) throws Exception;
 
 }

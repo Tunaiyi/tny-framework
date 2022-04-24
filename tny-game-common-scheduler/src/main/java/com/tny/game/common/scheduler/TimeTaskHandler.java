@@ -10,33 +10,33 @@ package com.tny.game.common.scheduler;
  */
 public interface TimeTaskHandler {
 
-	/**
-	 * 任务处理器名称 <br>
-	 *
-	 * @return 名称
-	 * @uml.property name="handlerName"
-	 */
-	String getName();
+    /**
+     * 任务处理器名称 <br>
+     *
+     * @return 名称
+     * @uml.property name="handlerName"
+     */
+    String getName();
 
-	/**
-	 * 处理方式
-	 *
-	 * @return
-	 */
-	HandleType getHandleType();
+    /**
+     * 处理方式
+     *
+     * @return
+     */
+    HandleType getHandleType();
 
-	/**
-	 * 处理 <br>
-	 *
-	 * @param receiver 任务接收器
-	 */
-	void handle(TaskReceiver receiver, long executeTime, TriggerContext context);
+    /**
+     * 处理 <br>
+     *
+     * @param receiver 任务接收器
+     */
+    void handle(TaskReceiver receiver, long executeTime, TriggerContext context);
 
-	/**
-	 * 任务处理器处理组 <br>
-	 *
-	 * @return 可处理的用户组
-	 */
-	boolean isHandleWith(TaskReceiverType group);
+    /**
+     * 任务处理器处理组 <br>
+     *
+     * @return 可处理的用户组
+     */
+    boolean isHandleWith(TaskReceiverType group);
 
 }

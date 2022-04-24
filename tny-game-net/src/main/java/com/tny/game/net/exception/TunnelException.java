@@ -25,5 +25,4 @@ public class TunnelException extends NetException {
         super(StringAide.format(message, params));
     }
 
-
 }

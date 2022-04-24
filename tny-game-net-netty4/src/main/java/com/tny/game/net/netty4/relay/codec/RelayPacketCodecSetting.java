@@ -7,51 +7,51 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class RelayPacketCodecSetting {
 
-	// 消息体编码器
-	private String messageBodyCodec;
+    // 消息体编码器
+    private String messageBodyCodec;
 
-	// 错误时候是否关闭
-	private boolean closeOnError = false;
+    // 错误时候是否关闭
+    private boolean closeOnError = false;
 
-	// 消息转发策略
-	private String messageRelayStrategy = null;
+    // 消息转发策略
+    private String messageRelayStrategy = null;
 
-	public RelayPacketCodecSetting() {
-	}
+    public RelayPacketCodecSetting() {
+    }
 
-	public RelayPacketCodecSetting(boolean closeOnError) {
-		this.closeOnError = closeOnError;
-	}
+    public RelayPacketCodecSetting(boolean closeOnError) {
+        this.closeOnError = closeOnError;
+    }
 
-	public boolean isHasRelayStrategy() {
-		return StringUtils.isNoneBlank(messageRelayStrategy);
-	}
+    public boolean isHasRelayStrategy() {
+        return StringUtils.isNoneBlank(messageRelayStrategy);
+    }
 
-	public String getMessageRelayStrategy() {
-		return messageRelayStrategy;
-	}
+    public String getMessageRelayStrategy() {
+        return messageRelayStrategy;
+    }
 
-	public RelayPacketCodecSetting setMessageRelayStrategy(String messageRelayStrategy) {
-		this.messageRelayStrategy = messageRelayStrategy;
-		return this;
-	}
+    public RelayPacketCodecSetting setMessageRelayStrategy(String messageRelayStrategy) {
+        this.messageRelayStrategy = messageRelayStrategy;
+        return this;
+    }
 
-	public String getMessageBodyCodec() {
-		return messageBodyCodec;
-	}
+    public String getMessageBodyCodec() {
+        return messageBodyCodec;
+    }
 
-	public RelayPacketCodecSetting setMessageBodyCodec(String messageBodyCodec) {
-		this.messageBodyCodec = messageBodyCodec;
-		return this;
-	}
+    public RelayPacketCodecSetting setMessageBodyCodec(String messageBodyCodec) {
+        this.messageBodyCodec = messageBodyCodec;
+        return this;
+    }
 
-	public boolean isCloseOnError() {
-		return closeOnError;
-	}
+    public boolean isCloseOnError() {
+        return closeOnError;
+    }
 
-	public RelayPacketCodecSetting setCloseOnError(boolean closeOnError) {
-		this.closeOnError = closeOnError;
-		return this;
-	}
+    public RelayPacketCodecSetting setCloseOnError(boolean closeOnError) {
+        this.closeOnError = closeOnError;
+        return this;
+    }
 
 }

@@ -6,15 +6,15 @@ package com.tny.game.basics.upgrade;
  */
 public interface ExpUpgradableItemModel extends UpgradableItemModel {
 
-	/**
-	 * @return 获取升级经验类型
-	 */
-	ExpType getLevelExpType();
+    /**
+     * @return 获取升级经验类型
+     */
+    ExpType getLevelExpType();
 
-	/**
-	 * @param item 相关Item
-	 * @return 获取Item的最大升级经验
-	 */
-	long getMaxLevelExp(ExpUpgradableItem<? extends ExpUpgradableItemModel> item, Object... attributes);
+    /**
+     * @param item 相关Item
+     * @return 获取Item的最大升级经验
+     */
+    long getMaxLevelExp(ExpUpgradableItem<? extends ExpUpgradableItemModel> item, Object... attributes);
 
 }

@@ -25,5 +25,4 @@ public class DataException extends RuntimeException {
         super(StringAide.format(message, params));
     }
 
-
 }

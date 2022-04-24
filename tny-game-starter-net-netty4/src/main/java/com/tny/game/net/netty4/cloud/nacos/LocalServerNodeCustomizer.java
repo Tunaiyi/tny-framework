@@ -10,6 +10,6 @@ import com.tny.game.net.relay.cluster.*;
  */
 public interface LocalServerNodeCustomizer {
 
-	void customize(LocalServeNode node);
+    void customize(LocalServeNode node);
 
 }

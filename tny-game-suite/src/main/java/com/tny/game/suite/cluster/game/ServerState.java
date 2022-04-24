@@ -26,8 +26,9 @@ public enum ServerState implements ProtoExEnum {
 
     public static ServerState get(int stateID) {
         for (ServerState state : values())
-            if (state.id == stateID)
+            if (state.id == stateID) {
                 return state;
+            }
         return null;
     }
 

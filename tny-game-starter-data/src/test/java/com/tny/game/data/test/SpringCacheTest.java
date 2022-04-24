@@ -12,9 +12,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest(classes = GameTestApp.class)
 class SpringCacheTest {
 
-	@Test
-	private void testCache() {
-		System.out.println("test");
-	}
+    @Test
+    private void testCache() {
+        System.out.println("test");
+    }
 
 }

@@ -12,6 +12,6 @@ import java.util.List;
  */
 public interface RpcRouter<T> {
 
-	Endpoint<?> route(List<RpcRemoteNode> nodes, RpcMethod invoker, T routeValue, Object... params);
+    Endpoint<?> route(List<RpcRemoteNode> nodes, RpcMethod invoker, T routeValue, Object... params);
 
 }

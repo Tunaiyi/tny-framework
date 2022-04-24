@@ -34,14 +34,16 @@ public interface DocTagFilters {
         Set<String> names = annotationMetadata.getAnnotationTypes();
         if (names.contains(DocTag.class.getName())) {
             Map<String, Object> group = annotationMetadata.getAnnotationAttributes(DocTag.class.getName());
-            String[] annoGroups = (String[]) group.get("value");
+            String[] annoGroups = (String[])group.get("value");
             for (String g : annoGroups) {
-                if (groups.contains(g))
+                if (groups.contains(g)) {
                     return true;
+                }
             }
         } else {
-            if (includeNoTag)
+            if (includeNoTag) {
                 return true;
+            }
         }
         return false;
     }

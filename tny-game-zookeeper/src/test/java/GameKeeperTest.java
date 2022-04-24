@@ -18,7 +18,8 @@ public class GameKeeperTest {
         //
         //			@Override
         //			public boolean handle(WatchedEvent event) {
-        //				System.out.println("monitorExists watch '/gkeeper' : - " + event.getPath() + " - " + event.getType() + " - " + event.getState());
+        //				System.out.println("monitorExists watch '/gkeeper' : - " + event.getPath() + " - " + event.getType() + " - " + event
+        //				.getState());
         //				return true;
         //			}
         //
@@ -35,7 +36,8 @@ public class GameKeeperTest {
         //
         //			@Override
         //			public boolean handle(WatchedEvent event) {
-        //				System.out.println("monitorChildren watch '/gkeeper2' : - " + event.getPath() + " - " + event.getType() + " - " + event.getState());
+        //				System.out.println("monitorChildren watch '/gkeeper2' : - " + event.getPath() + " - " + event.getType() + " - " + event
+        //				.getState());
         //				return true;
         //			}
         //
@@ -88,14 +90,16 @@ public class GameKeeperTest {
         //
         //			@Override
         //			public void process(WatchedEvent event) {
-        //				System.out.println("getChildren watch '/gkeeper2' : - " + event.getPath() + " - " + event.getType() + " - " + event.getState());
+        //				System.out.println("getChildren watch '/gkeeper2' : - " + event.getPath() + " - " + event.getType() + " - " + event.getState
+        //				());
         //			}
         //
         //		}, new Children2Callback() {
         //
         //			@Override
         //			public void processResult(int rc, String path, Object ctx, List<String> children, Stat stat) {
-        //				System.out.println(KeeperException.Code.get(rc) + "  Children2Callback callback '/gkeeper2' stat: " + stat + "  children : " + children);
+        //				System.out.println(KeeperException.Code.get(rc) + "  Children2Callback callback '/gkeeper2' stat: " + stat + "  children : "
+        //				+ children);
         //			}
         //		}, null);
 
@@ -166,4 +170,5 @@ public class GameKeeperTest {
             }
         }
     }
+
 }

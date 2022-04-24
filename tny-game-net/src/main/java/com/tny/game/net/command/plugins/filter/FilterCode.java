@@ -16,11 +16,13 @@ public final class FilterCode {
     public static ResultCode code(ResultCode defaultCode, int... illegalCodes) {
         ResultCode code = null;
         for (int illegalCode : illegalCodes) {
-            if (illegalCode <= 0)
+            if (illegalCode <= 0) {
                 continue;
+            }
             code = ResultCodes.of(illegalCode);
-            if (code != null)
+            if (code != null) {
                 return code;
+            }
         }
         return defaultCode;
     }

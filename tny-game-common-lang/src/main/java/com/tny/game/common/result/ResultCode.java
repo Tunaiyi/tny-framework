@@ -4,98 +4,98 @@ import com.tny.game.common.utils.*;
 
 public interface ResultCode {
 
-	int SUCCESS_CODE = 100;
-	int FAILURE_CODE = 101;
+    int SUCCESS_CODE = 100;
+    int FAILURE_CODE = 101;
 
-	ResultCode SUCCESS = new ResultCode() {
+    ResultCode SUCCESS = new ResultCode() {
 
-		{
-			this.registerSelf();
-		}
+        {
+            this.registerSelf();
+        }
 
-		@Override
-		public int getCode() {
-			return ResultCode.SUCCESS_CODE;
-		}
+        @Override
+        public int getCode() {
+            return ResultCode.SUCCESS_CODE;
+        }
 
-		@Override
-		public boolean isSuccess() {
-			return true;
-		}
+        @Override
+        public boolean isSuccess() {
+            return true;
+        }
 
-		@Override
-		public String getMessage() {
-			return "SUCCESS";
-		}
+        @Override
+        public String getMessage() {
+            return "SUCCESS";
+        }
 
-		@Override
-		public ResultLevel getLevel() {
-			return ResultLevel.GENERAL;
-		}
+        @Override
+        public ResultLevel getLevel() {
+            return ResultLevel.GENERAL;
+        }
 
-		@Override
-		public String message(Object... messageParams) {
-			return this.getMessage();
-		}
+        @Override
+        public String message(Object... messageParams) {
+            return this.getMessage();
+        }
 
-	};
+    };
 
-	ResultCode FAILURE = new ResultCode() {
+    ResultCode FAILURE = new ResultCode() {
 
-		{
-			this.registerSelf();
-		}
+        {
+            this.registerSelf();
+        }
 
-		@Override
-		public int getCode() {
-			return ResultCode.FAILURE_CODE;
-		}
+        @Override
+        public int getCode() {
+            return ResultCode.FAILURE_CODE;
+        }
 
-		@Override
-		public boolean isSuccess() {
-			return false;
-		}
+        @Override
+        public boolean isSuccess() {
+            return false;
+        }
 
-		@Override
-		public String getMessage() {
-			return "FAILURE";
-		}
+        @Override
+        public String getMessage() {
+            return "FAILURE";
+        }
 
-		@Override
-		public ResultLevel getLevel() {
-			return ResultLevel.GENERAL;
-		}
+        @Override
+        public ResultLevel getLevel() {
+            return ResultLevel.GENERAL;
+        }
 
-		@Override
-		public String message(Object... messageParams) {
-			return this.getMessage();
-		}
+        @Override
+        public String message(Object... messageParams) {
+            return this.getMessage();
+        }
 
-	};
+    };
 
-	int getCode();
+    int getCode();
 
-	default boolean isSuccess() {
-		return ResultCodes.isSuccess(this);
-	}
+    default boolean isSuccess() {
+        return ResultCodes.isSuccess(this);
+    }
 
-	default boolean isFailure() {
-		return !ResultCodes.isSuccess(this);
-	}
+    default boolean isFailure() {
+        return !ResultCodes.isSuccess(this);
+    }
 
-	String getMessage();
+    String getMessage();
 
-	ResultLevel getLevel();
+    ResultLevel getLevel();
 
-	default void registerSelf() {
-		ResultCodes.registerCode(this);
-	}
+    default void registerSelf() {
+        ResultCodes.registerCode(this);
+    }
 
-	default String message(Object... messageParams) {
+    default String message(Object... messageParams) {
         if (messageParams == null || messageParams.length == 0) {
             return getMessage();
         }
-		return StringAide.format(getMessage(), messageParams);
-	}
+        return StringAide.format(getMessage(), messageParams);
+    }
 
 }

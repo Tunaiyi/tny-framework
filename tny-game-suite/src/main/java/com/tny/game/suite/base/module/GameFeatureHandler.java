@@ -21,5 +21,4 @@ public abstract class GameFeatureHandler<F extends Feature> implements FeatureHa
         return "FeatureHandler [feature=" + this.feature + "]";
     }
 
-
 }

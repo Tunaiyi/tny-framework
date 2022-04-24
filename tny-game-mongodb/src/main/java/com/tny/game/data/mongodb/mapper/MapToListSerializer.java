@@ -14,12 +14,12 @@ import java.io.IOException;
  */
 public class MapToListSerializer extends JsonSerializer<Decimal128> {
 
-	@Override
-	public void serialize(Decimal128 value, JsonGenerator gen, SerializerProvider provider) throws IOException {
-		ObjectCodec codec = gen.getCodec();
-		gen.setCodec(null);
-		gen.writeObject(value);
-		gen.setCodec(codec);
-	}
+    @Override
+    public void serialize(Decimal128 value, JsonGenerator gen, SerializerProvider provider) throws IOException {
+        ObjectCodec codec = gen.getCodec();
+        gen.setCodec(null);
+        gen.writeObject(value);
+        gen.setCodec(codec);
+    }
 
 }

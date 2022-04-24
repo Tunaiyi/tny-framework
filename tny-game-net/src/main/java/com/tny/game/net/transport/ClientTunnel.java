@@ -11,49 +11,49 @@ import static com.tny.game.common.utils.ObjectAide.*;
  */
 public class ClientTunnel<UID, E extends NetTerminal<UID>, T extends MessageTransporter> extends BaseNetTunnel<UID, E, T> {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ClientTunnel.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClientTunnel.class);
 
-	public ClientTunnel(long id, NetworkContext context) {
-		super(id, null, TunnelMode.CLIENT, context);
-	}
+    public ClientTunnel(long id, NetworkContext context) {
+        super(id, null, TunnelMode.CLIENT, context);
+    }
 
-	@Override
-	protected boolean onOpen() {
-		if (!this.isActive()) {
-			try {
-				this.status = TunnelStatus.INIT;
-				T transport = as(this.endpoint.connect());
-				if (transport != null) {
-					this.transporter = transport;
-					this.transporter.bind(this);
-					this.status = TunnelStatus.OPEN;
-					this.endpoint.onConnected(this);
-					return true;
-				}
-			} catch (Exception e) {
-				this.disconnect();
-				//				throw new TunnelException(e, "{} failed to connect to server", this);
-				LOGGER.warn("{} open failed case : {}", this, e.getMessage(), e);
-				return false;
-			}
-		}
-		LOGGER.warn("{} is available", this);
-		return true;
-	}
+    @Override
+    protected boolean onOpen() {
+        if (!this.isActive()) {
+            try {
+                this.status = TunnelStatus.INIT;
+                T transport = as(this.endpoint.connect());
+                if (transport != null) {
+                    this.transporter = transport;
+                    this.transporter.bind(this);
+                    this.status = TunnelStatus.OPEN;
+                    this.endpoint.onConnected(this);
+                    return true;
+                }
+            } catch (Exception e) {
+                this.disconnect();
+                //				throw new TunnelException(e, "{} failed to connect to server", this);
+                LOGGER.warn("{} open failed case : {}", this, e.getMessage(), e);
+                return false;
+            }
+        }
+        LOGGER.warn("{} is available", this);
+        return true;
+    }
 
-	@Override
-	protected void onWriteUnavailable() {
-		this.endpoint.reconnect();
-	}
+    @Override
+    protected void onWriteUnavailable() {
+        this.endpoint.reconnect();
+    }
 
-	@Override
-	public String toString() {
-		return "NettyClientTunnel{" + "channel=" + this.transporter + '}';
-	}
+    @Override
+    public String toString() {
+        return "NettyClientTunnel{" + "channel=" + this.transporter + '}';
+    }
 
-	@Override
-	protected boolean replaceEndpoint(NetEndpoint<UID> endpoint) {
-		return this.endpoint == endpoint;
-	}
+    @Override
+    protected boolean replaceEndpoint(NetEndpoint<UID> endpoint) {
+        return this.endpoint == endpoint;
+    }
 
 }

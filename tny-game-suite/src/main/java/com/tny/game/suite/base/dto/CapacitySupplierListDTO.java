@@ -77,5 +77,4 @@ public class CapacitySupplierListDTO {
         return this;
     }
 
-
 }

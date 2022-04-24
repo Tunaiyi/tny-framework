@@ -10,49 +10,49 @@ import java.util.Collection;
  */
 public abstract class CompositionCapablerItem<IM extends ItemModel> extends BaseCapablerItem<IM> implements CompositionCapabler {
 
-	private final transient CapacitySupplierComposition composition;
+    private final transient CapacitySupplierComposition composition;
 
-	protected CompositionCapablerItem() {
-		this(new DefaultCapacitySupplierComposition());
-	}
+    protected CompositionCapablerItem() {
+        this(new DefaultCapacitySupplierComposition());
+    }
 
-	protected CompositionCapablerItem(CapacitySupplierComposition composition) {
-		this.composition = composition;
-	}
+    protected CompositionCapablerItem(CapacitySupplierComposition composition) {
+        this.composition = composition;
+    }
 
-	protected CompositionCapablerItem(long playerId, IM model, CapacitySupplierComposition composition) {
-		super(playerId, model);
-		this.composition = composition;
-	}
+    protected CompositionCapablerItem(long playerId, IM model, CapacitySupplierComposition composition) {
+        super(playerId, model);
+        this.composition = composition;
+    }
 
-	@Override
-	public CapableComposition composition() {
-		return composition;
-	}
+    @Override
+    public CapableComposition composition() {
+        return composition;
+    }
 
-	@Override
-	protected void accept(CapacitySupplier supplier) {
-		this.composition.accept(supplier);
-	}
+    @Override
+    protected void accept(CapacitySupplier supplier) {
+        this.composition.accept(supplier);
+    }
 
-	@Override
-	protected void accept(Collection<? extends CapacitySupplier> suppliers) {
-		this.composition.accept(suppliers);
-	}
+    @Override
+    protected void accept(Collection<? extends CapacitySupplier> suppliers) {
+        this.composition.accept(suppliers);
+    }
 
-	@Override
-	protected void remove(CapacitySupplier supplier) {
-		this.composition.remove(supplier);
-	}
+    @Override
+    protected void remove(CapacitySupplier supplier) {
+        this.composition.remove(supplier);
+    }
 
-	@Override
-	protected void remove(Collection<CapacitySupplier> suppliers) {
-		this.composition.remove(suppliers);
-	}
+    @Override
+    protected void remove(Collection<CapacitySupplier> suppliers) {
+        this.composition.remove(suppliers);
+    }
 
-	@Override
-	protected void clear() {
-		this.composition.clear();
-	}
+    @Override
+    protected void clear() {
+        this.composition.clear();
+    }
 
 }

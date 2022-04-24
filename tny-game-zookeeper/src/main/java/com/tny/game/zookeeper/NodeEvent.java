@@ -19,4 +19,5 @@ public class NodeEvent<T> {
     public MonitoredNode<T> getNode() {
         return this.node;
     }
+
 }

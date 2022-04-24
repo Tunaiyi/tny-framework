@@ -8,6 +8,6 @@ package com.tny.game.data.cache;
  */
 public interface ObjectCacheFactory {
 
-	<K extends Comparable<?>, O> ObjectCache<K, O> createCache(EntityScheme cacheScheme, EntityKeyMaker<K, O> keyMaker);
+    <K extends Comparable<?>, O> ObjectCache<K, O> createCache(EntityScheme cacheScheme, EntityKeyMaker<K, O> keyMaker);
 
 }

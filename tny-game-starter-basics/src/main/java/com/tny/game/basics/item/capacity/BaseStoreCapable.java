@@ -6,32 +6,32 @@ package com.tny.game.basics.item.capacity;
  */
 public abstract class BaseStoreCapable implements ExpireCapable {
 
-	private long expireAt;
+    private long expireAt;
 
-	public BaseStoreCapable(long expireAt) {
-		this.expireAt = expireAt;
-	}
+    public BaseStoreCapable(long expireAt) {
+        this.expireAt = expireAt;
+    }
 
-	@Override
-	public long getExpireAt() {
-		return expireAt;
-	}
+    @Override
+    public long getExpireAt() {
+        return expireAt;
+    }
 
-	@Override
-	public boolean isExpire() {
-		return expireAt >= 0 && System.currentTimeMillis() > expireAt;
-	}
+    @Override
+    public boolean isExpire() {
+        return expireAt >= 0 && System.currentTimeMillis() > expireAt;
+    }
 
-	@Override
-	public long getRemainTime(long now) {
-		if (expireAt < 0) {
-			return -1;
-		}
-		return Math.min(expireAt - now, 0);
-	}
+    @Override
+    public long getRemainTime(long now) {
+        if (expireAt < 0) {
+            return -1;
+        }
+        return Math.min(expireAt - now, 0);
+    }
 
-	public void expireAt(long at) {
-		this.expireAt = at;
-	}
+    public void expireAt(long at) {
+        this.expireAt = at;
+    }
 
 }

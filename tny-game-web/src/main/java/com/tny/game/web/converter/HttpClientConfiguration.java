@@ -32,6 +32,7 @@ import java.util.concurrent.*;
 public class HttpClientConfiguration {
 
     private static final String HTTP_PROXY_HOST = "tny.common.http_client.proxy.host";
+
     private static final String HTTP_PROXY_PORT = "tny.common.http_client.proxy.port";
 
     private final ScheduledExecutorService idleConnectionMonitor = Executors.newSingleThreadScheduledExecutor(
@@ -59,6 +60,7 @@ public class HttpClientConfiguration {
         // set up a TrustManager that trusts everything
         sslContext.init(null, new TrustManager[]{
                 new X509TrustManager() {
+
                     @Override
                     public X509Certificate[] getAcceptedIssuers() {
                         return new X509Certificate[0];
@@ -150,6 +152,7 @@ public class HttpClientConfiguration {
 
         }, 5, TimeUnit.SECONDS);
         return new HttpComponentsClientHttpRequestFactory(httpClient) {
+
             @Override
             protected HttpUriRequest createHttpUriRequest(HttpMethod httpMethod, URI uri) {
                 if (HttpMethod.DELETE == httpMethod) {

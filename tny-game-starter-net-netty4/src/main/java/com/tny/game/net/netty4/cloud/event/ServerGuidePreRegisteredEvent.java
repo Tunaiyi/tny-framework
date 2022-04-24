@@ -12,22 +12,22 @@ import org.springframework.context.ApplicationEvent;
  */
 public class ServerGuidePreRegisteredEvent extends ApplicationEvent {
 
-	private final NetApplication application;
+    private final NetApplication application;
 
-	private final ServerGuide serverGuide;
+    private final ServerGuide serverGuide;
 
-	public ServerGuidePreRegisteredEvent(NetApplication application, ServerGuide serverGuide) {
-		super(application);
-		this.application = application;
-		this.serverGuide = serverGuide;
-	}
+    public ServerGuidePreRegisteredEvent(NetApplication application, ServerGuide serverGuide) {
+        super(application);
+        this.application = application;
+        this.serverGuide = serverGuide;
+    }
 
-	public NetApplication getApplication() {
-		return application;
-	}
+    public NetApplication getApplication() {
+        return application;
+    }
 
-	public ServerGuide getServerGuide() {
-		return serverGuide;
-	}
+    public ServerGuide getServerGuide() {
+        return serverGuide;
+    }
 
 }

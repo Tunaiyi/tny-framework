@@ -12,10 +12,10 @@ import io.netty.channel.ChannelHandlerContext;
  */
 public interface RelayPacketArgumentsCodecor<A extends RelayPacketArguments> {
 
-	Class<A> getArgumentsClass();
+    Class<A> getArgumentsClass();
 
-	void encode(ChannelHandlerContext ctx, A arguments, ByteBuf out) throws Exception;
+    void encode(ChannelHandlerContext ctx, A arguments, ByteBuf out) throws Exception;
 
-	A decode(ChannelHandlerContext ctx, ByteBuf out) throws Exception;
+    A decode(ChannelHandlerContext ctx, ByteBuf out) throws Exception;
 
 }

@@ -18,6 +18,7 @@ class ObjectLockHolder {
     private static final Logger LOG = LoggerFactory.getLogger(LogAide.LOCK);
 
     private static final long GC_TIME = 600; // s
+
     private static final long SHOW_TIME = 30; // s
 
     /**
@@ -34,12 +35,13 @@ class ObjectLockHolder {
             for (Class clazz : ObjectLockHolder.this.holders.keySet()) {
                 LOG.info("#链锁池信息#{} 类型的锁数量为: {} ", clazz, ObjectLockHolder.this.count(clazz));
             }
-            ObjectLockHolder.this.scheduler.schedule((Runnable) this, SHOW_TIME, TimeUnit.SECONDS);
+            ObjectLockHolder.this.scheduler.schedule((Runnable)this, SHOW_TIME, TimeUnit.SECONDS);
         };
         this.scheduler.schedule(monitorRunnable, SHOW_TIME, TimeUnit.SECONDS);
         /*
          */
         Runnable gcRunnable = new Runnable() {
+
             @Override
             public void run() {
                 for (Entry<Class, Holder> entry : ObjectLockHolder.this.holders.entrySet()) {
@@ -96,8 +98,9 @@ class ObjectLockHolder {
         private ObjectReadWriteLock createLock(LockEntity object) {
             ObjectReadWriteLock result = new ObjectReadWriteLock(object);
             ObjectReadWriteLock oldLock = this.locks.put(object.getIdentity(), result);
-            if (oldLock == null)
+            if (oldLock == null) {
                 oldLock = result;
+            }
             return oldLock;
         }
 
@@ -142,8 +145,9 @@ class ObjectLockHolder {
      */
     private Holder getHolder(Class clazz) {
         Holder holder = this.holders.get(clazz);
-        if (holder != null)
+        if (holder != null) {
             return holder;
+        }
         this.holders.putIfAbsent(clazz, new Holder());
         return this.holders.get(clazz);
     }

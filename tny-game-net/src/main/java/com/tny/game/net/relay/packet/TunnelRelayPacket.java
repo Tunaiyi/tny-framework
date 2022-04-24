@@ -12,18 +12,18 @@ import com.tny.game.net.relay.packet.arguments.*;
  */
 public class TunnelRelayPacket extends BaseTunnelPacket<TunnelRelayArguments> {
 
-	public static final RelayPacketFactory<TunnelRelayPacket, TunnelRelayArguments> FACTORY = TunnelRelayPacket::new;
+    public static final RelayPacketFactory<TunnelRelayPacket, TunnelRelayArguments> FACTORY = TunnelRelayPacket::new;
 
-	public TunnelRelayPacket(int id, long instanceId, long tunnelId, Message message) {
-		super(id, RelayPacketType.TUNNEL_RELAY, new TunnelRelayArguments(instanceId, tunnelId, message));
-	}
+    public TunnelRelayPacket(int id, long instanceId, long tunnelId, Message message) {
+        super(id, RelayPacketType.TUNNEL_RELAY, new TunnelRelayArguments(instanceId, tunnelId, message));
+    }
 
-	public TunnelRelayPacket(int id, long instanceId, long tunnelId, Message message, long time) {
-		super(id, RelayPacketType.TUNNEL_RELAY, time, new TunnelRelayArguments(instanceId, tunnelId, message));
-	}
+    public TunnelRelayPacket(int id, long instanceId, long tunnelId, Message message, long time) {
+        super(id, RelayPacketType.TUNNEL_RELAY, time, new TunnelRelayArguments(instanceId, tunnelId, message));
+    }
 
-	public TunnelRelayPacket(int id, TunnelRelayArguments arguments, long nanoTime) {
-		super(id, RelayPacketType.TUNNEL_RELAY, nanoTime, arguments);
-	}
+    public TunnelRelayPacket(int id, TunnelRelayArguments arguments, long nanoTime) {
+        super(id, RelayPacketType.TUNNEL_RELAY, nanoTime, arguments);
+    }
 
 }

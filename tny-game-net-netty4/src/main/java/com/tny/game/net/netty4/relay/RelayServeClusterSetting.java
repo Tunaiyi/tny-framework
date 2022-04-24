@@ -12,6 +12,6 @@ import java.util.List;
  */
 public interface RelayServeClusterSetting extends RemoteServeClusterSetting {
 
-	List<RelayServeInstanceSetting> getInstanceList();
+    List<RelayServeInstanceSetting> getInstanceList();
 
 }

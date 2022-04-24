@@ -14,11 +14,11 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class MongoEntityIdConverterFactory implements EntityIdConverterFactory {
 
-	private static final Map<Class<?>, MongoEntityIdConverter<?, ?>> converterMap = new ConcurrentHashMap<>();
+    private static final Map<Class<?>, MongoEntityIdConverter<?, ?>> converterMap = new ConcurrentHashMap<>();
 
-	@Override
-	public EntityIdConverter<?, ?, ?> createConverter(EntityScheme scheme, EntityKeyMaker<?, ?> keyMaker) {
-		return converterMap.computeIfAbsent(scheme.getCacheClass(), MongoEntityIdConverter::new);
-	}
+    @Override
+    public EntityIdConverter<?, ?, ?> createConverter(EntityScheme scheme, EntityKeyMaker<?, ?> keyMaker) {
+        return converterMap.computeIfAbsent(scheme.getCacheClass(), MongoEntityIdConverter::new);
+    }
 
 }

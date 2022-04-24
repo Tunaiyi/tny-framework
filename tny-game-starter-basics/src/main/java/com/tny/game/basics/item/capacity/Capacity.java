@@ -9,28 +9,28 @@ import com.tny.game.doc.annotation.*;
 @ClassDoc("游戏能力值")
 public interface Capacity extends Ability {
 
-	CapacityUsage getUsage();
+    CapacityUsage getUsage();
 
-	CapacityGroup getGroup();
+    CapacityGroup getGroup();
 
-	default Number getDefault() {
-		return 0;
-	}
+    default Number getDefault() {
+        return 0;
+    }
 
-	Number countCapacity(Number baseValue, CapacitySettler settler);
+    Number countCapacity(Number baseValue, CapacitySettler settler);
 
-	default Number countFinalCapacity(Item<?> item, Ability ability, CapacitySettler settler) {
-		return this.countFinalCapacity(item.getAbility(getDefault(), ability), settler);
-	}
+    default Number countFinalCapacity(Item<?> item, Ability ability, CapacitySettler settler) {
+        return this.countFinalCapacity(item.getAbility(getDefault(), ability), settler);
+    }
 
-	default Number countFinalCapacity(long playerId, ItemModel model, Ability ability, CapacitySettler settler) {
-		return this.countFinalCapacity(model.getAbility(playerId, getDefault(), ability), settler);
-	}
+    default Number countFinalCapacity(long playerId, ItemModel model, Ability ability, CapacitySettler settler) {
+        return this.countFinalCapacity(model.getAbility(playerId, getDefault(), ability), settler);
+    }
 
-	default Number countFinalCapacity(CapacitySettler settler) {
-		return this.countFinalCapacity(0, settler);
-	}
+    default Number countFinalCapacity(CapacitySettler settler) {
+        return this.countFinalCapacity(0, settler);
+    }
 
-	Number countFinalCapacity(Number baseValue, CapacitySettler settler);
+    Number countFinalCapacity(Number baseValue, CapacitySettler settler);
 
 }

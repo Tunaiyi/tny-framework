@@ -2,7 +2,6 @@ package com.tny.game.basics.exception;
 
 import com.tny.game.basics.item.behavior.*;
 
-
 public class TryToDoException extends GameException {
 
     /**

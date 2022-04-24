@@ -12,6 +12,7 @@ public interface Answer<V> extends Future<V>, DoneSupplier<V> {
     boolean isFail();
 
     void addListener(AnswerListener<V> listener);
+
     Throwable getCause();
 
     @Override

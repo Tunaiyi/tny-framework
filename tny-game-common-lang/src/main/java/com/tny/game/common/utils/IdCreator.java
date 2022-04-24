@@ -8,6 +8,6 @@ package com.tny.game.common.utils;
  */
 public interface IdCreator {
 
-	long createId();
+    long createId();
 
 }

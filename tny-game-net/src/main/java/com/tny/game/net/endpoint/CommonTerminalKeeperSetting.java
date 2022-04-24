@@ -7,32 +7,32 @@ import static com.tny.game.net.base.configuration.NetUnitNames.*;
  */
 public class CommonTerminalKeeperSetting implements TerminalKeeperSetting {
 
-	private String name;
+    private String name;
 
-	private String keeperFactory = defaultName(TerminalKeeperFactory.class);
+    private String keeperFactory = defaultName(TerminalKeeperFactory.class);
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	@Override
-	public String getUserType() {
-		return this.name;
-	}
+    @Override
+    public String getUserType() {
+        return this.name;
+    }
 
-	@Override
-	public String getKeeperFactory() {
-		return this.keeperFactory;
-	}
+    @Override
+    public String getKeeperFactory() {
+        return this.keeperFactory;
+    }
 
-	public CommonTerminalKeeperSetting setKeeperFactory(String keeperFactory) {
-		this.keeperFactory = unitName(keeperFactory, TerminalKeeperFactory.class);
-		return this;
-	}
+    public CommonTerminalKeeperSetting setKeeperFactory(String keeperFactory) {
+        this.keeperFactory = unitName(keeperFactory, TerminalKeeperFactory.class);
+        return this;
+    }
 
-	public CommonTerminalKeeperSetting setName(String name) {
-		this.name = name;
-		return this;
-	}
+    public CommonTerminalKeeperSetting setName(String name) {
+        this.name = name;
+        return this;
+    }
 
 }

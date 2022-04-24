@@ -5,6 +5,6 @@ import io.netty.channel.ChannelHandlerContext;
 
 public interface RelayPackDecoder {
 
-	Object decodeObject(ChannelHandlerContext ctx, final ByteBuf buffer) throws Exception;
+    Object decodeObject(ChannelHandlerContext ctx, final ByteBuf buffer) throws Exception;
 
 }

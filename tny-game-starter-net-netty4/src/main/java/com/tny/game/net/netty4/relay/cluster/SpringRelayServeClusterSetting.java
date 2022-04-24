@@ -17,145 +17,145 @@ import static com.tny.game.net.base.configuration.NetUnitNames.*;
  */
 public class SpringRelayServeClusterSetting implements RelayServeClusterSetting {
 
-	private String serveName;
+    private String serveName;
 
-	private String service;
+    private String service;
 
-	private String username;
+    private String username;
 
-	private String clientGuide = defaultName(RelayClientGuide.class);
+    private String clientGuide = defaultName(RelayClientGuide.class);
 
-	private int linkConnectionSize = 1;
+    private int linkConnectionSize = 1;
 
-	private long linkHeartbeatInterval = 5000;
+    private long linkHeartbeatInterval = 5000;
 
-	private long linkMaxIdleTime = 10000;
+    private long linkMaxIdleTime = 10000;
 
-	private boolean discovery = true;
+    private boolean discovery = true;
 
-	private String serveInstanceAllotStrategy = lowerCamelName(PollingRelayAllotStrategy.class);
+    private String serveInstanceAllotStrategy = lowerCamelName(PollingRelayAllotStrategy.class);
 
-	private String relayLinkAllotStrategy = lowerCamelName(PollingRelayAllotStrategy.class);
+    private String relayLinkAllotStrategy = lowerCamelName(PollingRelayAllotStrategy.class);
 
-	private List<SpringRelayServeInstanceSetting> instances = new ArrayList<>();
+    private List<SpringRelayServeInstanceSetting> instances = new ArrayList<>();
 
-	@Override
-	public String getServeName() {
-		return serveName;
-	}
+    @Override
+    public String getServeName() {
+        return serveName;
+    }
 
-	@Override
-	public String getUsername() {
-		return username;
-	}
+    @Override
+    public String getUsername() {
+        return username;
+    }
 
-	@Override
-	public String getService() {
-		return service;
-	}
+    @Override
+    public String getService() {
+        return service;
+    }
 
-	public String getClientGuide() {
-		return clientGuide;
-	}
+    public String getClientGuide() {
+        return clientGuide;
+    }
 
-	@Override
-	public boolean isDiscovery() {
-		return discovery || StringUtils.isNoneBlank(this.serveName);
-	}
+    @Override
+    public boolean isDiscovery() {
+        return discovery || StringUtils.isNoneBlank(this.serveName);
+    }
 
-	@Override
-	public long getLinkHeartbeatInterval() {
-		return linkHeartbeatInterval;
-	}
+    @Override
+    public long getLinkHeartbeatInterval() {
+        return linkHeartbeatInterval;
+    }
 
-	@Override
-	public long getLinkMaxIdleTime() {
-		return linkMaxIdleTime;
-	}
+    @Override
+    public long getLinkMaxIdleTime() {
+        return linkMaxIdleTime;
+    }
 
-	@Override
-	public int getLinkConnectionSize() {
-		return linkConnectionSize;
-	}
+    @Override
+    public int getLinkConnectionSize() {
+        return linkConnectionSize;
+    }
 
-	@Override
-	public List<RelayServeInstanceSetting> getInstanceList() {
-		return Lists.newArrayList(instances);
-	}
+    @Override
+    public List<RelayServeInstanceSetting> getInstanceList() {
+        return Lists.newArrayList(instances);
+    }
 
-	public List<SpringRelayServeInstanceSetting> getInstances() {
-		return instances;
-	}
+    public List<SpringRelayServeInstanceSetting> getInstances() {
+        return instances;
+    }
 
-	public SpringRelayServeClusterSetting setUsername(String username) {
-		this.username = username;
-		return this;
-	}
+    public SpringRelayServeClusterSetting setUsername(String username) {
+        this.username = username;
+        return this;
+    }
 
-	public boolean isHasServeInstanceAllotStrategy() {
-		return StringUtils.isNoneBlank(serveInstanceAllotStrategy);
-	}
+    public boolean isHasServeInstanceAllotStrategy() {
+        return StringUtils.isNoneBlank(serveInstanceAllotStrategy);
+    }
 
-	public String getServeInstanceAllotStrategy() {
-		return serveInstanceAllotStrategy;
-	}
+    public String getServeInstanceAllotStrategy() {
+        return serveInstanceAllotStrategy;
+    }
 
-	public boolean isHasRelayLinkAllotStrategy() {
-		return StringUtils.isNoneBlank(relayLinkAllotStrategy);
-	}
+    public boolean isHasRelayLinkAllotStrategy() {
+        return StringUtils.isNoneBlank(relayLinkAllotStrategy);
+    }
 
-	public String getRelayLinkAllotStrategy() {
-		return relayLinkAllotStrategy;
-	}
+    public String getRelayLinkAllotStrategy() {
+        return relayLinkAllotStrategy;
+    }
 
-	public SpringRelayServeClusterSetting setService(String service) {
-		this.service = service;
-		return this;
-	}
+    public SpringRelayServeClusterSetting setService(String service) {
+        this.service = service;
+        return this;
+    }
 
-	public SpringRelayServeClusterSetting setServeName(String serveName) {
-		this.serveName = serveName;
-		return this;
-	}
+    public SpringRelayServeClusterSetting setServeName(String serveName) {
+        this.serveName = serveName;
+        return this;
+    }
 
-	public SpringRelayServeClusterSetting setDiscovery(boolean discovery) {
-		this.discovery = discovery;
-		return this;
-	}
+    public SpringRelayServeClusterSetting setDiscovery(boolean discovery) {
+        this.discovery = discovery;
+        return this;
+    }
 
-	public SpringRelayServeClusterSetting setClientGuide(String clientGuide) {
-		this.clientGuide = clientGuide;
-		return this;
-	}
+    public SpringRelayServeClusterSetting setClientGuide(String clientGuide) {
+        this.clientGuide = clientGuide;
+        return this;
+    }
 
-	public SpringRelayServeClusterSetting setLinkConnectionSize(int linkConnectionSize) {
-		this.linkConnectionSize = linkConnectionSize;
-		return this;
-	}
+    public SpringRelayServeClusterSetting setLinkConnectionSize(int linkConnectionSize) {
+        this.linkConnectionSize = linkConnectionSize;
+        return this;
+    }
 
-	public SpringRelayServeClusterSetting setServeInstanceAllotStrategy(String serveInstanceAllotStrategy) {
-		this.serveInstanceAllotStrategy = serveInstanceAllotStrategy;
-		return this;
-	}
+    public SpringRelayServeClusterSetting setServeInstanceAllotStrategy(String serveInstanceAllotStrategy) {
+        this.serveInstanceAllotStrategy = serveInstanceAllotStrategy;
+        return this;
+    }
 
-	public SpringRelayServeClusterSetting setRelayLinkAllotStrategy(String relayLinkAllotStrategy) {
-		this.relayLinkAllotStrategy = relayLinkAllotStrategy;
-		return this;
-	}
+    public SpringRelayServeClusterSetting setRelayLinkAllotStrategy(String relayLinkAllotStrategy) {
+        this.relayLinkAllotStrategy = relayLinkAllotStrategy;
+        return this;
+    }
 
-	public SpringRelayServeClusterSetting setInstances(List<SpringRelayServeInstanceSetting> instances) {
-		this.instances = instances;
-		return this;
-	}
+    public SpringRelayServeClusterSetting setInstances(List<SpringRelayServeInstanceSetting> instances) {
+        this.instances = instances;
+        return this;
+    }
 
-	public SpringRelayServeClusterSetting setLinkMaxIdleTime(long linkMaxIdleTime) {
-		this.linkMaxIdleTime = linkMaxIdleTime;
-		return this;
-	}
+    public SpringRelayServeClusterSetting setLinkMaxIdleTime(long linkMaxIdleTime) {
+        this.linkMaxIdleTime = linkMaxIdleTime;
+        return this;
+    }
 
-	public SpringRelayServeClusterSetting setLinkHeartbeatInterval(long linkHeartbeatInterval) {
-		this.linkHeartbeatInterval = linkHeartbeatInterval;
-		return this;
-	}
+    public SpringRelayServeClusterSetting setLinkHeartbeatInterval(long linkHeartbeatInterval) {
+        this.linkHeartbeatInterval = linkHeartbeatInterval;
+        return this;
+    }
 
 }

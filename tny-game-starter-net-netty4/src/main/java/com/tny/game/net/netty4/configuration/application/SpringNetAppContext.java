@@ -13,16 +13,16 @@ import java.util.*;
  */
 public class SpringNetAppContext extends DefaultNetAppContext {
 
-	public SpringNetAppContext(SpringNetAppProperties configure) {
-		super();
-		Set<String> scanPackages = new HashSet<>(ApplicationLauncherContext.getBasePackages());
-		scanPackages.addAll(configure.getBasePackages());
-		this.setName(configure.getName());
-		this.setServerId(configure.getServerId());
-		this.setLocale(configure.getLocale());
-		this.setAppType(configure.getAppType());
-		this.setScopeType(configure.getScopeType());
-		this.setScanPackages(scanPackages);
-	}
+    public SpringNetAppContext(SpringNetAppProperties configure) {
+        super();
+        Set<String> scanPackages = new HashSet<>(ApplicationLauncherContext.getBasePackages());
+        scanPackages.addAll(configure.getBasePackages());
+        this.setName(configure.getName());
+        this.setServerId(configure.getServerId());
+        this.setLocale(configure.getLocale());
+        this.setAppType(configure.getAppType());
+        this.setScopeType(configure.getScopeType());
+        this.setScanPackages(scanPackages);
+    }
 
 }

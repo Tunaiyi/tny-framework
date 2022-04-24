@@ -13,10 +13,10 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface JsonRegisterSubType {
 
-	String value();
+    String value();
 
-	String prefix() default "";
+    String prefix() default "";
 
-	String link() default "-";
+    String link() default "-";
 
 }

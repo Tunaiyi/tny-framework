@@ -14,37 +14,37 @@ import org.slf4j.*;
  */
 public class NacosServeNodeClient extends BaseServeNodeClient {
 
-	public static final Logger LOGGER = LoggerFactory.getLogger(NacosServeNodeClient.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(NacosServeNodeClient.class);
 
-	private final NacosDiscoveryProperties properties;
+    private final NacosDiscoveryProperties properties;
 
-	private final NacosServiceManager nacosServiceManager;
+    private final NacosServiceManager nacosServiceManager;
 
-	private final EventListener listener = this::handleEvent;
+    private final EventListener listener = this::handleEvent;
 
-	public NacosServeNodeClient(NacosDiscoveryProperties properties, NacosServiceManager nacosServiceManager) {
-		this.properties = properties;
-		this.nacosServiceManager = nacosServiceManager;
-	}
+    public NacosServeNodeClient(NacosDiscoveryProperties properties, NacosServiceManager nacosServiceManager) {
+        this.properties = properties;
+        this.nacosServiceManager = nacosServiceManager;
+    }
 
-	@Override
-	protected void doSubscribe(String serveName) {
-		NamingService namingService = nacosServiceManager.getNamingService(properties.getNacosProperties());
-		try {
-			namingService.subscribe(serveName, properties.getGroup(), listener);
-		} catch (NacosException e) {
-			e.printStackTrace();
-		}
-	}
+    @Override
+    protected void doSubscribe(String serveName) {
+        NamingService namingService = nacosServiceManager.getNamingService(properties.getNacosProperties());
+        try {
+            namingService.subscribe(serveName, properties.getGroup(), listener);
+        } catch (NacosException e) {
+            e.printStackTrace();
+        }
+    }
 
-	@Override
-	protected void doUnsubscribe(String serveName) {
-		NamingService namingService = nacosServiceManager.getNamingService(properties.getNacosProperties());
-		try {
-			namingService.unsubscribe(serveName, properties.getGroup(), listener);
-		} catch (NacosException e) {
-			e.printStackTrace();
-		}
-	}
+    @Override
+    protected void doUnsubscribe(String serveName) {
+        NamingService namingService = nacosServiceManager.getNamingService(properties.getNacosProperties());
+        try {
+            namingService.unsubscribe(serveName, properties.getGroup(), listener);
+        } catch (NacosException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

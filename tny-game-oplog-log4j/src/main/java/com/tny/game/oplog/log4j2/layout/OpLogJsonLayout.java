@@ -44,7 +44,7 @@ public class OpLogJsonLayout extends AbstractStringLayout {
     public String toSerializable(LogEvent event) {
         Message message = event.getMessage();
         if (message instanceof LogMessage) {
-            LogMessage logMessage = (LogMessage) message;
+            LogMessage logMessage = (LogMessage)message;
             Log loggable = logMessage.getLog();
             ObjectMapper mapper = OpLogMapper.getMapper();
             try {
@@ -54,8 +54,9 @@ public class OpLogJsonLayout extends AbstractStringLayout {
                 } else if (loggable instanceof UserStuffRecord) {
                     log = new JsonUserStuffRecord(logIDCounter.incrementAndGet(), as(loggable));
                 }
-                if (log != null)
+                if (log != null) {
                     return mapper.writeValueAsString(log) + "\r\n";
+                }
             } catch (JsonProcessingException e) {
                 LOGGER.error("OpLogLayout toSerializable exception", e);
             }

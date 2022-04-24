@@ -26,7 +26,6 @@ public class HttpAide {
         return new ResponseEntity<>(code.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-
     public static Map<String, String> requestParam2Map(HttpServletRequest request) {
         return requestParam2Map(request, new HashMap<>());
     }
@@ -40,7 +39,7 @@ public class HttpAide {
     }
 
     public static String getIP() {
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
         String ip = request.getHeader("X-Real-IP");
         if (!StringUtils.isBlank(ip) && !"unknown".equalsIgnoreCase(ip)) {
             return ip;

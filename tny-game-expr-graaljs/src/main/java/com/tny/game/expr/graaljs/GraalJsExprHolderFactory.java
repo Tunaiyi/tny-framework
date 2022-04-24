@@ -31,11 +31,13 @@ public class GraalJsExprHolderFactory extends ScriptExprHolderFactory {
     }
 
     public static GraalJsExprHolderFactory getDefault() {
-        if (factory != null)
+        if (factory != null) {
             return factory;
+        }
         synchronized (GraalJsExprHolderFactory.class) {
-            if (factory != null)
+            if (factory != null) {
                 return factory;
+            }
             return factory = new GraalJsExprHolderFactory();
         }
     }
@@ -61,7 +63,8 @@ public class GraalJsExprHolderFactory extends ScriptExprHolderFactory {
         // System.out.println(holder.createExpr().put("a", 2000).execute(Integer.class));
         //
         // ExprHolder test2 = factory.create(
-        //         "def index; def fibonacci = []; fibonacci[0] = 1; fibonacci[1] = 1; for(index=2; index<=100; index++) { fibonacci[index] = (fibonacci[index-2] + fibonacci[index-1]);}\n fibonacci.size();");
+        //         "def index; def fibonacci = []; fibonacci[0] = 1; fibonacci[1] = 1; for(index=2; index<=100; index++) { fibonacci[index] =
+        //         (fibonacci[index-2] + fibonacci[index-1]);}\n fibonacci.size();");
         // System.out.println(test2.createExpr().execute(Integer.class));
 
         ExprHolder holder3 = factory
@@ -70,7 +73,6 @@ public class GraalJsExprHolderFactory extends ScriptExprHolderFactory {
                         + "MathAide.rand(a);"
                         + "};");
         System.out.println(holder3.createExpr().execute(Integer.class));
-
 
         ExprHolder holder4 = factory
                 .create("{" +

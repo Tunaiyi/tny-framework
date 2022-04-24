@@ -12,6 +12,6 @@ import java.lang.annotation.*;
 @Documented
 public @interface SingleEntity {
 
-	boolean value() default true;
+    boolean value() default true;
 
 }

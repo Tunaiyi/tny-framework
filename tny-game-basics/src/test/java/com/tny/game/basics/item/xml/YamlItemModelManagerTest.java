@@ -10,32 +10,32 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class YamlItemModelManagerTest {
 
-	TempExplorer explorer = new TempExplorer();
+    TempExplorer explorer = new TempExplorer();
 
-	private static ExprHolderFactory exprHolderFactory = new GroovyExprHolderFactory();
+    private static ExprHolderFactory exprHolderFactory = new GroovyExprHolderFactory();
 
-	private ItemModelContext context = new DefaultItemModelContext(this.explorer, this.explorer, exprHolderFactory);
+    private ItemModelContext context = new DefaultItemModelContext(this.explorer, this.explorer, exprHolderFactory);
 
-	TestItemModelManager manager =
-			new TestItemModelManager("ItemExample.yml", this.context, new YamlModelLoaderFactory(exprHolderFactory));
+    TestItemModelManager manager =
+            new TestItemModelManager("ItemExample.yml", this.context, new YamlModelLoaderFactory(exprHolderFactory));
 
-	ItemModel itemModel = null;
+    ItemModel itemModel = null;
 
-	public YamlItemModelManagerTest() throws Exception {
-		this.manager.initManager();
-		this.itemModel = this.manager.getModel(1);
-		System.out.println(this.itemModel);
-	}
+    public YamlItemModelManagerTest() throws Exception {
+        this.manager.initManager();
+        this.itemModel = this.manager.getModel(1);
+        System.out.println(this.itemModel);
+    }
 
-	@Test
-	public void testOption() {
-		int value = 0;
-		value = this.itemModel.getActionOption(100, TestAction.NOMAL_UPGRADE, TestOption.CD);
-		assertEquals(value, 1000);
-		value = this.itemModel.getActionOption(100, TestAction.NOMAL_UPGRADE, TestOption.ATTACK_CD);
-		assertEquals(value, 200);
-		value = this.itemModel.getActionOption(100, TestAction.NOMAL_UPGRADE, TestOption.DEFEND_CD);
-		assertEquals(value, 300);
-	}
+    @Test
+    public void testOption() {
+        int value = 0;
+        value = this.itemModel.getActionOption(100, TestAction.NOMAL_UPGRADE, TestOption.CD);
+        assertEquals(value, 1000);
+        value = this.itemModel.getActionOption(100, TestAction.NOMAL_UPGRADE, TestOption.ATTACK_CD);
+        assertEquals(value, 200);
+        value = this.itemModel.getActionOption(100, TestAction.NOMAL_UPGRADE, TestOption.DEFEND_CD);
+        assertEquals(value, 300);
+    }
 
 }

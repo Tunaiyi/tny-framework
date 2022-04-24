@@ -5,13 +5,16 @@ import java.util.*;
 public class CacheItemHelper {
 
     static final int OPERATION_ADD = 1;
+
     private static final int OPERATION_UPDATE = 2;
+
     private static final int OPERATION_SAVE = 3;
 
     static <T> List<T> cacheItem2Object(
             List<RawCacheItem<T, ?>> failedObjects) {
-        if (failedObjects.isEmpty())
+        if (failedObjects.isEmpty()) {
             return Collections.emptyList();
+        }
         List<T> items = new ArrayList<>();
         for (RawCacheItem<T, ?> item : failedObjects)
             items.add(item.getRawValue());
@@ -60,8 +63,9 @@ public class CacheItemHelper {
     }
 
     public static <T> List<T> checkEmpty(List<T> fails) {
-        if (fails == null || fails.isEmpty())
+        if (fails == null || fails.isEmpty()) {
             fails = Collections.emptyList();
+        }
         return fails;
     }
 

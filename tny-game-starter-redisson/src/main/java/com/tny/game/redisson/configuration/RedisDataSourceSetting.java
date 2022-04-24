@@ -10,26 +10,26 @@ import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
  */
 public class RedisDataSourceSetting extends RedisProperties {
 
-	private boolean templateEnable = false;
+    private boolean templateEnable = false;
 
-	private boolean stringTemplateEnable = false;
+    private boolean stringTemplateEnable = false;
 
-	public boolean isTemplateEnable() {
-		return templateEnable;
-	}
+    public boolean isTemplateEnable() {
+        return templateEnable;
+    }
 
-	public RedisDataSourceSetting setTemplateEnable(boolean templateEnable) {
-		this.templateEnable = templateEnable;
-		return this;
-	}
+    public RedisDataSourceSetting setTemplateEnable(boolean templateEnable) {
+        this.templateEnable = templateEnable;
+        return this;
+    }
 
-	public boolean isStringTemplateEnable() {
-		return stringTemplateEnable;
-	}
+    public boolean isStringTemplateEnable() {
+        return stringTemplateEnable;
+    }
 
-	public RedisDataSourceSetting setStringTemplateEnable(boolean stringTemplateEnable) {
-		this.stringTemplateEnable = stringTemplateEnable;
-		return this;
-	}
+    public RedisDataSourceSetting setStringTemplateEnable(boolean stringTemplateEnable) {
+        this.stringTemplateEnable = stringTemplateEnable;
+        return this;
+    }
 
 }

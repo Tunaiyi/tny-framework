@@ -11,23 +11,23 @@ import com.tny.game.net.message.common.*;
  */
 public class TunnelRelayArguments extends BaseTunnelPacketArguments {
 
-	private final Message message;
+    private final Message message;
 
-	public TunnelRelayArguments(long instanceId, long tunnelId, Message message) {
-		super(instanceId, tunnelId);
-		this.message = message;
-	}
+    public TunnelRelayArguments(long instanceId, long tunnelId, Message message) {
+        super(instanceId, tunnelId);
+        this.message = message;
+    }
 
-	public Message getMessage() {
-		return this.message;
-	}
+    public Message getMessage() {
+        return this.message;
+    }
 
-	@Override
-	public void release() {
-		Object body = message.getBody();
-		if (body instanceof OctetMessageBody) {
-			((OctetMessageBody)body).release();
-		}
-	}
+    @Override
+    public void release() {
+        Object body = message.getBody();
+        if (body instanceof OctetMessageBody) {
+            ((OctetMessageBody)body).release();
+        }
+    }
 
 }

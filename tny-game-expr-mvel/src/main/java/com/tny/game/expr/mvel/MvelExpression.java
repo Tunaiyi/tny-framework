@@ -52,12 +52,15 @@ class MvelExpression extends AbstractMvelExpr {
             if (context != null) {
                 for (Entry<String, Object> entry : context.entrySet()) {
                     Object value = entry.getValue();
-                    if (value instanceof Class)
-                        parserContext.addImport(entry.getKey(), (Class<?>) value);
-                    if (value instanceof Method)
-                        parserContext.addImport(entry.getKey(), (Method) value);
-                    if (value instanceof MethodStub)
-                        parserContext.addImport(entry.getKey(), (MethodStub) value);
+                    if (value instanceof Class) {
+                        parserContext.addImport(entry.getKey(), (Class<?>)value);
+                    }
+                    if (value instanceof Method) {
+                        parserContext.addImport(entry.getKey(), (Method)value);
+                    }
+                    if (value instanceof MethodStub) {
+                        parserContext.addImport(entry.getKey(), (MethodStub)value);
+                    }
                 }
             }
             this.expression = lazy ? null : this.getExpression();
@@ -88,11 +91,13 @@ class MvelExpression extends AbstractMvelExpr {
     private Serializable getExpression() {
         if (this.expression == null) {
             synchronized (this) {
-                if (this.expression != null)
+                if (this.expression != null) {
                     return this.expression;
+                }
                 this.expression = MVEL.compileExpression(this.expressionStr, this.context.getParserContext());
-                if (!MvelExprHolderFactory.EXPR_INFO)
+                if (!MvelExprHolderFactory.EXPR_INFO) {
                     this.expressionStr = null;
+                }
             }
         }
         return this.expression;

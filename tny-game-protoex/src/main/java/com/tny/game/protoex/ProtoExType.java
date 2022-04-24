@@ -6,8 +6,11 @@ import java.lang.reflect.Type;
 import java.util.*;
 
 class PETKey {
+
     public static final boolean VAR_LENGTH = true;
+
     public static final boolean FIX_LENGTH = false;
+
 }
 
 public enum ProtoExType {
@@ -123,7 +126,7 @@ public enum ProtoExType {
     private final boolean hasLength;
 
     ProtoExType(int id, boolean hasLength) {
-        this.id = (byte) id;
+        this.id = (byte)id;
         this.hasLength = hasLength;
     }
 
@@ -152,17 +155,20 @@ public enum ProtoExType {
             return ENUM;
         }
         ProtoExType type = PROTO_EX_TYPE_MAP.get(clazz);
-        if (type != null)
+        if (type != null) {
             return type;
+        }
         return MESSAGE;
     }
 
     public static ProtoExType getRawType(int typeID) {
-        if (typeID <= 0)
+        if (typeID <= 0) {
             return null;
+        }
         for (ProtoExType type : values()) {
-            if (type.getId() == typeID)
+            if (type.getId() == typeID) {
                 return type;
+            }
         }
         return null;
     }

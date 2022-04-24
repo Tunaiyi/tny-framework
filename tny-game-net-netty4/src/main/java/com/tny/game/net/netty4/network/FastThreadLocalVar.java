@@ -13,43 +13,43 @@ import java.util.function.Supplier;
  */
 public class FastThreadLocalVar<T> implements ThreadLocalVar<T> {
 
-	private final FastThreadLocal<T> threadLocal;
+    private final FastThreadLocal<T> threadLocal;
 
-	private Supplier<T> supplier = null;
+    private Supplier<T> supplier = null;
 
-	public FastThreadLocalVar() {
-		this.threadLocal = new FastThreadLocal<>();
-	}
+    public FastThreadLocalVar() {
+        this.threadLocal = new FastThreadLocal<>();
+    }
 
-	public FastThreadLocalVar(Supplier<T> supplier) {
-		this();
-		this.supplier = supplier;
-	}
+    public FastThreadLocalVar(Supplier<T> supplier) {
+        this();
+        this.supplier = supplier;
+    }
 
-	public FastThreadLocalVar(FastThreadLocal<T> threadLocal) {
-		this.threadLocal = threadLocal;
-	}
+    public FastThreadLocalVar(FastThreadLocal<T> threadLocal) {
+        this.threadLocal = threadLocal;
+    }
 
-	@Override
-	public T get() {
-		T value = this.threadLocal.get();
-		if (value == null && this.supplier != null) {
-			value = this.supplier.get();
-			if (value != null) {
-				this.threadLocal.set(value);
-			}
-		}
-		return value;
-	}
+    @Override
+    public T get() {
+        T value = this.threadLocal.get();
+        if (value == null && this.supplier != null) {
+            value = this.supplier.get();
+            if (value != null) {
+                this.threadLocal.set(value);
+            }
+        }
+        return value;
+    }
 
-	@Override
-	public void set(T value) {
-		this.threadLocal.set(value);
-	}
+    @Override
+    public void set(T value) {
+        this.threadLocal.set(value);
+    }
 
-	@Override
-	public void remove() {
-		this.threadLocal.remove();
-	}
+    @Override
+    public void remove() {
+        this.threadLocal.remove();
+    }
 
 }

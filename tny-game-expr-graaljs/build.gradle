@@ -6,7 +6,7 @@ dependencies {
 
     api project(":tny-game-expr-jsr223")
     api project(":tny-game-common-lang")
-    
+
     api libs.graalvm_js
     api libs.graalvm_js_scriptengine
     api libs.graalvm_js_launcher

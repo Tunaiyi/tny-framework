@@ -29,5 +29,4 @@ public class LongRangeLimitParamFilter extends RangeLimitParamFilter<LongRange, 
         return annotation.illegalCode();
     }
 
-
 }

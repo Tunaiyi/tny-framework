@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ItemModels {
 
     private static Map<Integer, String> modelDesc = new ConcurrentHashMap<>();
+
     private static Map<Integer, String> modelAlias = new ConcurrentHashMap<>();
 
     public static void register(Model model) {
@@ -18,15 +19,17 @@ public class ItemModels {
 
     public static String name(int id) {
         String value = modelDesc.get(id);
-        if (value != null)
+        if (value != null) {
             return value;
+        }
         return String.valueOf(id);
     }
 
     public static String alias(int id) {
         String value = modelAlias.get(id);
-        if (value != null)
+        if (value != null) {
             return value;
+        }
         return String.valueOf(id);
     }
 

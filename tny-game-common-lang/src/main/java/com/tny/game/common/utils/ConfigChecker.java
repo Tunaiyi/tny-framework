@@ -14,8 +14,9 @@ public class ConfigChecker {
         if (idSet == null) {
             idSet = new HashSet<>();
             Set<Object> oldSet = ID_CHECK_MAP.putIfAbsent(key, idSet);
-            if (oldSet != null)
+            if (oldSet != null) {
                 idSet = oldSet;
+            }
         }
         return idSet;
     }

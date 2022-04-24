@@ -7,31 +7,31 @@ import com.tny.game.expr.*;
  */
 public class DefaultItemModelContext implements ItemModelContext {
 
-	private final ItemExplorer itemExplorer;
+    private final ItemExplorer itemExplorer;
 
-	private final ModelExplorer itemModelExplorer;
+    private final ModelExplorer itemModelExplorer;
 
-	private final ExprHolderFactory exprHolderFactory;
+    private final ExprHolderFactory exprHolderFactory;
 
-	public DefaultItemModelContext(ItemExplorer itemExplorer, ModelExplorer itemModelExplorer, ExprHolderFactory exprHolderFactory) {
-		this.itemExplorer = itemExplorer;
-		this.itemModelExplorer = itemModelExplorer;
-		this.exprHolderFactory = exprHolderFactory;
-	}
+    public DefaultItemModelContext(ItemExplorer itemExplorer, ModelExplorer itemModelExplorer, ExprHolderFactory exprHolderFactory) {
+        this.itemExplorer = itemExplorer;
+        this.itemModelExplorer = itemModelExplorer;
+        this.exprHolderFactory = exprHolderFactory;
+    }
 
-	@Override
-	public ItemExplorer getItemExplorer() {
-		return itemExplorer;
-	}
+    @Override
+    public ItemExplorer getItemExplorer() {
+        return itemExplorer;
+    }
 
-	@Override
-	public ModelExplorer getItemModelExplorer() {
-		return itemModelExplorer;
-	}
+    @Override
+    public ModelExplorer getItemModelExplorer() {
+        return itemModelExplorer;
+    }
 
-	@Override
-	public ExprHolderFactory getExprHolderFactory() {
-		return exprHolderFactory;
-	}
+    @Override
+    public ExprHolderFactory getExprHolderFactory() {
+        return exprHolderFactory;
+    }
 
 }

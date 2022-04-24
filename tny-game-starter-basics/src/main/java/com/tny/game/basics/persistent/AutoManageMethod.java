@@ -10,8 +10,8 @@ import java.lang.reflect.Method;
  */
 public class AutoManageMethod extends AutoMethod<Modifiable, ModifiableReturn, ModifiableParam, Immutable> {
 
-	protected AutoManageMethod(Method method) {
-		super(method, Modifiable.class, ModifiableReturn.class, ModifiableParam.class, Immutable.class);
-	}
+    protected AutoManageMethod(Method method) {
+        super(method, Modifiable.class, ModifiableReturn.class, ModifiableParam.class, Immutable.class);
+    }
 
 }

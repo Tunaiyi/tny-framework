@@ -11,20 +11,20 @@ import com.tny.game.net.exception.*;
  */
 public class RelayLinkException extends NetGeneralException {
 
-	public RelayLinkException(ResultCode code) {
-		super(code);
-	}
+    public RelayLinkException(ResultCode code) {
+        super(code);
+    }
 
-	public RelayLinkException(ResultCode code, String message, Object... messageParams) {
-		super(code, message, messageParams);
-	}
+    public RelayLinkException(ResultCode code, String message, Object... messageParams) {
+        super(code, message, messageParams);
+    }
 
-	public RelayLinkException(ResultCode code, Throwable cause) {
-		super(code, cause);
-	}
+    public RelayLinkException(ResultCode code, Throwable cause) {
+        super(code, cause);
+    }
 
-	public RelayLinkException(ResultCode code, Throwable cause, String message, Object... messageParams) {
-		super(code, cause, message, messageParams);
-	}
+    public RelayLinkException(ResultCode code, Throwable cause, String message, Object... messageParams) {
+        super(code, cause, message, messageParams);
+    }
 
 }

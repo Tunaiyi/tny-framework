@@ -10,22 +10,22 @@ import com.tny.game.net.relay.link.*;
  */
 public interface RelayPacketProcessor {
 
-	void onLinkOpen(RelayTransporter transporter, LinkOpenPacket packet);
+    void onLinkOpen(RelayTransporter transporter, LinkOpenPacket packet);
 
-	void onLinkOpened(NetRelayLink link, LinkOpenedPacket packet);
+    void onLinkOpened(NetRelayLink link, LinkOpenedPacket packet);
 
-	void onLinkClose(NetRelayLink link, LinkClosePacket packet);
+    void onLinkClose(NetRelayLink link, LinkClosePacket packet);
 
-	void onLinkHeartBeat(NetRelayLink link, LinkHeartBeatPacket packet);
+    void onLinkHeartBeat(NetRelayLink link, LinkHeartBeatPacket packet);
 
-	void onTunnelConnect(NetRelayLink link, TunnelConnectPacket packet);
+    void onTunnelConnect(NetRelayLink link, TunnelConnectPacket packet);
 
-	void onTunnelConnected(NetRelayLink link, TunnelConnectedPacket packet);
+    void onTunnelConnected(NetRelayLink link, TunnelConnectedPacket packet);
 
-	void onTunnelDisconnect(NetRelayLink link, TunnelDisconnectPacket packet);
+    void onTunnelDisconnect(NetRelayLink link, TunnelDisconnectPacket packet);
 
-	void onTunnelSwitchLink(NetRelayLink link, TunnelSwitchLinkPacket packet);
+    void onTunnelSwitchLink(NetRelayLink link, TunnelSwitchLinkPacket packet);
 
-	void onTunnelRelay(NetRelayLink link, TunnelRelayPacket packet);
+    void onTunnelRelay(NetRelayLink link, TunnelRelayPacket packet);
 
 }

@@ -8,6 +8,6 @@ package com.tny.game.net.rpc;
  */
 public interface RpcRouteManager {
 
-	<T> RpcRouter<T> getRouter(Class<?> routerClass);
+    <T> RpcRouter<T> getRouter(Class<?> routerClass);
 
 }

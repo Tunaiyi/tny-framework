@@ -9,4 +9,5 @@ public interface TelnetCommandHolder {
     TelnetCommand getCommand(String name);
 
     String execute(String[] split);
+
 }

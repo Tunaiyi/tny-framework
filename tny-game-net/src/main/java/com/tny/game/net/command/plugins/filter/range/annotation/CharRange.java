@@ -17,4 +17,5 @@ public @interface CharRange {
      * @return 207
      */
     int illegalCode() default 0;
+
 }

@@ -11,13 +11,13 @@ import com.tny.game.net.transport.*;
  */
 public class TestGeneralServerTunnel extends GeneralServerTunnel<Long> {
 
-	public TestGeneralServerTunnel(long id, MessageTransporter transport, NetBootstrapContext bootstrapContext) {
-		super(id, transport, bootstrapContext);
-	}
+    public TestGeneralServerTunnel(long id, MessageTransporter transport, NetBootstrapContext bootstrapContext) {
+        super(id, transport, bootstrapContext);
+    }
 
-	@Override
-	protected MessageTransporter getTransporter() {
-		return super.getTransporter();
-	}
+    @Override
+    protected MessageTransporter getTransporter() {
+        return super.getTransporter();
+    }
 
 }

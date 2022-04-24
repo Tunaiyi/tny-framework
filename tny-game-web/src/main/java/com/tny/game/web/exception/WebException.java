@@ -57,12 +57,14 @@ public class WebException extends RuntimeException {
 
     @Override
     public String getMessage() {
-        if (StringUtils.isNotBlank(message))
+        if (StringUtils.isNotBlank(message)) {
             return this.message;
+        }
         return super.getMessage();
     }
 
     public Object getBody() {
         return body;
     }
+
 }

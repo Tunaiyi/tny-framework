@@ -6,6 +6,6 @@ package com.tny.game.basics.mould;
  */
 public interface FeatureOpenModeCondition<FM extends FeatureModel, C> {
 
-	boolean check(FeatureLauncher explorer, FM model, FeatureOpenMode<?> mode, C context);
+    boolean check(FeatureLauncher explorer, FM model, FeatureOpenMode<?> mode, C context);
 
 }

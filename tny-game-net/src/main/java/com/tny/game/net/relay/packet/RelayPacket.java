@@ -11,22 +11,22 @@ import com.tny.game.net.relay.packet.arguments.*;
  */
 public interface RelayPacket<A extends RelayPacketArguments> {
 
-	static void release(RelayPacket<?> packet) {
-		if (packet == null) {
-			return;
-		}
-		RelayPacketArguments arguments = packet.getArguments();
-		if (arguments != null) {
-			arguments.release();
-		}
-	}
+    static void release(RelayPacket<?> packet) {
+        if (packet == null) {
+            return;
+        }
+        RelayPacketArguments arguments = packet.getArguments();
+        if (arguments != null) {
+            arguments.release();
+        }
+    }
 
-	int getId();
+    int getId();
 
-	RelayPacketType getType();
+    RelayPacketType getType();
 
-	long getTime();
+    long getTime();
 
-	A getArguments();
+    A getArguments();
 
 }

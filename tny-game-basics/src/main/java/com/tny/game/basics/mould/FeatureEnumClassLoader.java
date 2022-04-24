@@ -14,21 +14,21 @@ import static com.tny.game.scanner.selector.EnumClassSelector.*;
  */
 public class FeatureEnumClassLoader {
 
-	public static final Logger LOGGER = LoggerFactory.getLogger(FeatureEnumClassLoader.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(FeatureEnumClassLoader.class);
 
-	@ClassSelectorProvider
-	static ClassSelector openModesSelector() {
-		return createSelector(FeatureOpenMode.class, FeatureOpenModes::register);
-	}
+    @ClassSelectorProvider
+    static ClassSelector openModesSelector() {
+        return createSelector(FeatureOpenMode.class, FeatureOpenModes::register);
+    }
 
-	@ClassSelectorProvider
-	static ClassSelector featuresSelector() {
-		return createSelector(Feature.class, Features::register);
-	}
+    @ClassSelectorProvider
+    static ClassSelector featuresSelector() {
+        return createSelector(Feature.class, Features::register);
+    }
 
-	@ClassSelectorProvider
-	static ClassSelector mouldsSelector() {
-		return createSelector(Mould.class, Moulds::register);
-	}
+    @ClassSelectorProvider
+    static ClassSelector mouldsSelector() {
+        return createSelector(Mould.class, Moulds::register);
+    }
 
 }

@@ -7,4 +7,5 @@ package com.tny.game.net.codec;
  * @date: 2018-10-17 11:02
  */
 public interface CodecBuffer {
+
 }

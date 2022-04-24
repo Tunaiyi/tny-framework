@@ -15,12 +15,12 @@ import java.util.Collection;
 @UnitInterface
 public interface NetMessageDispatcherContext extends MessageDispatcherContext {
 
-	void addControllerPlugin(CommandPlugin<?, ?> plugin);
+    void addControllerPlugin(CommandPlugin<?, ?> plugin);
 
-	void addControllerPlugin(Collection<? extends CommandPlugin<?, ?>> plugins);
+    void addControllerPlugin(Collection<? extends CommandPlugin<?, ?>> plugins);
 
-	void addAuthProvider(AuthenticateValidator<?> provider);
+    void addAuthProvider(AuthenticateValidator<?> provider);
 
-	void addAuthProvider(Collection<? extends AuthenticateValidator<?>> providers);
+    void addAuthProvider(Collection<? extends AuthenticateValidator<?>> providers);
 
 }

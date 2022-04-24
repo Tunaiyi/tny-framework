@@ -24,8 +24,8 @@ public interface IpAide {
 
     static boolean isLocalHost(String host) {
         return host != null
-               && (LOCAL_IP_PATTERN.matcher(host).matches()
-                   || host.equalsIgnoreCase("localhost"));
+                && (LOCAL_IP_PATTERN.matcher(host).matches()
+                || host.equalsIgnoreCase("localhost"));
     }
 
 }

@@ -12,56 +12,56 @@ import java.util.*;
  */
 public class TaskReceiverTypes extends ClassImporter {
 
-	private static EnumeratorHolder<TaskReceiverType> holder = new EnumeratorHolder<TaskReceiverType>() {
+    private static EnumeratorHolder<TaskReceiverType> holder = new EnumeratorHolder<TaskReceiverType>() {
 
-	};
+    };
 
-	private TaskReceiverTypes() {
-	}
+    private TaskReceiverTypes() {
+    }
 
-	static {
-		holder.register(DefaultTaskReceiverType.values());
-	}
+    static {
+        holder.register(DefaultTaskReceiverType.values());
+    }
 
-	static void register(TaskReceiverType value) {
-		holder.register(value);
-	}
+    static void register(TaskReceiverType value) {
+        holder.register(value);
+    }
 
-	public static <T extends TaskReceiverType> T ofAlias(String alias) {
-		String[] heads = StringUtils.split(alias, '$');
-		return holder.check("$" + heads[0], "获取 别名前缀 {} 的 TaskReceiverType 不存在", heads[0]);
-	}
+    public static <T extends TaskReceiverType> T ofAlias(String alias) {
+        String[] heads = StringUtils.split(alias, '$');
+        return holder.check("$" + heads[0], "获取 别名前缀 {} 的 TaskReceiverType 不存在", heads[0]);
+    }
 
-	public static <T extends TaskReceiverType> T check(String key) {
-		return holder.check(key, "获取 {} TaskReceiverType 不存在", key);
-	}
+    public static <T extends TaskReceiverType> T check(String key) {
+        return holder.check(key, "获取 {} TaskReceiverType 不存在", key);
+    }
 
-	public static <T extends TaskReceiverType> T check(int id) {
-		return holder.check(id, "获取 ID为 {} 的 TaskReceiverType 不存在", id);
-	}
+    public static <T extends TaskReceiverType> T check(int id) {
+        return holder.check(id, "获取 ID为 {} 的 TaskReceiverType 不存在", id);
+    }
 
-	public static <T extends TaskReceiverType> T of(int id) {
-		return holder.of(id);
-	}
+    public static <T extends TaskReceiverType> T of(int id) {
+        return holder.of(id);
+    }
 
-	public static <T extends TaskReceiverType> T of(String key) {
-		return holder.of(key);
-	}
+    public static <T extends TaskReceiverType> T of(String key) {
+        return holder.of(key);
+    }
 
-	public static <T extends TaskReceiverType> Optional<T> option(int id) {
-		return holder.option(id);
-	}
+    public static <T extends TaskReceiverType> Optional<T> option(int id) {
+        return holder.option(id);
+    }
 
-	public static <T extends TaskReceiverType> Optional<T> option(String key) {
-		return holder.option(key);
-	}
+    public static <T extends TaskReceiverType> Optional<T> option(String key) {
+        return holder.option(key);
+    }
 
-	public static <T extends TaskReceiverType> Collection<T> all() {
-		return holder.allValues();
-	}
+    public static <T extends TaskReceiverType> Collection<T> all() {
+        return holder.allValues();
+    }
 
-	public static Enumerator<TaskReceiverType> enumerator() {
-		return holder;
-	}
+    public static Enumerator<TaskReceiverType> enumerator() {
+        return holder;
+    }
 
 }

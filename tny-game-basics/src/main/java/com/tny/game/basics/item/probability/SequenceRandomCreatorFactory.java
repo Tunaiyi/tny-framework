@@ -22,7 +22,7 @@ public class SequenceRandomCreatorFactory<G extends ProbabilityGroup<P>, P exten
     @Override
     @SuppressWarnings("unchecked")
     public RandomCreator<G, P> getRandomCreator() {
-        return (RandomCreator<G, P>) CREATOR;
+        return (RandomCreator<G, P>)CREATOR;
     }
 
 }

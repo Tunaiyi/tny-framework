@@ -1,6 +1,5 @@
 package com.tny.game.actor.exception;
 
-
 import com.tny.game.actor.*;
 
 /**

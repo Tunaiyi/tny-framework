@@ -13,95 +13,95 @@ import java.util.stream.*;
  */
 public class StoreByCopyCapacityGoal extends BaseStoreCapacitiable implements StoreCapacityGoal {
 
-	private long id;
+    private long id;
 
-	private int itemId;
+    private int itemId;
 
-	private Set<Long> suppliers;
+    private Set<Long> suppliers;
 
-	private Set<CapacityGroup> groups;
+    private Set<CapacityGroup> groups;
 
-	private CapacityVisitor visitor;
+    private CapacityVisitor visitor;
 
-	StoreByCopyCapacityGoal(long id, int itemId, Stream<Long> suppliers, Stream<CapacityGroup> groups, CapacityVisitor visitor, long expireAt) {
-		super(expireAt);
-		this.id = id;
-		this.itemId = itemId;
-		ImmutableSet.Builder<Long> suppliersBuilder = ImmutableSet.builder();
-		suppliers.forEach(suppliersBuilder::add);
-		this.suppliers = suppliersBuilder.build();
-		ImmutableSet.Builder<CapacityGroup> groupsBuilder = ImmutableSet.builder();
-		groups.forEach(groupsBuilder::add);
-		this.groups = groupsBuilder.build();
-		this.visitor = visitor;
-	}
+    StoreByCopyCapacityGoal(long id, int itemId, Stream<Long> suppliers, Stream<CapacityGroup> groups, CapacityVisitor visitor, long expireAt) {
+        super(expireAt);
+        this.id = id;
+        this.itemId = itemId;
+        ImmutableSet.Builder<Long> suppliersBuilder = ImmutableSet.builder();
+        suppliers.forEach(suppliersBuilder::add);
+        this.suppliers = suppliersBuilder.build();
+        ImmutableSet.Builder<CapacityGroup> groupsBuilder = ImmutableSet.builder();
+        groups.forEach(groupsBuilder::add);
+        this.groups = groupsBuilder.build();
+        this.visitor = visitor;
+    }
 
-	StoreByCopyCapacityGoal(long id, int itemId, Stream<? extends CapacitySupplier> suppliers, CapacityVisitor visitor, long expireAt) {
-		super(expireAt);
-		this.id = id;
-		this.itemId = itemId;
-		ImmutableSet.Builder<Long> suppliersBuilder = ImmutableSet.builder();
-		ImmutableSet.Builder<CapacityGroup> groupsBuilder = ImmutableSet.builder();
-		suppliers.forEach(s -> {
-			suppliersBuilder.add(s.getId());
-			groupsBuilder.addAll(s.getAllCapacityGroups());
-		});
-		this.suppliers = suppliersBuilder.build();
-		this.groups = groupsBuilder.build();
-		this.visitor = visitor;
-	}
+    StoreByCopyCapacityGoal(long id, int itemId, Stream<? extends CapacitySupplier> suppliers, CapacityVisitor visitor, long expireAt) {
+        super(expireAt);
+        this.id = id;
+        this.itemId = itemId;
+        ImmutableSet.Builder<Long> suppliersBuilder = ImmutableSet.builder();
+        ImmutableSet.Builder<CapacityGroup> groupsBuilder = ImmutableSet.builder();
+        suppliers.forEach(s -> {
+            suppliersBuilder.add(s.getId());
+            groupsBuilder.addAll(s.getAllCapacityGroups());
+        });
+        this.suppliers = suppliersBuilder.build();
+        this.groups = groupsBuilder.build();
+        this.visitor = visitor;
+    }
 
-	@Override
-	public long getId() {
-		return id;
-	}
+    @Override
+    public long getId() {
+        return id;
+    }
 
-	@Override
-	public int getItemId() {
-		return itemId;
-	}
+    @Override
+    public int getItemId() {
+        return itemId;
+    }
 
-	@Override
-	public long getPlayerId() {
-		return visitor.getPlayerId();
-	}
+    @Override
+    public long getPlayerId() {
+        return visitor.getPlayerId();
+    }
 
-	@Override
-	public Set<CapacityGroup> getSuppliersCapacityGroups() {
-		return groups;
-	}
+    @Override
+    public Set<CapacityGroup> getSuppliersCapacityGroups() {
+        return groups;
+    }
 
-	@Override
-	public Collection<? extends CapacitySupplier> suppliers() {
+    @Override
+    public Collection<? extends CapacitySupplier> suppliers() {
         if (suppliers.isEmpty()) {
             return ImmutableList.of();
         }
-		return suppliers.stream()
-				.map(visitor::findSupplier)
-				.filter(Optional::isPresent)
-				.map(Optional::get)
-				.collect(Collectors.toList());
-	}
+        return suppliers.stream()
+                .map(visitor::findSupplier)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList());
+    }
 
-	@Override
-	public Stream<? extends CapacitySupplier> suppliersStream() {
+    @Override
+    public Stream<? extends CapacitySupplier> suppliersStream() {
         if (suppliers.isEmpty()) {
             return Stream.empty();
         }
-		return suppliers.stream()
-				.map(visitor::findSupplier)
-				.filter(Optional::isPresent)
-				.map(Optional::get);
-	}
+        return suppliers.stream()
+                .map(visitor::findSupplier)
+                .filter(Optional::isPresent)
+                .map(Optional::get);
+    }
 
-	@Override
-	public String toString() {
-		return MoreObjects.toStringHelper(this)
-				.add("id", id)
-				.add("itemId", itemId)
-				.add("name", ItemModels.name(itemId))
-				.add("suppliers", suppliers)
-				.toString();
-	}
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("id", id)
+                .add("itemId", itemId)
+                .add("name", ItemModels.name(itemId))
+                .add("suppliers", suppliers)
+                .toString();
+    }
 
 }

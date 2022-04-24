@@ -19,8 +19,9 @@ public class CacheShardInterpreter<T> extends ShardInterpreter<T> {
             String key = param.toString();
             String headPre = CacheUtils.getKeyHeadPre();
             int end = key.indexOf(CacheUtils.getSeparator());
-            if (end < 0)
+            if (end < 0) {
                 return key;
+            }
             return StringUtils.substring(key, headPre.length(), end);
         }
         return null;
@@ -40,8 +41,9 @@ public class CacheShardInterpreter<T> extends ShardInterpreter<T> {
     @Override
     public void doInterpret(StatementRuntime runtime, T object) {
         Class<?> daoClass = runtime.getMetaData().getDAOMetaData().getDAOClass();
-        if (!ShardCacheDAO.class.isAssignableFrom(daoClass))
+        if (!ShardCacheDAO.class.isAssignableFrom(daoClass)) {
             return;
+        }
         String sql = runtime.getSQL();
         String table = this.getTable(object);
         if (table != null) {

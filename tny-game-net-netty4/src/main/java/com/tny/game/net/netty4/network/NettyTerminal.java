@@ -8,6 +8,6 @@ import com.tny.game.net.transport.*;
  */
 public interface NettyTerminal<UID> extends NetEndpoint<UID>, NetTerminal<UID> {
 
-	boolean isAutoReconnect();
+    boolean isAutoReconnect();
 
 }

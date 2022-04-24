@@ -13,66 +13,66 @@ import com.tny.game.common.utils.*;
 @SuppressWarnings("unchecked")
 public abstract class ItemBuilder<I extends BaseItem<IM>, IM extends ItemModel, B extends ItemBuilder<I, IM, B>> {
 
-	/**
-	 * 玩家ID
-	 */
-	protected long playerId;
+    /**
+     * 玩家ID
+     */
+    protected long playerId;
 
-	/**
-	 * 物品模型
-	 */
-	protected IM itemModel;
+    /**
+     * 物品模型
+     */
+    protected IM itemModel;
 
-	/**
-	 * 设置玩家ID <br>
-	 *
-	 * @param playerId 玩家id
-	 * @return 构建器
-	 */
-	public B setPlayerId(long playerId) {
-		this.playerId = playerId;
-		return (B)this;
-	}
+    /**
+     * 设置玩家ID <br>
+     *
+     * @param playerId 玩家id
+     * @return 构建器
+     */
+    public B setPlayerId(long playerId) {
+        this.playerId = playerId;
+        return (B)this;
+    }
 
-	/**
-	 * 设置事物模型 <br>
-	 *
-	 * @param model 物品模型
-	 * @return 构建器
-	 */
-	public B setModel(IM model) {
-		Asserts.checkNotNull(model);
-		this.itemModel = model;
-		return (B)this;
-	}
+    /**
+     * 设置事物模型 <br>
+     *
+     * @param model 物品模型
+     * @return 构建器
+     */
+    public B setModel(IM model) {
+        Asserts.checkNotNull(model);
+        this.itemModel = model;
+        return (B)this;
+    }
 
-	/**
-	 * 构建事物对象
-	 *
-	 * @return
-	 */
-	public I build() {
-		I entity = createItem();
-		entity.setPlayerId(this.playerId);
-		entity.setModel(this.itemModel);
-		afterModelItem(entity);
-		return entity;
-	}
+    /**
+     * 构建事物对象
+     *
+     * @return
+     */
+    public I build() {
+        I entity = createItem();
+        entity.setPlayerId(this.playerId);
+        entity.setModel(this.itemModel);
+        afterModelItem(entity);
+        return entity;
+    }
 
-	/**
-	 * 构建事物对象
-	 *
-	 * @return
-	 */
-	protected void afterModelItem(I item) {
+    /**
+     * 构建事物对象
+     *
+     * @return
+     */
+    protected void afterModelItem(I item) {
 
-	}
+    }
 
-	/**
-	 * 构建事物对象
-	 *
-	 * @return
-	 */
-	protected abstract I createItem();
+    /**
+     * 构建事物对象
+     *
+     * @return
+     */
+    protected abstract I createItem();
 
 }

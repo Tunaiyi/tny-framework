@@ -7,12 +7,12 @@ import java.lang.annotation.*;
 @Documented
 public @interface FunDoc {
 
-	String des();
+    String des();
 
-	String text() default "";
+    String text() default "";
 
-	Class<?> returnType() default Object.class;
+    Class<?> returnType() default Object.class;
 
-	String returnDes() default "";
+    String returnDes() default "";
 
 }

@@ -28,6 +28,7 @@ public class RSAUtils {
      * 签名/验证算法
      */
     public static final String SIGN_MD5_ALGORITHM = "MD5withRSA";
+
     public static final String SIGN_SHA1_ALGORITHMS = "SHA1WithRSA";
 
     static {
@@ -50,7 +51,7 @@ public class RSAUtils {
             BigInteger mod = new BigInteger(modulus);
             BigInteger exp = new BigInteger(exponent);
             RSAPublicKeySpec keySpec = new RSAPublicKeySpec(mod, exp);
-            return (RSAPublicKey) keyFactory.generatePublic(keySpec);
+            return (RSAPublicKey)keyFactory.generatePublic(keySpec);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -69,7 +70,7 @@ public class RSAUtils {
             BigInteger mod = new BigInteger(modulus);
             BigInteger exp = new BigInteger(exponent);
             RSAPrivateKeySpec keySpec = new RSAPrivateKeySpec(mod, exp);
-            return (RSAPrivateKey) keyFactory.generatePrivate(keySpec);
+            return (RSAPrivateKey)keyFactory.generatePrivate(keySpec);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -94,7 +95,7 @@ public class RSAUtils {
      */
     public static RSAPrivateKey toPrivateKey(String key) throws InvalidKeySpecException {
         byte[] data = Base64.decodeBase64(key);
-        return (RSAPrivateKey) keyFactory.generatePrivate(new PKCS8EncodedKeySpec(data));
+        return (RSAPrivateKey)keyFactory.generatePrivate(new PKCS8EncodedKeySpec(data));
     }
 
     /**
@@ -105,7 +106,7 @@ public class RSAUtils {
      */
     public static RSAPublicKey toPublicKey(String key) throws InvalidKeySpecException {
         byte[] data = Base64.decodeBase64(key);
-        return (RSAPublicKey) keyFactory.generatePublic(new X509EncodedKeySpec(data));
+        return (RSAPublicKey)keyFactory.generatePublic(new X509EncodedKeySpec(data));
     }
 
     /**
@@ -307,8 +308,9 @@ public class RSAUtils {
     }
 
     public static RSAKeyPair getKeyPair(int size) throws Exception {
-        if (size % 64 != 0)
+        if (size % 64 != 0) {
             throw new IllegalArgumentException(format("密码长度 {} 不为64的倍数", size));
+        }
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(KEY_ALGORITHM);
         keyPairGenerator.initialize(size);
         KeyPair keyPair = keyPairGenerator.generateKeyPair();
@@ -358,11 +360,11 @@ public class RSAUtils {
         KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance("RSA");
         keyPairGen.initialize(512);
         KeyPair keyPair = keyPairGen.generateKeyPair();
-        RSAPublicKey publicKey1 = (RSAPublicKey) keyPair.getPublic();
+        RSAPublicKey publicKey1 = (RSAPublicKey)keyPair.getPublic();
         byte[] pubKeyBytes1 = publicKey1.getEncoded();
         System.out.println("public Key: ");
         System.out.println(Base64.encodeBase64String(pubKeyBytes1));
-        RSAPrivateKey privateKey1 = (RSAPrivateKey) keyPair.getPrivate();
+        RSAPrivateKey privateKey1 = (RSAPrivateKey)keyPair.getPrivate();
         byte[] priKeyBytes1 = privateKey1.getEncoded();
         System.out.println("private Key: ");
         System.out.println(Base64.encodeBase64String(priKeyBytes1));
@@ -371,11 +373,11 @@ public class RSAUtils {
         keyPairGen = KeyPairGenerator.getInstance("RSA");
         keyPairGen.initialize(512);
         keyPair = keyPairGen.generateKeyPair();
-        publicKey1 = (RSAPublicKey) keyPair.getPublic();
+        publicKey1 = (RSAPublicKey)keyPair.getPublic();
         pubKeyBytes1 = publicKey1.getEncoded();
         System.out.println("public Key: ");
         System.out.println(Base64.encodeBase64String(pubKeyBytes1));
-        privateKey1 = (RSAPrivateKey) keyPair.getPrivate();
+        privateKey1 = (RSAPrivateKey)keyPair.getPrivate();
         priKeyBytes1 = privateKey1.getEncoded();
         System.out.println("private Key: ");
         System.out.println(Base64.encodeBase64String(priKeyBytes1));
@@ -388,8 +390,8 @@ public class RSAUtils {
         System.out.println(Base64.encodeBase64String(privateRsaData).length());
 
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-        RSAPublicKey publicKey2 = (RSAPublicKey) keyFactory.generatePublic(new X509EncodedKeySpec(pubKeyBytes1));
-        RSAPrivateKey privateKey2 = (RSAPrivateKey) keyFactory.generatePrivate(new PKCS8EncodedKeySpec(priKeyBytes1));
+        RSAPublicKey publicKey2 = (RSAPublicKey)keyFactory.generatePublic(new X509EncodedKeySpec(pubKeyBytes1));
+        RSAPrivateKey privateKey2 = (RSAPrivateKey)keyFactory.generatePrivate(new PKCS8EncodedKeySpec(priKeyBytes1));
         System.out.println(new String(decrypt(publicRsaData, privateKey2)));
         System.out.println(new String(decrypt(privateRsaData, publicKey2)));
 
@@ -397,4 +399,5 @@ public class RSAUtils {
         System.out.println(verify(context.getBytes(), priSign, publicKey1));
 
     }
+
 }

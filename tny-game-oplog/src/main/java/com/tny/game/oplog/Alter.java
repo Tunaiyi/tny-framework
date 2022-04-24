@@ -49,18 +49,21 @@ public class Alter<N> {
     }
 
     public void update() {
-        if (this.supplier == null)
+        if (this.supplier == null) {
             LOGGER.warn("alter supplier is null", new NullPointerException());
+        }
         this.update(this.supplier.get());
     }
 
     public void update(N alter) {
-        if (alter == null)
+        if (alter == null) {
             return;
-        if (this.lately != null)
+        }
+        if (this.lately != null) {
             this.lately = alter;
-        else if (this.value == null || !this.value.equals(alter))
+        } else if (this.value == null || !this.value.equals(alter)) {
             this.lately = alter;
+        }
     }
 
     public boolean isChange() {

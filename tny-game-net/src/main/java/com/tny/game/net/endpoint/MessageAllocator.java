@@ -11,13 +11,13 @@ import com.tny.game.net.transport.*;
  */
 public interface MessageAllocator {
 
-	/**
-	 * 分配生成消息
-	 *
-	 * @param factory 消息工厂
-	 * @param context 发送上下文
-	 * @return 返回消息
-	 */
-	Message allocate(MessageFactory factory, MessageContext context);
+    /**
+     * 分配生成消息
+     *
+     * @param factory 消息工厂
+     * @param context 发送上下文
+     * @return 返回消息
+     */
+    Message allocate(MessageFactory factory, MessageContext context);
 
 }

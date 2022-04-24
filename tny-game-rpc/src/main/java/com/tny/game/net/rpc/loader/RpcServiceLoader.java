@@ -15,23 +15,23 @@ import java.util.*;
  */
 public final class RpcServiceLoader {
 
-	private static final Set<Class<?>> CLASSES = new ConcurrentHashSet<>();
+    private static final Set<Class<?>> CLASSES = new ConcurrentHashSet<>();
 
-	private RpcServiceLoader() {
-	}
+    private RpcServiceLoader() {
+    }
 
-	@ClassSelectorProvider
-	public static ClassSelector serviceSelector() {
-		return ClassSelector.create()
-				.addFilter(AnnotationClassFilter.ofInclude(RpcService.class))
-				.setHandler((classes) -> classes.stream()
-						.filter(Class::isInterface)
-						.forEach(CLASSES::add)
-				);
-	}
+    @ClassSelectorProvider
+    public static ClassSelector serviceSelector() {
+        return ClassSelector.create()
+                .addFilter(AnnotationClassFilter.ofInclude(RpcService.class))
+                .setHandler((classes) -> classes.stream()
+                        .filter(Class::isInterface)
+                        .forEach(CLASSES::add)
+                );
+    }
 
-	public static Set<Class<?>> getServiceClasses() {
-		return Collections.unmodifiableSet(CLASSES);
-	}
+    public static Set<Class<?>> getServiceClasses() {
+        return Collections.unmodifiableSet(CLASSES);
+    }
 
 }

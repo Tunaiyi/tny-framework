@@ -19,23 +19,23 @@ import static com.tny.game.basics.configuration.BasicsPropertiesConstants.*;
 @ConditionalOnProperty(name = BASICS_WAREHOUSE_MODULE_ENABLE, havingValue = "true")
 public class BasicsWarehouseModuleConfiguration {
 
-	@Bean
-	@Primary
-	@ConditionalOnBean(StuffOwnerExplorer.class)
-	public GameStuffOwnerService<?, ?, ?> gameStuffOwnerService(StuffOwnerExplorer stuffOwnerExplorer) {
-		return new GameStuffOwnerService<>(stuffOwnerExplorer);
-	}
+    @Bean
+    @Primary
+    @ConditionalOnBean(StuffOwnerExplorer.class)
+    public GameStuffOwnerService<?, ?, ?> gameStuffOwnerService(StuffOwnerExplorer stuffOwnerExplorer) {
+        return new GameStuffOwnerService<>(stuffOwnerExplorer);
+    }
 
-	@Bean
-	@ConditionalOnBean(WarehouseManager.class)
-	public TradeService tradeService(
-			WarehouseManager warehouseManager,
-			ObjectProvider<PrimaryStuffService<?>> primaryObjectProvider,
-			ObjectProvider<StuffService<?>> serviceObjectProvider) {
-		return new GameTradeService(
-				warehouseManager,
-				primaryObjectProvider.getIfUnique(),
-				serviceObjectProvider.stream().collect(Collectors.toList()));
-	}
+    @Bean
+    @ConditionalOnBean(WarehouseManager.class)
+    public TradeService tradeService(
+            WarehouseManager warehouseManager,
+            ObjectProvider<PrimaryStuffService<?>> primaryObjectProvider,
+            ObjectProvider<StuffService<?>> serviceObjectProvider) {
+        return new GameTradeService(
+                warehouseManager,
+                primaryObjectProvider.getIfUnique(),
+                serviceObjectProvider.stream().collect(Collectors.toList()));
+    }
 
 }

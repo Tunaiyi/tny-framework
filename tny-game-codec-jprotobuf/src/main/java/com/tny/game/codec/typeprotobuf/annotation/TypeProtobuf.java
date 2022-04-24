@@ -14,11 +14,11 @@ import java.lang.annotation.*;
 @DocAnnotationClass
 public @interface TypeProtobuf {
 
-	/**
-	 * aa/bb 方式 mimeType 优先
-	 *
-	 * @return 等同 mimeType
-	 */
-	int value();
+    /**
+     * aa/bb 方式 mimeType 优先
+     *
+     * @return 等同 mimeType
+     */
+    int value();
 
 }

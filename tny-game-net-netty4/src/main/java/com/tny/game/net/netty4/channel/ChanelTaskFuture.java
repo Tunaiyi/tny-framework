@@ -13,45 +13,45 @@ import java.util.concurrent.*;
  */
 public class ChanelTaskFuture implements TaskFuture<Void> {
 
-	private ChannelPromise promise;
+    private ChannelPromise promise;
 
-	public ChanelTaskFuture(ChannelPromise promise) {
-		this.promise = promise;
-	}
+    public ChanelTaskFuture(ChannelPromise promise) {
+        this.promise = promise;
+    }
 
-	@Override
-	public void success(Void value) {
-		this.promise.setSuccess();
-	}
+    @Override
+    public void success(Void value) {
+        this.promise.setSuccess();
+    }
 
-	@Override
-	public void failure(Throwable throwable) {
-		promise.setFailure(throwable);
-	}
+    @Override
+    public void failure(Throwable throwable) {
+        promise.setFailure(throwable);
+    }
 
-	@Override
-	public boolean cancel(boolean mayInterruptIfRunning) {
-		return promise.cancel(true);
-	}
+    @Override
+    public boolean cancel(boolean mayInterruptIfRunning) {
+        return promise.cancel(true);
+    }
 
-	@Override
-	public boolean isCancelled() {
-		return promise.isCancelled();
-	}
+    @Override
+    public boolean isCancelled() {
+        return promise.isCancelled();
+    }
 
-	@Override
-	public boolean isDone() {
-		return promise.isDone();
-	}
+    @Override
+    public boolean isDone() {
+        return promise.isDone();
+    }
 
-	@Override
-	public Void get() throws InterruptedException, ExecutionException {
-		return promise.get();
-	}
+    @Override
+    public Void get() throws InterruptedException, ExecutionException {
+        return promise.get();
+    }
 
-	@Override
-	public Void get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-		return promise.get(timeout, unit);
-	}
+    @Override
+    public Void get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+        return promise.get(timeout, unit);
+    }
 
 }

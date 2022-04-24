@@ -11,10 +11,15 @@ import java.util.*;
 public class JedisConfig {
 
     private String host = Protocol.DEFAULT_HOST;
+
     private int port = Protocol.DEFAULT_PORT;
+
     private String password = null;
+
     private int db = Protocol.DEFAULT_DATABASE;
+
     private int timeout = Protocol.DEFAULT_TIMEOUT;
+
     private Map<String, Object> params = new HashMap<>();
 
     public String getHost() {
@@ -68,12 +73,13 @@ public class JedisConfig {
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                          .add("host", host)
-                          .add("port", port)
-                          .add("password", password)
-                          .add("db", db)
-                          .add("timeout", timeout)
-                          .add("params", params)
-                          .toString();
+                .add("host", host)
+                .add("port", port)
+                .add("password", password)
+                .add("db", db)
+                .add("timeout", timeout)
+                .add("params", params)
+                .toString();
     }
+
 }

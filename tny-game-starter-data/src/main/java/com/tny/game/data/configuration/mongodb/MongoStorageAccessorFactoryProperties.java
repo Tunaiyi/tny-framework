@@ -13,39 +13,39 @@ import java.util.*;
 @ConfigurationProperties(prefix = "tny.data.storage-accessor.mongo-accessor")
 public class MongoStorageAccessorFactoryProperties {
 
-	private boolean enable = true;
+    private boolean enable = true;
 
-	@NestedConfigurationProperty
-	private MongoStorageAccessorFactorySetting accessor = new MongoStorageAccessorFactorySetting();
+    @NestedConfigurationProperty
+    private MongoStorageAccessorFactorySetting accessor = new MongoStorageAccessorFactorySetting();
 
-	private Map<String, MongoStorageAccessorFactorySetting> accessors = new HashMap<>();
+    private Map<String, MongoStorageAccessorFactorySetting> accessors = new HashMap<>();
 
-	public boolean isEnable() {
-		return enable;
-	}
+    public boolean isEnable() {
+        return enable;
+    }
 
-	public MongoStorageAccessorFactoryProperties setEnable(boolean enable) {
-		this.enable = enable;
-		return this;
-	}
+    public MongoStorageAccessorFactoryProperties setEnable(boolean enable) {
+        this.enable = enable;
+        return this;
+    }
 
-	public MongoStorageAccessorFactorySetting getAccessor() {
-		return accessor;
-	}
+    public MongoStorageAccessorFactorySetting getAccessor() {
+        return accessor;
+    }
 
-	public MongoStorageAccessorFactoryProperties setAccessor(MongoStorageAccessorFactorySetting accessor) {
-		this.accessor = accessor;
-		return this;
-	}
+    public MongoStorageAccessorFactoryProperties setAccessor(MongoStorageAccessorFactorySetting accessor) {
+        this.accessor = accessor;
+        return this;
+    }
 
-	public Map<String, MongoStorageAccessorFactorySetting> getAccessors() {
-		return accessors;
-	}
+    public Map<String, MongoStorageAccessorFactorySetting> getAccessors() {
+        return accessors;
+    }
 
-	public MongoStorageAccessorFactoryProperties setAccessors(
-			Map<String, MongoStorageAccessorFactorySetting> accessors) {
-		this.accessors = accessors;
-		return this;
-	}
+    public MongoStorageAccessorFactoryProperties setAccessors(
+            Map<String, MongoStorageAccessorFactorySetting> accessors) {
+        this.accessors = accessors;
+        return this;
+    }
 
 }

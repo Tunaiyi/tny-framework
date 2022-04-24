@@ -11,9 +11,9 @@ public class LambdaTest1 {
 
     private static void test(Consumer<String> old) {
         Consumer<String> ld = (s) -> System.out.println(s);
-        if (old == null)
+        if (old == null) {
             temp = ld;
-        else {
+        } else {
             System.out.println(ld == old);
         }
     }
@@ -25,17 +25,19 @@ public class LambdaTest1 {
             test(temp);
         System.out.println("@@@@@@@@");
 
-
         Consumer<String> old = null;
         int index = 0;
         while (true) {
             Consumer<String> ld1 = (s) -> System.out.println(s);
-            if (old == null)
+            if (old == null) {
                 old = ld1;
+            }
             System.out.println(old == ld1);
-            if (index++ == 4)
+            if (index++ == 4) {
                 break;
+            }
             ld1.accept("aa");
         }
     }
+
 }

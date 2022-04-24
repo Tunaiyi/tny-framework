@@ -7,7 +7,6 @@ import org.springframework.util.StreamUtils;
 
 import java.io.*;
 
-
 public class ExcelHttpMessageConverter extends AbstractHttpMessageConverter<Workbook> {
 
     /**
@@ -40,7 +39,7 @@ public class ExcelHttpMessageConverter extends AbstractHttpMessageConverter<Work
     protected Workbook readInternal(Class<? extends Workbook> clazz, HttpInputMessage inputMessage)
             throws IOException, HttpMessageNotReadableException {
         long contentLength = inputMessage.getHeaders().getContentLength();
-        ByteArrayOutputStream bos = new ByteArrayOutputStream(contentLength >= 0 ? (int) contentLength : StreamUtils.BUFFER_SIZE);
+        ByteArrayOutputStream bos = new ByteArrayOutputStream(contentLength >= 0 ? (int)contentLength : StreamUtils.BUFFER_SIZE);
         StreamUtils.copy(inputMessage.getBody(), bos);
         return WorkbookFactory.create(inputMessage.getBody());
     }

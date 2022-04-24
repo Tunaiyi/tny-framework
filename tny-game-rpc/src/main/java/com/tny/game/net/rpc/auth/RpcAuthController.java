@@ -18,19 +18,19 @@ import static com.tny.game.net.rpc.auth.RpcProtocol.*;
 @RpcController
 public class RpcAuthController {
 
-	@Resource
-	private RpcAuthService rpcAuthService;
+    @Resource
+    private RpcAuthService rpcAuthService;
 
-	@RpcRequest(RPC_AUTH_$_AUTHENTICATE)
-	@AuthenticationRequired(validator = RpcPasswordValidator.class)
-	public RpcResult<String> authenticate(ServerBootstrapSetting setting, @UserId RpcLinkerId id) {
-		String token = rpcAuthService.createToken(setting.serviceName(), id);
-		return RpcResults.success(token);
-	}
+    @RpcRequest(RPC_AUTH_$_AUTHENTICATE)
+    @AuthenticationRequired(validator = RpcPasswordValidator.class)
+    public RpcResult<String> authenticate(ServerBootstrapSetting setting, @UserId RpcLinkerId id) {
+        String token = rpcAuthService.createToken(setting.serviceName(), id);
+        return RpcResults.success(token);
+    }
 
-	@RpcResponse(RPC_AUTH_$_AUTHENTICATE)
-	@AuthenticationRequired(validator = RpcTokenValidator.class)
-	public void authenticated(@UserId RpcLinkerId id) {
-	}
+    @RpcResponse(RPC_AUTH_$_AUTHENTICATE)
+    @AuthenticationRequired(validator = RpcTokenValidator.class)
+    public void authenticated(@UserId RpcLinkerId id) {
+    }
 
 }

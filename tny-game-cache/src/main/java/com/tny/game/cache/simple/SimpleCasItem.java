@@ -8,8 +8,11 @@ public class SimpleCasItem<T> implements CasItem<T> {
      *
      */
     private static final long serialVersionUID = 1L;
+
     private String key;
+
     private T data;
+
     private long version;
 
     public SimpleCasItem(String key, T data, long version) {

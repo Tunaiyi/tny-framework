@@ -7,16 +7,16 @@ import static com.tny.game.common.utils.ObjectAide.*;
  */
 public class FeatureOpenPlan {
 
-	private int level;
+    private int level;
 
-	private FeatureOpenMode<?> mode;
+    private FeatureOpenMode<?> mode;
 
-	public int getLevel() {
-		return this.level;
-	}
+    public int getLevel() {
+        return this.level;
+    }
 
-	public <FM extends FeatureModel> FeatureOpenMode<FM> getMode() {
-		return as(this.mode);
-	}
+    public <FM extends FeatureModel> FeatureOpenMode<FM> getMode() {
+        return as(this.mode);
+    }
 
 }

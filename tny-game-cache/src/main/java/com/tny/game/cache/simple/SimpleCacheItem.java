@@ -5,9 +5,13 @@ import com.tny.game.cache.*;
 public class SimpleCacheItem<T, R> extends RawCacheItem<R, T> {
 
     private static final long serialVersionUID = 1L;
+
     private String key;
+
     private T data;
+
     private long version;
+
     private long expire;
 
     public SimpleCacheItem() {
@@ -47,4 +51,5 @@ public class SimpleCacheItem<T, R> extends RawCacheItem<R, T> {
     public T getData() {
         return data;
     }
+
 }

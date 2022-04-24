@@ -10,14 +10,14 @@ import com.tny.game.net.relay.packet.arguments.*;
  */
 public class LinkOpenPacket extends BaseLinkPacket<LinkOpenArguments> {
 
-	public static final RelayPacketFactory<LinkOpenPacket, LinkOpenArguments> FACTORY = LinkOpenPacket::new;
+    public static final RelayPacketFactory<LinkOpenPacket, LinkOpenArguments> FACTORY = LinkOpenPacket::new;
 
-	public LinkOpenPacket(int id, LinkOpenArguments arguments) {
-		super(id, RelayPacketType.LINK_OPENING, arguments);
-	}
+    public LinkOpenPacket(int id, LinkOpenArguments arguments) {
+        super(id, RelayPacketType.LINK_OPENING, arguments);
+    }
 
-	public LinkOpenPacket(int id, LinkOpenArguments arguments, long time) {
-		super(id, RelayPacketType.LINK_OPENING, time, arguments);
-	}
+    public LinkOpenPacket(int id, LinkOpenArguments arguments, long time) {
+        super(id, RelayPacketType.LINK_OPENING, time, arguments);
+    }
 
 }

@@ -8,11 +8,17 @@ import java.time.Instant;
 class DefaultTimeTrigger<C extends TimeCycle> implements TimeTrigger<C> {
 
     private C timeCycle = null;
+
     private Instant startTime = null;
+
     private Instant previousTime = null;
+
     private Instant nextTime = null;
+
     private Instant endTime = null;
+
     private long speedMills = 0;
+
     private Instant suspendTime = null;
 
     protected DefaultTimeTrigger(Instant startTime, Instant previousTime, Instant endTime, Instant suspendTime, C timeCycle, long speedMills,

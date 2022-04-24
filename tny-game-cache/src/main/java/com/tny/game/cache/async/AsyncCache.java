@@ -72,8 +72,9 @@ public class AsyncCache implements Cache {
     public <T> List<T> addObject(Collection<T> objectCollection) {
         List<T> itemList = new ArrayList<T>();
         for (T object : objectCollection) {
-            if (!this.addObject(object))
+            if (!this.addObject(object)) {
                 itemList.add(object);
+            }
         }
         return itemList;
     }
@@ -89,8 +90,9 @@ public class AsyncCache implements Cache {
     public <T> List<T> setObject(Collection<T> objectCollection) {
         List<T> itemList = new ArrayList<T>();
         for (T object : objectCollection) {
-            if (!this.setObject(object))
+            if (!this.setObject(object)) {
                 itemList.add(object);
+            }
         }
         return itemList;
     }
@@ -106,8 +108,9 @@ public class AsyncCache implements Cache {
     public <T> List<T> updateObject(Collection<T> objectCollection) {
         List<T> itemList = new ArrayList<T>();
         for (T object : objectCollection) {
-            if (!this.updateObject(object))
+            if (!this.updateObject(object)) {
                 itemList.add(object);
+            }
         }
         return itemList;
     }
@@ -123,8 +126,9 @@ public class AsyncCache implements Cache {
     public <T> List<T> deleteObject(T... objects) {
         List<T> list = new ArrayList<T>();
         for (T object : objects) {
-            if (!this.deleteObject(object))
+            if (!this.deleteObject(object)) {
                 list.add(object);
+            }
         }
         return list;
     }
@@ -133,8 +137,9 @@ public class AsyncCache implements Cache {
     public <T> List<T> deleteObject(Collection<T> objectCollection) {
         List<T> list = new ArrayList<T>();
         for (T object : objectCollection) {
-            if (!this.deleteObject(object))
+            if (!this.deleteObject(object)) {
                 list.add(object);
+            }
         }
         return list;
     }

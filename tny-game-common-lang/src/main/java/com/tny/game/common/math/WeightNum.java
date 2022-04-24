@@ -21,7 +21,7 @@ public class WeightNum<V> {
     }
 
     public int countProbability(float perNum) {
-        return (int) (this.weight * perNum);
+        return (int)(this.weight * perNum);
     }
 
 }

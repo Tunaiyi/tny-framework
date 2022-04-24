@@ -12,8 +12,8 @@ import java.util.Collection;
  */
 public interface EventSource<L> extends EventBus<L> {
 
-	void addListener(Collection<? extends L> listeners);
+    void addListener(Collection<? extends L> listeners);
 
-	void removeListener(Collection<? extends L> listeners);
+    void removeListener(Collection<? extends L> listeners);
 
 }

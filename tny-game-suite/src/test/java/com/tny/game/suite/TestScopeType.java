@@ -8,15 +8,17 @@ import com.tny.game.net.base.*;
  */
 public enum TestScopeType implements ScopeType {
 
-
     ONLINE(0, "online", TestAppType.GAME, false),
 
     //
     ;
 
     int id;
+
     String name;
+
     boolean test;
+
     TestAppType serverType;
 
     TestScopeType(int id, String name, TestAppType serverType, boolean test) {
@@ -26,7 +28,6 @@ public enum TestScopeType implements ScopeType {
         this.test = test;
         registerSelf();
     }
-
 
     @Override
     public int getId() {

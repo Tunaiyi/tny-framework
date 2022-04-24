@@ -47,10 +47,12 @@ public class ActorAddress {
      */
     public String hostPort() {
         StringBuilder sb = (new StringBuilder(system));
-        if (StringUtils.isNoneBlank(host))
+        if (StringUtils.isNoneBlank(host)) {
             sb.append('@').append(host);
-        if (port != null)
+        }
+        if (port != null) {
             sb.append(':').append(port);
+        }
         return sb.toString();
     }
 
@@ -60,10 +62,12 @@ public class ActorAddress {
     @Override
     public String toString() {
         StringBuilder sb = (new StringBuilder(protocol)).append("://").append(system);
-        if (StringUtils.isNoneBlank(host))
+        if (StringUtils.isNoneBlank(host)) {
             sb.append('@').append(host);
-        if (port != null)
+        }
+        if (port != null) {
             sb.append(':').append(port);
+        }
         return sb.toString();
     }
 

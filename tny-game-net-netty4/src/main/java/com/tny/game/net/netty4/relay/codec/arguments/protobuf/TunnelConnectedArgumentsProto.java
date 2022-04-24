@@ -11,29 +11,29 @@ import com.tny.game.net.relay.packet.arguments.*;
  */
 public class TunnelConnectedArgumentsProto extends BaseTunnelArgumentsProto<TunnelConnectedArguments> {
 
-	@Protobuf(order = 10)
-	private boolean result;
+    @Protobuf(order = 10)
+    private boolean result;
 
-	public TunnelConnectedArgumentsProto() {
-	}
+    public TunnelConnectedArgumentsProto() {
+    }
 
-	public TunnelConnectedArgumentsProto(TunnelConnectedArguments arguments) {
-		super(arguments);
-		this.result = arguments.getResult();
-	}
+    public TunnelConnectedArgumentsProto(TunnelConnectedArguments arguments) {
+        super(arguments);
+        this.result = arguments.getResult();
+    }
 
-	@Override
-	public TunnelConnectedArguments toArguments() {
-		return TunnelConnectedArguments.ofResult(this.getInstanceId(), this.getTunnelId(), this.result);
-	}
+    @Override
+    public TunnelConnectedArguments toArguments() {
+        return TunnelConnectedArguments.ofResult(this.getInstanceId(), this.getTunnelId(), this.result);
+    }
 
-	public boolean isResult() {
-		return result;
-	}
+    public boolean isResult() {
+        return result;
+    }
 
-	public TunnelConnectedArgumentsProto setResult(boolean result) {
-		this.result = result;
-		return this;
-	}
+    public TunnelConnectedArgumentsProto setResult(boolean result) {
+        this.result = result;
+        return this;
+    }
 
 }

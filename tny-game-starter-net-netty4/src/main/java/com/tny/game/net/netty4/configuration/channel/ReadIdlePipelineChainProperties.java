@@ -11,15 +11,15 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties("tny.net.pipeline.read-idle-pipeline-chain")
 public class ReadIdlePipelineChainProperties {
 
-	private long idleTimeout = 180000;
+    private long idleTimeout = 180000;
 
-	public long getIdleTimeout() {
-		return idleTimeout;
-	}
+    public long getIdleTimeout() {
+        return idleTimeout;
+    }
 
-	public ReadIdlePipelineChainProperties setIdleTimeout(long idleTimeout) {
-		this.idleTimeout = idleTimeout;
-		return this;
-	}
+    public ReadIdlePipelineChainProperties setIdleTimeout(long idleTimeout) {
+        this.idleTimeout = idleTimeout;
+        return this;
+    }
 
 }

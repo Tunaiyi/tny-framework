@@ -115,6 +115,7 @@ public class AutoSnapMethod<SN extends Annotation> extends AutoMethod<Snap, None
     private static class SnapParamHolder {
 
         private Snap snap;
+
         private int index;
 
         private SnapParamHolder(Snap snap, int index) {
@@ -135,6 +136,7 @@ public class AutoSnapMethod<SN extends Annotation> extends AutoMethod<Snap, None
     public static class SnapParamEntry {
 
         private Object object;
+
         private Snap snap;
 
         public SnapParamEntry(Object object, Snap snap) {

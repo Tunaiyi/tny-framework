@@ -12,20 +12,20 @@ import java.net.InetSocketAddress;
  */
 public interface NetServer extends Serve {
 
-	/**
-	 * @return 服务名
-	 */
-	String getName();
+    /**
+     * @return 服务名
+     */
+    String getName();
 
-	@Override
-	default String getService() {
-		return getName();
-	}
+    @Override
+    default String getService() {
+        return getName();
+    }
 
-	String getScheme();
+    String getScheme();
 
-	InetSocketAddress getBindAddress();
+    InetSocketAddress getBindAddress();
 
-	InetSocketAddress getServeAddress();
+    InetSocketAddress getServeAddress();
 
 }

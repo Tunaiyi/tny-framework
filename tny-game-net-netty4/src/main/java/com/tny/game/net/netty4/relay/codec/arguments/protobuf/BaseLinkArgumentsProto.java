@@ -10,10 +10,10 @@ import com.tny.game.net.relay.packet.arguments.*;
  */
 public abstract class BaseLinkArgumentsProto<T extends LinkPacketArguments> implements PacketArgumentsProto<T> {
 
-	protected BaseLinkArgumentsProto() {
-	}
+    protected BaseLinkArgumentsProto() {
+    }
 
-	protected BaseLinkArgumentsProto(T arguments) {
-	}
+    protected BaseLinkArgumentsProto(T arguments) {
+    }
 
 }

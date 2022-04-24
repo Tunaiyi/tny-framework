@@ -14,6 +14,6 @@ import io.netty.channel.Channel;
 @UnitInterface
 public interface NettyTunnelFactory {
 
-	<T> NetTunnel<T> create(long id, Channel channel, NetworkContext context);
+    <T> NetTunnel<T> create(long id, Channel channel, NetworkContext context);
 
 }

@@ -10,8 +10,8 @@ import java.nio.ByteBuffer;
  */
 public interface ByteBufferAllocator {
 
-	ByteBuffer alloc(int capacity);
+    ByteBuffer alloc(int capacity);
 
-	void release();
+    void release();
 
 }

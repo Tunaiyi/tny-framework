@@ -10,37 +10,37 @@ import com.tny.game.common.enums.*;
  */
 public enum TunnelStatus implements IntEnumerable {
 
-	/**
-	 * 初始化
-	 **/
-	INIT(1),
+    /**
+     * 初始化
+     **/
+    INIT(1),
 
-	/**
-	 * 连接
-	 **/
-	OPEN(2),
+    /**
+     * 连接
+     **/
+    OPEN(2),
 
-	/**
-	 * 挂起
-	 */
-	SUSPEND(3),
+    /**
+     * 挂起
+     */
+    SUSPEND(3),
 
-	/**
-	 * 关闭
-	 **/
-	CLOSED(4);
+    /**
+     * 关闭
+     **/
+    CLOSED(4);
 
-	//
+    //
 
-	private final int id;
+    private final int id;
 
-	TunnelStatus(int id) {
-		this.id = id;
-	}
+    TunnelStatus(int id) {
+        this.id = id;
+    }
 
-	@Override
-	public int id() {
-		return this.id;
-	}
+    @Override
+    public int id() {
+        return this.id;
+    }
 
 }

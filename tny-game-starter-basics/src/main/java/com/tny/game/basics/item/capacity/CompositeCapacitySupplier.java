@@ -10,17 +10,17 @@ import java.util.*;
  */
 public interface CompositeCapacitySupplier extends CapacitySupplier, CapableComposition {
 
-	@Override
-	default boolean isHasCapacity(Capacity capacity) {
-		return isWorking() && suppliersStream().anyMatch(s -> s.isHasCapacity(capacity));
-	}
+    @Override
+    default boolean isHasCapacity(Capacity capacity) {
+        return isWorking() && suppliersStream().anyMatch(s -> s.isHasCapacity(capacity));
+    }
 
-	@Override
-	default Map<Capacity, Number> getAllCapacities() {
-		Map<Capacity, Number> numberMap = new HashMap<>();
-		suppliers()
-				.forEach(s -> s.getAllCapacities().forEach((c, num) -> numberMap.merge(c, num, NumberAide::add)));
-		return numberMap;
-	}
+    @Override
+    default Map<Capacity, Number> getAllCapacities() {
+        Map<Capacity, Number> numberMap = new HashMap<>();
+        suppliers()
+                .forEach(s -> s.getAllCapacities().forEach((c, num) -> numberMap.merge(c, num, NumberAide::add)));
+        return numberMap;
+    }
 
 }

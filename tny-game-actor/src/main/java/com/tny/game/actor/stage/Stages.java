@@ -1,6 +1,5 @@
 package com.tny.game.actor.stage;
 
-
 import com.tny.game.actor.*;
 import com.tny.game.actor.stage.exception.*;
 import com.tny.game.actor.stage.invok.*;
@@ -19,8 +18,9 @@ import java.util.stream.Collectors;
 class Stages {
 
     public static Done<Throwable> getCause(Stage stage) {
-        if (!stage.isDone())
+        if (!stage.isDone()) {
             return DoneResults.failure();
+        }
         return DoneResults.successNullable(stage.getCause());
     }
 
@@ -149,8 +149,9 @@ class Stages {
 
         @Override
         protected void doExecute(T returnVal, Throwable e) {
-            if (isFailed(e) || this.isDone())
+            if (isFailed(e) || this.isDone()) {
                 return;
+            }
             NR result = invoke(returnVal, e);
             this.finish(result);
         }
@@ -167,6 +168,7 @@ class Stages {
         protected boolean isNoneParam() {
             return true;
         }
+
     }
 
     //region JoinFragment classes
@@ -184,8 +186,9 @@ class Stages {
 
         @Override
         protected void doExecute(T returnVal, Throwable e) {
-            if (this.isDone())
+            if (this.isDone()) {
                 return;
+            }
             this.stage = this.invoke(returnVal, e);
             if (this.stage != null) {
                 finish(null);
@@ -206,6 +209,7 @@ class Stages {
         protected boolean isNoneParam() {
             return true;
         }
+
     }
 
     static class JoinSupplyFragment<T> extends VoidJoinFragment<Supplier<Stage<T>>, T> {
@@ -239,7 +243,6 @@ class Stages {
         JoinSupplyStageableFragment(SupplyStageable<Stage<R>> fn) {
             super(fn);
         }
-
 
         @Override
         protected Stage<R> invoke(Void returnVal, Throwable e) {
@@ -298,7 +301,6 @@ class Stages {
             return waitUntil(this.fn.apply(returnVal));
         }
 
-
     }
 
     static class JoinApplyDoneSupplierFragment<T, R> extends JoinFragment<Function<R, DoneSupplier<T>>, R, T> {
@@ -328,6 +330,7 @@ class Stages {
             this.fn.run();
             return null;
         }
+
     }
     //endregion
 
@@ -342,6 +345,7 @@ class Stages {
         protected T invoke(Void returnVal, Throwable e) {
             return this.fn.get();
         }
+
     }
     //endregion
 
@@ -356,6 +360,7 @@ class Stages {
         protected R invoke(T returnVal, Throwable e) {
             return this.fn.apply(returnVal);
         }
+
     }
     //endregion
 
@@ -372,6 +377,7 @@ class Stages {
             this.fn.accept(returnVal);
             return null;
         }
+
     }
     //endregion
 
@@ -391,8 +397,9 @@ class Stages {
 
         @Override
         protected void doExecute(T returnVal, Throwable e) {
-            if (this.isDone())
+            if (this.isDone()) {
                 return;
+            }
             NR result = invoke(returnVal, e);
             this.finish(result);
         }
@@ -479,8 +486,9 @@ class Stages {
 
         @Override
         protected void doExecute(T returnVal, Throwable e) {
-            if (this.isDone())
+            if (this.isDone()) {
                 return;
+            }
             if (e == null) {
                 this.finish(returnVal);
             } else {
@@ -528,6 +536,7 @@ class Stages {
         protected T invoke(Void returnVal, Throwable e) {
             return this.fn.catchThrow(e);
         }
+
     }
 
     //endregion
@@ -537,6 +546,7 @@ class Stages {
     static abstract class WaitFragment<F, T, R> extends BaseFragment<F, T, R> {
 
         private long timeout = -1;
+
         private Duration duration;
 
         WaitFragment(F fn, Duration duration) {
@@ -545,8 +555,9 @@ class Stages {
         }
 
         R checkDone(Done<R> result) {
-            if (result == null)
+            if (result == null) {
                 throw new NullPointerException("等待返回值必须为Boolean或Done, 不可为空");
+            }
             if (result.isSuccess()) {
                 finish(result.get());
             } else {
@@ -556,8 +567,9 @@ class Stages {
         }
 
         Boolean checkBoolean(Boolean result) {
-            if (result == null)
+            if (result == null) {
                 throw new NullPointerException("等待返回值必须为Boolean或Done, 不可为空");
+            }
             if (result) {
                 finish(null);
             } else {
@@ -568,20 +580,22 @@ class Stages {
 
         @Override
         protected void doExecute(T returnVal, Throwable e) {
-            if (isFailed(e) || this.isDone())
+            if (isFailed(e) || this.isDone()) {
                 return;
-            if (this.duration != null && this.timeout == -1)
+            }
+            if (this.duration != null && this.timeout == -1) {
                 this.timeout = System.currentTimeMillis() + this.duration.toMillis();
+            }
             invoke(returnVal, null);
         }
 
         void checkTimeout() {
-            if (this.timeout > 0 && System.currentTimeMillis() > this.timeout)
+            if (this.timeout > 0 && System.currentTimeMillis() > this.timeout) {
                 throw new StageTimeoutException("等待任务超时");
+            }
         }
 
     }
-
 
     static abstract class VoidWaitFragment<F, R> extends WaitFragment<F, Void, R> {
 
@@ -605,8 +619,9 @@ class Stages {
         WaitRunFragment(Iterable<? extends Completable> fns, Duration timeout) {
             super(() -> {
                 for (Completable fn : fns)
-                    if (!fn.isCompleted())
+                    if (!fn.isCompleted()) {
                         return false;
+                    }
                 return true;
             }, timeout);
         }
@@ -638,10 +653,11 @@ class Stages {
                 List<R> result = new ArrayList<>();
                 for (Supplier<Done<R>> fn : fns) {
                     Done<R> done = fn.get();
-                    if (!done.isSuccess())
+                    if (!done.isSuccess()) {
                         return DoneResults.failure();
-                    else
+                    } else {
                         result.add(done.get());
+                    }
                 }
                 return DoneResults.success(result);
             }, timeout);
@@ -660,14 +676,15 @@ class Stages {
             super(() -> {
                 for (Supplier<Done<R>> fn : fns.values()) {
                     Done<R> done = fn.get();
-                    if (!done.isSuccess())
+                    if (!done.isSuccess()) {
                         return DoneResults.failure();
+                    }
                 }
                 return DoneResults.success(fns.entrySet().stream()
-                                              .collect(Collectors.toMap(
-                                                      Entry::getKey,
-                                                      e -> e.getValue().get().get()
-                                              )));
+                        .collect(Collectors.toMap(
+                                Entry::getKey,
+                                e -> e.getValue().get().get()
+                        )));
             }, timeout);
         }
 

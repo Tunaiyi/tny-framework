@@ -11,15 +11,15 @@ import com.tny.game.net.command.dispatcher.*;
  */
 public class RunnableCommandTask implements CommandTask {
 
-	private final Runnable runnable;
+    private final Runnable runnable;
 
-	public RunnableCommandTask(Runnable runnable) {
-		this.runnable = runnable;
-	}
+    public RunnableCommandTask(Runnable runnable) {
+        this.runnable = runnable;
+    }
 
-	@Override
-	public Command createCommand() {
-		return new RunnableCommand(this.runnable);
-	}
+    @Override
+    public Command createCommand() {
+        return new RunnableCommand(this.runnable);
+    }
 
 }

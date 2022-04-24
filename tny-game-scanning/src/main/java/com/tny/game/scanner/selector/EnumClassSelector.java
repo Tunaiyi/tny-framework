@@ -16,19 +16,19 @@ import java.util.function.Consumer;
  */
 public class EnumClassSelector {
 
-	public static final Logger LOGGER = LoggerFactory.getLogger(EnumClassSelector.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(EnumClassSelector.class);
 
-	@SuppressWarnings("unchecked")
-	public static <E, A extends Enum<A>> ClassSelector createSelector(Class<E> type, Consumer<E> handler) {
-		return ClassSelector.create()
-				.addFilter(SubOfClassFilter.ofInclude(type))
-				.setHandler((classes) -> classes.forEach(codeClass -> {
-					if (codeClass.isEnum()) {
-						List<A> enumList = EnumUtils.getEnumList((Class<A>)codeClass);
-						enumList.forEach(v -> handler.accept((E)v));
-					}
-					LOGGER.info("GameClassLoader.selector for {} at {}", type, codeClass);
-				}));
-	}
+    @SuppressWarnings("unchecked")
+    public static <E, A extends Enum<A>> ClassSelector createSelector(Class<E> type, Consumer<E> handler) {
+        return ClassSelector.create()
+                .addFilter(SubOfClassFilter.ofInclude(type))
+                .setHandler((classes) -> classes.forEach(codeClass -> {
+                    if (codeClass.isEnum()) {
+                        List<A> enumList = EnumUtils.getEnumList((Class<A>)codeClass);
+                        enumList.forEach(v -> handler.accept((E)v));
+                    }
+                    LOGGER.info("GameClassLoader.selector for {} at {}", type, codeClass);
+                }));
+    }
 
 }

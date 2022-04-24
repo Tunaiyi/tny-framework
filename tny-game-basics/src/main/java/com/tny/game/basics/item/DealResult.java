@@ -11,18 +11,18 @@ import java.util.List;
  */
 public interface DealResult {
 
-	/**
-	 * 交易相关Action
-	 *
-	 * @return
-	 */
-	Action getAction();
+    /**
+     * 交易相关Action
+     *
+     * @return
+     */
+    Action getAction();
 
-	/**
-	 * 获取完成交易的对象
-	 *
-	 * @return
-	 */
-	List<DealItem<?>> getDealItemList();
+    /**
+     * 获取完成交易的对象
+     *
+     * @return
+     */
+    List<DealItem<?>> getDealItemList();
 
 }

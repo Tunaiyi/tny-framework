@@ -9,6 +9,6 @@ import com.tny.game.basics.item.*;
  */
 public abstract class BaseAwardPlan extends DemandParamsObject implements AwardPlan {
 
-	public abstract void init(ItemModel itemModel, ItemModelContext context);
+    public abstract void init(ItemModel itemModel, ItemModelContext context);
 
 }

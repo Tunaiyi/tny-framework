@@ -54,8 +54,9 @@ public abstract class GameSaveByOtherManager<O, SO> extends GameCacheManager<O> 
     public Collection<O> save(Collection<O> itemCollection) {
         List<O> list = new ArrayList<>();
         for (O item : itemCollection) {
-            if (!this.save(item))
+            if (!this.save(item)) {
                 list.add(item);
+            }
         }
         return list;
     }
@@ -74,8 +75,9 @@ public abstract class GameSaveByOtherManager<O, SO> extends GameCacheManager<O> 
     public Collection<O> update(Collection<O> itemCollection) {
         List<O> list = new ArrayList<>();
         for (O item : itemCollection) {
-            if (!this.update(item))
+            if (!this.update(item)) {
                 list.add(item);
+            }
         }
         return list;
     }

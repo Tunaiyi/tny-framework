@@ -18,22 +18,22 @@ import java.util.stream.Collectors;
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(MongodbAutoConfiguration.class)
 @EnableConfigurationProperties({
-		DefaultItemModelProperties.class,
+        DefaultItemModelProperties.class,
 })
 public class BasicsMongoAutoConfiguration {
 
-	@Bean
-	MongoBasicsObjectMapperCustomizer mongoBasicsObjectMapperCustomizer() {
-		return new MongoBasicsObjectMapperCustomizer();
-	}
+    @Bean
+    MongoBasicsObjectMapperCustomizer mongoBasicsObjectMapperCustomizer() {
+        return new MongoBasicsObjectMapperCustomizer();
+    }
 
-	@Bean
-	GameJsonMongoEntityConverter gameJsonEntityObjectConverter(
-			ObjectProvider<MongoDocumentEnhance<?>> enhances,
-			ObjectProvider<ObjectMapperCustomizer> mapperCustomizers) {
-		ObjectMapperFactory factory = new ObjectMapperFactory();
-		factory.addCustomizers(mapperCustomizers.stream().collect(Collectors.toList()));
-		return new GameJsonMongoEntityConverter(factory.create(), enhances.stream().collect(Collectors.toList()));
-	}
+    @Bean
+    GameJsonMongoEntityConverter gameJsonEntityObjectConverter(
+            ObjectProvider<MongoDocumentEnhance<?>> enhances,
+            ObjectProvider<ObjectMapperCustomizer> mapperCustomizers) {
+        ObjectMapperFactory factory = new ObjectMapperFactory();
+        factory.addCustomizers(mapperCustomizers.stream().collect(Collectors.toList()));
+        return new GameJsonMongoEntityConverter(factory.create(), enhances.stream().collect(Collectors.toList()));
+    }
 
 }

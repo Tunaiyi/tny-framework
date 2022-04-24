@@ -11,6 +11,6 @@ import org.springframework.cloud.client.serviceregistry.Registration;
  */
 public interface ServerGuideRegistrationFactory {
 
-	Registration create(ServerGuide guide, NetAppContext appContext);
+    Registration create(ServerGuide guide, NetAppContext appContext);
 
 }

@@ -9,32 +9,32 @@ import java.util.concurrent.CopyOnWriteArraySet;
  */
 public abstract class BaseCapacitySupplierComposition implements CapacitySupplierComposition {
 
-	protected volatile Set<CapacitySupplier> suppliers = new CopyOnWriteArraySet<>();
+    protected volatile Set<CapacitySupplier> suppliers = new CopyOnWriteArraySet<>();
 
-	@Override
-	public Collection<? extends CapacitySupplier> suppliers() {
-		return Collections.unmodifiableCollection(suppliers);
-	}
+    @Override
+    public Collection<? extends CapacitySupplier> suppliers() {
+        return Collections.unmodifiableCollection(suppliers);
+    }
 
-	@Override
-	public boolean doAccept(CapacitySupplier supplier) {
-		this.suppliers.remove(supplier);
-		return suppliers.add(supplier);
-	}
+    @Override
+    public boolean doAccept(CapacitySupplier supplier) {
+        this.suppliers.remove(supplier);
+        return suppliers.add(supplier);
+    }
 
-	@Override
-	public boolean doRemove(CapacitySupplier supplier) {
-		return suppliers.remove(supplier);
-	}
+    @Override
+    public boolean doRemove(CapacitySupplier supplier) {
+        return suppliers.remove(supplier);
+    }
 
-	@Override
-	public void clear() {
-		this.suppliers = new CopyOnWriteArraySet<>();
-	}
+    @Override
+    public void clear() {
+        this.suppliers = new CopyOnWriteArraySet<>();
+    }
 
-	@Override
-	public void collectCapacities(CapacityCollector collector, Collection<? extends Capacity> capacities) {
-		suppliers.forEach(supplier -> supplier.collectCapacities(collector, capacities));
-	}
+    @Override
+    public void collectCapacities(CapacityCollector collector, Collection<? extends Capacity> capacities) {
+        suppliers.forEach(supplier -> supplier.collectCapacities(collector, capacities));
+    }
 
 }

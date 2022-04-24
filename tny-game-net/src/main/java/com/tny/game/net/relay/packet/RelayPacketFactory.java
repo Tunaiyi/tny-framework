@@ -10,6 +10,6 @@ import com.tny.game.net.relay.packet.arguments.*;
  */
 public interface RelayPacketFactory<P extends RelayPacket<A>, A extends RelayPacketArguments> {
 
-	P createPacket(int id, A arguments, long time);
+    P createPacket(int id, A arguments, long time);
 
 }

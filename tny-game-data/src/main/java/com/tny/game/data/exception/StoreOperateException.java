@@ -25,5 +25,4 @@ public class StoreOperateException extends RuntimeException {
         super(StringAide.format(message, params));
     }
 
-
 }

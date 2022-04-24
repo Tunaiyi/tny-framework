@@ -20,53 +20,53 @@ import java.util.function.Consumer;
  */
 public class NettyChannelRelayTransporter extends NettyChannelConnection implements RelayTransporter {
 
-	public static final Logger LOGGER = LoggerFactory.getLogger(NettyChannelMessageTransporter.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(NettyChannelMessageTransporter.class);
 
-	private final NetworkContext context;
+    private final NetworkContext context;
 
-	public NettyChannelRelayTransporter(Channel channel, NetworkContext context) {
-		super(channel);
-		this.context = context;
-		this.channel.attr(NettyRelayAttrKeys.RELAY_TRANSPORTER).setIfAbsent(this);
-		this.channel.closeFuture().addListener(f -> this.close());
-	}
+    public NettyChannelRelayTransporter(Channel channel, NetworkContext context) {
+        super(channel);
+        this.context = context;
+        this.channel.attr(NettyRelayAttrKeys.RELAY_TRANSPORTER).setIfAbsent(this);
+        this.channel.closeFuture().addListener(f -> this.close());
+    }
 
-	@Override
-	protected void doClose() {
-		NetRelayLink link = this.channel.attr(NettyRelayAttrKeys.RELAY_LINK).getAndSet(null);
-		if (link != null) {
-			link.disconnect();
-		}
-		this.channel.disconnect();
-	}
+    @Override
+    protected void doClose() {
+        NetRelayLink link = this.channel.attr(NettyRelayAttrKeys.RELAY_LINK).getAndSet(null);
+        if (link != null) {
+            link.disconnect();
+        }
+        this.channel.disconnect();
+    }
 
-	@Override
-	public MessageWriteAwaiter write(RelayPacket<?> packet, MessageWriteAwaiter awaiter) {
-		ChannelPromise channelPromise = createChannelPromise(awaiter);
-		this.channel.writeAndFlush(packet, channelPromise);
-		return awaiter;
-	}
+    @Override
+    public MessageWriteAwaiter write(RelayPacket<?> packet, MessageWriteAwaiter awaiter) {
+        ChannelPromise channelPromise = createChannelPromise(awaiter);
+        this.channel.writeAndFlush(packet, channelPromise);
+        return awaiter;
+    }
 
-	@Override
-	public MessageWriteAwaiter write(RelayPacketMaker maker, MessageWriteAwaiter awaiter) {
-		ChannelPromise channelPromise = createChannelPromise(awaiter);
-		this.channel.eventLoop().execute(() -> this.channel.writeAndFlush(maker.make(), channelPromise));
-		return awaiter;
-	}
+    @Override
+    public MessageWriteAwaiter write(RelayPacketMaker maker, MessageWriteAwaiter awaiter) {
+        ChannelPromise channelPromise = createChannelPromise(awaiter);
+        this.channel.eventLoop().execute(() -> this.channel.writeAndFlush(maker.make(), channelPromise));
+        return awaiter;
+    }
 
-	@Override
-	public void bind(NetRelayLink link) {
-		this.channel.attr(NettyRelayAttrKeys.RELAY_LINK).setIfAbsent(link);
-	}
+    @Override
+    public void bind(NetRelayLink link) {
+        this.channel.attr(NettyRelayAttrKeys.RELAY_LINK).setIfAbsent(link);
+    }
 
-	@Override
-	public NetworkContext getContext() {
-		return context;
-	}
+    @Override
+    public NetworkContext getContext() {
+        return context;
+    }
 
-	@Override
-	public void addCloseListener(Consumer<RelayTransporter> onClose) {
-		this.channel.closeFuture().addListener((f) -> onClose.accept(this));
-	}
+    @Override
+    public void addCloseListener(Consumer<RelayTransporter> onClose) {
+        this.channel.closeFuture().addListener((f) -> onClose.accept(this));
+    }
 
 }

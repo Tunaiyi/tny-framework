@@ -42,5 +42,4 @@ public class GameItemModelContext implements ItemModelContext {
         return exprHolderFactory;
     }
 
-
 }

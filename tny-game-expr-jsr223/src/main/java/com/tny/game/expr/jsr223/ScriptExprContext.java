@@ -127,7 +127,6 @@ public abstract class ScriptExprContext implements ExprContext {
         return this.importCode;
     }
 
-
     protected String createImportCode() {
         StringBuilder importCode = new StringBuilder();
         for (Class<?> cl : this.importClasses)

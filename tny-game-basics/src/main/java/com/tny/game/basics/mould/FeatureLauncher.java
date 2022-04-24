@@ -4,16 +4,16 @@ import java.util.Set;
 
 public interface FeatureLauncher {
 
-	long getPlayerId();
+    long getPlayerId();
 
-	int getLevel();
+    int getLevel();
 
-	boolean isMouldOpened(Mould mould);
+    boolean isMouldOpened(Mould mould);
 
-	Set<Mould> getOpenedMoulds();
+    Set<Mould> getOpenedMoulds();
 
-	boolean isFeatureOpened(Feature feature);
+    boolean isFeatureOpened(Feature feature);
 
-	Set<Feature> getOpenedFeatures();
+    Set<Feature> getOpenedFeatures();
 
 }

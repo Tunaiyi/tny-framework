@@ -13,38 +13,38 @@ import java.util.*;
 @ConfigurationProperties(prefix = "tny.datasource.redisson")
 public class RedissonDataSourceProperties {
 
-	private boolean enable = true;
+    private boolean enable = true;
 
-	@NestedConfigurationProperty
-	private RedisDataSourceSetting setting;
+    @NestedConfigurationProperty
+    private RedisDataSourceSetting setting;
 
-	private Map<String, RedisDataSourceSetting> settings = new HashMap<>();
+    private Map<String, RedisDataSourceSetting> settings = new HashMap<>();
 
-	public boolean isEnable() {
-		return enable;
-	}
+    public boolean isEnable() {
+        return enable;
+    }
 
-	public RedissonDataSourceProperties setEnable(boolean enable) {
-		this.enable = enable;
-		return this;
-	}
+    public RedissonDataSourceProperties setEnable(boolean enable) {
+        this.enable = enable;
+        return this;
+    }
 
-	public RedisDataSourceSetting getSetting() {
-		return setting;
-	}
+    public RedisDataSourceSetting getSetting() {
+        return setting;
+    }
 
-	public RedissonDataSourceProperties setSetting(RedisDataSourceSetting setting) {
-		this.setting = setting;
-		return this;
-	}
+    public RedissonDataSourceProperties setSetting(RedisDataSourceSetting setting) {
+        this.setting = setting;
+        return this;
+    }
 
-	public Map<String, RedisDataSourceSetting> getSettings() {
-		return settings;
-	}
+    public Map<String, RedisDataSourceSetting> getSettings() {
+        return settings;
+    }
 
-	public RedissonDataSourceProperties setSettings(Map<String, RedisDataSourceSetting> settings) {
-		this.settings = settings;
-		return this;
-	}
+    public RedissonDataSourceProperties setSettings(Map<String, RedisDataSourceSetting> settings) {
+        this.settings = settings;
+        return this;
+    }
 
 }

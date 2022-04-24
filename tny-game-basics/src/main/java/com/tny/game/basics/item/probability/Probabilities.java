@@ -21,9 +21,9 @@ public interface Probabilities {
             if (number < size) {
                 number = 0;
                 group.probabilities().stream()
-                     .filter(p -> p.isEffect(attributes))
-                     .limit(group.getNumber(attributes))
-                     .collect(Collectors.toCollection(() -> values));
+                        .filter(p -> p.isEffect(attributes))
+                        .limit(group.getNumber(attributes))
+                        .collect(Collectors.toCollection(() -> values));
             } else {
                 number -= size;
                 values.addAll(group.probabilities());
@@ -35,6 +35,7 @@ public interface Probabilities {
     class ProbabilityEntry<P extends Probability> {
 
         private int probability;
+
         private P value;
 
         private ProbabilityEntry(P value, int probability) {
@@ -49,33 +50,39 @@ public interface Probabilities {
         public P getValue() {
             return value;
         }
+
     }
 
     static <G extends ProbabilityGroup<P>, P extends Probability> List<P> drawWeightsNoRepeat(G group, Map<String, Object> attributes) {
         List<P> probabilities = group.probabilities();
-        if (probabilities.isEmpty())
+        if (probabilities.isEmpty()) {
             return ImmutableList.of();
+        }
         int number = group.getNumber(attributes);
-        if (number <= 0)
+        if (number <= 0) {
             return ImmutableList.of();
+        }
         int total = 0;
         List<P> values = new ArrayList<>();
         List<ProbabilityEntry<P>> entries = new ArrayList<>();
         for (P p : probabilities) {
-            if (!p.isEffect(attributes))
+            if (!p.isEffect(attributes)) {
                 continue;
+            }
             int probability = p.getProbability(attributes);
             if (probability > 0) {
                 total += probability;
                 entries.add(new ProbabilityEntry<>(p, probability));
             } else if (probability < 0) {
                 values.add(p);
-                if (values.size() >= number)
+                if (values.size() >= number) {
                     return values;
+                }
             }
         }
-        if (total == 0)
+        if (total == 0) {
             return values;
+        }
         Random random = ThreadLocalRandom.current();
         while (values.size() != number && !entries.isEmpty()) {
             int index = 0;
@@ -88,77 +95,89 @@ public interface Probabilities {
                 }
                 index += entry.getProbability();
             }
-            if (gain != null)
+            if (gain != null) {
                 entries.remove(gain);
+            }
         }
         return values;
     }
 
-
     static <G extends ProbabilityGroup<P>, P extends Probability> List<P> drawWeights(G group, Map<String, Object> attributes) {
         List<P> probabilities = group.probabilities();
-        if (probabilities.isEmpty())
+        if (probabilities.isEmpty()) {
             return ImmutableList.of();
+        }
         TreeMap<Integer, P> proMap = new TreeMap<>();
         int number = group.getNumber(attributes);
-        if (number <= 0)
+        if (number <= 0) {
             return ImmutableList.of();
+        }
         int total = 0;
         List<P> values = new ArrayList<>();
         for (P p : probabilities) {
-            if (!p.isEffect(attributes))
+            if (!p.isEffect(attributes)) {
                 continue;
+            }
             int probability = p.getProbability(attributes);
             if (probability > 0) {
                 total += probability;
                 proMap.put(total, p);
             } else if (probability < 0) {
                 values.add(p);
-                if (values.size() >= number)
+                if (values.size() >= number) {
                     return values;
+                }
             }
         }
-        if (proMap.isEmpty())
+        if (proMap.isEmpty()) {
             return values;
+        }
         return draw(number, total, proMap, values);
     }
 
     static <G extends ProbabilityGroup<P>, P extends Probability> List<P> drawProbabilities(G group, Map<String, Object> attributes) {
         int range = group.getRange(attributes);
         List<P> probabilities = group.probabilities();
-        if (range == 0)
+        if (range == 0) {
             range = 10000;
+        }
         int number = group.getNumber(attributes);
-        if (number <= 0)
+        if (number <= 0) {
             return ImmutableList.of();
+        }
         TreeMap<Integer, P> proMap = new TreeMap<>();
         List<P> values = new ArrayList<>();
         for (P p : probabilities) {
-            if (!p.isEffect(attributes))
+            if (!p.isEffect(attributes)) {
                 continue;
+            }
             int probability = p.getProbability(attributes);
             if (probability > 0) {
                 proMap.put(probability, p);
             } else if (probability < 0) {
                 values.add(p);
-                if (values.size() >= number)
+                if (values.size() >= number) {
                     return values;
+                }
             }
         }
-        if (proMap.isEmpty())
+        if (proMap.isEmpty()) {
             return values;
+        }
         return draw(number, range, proMap, values);
     }
 
     static <O> List<O> draw(int number, int range, TreeMap<Integer, O> proMap, List<O> values) {
-        if (proMap.isEmpty() || number <= 0)
+        if (proMap.isEmpty() || number <= 0) {
             return ImmutableList.of();
+        }
         Random random = ThreadLocalRandom.current();
         while (values.size() < number) {
             int rand = random.nextInt(range);
             Entry<Integer, O> entry = proMap.higherEntry(rand);
-            if (entry == null)
+            if (entry == null) {
                 continue;
+            }
             values.add(entry.getValue());
         }
         return values;
@@ -167,10 +186,9 @@ public interface Probabilities {
     public static void main(String[] args) {
         List<Integer> values = new ArrayList<>();
         Arrays.asList(1, 2, 3, 4, 5, 6)
-              .stream()
-              .collect(Collectors.toCollection(() -> values));
+                .stream()
+                .collect(Collectors.toCollection(() -> values));
         System.out.println(values);
     }
-
 
 }

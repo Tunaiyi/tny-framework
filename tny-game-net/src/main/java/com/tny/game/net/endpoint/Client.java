@@ -7,6 +7,6 @@ import com.tny.game.net.base.*;
  */
 public interface Client<UID> extends Terminal<UID> {
 
-	ClientConnectFuture<UID> open();
+    ClientConnectFuture<UID> open();
 
 }

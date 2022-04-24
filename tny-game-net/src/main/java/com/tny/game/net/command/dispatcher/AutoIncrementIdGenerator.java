@@ -12,30 +12,30 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class AutoIncrementIdGenerator implements NetIdGenerator {
 
-	private static final int PROCESSORS_SIZE = Runtime.getRuntime().availableProcessors();
+    private static final int PROCESSORS_SIZE = Runtime.getRuntime().availableProcessors();
 
-	private final AtomicLong[] idGenerators;
+    private final AtomicLong[] idGenerators;
 
-	private final int bitSize;
+    private final int bitSize;
 
-	public AutoIncrementIdGenerator() {
-		this(PROCESSORS_SIZE);
-	}
+    public AutoIncrementIdGenerator() {
+        this(PROCESSORS_SIZE);
+    }
 
-	public AutoIncrementIdGenerator(int concurrentLevel) {
-		this.bitSize = Integer.bitCount(concurrentLevel);
-		this.idGenerators = new AtomicLong[concurrentLevel];
-		for (int i = 0; i < idGenerators.length; i++) {
-			idGenerators[i] = new AtomicLong();
-		}
-	}
+    public AutoIncrementIdGenerator(int concurrentLevel) {
+        this.bitSize = Integer.bitCount(concurrentLevel);
+        this.idGenerators = new AtomicLong[concurrentLevel];
+        for (int i = 0; i < idGenerators.length; i++) {
+            idGenerators[i] = new AtomicLong();
+        }
+    }
 
-	@Override
-	public long generate() {
-		long id = Thread.currentThread().getId();
-		int index = (int)(id % idGenerators.length);
-		AtomicLong generator = idGenerators[index];
-		return generator.incrementAndGet() << bitSize | index;
-	}
+    @Override
+    public long generate() {
+        long id = Thread.currentThread().getId();
+        int index = (int)(id % idGenerators.length);
+        AtomicLong generator = idGenerators[index];
+        return generator.incrementAndGet() << bitSize | index;
+    }
 
 }

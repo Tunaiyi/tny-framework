@@ -23,11 +23,11 @@ public class IterableAide {
 
     };
 
-    private static final Iterable<?> EMPTY = (Iterable<Object>) () -> EMPTY_ITERATOR;
+    private static final Iterable<?> EMPTY = (Iterable<Object>)() -> EMPTY_ITERATOR;
 
     @SuppressWarnings("unchecked")
     public static <T> Iterable<T> empty() {
-        return (Iterable<T>) EMPTY;
+        return (Iterable<T>)EMPTY;
     }
 
     public static <O, N> Iterable<N> trans(Iterable<O> iterable, Function<O, N> fn) {
@@ -54,8 +54,9 @@ public class IterableAide {
         @Override
         public N next() {
             O value = this.origIterator.next();
-            if (value != null)
+            if (value != null) {
                 return this.fn.apply(value);
+            }
             return null;
         }
 

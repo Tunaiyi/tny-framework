@@ -20,8 +20,11 @@ public class AppURLPaths {
     private static class DefaultAppURLPath implements AppURLPath {
 
         private String name;
+
         private String protocol;
+
         private String path;
+
         private String appType;
 
         private DefaultAppURLPath(String serverType, String name, String protocol, String defaultPath) {

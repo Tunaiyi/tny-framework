@@ -30,8 +30,9 @@ public class TryToDoFailDTO extends DemandResultDTO implements Serializable {
     private int action;
 
     public static TryToDoFailDTO tryToDoResult2DTO(TryToDoResult result) {
-        if (result.isSatisfy())
+        if (result.isSatisfy()) {
             return null;
+        }
         TryToDoFailDTO dto = new TryToDoFailDTO();
         setDTO(dto, result.getFailResult());
         dto.action = result.getAction().getId();
@@ -44,4 +45,5 @@ public class TryToDoFailDTO extends DemandResultDTO implements Serializable {
         dto.action = exception.getAction().getId();
         return dto;
     }
+
 }

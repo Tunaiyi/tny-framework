@@ -43,15 +43,17 @@ public class Form2MapHttpMessageConverter implements HttpMessageConverter<Map<St
 
     @Override
     public boolean canRead(Class<?> clazz, MediaType mediaType) {
-        if (!Map.class.isAssignableFrom(clazz))
+        if (!Map.class.isAssignableFrom(clazz)) {
             return false;
+        }
         return converter.canRead(MultiValueMap.class, mediaType);
     }
 
     @Override
     public boolean canWrite(Class<?> clazz, MediaType mediaType) {
-        if (!Map.class.isAssignableFrom(clazz))
+        if (!Map.class.isAssignableFrom(clazz)) {
             return false;
+        }
         return converter.canWrite(MultiValueMap.class, mediaType);
     }
 
@@ -59,8 +61,9 @@ public class Form2MapHttpMessageConverter implements HttpMessageConverter<Map<St
     public Map<String, ?> read(Class<? extends Map<String, ?>> clazz, HttpInputMessage inputMessage)
             throws IOException, HttpMessageNotReadableException {
         MultiValueMap<String, String> multiValueMap = converter.read(null, inputMessage);
-        if (MultiValueMap.class.isAssignableFrom(clazz))
+        if (MultiValueMap.class.isAssignableFrom(clazz)) {
             return multiValueMap;
+        }
         Map<String, Object> map = new HashMap<>();
         multiValueMap.forEach((k, vs) -> vs.forEach(v -> map.put(k, v)));
         return map;
@@ -71,11 +74,12 @@ public class Form2MapHttpMessageConverter implements HttpMessageConverter<Map<St
     public void write(Map<String, ?> map, MediaType contentType, HttpOutputMessage outputMessage)
             throws IOException, HttpMessageNotWritableException {
         if (map instanceof MultiValueMap) {
-            converter.write((MultiValueMap<String, ?>) map, contentType, outputMessage);
+            converter.write((MultiValueMap<String, ?>)map, contentType, outputMessage);
         } else {
             MultiValueMap<String, Object> multiValueMap = new LinkedMultiValueMap<>();
             map.forEach(multiValueMap::add);
             converter.write(multiValueMap, contentType, outputMessage);
         }
     }
+
 }

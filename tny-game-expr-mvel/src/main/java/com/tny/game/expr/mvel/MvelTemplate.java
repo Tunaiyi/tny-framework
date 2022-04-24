@@ -38,7 +38,6 @@ class MvelTemplate extends AbstractMvelExpr {
         this.expression = lazy ? null : this.getExpression();
     }
 
-
     protected MvelTemplate(final MvelTemplate template) {
         super(template);
         this.expression = template.getExpression();

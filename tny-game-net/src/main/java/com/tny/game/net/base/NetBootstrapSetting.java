@@ -2,24 +2,24 @@ package com.tny.game.net.base;
 
 public interface NetBootstrapSetting {
 
-	/**
-	 * @return 服务名
-	 */
-	String getName();
+    /**
+     * @return 服务名
+     */
+    String getName();
 
-	/**
-	 * @return 服务发现 服务名
-	 */
-	String getServeName();
+    /**
+     * @return 服务发现 服务名
+     */
+    String getServeName();
 
-	String getTunnelIdGenerator();
+    String getTunnelIdGenerator();
 
-	String getMessageFactory();
+    String getMessageFactory();
 
-	String getCertificateFactory();
+    String getCertificateFactory();
 
-	String getMessageDispatcher();
+    String getMessageDispatcher();
 
-	String getCommandTaskProcessor();
+    String getCommandTaskProcessor();
 
 }

@@ -7,6 +7,6 @@ import io.netty.channel.ChannelHandlerContext;
 @UnitInterface
 public interface DatagramPackDecoder {
 
-	Object decodeObject(ChannelHandlerContext ctx, final ByteBuf buffer, DatagramPackDecodeMarker marker) throws Exception;
+    Object decodeObject(ChannelHandlerContext ctx, final ByteBuf buffer, DatagramPackDecodeMarker marker) throws Exception;
 
 }

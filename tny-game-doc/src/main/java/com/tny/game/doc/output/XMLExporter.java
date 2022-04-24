@@ -11,21 +11,21 @@ import java.io.IOException;
  */
 class XMLExporter implements Exporter {
 
-	private final XStream xstream = new XStream();
+    private final XStream xstream = new XStream();
 
-	XMLExporter() {
-		xstream.autodetectAnnotations(true);
-		xstream.aliasSystemAttribute(null, "class");
-	}
+    XMLExporter() {
+        xstream.autodetectAnnotations(true);
+        xstream.aliasSystemAttribute(null, "class");
+    }
 
-	@Override
-	public String output(OutputScheme table) throws IOException {
-		return xstream.toXML(table);
-	}
+    @Override
+    public String output(OutputScheme table) throws IOException {
+        return xstream.toXML(table);
+    }
 
-	@Override
-	public String getHead() {
-		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-	}
+    @Override
+    public String getHead() {
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+    }
 
 }

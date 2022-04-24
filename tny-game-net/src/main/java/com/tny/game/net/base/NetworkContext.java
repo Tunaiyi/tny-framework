@@ -12,10 +12,10 @@ import com.tny.game.net.message.*;
  */
 public interface NetworkContext extends EndpointContext {
 
-	NetBootstrapSetting getSetting();
+    NetBootstrapSetting getSetting();
 
-	MessageFactory getMessageFactory();
+    MessageFactory getMessageFactory();
 
-	<UID> CertificateFactory<UID> getCertificateFactory();
+    <UID> CertificateFactory<UID> getCertificateFactory();
 
 }

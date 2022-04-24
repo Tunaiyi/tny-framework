@@ -11,10 +11,10 @@ import java.util.*;
  */
 public interface CostList {
 
-	Action getAction();
+    Action getAction();
 
-	List<TradeItem<StuffModel>> getAwardTradeItemList();
+    List<TradeItem<StuffModel>> getAwardTradeItemList();
 
-	Set<StuffModel> getTradeModelSet();
+    Set<StuffModel> getTradeModelSet();
 
 }

@@ -18,11 +18,13 @@ public class ObjectKey {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
+        if (this == o) {
             return true;
-        if (!(o instanceof ObjectKey))
+        }
+        if (!(o instanceof ObjectKey)) {
             return false;
-        ObjectKey objectKey = (ObjectKey) o;
+        }
+        ObjectKey objectKey = (ObjectKey)o;
         return Arrays.equals(keyWords, objectKey.keyWords);
     }
 
@@ -30,4 +32,5 @@ public class ObjectKey {
     public int hashCode() {
         return Arrays.hashCode(keyWords);
     }
+
 }

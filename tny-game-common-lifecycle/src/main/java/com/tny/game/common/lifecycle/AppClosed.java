@@ -1,6 +1,5 @@
 package com.tny.game.common.lifecycle;
 
-
 public interface AppClosed extends LifecycleHandler {
 
     default PostCloser getPostCloser() {

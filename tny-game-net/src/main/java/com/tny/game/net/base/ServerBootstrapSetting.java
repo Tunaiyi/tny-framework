@@ -4,10 +4,10 @@ import java.net.InetSocketAddress;
 
 public interface ServerBootstrapSetting extends NetBootstrapSetting {
 
-	String serviceName();
+    String serviceName();
 
-	InetSocketAddress bindAddress();
+    InetSocketAddress bindAddress();
 
-	InetSocketAddress serveAddress();
+    InetSocketAddress serveAddress();
 
 }

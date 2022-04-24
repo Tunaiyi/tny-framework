@@ -26,7 +26,7 @@ public enum AsyncDBState {
     UPDATE() {
         @Override
         public boolean doOperation(Synchronizer<?> synchronizer, Object object) {
-            return ((Synchronizer<Object>) synchronizer).update(object);
+            return ((Synchronizer<Object>)synchronizer).update(object);
         }
 
         @Override
@@ -36,7 +36,7 @@ public enum AsyncDBState {
 
         @Override
         public Collection<Object> doOperation(Synchronizer<?> synchronizer, Collection<Object> objects) {
-            return ((Synchronizer<Object>) synchronizer).update(objects);
+            return ((Synchronizer<Object>)synchronizer).update(objects);
         }
     },
 
@@ -46,8 +46,9 @@ public enum AsyncDBState {
     INSERT() {
         @Override
         public boolean doOperation(Synchronizer<?> synchronizer, Object object) {
-            if (!((Synchronizer<Object>) synchronizer).insert(object))
+            if (!((Synchronizer<Object>)synchronizer).insert(object)) {
                 LOGGER.warn("{} 对象插入失败", object);
+            }
             return true;
         }
 
@@ -58,7 +59,7 @@ public enum AsyncDBState {
 
         @Override
         public Collection<Object> doOperation(Synchronizer<?> synchronizer, Collection<Object> objects) {
-            Collection<Object> result = ((Synchronizer<Object>) synchronizer).insert(objects);
+            Collection<Object> result = ((Synchronizer<Object>)synchronizer).insert(objects);
             if (!result.isEmpty()) {
                 for (Object object : objects)
                     LOGGER.warn("{} 对象插入失败", object);
@@ -73,7 +74,7 @@ public enum AsyncDBState {
     SAVE() {
         @Override
         public boolean doOperation(Synchronizer<?> synchronizer, Object object) {
-            return ((Synchronizer<Object>) synchronizer).save(object);
+            return ((Synchronizer<Object>)synchronizer).save(object);
         }
 
         @Override
@@ -83,7 +84,7 @@ public enum AsyncDBState {
 
         @Override
         public Collection<Object> doOperation(Synchronizer<?> synchronizer, Collection<Object> objects) {
-            return ((Synchronizer<Object>) synchronizer).save(objects);
+            return ((Synchronizer<Object>)synchronizer).save(objects);
         }
     },
 
@@ -93,7 +94,7 @@ public enum AsyncDBState {
     DELETE() {
         @Override
         public boolean doOperation(Synchronizer<?> synchronizer, Object object) {
-            return ((Synchronizer<Object>) synchronizer).delete(object);
+            return ((Synchronizer<Object>)synchronizer).delete(object);
         }
 
         @Override
@@ -103,7 +104,7 @@ public enum AsyncDBState {
 
         @Override
         public Collection<Object> doOperation(Synchronizer<?> synchronizer, Collection<Object> objects) {
-            return ((Synchronizer<Object>) synchronizer).delete(objects);
+            return ((Synchronizer<Object>)synchronizer).delete(objects);
         }
     };
 

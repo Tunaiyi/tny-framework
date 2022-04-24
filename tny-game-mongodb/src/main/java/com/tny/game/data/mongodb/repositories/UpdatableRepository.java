@@ -14,18 +14,18 @@ import static org.springframework.data.mongodb.core.query.Query.*;
 @NoRepositoryBean
 public interface UpdatableRepository<T, ID> extends Repository<T, ID> {
 
-	default T loadOrCreate(ID id, T document) {
-		return loadOrCreate(query(where("_id").is(id)), document);
-	}
+    default T loadOrCreate(ID id, T document) {
+        return loadOrCreate(query(where("_id").is(id)), document);
+    }
 
-	default T loadOrCreate(Map<String, Object> query, T document) {
-		return loadOrCreate(query(byExample(query)), document);
-	}
+    default T loadOrCreate(Map<String, Object> query, T document) {
+        return loadOrCreate(query(byExample(query)), document);
+    }
 
-	T loadOrCreate(Query query, T document);
+    T loadOrCreate(Query query, T document);
 
-	T findAndSave(Query query, T document);
+    T findAndSave(Query query, T document);
 
-	T findAndUpdate(Query query, T document);
+    T findAndUpdate(Query query, T document);
 
 }

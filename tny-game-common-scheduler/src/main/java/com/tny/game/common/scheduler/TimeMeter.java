@@ -51,38 +51,42 @@ public interface TimeMeter<C extends TimeCycle> {
     default double getProgress(long timeMillis) {
         long duration = this.getDuration();
         long progressTime = duration - this.countRemainMills(timeMillis);
-        return (double) progressTime / duration;
+        return (double)progressTime / duration;
     }
 
     default double getTotalProgress(long timeMillis) {
         long duration = this.getTotalDuration();
         long progressTime = duration - this.countEndRemainMills(timeMillis);
-        return (double) progressTime / duration;
+        return (double)progressTime / duration;
     }
 
     default long getTotalDuration() {
         Instant dateTime = this.getStartTime();
         Instant endTime = this.getEndTime();
-        if (endTime == null)
+        if (endTime == null) {
             return -1L;
+        }
         return Math.max(endTime.toEpochMilli() - dateTime.toEpochMilli(), 0L);
     }
 
     default long getDuration() {
         Instant previous = this.getPreviousTime();
         Instant next = this.getNextTime();
-        if (previous == null || next == null)
+        if (previous == null || next == null) {
             return -1;
+        }
         return next.toEpochMilli() - previous.toEpochMilli();
     }
 
     default long countRemainMills(long timeMillis) {
         Instant next = this.getNextTime();
-        if (next == null)
+        if (next == null) {
             return -1;
+        }
         Instant suspendTime = this.getSuspendTime();
-        if (suspendTime != null && suspendTime.toEpochMilli() < timeMillis + this.getSpeedMills())
+        if (suspendTime != null && suspendTime.toEpochMilli() < timeMillis + this.getSpeedMills()) {
             timeMillis = suspendTime.toEpochMilli();
+        }
         return Math.max(next.toEpochMilli() - (timeMillis + this.getSpeedMills()), 0L);
     }
 
@@ -92,14 +96,17 @@ public interface TimeMeter<C extends TimeCycle> {
 
     default long countEndRemainMills(long timeMillis) {
         Instant next = this.getNextTime();
-        if (next == null)
+        if (next == null) {
             return -1;
+        }
         Instant end = this.getEndTime();
-        if (end == null)
+        if (end == null) {
             return -1;
+        }
         Instant suspendTime = this.getSuspendTime();
-        if (suspendTime != null && suspendTime.toEpochMilli() <= timeMillis)
+        if (suspendTime != null && suspendTime.toEpochMilli() <= timeMillis) {
             timeMillis = suspendTime.toEpochMilli();
+        }
         return Math.max(end.toEpochMilli() - (timeMillis + this.getSpeedMills()), 0L);
     }
 

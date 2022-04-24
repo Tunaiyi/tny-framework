@@ -11,14 +11,14 @@ import java.util.concurrent.*;
  * @author : kgtny
  * @date : 2021/11/2 5:11 下午
  */
-public interface RpcFuture<T> extends Future<RpcResult<T>>, CompletionStage<RpcResult<T>> {
+public interface RpcFuture<T> extends Future<RpcResult<T>>, CompletionStage<RpcResult<T>>, RpcReturn<T> {
 
-	ResultCode getResultCode();
+    ResultCode getResultCode();
 
-	T getBody();
+    T getBody();
 
-	boolean isSuccess();
+    boolean isSuccess();
 
-	boolean isFailure();
+    boolean isFailure();
 
 }

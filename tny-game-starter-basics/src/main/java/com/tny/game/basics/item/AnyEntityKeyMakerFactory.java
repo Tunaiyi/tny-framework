@@ -10,9 +10,9 @@ import com.tny.game.data.cache.*;
  */
 public class AnyEntityKeyMakerFactory implements EntityKeyMakerFactory {
 
-	@Override
-	public EntityKeyMaker<?, ?> createMaker(EntityScheme scheme) {
-		return new AnyEntityKeyMaker(scheme);
-	}
+    @Override
+    public EntityKeyMaker<?, ?> createMaker(EntityScheme scheme) {
+        return new AnyEntityKeyMaker(scheme);
+    }
 
 }

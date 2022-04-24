@@ -10,35 +10,35 @@ import com.tny.game.net.rpc.*;
  */
 public class RpcToken extends RpcLinkerId {
 
-	private RpcLinkerId user;
+    private RpcLinkerId user;
 
-	private long issueAt;
+    private long issueAt;
 
-	public RpcToken() {
-	}
+    public RpcToken() {
+    }
 
-	public RpcToken(String service, long serverId, long id, RpcLinkerId user) {
-		super(service, serverId, id);
-		this.user = user;
-		this.issueAt = System.currentTimeMillis();
-	}
+    public RpcToken(String service, long serverId, long id, RpcLinkerId user) {
+        super(service, serverId, id);
+        this.user = user;
+        this.issueAt = System.currentTimeMillis();
+    }
 
-	public RpcLinkerId getUser() {
-		return user;
-	}
+    public RpcLinkerId getUser() {
+        return user;
+    }
 
-	public long getIssueAt() {
-		return issueAt;
-	}
+    public long getIssueAt() {
+        return issueAt;
+    }
 
-	private RpcToken setIssueAt(long issueAt) {
-		this.issueAt = issueAt;
-		return this;
-	}
+    private RpcToken setIssueAt(long issueAt) {
+        this.issueAt = issueAt;
+        return this;
+    }
 
-	public RpcToken setUser(RpcLinkerId user) {
-		this.user = user;
-		return this;
-	}
+    public RpcToken setUser(RpcLinkerId user) {
+        this.user = user;
+        return this;
+    }
 
 }

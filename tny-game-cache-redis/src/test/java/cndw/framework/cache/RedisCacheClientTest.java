@@ -32,6 +32,7 @@ public class RedisCacheClientTest {
     @BeforeEach
     public void setUp() throws Exception {
         task = new ClientTestTask(this.client) {
+
             @Override
             protected void doFlushAll() {
                 RedisCacheClientTest.this.client.flushAll();

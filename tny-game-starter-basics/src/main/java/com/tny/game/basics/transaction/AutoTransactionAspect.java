@@ -10,21 +10,21 @@ import org.aspectj.lang.annotation.*;
 @Aspect
 public class AutoTransactionAspect {
 
-	@Pointcut("execution(* *(..)) && @annotation(com.tny.game.basics.transaction.annotation.InTransaction)")
-	public void invokeTransaction() {
-	}
+    @Pointcut("execution(* *(..)) && @annotation(com.tny.game.basics.transaction.annotation.InTransaction)")
+    public void invokeTransaction() {
+    }
 
-	@Around("invokeTransaction()")
-	public Object transactionAround(ProceedingJoinPoint joinPoint) throws Throwable {
-		TransactionManager.open();
-		try {
-			Object result = joinPoint.proceed();
-			TransactionManager.close();
-			return result;
-		} catch (Throwable e) {
-			TransactionManager.rollback(e);
-			throw e;
-		}
-	}
+    @Around("invokeTransaction()")
+    public Object transactionAround(ProceedingJoinPoint joinPoint) throws Throwable {
+        TransactionManager.open();
+        try {
+            Object result = joinPoint.proceed();
+            TransactionManager.close();
+            return result;
+        } catch (Throwable e) {
+            TransactionManager.rollback(e);
+            throw e;
+        }
+    }
 
 }

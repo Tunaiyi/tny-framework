@@ -12,11 +12,13 @@ public abstract class ItemSnapper<O, I extends Item<?>, S extends ItemSnapshot> 
     @Override
     public S toSnapshot(O object) {
         I item = item(object);
-        if (item == null)
+        if (item == null) {
             return null;
+        }
         S snapshot = super.toSnapshot(object);
-        if (snapshot == null)
+        if (snapshot == null) {
             return null;
+        }
         snapshot.setIDs(item.getItemId(), item.getId());
         snapshot.setPid(item.getPlayerId());
         this.setSnapshot(snapshot, object);

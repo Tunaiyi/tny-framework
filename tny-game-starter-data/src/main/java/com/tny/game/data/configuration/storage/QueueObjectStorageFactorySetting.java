@@ -11,26 +11,26 @@ import com.tny.game.data.storage.*;
  */
 public class QueueObjectStorageFactorySetting {
 
-	private String storeExecutor = BeanNameUtils.lowerCamelName(ForkJoinAsyncObjectStoreExecutor.class);
+    private String storeExecutor = BeanNameUtils.lowerCamelName(ForkJoinAsyncObjectStoreExecutor.class);
 
-	private String accessorFactory;
+    private String accessorFactory;
 
-	public String getStoreExecutor() {
-		return storeExecutor;
-	}
+    public String getStoreExecutor() {
+        return storeExecutor;
+    }
 
-	public QueueObjectStorageFactorySetting setStoreExecutor(String storeExecutor) {
-		this.storeExecutor = storeExecutor;
-		return this;
-	}
+    public QueueObjectStorageFactorySetting setStoreExecutor(String storeExecutor) {
+        this.storeExecutor = storeExecutor;
+        return this;
+    }
 
-	public String getAccessorFactory() {
-		return accessorFactory;
-	}
+    public String getAccessorFactory() {
+        return accessorFactory;
+    }
 
-	public QueueObjectStorageFactorySetting setAccessorFactory(String accessorFactory) {
-		this.accessorFactory = accessorFactory;
-		return this;
-	}
+    public QueueObjectStorageFactorySetting setAccessorFactory(String accessorFactory) {
+        this.accessorFactory = accessorFactory;
+        return this;
+    }
 
 }

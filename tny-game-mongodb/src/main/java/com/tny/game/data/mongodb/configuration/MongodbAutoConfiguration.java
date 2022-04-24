@@ -8,9 +8,9 @@ import org.springframework.context.annotation.*;
  */
 @Configuration(proxyBeanMethods = false)
 @Import({
-		ImportConverterBeanDefinitionRegistrar.class,
-		MongodbBeanConfiguration.class,
-		ImportMongodbDataSourceBeanDefinitionRegistrar.class
+        ImportConverterBeanDefinitionRegistrar.class,
+        MongodbBeanConfiguration.class,
+        ImportMongodbDataSourceBeanDefinitionRegistrar.class
 })
 @EnableConfigurationProperties(MongodbDataSourceProperties.class)
 public class MongodbAutoConfiguration {

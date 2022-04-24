@@ -20,18 +20,20 @@ public enum DefineType {
     public final byte ID;
 
     private DefineType(int id) {
-        this.ID = (byte) id;
+        this.ID = (byte)id;
     }
 
     public static DefineType get(boolean raw) {
-        if (raw)
+        if (raw) {
             return RAW;
+        }
         return CUSTOM;
     }
 
     public static DefineType get(int typeID) {
-        if (typeID == 0)
+        if (typeID == 0) {
             return RAW;
+        }
         return CUSTOM;
     }
 

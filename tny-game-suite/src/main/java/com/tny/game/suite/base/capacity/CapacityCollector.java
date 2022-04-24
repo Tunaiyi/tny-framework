@@ -14,8 +14,9 @@ public class CapacityCollector {
     private Map<Capacity, Number> visitCapacities = Collections.unmodifiableMap(capacities);
 
     public void collect(Capacity capacity, Number number) {
-        if (number == null)
+        if (number == null) {
             return;
+        }
         capacities.merge(capacity, number, NumberAide::add);
     }
 

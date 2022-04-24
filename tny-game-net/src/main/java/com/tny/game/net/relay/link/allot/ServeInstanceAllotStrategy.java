@@ -12,13 +12,13 @@ import com.tny.game.net.transport.*;
  */
 public interface ServeInstanceAllotStrategy {
 
-	/**
-	 * 分配服务实例
-	 *
-	 * @param tunnel  分配的通讯管道
-	 * @param cluster 目标集群
-	 * @return 返回服务实例
-	 */
-	RemoteServeInstance allot(Tunnel<?> tunnel, NetRemoteServeCluster cluster);
+    /**
+     * 分配服务实例
+     *
+     * @param tunnel  分配的通讯管道
+     * @param cluster 目标集群
+     * @return 返回服务实例
+     */
+    RemoteServeInstance allot(Tunnel<?> tunnel, NetRemoteServeCluster cluster);
 
 }

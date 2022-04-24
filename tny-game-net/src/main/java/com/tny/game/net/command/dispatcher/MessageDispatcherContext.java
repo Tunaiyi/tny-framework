@@ -17,43 +17,43 @@ import java.util.Collection;
 @UnitInterface
 public interface MessageDispatcherContext {
 
-	/**
-	 * @return 获取应用配置
-	 */
-	NetAppContext getAppContext();
+    /**
+     * @return 获取应用配置
+     */
+    NetAppContext getAppContext();
 
-	/**
-	 * 获取插件
-	 *
-	 * @param pluginClass 抄件类型
-	 * @return 返回 ControllerHolder
-	 */
-	CommandPlugin<?, ?> getPlugin(Class<? extends CommandPlugin<?, ?>> pluginClass);
+    /**
+     * 获取插件
+     *
+     * @param pluginClass 抄件类型
+     * @return 返回 ControllerHolder
+     */
+    CommandPlugin<?, ?> getPlugin(Class<? extends CommandPlugin<?, ?>> pluginClass);
 
-	/**
-	 * 获取身份校验器
-	 *
-	 * @param protocol 协议
-	 * @return 返回身份校验器
-	 */
-	AuthenticateValidator<?> getValidator(Object protocol);
+    /**
+     * 获取身份校验器
+     *
+     * @param protocol 协议
+     * @return 返回身份校验器
+     */
+    AuthenticateValidator<?> getValidator(Object protocol);
 
-	/**
-	 * 获取身份校验器
-	 *
-	 * @param validatorClass 类
-	 * @return 返回身份校验器
-	 */
-	AuthenticateValidator<?> getValidator(Class<? extends AuthenticateValidator<?>> validatorClass);
+    /**
+     * 获取身份校验器
+     *
+     * @param validatorClass 类
+     * @return 返回身份校验器
+     */
+    AuthenticateValidator<?> getValidator(Class<? extends AuthenticateValidator<?>> validatorClass);
 
-	Collection<MessageCommandListener> getCommandListener();
+    Collection<MessageCommandListener> getCommandListener();
 
-	void addCommandListener(MessageCommandListener listener);
+    void addCommandListener(MessageCommandListener listener);
 
-	void addCommandListener(Collection<MessageCommandListener> listeners);
+    void addCommandListener(Collection<MessageCommandListener> listeners);
 
-	void removeCommandListener(MessageCommandListener listener);
+    void removeCommandListener(MessageCommandListener listener);
 
-	void clearCommandListeners();
+    void clearCommandListeners();
 
 }

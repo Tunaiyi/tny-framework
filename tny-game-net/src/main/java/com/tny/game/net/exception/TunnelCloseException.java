@@ -25,5 +25,4 @@ public class TunnelCloseException extends NetException {
         super(StringAide.format(message, params));
     }
 
-
 }

@@ -15,43 +15,43 @@ import com.tny.game.net.rpc.*;
  */
 public class DefaultRpcAuthService implements RpcAuthService {
 
-	private final RpcUserPasswordManager rpcUserPasswordManager;
+    private final RpcUserPasswordManager rpcUserPasswordManager;
 
-	private final NetAppContext netAppContext;
+    private final NetAppContext netAppContext;
 
-	private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
-	public DefaultRpcAuthService(NetAppContext netAppContext, RpcUserPasswordManager rpcUserPasswordManager) {
-		this.rpcUserPasswordManager = rpcUserPasswordManager;
-		this.netAppContext = netAppContext;
-	}
+    public DefaultRpcAuthService(NetAppContext netAppContext, RpcUserPasswordManager rpcUserPasswordManager) {
+        this.rpcUserPasswordManager = rpcUserPasswordManager;
+        this.netAppContext = netAppContext;
+    }
 
-	@Override
-	public DoneResult<RpcLinkerId> authenticate(String service, long serverId, long instance, String password) {
-		if (rpcUserPasswordManager.auth(service, serverId, instance, password)) {
-			return DoneResults.success(new RpcLinkerId(service, serverId, instance));
-		}
-		return DoneResults.failure(NetResultCode.VALIDATOR_FAIL_ERROR);
-	}
+    @Override
+    public DoneResult<RpcLinkerId> authenticate(String service, long serverId, long instance, String password) {
+        if (rpcUserPasswordManager.auth(service, serverId, instance, password)) {
+            return DoneResults.success(new RpcLinkerId(service, serverId, instance));
+        }
+        return DoneResults.failure(NetResultCode.VALIDATOR_FAIL_ERROR);
+    }
 
-	@Override
-	public String createToken(String serviceName, RpcLinkerId id) {
-		RpcToken token = new RpcToken(serviceName, netAppContext.getServerId(), id.getId(), id);
-		try {
-			return objectMapper.writeValueAsString(token);
-		} catch (JsonProcessingException e) {
-			throw new CommonRuntimeException(e);
-		}
-	}
+    @Override
+    public String createToken(String serviceName, RpcLinkerId id) {
+        RpcToken token = new RpcToken(serviceName, netAppContext.getServerId(), id.getId(), id);
+        try {
+            return objectMapper.writeValueAsString(token);
+        } catch (JsonProcessingException e) {
+            throw new CommonRuntimeException(e);
+        }
+    }
 
-	@Override
-	public DoneResult<RpcToken> verifyToken(String token) {
-		try {
-			RpcToken rpcToken = objectMapper.readValue(token, RpcToken.class);
-			return DoneResults.success(rpcToken);
-		} catch (JsonProcessingException e) {
-			throw new CommonRuntimeException(e);
-		}
-	}
+    @Override
+    public DoneResult<RpcToken> verifyToken(String token) {
+        try {
+            RpcToken rpcToken = objectMapper.readValue(token, RpcToken.class);
+            return DoneResults.success(rpcToken);
+        } catch (JsonProcessingException e) {
+            throw new CommonRuntimeException(e);
+        }
+    }
 
 }

@@ -50,45 +50,53 @@ public class LocaleAide {
                 canBuild = true;
             }
         }
-        if (!canBuild)
+        if (!canBuild) {
             throw new IllegalArgumentException(format("Locale pares {} error", mark));
+        }
         return builder.build();
     }
 
     public static boolean isLanguage(String value) {
-        if (value.length() != LANGUAGE_SIZE)
+        if (value.length() != LANGUAGE_SIZE) {
             return false;
+        }
         for (int index = 0; index < value.length(); index++) {
             char character = value.charAt(index);
-            if (Character.isUpperCase(character))
+            if (Character.isUpperCase(character)) {
                 return false;
+            }
         }
         return true;
     }
 
     public static boolean isScripts(String value) {
-        if (value.length() != SCRIPTS_SIZE)
+        if (value.length() != SCRIPTS_SIZE) {
             return false;
+        }
         for (int index = 0; index < value.length(); index++) {
             char character = value.charAt(index);
             if (index == 0) {
-                if (Character.isLowerCase(character))
+                if (Character.isLowerCase(character)) {
                     return false;
+                }
             } else {
-                if (Character.isUpperCase(character))
+                if (Character.isUpperCase(character)) {
                     return false;
+                }
             }
         }
         return true;
     }
 
     public static boolean isRegion(String value) {
-        if (value.length() != REGION_SIZE)
+        if (value.length() != REGION_SIZE) {
             return false;
+        }
         for (int index = 0; index < value.length(); index++) {
             char character = value.charAt(index);
-            if (Character.isLowerCase(character))
+            if (Character.isLowerCase(character)) {
                 return false;
+            }
         }
         return true;
     }
@@ -115,20 +123,27 @@ public class LocaleAide {
         String script = locale.getScript();
         String country = locale.getCountry();
         List<String> locales = new ArrayList<>();
-        if (isNotBlank(language) && isNotBlank(script) && isNotBlank(country))
+        if (isNotBlank(language) && isNotBlank(script) && isNotBlank(country)) {
             locales.add(mark(language, script, country));
-        if (isNotBlank(language) && isNotBlank(script))
+        }
+        if (isNotBlank(language) && isNotBlank(script)) {
             locales.add(mark(language, script, null));
-        if (isNotBlank(language) && isNotBlank(country))
+        }
+        if (isNotBlank(language) && isNotBlank(country)) {
             locales.add(mark(language, null, country));
-        if (isNotBlank(language))
+        }
+        if (isNotBlank(language)) {
             locales.add(mark(language, null, null));
-        if (isNotBlank(script) && isNotBlank(country))
+        }
+        if (isNotBlank(script) && isNotBlank(country)) {
             locales.add(mark(null, script, country));
-        if (isNotBlank(script))
+        }
+        if (isNotBlank(script)) {
             locales.add(mark(null, script, null));
-        if (isNotBlank(country))
+        }
+        if (isNotBlank(country)) {
             locales.add(mark(null, null, country));
+        }
         return locales;
     }
 

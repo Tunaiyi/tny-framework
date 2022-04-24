@@ -7,29 +7,29 @@ import com.tny.game.common.type.*;
  */
 public interface MessageContent extends MessageSchema {
 
-	/**
-	 * @return 获取结果码
-	 */
-	int getCode();
+    /**
+     * @return 获取结果码
+     */
+    int getCode();
 
-	/**
-	 * @return 是否存在消息
-	 */
-	boolean existBody();
+    /**
+     * @return 是否存在消息
+     */
+    boolean existBody();
 
-	/**
-	 * @return 获取消息体
-	 */
-	Object getBody();
+    /**
+     * @return 获取消息体
+     */
+    Object getBody();
 
-	/**
-	 * @return 获取消息体
-	 */
-	<T> T bodyAs(Class<T> clazz);
+    /**
+     * @return 获取消息体
+     */
+    <T> T bodyAs(Class<T> clazz);
 
-	/**
-	 * @return 获取消息体
-	 */
-	<T> T bodyAs(ReferenceType<T> clazz);
+    /**
+     * @return 获取消息体
+     */
+    <T> T bodyAs(ReferenceType<T> clazz);
 
 }

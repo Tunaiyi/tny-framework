@@ -1,6 +1,5 @@
 package com.tny.game.actor.stage;
 
-
 import com.tny.game.actor.*;
 import com.tny.game.common.result.*;
 
@@ -17,8 +16,9 @@ import java.util.stream.Collectors;
 public class Flows {
 
     public static Done<Throwable> getCause(Stage stage) {
-        if (!stage.isDone())
+        if (!stage.isDone()) {
             return DoneResults.failure();
+        }
         return DoneResults.successNullable(stage.getCause());
     }
 
@@ -70,8 +70,9 @@ public class Flows {
     public static VoidFlow waitUntil(Iterable<? extends Completable> fns, Duration timeout) {
         return new LinkedFlow<>().waitUntil(() -> {
             for (Completable fn : fns)
-                if (!fn.isCompleted())
+                if (!fn.isCompleted()) {
                     return false;
+                }
             return true;
         }, timeout);
     }
@@ -109,10 +110,11 @@ public class Flows {
             List<T> result = new ArrayList<>();
             for (Supplier<Done<T>> fn : fns) {
                 Done<T> done = fn.get();
-                if (!done.isSuccess())
+                if (!done.isSuccess()) {
                     return DoneResults.failure();
-                else
+                } else {
                     result.add(done.get());
+                }
             }
             return DoneResults.success(result);
         }, timeout);
@@ -126,14 +128,15 @@ public class Flows {
         return new LinkedFlow<>().waitFor(() -> {
             for (Supplier<Done<T>> fn : fns.values()) {
                 Done<T> done = fn.get();
-                if (!done.isSuccess())
+                if (!done.isSuccess()) {
                     return DoneResults.failure();
+                }
             }
             return DoneResults.success(fns.entrySet().stream()
-                                          .collect(Collectors.toMap(
-                                                  Entry::getKey,
-                                                  e -> e.getValue().get().get()
-                                          )));
+                    .collect(Collectors.toMap(
+                            Entry::getKey,
+                            e -> e.getValue().get().get()
+                    )));
         }, timeout);
     }
 
@@ -145,7 +148,6 @@ public class Flows {
         return waitFor(new FutureAwait<>(future), duration);
     }
     //endregion
-
 
     //    public static <R, T> TaskStage<T> awaitApply(Function<R, Done<T>> fn) {
     //        return awaitApply(fn, null);
@@ -178,6 +180,5 @@ public class Flows {
     //    public static <R> VoidTaskStage awaitAccept(TaskPredicate<R> fn, Duration timeout) {
     //        return new AwaysVoidTaskStage(null, new TaskWaitAcceptFragment<>(fn, timeout));
     //    }
-
 
 }

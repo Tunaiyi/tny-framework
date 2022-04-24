@@ -8,9 +8,9 @@ import com.tny.game.common.lifecycle.unit.annotation.*;
 @Unit
 public class CommonTerminalKeeperFactory<UID> implements TerminalKeeperFactory<UID, TerminalKeeperSetting> {
 
-	@Override
-	public NetEndpointKeeper<UID, Terminal<UID>> createKeeper(String userType, TerminalKeeperSetting setting) {
-		return new CommonTerminalKeeper<>(userType);
-	}
+    @Override
+    public NetEndpointKeeper<UID, Terminal<UID>> createKeeper(String userType, TerminalKeeperSetting setting) {
+        return new CommonTerminalKeeper<>(userType);
+    }
 
 }

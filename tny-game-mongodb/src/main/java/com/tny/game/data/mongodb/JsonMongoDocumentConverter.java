@@ -11,23 +11,23 @@ import java.util.List;
 
 public class JsonMongoDocumentConverter extends AbstractMongoDocumentConverter {
 
-	private final ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
 
-	public JsonMongoDocumentConverter(List<MongoDocumentEnhance<?>> enhances) {
-		this(ObjectMapperFactory.createMapper(), enhances);
-	}
+    public JsonMongoDocumentConverter(List<MongoDocumentEnhance<?>> enhances) {
+        this(ObjectMapperFactory.createMapper(), enhances);
+    }
 
-	public JsonMongoDocumentConverter(ObjectMapper objectMapper, List<MongoDocumentEnhance<?>> enhances) {
-		super(enhances);
-		this.objectMapper = objectMapper;
-	}
+    public JsonMongoDocumentConverter(ObjectMapper objectMapper, List<MongoDocumentEnhance<?>> enhances) {
+        super(enhances);
+        this.objectMapper = objectMapper;
+    }
 
-	@Override
-	protected <T> T doFormat(Object source, Class<T> targetClass) {
-		if (source == null) {
-			return null;
-		}
-		return objectMapper.convertValue(source, targetClass);
-	}
+    @Override
+    protected <T> T doFormat(Object source, Class<T> targetClass) {
+        if (source == null) {
+            return null;
+        }
+        return objectMapper.convertValue(source, targetClass);
+    }
 
 }

@@ -12,59 +12,59 @@ import java.util.Map;
  */
 public class RelayServeInstanceSetting extends BaseServeNode {
 
-	public RelayServeInstanceSetting() {
-	}
+    public RelayServeInstanceSetting() {
+    }
 
-	public RelayServeInstanceSetting(String appType, String scopeType, String serveName, String service,
-			NetAccessPoint point) {
-		super(appType, scopeType, serveName, service, point);
-	}
+    public RelayServeInstanceSetting(String appType, String scopeType, String serveName, String service,
+            NetAccessPoint point) {
+        super(appType, scopeType, serveName, service, point);
+    }
 
-	public RelayServeInstanceSetting(String serveName, String service, String appType, String scopeType, long id, String scheme, String host,
-			int port) {
-		super(serveName, service, appType, scopeType, id, scheme, host, port);
-	}
+    public RelayServeInstanceSetting(String serveName, String service, String appType, String scopeType, long id, String scheme, String host,
+            int port) {
+        super(serveName, service, appType, scopeType, id, scheme, host, port);
+    }
 
-	@Override
-	public RelayServeInstanceSetting setId(long id) {
-		super.setId(id);
-		return this;
-	}
+    @Override
+    public RelayServeInstanceSetting setId(long id) {
+        super.setId(id);
+        return this;
+    }
 
-	@Override
-	public RelayServeInstanceSetting setHealthy(boolean healthy) {
-		super.setHealthy(healthy);
-		return this;
-	}
+    @Override
+    public RelayServeInstanceSetting setHealthy(boolean healthy) {
+        super.setHealthy(healthy);
+        return this;
+    }
 
-	@Override
-	public RelayServeInstanceSetting setScheme(String scheme) {
-		super.setScheme(scheme);
-		return this;
-	}
+    @Override
+    public RelayServeInstanceSetting setScheme(String scheme) {
+        super.setScheme(scheme);
+        return this;
+    }
 
-	@Override
-	public RelayServeInstanceSetting setHost(String host) {
-		super.setHost(host);
-		return this;
-	}
+    @Override
+    public RelayServeInstanceSetting setHost(String host) {
+        super.setHost(host);
+        return this;
+    }
 
-	@Override
-	public RelayServeInstanceSetting setPort(int port) {
-		super.setPort(port);
-		return this;
-	}
+    @Override
+    public RelayServeInstanceSetting setPort(int port) {
+        super.setPort(port);
+        return this;
+    }
 
-	@Override
-	public RelayServeInstanceSetting setMetadata(Map<String, Object> metadata) {
-		super.setMetadata(metadata);
-		return this;
-	}
+    @Override
+    public RelayServeInstanceSetting setMetadata(Map<String, Object> metadata) {
+        super.setMetadata(metadata);
+        return this;
+    }
 
-	@Override
-	public RelayServeInstanceSetting setUrl(String value) {
-		super.setUrl(value);
-		return this;
-	}
+    @Override
+    public RelayServeInstanceSetting setUrl(String value) {
+        super.setUrl(value);
+        return this;
+    }
 
 }

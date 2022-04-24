@@ -10,11 +10,15 @@ import static org.junit.jupiter.api.Assertions.*;
 public abstract class MessageTest {
 
     protected final int MESSAGE_ID = 100;
+
     protected final Long UID = 100L;
+
     protected Long unloginUID = 0L;
 
     protected Message message = message();
+
     protected Message unloginMessage = unloginMessage(this.unloginUID);
+
     protected Message unloginNullMessage = unloginMessage(null);
 
     protected abstract Message message();

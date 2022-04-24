@@ -10,6 +10,6 @@ import java.lang.annotation.*;
 @Documented
 public @interface ManagedBy {
 
-	Class<? extends Manager<?>> manager();
+    Class<? extends Manager<?>> manager();
 
 }

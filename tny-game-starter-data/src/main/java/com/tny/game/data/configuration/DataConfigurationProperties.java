@@ -11,15 +11,15 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "tny.data")
 public class DataConfigurationProperties {
 
-	private boolean enable = true;
+    private boolean enable = true;
 
-	public boolean isEnable() {
-		return enable;
-	}
+    public boolean isEnable() {
+        return enable;
+    }
 
-	public DataConfigurationProperties setEnable(boolean enable) {
-		this.enable = enable;
-		return this;
-	}
+    public DataConfigurationProperties setEnable(boolean enable) {
+        this.enable = enable;
+        return this;
+    }
 
 }

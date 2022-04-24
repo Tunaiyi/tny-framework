@@ -15,30 +15,30 @@ import com.tny.game.net.command.dispatcher.*;
 @UnitInterface
 public interface MessageCommandListener {
 
-	/**
-	 * 每次 Command 执行开始<br>
-	 *
-	 * @param command 分发上下文
-	 */
-	default void onExecuteStart(MessageCommand command) {
-	}
+    /**
+     * 每次 Command 执行开始<br>
+     *
+     * @param command 分发上下文
+     */
+    default void onExecuteStart(MessageCommand command) {
+    }
 
-	/**
-	 * 每次 Command 执行结束<br>
-	 *
-	 * @param command 分发上下文
-	 * @param cause   失败异常, 成功为 null
-	 */
-	default void onExecuteEnd(MessageCommand command, Throwable cause) {
-	}
+    /**
+     * 每次 Command 执行结束<br>
+     *
+     * @param command 分发上下文
+     * @param cause   失败异常, 成功为 null
+     */
+    default void onExecuteEnd(MessageCommand command, Throwable cause) {
+    }
 
-	/**
-	 * 执行Command任务完成  <br>
-	 *
-	 * @param command 分发上下文
-	 * @param cause   失败异常, 成功为 null
-	 */
-	default void onDone(MessageCommand command, Throwable cause) {
-	}
+    /**
+     * 执行Command任务完成  <br>
+     *
+     * @param command 分发上下文
+     * @param cause   失败异常, 成功为 null
+     */
+    default void onDone(MessageCommand command, Throwable cause) {
+    }
 
 }

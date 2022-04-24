@@ -13,39 +13,39 @@ import java.util.*;
 @ConfigurationProperties(prefix = "tny.data.storage-accessor.redisson-accessor")
 public class RedissonStorageAccessorFactoryProperties {
 
-	private boolean enable = true;
+    private boolean enable = true;
 
-	@NestedConfigurationProperty
-	private RedissonStorageAccessorFactorySetting accessor = new RedissonStorageAccessorFactorySetting();
+    @NestedConfigurationProperty
+    private RedissonStorageAccessorFactorySetting accessor = new RedissonStorageAccessorFactorySetting();
 
-	private Map<String, RedissonStorageAccessorFactorySetting> accessors = new HashMap<>();
+    private Map<String, RedissonStorageAccessorFactorySetting> accessors = new HashMap<>();
 
-	public boolean isEnable() {
-		return enable;
-	}
+    public boolean isEnable() {
+        return enable;
+    }
 
-	public RedissonStorageAccessorFactoryProperties setEnable(boolean enable) {
-		this.enable = enable;
-		return this;
-	}
+    public RedissonStorageAccessorFactoryProperties setEnable(boolean enable) {
+        this.enable = enable;
+        return this;
+    }
 
-	public RedissonStorageAccessorFactorySetting getAccessor() {
-		return accessor;
-	}
+    public RedissonStorageAccessorFactorySetting getAccessor() {
+        return accessor;
+    }
 
-	public RedissonStorageAccessorFactoryProperties setAccessor(RedissonStorageAccessorFactorySetting accessor) {
-		this.accessor = accessor;
-		return this;
-	}
+    public RedissonStorageAccessorFactoryProperties setAccessor(RedissonStorageAccessorFactorySetting accessor) {
+        this.accessor = accessor;
+        return this;
+    }
 
-	public Map<String, RedissonStorageAccessorFactorySetting> getAccessors() {
-		return accessors;
-	}
+    public Map<String, RedissonStorageAccessorFactorySetting> getAccessors() {
+        return accessors;
+    }
 
-	public RedissonStorageAccessorFactoryProperties setAccessors(
-			Map<String, RedissonStorageAccessorFactorySetting> accessors) {
-		this.accessors = accessors;
-		return this;
-	}
+    public RedissonStorageAccessorFactoryProperties setAccessors(
+            Map<String, RedissonStorageAccessorFactorySetting> accessors) {
+        this.accessors = accessors;
+        return this;
+    }
 
 }

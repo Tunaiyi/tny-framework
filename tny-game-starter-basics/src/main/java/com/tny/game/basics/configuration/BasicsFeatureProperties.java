@@ -15,37 +15,37 @@ import static com.tny.game.basics.configuration.BasicsPropertiesConstants.*;
 @ConfigurationProperties(BASICS_FEATURE_MANAGER)
 public class BasicsFeatureProperties {
 
-	private boolean enable;
+    private boolean enable;
 
-	private String path = ItemModelPaths.FEATURE_MODEL_CONFIG_PATH;
+    private String path = ItemModelPaths.FEATURE_MODEL_CONFIG_PATH;
 
-	private Class<? extends DefaultFeatureModel> modelClass = DefaultFeatureModel.class;
+    private Class<? extends DefaultFeatureModel> modelClass = DefaultFeatureModel.class;
 
-	public boolean isEnable() {
-		return enable;
-	}
+    public boolean isEnable() {
+        return enable;
+    }
 
-	public BasicsFeatureProperties setEnable(boolean enable) {
-		this.enable = enable;
-		return this;
-	}
+    public BasicsFeatureProperties setEnable(boolean enable) {
+        this.enable = enable;
+        return this;
+    }
 
-	public String getPath() {
-		return path;
-	}
+    public String getPath() {
+        return path;
+    }
 
-	public BasicsFeatureProperties setPath(String path) {
-		this.path = path;
-		return this;
-	}
+    public BasicsFeatureProperties setPath(String path) {
+        this.path = path;
+        return this;
+    }
 
-	public Class<? extends DefaultFeatureModel> getModelClass() {
-		return modelClass;
-	}
+    public Class<? extends DefaultFeatureModel> getModelClass() {
+        return modelClass;
+    }
 
-	public BasicsFeatureProperties setModelClass(Class<? extends DefaultFeatureModel> modelClass) {
-		this.modelClass = modelClass;
-		return this;
-	}
+    public BasicsFeatureProperties setModelClass(Class<? extends DefaultFeatureModel> modelClass) {
+        this.modelClass = modelClass;
+        return this;
+    }
 
 }

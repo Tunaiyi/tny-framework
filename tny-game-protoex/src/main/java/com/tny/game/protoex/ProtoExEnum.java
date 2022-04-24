@@ -9,11 +9,11 @@ import com.tny.game.common.enums.*;
  */
 public interface ProtoExEnum extends IntEnumerable {
 
-	/**
-	 * 枚举名字
-	 *
-	 * @return
-	 */
-	String name();
+    /**
+     * 枚举名字
+     *
+     * @return
+     */
+    String name();
 
 }

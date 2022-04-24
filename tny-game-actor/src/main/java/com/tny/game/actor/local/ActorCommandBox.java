@@ -12,77 +12,77 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 public abstract class ActorCommandBox extends AbstractWorkerCommandBox<ActorCommand<?>, ActorCommandBox> {
 
-	private ActorCell actorCell;
+    private ActorCell actorCell;
 
-	private volatile boolean terminated;
+    private volatile boolean terminated;
 
-	public ActorCommandBox(ActorCell actorCell) {
-		super(new ConcurrentLinkedQueue<>());
-		this.actorCell = actorCell;
-	}
+    public ActorCommandBox(ActorCell actorCell) {
+        super(new ConcurrentLinkedQueue<>());
+        this.actorCell = actorCell;
+    }
 
-	@Override
-	protected Queue<ActorCommand<?>> acceptQueue() {
-		return this.queue;
-	}
+    @Override
+    protected Queue<ActorCommand<?>> acceptQueue() {
+        return this.queue;
+    }
 
-	protected void terminate() {
-		if (this.terminated) {
-			return;
-		}
-		this.terminated = true;
-		Queue<ActorCommand<?>> queue = this.acceptQueue();
-		while (!queue.isEmpty()) {
-			ActorCommand<?> cmd = queue.poll();
-			cmd.cancel();
-			this.executeCommand(cmd);
-		}
-		for (ActorCommandBox box : boxes()) {
-			box.getActorCell().terminate();
-		}
-	}
+    protected void terminate() {
+        if (this.terminated) {
+            return;
+        }
+        this.terminated = true;
+        Queue<ActorCommand<?>> queue = this.acceptQueue();
+        while (!queue.isEmpty()) {
+            ActorCommand<?> cmd = queue.poll();
+            cmd.cancel();
+            this.executeCommand(cmd);
+        }
+        for (ActorCommandBox box : boxes()) {
+            box.getActorCell().terminate();
+        }
+    }
 
-	boolean isTerminated() {
-		return this.terminated;
-	}
+    boolean isTerminated() {
+        return this.terminated;
+    }
 
-	boolean detach() {
-		return this.worker != null && this.worker.unregister(this);
-	}
+    boolean detach() {
+        return this.worker != null && this.worker.unregister(this);
+    }
 
-	private ActorCell getActorCell() {
-		return this.actorCell;
-	}
+    private ActorCell getActorCell() {
+        return this.actorCell;
+    }
 
-	private void checkTerminated() {
-		if (this.isTerminated()) {
-			throw new ActorTerminatedException(this.actorCell.getActor());
-		}
-	}
+    private void checkTerminated() {
+        if (this.isTerminated()) {
+            throw new ActorTerminatedException(this.actorCell.getActor());
+        }
+    }
 
-	public int getStepSize() {
-		return this.actorCell.getStepSize();
-	}
+    public int getStepSize() {
+        return this.actorCell.getStepSize();
+    }
 
-	@Override
-	public boolean accept(ActorCommand<?> command) {
-		this.checkTerminated();
-		return super.accept(command);
-	}
+    @Override
+    public boolean accept(ActorCommand<?> command) {
+        this.checkTerminated();
+        return super.accept(command);
+    }
 
-	@Override
-	public boolean bindWorker(CommandWorker worker) {
-		return !this.isTerminated() && super.bindWorker(worker);
-	}
+    @Override
+    public boolean bindWorker(CommandWorker worker) {
+        return !this.isTerminated() && super.bindWorker(worker);
+    }
 
-	@Override
-	public boolean unbindWorker() {
-		return super.unbindWorker();
-	}
+    @Override
+    public boolean unbindWorker() {
+        return super.unbindWorker();
+    }
 
-	@Override
-	public boolean register(CommandBox commandBox) {
-		return !this.terminated && super.register(commandBox);
-	}
+    @Override
+    public boolean register(CommandBox commandBox) {
+        return !this.terminated && super.register(commandBox);
+    }
 
 }

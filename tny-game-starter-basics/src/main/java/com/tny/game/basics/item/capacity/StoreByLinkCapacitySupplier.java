@@ -11,69 +11,69 @@ import java.util.*;
  */
 public class StoreByLinkCapacitySupplier extends BaseStoreCapable implements StoreCapacitySupplier {
 
-	private CapacitySupplier supplier;
+    private CapacitySupplier supplier;
 
-	StoreByLinkCapacitySupplier(CapacitySupplier supplier, long expireAt) {
-		super(expireAt);
-		this.supplier = supplier;
-	}
+    StoreByLinkCapacitySupplier(CapacitySupplier supplier, long expireAt) {
+        super(expireAt);
+        this.supplier = supplier;
+    }
 
-	@Override
-	public long getId() {
-		return supplier.getId();
-	}
+    @Override
+    public long getId() {
+        return supplier.getId();
+    }
 
-	public int getModelId() {
-		return supplier.getModelId();
-	}
+    public int getModelId() {
+        return supplier.getModelId();
+    }
 
-	@Override
-	public long getPlayerId() {
-		return supplier.getPlayerId();
-	}
+    @Override
+    public long getPlayerId() {
+        return supplier.getPlayerId();
+    }
 
-	@Override
-	public CapacitySupplierType getSupplierType() {
-		return supplier.getSupplierType();
-	}
+    @Override
+    public CapacitySupplierType getSupplierType() {
+        return supplier.getSupplierType();
+    }
 
-	@Override
-	public boolean isHasCapacity(Capacity capacity) {
-		return supplier.isHasCapacity(capacity);
-	}
+    @Override
+    public boolean isHasCapacity(Capacity capacity) {
+        return supplier.isHasCapacity(capacity);
+    }
 
-	@Override
-	public Number getCapacity(Capacity capacity, Number defaultValue) {
-		return supplier.getCapacity(capacity, defaultValue);
-	}
+    @Override
+    public Number getCapacity(Capacity capacity, Number defaultValue) {
+        return supplier.getCapacity(capacity, defaultValue);
+    }
 
-	@Override
-	public Set<CapacityGroup> getAllCapacityGroups() {
-		return supplier.getAllCapacityGroups();
-	}
+    @Override
+    public Set<CapacityGroup> getAllCapacityGroups() {
+        return supplier.getAllCapacityGroups();
+    }
 
-	@Override
-	public Number getCapacity(Capacity capacity) {
-		return getCapacity(capacity, null);
-	}
+    @Override
+    public Number getCapacity(Capacity capacity) {
+        return getCapacity(capacity, null);
+    }
 
-	@Override
-	public Map<Capacity, Number> getAllCapacities() {
-		return supplier.getAllCapacities();
-	}
+    @Override
+    public Map<Capacity, Number> getAllCapacities() {
+        return supplier.getAllCapacities();
+    }
 
-	@Override
-	public boolean isLinked() {
-		return true;
-	}
+    @Override
+    public boolean isLinked() {
+        return true;
+    }
 
-	@Override
-	public String toString() {
-		return MoreObjects.toStringHelper(this)
-				.add("id", supplier.getId())
-				.add("modelId", supplier.getModelId())
-				.add("name", ItemModels.name(supplier.getModelId()))
-				.toString();
-	}
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("id", supplier.getId())
+                .add("modelId", supplier.getModelId())
+                .add("name", ItemModels.name(supplier.getModelId()))
+                .toString();
+    }
 
 }

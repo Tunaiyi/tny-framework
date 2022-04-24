@@ -10,22 +10,22 @@ import com.tny.game.data.accessor.*;
  */
 public abstract class MongoStorageAccessor<K extends Comparable<?>, O> implements BatchStorageAccessor<K, O> {
 
-	private final String dataSource;
+    private final String dataSource;
 
-	protected final Class<O> entityClass;
+    protected final Class<O> entityClass;
 
-	public MongoStorageAccessor(Class<O> entityClass, String dataSource) {
-		this.entityClass = entityClass;
-		this.dataSource = dataSource;
-	}
+    public MongoStorageAccessor(Class<O> entityClass, String dataSource) {
+        this.entityClass = entityClass;
+        this.dataSource = dataSource;
+    }
 
-	public Class<O> getEntityClass() {
-		return entityClass;
-	}
+    public Class<O> getEntityClass() {
+        return entityClass;
+    }
 
-	@Override
-	public String getDataSource() {
-		return dataSource;
-	}
+    @Override
+    public String getDataSource() {
+        return dataSource;
+    }
 
 }

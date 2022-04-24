@@ -6,13 +6,15 @@ import java.security.interfaces.*;
 public class RSAKeyPair {
 
     private KeyPair keyPair;
+
     private RSAPrivateKey privateKey;
+
     private RSAPublicKey publicKey;
 
     protected RSAKeyPair(KeyPair keyPair) {
         this.keyPair = keyPair;
-        this.privateKey = (RSAPrivateKey) keyPair.getPrivate();
-        this.publicKey = (RSAPublicKey) keyPair.getPublic();
+        this.privateKey = (RSAPrivateKey)keyPair.getPrivate();
+        this.publicKey = (RSAPublicKey)keyPair.getPublic();
     }
 
     public KeyPair getKeyPair() {

@@ -14,60 +14,60 @@ import static com.tny.game.common.utils.ObjectAide.*;
  */
 public abstract class BaseUpdaterBuilder<I extends Item<?>, U extends BaseUpdater<I>, B extends BaseUpdaterBuilder<I, U, B>> {
 
-	private OnUpgrade<I> onUpgrade;
+    private OnUpgrade<I> onUpgrade;
 
-	private OnPreUpgrade<I> onPreUpgrade;
+    private OnPreUpgrade<I> onPreUpgrade;
 
-	private OnReset<I> onReset;
+    private OnReset<I> onReset;
 
-	protected I item;
+    protected I item;
 
-	protected int level;
+    protected int level;
 
-	public B setOnUpgrade(OnUpgrade<I> onUpgrade) {
-		this.onUpgrade = onUpgrade;
-		return as(this);
-	}
+    public B setOnUpgrade(OnUpgrade<I> onUpgrade) {
+        this.onUpgrade = onUpgrade;
+        return as(this);
+    }
 
-	public B setPrepareUpgrade(OnPreUpgrade<I> onPreUpgrade) {
-		this.onPreUpgrade = onPreUpgrade;
-		return as(this);
-	}
+    public B setPrepareUpgrade(OnPreUpgrade<I> onPreUpgrade) {
+        this.onPreUpgrade = onPreUpgrade;
+        return as(this);
+    }
 
-	protected B setOnReset(OnReset<I> onReset) {
-		this.onReset = onReset;
-		return as(this);
-	}
+    protected B setOnReset(OnReset<I> onReset) {
+        this.onReset = onReset;
+        return as(this);
+    }
 
-	public B setItem(I item) {
-		this.item = item;
-		return as(this);
-	}
+    public B setItem(I item) {
+        this.item = item;
+        return as(this);
+    }
 
-	public B setLevel(int level) {
-		this.level = level;
-		return as(this);
-	}
+    public B setLevel(int level) {
+        this.level = level;
+        return as(this);
+    }
 
-	public U build() {
-		U updater = createUpdater();
-		init(updater);
-		postInit(updater);
-		return updater;
-	}
+    public U build() {
+        U updater = createUpdater();
+        init(updater);
+        postInit(updater);
+        return updater;
+    }
 
-	private void init(U updater) {
-		updater.setLevel(this.level)
-				.setItem(this.item)
-				.withOnPreUpgrade(onPreUpgrade)
-				.withOnUpgrade(onUpgrade)
-				.withOnReset(onReset);
-	}
+    private void init(U updater) {
+        updater.setLevel(this.level)
+                .setItem(this.item)
+                .withOnPreUpgrade(onPreUpgrade)
+                .withOnUpgrade(onUpgrade)
+                .withOnReset(onReset);
+    }
 
-	protected void postInit(U updater) {
+    protected void postInit(U updater) {
 
-	}
+    }
 
-	public abstract U createUpdater();
+    public abstract U createUpdater();
 
 }

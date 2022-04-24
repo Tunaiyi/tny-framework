@@ -1,6 +1,5 @@
 package com.tny.game.actor.local;
 
-
 /**
  * Deliver对象,负责处理消息.
  *
@@ -32,10 +31,8 @@ public interface ActorLifeCycle {
     default void postHandle(ActorCommand<?> command) {
     }
 
-
     default void postSucc(Object result) {
     }
-
 
     default void postFail(Throwable cause) {
     }

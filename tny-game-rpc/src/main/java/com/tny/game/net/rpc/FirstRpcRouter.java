@@ -12,17 +12,17 @@ import java.util.List;
  */
 public class FirstRpcRouter implements RpcRouter<Object> {
 
-	@Override
-	public Endpoint<?> route(List<RpcRemoteNode> nodes, RpcMethod invoker, Object routeValue, Object... params) {
-		if (nodes.isEmpty()) {
-			return null;
-		}
-		RpcRemoteNode node = nodes.get(0);
-		List<Endpoint<RpcLinkerId>> endpoints = node.getOrderEndpoints();
-		if (endpoints.isEmpty()) {
-			return null;
-		}
-		return endpoints.get(0);
-	}
+    @Override
+    public Endpoint<?> route(List<RpcRemoteNode> nodes, RpcMethod invoker, Object routeValue, Object... params) {
+        if (nodes.isEmpty()) {
+            return null;
+        }
+        RpcRemoteNode node = nodes.get(0);
+        List<Endpoint<RpcLinkerId>> endpoints = node.getOrderEndpoints();
+        if (endpoints.isEmpty()) {
+            return null;
+        }
+        return endpoints.get(0);
+    }
 
 }

@@ -28,10 +28,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class StandardThreadExecutor extends ThreadPoolExecutor {
 
     public static final int DEFAULT_MIN_THREADS = 20;
+
     public static final int DEFAULT_MAX_THREADS = 200;
+
     public static final int DEFAULT_MAX_IDLE_TIME = 60 * 1000; // 1 minutes
 
     protected AtomicInteger submittedTasksCount;    // 正在处理的任务数
+
     private int maxSubmittedTaskCount;                // 最大允许同时处理的任务数
 
     public StandardThreadExecutor() {
@@ -124,7 +127,7 @@ public class StandardThreadExecutor extends ThreadPoolExecutor {
 class ExecutorQueue extends LinkedTransferQueue<Runnable> {
 
     private static final long serialVersionUID = -265236426751004839L;
-    
+
     private StandardThreadExecutor threadPoolExecutor;
 
     public ExecutorQueue() {

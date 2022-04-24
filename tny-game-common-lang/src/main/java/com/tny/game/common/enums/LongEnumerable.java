@@ -6,10 +6,10 @@ package com.tny.game.common.enums;
 
 public interface LongEnumerable extends Enumerable<Long> {
 
-	long id();
+    long id();
 
-	default Long getId() {
-		return id();
-	}
+    default Long getId() {
+        return id();
+    }
 
 }

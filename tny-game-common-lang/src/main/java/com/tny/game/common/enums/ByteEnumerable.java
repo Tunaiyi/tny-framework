@@ -6,11 +6,11 @@ package com.tny.game.common.enums;
 
 public interface ByteEnumerable extends Enumerable<Byte> {
 
-	byte id();
+    byte id();
 
-	@Override
-	default Byte getId() {
-		return id();
-	}
+    @Override
+    default Byte getId() {
+        return id();
+    }
 
 }

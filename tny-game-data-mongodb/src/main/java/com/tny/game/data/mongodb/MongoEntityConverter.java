@@ -10,8 +10,8 @@ import org.bson.Document;
  */
 public interface MongoEntityConverter {
 
-	<T> T convertToRead(Document source, Class<T> targetClass);
+    <T> T convertToRead(Document source, Class<T> targetClass);
 
-	Document convertToWrite(Object id, Object source);
+    Document convertToWrite(Object id, Object source);
 
 }

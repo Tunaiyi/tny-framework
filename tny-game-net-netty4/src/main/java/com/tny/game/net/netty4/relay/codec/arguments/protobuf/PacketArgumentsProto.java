@@ -8,6 +8,6 @@ package com.tny.game.net.netty4.relay.codec.arguments.protobuf;
  */
 public interface PacketArgumentsProto<T> {
 
-	T toArguments();
+    T toArguments();
 
 }

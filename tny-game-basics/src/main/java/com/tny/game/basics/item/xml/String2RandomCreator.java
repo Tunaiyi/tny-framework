@@ -12,22 +12,22 @@ import static com.tny.game.common.utils.StringAide.*;
  */
 public class String2RandomCreator extends AbstractSingleValueConverter {
 
-	public String2RandomCreator() {
-	}
+    public String2RandomCreator() {
+    }
 
-	@Override
-	@SuppressWarnings("rawtypes")
-	public boolean canConvert(Class clazz) {
-		return RandomCreator.class.isAssignableFrom(clazz);
-	}
+    @Override
+    @SuppressWarnings("rawtypes")
+    public boolean canConvert(Class clazz) {
+        return RandomCreator.class.isAssignableFrom(clazz);
+    }
 
-	@Override
-	public Object fromString(String name) {
-		RandomCreatorFactory<?, ?> factory = RandomCreators.getFactory(name);
-		if (factory == null) {
-			throw new NullPointerException(format("找不到名字为 {} 的 RandomCreatorFactory", name));
-		}
-		return factory.getRandomCreator();
-	}
+    @Override
+    public Object fromString(String name) {
+        RandomCreatorFactory<?, ?> factory = RandomCreators.getFactory(name);
+        if (factory == null) {
+            throw new NullPointerException(format("找不到名字为 {} 的 RandomCreatorFactory", name));
+        }
+        return factory.getRandomCreator();
+    }
 
 }

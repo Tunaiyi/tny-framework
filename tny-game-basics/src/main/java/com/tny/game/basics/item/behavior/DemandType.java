@@ -19,18 +19,18 @@ import com.tny.game.common.result.*;
  */
 public interface DemandType extends IntEnumerable {
 
-	/**
-	 * 是否是costDemand
-	 *
-	 * @return
-	 */
-	boolean isCost();
+    /**
+     * 是否是costDemand
+     *
+     * @return
+     */
+    boolean isCost();
 
-	/**
-	 * 返回错误码
-	 *
-	 * @return
-	 */
-	ResultCode getResultCode();
+    /**
+     * 返回错误码
+     *
+     * @return
+     */
+    ResultCode getResultCode();
 
 }

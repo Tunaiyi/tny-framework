@@ -19,8 +19,11 @@ public class FlowTestUnits {
     ScheduledExecutorService scheduled = Executors.newScheduledThreadPool(1);
 
     static final String value = "10000";
+
     static final String other = "20000";
+
     static final String other_value = "2000010000";
+
     static final RuntimeException exception = new RuntimeException();
 
     static final Duration TIME_100 = Duration.ofMillis(100);

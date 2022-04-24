@@ -10,11 +10,11 @@ import com.tny.game.net.message.*;
  */
 public interface Receiver {
 
-	/**
-	 * 接收消息
-	 *
-	 * @param message 消息
-	 */
-	boolean receive(Message message);
+    /**
+     * 接收消息
+     *
+     * @param message 消息
+     */
+    boolean receive(Message message);
 
 }

@@ -14,14 +14,14 @@ import org.springframework.context.annotation.*;
 @ConditionalOnProperty(name = BasicsPropertiesConstants.BASICS_CAPACITY_MODULE_ENABLE, havingValue = "true")
 public class BasicsCapacityModuleConfiguration {
 
-	@Bean
-	public CapacityDebugger capacityDebugger() {
-		return new CapacityDebugger();
-	}
+    @Bean
+    public CapacityDebugger capacityDebugger() {
+        return new CapacityDebugger();
+    }
 
-	@Bean
-	public CapacityService capacityService() {
-		return new CapacityService();
-	}
+    @Bean
+    public CapacityService capacityService() {
+        return new CapacityService();
+    }
 
 }

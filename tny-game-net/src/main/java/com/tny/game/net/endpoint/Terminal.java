@@ -9,9 +9,9 @@ import com.tny.game.common.url.*;
  */
 public interface Terminal<UID> extends Endpoint<UID> {
 
-	/**
-	 * @return 获取客户端 url
-	 */
-	URL getUrl();
+    /**
+     * @return 获取客户端 url
+     */
+    URL getUrl();
 
 }

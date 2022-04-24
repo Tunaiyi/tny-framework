@@ -7,18 +7,18 @@ import java.util.concurrent.Future;
  */
 public interface Wait<R> {
 
-	static <V> Wait<V> of(Future<V> future) {
-		return new FutureWait<>(future);
-	}
+    static <V> Wait<V> of(Future<V> future) {
+        return new FutureWait<>(future);
+    }
 
-	boolean isDone();
+    boolean isDone();
 
-	boolean isFailed();
+    boolean isFailed();
 
-	boolean isSuccess();
+    boolean isSuccess();
 
-	Throwable getCause();
+    Throwable getCause();
 
-	R getResult();
+    R getResult();
 
 }

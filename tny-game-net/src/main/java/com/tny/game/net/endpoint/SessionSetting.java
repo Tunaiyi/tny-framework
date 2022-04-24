@@ -8,6 +8,6 @@ import com.tny.game.common.lifecycle.unit.annotation.*;
 @UnitInterface
 public interface SessionSetting extends EndpointSetting {
 
-	int getSendMessageCachedSize();
+    int getSendMessageCachedSize();
 
 }

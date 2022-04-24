@@ -1,6 +1,5 @@
 package com.tny.game.suite.cluster;
 
-
 import com.tny.game.common.event.bus.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.suite.cluster.event.*;
@@ -85,8 +84,9 @@ public class ServerNode {
 
     public boolean isInOpenDate() {
         ServerOutline outline = this.outline;
-        if (outline == null)
+        if (outline == null) {
             return false;
+        }
         LocalDate data = outline.getOpenLocalDate();
         LocalDate now = DateTimeAide.today();
         return !now.isBefore(data);
@@ -94,15 +94,17 @@ public class ServerNode {
 
     public Optional<InetConnector> getPublicConnector(String... ids) {
         ServerOutline outline = this.outline;
-        if (outline == null)
+        if (outline == null) {
             return null;
+        }
         return Optional.ofNullable(outline.getPublicConnector(ids));
     }
 
     public Optional<InetConnector> getPrivateConnector(String... ids) {
         ServerOutline outline = this.outline;
-        if (outline == null)
+        if (outline == null) {
             return null;
+        }
         return Optional.ofNullable(outline.getPrivateConnector(ids));
     }
 

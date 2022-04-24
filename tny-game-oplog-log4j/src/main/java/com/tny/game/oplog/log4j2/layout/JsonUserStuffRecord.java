@@ -39,14 +39,15 @@ public class JsonUserStuffRecord {
         this.name = log.getName();
         this.sid = log.getServerId();
         this.stuffs = log.getStuffLogs()
-                         .stream()
-                         .map(JsonUserStuffRecord::log2Record)
-                         .collect(Collectors.toList());
+                .stream()
+                .map(JsonUserStuffRecord::log2Record)
+                .collect(Collectors.toList());
     }
 
     private static StuffRecord log2Record(StuffSettleLog log) {
-        if (log instanceof StuffRecord)
+        if (log instanceof StuffRecord) {
             return as(log, StuffRecord.class);
+        }
         return new StuffRecord(log);
     }
 
@@ -57,7 +58,6 @@ public class JsonUserStuffRecord {
     public long getUserId() {
         return uid;
     }
-
 
     public int getServerId() {
         return sid;
@@ -70,4 +70,5 @@ public class JsonUserStuffRecord {
     public List<StuffRecord> getStuffs() {
         return stuffs;
     }
+
 }

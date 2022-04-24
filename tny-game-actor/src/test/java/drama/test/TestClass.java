@@ -26,9 +26,10 @@ public class TestClass {
         @Override
         public String toString() {
             return "Person{" +
-                   "id=" + id +
-                   '}';
+                    "id=" + id +
+                    '}';
         }
+
     }
 
     @Test
@@ -43,14 +44,14 @@ public class TestClass {
                 new Person(7)
         );
         List<Person> newPersons = persons.stream()
-                                         .filter(Person::isDouble)
-                                         .collect(Collectors.toList());
+                .filter(Person::isDouble)
+                .collect(Collectors.toList());
         System.out.println(persons);
         System.out.println(newPersons);
     }
 
-
     public static String ELEMENT_REGEX_STR = "(?:[-\\w:@&=+,.!~*'_;]|%\\p{XDigit}{2})(?:[-\\w:@&=+,.!~*'$_;]|%\\p{XDigit}{2})*";
+
     public static Pattern ELEMENT_REGEX = Pattern.compile(ELEMENT_REGEX_STR);
 
     private boolean match(String value) {
@@ -77,7 +78,6 @@ public class TestClass {
         System.out.println(duration.toMillis());
         System.out.println(duration.getSeconds());
     }
-
 
 }
 

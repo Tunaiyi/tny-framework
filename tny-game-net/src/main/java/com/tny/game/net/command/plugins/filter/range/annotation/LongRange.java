@@ -17,4 +17,5 @@ public @interface LongRange {
      * @return 207
      */
     int illegalCode() default 0;
+
 }

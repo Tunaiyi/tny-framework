@@ -2,8 +2,8 @@ package com.tny.game.net.message;
 
 public interface NetMessage extends NetMessageHead, Message {
 
-	boolean isRelay();
+    boolean isRelay();
 
-	void relay(boolean value);
+    void relay(boolean value);
 
 }

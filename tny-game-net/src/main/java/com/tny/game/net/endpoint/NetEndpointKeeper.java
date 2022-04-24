@@ -8,13 +8,13 @@ package com.tny.game.net.endpoint;
  */
 public interface NetEndpointKeeper<UID, E extends Endpoint<UID>> extends EndpointKeeper<UID, E> {
 
-	default void notifyEndpointOnline(Endpoint<?> endpoint) {
-	}
+    default void notifyEndpointOnline(Endpoint<?> endpoint) {
+    }
 
-	default void notifyEndpointOffline(Endpoint<?> endpoint) {
-	}
+    default void notifyEndpointOffline(Endpoint<?> endpoint) {
+    }
 
-	default void notifyEndpointClose(Endpoint<?> endpoint) {
-	}
+    default void notifyEndpointClose(Endpoint<?> endpoint) {
+    }
 
 }

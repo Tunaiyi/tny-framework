@@ -8,8 +8,8 @@ package com.tny.game.net.rpc.auth;
  */
 public interface RpcProtocol {
 
-	int RPC_AUTH = 987_0000;
+    int RPC_AUTH = 987_0000;
 
-	int RPC_AUTH_$_AUTHENTICATE = 987_0000_01;
+    int RPC_AUTH_$_AUTHENTICATE = 987_0000_01;
 
 }

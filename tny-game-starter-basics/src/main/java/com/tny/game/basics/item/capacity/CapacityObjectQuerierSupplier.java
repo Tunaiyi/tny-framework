@@ -11,30 +11,30 @@ import java.util.stream.Stream;
  */
 public interface CapacityObjectQuerierSupplier extends Capabler {
 
-	/**
-	 * @return 能力值访问器
-	 */
-	CapacityObjectQuerier querier();
+    /**
+     * @return 能力值访问器
+     */
+    CapacityObjectQuerier querier();
 
-	@Override
-	default Collection<? extends CapacitySupplier> suppliers() {
-		return querier().findCompositeSupplier(this.getId())
-				.map(CompositeCapacitySupplier::suppliers)
-				.orElse(ImmutableList.of());
-	}
+    @Override
+    default Collection<? extends CapacitySupplier> suppliers() {
+        return querier().findCompositeSupplier(this.getId())
+                .map(CompositeCapacitySupplier::suppliers)
+                .orElse(ImmutableList.of());
+    }
 
-	@Override
-	default Stream<? extends CapacitySupplier> suppliersStream() {
-		return querier().findCompositeSupplier(this.getId())
-				.map(CompositeCapacitySupplier::suppliersStream)
-				.orElseGet(Stream::empty);
-	}
+    @Override
+    default Stream<? extends CapacitySupplier> suppliersStream() {
+        return querier().findCompositeSupplier(this.getId())
+                .map(CompositeCapacitySupplier::suppliersStream)
+                .orElseGet(Stream::empty);
+    }
 
-	@Override
-	default Set<CapacityGroup> getAllCapacityGroups() {
-		return querier().findSupplier(this.getId())
-				.map(CapacitySupply::getAllCapacityGroups)
-				.orElse(ImmutableSet.of());
-	}
+    @Override
+    default Set<CapacityGroup> getAllCapacityGroups() {
+        return querier().findSupplier(this.getId())
+                .map(CapacitySupply::getAllCapacityGroups)
+                .orElse(ImmutableSet.of());
+    }
 
 }

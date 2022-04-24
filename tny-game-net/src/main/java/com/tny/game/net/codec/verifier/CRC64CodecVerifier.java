@@ -19,41 +19,41 @@ import static com.tny.game.common.digest.binary.BytesAide.*;
 @Unit
 public class CRC64CodecVerifier implements CodecVerifier {
 
-	public static final Logger LOGGER = LoggerFactory.getLogger(CRC64CodecVerifier.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(CRC64CodecVerifier.class);
 
-	@Override
-	public int getCodeLength() {
-		return 8;
-	}
+    @Override
+    public int getCodeLength() {
+        return 8;
+    }
 
-	@Override
-	public byte[] generate(DataPackageContext packager, byte[] body, int offset, int length) {
-		byte[] generateCode = doGenerate(packager, body, offset, length);
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("generate code {} form body {}", toHexString(generateCode), toHexString(body));
-		}
-		return generateCode;
-	}
+    @Override
+    public byte[] generate(DataPackageContext packager, byte[] body, int offset, int length) {
+        byte[] generateCode = doGenerate(packager, body, offset, length);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("generate code {} form body {}", toHexString(generateCode), toHexString(body));
+        }
+        return generateCode;
+    }
 
-	@Override
-	public boolean verify(DataPackageContext packager, byte[] body, int offset, int length, byte[] verifyCode) {
-		byte[] generateCode = doGenerate(packager, body, offset, length);
-		if (!Arrays.equals(generateCode, verifyCode)) {
-			LOGGER.debug("verify remote code {} is not equals to local code {} form body {}",
-					toHexString(verifyCode), toHexString(generateCode), toHexString(body));
-			return false;
-		}
-		return true;
-	}
+    @Override
+    public boolean verify(DataPackageContext packager, byte[] body, int offset, int length, byte[] verifyCode) {
+        byte[] generateCode = doGenerate(packager, body, offset, length);
+        if (!Arrays.equals(generateCode, verifyCode)) {
+            LOGGER.debug("verify remote code {} is not equals to local code {} form body {}",
+                    toHexString(verifyCode), toHexString(generateCode), toHexString(body));
+            return false;
+        }
+        return true;
+    }
 
-	private byte[] doGenerate(DataPackageContext packager, byte[] body, int offset, int length) {
-		byte[] numberBytes = BytesAide.int2Bytes(packager.getPacketNumber());
-		byte[] codeBytes = BytesAide.int2Bytes(packager.getPacketCode());
-		return BytesAide.long2Bytes(CRC64.crc64Long(
-				ByteBuffer.wrap(numberBytes),
-				ByteBuffer.wrap(body, offset, length),
-				ByteBuffer.wrap(packager.getAccessKeyBytes()),
-				ByteBuffer.wrap(codeBytes)));
-	}
+    private byte[] doGenerate(DataPackageContext packager, byte[] body, int offset, int length) {
+        byte[] numberBytes = BytesAide.int2Bytes(packager.getPacketNumber());
+        byte[] codeBytes = BytesAide.int2Bytes(packager.getPacketCode());
+        return BytesAide.long2Bytes(CRC64.crc64Long(
+                ByteBuffer.wrap(numberBytes),
+                ByteBuffer.wrap(body, offset, length),
+                ByteBuffer.wrap(packager.getAccessKeyBytes()),
+                ByteBuffer.wrap(codeBytes)));
+    }
 
 }

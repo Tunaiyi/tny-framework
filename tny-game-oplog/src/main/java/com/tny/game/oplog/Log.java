@@ -1,6 +1,5 @@
 package com.tny.game.oplog;
 
-
 import java.time.Instant;
 
 public interface Log {

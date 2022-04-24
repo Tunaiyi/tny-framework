@@ -1,6 +1,5 @@
 package com.tny.game.actor;
 
-
 public interface ActorFactory<ID, ACT extends Actor<ID, ?>> {
 
     /**

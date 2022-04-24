@@ -11,31 +11,31 @@ import java.util.List;
 
 public class RelayPackDecodeHandler extends ByteToMessageDecoder implements RelayCodecErrorHandler {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(NetLogger.CODER);
+    private static final Logger LOGGER = LoggerFactory.getLogger(NetLogger.CODER);
 
-	private final RelayPackDecoder decoder;
+    private final RelayPackDecoder decoder;
 
-	private final boolean closeOnError;
+    private final boolean closeOnError;
 
-	public RelayPackDecodeHandler(RelayPackDecoder decoder, boolean closeOnError) {
-		this.decoder = decoder;
-		this.closeOnError = closeOnError;
-	}
+    public RelayPackDecodeHandler(RelayPackDecoder decoder, boolean closeOnError) {
+        this.decoder = decoder;
+        this.closeOnError = closeOnError;
+    }
 
-	@Override
-	protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) {
-		try {
-			while (in.readableBytes() > 0) {
-				Object object = this.decoder.decodeObject(ctx, in);
-				if (object instanceof RelayPacket) {
-					out.add(object);
-				} else {
-					break;
-				}
-			}
-		} catch (Throwable exception) {
-			handleOnDecodeError(LOGGER, ctx, exception, closeOnError);
-		}
-	}
+    @Override
+    protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) {
+        try {
+            while (in.readableBytes() > 0) {
+                Object object = this.decoder.decodeObject(ctx, in);
+                if (object instanceof RelayPacket) {
+                    out.add(object);
+                } else {
+                    break;
+                }
+            }
+        } catch (Throwable exception) {
+            handleOnDecodeError(LOGGER, ctx, exception, closeOnError);
+        }
+    }
 
 }

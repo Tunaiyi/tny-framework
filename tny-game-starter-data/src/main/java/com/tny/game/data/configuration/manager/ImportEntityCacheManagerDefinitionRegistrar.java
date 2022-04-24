@@ -24,59 +24,59 @@ import static com.tny.game.common.utils.ObjectAide.*;
  */
 public class ImportEntityCacheManagerDefinitionRegistrar extends ImportConfigurationBeanDefinitionRegistrar {
 
-	private final static DynamicEntityCacheManagerFactory entityCacheManagerFactory = new DynamicEntityCacheManagerFactory();
+    private final static DynamicEntityCacheManagerFactory entityCacheManagerFactory = new DynamicEntityCacheManagerFactory();
 
-	private String beamName(String name, String defaultName) {
-		if (StringUtils.isBlank(name)) {
-			return defaultName;
-		}
-		return name;
-	}
+    private String beamName(String name, String defaultName) {
+        if (StringUtils.isBlank(name)) {
+            return defaultName;
+        }
+        return name;
+    }
 
-	@Override
-	public void registerBeanDefinitions(@Nonnull AnnotationMetadata importingClassMetadata, @Nonnull BeanDefinitionRegistry registry) {
-		EntityCacheManagerProperties properties = loadProperties(EntityCacheManagerProperties.class);
-		Set<Class<?>> registeredClasses = new HashSet<>();
-		for (EntityScheme scheme : EntitySchemeLoader.getAllCacheSchemes()) {
-			Class<?> objectClass = scheme.getCacheClass();
-			if (!registeredClasses.add(objectClass)) {
-				continue;
-			}
-			EntityKeyMakerFactory entityKeyMakerFactory = beanFactory.getBean(
-					beamName(scheme.keyMakerFactory(), properties.getKeyMakerFactory()), EntityKeyMakerFactory.class);
-			EntityKeyMaker<?, ?> keyMaker = entityKeyMakerFactory.createMaker(scheme);
+    @Override
+    public void registerBeanDefinitions(@Nonnull AnnotationMetadata importingClassMetadata, @Nonnull BeanDefinitionRegistry registry) {
+        EntityCacheManagerProperties properties = loadProperties(EntityCacheManagerProperties.class);
+        Set<Class<?>> registeredClasses = new HashSet<>();
+        for (EntityScheme scheme : EntitySchemeLoader.getAllCacheSchemes()) {
+            Class<?> objectClass = scheme.getCacheClass();
+            if (!registeredClasses.add(objectClass)) {
+                continue;
+            }
+            EntityKeyMakerFactory entityKeyMakerFactory = beanFactory.getBean(
+                    beamName(scheme.keyMakerFactory(), properties.getKeyMakerFactory()), EntityKeyMakerFactory.class);
+            EntityKeyMaker<?, ?> keyMaker = entityKeyMakerFactory.createMaker(scheme);
 
-			ObjectCacheFactory objectCacheFactory = beanFactory.getBean(
-					beamName(scheme.cacheFactory(), properties.getCacheFactory()), ObjectCacheFactory.class);
-			ObjectCache<?, ?> objectCache = objectCacheFactory.createCache(scheme, as(keyMaker));
+            ObjectCacheFactory objectCacheFactory = beanFactory.getBean(
+                    beamName(scheme.cacheFactory(), properties.getCacheFactory()), ObjectCacheFactory.class);
+            ObjectCache<?, ?> objectCache = objectCacheFactory.createCache(scheme, as(keyMaker));
 
-			ObjectStorageFactory objectStorageFactory = beanFactory.getBean(
-					beamName(scheme.storageFactory(), properties.getStorageFactory()), ObjectStorageFactory.class);
-			ObjectStorage<?, ?> objectStorage = objectStorageFactory.createStorage(scheme, as(keyMaker));
+            ObjectStorageFactory objectStorageFactory = beanFactory.getBean(
+                    beamName(scheme.storageFactory(), properties.getStorageFactory()), ObjectStorageFactory.class);
+            ObjectStorage<?, ?> objectStorage = objectStorageFactory.createStorage(scheme, as(keyMaker));
 
-			Class<? extends Comparable<?>> keyClass = keyMaker.getKeyClass();
-			if (keyClass.isPrimitive()) {
-				keyClass = as(Wrapper.getWrapper(keyClass));
-			}
-			EntityCacheManager<?, ?> entityCacheManager = entityCacheManagerFactory.createCache(keyClass, scheme.getEntityClass());
+            Class<? extends Comparable<?>> keyClass = keyMaker.getKeyClass();
+            if (keyClass.isPrimitive()) {
+                keyClass = as(Wrapper.getWrapper(keyClass));
+            }
+            EntityCacheManager<?, ?> entityCacheManager = entityCacheManagerFactory.createCache(keyClass, scheme.getEntityClass());
 
-			//			entityCacheManager.getClass()
+            //			entityCacheManager.getClass()
 
-			System.out.println(entityCacheManager.getClass());
-			for (Class<?> c : ReflectAide.getComponentType(entityCacheManager.getClass(), EntityCacheManager.class)) {
-				System.out.println("T " + c);
-			}
+            System.out.println(entityCacheManager.getClass());
+            for (Class<?> c : ReflectAide.getComponentType(entityCacheManager.getClass(), EntityCacheManager.class)) {
+                System.out.println("T " + c);
+            }
 
-			Class<EntityCacheManager<?, ?>> managerClass = as(entityCacheManager.getClass());
-			String managerBeanName = BeanNameUtils.lowerCamelName(objectClass.getSimpleName() + EntityCacheManager.class.getSimpleName());
-			registry.registerBeanDefinition(managerBeanName, BeanDefinitionBuilder
-					.genericBeanDefinition(managerClass, () -> entityCacheManager)
-					.addPropertyValue("cache", objectCache)
-					.addPropertyValue("keyMaker", keyMaker)
-					.addPropertyValue("storage", objectStorage)
-					.addPropertyValue("currentLevel", scheme.concurrencyLevel())
-					.getBeanDefinition());
-		}
-	}
+            Class<EntityCacheManager<?, ?>> managerClass = as(entityCacheManager.getClass());
+            String managerBeanName = BeanNameUtils.lowerCamelName(objectClass.getSimpleName() + EntityCacheManager.class.getSimpleName());
+            registry.registerBeanDefinition(managerBeanName, BeanDefinitionBuilder
+                    .genericBeanDefinition(managerClass, () -> entityCacheManager)
+                    .addPropertyValue("cache", objectCache)
+                    .addPropertyValue("keyMaker", keyMaker)
+                    .addPropertyValue("storage", objectStorage)
+                    .addPropertyValue("currentLevel", scheme.concurrencyLevel())
+                    .getBeanDefinition());
+        }
+    }
 
 }

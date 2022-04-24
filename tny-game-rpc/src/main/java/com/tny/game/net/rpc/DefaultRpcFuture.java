@@ -16,35 +16,35 @@ import static com.tny.game.common.utils.ObjectAide.*;
  */
 public class DefaultRpcFuture<T> extends CompleteStageFuture<RpcResult<T>> implements RpcFuture<T> {
 
-	public DefaultRpcFuture() {
-	}
+    public DefaultRpcFuture() {
+    }
 
-	@Override
-	public ResultCode getResultCode() {
-		return result().getResultCode();
-	}
+    @Override
+    public ResultCode getResultCode() {
+        return result().getResultCode();
+    }
 
-	@Override
-	public T getBody() {
-		return as(result().getBody());
-	}
+    @Override
+    public T getBody() {
+        return as(result().getBody());
+    }
 
-	@Override
-	public boolean isSuccess() {
-		return result().isSuccess();
-	}
+    @Override
+    public boolean isSuccess() {
+        return result().isSuccess();
+    }
 
-	@Override
-	public boolean isFailure() {
-		return result().isFailure();
-	}
+    @Override
+    public boolean isFailure() {
+        return result().isFailure();
+    }
 
-	private RpcResult<T> result() {
-		try {
-			return get();
-		} catch (Exception e) {
-			throw new RpcInvokeException(NetResultCode.REMOTE_EXCEPTION, e);
-		}
-	}
+    private RpcResult<T> result() {
+        try {
+            return get();
+        } catch (Exception e) {
+            throw new RpcInvokeException(NetResultCode.REMOTE_EXCEPTION, e);
+        }
+    }
 
 }

@@ -12,15 +12,15 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "tny.data.store-executor.fork-join")
 public class AsyncObjectStoreExecutorProperties extends AsyncObjectStoreExecutorSetting {
 
-	private boolean enable;
+    private boolean enable;
 
-	public boolean isEnable() {
-		return enable;
-	}
+    public boolean isEnable() {
+        return enable;
+    }
 
-	public AsyncObjectStoreExecutorProperties setEnable(boolean enable) {
-		this.enable = enable;
-		return this;
-	}
+    public AsyncObjectStoreExecutorProperties setEnable(boolean enable) {
+        this.enable = enable;
+        return this;
+    }
 
 }

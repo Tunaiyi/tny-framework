@@ -32,12 +32,12 @@ public class ZKMonitorClient {
         STAT(EnumSet.of(Code.OK, Code.NONODE)) {
             @Override
             public void handleCallBack(AsyncCallback callback, int rc, String path, Object value, Object ctx, Stat stat) {
-                ((StatCallback) callback).processResult(rc, path, ctx, stat);
+                ((StatCallback)callback).processResult(rc, path, ctx, stat);
             }
 
             @Override
             public void addWatcher(ZKClient keeper, String path, Watcher watcher, AsyncCallback cb, Object ctx) {
-                keeper.exists(path, watcher, (StatCallback) cb, ctx);
+                keeper.exists(path, watcher, (StatCallback)cb, ctx);
             }
         },
 
@@ -45,12 +45,12 @@ public class ZKMonitorClient {
             @Override
             @SuppressWarnings("unchecked")
             public void handleCallBack(AsyncCallback callback, int rc, String path, Object value, Object ctx, Stat stat) {
-                ((ChildrenCallback) callback).processResult(rc, path, ctx, (List<String>) value);
+                ((ChildrenCallback)callback).processResult(rc, path, ctx, (List<String>)value);
             }
 
             @Override
             public void addWatcher(ZKClient keeper, String path, Watcher watcher, AsyncCallback cb, Object ctx) {
-                keeper.getChildren(path, watcher, (ChildrenCallback) cb, ctx);
+                keeper.getChildren(path, watcher, (ChildrenCallback)cb, ctx);
             }
 
         },
@@ -59,12 +59,12 @@ public class ZKMonitorClient {
             @Override
             @SuppressWarnings("unchecked")
             public void handleCallBack(AsyncCallback callback, int rc, String path, Object value, Object ctx, Stat stat) {
-                ((Children2Callback) callback).processResult(rc, path, ctx, (List<String>) value, stat);
+                ((Children2Callback)callback).processResult(rc, path, ctx, (List<String>)value, stat);
             }
 
             @Override
             public void addWatcher(ZKClient keeper, String path, Watcher watcher, AsyncCallback cb, Object ctx) {
-                keeper.getChildren2(path, watcher, (Children2Callback) cb, ctx);
+                keeper.getChildren2(path, watcher, (Children2Callback)cb, ctx);
             }
 
         },
@@ -72,12 +72,12 @@ public class ZKMonitorClient {
         DATA(EnumSet.of(Code.OK)) {
             @Override
             public void handleCallBack(AsyncCallback callback, int rc, String path, Object value, Object ctx, Stat stat) {
-                ((DataCallback) callback).processResult(rc, path, ctx, (byte[]) value, stat);
+                ((DataCallback)callback).processResult(rc, path, ctx, (byte[])value, stat);
             }
 
             @Override
             public void addWatcher(ZKClient keeper, String path, Watcher watcher, AsyncCallback cb, Object ctx) {
-                keeper.getData(path, watcher, (DataCallback) cb, ctx);
+                keeper.getData(path, watcher, (DataCallback)cb, ctx);
             }
         };
 
@@ -128,16 +128,18 @@ public class ZKMonitorClient {
         private void checkAndDoCallback(int rc, String path, Object ctx, Object value, Stat stat) {
             Code code = KeeperException.Code.get(rc);
             LOGGER.debug("checkAndDoCallback : {}", code);
-            if (this.callback != null)
+            if (this.callback != null) {
                 this.operation.handleCallBack(this.callback, rc, path, value, ctx, stat);
+            }
             if (this.operation.ADD_WATCHER_SUCC_SET.contains(code)) {
                 this.policy.success();
                 this.setState(MonitorState.WATCHING);
                 LOGGER.debug("{} 第{}次尝试监听 {} 变化成功 {}, monitor状态:{}", this.path, this.time.get(), this.operation, code, this.state);
             } else if (rc == KeeperException.Code.CONNECTIONLOSS.intValue()) {
                 MonitorState state = this.state;
-                if (state == MonitorState.UNWATCH)
+                if (state == MonitorState.UNWATCH) {
                     this.doRetry(code);
+                }
             } else {
                 this.doRetry(code);
             }
@@ -165,11 +167,13 @@ public class ZKMonitorClient {
 
         @Override
         public void start() {
-            if (start)
+            if (start) {
                 return;
+            }
             synchronized (this) {
-                if (start)
+                if (start) {
                     return;
+                }
                 LOGGER.debug("{} 第{}次尝试监听 {} 变化, monitor状态:{}", this.path, this.time.incrementAndGet(), this.operation, this.state);
                 this.operation.addWatcher(ZKMonitorClient.this.keeper, this.path, this, this, this.ctx);
                 this.start = true;
@@ -187,14 +191,16 @@ public class ZKMonitorClient {
                 this.setState(MonitorState.UNWATCH);
                 this.policy.reset();
                 LOGGER.debug("{} 第{}次监听到 {} 发生变化, monitor状态:{}, keeperState: {}", this.path, this.time.get(), this.operation, this.state, state);
-                if (this.handler != null)
+                if (this.handler != null) {
                     this.handler.process(event);
+                }
                 if (this.working) {
                     this.run();
                 }
             } else {
-                if (this.handler != null)
+                if (this.handler != null) {
                     this.handler.process(event);
+                }
             }
         }
 

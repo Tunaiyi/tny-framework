@@ -8,9 +8,13 @@ public class Person implements IPerson, Serializable {
      * serialVersionUID
      */
     private static final long serialVersionUID = 1L;
+
     private int id;
+
     private String name;
+
     private int age;
+
     private int sex;
 
     public Person() {
@@ -69,31 +73,39 @@ public class Person implements IPerson, Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
-        Person other = (Person) obj;
-        if (age != other.age)
+        }
+        Person other = (Person)obj;
+        if (age != other.age) {
             return false;
-        if (id != other.id)
+        }
+        if (id != other.id) {
             return false;
+        }
         if (name == null) {
-            if (other.name != null)
+            if (other.name != null) {
                 return false;
-        } else if (!name.equals(other.name))
+            }
+        } else if (!name.equals(other.name)) {
             return false;
-        if (sex != other.sex)
+        }
+        if (sex != other.sex) {
             return false;
+        }
         return true;
     }
 
     @Override
     public String toString() {
         return "PersonDao [id=" + id + ", name=" + name + ", age=" + age
-               + ", sex=" + sex + "]";
+                + ", sex=" + sex + "]";
     }
 
 }

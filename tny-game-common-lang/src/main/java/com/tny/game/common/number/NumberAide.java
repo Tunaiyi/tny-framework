@@ -11,6 +11,7 @@ import static com.tny.game.common.utils.StringAide.*;
 public class NumberAide {
 
     private static final int[] intSizeTable = new int[String.valueOf(Integer.MAX_VALUE).length()];
+
     private static final long[] longSizeTable = new long[String.valueOf(Long.MAX_VALUE).length()];
 
     // public static final long[] intSizeTable;

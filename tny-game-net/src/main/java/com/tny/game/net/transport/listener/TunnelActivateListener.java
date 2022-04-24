@@ -11,6 +11,6 @@ import com.tny.game.net.transport.*;
 @FunctionalInterface
 public interface TunnelActivateListener<UID> extends TunnelListener {
 
-	void onActivate(Tunnel<UID> tunnel);
+    void onActivate(Tunnel<UID> tunnel);
 
 }

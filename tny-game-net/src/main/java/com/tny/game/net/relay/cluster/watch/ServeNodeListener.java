@@ -12,10 +12,10 @@ import java.util.List;
  */
 public interface ServeNodeListener {
 
-	void onChange(ServeNode node, List<ServeNodeChangeStatus> statuses);
+    void onChange(ServeNode node, List<ServeNodeChangeStatus> statuses);
 
-	void onRemove(ServeNode node);
+    void onRemove(ServeNode node);
 
-	void onCreate(ServeNode node);
+    void onCreate(ServeNode node);
 
 }

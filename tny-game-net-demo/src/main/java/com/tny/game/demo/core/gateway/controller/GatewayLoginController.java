@@ -20,14 +20,14 @@ import java.time.ZonedDateTime;
 @BeforePlugin(SpringBootParamFilterPlugin.class)
 public class GatewayLoginController {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(GatewayLoginController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GatewayLoginController.class);
 
-	@RelayTo
-	@Rpc(CtrlerIds.LOGIN$LOGIN)
-	@BeforePlugin(SpringBootParamFilterPlugin.class)
-	@AuthenticationRequired(value = Certificates.DEFAULT_USER_TYPE, validator = DemoAuthenticateValidator.class)
-	public void login(Endpoint<Long> endpoint, @MsgParam long sessionId, @MsgParam long userId) {
-		LOGGER.info("{} - {} 登录成功 at {}", userId, sessionId, ZonedDateTime.now());
-	}
+    @RelayTo
+    @Rpc(CtrlerIds.LOGIN$LOGIN)
+    @BeforePlugin(SpringBootParamFilterPlugin.class)
+    @AuthenticationRequired(value = Certificates.DEFAULT_USER_TYPE, validator = DemoAuthenticateValidator.class)
+    public void login(Endpoint<Long> endpoint, @MsgParam long sessionId, @MsgParam long userId) {
+        LOGGER.info("{} - {} 登录成功 at {}", userId, sessionId, ZonedDateTime.now());
+    }
 
 }

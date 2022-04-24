@@ -18,45 +18,45 @@ import org.springframework.context.annotation.*;
  */
 @Configuration(proxyBeanMethods = false)
 @Import({
-		ImportReleaseStrategyDefinitionRegistrar.class,
-		ImportLocalObjectCacheFactoryDefinitionRegistrar.class,
-		ImportQueueObjectStorageFactoryDefinitionRegistrar.class,
-		ImportEntityCacheManagerDefinitionRegistrar.class
+        ImportReleaseStrategyDefinitionRegistrar.class,
+        ImportLocalObjectCacheFactoryDefinitionRegistrar.class,
+        ImportQueueObjectStorageFactoryDefinitionRegistrar.class,
+        ImportEntityCacheManagerDefinitionRegistrar.class
 })
 @EnableConfigurationProperties({
-		DataConfigurationProperties.class,
-		CacheRecyclerProperties.class,
-		ReleaseStrategyProperties.class,
-		LocalObjectCacheFactoriesProperties.class,
-		EntityCacheManagerProperties.class,
-		AsyncObjectStorageFactoriesProperties.class,
-		AsyncObjectStoreExecutorProperties.class,
+        DataConfigurationProperties.class,
+        CacheRecyclerProperties.class,
+        ReleaseStrategyProperties.class,
+        LocalObjectCacheFactoriesProperties.class,
+        EntityCacheManagerProperties.class,
+        AsyncObjectStorageFactoriesProperties.class,
+        AsyncObjectStoreExecutorProperties.class,
 
 })
 @ConditionalOnProperty(value = "tny.data.enable", matchIfMissing = true)
 public class DataAutoConfiguration {
 
-	@Bean
-	@ConditionalOnClass(CacheRecyclerProperties.class)
-	public ScheduledCacheRecycler scheduledCacheRecycler(CacheRecyclerProperties properties) {
-		ScheduledCacheRecyclerSetting setting = properties.getScheduled();
-		return new ScheduledCacheRecycler(setting.getRecycleIntervalTime());
-	}
+    @Bean
+    @ConditionalOnClass(CacheRecyclerProperties.class)
+    public ScheduledCacheRecycler scheduledCacheRecycler(CacheRecyclerProperties properties) {
+        ScheduledCacheRecyclerSetting setting = properties.getScheduled();
+        return new ScheduledCacheRecycler(setting.getRecycleIntervalTime());
+    }
 
-	@Bean
-	public AnnotationEntityKeyMakerFactory annotationEntityKeyMakerFactory() {
-		return new AnnotationEntityKeyMakerFactory();
-	}
+    @Bean
+    public AnnotationEntityKeyMakerFactory annotationEntityKeyMakerFactory() {
+        return new AnnotationEntityKeyMakerFactory();
+    }
 
-	@Bean
-	public EntityKeyMakerIdConverterFactory entityKeyMakerIdConverterFactory() {
-		return new EntityKeyMakerIdConverterFactory();
-	}
+    @Bean
+    public EntityKeyMakerIdConverterFactory entityKeyMakerIdConverterFactory() {
+        return new EntityKeyMakerIdConverterFactory();
+    }
 
-	@Bean
-	@ConditionalOnProperty(value = "tny.data.store-executor.fork-join.enable", havingValue = "true")
-	public ForkJoinAsyncObjectStoreExecutor forkJoinAsyncObjectStoreExecutor(AsyncObjectStoreExecutorProperties properties) {
-		return new SpringForkJoinAsyncObjectStoreExecutor(properties);
-	}
+    @Bean
+    @ConditionalOnProperty(value = "tny.data.store-executor.fork-join.enable", havingValue = "true")
+    public ForkJoinAsyncObjectStoreExecutor forkJoinAsyncObjectStoreExecutor(AsyncObjectStoreExecutorProperties properties) {
+        return new SpringForkJoinAsyncObjectStoreExecutor(properties);
+    }
 
 }

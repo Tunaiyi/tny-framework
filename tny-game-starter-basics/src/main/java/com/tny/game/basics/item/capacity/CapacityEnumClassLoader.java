@@ -13,14 +13,14 @@ import static com.tny.game.scanner.selector.EnumClassSelector.*;
  */
 public class CapacityEnumClassLoader {
 
-	@ClassSelectorProvider
-	static ClassSelector capacitiesSelector() {
-		return createSelector(Capacity.class, Capacities::register);
-	}
+    @ClassSelectorProvider
+    static ClassSelector capacitiesSelector() {
+        return createSelector(Capacity.class, Capacities::register);
+    }
 
-	@ClassSelectorProvider
-	static ClassSelector capacityGroupSelector() {
-		return createSelector(CapacityGroup.class, Capacities::register);
-	}
+    @ClassSelectorProvider
+    static ClassSelector capacityGroupSelector() {
+        return createSelector(CapacityGroup.class, Capacities::register);
+    }
 
 }

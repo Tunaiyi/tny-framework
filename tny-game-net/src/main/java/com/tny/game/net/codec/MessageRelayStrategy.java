@@ -13,8 +13,8 @@ import com.tny.game.net.message.*;
 @FunctionalInterface
 public interface MessageRelayStrategy {
 
-	MessageRelayStrategy NO_RELAY_STRATEGY = (head) -> false;
+    MessageRelayStrategy NO_RELAY_STRATEGY = (head) -> false;
 
-	boolean isRelay(MessageHead head);
+    boolean isRelay(MessageHead head);
 
 }

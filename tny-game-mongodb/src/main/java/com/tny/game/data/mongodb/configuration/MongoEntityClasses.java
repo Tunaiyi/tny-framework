@@ -12,14 +12,14 @@ import java.util.*;
  */
 public class MongoEntityClasses {
 
-	private Set<Class<?>> classes;
+    private Set<Class<?>> classes;
 
-	public MongoEntityClasses(Collection<Class<?>> classes) {
-		this.classes = ImmutableSet.copyOf(classes);
-	}
+    public MongoEntityClasses(Collection<Class<?>> classes) {
+        this.classes = ImmutableSet.copyOf(classes);
+    }
 
-	public Set<Class<?>> getClasses() {
-		return classes;
-	}
+    public Set<Class<?>> getClasses() {
+        return classes;
+    }
 
 }

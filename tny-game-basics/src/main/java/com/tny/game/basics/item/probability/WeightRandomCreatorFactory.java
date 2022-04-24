@@ -17,7 +17,7 @@ public class WeightRandomCreatorFactory<G extends ProbabilityGroup<P>, P extends
     @Override
     @SuppressWarnings("unchecked")
     public RandomCreator<G, P> getRandomCreator() {
-        return (RandomCreator<G, P>) CREATOR;
+        return (RandomCreator<G, P>)CREATOR;
     }
 
     @Override

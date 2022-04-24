@@ -41,8 +41,9 @@ public class ProtoItem implements Blob {
     }
 
     private Blob blob() throws SQLException {
-        if (blob != null)
+        if (blob != null) {
             return blob;
+        }
         return blob = new NoCopyBytesBlob(this.item);
     }
 
@@ -100,4 +101,5 @@ public class ProtoItem implements Blob {
     public InputStream getBinaryStream(long pos, long length) throws SQLException {
         return blob().getBinaryStream(pos, length);
     }
+
 }

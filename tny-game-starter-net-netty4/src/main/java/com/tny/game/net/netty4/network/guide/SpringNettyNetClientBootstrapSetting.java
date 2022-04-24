@@ -14,34 +14,34 @@ import static com.tny.game.common.utils.ObjectAide.*;
  */
 public class SpringNettyNetClientBootstrapSetting extends NettyNetClientBootstrapSetting {
 
-	@NestedConfigurationProperty
-	private SpringNettyDatagramChannelSetting channel;
+    @NestedConfigurationProperty
+    private SpringNettyDatagramChannelSetting channel;
 
-	@NestedConfigurationProperty
-	private ClientConnectorSetting connector;
+    @NestedConfigurationProperty
+    private ClientConnectorSetting connector;
 
-	public SpringNettyNetClientBootstrapSetting() {
-		super(new SpringNettyDatagramChannelSetting());
-	}
+    public SpringNettyNetClientBootstrapSetting() {
+        super(new SpringNettyDatagramChannelSetting());
+    }
 
-	@Override
-	public SpringNettyDatagramChannelSetting getChannel() {
-		return as(super.getChannel());
-	}
+    @Override
+    public SpringNettyDatagramChannelSetting getChannel() {
+        return as(super.getChannel());
+    }
 
-	public NettyNetClientBootstrapSetting setChannel(SpringNettyDatagramChannelSetting channel) {
-		return super.setChannel(channel);
-	}
+    public NettyNetClientBootstrapSetting setChannel(SpringNettyDatagramChannelSetting channel) {
+        return super.setChannel(channel);
+    }
 
-	@Override
-	public ClientConnectorSetting getConnector() {
-		return super.getConnector();
-	}
+    @Override
+    public ClientConnectorSetting getConnector() {
+        return super.getConnector();
+    }
 
-	@Override
-	public NettyNetClientBootstrapSetting setConnector(ClientConnectorSetting connector) {
-		super.setConnector(connector);
-		return this;
-	}
+    @Override
+    public NettyNetClientBootstrapSetting setConnector(ClientConnectorSetting connector) {
+        super.setConnector(connector);
+        return this;
+    }
 
 }

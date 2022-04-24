@@ -8,6 +8,6 @@ package com.tny.game.basics.item.loader;
  **/
 public interface ModelLoaderContextHandler<C> {
 
-	void onInit(C context);
+    void onInit(C context);
 
 }

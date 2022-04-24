@@ -10,8 +10,8 @@ import com.tny.game.data.*;
  */
 public class DynamicEntityCacheMananger<K extends Comparable<?>, O> extends EntityCacheManager<K, O> {
 
-	public DynamicEntityCacheMananger() {
-		super();
-	}
+    public DynamicEntityCacheMananger() {
+        super();
+    }
 
 }

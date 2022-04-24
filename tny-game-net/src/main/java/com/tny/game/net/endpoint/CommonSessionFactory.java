@@ -7,12 +7,12 @@ import com.tny.game.net.command.*;
  */
 public class CommonSessionFactory<UID> implements SessionFactory<UID, CommonSession<UID>, SessionSetting> {
 
-	public CommonSessionFactory() {
-	}
+    public CommonSessionFactory() {
+    }
 
-	@Override
-	public CommonSession<UID> create(SessionSetting setting, EndpointContext endpointContext, CertificateFactory<UID> certificateFactory) {
-		return new CommonSession<>(setting, certificateFactory.anonymous(), endpointContext);
-	}
+    @Override
+    public CommonSession<UID> create(SessionSetting setting, EndpointContext endpointContext, CertificateFactory<UID> certificateFactory) {
+        return new CommonSession<>(setting, certificateFactory.anonymous(), endpointContext);
+    }
 
 }

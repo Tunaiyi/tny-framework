@@ -8,20 +8,20 @@ import java.util.*;
  */
 public class CapacityService {
 
-	public void accept(BaseCapablerItem<?> goal, CapacitySupplier... suppliers) {
-		this.accept(goal, Arrays.asList(suppliers));
-	}
+    public void accept(BaseCapablerItem<?> goal, CapacitySupplier... suppliers) {
+        this.accept(goal, Arrays.asList(suppliers));
+    }
 
-	public void accept(BaseCapablerItem<?> goal, Collection<CapacitySupplier> suppliers) {
-		goal.accept(suppliers);
-	}
+    public void accept(BaseCapablerItem<?> goal, Collection<CapacitySupplier> suppliers) {
+        goal.accept(suppliers);
+    }
 
-	public void reduce(BaseCapablerItem<?> goal, CapacitySupplier... suppliers) {
-		this.reduce(goal, Arrays.asList(suppliers));
-	}
+    public void reduce(BaseCapablerItem<?> goal, CapacitySupplier... suppliers) {
+        this.reduce(goal, Arrays.asList(suppliers));
+    }
 
-	public void reduce(BaseCapablerItem<?> goal, Collection<CapacitySupplier> suppliers) {
-		goal.remove(suppliers);
-	}
+    public void reduce(BaseCapablerItem<?> goal, Collection<CapacitySupplier> suppliers) {
+        goal.remove(suppliers);
+    }
 
 }

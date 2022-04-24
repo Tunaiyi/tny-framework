@@ -25,7 +25,7 @@ public abstract class EnumIO {
 
     public static int getEnumId(Enum<?> e) {
         if (e instanceof ProtoExEnum) {
-            return ((ProtoExEnum) e).getId();
+            return ((ProtoExEnum)e).getId();
         } else {
             return e.ordinal();
         }
@@ -53,18 +53,21 @@ public abstract class EnumIO {
     public static <E extends Enum<E>> E readFrom(ProtoExInputStream inputStream, Class<E> clazz) {
         if (RuntimeEnv.ENUMS_BY_NAME) {
             String name = inputStream.readString();
-            if (name != null)
+            if (name != null) {
                 return Enum.valueOf(clazz, name);
+            }
         } else {
             int id = inputStream.readInt();
             boolean protoEnum = ProtoExEnum.class.isAssignableFrom(clazz);
             for (E e : clazz.getEnumConstants()) {
                 if (protoEnum) {
-                    if (((ProtoExEnum) e).getId() == id)
+                    if (((ProtoExEnum)e).getId() == id) {
                         return e;
+                    }
                 } else {
-                    if (e.ordinal() == id)
+                    if (e.ordinal() == id) {
                         return e;
+                    }
                 }
             }
         }

@@ -25,7 +25,6 @@ public class HashAide {
 
     private static final Charset CHARSET = StandardCharsets.UTF_8;
 
-
     // 数值哈希部分
 
     /**
@@ -564,10 +563,10 @@ public class HashAide {
             } else {
                 // surrogate pair
                 // int utf32 = pos < end ? (int) data.charAt(pos++) : 0;
-                int utf32 = (int) data.charAt(pos++);
+                int utf32 = (int)data.charAt(pos++);
                 utf32 = ((code - 0xD7C0) << 10) + (utf32 & 0x3FF);
                 k2 = (0xff & (0xF0 | (utf32 >> 18))) | ((0x80 | ((utf32 >> 12) & 0x3F))) << 8 | ((0x80 | ((utf32 >> 6) & 0x3F))) << 16 |
-                     (0x80 | (utf32 & 0x3F)) << 24;
+                        (0x80 | (utf32 & 0x3F)) << 24;
                 bits = 32;
             }
 
@@ -716,22 +715,30 @@ public class HashAide {
         int hash = data.length();
         for (int index = 0; index < (size << 3); index += 8) {
             char element = data.charAt(index >> 3);
-            if ((element & 0x01) == 0)
+            if ((element & 0x01) == 0) {
                 hash ^= table[index + 0];
-            if ((element & 0x02) == 0)
+            }
+            if ((element & 0x02) == 0) {
                 hash ^= table[index + 1];
-            if ((element & 0x04) == 0)
+            }
+            if ((element & 0x04) == 0) {
                 hash ^= table[index + 2];
-            if ((element & 0x08) == 0)
+            }
+            if ((element & 0x08) == 0) {
                 hash ^= table[index + 3];
-            if ((element & 0x10) == 0)
+            }
+            if ((element & 0x10) == 0) {
                 hash ^= table[index + 4];
-            if ((element & 0x20) == 0)
+            }
+            if ((element & 0x20) == 0) {
                 hash ^= table[index + 5];
-            if ((element & 0x40) == 0)
+            }
+            if ((element & 0x40) == 0) {
                 hash ^= table[index + 6];
-            if ((element & 0x80) == 0)
+            }
+            if ((element & 0x80) == 0) {
                 hash ^= table[index + 7];
+            }
         }
         return hash;
     }

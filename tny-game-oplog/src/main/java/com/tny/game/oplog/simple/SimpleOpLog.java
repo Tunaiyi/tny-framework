@@ -40,8 +40,9 @@ public class SimpleOpLog extends OpLog {
     private UserOpLog getBaseUserOpLog(long userID) {
         for (int index = 0; index < this.userLogs.size(); index++) {
             UserOpLog log = this.userLogs.get(index);
-            if (log.getUserId() == userID)
+            if (log.getUserId() == userID) {
                 return log;
+            }
         }
         return null;
     }

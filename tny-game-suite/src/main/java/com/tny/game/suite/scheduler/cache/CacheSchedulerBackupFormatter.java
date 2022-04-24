@@ -32,21 +32,21 @@ public class CacheSchedulerBackupFormatter extends CacheFormatter<CacheScheduler
         IntLocalNum index = new IntLocalNum(0);
         Map<String, Integer> handlers = new HashMap<>();
         List<TimeTaskProto> taskList = taskCollection.stream().map(task -> TimeTaskProto.newBuilder()
-                                                                                        .setExecutTime(task.getExecuteTime())
-                                                                                        .addAllHandlers(task.getHandlerList().stream()
-                                                                                                            .map(handler -> handlers
-                                                                                                                    .computeIfAbsent(handler,
-                                                                                                                            (h) -> index.add(1)))
-                                                                                                            .collect(Collectors.toList()))
-                                                                                        .build()).collect(Collectors.toList());
+                .setExecutTime(task.getExecuteTime())
+                .addAllHandlers(task.getHandlerList().stream()
+                        .map(handler -> handlers
+                                .computeIfAbsent(handler,
+                                        (h) -> index.add(1)))
+                        .collect(Collectors.toList()))
+                .build()).collect(Collectors.toList());
         byte[] data = SchedulerBackupProto.newBuilder()
-                                          .setStopTime(backup.getStopTime())
-                                          .addAllTimeTaskQueue(taskList)
-                                          .putAllHandlers(handlers.entrySet().stream().collect(Collectors.toMap(
-                                                  Entry::getValue,
-                                                  Entry::getKey
-                                          )))
-                                          .build().toByteArray();
+                .setStopTime(backup.getStopTime())
+                .addAllTimeTaskQueue(taskList)
+                .putAllHandlers(handlers.entrySet().stream().collect(Collectors.toMap(
+                        Entry::getValue,
+                        Entry::getKey
+                )))
+                .build().toByteArray();
         // TEST_LOG.info("CacheSchedulerBackupFormatter | data size : {} To Save", data.length);
         return data;
     }
@@ -65,8 +65,8 @@ public class CacheSchedulerBackupFormatter extends CacheFormatter<CacheScheduler
         CacheSchedulerBackup cacheSchedulerBackup = new CacheSchedulerBackup();
         cacheSchedulerBackup.setStopTime(proto.getStopTime());
         List<TimeTask> taskList = proto.getTimeTaskQueueList().stream()
-                                       .map(taskProto -> proto2TimeTask(taskProto, handles))
-                                       .collect(Collectors.toList());
+                .map(taskProto -> proto2TimeTask(taskProto, handles))
+                .collect(Collectors.toList());
         cacheSchedulerBackup.setTimeTaskList(taskList);
         return cacheSchedulerBackup;
     }

@@ -1,6 +1,5 @@
 package com.tny.game.actor.local;
 
-
 import com.tny.game.actor.*;
 
 import java.util.Map;
@@ -33,26 +32,32 @@ public class LocalActorContext<ID, M> implements ActorContext<ID, DefaultLocalAc
 
     public LocalActorContext(ActorURL rootPath, ActorProps defaultProps, ActorTheatre defaultTheatre) {
         this.rootPath = rootPath;
-        if (defaultTheatre != null)
+        if (defaultTheatre != null) {
             this.defaultTheatre = defaultTheatre;
-        if (defaultProps != null)
+        }
+        if (defaultProps != null) {
             this.defaultProps = defaultProps;
-        if (this.defaultTheatre == null)
+        }
+        if (this.defaultTheatre == null) {
             this.defaultTheatre = ActorTheatres.getDefault();
-        if (this.defaultProps == null)
+        }
+        if (this.defaultProps == null) {
             this.defaultProps = ActorProps.of();
+        }
     }
 
     public DefaultLocalActor<ID, M> actorOf(ID id, ActorURL path, ActorProps props) {
         DefaultLocalActor<ID, M> actor = actorMap.get(id);
-        if (actor != null)
+        if (actor != null) {
             return actor;
+        }
         ActorCell cell = new ActorCell(id, path, props == null ? defaultProps : props);
         actor = add(cell.getActor());
         if (!actor.isTakenOver()) {
             ActorTheatre theatre = props.getActorTheatre();
-            if (theatre == null)
+            if (theatre == null) {
                 theatre = defaultTheatre;
+            }
             theatre.takeOver(actor);
         }
         return add(actor);
@@ -64,7 +69,7 @@ public class LocalActorContext<ID, M> implements ActorContext<ID, DefaultLocalAc
 
     @Override
     public DefaultLocalActor<ID, M> actorOf(ID id, ActorURL path) {
-        return actorOf(id, path, (ActorProps) null);
+        return actorOf(id, path, (ActorProps)null);
     }
 
     @Override
@@ -89,8 +94,9 @@ public class LocalActorContext<ID, M> implements ActorContext<ID, DefaultLocalAc
     public boolean stop(Actor<?, ?> actor) {
         if (actor instanceof DefaultLocalActor && this.isExist(actor)) {
             if (this.remove(actor)) {
-                if (!actor.isTerminated())
-                    ((DefaultLocalActor) actor).terminate();
+                if (!actor.isTerminated()) {
+                    ((DefaultLocalActor)actor).terminate();
+                }
                 return true;
             }
         }

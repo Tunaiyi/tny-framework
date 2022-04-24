@@ -13,18 +13,18 @@ import io.netty.channel.ChannelHandlerContext;
  */
 public class LinkVoidArgumentsCodecor implements RelayPacketArgumentsCodecor<LinkVoidArguments> {
 
-	@Override
-	public Class<LinkVoidArguments> getArgumentsClass() {
-		return LinkVoidArguments.class;
-	}
+    @Override
+    public Class<LinkVoidArguments> getArgumentsClass() {
+        return LinkVoidArguments.class;
+    }
 
-	@Override
-	public void encode(ChannelHandlerContext ctx, LinkVoidArguments arguments, ByteBuf out) {
-	}
+    @Override
+    public void encode(ChannelHandlerContext ctx, LinkVoidArguments arguments, ByteBuf out) {
+    }
 
-	@Override
-	public LinkVoidArguments decode(ChannelHandlerContext ctx, ByteBuf out) {
-		return LinkVoidArguments.of();
-	}
+    @Override
+    public LinkVoidArguments decode(ChannelHandlerContext ctx, ByteBuf out) {
+        return LinkVoidArguments.of();
+    }
 
 }

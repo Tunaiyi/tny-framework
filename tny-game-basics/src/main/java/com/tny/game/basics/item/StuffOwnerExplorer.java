@@ -9,22 +9,22 @@ import java.util.Collection;
  */
 public interface StuffOwnerExplorer {
 
-	<O extends StuffOwner<?, ?>> O getOwner(long playerId, ItemType ownerType);
+    <O extends StuffOwner<?, ?>> O getOwner(long playerId, ItemType ownerType);
 
-	boolean insertOwner(StuffOwner<?, ?>... storageArray);
+    boolean insertOwner(StuffOwner<?, ?>... storageArray);
 
-	<O extends StuffOwner<?, ?>> Collection<O> insertOwner(Collection<O> storageCollection);
+    <O extends StuffOwner<?, ?>> Collection<O> insertOwner(Collection<O> storageCollection);
 
-	boolean updateOwner(StuffOwner<?, ?>... storageArray);
+    boolean updateOwner(StuffOwner<?, ?>... storageArray);
 
-	<O extends StuffOwner<?, ?>> Collection<O> updateOwner(Collection<O> storageCollection);
+    <O extends StuffOwner<?, ?>> Collection<O> updateOwner(Collection<O> storageCollection);
 
-	boolean saveOwner(StuffOwner<?, ?>... storageArray);
+    boolean saveOwner(StuffOwner<?, ?>... storageArray);
 
-	<O extends StuffOwner<?, ?>> Collection<O> saveOwner(Collection<O> storageCollection);
+    <O extends StuffOwner<?, ?>> Collection<O> saveOwner(Collection<O> storageCollection);
 
-	void deleteOwner(StuffOwner<?, ?>... storageArray);
+    void deleteOwner(StuffOwner<?, ?>... storageArray);
 
-	<O extends StuffOwner<?, ?>> void deleteOwner(Collection<O> storageCollection);
+    <O extends StuffOwner<?, ?>> void deleteOwner(Collection<O> storageCollection);
 
 }

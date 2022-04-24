@@ -24,5 +24,4 @@ public class SendTimeoutException extends NetException {
         super(message, cause);
     }
 
-
 }

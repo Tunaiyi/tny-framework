@@ -10,19 +10,19 @@ import com.tny.game.common.exception.*;
  */
 public class GetEntityIdException extends CommonRuntimeException {
 
-	public GetEntityIdException() {
-	}
+    public GetEntityIdException() {
+    }
 
-	public GetEntityIdException(String message, Object... messageParams) {
-		super(message, messageParams);
-	}
+    public GetEntityIdException(String message, Object... messageParams) {
+        super(message, messageParams);
+    }
 
-	public GetEntityIdException(Throwable cause) {
-		super(cause);
-	}
+    public GetEntityIdException(Throwable cause) {
+        super(cause);
+    }
 
-	public GetEntityIdException(Throwable cause, String message, Object... messageParams) {
-		super(cause, message, messageParams);
-	}
+    public GetEntityIdException(Throwable cause, String message, Object... messageParams) {
+        super(cause, message, messageParams);
+    }
 
 }

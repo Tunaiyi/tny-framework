@@ -7,8 +7,8 @@ import org.bson.Document;
  */
 public interface MongoDocumentMapper {
 
-	<T> T fromDocument(Document source, Class<T> targetClass);
+    <T> T fromDocument(Document source, Class<T> targetClass);
 
-	Document toDocument(Object source);
+    Document toDocument(Object source);
 
 }

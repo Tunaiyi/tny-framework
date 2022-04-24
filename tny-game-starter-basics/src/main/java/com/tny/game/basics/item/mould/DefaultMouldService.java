@@ -8,8 +8,8 @@ package com.tny.game.basics.item.mould;
  */
 public class DefaultMouldService extends MouldService {
 
-	public DefaultMouldService(FeatureLauncherManager featureLauncherManager) {
-		super(featureLauncherManager);
-	}
+    public DefaultMouldService(FeatureLauncherManager featureLauncherManager) {
+        super(featureLauncherManager);
+    }
 
 }

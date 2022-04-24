@@ -22,7 +22,6 @@ public abstract class ShardDataSourceCluster extends ServiceCluster {
         this(serverType, dataSourceFactory, monitorAllServices, ImmutableList.of());
     }
 
-
     protected ShardDataSourceCluster(String serverType, ShardDataSourceFactory dataSourceFactory, boolean monitorAllServices,
             Collection<String> monitorWebTypes) {
         super(serverType, true, monitorAllServices, monitorWebTypes);
@@ -35,9 +34,10 @@ public abstract class ShardDataSourceCluster extends ServiceCluster {
             ServerOutline outline = node.getOutline();
             if (outline.isHasDB()) {
                 ServerSetting setting = node.getSetting();
-                if (setting != null && setting.getServerState() != ServerState.INVALID)
+                if (setting != null && setting.getServerState() != ServerState.INVALID) {
                     this.dataSourceFactory.register(outline.getServerId(),
                             outline.getDbHost(), outline.getDbPort(), outline.getDb());
+                }
             }
         } catch (Exception e) {
             LOGGER.error("{} 服务器注册 dataSource 异常", node, e);
@@ -49,9 +49,10 @@ public abstract class ShardDataSourceCluster extends ServiceCluster {
         try {
             if (outline.isHasDB()) {
                 ServerSetting setting = node.getSetting();
-                if (setting != null && setting.getServerState() != ServerState.INVALID)
+                if (setting != null && setting.getServerState() != ServerState.INVALID) {
                     this.dataSourceFactory.register(outline.getServerId(),
                             outline.getDbHost(), outline.getDbPort(), outline.getDb());
+                }
             }
         } catch (Exception e) {
             LOGGER.error("{} 服务器注册 dataSource 异常", node, e);

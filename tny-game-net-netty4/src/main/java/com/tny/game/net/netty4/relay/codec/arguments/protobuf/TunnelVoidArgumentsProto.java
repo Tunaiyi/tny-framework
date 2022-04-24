@@ -10,16 +10,16 @@ import com.tny.game.net.relay.packet.arguments.*;
  */
 public class TunnelVoidArgumentsProto extends BaseTunnelArgumentsProto<TunnelVoidArguments> {
 
-	public TunnelVoidArgumentsProto() {
-	}
+    public TunnelVoidArgumentsProto() {
+    }
 
-	public TunnelVoidArgumentsProto(TunnelVoidArguments arguments) {
-		super(arguments);
-	}
+    public TunnelVoidArgumentsProto(TunnelVoidArguments arguments) {
+        super(arguments);
+    }
 
-	@Override
-	public TunnelVoidArguments toArguments() {
-		return new TunnelVoidArguments(this.getInstanceId(), this.getTunnelId());
-	}
+    @Override
+    public TunnelVoidArguments toArguments() {
+        return new TunnelVoidArguments(this.getInstanceId(), this.getTunnelId());
+    }
 
 }

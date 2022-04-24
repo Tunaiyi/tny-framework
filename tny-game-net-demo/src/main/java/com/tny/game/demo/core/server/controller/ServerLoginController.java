@@ -24,16 +24,16 @@ import static com.tny.game.common.utils.StringAide.*;
 @BeforePlugin(SpringBootParamFilterPlugin.class)
 public class ServerLoginController {
 
-	private static final ScheduledExecutorService EXECUTOR_SERVICE = Executors.newScheduledThreadPool(1);
+    private static final ScheduledExecutorService EXECUTOR_SERVICE = Executors.newScheduledThreadPool(1);
 
-	@Rpc(CtrlerIds.LOGIN$LOGIN)
-	@BeforePlugin(SpringBootParamFilterPlugin.class)
-	@AuthenticationRequired(value = Certificates.DEFAULT_USER_TYPE, validator = DemoAuthenticateValidator.class)
-	public LoginDTO login(Tunnel<Long> tunnel, Endpoint<Long> endpoint, @MsgParam long sessionId, @MsgParam long userId) {
-		Certificate<Long> certificate = endpoint.getCertificate();
-		//        EXECUTOR_SERVICE.scheduleAtFixedRate(() -> endpoint.send(MessageContexts
-		//                .push(ProtocolAide.protocol(CtrlerIDs.LOGIN$PING), "ping tunnel id " + tunnel.getId())), 0, 3, TimeUnit.SECONDS);
-		return new LoginDTO(certificate.getId(), userId, format("{} - {} 登录成功 at {}", userId, sessionId, ZonedDateTime.now()));
-	}
+    @Rpc(CtrlerIds.LOGIN$LOGIN)
+    @BeforePlugin(SpringBootParamFilterPlugin.class)
+    @AuthenticationRequired(value = Certificates.DEFAULT_USER_TYPE, validator = DemoAuthenticateValidator.class)
+    public LoginDTO login(Tunnel<Long> tunnel, Endpoint<Long> endpoint, @MsgParam long sessionId, @MsgParam long userId) {
+        Certificate<Long> certificate = endpoint.getCertificate();
+        //        EXECUTOR_SERVICE.scheduleAtFixedRate(() -> endpoint.send(MessageContexts
+        //                .push(ProtocolAide.protocol(CtrlerIDs.LOGIN$PING), "ping tunnel id " + tunnel.getId())), 0, 3, TimeUnit.SECONDS);
+        return new LoginDTO(certificate.getId(), userId, format("{} - {} 登录成功 at {}", userId, sessionId, ZonedDateTime.now()));
+    }
 
 }

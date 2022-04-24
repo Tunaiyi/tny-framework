@@ -21,6 +21,7 @@ import java.util.zip.Deflater;
 public class RolloverWithTempStrategy extends AbstractRolloverStrategy {
 
     private static final int MIN_WINDOW_SIZE = 1;
+
     private static final int DEFAULT_WINDOW_SIZE = 7;
 
     private static final String TEMP_EXTENSION = ".tmp";
@@ -91,9 +92,13 @@ public class RolloverWithTempStrategy extends AbstractRolloverStrategy {
      * Index for most recent log file.
      */
     private final int minIndex;
+
     private final boolean useMax;
+
     private final int compressionLevel;
+
     private final List<Action> customActions;
+
     private final boolean stopCustomActionsOnError;
 
     /**
@@ -197,7 +202,7 @@ public class RolloverWithTempStrategy extends AbstractRolloverStrategy {
         }
 
         return eligibleFiles.size() > 0 ?
-               (eligibleFiles.lastKey() < highIndex ? eligibleFiles.lastKey() + 1 : highIndex) : lowIndex;
+                (eligibleFiles.lastKey() < highIndex ? eligibleFiles.lastKey() + 1 : highIndex) : lowIndex;
     }
 
     /**

@@ -8,14 +8,14 @@ package com.tny.game.net.message.common;
  */
 public interface OctetMessageBody {
 
-	static void release(OctetMessageBody body) {
-		if (body != null) {
-			body.release();
-		}
-	}
+    static void release(OctetMessageBody body) {
+        if (body != null) {
+            body.release();
+        }
+    }
 
-	Object getBody();
+    Object getBody();
 
-	void release();
+    void release();
 
 }

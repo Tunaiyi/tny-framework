@@ -46,8 +46,9 @@ public class EnumConfiger {
         this.packageName = holder.getEntityClass().getPackage().getName();
         this.des = holder.getClassDoc().value();
         this.text = holder.getClassDoc().text();
-        if (StringUtils.isBlank(this.text))
+        if (StringUtils.isBlank(this.text)) {
             this.text = this.des;
+        }
         Map<String, EnumerConfiger> fieldMap = new HashMap<>();
         for (FieldDocHolder fieldDocHolder : holder.getEnumList()) {
             EnumerConfiger configer = this.createEnumerConfiger(fieldDocHolder, typeFormatter);

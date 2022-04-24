@@ -15,8 +15,11 @@ public class Equip implements Serializable {
      * serialVersionUID
      */
     private static final long serialVersionUID = 1L;
+
     private long playerId;
+
     private int id;
+
     private String name;
 
     public Equip() {
@@ -55,28 +58,35 @@ public class Equip implements Serializable {
         int result = 1;
         result = prime * result + id;
         result = prime * result + ((name == null) ? 0 : name.hashCode());
-        result = prime * result + (int) (playerId ^ (playerId >>> 32));
+        result = prime * result + (int)(playerId ^ (playerId >>> 32));
         return result;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
-        Equip other = (Equip) obj;
-        if (id != other.id)
+        }
+        Equip other = (Equip)obj;
+        if (id != other.id) {
             return false;
+        }
         if (name == null) {
-            if (other.name != null)
+            if (other.name != null) {
                 return false;
-        } else if (!name.equals(other.name))
+            }
+        } else if (!name.equals(other.name)) {
             return false;
-        if (playerId != other.playerId)
+        }
+        if (playerId != other.playerId) {
             return false;
+        }
         return true;
     }
 

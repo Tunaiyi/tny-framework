@@ -16,122 +16,122 @@ import static com.tny.game.common.utils.StringAide.*;
  */
 public class RpcServiceSetting implements Serve {
 
-	/**
-	 * rpc服务名
-	 */
-	private String service;
+    /**
+     * rpc服务名
+     */
+    private String service;
 
-	/**
-	 * 服务发现-服务器服务名
-	 */
-	private String serveName;
+    /**
+     * 服务发现-服务器服务名
+     */
+    private String serveName;
 
-	private boolean discovery = false;
+    private boolean discovery = false;
 
-	private String password = "";
+    private String password = "";
 
-	private String host;
+    private String host;
 
-	private int port;
+    private int port;
 
-	private String guide;
+    private String guide;
 
-	private String username;
+    private String username;
 
-	private int connectSize = 1;
+    private int connectSize = 1;
 
-	public boolean isDiscovery() {
-		return discovery || StringUtils.isNoneBlank(serveName);
-	}
+    public boolean isDiscovery() {
+        return discovery || StringUtils.isNoneBlank(serveName);
+    }
 
-	@Override
-	public String getServeName() {
-		return serveName;
-	}
+    @Override
+    public String getServeName() {
+        return serveName;
+    }
 
-	@Override
-	public String getService() {
-		return service;
-	}
+    @Override
+    public String getService() {
+        return service;
+    }
 
-	public String getPassword() {
-		return password;
-	}
+    public String getPassword() {
+        return password;
+    }
 
-	public String getHost() {
-		return host;
-	}
+    public String getHost() {
+        return host;
+    }
 
-	public int getPort() {
-		return port;
-	}
+    public int getPort() {
+        return port;
+    }
 
-	public String getGuide() {
-		return guide;
-	}
+    public String getGuide() {
+        return guide;
+    }
 
-	public boolean isHasGuide() {
-		return StringUtils.isNotEmpty(guide);
-	}
+    public boolean isHasGuide() {
+        return StringUtils.isNotEmpty(guide);
+    }
 
-	public int getConnectSize() {
-		return connectSize;
-	}
+    public int getConnectSize() {
+        return connectSize;
+    }
 
-	public String getUsername() {
-		return username;
-	}
+    public String getUsername() {
+        return username;
+    }
 
-	public Optional<URL> url() {
-		if (this.isDiscovery()) {
-			return Optional.empty();
-		}
-		return Optional.of(URL.valueOf(format("rpc://{}:{}", this.getHost(), this.getPort())));
-	}
+    public Optional<URL> url() {
+        if (this.isDiscovery()) {
+            return Optional.empty();
+        }
+        return Optional.of(URL.valueOf(format("rpc://{}:{}", this.getHost(), this.getPort())));
+    }
 
-	public RpcServiceSetting setServeName(String serveName) {
-		this.serveName = serveName;
-		return this;
-	}
+    public RpcServiceSetting setServeName(String serveName) {
+        this.serveName = serveName;
+        return this;
+    }
 
-	public RpcServiceSetting setPassword(String password) {
-		this.password = password;
-		return this;
-	}
+    public RpcServiceSetting setPassword(String password) {
+        this.password = password;
+        return this;
+    }
 
-	public RpcServiceSetting setHost(String host) {
-		this.host = host;
-		return this;
-	}
+    public RpcServiceSetting setHost(String host) {
+        this.host = host;
+        return this;
+    }
 
-	public RpcServiceSetting setPort(int port) {
-		this.port = port;
-		return this;
-	}
+    public RpcServiceSetting setPort(int port) {
+        this.port = port;
+        return this;
+    }
 
-	public RpcServiceSetting setConnectSize(int connectSize) {
-		this.connectSize = connectSize;
-		return this;
-	}
+    public RpcServiceSetting setConnectSize(int connectSize) {
+        this.connectSize = connectSize;
+        return this;
+    }
 
-	public RpcServiceSetting setService(String service) {
-		this.service = service;
-		return this;
-	}
+    public RpcServiceSetting setService(String service) {
+        this.service = service;
+        return this;
+    }
 
-	public RpcServiceSetting setUsername(String username) {
-		this.username = username;
-		return this;
-	}
+    public RpcServiceSetting setUsername(String username) {
+        this.username = username;
+        return this;
+    }
 
-	public RpcServiceSetting setGuide(String guide) {
-		this.guide = guide;
-		return this;
-	}
+    public RpcServiceSetting setGuide(String guide) {
+        this.guide = guide;
+        return this;
+    }
 
-	public RpcServiceSetting setDiscovery(boolean discovery) {
-		this.discovery = discovery;
-		return this;
-	}
+    public RpcServiceSetting setDiscovery(boolean discovery) {
+        this.discovery = discovery;
+        return this;
+    }
 
 }

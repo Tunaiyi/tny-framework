@@ -17,94 +17,94 @@ import static com.tny.game.common.utils.ObjectAide.*;
  */
 public class NettyRemoteServeClusterContext implements RemoteServeClusterContext {
 
-	private final RelayServeClusterSetting setting;
+    private final RelayServeClusterSetting setting;
 
-	private RelayClientGuide clientGuide;
+    private RelayClientGuide clientGuide;
 
-	private ServeInstanceAllotStrategy serveInstanceAllotStrategy = new PollingRelayAllotStrategy();
+    private ServeInstanceAllotStrategy serveInstanceAllotStrategy = new PollingRelayAllotStrategy();
 
-	private RelayLinkAllotStrategy relayLinkAllotStrategy = new PollingRelayAllotStrategy();
+    private RelayLinkAllotStrategy relayLinkAllotStrategy = new PollingRelayAllotStrategy();
 
-	public NettyRemoteServeClusterContext(RelayServeClusterSetting setting) {
-		this.setting = setting;
-	}
+    public NettyRemoteServeClusterContext(RelayServeClusterSetting setting) {
+        this.setting = setting;
+    }
 
-	@Override
-	public String getServeName() {
-		return setting.getServeName();
-	}
+    @Override
+    public String getServeName() {
+        return setting.getServeName();
+    }
 
-	@Override
-	public String getService() {
-		return setting.getService();
-	}
+    @Override
+    public String getService() {
+        return setting.getService();
+    }
 
-	@Override
-	public String getUsername() {
-		return setting.getUsername();
-	}
+    @Override
+    public String getUsername() {
+        return setting.getUsername();
+    }
 
-	public RelayClientGuide getClientGuide() {
-		return clientGuide;
-	}
+    public RelayClientGuide getClientGuide() {
+        return clientGuide;
+    }
 
-	@Override
-	public long getLinkMaxIdleTime() {
-		return setting.getLinkMaxIdleTime();
-	}
+    @Override
+    public long getLinkMaxIdleTime() {
+        return setting.getLinkMaxIdleTime();
+    }
 
-	@Override
-	public int getLinkConnectionSize() {
-		return setting.getLinkConnectionSize();
-	}
+    @Override
+    public int getLinkConnectionSize() {
+        return setting.getLinkConnectionSize();
+    }
 
-	@Override
-	public boolean isDiscovery() {
-		return setting.isDiscovery();
-	}
+    @Override
+    public boolean isDiscovery() {
+        return setting.isDiscovery();
+    }
 
-	@Override
-	public long getLinkHeartbeatInterval() {
-		return this.setting.getLinkHeartbeatInterval();
-	}
+    @Override
+    public long getLinkHeartbeatInterval() {
+        return this.setting.getLinkHeartbeatInterval();
+    }
 
-	@Override
-	public List<NetAccessPoint> getInstances() {
-		return as(setting.getInstanceList());
-	}
+    @Override
+    public List<NetAccessPoint> getInstances() {
+        return as(setting.getInstanceList());
+    }
 
-	@Override
-	public ServeInstanceAllotStrategy getServeInstanceAllotStrategy() {
-		return serveInstanceAllotStrategy;
-	}
+    @Override
+    public ServeInstanceAllotStrategy getServeInstanceAllotStrategy() {
+        return serveInstanceAllotStrategy;
+    }
 
-	@Override
-	public RelayLinkAllotStrategy getRelayLinkAllotStrategy() {
-		return relayLinkAllotStrategy;
-	}
+    @Override
+    public RelayLinkAllotStrategy getRelayLinkAllotStrategy() {
+        return relayLinkAllotStrategy;
+    }
 
-	/**
-	 * @param url url
-	 */
-	@Override
-	public void connect(URL url, RelayConnectCallback callback) {
-		clientGuide.connect(url, callback);
-	}
+    /**
+     * @param url url
+     */
+    @Override
+    public void connect(URL url, RelayConnectCallback callback) {
+        clientGuide.connect(url, callback);
+    }
 
-	public NettyRemoteServeClusterContext setClientGuide(RelayClientGuide clientGuide) {
-		this.clientGuide = clientGuide;
-		return this;
-	}
+    public NettyRemoteServeClusterContext setClientGuide(RelayClientGuide clientGuide) {
+        this.clientGuide = clientGuide;
+        return this;
+    }
 
-	public NettyRemoteServeClusterContext setServeInstanceAllotStrategy(
-			ServeInstanceAllotStrategy serveInstanceAllotStrategy) {
-		this.serveInstanceAllotStrategy = serveInstanceAllotStrategy;
-		return this;
-	}
+    public NettyRemoteServeClusterContext setServeInstanceAllotStrategy(
+            ServeInstanceAllotStrategy serveInstanceAllotStrategy) {
+        this.serveInstanceAllotStrategy = serveInstanceAllotStrategy;
+        return this;
+    }
 
-	public NettyRemoteServeClusterContext setRelayLinkAllotStrategy(RelayLinkAllotStrategy relayLinkAllotStrategy) {
-		this.relayLinkAllotStrategy = relayLinkAllotStrategy;
-		return this;
-	}
+    public NettyRemoteServeClusterContext setRelayLinkAllotStrategy(RelayLinkAllotStrategy relayLinkAllotStrategy) {
+        this.relayLinkAllotStrategy = relayLinkAllotStrategy;
+        return this;
+    }
 
 }

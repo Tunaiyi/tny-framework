@@ -15,14 +15,17 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TimeTriggerTest {
 
     private long at = System.currentTimeMillis();
+
     private long restartAt = this.at + 1000;
 
     private Instant atTime = Instant.ofEpochMilli(this.at);
 
     private Instant restartAtTime = Instant.ofEpochMilli(this.restartAt);
+
     private Instant endTime = Instant.ofEpochMilli(this.at + 3010);
 
     private DurationTimeCycle CYCLE_1000 = DurationTimeCycle.of(1000);
+
     private DurationTimeCycle CYCLE_2000 = DurationTimeCycle.of(2000);
 
     private TimeTrigger<TimeCycle> startNoEndTrigger = TimeTriggerBuilder.newBuilder()

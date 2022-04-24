@@ -17,13 +17,13 @@ import java.util.Set;
  */
 public class ImportControllerBeanDefinitionRegistrar implements ImportBeanDefinitionRegistrar {
 
-	@Override
-	public void registerBeanDefinitions(@Nonnull AnnotationMetadata annotationMetadata, BeanDefinitionRegistry registry) {
-		Set<Class<?>> classes = RpcControllerLoader.getControllerClasses();
-		for (Class<?> controllerClass : classes) {
-			registry.registerBeanDefinition(BeanNameUtils.lowerCamelName(controllerClass),
-					BeanDefinitionBuilder.genericBeanDefinition(controllerClass).getBeanDefinition());
-		}
-	}
+    @Override
+    public void registerBeanDefinitions(@Nonnull AnnotationMetadata annotationMetadata, BeanDefinitionRegistry registry) {
+        Set<Class<?>> classes = RpcControllerLoader.getControllerClasses();
+        for (Class<?> controllerClass : classes) {
+            registry.registerBeanDefinition(BeanNameUtils.lowerCamelName(controllerClass),
+                    BeanDefinitionBuilder.genericBeanDefinition(controllerClass).getBeanDefinition());
+        }
+    }
 
 }

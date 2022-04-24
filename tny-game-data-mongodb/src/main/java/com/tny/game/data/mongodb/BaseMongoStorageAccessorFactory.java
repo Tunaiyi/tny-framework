@@ -14,47 +14,47 @@ import org.springframework.data.mongodb.core.MongoTemplate;
  */
 public abstract class BaseMongoStorageAccessorFactory extends AbstractCachedFactory<Class<?>, StorageAccessor<?, ?>> implements StorageAccessorFactory {
 
-	protected final String dataSource;
+    protected final String dataSource;
 
-	protected EntityIdConverterFactory entityIdConverterFactory;
+    protected EntityIdConverterFactory entityIdConverterFactory;
 
-	protected MongoEntityConverter entityObjectConverter;
+    protected MongoEntityConverter entityObjectConverter;
 
-	protected MongoTemplate mongoTemplate;
+    protected MongoTemplate mongoTemplate;
 
-	public BaseMongoStorageAccessorFactory(String dataSource) {
-		this.dataSource = dataSource;
-	}
+    public BaseMongoStorageAccessorFactory(String dataSource) {
+        this.dataSource = dataSource;
+    }
 
-	public BaseMongoStorageAccessorFactory(EntityIdConverterFactory entityIdConverterFactory, MongoEntityConverter entityObjectConverter,
-			MongoTemplate mongoTemplate, String dataSource) {
-		this.dataSource = dataSource;
-		this.entityIdConverterFactory = entityIdConverterFactory;
-		this.entityObjectConverter = entityObjectConverter;
-		this.mongoTemplate = mongoTemplate;
-	}
+    public BaseMongoStorageAccessorFactory(EntityIdConverterFactory entityIdConverterFactory, MongoEntityConverter entityObjectConverter,
+            MongoTemplate mongoTemplate, String dataSource) {
+        this.dataSource = dataSource;
+        this.entityIdConverterFactory = entityIdConverterFactory;
+        this.entityObjectConverter = entityObjectConverter;
+        this.mongoTemplate = mongoTemplate;
+    }
 
-	@Override
-	public <A extends StorageAccessor<?, ?>> A createAccessor(EntityScheme scheme, EntityKeyMaker<?, ?> keyMaker) {
-		EntityIdConverter<?, ?, ?> idConverter = entityIdConverterFactory.createConverter(scheme, keyMaker);
-		return loadOrCreate(scheme.getEntityClass(), clazz -> this.newMongoStorageAccessor(clazz, idConverter));
-	}
+    @Override
+    public <A extends StorageAccessor<?, ?>> A createAccessor(EntityScheme scheme, EntityKeyMaker<?, ?> keyMaker) {
+        EntityIdConverter<?, ?, ?> idConverter = entityIdConverterFactory.createConverter(scheme, keyMaker);
+        return loadOrCreate(scheme.getEntityClass(), clazz -> this.newMongoStorageAccessor(clazz, idConverter));
+    }
 
-	protected abstract StorageAccessor<?, ?> newMongoStorageAccessor(Class<?> entityClass, EntityIdConverter<?, ?, ?> idConverter);
+    protected abstract StorageAccessor<?, ?> newMongoStorageAccessor(Class<?> entityClass, EntityIdConverter<?, ?, ?> idConverter);
 
-	public BaseMongoStorageAccessorFactory setEntityIdConverterFactory(EntityIdConverterFactory entityIdConverterFactory) {
-		this.entityIdConverterFactory = entityIdConverterFactory;
-		return this;
-	}
+    public BaseMongoStorageAccessorFactory setEntityIdConverterFactory(EntityIdConverterFactory entityIdConverterFactory) {
+        this.entityIdConverterFactory = entityIdConverterFactory;
+        return this;
+    }
 
-	public BaseMongoStorageAccessorFactory setEntityObjectConverter(MongoEntityConverter entityObjectConverter) {
-		this.entityObjectConverter = entityObjectConverter;
-		return this;
-	}
+    public BaseMongoStorageAccessorFactory setEntityObjectConverter(MongoEntityConverter entityObjectConverter) {
+        this.entityObjectConverter = entityObjectConverter;
+        return this;
+    }
 
-	public BaseMongoStorageAccessorFactory setMongoTemplate(MongoTemplate mongoTemplate) {
-		this.mongoTemplate = mongoTemplate;
-		return this;
-	}
+    public BaseMongoStorageAccessorFactory setMongoTemplate(MongoTemplate mongoTemplate) {
+        this.mongoTemplate = mongoTemplate;
+        return this;
+    }
 
 }

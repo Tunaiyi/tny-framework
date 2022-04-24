@@ -2,6 +2,6 @@ package com.tny.game.net.base;
 
 public interface ClientBootstrapSetting extends NetBootstrapSetting {
 
-	ClientConnectorSetting getConnector();
+    ClientConnectorSetting getConnector();
 
 }

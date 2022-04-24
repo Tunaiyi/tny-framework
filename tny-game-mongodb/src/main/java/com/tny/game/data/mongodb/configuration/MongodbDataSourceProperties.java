@@ -13,39 +13,39 @@ import java.util.*;
 @ConfigurationProperties(prefix = "tny.datasource.mongodb")
 public class MongodbDataSourceProperties {
 
-	private boolean enable = true;
+    private boolean enable = true;
 
-	@NestedConfigurationProperty
-	private MongodbDataSourceSetting setting;
+    @NestedConfigurationProperty
+    private MongodbDataSourceSetting setting;
 
-	private Map<String, MongodbDataSourceSetting> settings = new HashMap<>();
+    private Map<String, MongodbDataSourceSetting> settings = new HashMap<>();
 
-	public boolean isEnable() {
-		return enable;
-	}
+    public boolean isEnable() {
+        return enable;
+    }
 
-	public MongodbDataSourceProperties setEnable(boolean enable) {
-		this.enable = enable;
-		return this;
-	}
+    public MongodbDataSourceProperties setEnable(boolean enable) {
+        this.enable = enable;
+        return this;
+    }
 
-	public MongodbDataSourceSetting getSetting() {
-		return setting;
-	}
+    public MongodbDataSourceSetting getSetting() {
+        return setting;
+    }
 
-	public MongodbDataSourceProperties setSetting(MongodbDataSourceSetting setting) {
-		this.setting = setting;
-		return this;
-	}
+    public MongodbDataSourceProperties setSetting(MongodbDataSourceSetting setting) {
+        this.setting = setting;
+        return this;
+    }
 
-	public Map<String, MongodbDataSourceSetting> getSettings() {
-		return settings;
-	}
+    public Map<String, MongodbDataSourceSetting> getSettings() {
+        return settings;
+    }
 
-	public MongodbDataSourceProperties setSettings(
-			Map<String, MongodbDataSourceSetting> settings) {
-		this.settings = settings;
-		return this;
-	}
+    public MongodbDataSourceProperties setSettings(
+            Map<String, MongodbDataSourceSetting> settings) {
+        this.settings = settings;
+        return this;
+    }
 
 }

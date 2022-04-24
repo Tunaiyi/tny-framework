@@ -11,94 +11,94 @@ import com.tny.game.net.relay.link.*;
  */
 class NettyRelayLinkConnector implements RelayConnectCallback {
 
-	private String linkKey;
+    private String linkKey;
 
-	private final RemoteRelayContext relayContext;
+    private final RemoteRelayContext relayContext;
 
-	private final NetRemoteServeInstance instance;
+    private final NetRemoteServeInstance instance;
 
-	private final NettyServeInstanceConnectMonitor connector;
+    private final NettyServeInstanceConnectMonitor connector;
 
-	private volatile RelayConnectorStatus status = RelayConnectorStatus.INIT;
+    private volatile RelayConnectorStatus status = RelayConnectorStatus.INIT;
 
-	private volatile RemoteRelayLink link;
+    private volatile RemoteRelayLink link;
 
-	private int times;
+    private int times;
 
-	private final String username;
+    private final String username;
 
-	private final static long[] delayTimeList = {1, 2, 2, 3, 3, 3, 5, 5, 5, 5, 10, 10, 10, 10, 10, 15};
+    private final static long[] delayTimeList = {1, 2, 2, 3, 3, 3, 5, 5, 5, 5, 10, 10, 10, 10, 10, 15};
 
-	NettyRelayLinkConnector(RemoteRelayContext relayContext, NetRemoteServeInstance instance, NettyServeInstanceConnectMonitor connector) {
-		this.relayContext = relayContext;
-		this.instance = instance;
-		this.connector = connector;
-		this.username = instance.username(relayContext.getAppServeName());
-	}
+    NettyRelayLinkConnector(RemoteRelayContext relayContext, NetRemoteServeInstance instance, NettyServeInstanceConnectMonitor connector) {
+        this.relayContext = relayContext;
+        this.instance = instance;
+        this.connector = connector;
+        this.username = instance.username(relayContext.getAppServeName());
+    }
 
-	public URL getUrl() {
-		return instance.url();
-	}
+    public URL getUrl() {
+        return instance.url();
+    }
 
-	public synchronized void connect() {
-		if (!status.isCanConnect()) {
-			return;
-		}
-		if (link == null || !link.isActive()) {
-			status = RelayConnectorStatus.CONNECTING;
-			connector.connect(this);
-		}
-	}
+    public synchronized void connect() {
+        if (!status.isCanConnect()) {
+            return;
+        }
+        if (link == null || !link.isActive()) {
+            status = RelayConnectorStatus.CONNECTING;
+            connector.connect(this);
+        }
+    }
 
-	private void onConnected(RelayTransporter transporter) {
-		if (status != RelayConnectorStatus.CONNECTING) {
-			transporter.close();
-			return;
-		}
-		this.status = RelayConnectorStatus.OPEN;
-		this.times = 0;
-		this.linkKey = relayContext.createLinkKey(username);
-		this.link = new CommonRemoteRelayLink(this.linkKey, instance, transporter);
-		this.link.auth(username, relayContext.getAppInstanceId());
-		transporter.addCloseListener(this::onClose);
-	}
+    private void onConnected(RelayTransporter transporter) {
+        if (status != RelayConnectorStatus.CONNECTING) {
+            transporter.close();
+            return;
+        }
+        this.status = RelayConnectorStatus.OPEN;
+        this.times = 0;
+        this.linkKey = relayContext.createLinkKey(username);
+        this.link = new CommonRemoteRelayLink(this.linkKey, instance, transporter);
+        this.link.auth(username, relayContext.getAppInstanceId());
+        transporter.addCloseListener(this::onClose);
+    }
 
-	private void onReconnected() {
-		if (status.isCanConnect()) {
-			connector.connect(this, delayTimeList[this.times % delayTimeList.length] * 1000);
-			this.times++;
-		}
-	}
+    private void onReconnected() {
+        if (status.isCanConnect()) {
+            connector.connect(this, delayTimeList[this.times % delayTimeList.length] * 1000);
+            this.times++;
+        }
+    }
 
-	private void onClose(RelayTransporter transporter) {
-		if (status != RelayConnectorStatus.CLOSE) {
-			this.status = RelayConnectorStatus.DISCONNECT;
-			onReconnected();
-		}
-	}
+    private void onClose(RelayTransporter transporter) {
+        if (status != RelayConnectorStatus.CLOSE) {
+            this.status = RelayConnectorStatus.DISCONNECT;
+            onReconnected();
+        }
+    }
 
-	public synchronized void close() {
-		status = RelayConnectorStatus.CLOSE;
-	}
+    public synchronized void close() {
+        status = RelayConnectorStatus.CLOSE;
+    }
 
-	@Override
-	public void complete(boolean result, URL url, RelayTransporter transporter, Throwable cause) {
-		if (this.status == RelayConnectorStatus.CLOSE) {
-			NettyRemoteServeInstance.LOGGER.warn("Server [{}-{}-{}] Connector is closed",
-					instance.getServeName(), instance.getId(), this.linkKey);
-			transporter.close();
-			return;
-		}
-		if (result && transporter.isActive()) {
-			NettyRemoteServeInstance.LOGGER.info("Server [{}-{}-{}] connect to {} success on the {}th times",
-					instance.getServeName(), instance.getId(), this.linkKey, url, times);
-			onConnected(transporter);
-		} else {
-			this.status = RelayConnectorStatus.DISCONNECT;
-			NettyRemoteServeInstance.LOGGER.warn("Server [{}-{}-{}] connect to {} failed {} times",
-					instance.getServeName(), instance.getId(), this.linkKey, url, times, cause.getCause());
-			onReconnected();
-		}
-	}
+    @Override
+    public void complete(boolean result, URL url, RelayTransporter transporter, Throwable cause) {
+        if (this.status == RelayConnectorStatus.CLOSE) {
+            NettyRemoteServeInstance.LOGGER.warn("Server [{}-{}-{}] Connector is closed",
+                    instance.getServeName(), instance.getId(), this.linkKey);
+            transporter.close();
+            return;
+        }
+        if (result && transporter.isActive()) {
+            NettyRemoteServeInstance.LOGGER.info("Server [{}-{}-{}] connect to {} success on the {}th times",
+                    instance.getServeName(), instance.getId(), this.linkKey, url, times);
+            onConnected(transporter);
+        } else {
+            this.status = RelayConnectorStatus.DISCONNECT;
+            NettyRemoteServeInstance.LOGGER.warn("Server [{}-{}-{}] connect to {} failed {} times",
+                    instance.getServeName(), instance.getId(), this.linkKey, url, times, cause.getCause());
+            onReconnected();
+        }
+    }
 
 }

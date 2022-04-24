@@ -11,29 +11,29 @@ import com.tny.game.common.scheduler.*;
  */
 public abstract class BaseSchedulerBackup extends SchedulerBackup implements Any {
 
-	private long id;
+    private long id;
 
-	protected BaseSchedulerBackup() {
-	}
+    protected BaseSchedulerBackup() {
+    }
 
-	protected BaseSchedulerBackup(TimeTaskScheduler scheduler, long id) {
-		super(scheduler);
-		this.id = id;
-	}
+    protected BaseSchedulerBackup(TimeTaskScheduler scheduler, long id) {
+        super(scheduler);
+        this.id = id;
+    }
 
-	@Override
-	public long getPlayerId() {
-		return id;
-	}
+    @Override
+    public long getPlayerId() {
+        return id;
+    }
 
-	@Override
-	public long getId() {
-		return id;
-	}
+    @Override
+    public long getId() {
+        return id;
+    }
 
-	protected BaseSchedulerBackup setId(long id) {
-		this.id = id;
-		return this;
-	}
+    protected BaseSchedulerBackup setId(long id) {
+        this.id = id;
+        return this;
+    }
 
 }

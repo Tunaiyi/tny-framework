@@ -11,6 +11,6 @@ import com.tny.game.data.cache.*;
  */
 public interface StorageAccessorFactory {
 
-	<A extends StorageAccessor<?, ?>> A createAccessor(EntityScheme scheme, EntityKeyMaker<?, ?> keyMaker);
+    <A extends StorageAccessor<?, ?>> A createAccessor(EntityScheme scheme, EntityKeyMaker<?, ?> keyMaker);
 
 }

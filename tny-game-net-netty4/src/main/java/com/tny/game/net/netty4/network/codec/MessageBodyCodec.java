@@ -6,8 +6,8 @@ import io.netty.buffer.ByteBuf;
 @UnitInterface
 public interface MessageBodyCodec<I> {
 
-	I decode(ByteBuf buffer) throws Exception;
+    I decode(ByteBuf buffer) throws Exception;
 
-	void encode(I object, ByteBuf buffer) throws Exception;
+    void encode(I object, ByteBuf buffer) throws Exception;
 
 }

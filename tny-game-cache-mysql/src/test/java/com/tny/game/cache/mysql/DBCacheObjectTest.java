@@ -25,6 +25,7 @@ public class DBCacheObjectTest {
     @BeforeEach
     public void setUp() throws Exception {
         this.task = new CacheTestTask(this.cache) {
+
             @Override
             protected void doFlushAll() {
                 DBCacheObjectTest.this.cacheDAO.flushAll("CPlayer0");

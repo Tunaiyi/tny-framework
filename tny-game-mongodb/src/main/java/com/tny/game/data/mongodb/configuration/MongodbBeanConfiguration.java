@@ -29,45 +29,45 @@ import static com.tny.game.common.utils.ObjectAide.*;
 @Configuration(proxyBeanMethods = false)
 public class MongodbBeanConfiguration {
 
-	@Bean
-	public MongoClientSettings mongoClientSettings() {
-		return MongoClientSettings.builder().build();
-	}
+    @Bean
+    public MongoClientSettings mongoClientSettings() {
+        return MongoClientSettings.builder().build();
+    }
 
-	@Bean
-	public MongoCustomConversions mongoCustomConversions(ApplicationContext applicationContext) {
-		Collection<Converter<?, ?>> converterBeans = as(SpringBeanUtils.beansOfType(applicationContext, Converter.class));
-		Collection<Converter<?, ?>> converters = new ArrayList<>(converterBeans);
-		return MongoCustomConversions.create((adapter) -> adapter.registerConverters(converters));
-	}
+    @Bean
+    public MongoCustomConversions mongoCustomConversions(ApplicationContext applicationContext) {
+        Collection<Converter<?, ?>> converterBeans = as(SpringBeanUtils.beansOfType(applicationContext, Converter.class));
+        Collection<Converter<?, ?>> converters = new ArrayList<>(converterBeans);
+        return MongoCustomConversions.create((adapter) -> adapter.registerConverters(converters));
+    }
 
-	@Bean
-	public MongoEntityClasses mongoEntityClasses(ApplicationContext applicationContext) throws ClassNotFoundException {
-		Set<Class<?>> classes = new EntityScanner(applicationContext).scan(Document.class, Persistent.class);
-		return new MongoEntityClasses(classes);
-	}
+    @Bean
+    public MongoEntityClasses mongoEntityClasses(ApplicationContext applicationContext) throws ClassNotFoundException {
+        Set<Class<?>> classes = new EntityScanner(applicationContext).scan(Document.class, Persistent.class);
+        return new MongoEntityClasses(classes);
+    }
 
-	@Bean
-	@ConditionalOnMissingBean(MongoObjectLoadedService.class)
-	public MongoObjectLoadedService defaultEntityLoadedService(ApplicationContext applicationContext) {
-		return new DefaultMongoObjectLoadedService(applicationContext);
-	}
+    @Bean
+    @ConditionalOnMissingBean(MongoObjectLoadedService.class)
+    public MongoObjectLoadedService defaultEntityLoadedService(ApplicationContext applicationContext) {
+        return new DefaultMongoObjectLoadedService(applicationContext);
+    }
 
-	@Bean
-	@ConditionalOnMissingBean(value = MongoDocumentConverter.class)
-	public MongoDocumentConverter jsonMongoDocumentMapper(
-			ObjectProvider<MongoDocumentEnhance<?>> enhances,
-			ObjectProvider<ObjectMapperCustomizer> mapperCustomizers) {
-		ObjectMapper mapper = ObjectMapperFactory.createMapper();
-		mapper.registerModule(MongoObjectMapperMixLoader.getModule())
-				.setAnnotationIntrospector(new MongoIdIntrospector())
-				.configure(MapperFeature.PROPAGATE_TRANSIENT_MARKER, true)
-				.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-				.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY)
-				.configure(MapperFeature.AUTO_DETECT_GETTERS, false)
-				.configure(MapperFeature.AUTO_DETECT_IS_GETTERS, false);
-		mapperCustomizers.forEach((action) -> action.customize(mapper));
-		return new JsonMongoDocumentConverter(mapper, enhances.stream().collect(Collectors.toList()));
-	}
+    @Bean
+    @ConditionalOnMissingBean(value = MongoDocumentConverter.class)
+    public MongoDocumentConverter jsonMongoDocumentMapper(
+            ObjectProvider<MongoDocumentEnhance<?>> enhances,
+            ObjectProvider<ObjectMapperCustomizer> mapperCustomizers) {
+        ObjectMapper mapper = ObjectMapperFactory.createMapper();
+        mapper.registerModule(MongoObjectMapperMixLoader.getModule())
+                .setAnnotationIntrospector(new MongoIdIntrospector())
+                .configure(MapperFeature.PROPAGATE_TRANSIENT_MARKER, true)
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                .setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY)
+                .configure(MapperFeature.AUTO_DETECT_GETTERS, false)
+                .configure(MapperFeature.AUTO_DETECT_IS_GETTERS, false);
+        mapperCustomizers.forEach((action) -> action.customize(mapper));
+        return new JsonMongoDocumentConverter(mapper, enhances.stream().collect(Collectors.toList()));
+    }
 
 }

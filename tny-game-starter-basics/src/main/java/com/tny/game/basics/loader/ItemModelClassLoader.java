@@ -17,20 +17,20 @@ import static com.tny.game.common.utils.ObjectAide.*;
  */
 public final class ItemModelClassLoader {
 
-	private static final Set<Class<?>> CLASSES = new ConcurrentHashSet<>();
+    private static final Set<Class<?>> CLASSES = new ConcurrentHashSet<>();
 
-	private ItemModelClassLoader() {
-	}
+    private ItemModelClassLoader() {
+    }
 
-	@ClassSelectorProvider
-	public static ClassSelector controllerSelector() {
-		return ClassSelector.create()
-				.addFilter(SubOfClassFilter.ofInclude(ItemModel.class))
-				.setHandler(CLASSES::addAll);
-	}
+    @ClassSelectorProvider
+    public static ClassSelector controllerSelector() {
+        return ClassSelector.create()
+                .addFilter(SubOfClassFilter.ofInclude(ItemModel.class))
+                .setHandler(CLASSES::addAll);
+    }
 
-	public static Set<Class<? extends ItemModel>> getClasses() {
-		return as(Collections.unmodifiableSet(CLASSES));
-	}
+    public static Set<Class<? extends ItemModel>> getClasses() {
+        return as(Collections.unmodifiableSet(CLASSES));
+    }
 
 }

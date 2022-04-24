@@ -10,10 +10,10 @@ import com.fasterxml.jackson.annotation.*;
  */
 public abstract class MongoIdMix<O, I> {
 
-	@JsonGetter("_id")
-	public abstract O getId();
+    @JsonGetter("_id")
+    public abstract O getId();
 
-	@JsonSetter("_id")
-	public abstract O setId(I id);
+    @JsonSetter("_id")
+    public abstract O setId(I id);
 
 }

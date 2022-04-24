@@ -12,6 +12,6 @@ import io.netty.channel.Channel;
 @UnitInterface
 public interface ChannelMaker<C extends Channel> {
 
-	void initChannel(C channel) throws Exception;
+    void initChannel(C channel) throws Exception;
 
 }

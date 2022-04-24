@@ -12,29 +12,29 @@ import java.lang.reflect.Method;
 @Aspect
 public class AutoManageAspect {
 
-	@Pointcut("execution(* *(..)) && (" +
-			"@annotation(com.tny.game.basics.persistent.annotation.Modifiable) ||" +
-			"@annotation(com.tny.game.basics.persistent.annotation.ModifiableParam) || " +
-			"@annotation(com.tny.game.basics.persistent.annotation.ModifiableReturn))")
-	public void invokeAutoDB() {
-	}
+    @Pointcut("execution(* *(..)) && (" +
+            "@annotation(com.tny.game.basics.persistent.annotation.Modifiable) ||" +
+            "@annotation(com.tny.game.basics.persistent.annotation.ModifiableParam) || " +
+            "@annotation(com.tny.game.basics.persistent.annotation.ModifiableReturn))")
+    public void invokeAutoDB() {
+    }
 
-	@AfterReturning(pointcut = "invokeAutoDB()", returning = "result")
-	public void persistentAfterReturn(JoinPoint joinPoint, Object result) throws Throwable {
-		MethodSignature signature = (MethodSignature)joinPoint.getSignature();
-		Method method = signature.getMethod();
-		Object[] args = joinPoint.getArgs();
-		Object target = joinPoint.getTarget();
-		AutoManageAdvice.getInstance().doAfterReturning(result, method, args, target);
-	}
+    @AfterReturning(pointcut = "invokeAutoDB()", returning = "result")
+    public void persistentAfterReturn(JoinPoint joinPoint, Object result) throws Throwable {
+        MethodSignature signature = (MethodSignature)joinPoint.getSignature();
+        Method method = signature.getMethod();
+        Object[] args = joinPoint.getArgs();
+        Object target = joinPoint.getTarget();
+        AutoManageAdvice.getInstance().doAfterReturning(result, method, args, target);
+    }
 
-	@AfterThrowing(pointcut = "invokeAutoDB()", throwing = "error")
-	public void persistentAfterThrowing(JoinPoint joinPoint, Throwable error) throws Throwable {
-		MethodSignature signature = (MethodSignature)joinPoint.getSignature();
-		Method method = signature.getMethod();
-		Object[] args = joinPoint.getArgs();
-		Object target = joinPoint.getTarget();
-		AutoManageAdvice.getInstance().doAfterThrowing(method, args, target, error);
-	}
+    @AfterThrowing(pointcut = "invokeAutoDB()", throwing = "error")
+    public void persistentAfterThrowing(JoinPoint joinPoint, Throwable error) throws Throwable {
+        MethodSignature signature = (MethodSignature)joinPoint.getSignature();
+        Method method = signature.getMethod();
+        Object[] args = joinPoint.getArgs();
+        Object target = joinPoint.getTarget();
+        AutoManageAdvice.getInstance().doAfterThrowing(method, args, target, error);
+    }
 
 }

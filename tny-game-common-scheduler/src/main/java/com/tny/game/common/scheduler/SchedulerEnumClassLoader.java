@@ -13,9 +13,9 @@ import static com.tny.game.scanner.selector.EnumClassSelector.*;
  */
 public class SchedulerEnumClassLoader {
 
-	@ClassSelectorProvider
-	static ClassSelector itemTypesSelector() {
-		return createSelector(TaskReceiverType.class, TaskReceiverTypes::register);
-	}
+    @ClassSelectorProvider
+    static ClassSelector itemTypesSelector() {
+        return createSelector(TaskReceiverType.class, TaskReceiverTypes::register);
+    }
 
 }

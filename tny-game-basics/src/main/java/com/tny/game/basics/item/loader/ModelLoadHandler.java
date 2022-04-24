@@ -10,6 +10,6 @@ import java.util.List;
  **/
 public interface ModelLoadHandler<M> {
 
-	void onLoad(List<M> models, String path, boolean reload) throws Exception;
+    void onLoad(List<M> models, String path, boolean reload) throws Exception;
 
 }

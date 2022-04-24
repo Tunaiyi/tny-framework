@@ -15,19 +15,19 @@ import java.util.function.Function;
 
 public class IdObjectDeserializer<T> extends JsonDeserializer<T> {
 
-	private final Function<Integer, T> loader;
+    private final Function<Integer, T> loader;
 
-	public IdObjectDeserializer(Function<Integer, T> loader) {
-		this.loader = loader;
-	}
+    public IdObjectDeserializer(Function<Integer, T> loader) {
+        this.loader = loader;
+    }
 
-	@Override
-	public T deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
-		Object object = p.getCurrentValue();
-		if (object == null) {
-			return null;
-		}
-		return loader.apply(p.getIntValue());
-	}
+    @Override
+    public T deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+        Object object = p.getCurrentValue();
+        if (object == null) {
+            return null;
+        }
+        return loader.apply(p.getIntValue());
+    }
 
 }

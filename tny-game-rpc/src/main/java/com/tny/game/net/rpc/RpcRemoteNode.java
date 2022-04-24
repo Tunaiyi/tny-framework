@@ -14,60 +14,60 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class RpcRemoteNode {
 
-	private final long serverId;
+    private final long serverId;
 
-	private final Map<Long, Endpoint<RpcLinkerId>> realEndpointMap = new ConcurrentHashMap<>();
+    private final Map<Long, Endpoint<RpcLinkerId>> realEndpointMap = new ConcurrentHashMap<>();
 
-	private volatile List<Endpoint<RpcLinkerId>> orderEndpoints = ImmutableList.of();
+    private volatile List<Endpoint<RpcLinkerId>> orderEndpoints = ImmutableList.of();
 
-	;
+    ;
 
-	private final RpcRemoteServicer service;
+    private final RpcRemoteServicer service;
 
-	public RpcRemoteNode(long serverId, RpcRemoteServicer service) {
-		this.serverId = serverId;
-		this.service = service;
-	}
+    public RpcRemoteNode(long serverId, RpcRemoteServicer service) {
+        this.serverId = serverId;
+        this.service = service;
+    }
 
-	public long getServerId() {
-		return serverId;
-	}
+    public long getServerId() {
+        return serverId;
+    }
 
-	public List<Endpoint<RpcLinkerId>> getOrderEndpoints() {
-		return orderEndpoints;
-	}
+    public List<Endpoint<RpcLinkerId>> getOrderEndpoints() {
+        return orderEndpoints;
+    }
 
-	public boolean isActive() {
-		return !orderEndpoints.isEmpty();
-	}
+    public boolean isActive() {
+        return !orderEndpoints.isEmpty();
+    }
 
-	protected void addEndpoint(Endpoint<RpcLinkerId> endpoint) {
-		synchronized (this) {
-			boolean activate = this.realEndpointMap.isEmpty();
-			RpcLinkerId nodeId = endpoint.getUserId();
-			this.realEndpointMap.put(nodeId.getId(), endpoint);
-			this.orderEndpoints = ImmutableList.sortedCopyOf(
-					Comparator.comparing(Endpoint::getUserId),
-					realEndpointMap.values());
-			if (!activate && !this.realEndpointMap.isEmpty()) {
-				service.onNodeActivate(this);
-			}
-		}
-	}
+    protected void addEndpoint(Endpoint<RpcLinkerId> endpoint) {
+        synchronized (this) {
+            boolean activate = this.realEndpointMap.isEmpty();
+            RpcLinkerId nodeId = endpoint.getUserId();
+            this.realEndpointMap.put(nodeId.getId(), endpoint);
+            this.orderEndpoints = ImmutableList.sortedCopyOf(
+                    Comparator.comparing(Endpoint::getUserId),
+                    realEndpointMap.values());
+            if (!activate && !this.realEndpointMap.isEmpty()) {
+                service.onNodeActivate(this);
+            }
+        }
+    }
 
-	protected void removeEndpoint(Endpoint<RpcLinkerId> endpoint) {
-		synchronized (this) {
-			RpcLinkerId nodeId = endpoint.getUserId();
-			boolean activate = this.realEndpointMap.isEmpty();
-			if (this.realEndpointMap.remove(nodeId.getId(), endpoint)) {
-				this.orderEndpoints = ImmutableList.sortedCopyOf(
-						Comparator.comparing(Endpoint::getUserId),
-						realEndpointMap.values());
-				if (activate && this.realEndpointMap.isEmpty()) {
-					service.onNodeUnactivated(this);
-				}
-			}
-		}
-	}
+    protected void removeEndpoint(Endpoint<RpcLinkerId> endpoint) {
+        synchronized (this) {
+            RpcLinkerId nodeId = endpoint.getUserId();
+            boolean activate = this.realEndpointMap.isEmpty();
+            if (this.realEndpointMap.remove(nodeId.getId(), endpoint)) {
+                this.orderEndpoints = ImmutableList.sortedCopyOf(
+                        Comparator.comparing(Endpoint::getUserId),
+                        realEndpointMap.values());
+                if (activate && this.realEndpointMap.isEmpty()) {
+                    service.onNodeUnactivated(this);
+                }
+            }
+        }
+    }
 
 }

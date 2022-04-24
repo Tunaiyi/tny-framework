@@ -71,8 +71,9 @@ public abstract class CrudDAOManager<T, VO, ID extends Serializable> {
 
     public T find(ID id) {
         VO vo = this.dao().find(id);
-        if (vo == null)
+        if (vo == null) {
             return null;
+        }
         return vo2Object(vo);
     }
 
@@ -91,13 +92,15 @@ public abstract class CrudDAOManager<T, VO, ID extends Serializable> {
         int index = 0;
         for (T e : entities) {
             if (!results[index++]) {
-                if (fails == null)
+                if (fails == null) {
                     fails = new ArrayList<>();
+                }
                 fails.add(e);
             }
         }
-        if (fails == null)
+        if (fails == null) {
             fails = Collections.emptyList();
+        }
         return fails;
     }
 

@@ -52,7 +52,6 @@ public interface CapacityVisitor {
      */
     boolean isHasGoal(long id);
 
-
     // /**
     //  * 指定id的提供器是否存在capacity能力值
     //  *

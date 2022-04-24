@@ -1,6 +1,5 @@
 package com.tny.game.suite.base.capacity;
 
-
 /**
  * 游戏能力值提供器
  * Created by Kun Yang on 16/2/15.
@@ -25,8 +24,9 @@ public abstract class BaseStoreCapacitiable implements ExpireCapacitiable {
 
     @Override
     public long getRemainTime(long now) {
-        if (expireAt < 0)
+        if (expireAt < 0) {
             return -1;
+        }
         return Math.min(expireAt - now, 0);
     }
 

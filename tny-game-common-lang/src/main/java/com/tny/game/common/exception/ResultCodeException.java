@@ -11,28 +11,28 @@ import static com.tny.game.common.utils.StringAide.*;
  */
 public class ResultCodeException extends CommonException {
 
-	private final ResultCode code;
+    private final ResultCode code;
 
-	public ResultCodeException(ResultCode code) {
-		super();
-		this.code = code;
-	}
+    public ResultCodeException(ResultCode code) {
+        super();
+        this.code = code;
+    }
 
-	public ResultCodeException(ResultCode code, String message, Object... messageParams) {
-		this(code, null, message, messageParams);
-	}
+    public ResultCodeException(ResultCode code, String message, Object... messageParams) {
+        this(code, null, message, messageParams);
+    }
 
-	public ResultCodeException(ResultCode code, Throwable cause) {
-		this(code, cause, "");
-	}
+    public ResultCodeException(ResultCode code, Throwable cause) {
+        this(code, cause, "");
+    }
 
-	public ResultCodeException(ResultCode code, Throwable cause, String message, Object... messageParams) {
-		super(format(message, messageParams), cause);
-		this.code = code;
-	}
+    public ResultCodeException(ResultCode code, Throwable cause, String message, Object... messageParams) {
+        super(format(message, messageParams), cause);
+        this.code = code;
+    }
 
-	public ResultCode getCode() {
-		return code;
-	}
+    public ResultCode getCode() {
+        return code;
+    }
 
 }

@@ -10,8 +10,8 @@ import java.util.concurrent.Future;
  */
 public interface TInterface {
 
-	Future<RpcResult<String>> future();
+    Future<RpcResult<String>> future();
 
-	String string();
+    String string();
 
 }

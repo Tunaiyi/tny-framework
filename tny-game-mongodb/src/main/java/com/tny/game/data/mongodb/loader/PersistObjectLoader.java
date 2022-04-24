@@ -16,24 +16,24 @@ import static com.tny.game.codec.jackson.mapper.AutoRegisterModuleClassesHandler
  */
 public final class PersistObjectLoader {
 
-	public static final Logger LOGGER = LoggerFactory.getLogger(PersistObjectLoader.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(PersistObjectLoader.class);
 
-	private static final Set<Class<?>> CONVERTER_CLASSES = new ConcurrentHashSet<>();
+    private static final Set<Class<?>> CONVERTER_CLASSES = new ConcurrentHashSet<>();
 
-	private PersistObjectLoader() {
-	}
+    private PersistObjectLoader() {
+    }
 
-	@ClassSelectorProvider
-	static ClassSelector mixDocumentSelector() {
-		return ClassSelector.create()
-				.addFilter(AnnotationClassFilter.ofInclude(Document.class))
-				.setHandler(createHandler((module, classes) ->
-						//							module.setMixInAnnotation(docClass, MongoIdMix.class);
-						CONVERTER_CLASSES.addAll(classes)));
-	}
+    @ClassSelectorProvider
+    static ClassSelector mixDocumentSelector() {
+        return ClassSelector.create()
+                .addFilter(AnnotationClassFilter.ofInclude(Document.class))
+                .setHandler(createHandler((module, classes) ->
+                        //							module.setMixInAnnotation(docClass, MongoIdMix.class);
+                        CONVERTER_CLASSES.addAll(classes)));
+    }
 
-	public static Set<Class<?>> getConverterClasses() {
-		return Collections.unmodifiableSet(CONVERTER_CLASSES);
-	}
+    public static Set<Class<?>> getConverterClasses() {
+        return Collections.unmodifiableSet(CONVERTER_CLASSES);
+    }
 
 }

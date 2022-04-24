@@ -5,6 +5,6 @@ package com.tny.game.doc.table;
  */
 public interface TableAttributeFactory {
 
-	TableAttribute create();
+    TableAttribute create();
 
 }

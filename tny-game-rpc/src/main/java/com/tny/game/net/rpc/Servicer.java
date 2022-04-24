@@ -8,6 +8,6 @@ package com.tny.game.net.rpc;
  */
 public interface Servicer<S, U> {
 
-	S to(U forUser);
+    S to(U forUser);
 
 }

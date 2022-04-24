@@ -1,6 +1,5 @@
 package com.tny.game.actor.local;
 
-
 import com.tny.game.common.result.*;
 
 import java.util.function.Predicate;
@@ -24,10 +23,11 @@ public class ActorRunUntilCommand extends BaseActorCommand<Void> {
 
     @Override
     protected Done<Void> doHandle() {
-        if (this.predicate.test(this.actorCell.getActor()))
+        if (this.predicate.test(this.actorCell.getActor())) {
             return DoneResults.successNullable(null);
-        else
+        } else {
             return DoneResults.failure();
+        }
     }
 
 }

@@ -11,7 +11,9 @@ public class PlayerTest implements Serializable {
     private static final long serialVersionUID = 1L;
 
     public long playerId;
+
     public List<Integer> ids = new ArrayList<Integer>();
+
     public transient List<Equip> equipList = new ArrayList<Equip>();
 
     public PlayerTest(int flag, long playerId, Integer... ids) {

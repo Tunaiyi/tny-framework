@@ -11,17 +11,17 @@ import java.util.*;
  */
 public interface AwardList {
 
-	Action getAction();
+    Action getAction();
 
-	/**
-	 * 获取奖励的所有<奖励组<奖励物品的ID - 奖励数量>>
-	 *
-	 * @return
-	 */
-	List<AwardDetail> getAwardDetailList();
+    /**
+     * 获取奖励的所有<奖励组<奖励物品的ID - 奖励数量>>
+     *
+     * @return
+     */
+    List<AwardDetail> getAwardDetailList();
 
-	List<TradeItem<StuffModel>> getAwardTradeItemList();
+    List<TradeItem<StuffModel>> getAwardTradeItemList();
 
-	Set<StuffModel> getAwardItemModelSet();
+    Set<StuffModel> getAwardItemModelSet();
 
 }

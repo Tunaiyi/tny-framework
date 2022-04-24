@@ -35,6 +35,7 @@ public class OperationLogger extends AbstractOpLogger implements AppPrepareStart
     private static final IDCreator ID_CREATOR = new IDCreator(16);
 
     private final Map<Object, Snapper<Owned, Snapshot>> snapperMap = new CopyOnWriteMap<>();
+
     private final Map<Class<?>, Snapper<Owned, Snapshot>> targetClassSnapperMap = new CopyOnWriteMap<>();
 
     private static OpLogger instance;

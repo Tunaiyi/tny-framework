@@ -19,10 +19,10 @@ import org.springframework.context.annotation.*;
 @AutoConfigureAfter(NacosDiscoveryAutoConfiguration.class)
 public class NetNacosDiscoveryClientConfiguration {
 
-	@Bean
-	@ConditionalOnBean(NacosDiscoveryProperties.class)
-	public ServeNodeClient serveNodeClient(NacosDiscoveryProperties properties, NacosServiceManager nacosServiceManager) {
-		return new NacosServeNodeClient(properties, nacosServiceManager);
-	}
+    @Bean
+    @ConditionalOnBean(NacosDiscoveryProperties.class)
+    public ServeNodeClient serveNodeClient(NacosDiscoveryProperties properties, NacosServiceManager nacosServiceManager) {
+        return new NacosServeNodeClient(properties, nacosServiceManager);
+    }
 
 }

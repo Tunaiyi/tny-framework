@@ -11,20 +11,20 @@ import com.tny.game.common.result.*;
  */
 public class RpcException extends ResultCodeRuntimeException {
 
-	public RpcException(ResultCode code) {
-		super(code);
-	}
+    public RpcException(ResultCode code) {
+        super(code);
+    }
 
-	public RpcException(ResultCode code, String message, Object... messageParams) {
-		super(code, message, messageParams);
-	}
+    public RpcException(ResultCode code, String message, Object... messageParams) {
+        super(code, message, messageParams);
+    }
 
-	public RpcException(ResultCode code, Throwable cause) {
-		super(code, cause);
-	}
+    public RpcException(ResultCode code, Throwable cause) {
+        super(code, cause);
+    }
 
-	public RpcException(ResultCode code, Throwable cause, String message, Object... messageParams) {
-		super(code, cause, message, messageParams);
-	}
+    public RpcException(ResultCode code, Throwable cause, String message, Object... messageParams) {
+        super(code, cause, message, messageParams);
+    }
 
 }

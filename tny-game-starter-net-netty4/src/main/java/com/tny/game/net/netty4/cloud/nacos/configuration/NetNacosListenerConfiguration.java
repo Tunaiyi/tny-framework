@@ -13,11 +13,11 @@ import org.springframework.context.annotation.*;
 @ConditionalOnClass(NacosServiceRegistry.class)
 public class NetNacosListenerConfiguration {
 
-	@Bean
-	@ConditionalOnBean({NacosServiceRegistry.class})
-	public NacosEventListener nacosEventListener(NetAutoServiceRegister register) {
-		return new NacosEventListener(register);
-	}
+    @Bean
+    @ConditionalOnBean({NacosServiceRegistry.class})
+    public NacosEventListener nacosEventListener(NetAutoServiceRegister register) {
+        return new NacosEventListener(register);
+    }
 
 }
 

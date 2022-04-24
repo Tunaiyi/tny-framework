@@ -10,6 +10,6 @@ import com.tny.game.net.relay.packet.*;
  */
 public interface RelayPacketMaker {
 
-	RelayPacket<?> make();
+    RelayPacket<?> make();
 
 }

@@ -27,6 +27,7 @@ public interface CapacityStorerListener {
      */
     default void onSaveSupplier(CapacityStorer storer, Collection<ExpireCapacitySupplier> suppliers) {
     }
+
     ;
 
     /**
@@ -37,6 +38,7 @@ public interface CapacityStorerListener {
      */
     default void onDeleteSupplier(CapacityStorer storer, Collection<ExpireCapacitySupplier> suppliers) {
     }
+
     ;
 
     /**
@@ -47,6 +49,7 @@ public interface CapacityStorerListener {
      */
     default void onExpireSupplier(CapacityStorer storer, Collection<ExpireCapacitySupplier> suppliers) {
     }
+
     ;
 
     /**
@@ -57,6 +60,7 @@ public interface CapacityStorerListener {
      */
     default void onSaveGoal(CapacityStorer storer, Collection<ExpireCapacityGoal> goals) {
     }
+
     ;
 
     /**
@@ -67,8 +71,8 @@ public interface CapacityStorerListener {
      */
     default void onDeleteGoal(CapacityStorer storer, Collection<ExpireCapacityGoal> goals) {
     }
-    ;
 
+    ;
 
     /**
      * 触发有效时间变化
@@ -78,6 +82,7 @@ public interface CapacityStorerListener {
      */
     default void onExpireGoal(CapacityStorer storer, Collection<ExpireCapacityGoal> goals) {
     }
+
     ;
 
 }

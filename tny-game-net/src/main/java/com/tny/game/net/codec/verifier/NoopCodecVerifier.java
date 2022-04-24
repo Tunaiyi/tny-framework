@@ -10,19 +10,19 @@ import com.tny.game.net.codec.*;
  */
 public class NoopCodecVerifier implements CodecVerifier {
 
-	@Override
-	public int getCodeLength() {
-		return 0;
-	}
+    @Override
+    public int getCodeLength() {
+        return 0;
+    }
 
-	@Override
-	public byte[] generate(DataPackageContext packager, byte[] body, int offset, int length) {
-		return new byte[0];
-	}
+    @Override
+    public byte[] generate(DataPackageContext packager, byte[] body, int offset, int length) {
+        return new byte[0];
+    }
 
-	@Override
-	public boolean verify(DataPackageContext packager, byte[] body, int offset, int length, byte[] verifyCode) {
-		return true;
-	}
+    @Override
+    public boolean verify(DataPackageContext packager, byte[] body, int offset, int length, byte[] verifyCode) {
+        return true;
+    }
 
 }

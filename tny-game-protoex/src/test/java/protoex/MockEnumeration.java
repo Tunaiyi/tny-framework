@@ -5,10 +5,10 @@ import com.tny.game.protoex.annotations.*;
 @ProtoEx(3004)
 public enum MockEnumeration {
 
-	PROTOSS,
+    PROTOSS,
 
-	TERRAN,
+    TERRAN,
 
-	ZERG;
+    ZERG;
 
 }

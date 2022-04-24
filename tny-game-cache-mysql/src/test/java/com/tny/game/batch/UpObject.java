@@ -23,10 +23,11 @@ public class UpObject {
     }
 
     public void reset() {
-        if (this.name.startsWith("one"))
+        if (this.name.startsWith("one")) {
             this.name = "tow" + this.id;
-        else
+        } else {
             this.name = "one" + this.id;
+        }
         this.age = ThreadLocalRandom.current().nextInt(10) + 10;
         this.gender = ThreadLocalRandom.current().nextInt(1);
     }

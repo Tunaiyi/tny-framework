@@ -4,10 +4,10 @@ import com.tny.game.common.enums.*;
 
 public interface Mould extends IntEnumerable {
 
-	String name();
+    String name();
 
-	boolean isValid();
+    boolean isValid();
 
-	boolean isHasHandler();
+    boolean isHasHandler();
 
 }

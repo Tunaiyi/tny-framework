@@ -35,8 +35,9 @@ public abstract class String2ExprHolderConverter extends AbstractSingleValueConv
 
     @Override
     public Object fromString(String formula) {
-        if (formula == null || formula.equals(""))
+        if (formula == null || formula.equals("")) {
             return null;
+        }
         try {
             return exprHolderFactory.create(formula);
         } catch (Throwable e) {
@@ -44,4 +45,5 @@ public abstract class String2ExprHolderConverter extends AbstractSingleValueConv
             throw e;
         }
     }
+
 }

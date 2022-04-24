@@ -7,4 +7,5 @@ package com.tny.game.test;
  * @date 2019-11-20 22:00
  */
 public class MessageB {
+
 }

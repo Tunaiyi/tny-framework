@@ -16,15 +16,15 @@ import static com.tny.game.common.utils.ObjectAide.*;
 @AsLifecycle
 public class ResultCodeLoadInitializer {
 
-	@StaticInit
-	static <E extends Enum<E> & ResultCode> void loadClass() {
-		ReferenceType<Class<E>> type = new ReferenceType<Class<E>>() {
+    @StaticInit
+    static <E extends Enum<E> & ResultCode> void loadClass() {
+        ReferenceType<Class<E>> type = new ReferenceType<Class<E>>() {
 
-		};
-		AutoClassScanConfigure.getClasses(ResultCode.class)
-				.stream()
-				.map(c -> as(c, type))
-				.forEach(ResultCodes::registerClass);
-	}
+        };
+        AutoClassScanConfigure.getClasses(ResultCode.class)
+                .stream()
+                .map(c -> as(c, type))
+                .forEach(ResultCodes::registerClass);
+    }
 
 }

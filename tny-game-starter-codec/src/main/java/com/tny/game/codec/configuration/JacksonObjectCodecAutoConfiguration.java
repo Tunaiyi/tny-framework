@@ -19,21 +19,21 @@ import java.util.stream.Collectors;
 @ConditionalOnClass(JacksonObjectCodecFactory.class)
 public class JacksonObjectCodecAutoConfiguration {
 
-	@Bean
-	@ConditionalOnMissingBean(JacksonObjectCodecFactory.class)
-	public JacksonObjectCodecFactory jacksonObjectCodecorFactory() {
-		return new JacksonObjectCodecFactory();
-	}
+    @Bean
+    @ConditionalOnMissingBean(JacksonObjectCodecFactory.class)
+    public JacksonObjectCodecFactory jacksonObjectCodecorFactory() {
+        return new JacksonObjectCodecFactory();
+    }
 
-	@Bean
-	public HandlerInstantiatorObjectMapperCustomizer handlerInstantiatorObjectMapperCustomizer(
-			ObjectProvider<JsonSerializer<?>> jsonSerializerProviders,
-			ObjectProvider<JsonDeserializer<?>> jsonDeserializerProviders,
-			ObjectProvider<KeyDeserializer> keyDeserializerProviders) {
-		return new HandlerInstantiatorObjectMapperCustomizer(
-				jsonSerializerProviders.stream().collect(Collectors.toList()),
-				jsonDeserializerProviders.stream().collect(Collectors.toList()),
-				keyDeserializerProviders.stream().collect(Collectors.toList()));
-	}
+    @Bean
+    public HandlerInstantiatorObjectMapperCustomizer handlerInstantiatorObjectMapperCustomizer(
+            ObjectProvider<JsonSerializer<?>> jsonSerializerProviders,
+            ObjectProvider<JsonDeserializer<?>> jsonDeserializerProviders,
+            ObjectProvider<KeyDeserializer> keyDeserializerProviders) {
+        return new HandlerInstantiatorObjectMapperCustomizer(
+                jsonSerializerProviders.stream().collect(Collectors.toList()),
+                jsonDeserializerProviders.stream().collect(Collectors.toList()),
+                keyDeserializerProviders.stream().collect(Collectors.toList()));
+    }
 
 }

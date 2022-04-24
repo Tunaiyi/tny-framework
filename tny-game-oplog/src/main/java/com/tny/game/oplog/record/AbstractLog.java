@@ -14,10 +14,12 @@ public class AbstractLog implements Log {
      * 日志ID
      */
     private String logID;
+
     /**
      * 日志
      */
     protected OpLog log;
+
     /**
      * 玩家日志
      */

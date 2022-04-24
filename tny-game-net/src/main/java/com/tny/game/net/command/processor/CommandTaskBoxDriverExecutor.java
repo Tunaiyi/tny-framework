@@ -8,12 +8,12 @@ package com.tny.game.net.command.processor;
  */
 public interface CommandTaskBoxDriverExecutor<T extends CommandTaskBoxDriver> {
 
-	void execute(T driver);
+    void execute(T driver);
 
-	void schedule(T driver);
+    void schedule(T driver);
 
-	int getBusSpinTimes();
+    int getBusSpinTimes();
 
-	int getYieldTimes();
+    int getYieldTimes();
 
 }

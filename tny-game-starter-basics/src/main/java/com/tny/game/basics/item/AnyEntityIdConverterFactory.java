@@ -11,9 +11,9 @@ import com.tny.game.data.cache.*;
  */
 public class AnyEntityIdConverterFactory implements EntityIdConverterFactory {
 
-	@Override
-	public EntityIdConverter<?, ?, ?> createConverter(EntityScheme scheme, EntityKeyMaker<?, ?> keyMaker) {
-		return new AnyEntityIdConverter(scheme);
-	}
+    @Override
+    public EntityIdConverter<?, ?, ?> createConverter(EntityScheme scheme, EntityKeyMaker<?, ?> keyMaker) {
+        return new AnyEntityIdConverter(scheme);
+    }
 
 }

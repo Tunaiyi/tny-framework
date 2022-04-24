@@ -29,65 +29,65 @@ import static com.tny.game.suite.SuiteProfiles.*;
 @Profile(PROTOBUF_MAPPER)
 public class ProtobufTableMapperInitiator implements InitializingBean, AppPostStart, ApplicationContextAware {
 
-	private final ClassSelector selector = ClassSelector.create(AnnotationClassFilter.ofInclude(ToCache.class));
+    private final ClassSelector selector = ClassSelector.create(AnnotationClassFilter.ofInclude(ToCache.class));
 
-	private ApplicationContext context;
+    private ApplicationContext context;
 
-	@Resource
-	private NetAppContext appContext;
+    @Resource
+    private NetAppContext appContext;
 
-	private ForkJoinTask<?> task;
+    private ForkJoinTask<?> task;
 
-	public ProtobufTableMapperInitiator() {
-	}
+    public ProtobufTableMapperInitiator() {
+    }
 
-	@Override
-	public void afterPropertiesSet() throws Exception {
-		this.task = ForkJoinPool.commonPool()
-				.submit(() -> ClassScanner.instance()
-						.addSelector(this.selector)
-						.scan(this.appContext.getScanPackages()));
-	}
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        this.task = ForkJoinPool.commonPool()
+                .submit(() -> ClassScanner.instance()
+                        .addSelector(this.selector)
+                        .scan(this.appContext.getScanPackages()));
+    }
 
-	@Override
-	public void postStart() throws Exception {
-		this.task.join();
-		Collection<String> profiles = Configs.getProfiles();
-		Map<Class<?>, ProtoCacheFormatter<?, ?>> formatterMap = this.context.getBeansOfType(ProtoCacheFormatter.class)
-				.values()
-				.stream()
-				.map(f -> (ProtoCacheFormatter<?, ?>)f)
-				.collect(CollectorsAide.toMap(ProtoCacheFormatter::getClass));
-		for (Class<?> clazz : this.selector.getClasses()) {
-			ToCache cache = clazz.getAnnotation(ToCache.class);
-			String[] cacheProfiles = cache.profiles();
-			if (cacheProfiles.length > 0 && Stream.of(cacheProfiles).noneMatch(profiles::contains)) {
-				continue;
-			}
-			String table = cache.prefix();
-			if (StringUtils.isBlank(table)) {
-				throw new IllegalArgumentException(
-						format("{} 没有 prefix 参数", clazz));
-			}
-			if (cache.triggers().length == 0) {
-				continue;
-			}
-			Class<?> triggerClass = cache.triggers()[0];
-			if (!ProtoCacheFormatter.class.isAssignableFrom(triggerClass)) {
-				continue;
-			}
-			ProtoCacheFormatter<?, ?> formatter = formatterMap.get(triggerClass);
-			if (formatter == null) {
-				throw new IllegalArgumentException(
-						format("{} 找不到 {} formatter", clazz, triggerClass));
-			}
-			ProtobufTableMapper.loadOrCreate(table, formatter);
-		}
-	}
+    @Override
+    public void postStart() throws Exception {
+        this.task.join();
+        Collection<String> profiles = Configs.getProfiles();
+        Map<Class<?>, ProtoCacheFormatter<?, ?>> formatterMap = this.context.getBeansOfType(ProtoCacheFormatter.class)
+                .values()
+                .stream()
+                .map(f -> (ProtoCacheFormatter<?, ?>)f)
+                .collect(CollectorsAide.toMap(ProtoCacheFormatter::getClass));
+        for (Class<?> clazz : this.selector.getClasses()) {
+            ToCache cache = clazz.getAnnotation(ToCache.class);
+            String[] cacheProfiles = cache.profiles();
+            if (cacheProfiles.length > 0 && Stream.of(cacheProfiles).noneMatch(profiles::contains)) {
+                continue;
+            }
+            String table = cache.prefix();
+            if (StringUtils.isBlank(table)) {
+                throw new IllegalArgumentException(
+                        format("{} 没有 prefix 参数", clazz));
+            }
+            if (cache.triggers().length == 0) {
+                continue;
+            }
+            Class<?> triggerClass = cache.triggers()[0];
+            if (!ProtoCacheFormatter.class.isAssignableFrom(triggerClass)) {
+                continue;
+            }
+            ProtoCacheFormatter<?, ?> formatter = formatterMap.get(triggerClass);
+            if (formatter == null) {
+                throw new IllegalArgumentException(
+                        format("{} 找不到 {} formatter", clazz, triggerClass));
+            }
+            ProtobufTableMapper.loadOrCreate(table, formatter);
+        }
+    }
 
-	@Override
-	public void setApplicationContext(ApplicationContext context) throws BeansException {
-		this.context = context;
-	}
+    @Override
+    public void setApplicationContext(ApplicationContext context) throws BeansException {
+        this.context = context;
+    }
 
 }

@@ -15,25 +15,25 @@ import java.util.List;
  */
 public class GameJsonMongoEntityConverter extends JsonMongoEntityConverter {
 
-	public GameJsonMongoEntityConverter(List<MongoDocumentEnhance<?>> enhances) {
-		super(enhances);
-	}
+    public GameJsonMongoEntityConverter(List<MongoDocumentEnhance<?>> enhances) {
+        super(enhances);
+    }
 
-	public GameJsonMongoEntityConverter(ObjectMapper objectMapper, List<MongoDocumentEnhance<?>> enhances) {
-		super(objectMapper, enhances);
-	}
+    public GameJsonMongoEntityConverter(ObjectMapper objectMapper, List<MongoDocumentEnhance<?>> enhances) {
+        super(objectMapper, enhances);
+    }
 
-	@Override
-	public Document convertToWrite(Object id, Object source) {
-		Document document = this.format(source, Document.class);
-		if (source instanceof Any) {
-			Any any = (Any)source;
-			document.put("_id", id);
-			if (!document.containsKey("id")) {
-				document.put("id", any.getId());
-			}
-		}
-		return document;
-	}
+    @Override
+    public Document convertToWrite(Object id, Object source) {
+        Document document = this.format(source, Document.class);
+        if (source instanceof Any) {
+            Any any = (Any)source;
+            document.put("_id", id);
+            if (!document.containsKey("id")) {
+                document.put("id", any.getId());
+            }
+        }
+        return document;
+    }
 
 }

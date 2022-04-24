@@ -15,4 +15,5 @@ class DefaultDoneResult<M> extends BaseDoneResult<M, DefaultDoneResult<M>> {
     DefaultDoneResult(ResultCode code, M returnValue, String message) {
         super(code, returnValue, message);
     }
+
 }

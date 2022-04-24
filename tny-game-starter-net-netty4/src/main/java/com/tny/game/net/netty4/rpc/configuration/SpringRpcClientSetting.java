@@ -12,14 +12,14 @@ import java.util.List;
  */
 public class SpringRpcClientSetting extends RpcClientSetting {
 
-	@Override
-	public List<RpcServiceSetting> getServices() {
-		return super.getServices();
-	}
+    @Override
+    public List<RpcServiceSetting> getServices() {
+        return super.getServices();
+    }
 
-	@Override
-	public RpcClientSetting setServices(List<RpcServiceSetting> services) {
-		return super.setServices(services);
-	}
+    @Override
+    public RpcClientSetting setServices(List<RpcServiceSetting> services) {
+        return super.setServices(services);
+    }
 
 }

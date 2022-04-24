@@ -6,7 +6,6 @@ import com.tny.game.suite.*;
 
 import java.util.*;
 
-
 @ProtoEx(SuiteProtoIDs.FLOAT_LIST_DTO)
 @DTODoc("通用Float List DTO")
 public class FloatListDTO {
@@ -41,4 +40,5 @@ public class FloatListDTO {
             text += value;
         return text;
     }
+
 }

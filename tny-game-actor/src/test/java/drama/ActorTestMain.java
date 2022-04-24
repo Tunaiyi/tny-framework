@@ -1,6 +1,5 @@
 package drama;
 
-
 import com.tny.game.actor.*;
 import com.tny.game.actor.local.*;
 import com.tny.game.actor.stage.*;
@@ -45,15 +44,15 @@ public class ActorTestMain {
         LocalActor<String, Object> actor2 = context.actorOf("Actor2");
 
         VoidFlow flow = Flows.of(actor1)
-                             .thenRun(() -> service.tell(actor1))
-                             .switchTo(actor2)
-                             .thenGet(() -> service.askName(actor2))
-                             .thenApply((name) -> service.askAge(actor2, name))
-                             .thenAccept((message) -> {
-                                 service.tell(actor2);
-                                 System.out.println(message);
-                             })
-                             .start();
+                .thenRun(() -> service.tell(actor1))
+                .switchTo(actor2)
+                .thenGet(() -> service.askName(actor2))
+                .thenApply((name) -> service.askAge(actor2, name))
+                .thenAccept((message) -> {
+                    service.tell(actor2);
+                    System.out.println(message);
+                })
+                .start();
 
         while (!flow.isDone()) {
             Thread.sleep(10);
@@ -64,8 +63,8 @@ public class ActorTestMain {
 
         Future<String> future = new CompletableFuture<>();
         flow = Flows.of(actor1)
-                    .thenRun(() -> System.out.println("finish tell until"))
-                    .start();
+                .thenRun(() -> System.out.println("finish tell until"))
+                .start();
 
         while (!flow.isDone()) {
             Thread.sleep(10);

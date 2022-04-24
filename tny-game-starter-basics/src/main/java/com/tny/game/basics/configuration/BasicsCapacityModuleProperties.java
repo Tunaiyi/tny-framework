@@ -11,15 +11,15 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(BasicsPropertiesConstants.BASICS_CAPACITY_MODULE)
 public class BasicsCapacityModuleProperties {
 
-	private boolean enable = false;
+    private boolean enable = false;
 
-	public boolean isEnable() {
-		return enable;
-	}
+    public boolean isEnable() {
+        return enable;
+    }
 
-	public BasicsCapacityModuleProperties setEnable(boolean enable) {
-		this.enable = enable;
-		return this;
-	}
+    public BasicsCapacityModuleProperties setEnable(boolean enable) {
+        this.enable = enable;
+        return this;
+    }
 
 }

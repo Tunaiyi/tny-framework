@@ -9,6 +9,6 @@ import com.tny.game.common.enums.*;
 @FunctionalInterface
 public interface CapacitySupplierType extends IntEnumerable {
 
-	CapacitySupplierType NONE = () -> 0;
+    CapacitySupplierType NONE = () -> 0;
 
 }

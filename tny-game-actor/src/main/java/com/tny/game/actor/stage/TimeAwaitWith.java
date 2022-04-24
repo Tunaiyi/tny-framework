@@ -10,7 +10,9 @@ import java.time.Duration;
 public class TimeAwaitWith<T> {
 
     private Duration duration;
+
     private T object;
+
     private long timeout = -1;
 
     public TimeAwaitWith(T object, Duration duration) {
@@ -19,8 +21,10 @@ public class TimeAwaitWith<T> {
     }
 
     public Done<T> get() {
-        if (this.timeout < 0)
+        if (this.timeout < 0) {
             this.timeout = System.currentTimeMillis() + this.duration.toMillis();
+        }
         return System.currentTimeMillis() > this.timeout ? DoneResults.success(this.object) : DoneResults.failure();
     }
+
 }

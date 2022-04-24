@@ -13,21 +13,21 @@ import static com.tny.game.common.utils.ObjectAide.*;
  */
 public class SpringNettyRelayClientBootstrapSetting extends NettyRelayClientBootstrapSetting {
 
-	@NestedConfigurationProperty
-	private SpringNettyRelayChannelSetting channel;
+    @NestedConfigurationProperty
+    private SpringNettyRelayChannelSetting channel;
 
-	public SpringNettyRelayClientBootstrapSetting() {
-		super(new SpringNettyRelayChannelSetting());
-	}
+    public SpringNettyRelayClientBootstrapSetting() {
+        super(new SpringNettyRelayChannelSetting());
+    }
 
-	@Override
-	public SpringNettyRelayChannelSetting getChannel() {
-		return as(super.getChannel());
-	}
+    @Override
+    public SpringNettyRelayChannelSetting getChannel() {
+        return as(super.getChannel());
+    }
 
-	public NettyRelayClientBootstrapSetting setChannel(SpringNettyRelayChannelSetting channel) {
-		return super.setChannel(channel);
-	}
+    public NettyRelayClientBootstrapSetting setChannel(SpringNettyRelayChannelSetting channel) {
+        return super.setChannel(channel);
+    }
 
 }
 

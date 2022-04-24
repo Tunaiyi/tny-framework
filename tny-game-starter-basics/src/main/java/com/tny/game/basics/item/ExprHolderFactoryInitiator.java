@@ -7,6 +7,6 @@ import com.tny.game.expr.*;
  */
 public interface ExprHolderFactoryInitiator {
 
-	void init(ExprHolderFactory factory);
+    void init(ExprHolderFactory factory);
 
 }

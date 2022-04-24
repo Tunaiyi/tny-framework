@@ -6,19 +6,19 @@ package com.tny.game.basics.item.capacity;
  */
 public interface ExpireCapable extends Capable {
 
-	static long expireAtOf(Capable capable, long expireAt) {
-		return expireAt != 0 ? expireAt :
-				capable instanceof ExpireCapable ? ((ExpireCapable)capable).getExpireAt() : -1;
-	}
+    static long expireAtOf(Capable capable, long expireAt) {
+        return expireAt != 0 ? expireAt :
+                capable instanceof ExpireCapable ? ((ExpireCapable)capable).getExpireAt() : -1;
+    }
 
-	long getExpireAt();
+    long getExpireAt();
 
-	boolean isExpire();
+    boolean isExpire();
 
-	default long getRemainTime() {
-		return getRemainTime(System.currentTimeMillis());
-	}
+    default long getRemainTime() {
+        return getRemainTime(System.currentTimeMillis());
+    }
 
-	long getRemainTime(long now);
+    long getRemainTime(long now);
 
 }

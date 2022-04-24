@@ -11,18 +11,18 @@ import java.util.Collection;
  **/
 public interface ModelLoader<M> {
 
-	ModelLoader<M> addPath(String path);
+    ModelLoader<M> addPath(String path);
 
-	ModelLoader<M> addPaths(Collection<String> paths);
+    ModelLoader<M> addPaths(Collection<String> paths);
 
-	ModelLoader<M> addPaths(String... paths);
+    ModelLoader<M> addPaths(String... paths);
 
-	ModelLoader<M> addEnumClass(Class<? extends Enum<?>> clazz);
+    ModelLoader<M> addEnumClass(Class<? extends Enum<?>> clazz);
 
-	ModelLoader<M> addEnumClass(Collection<Class<? extends Enum<?>>> classes);
+    ModelLoader<M> addEnumClass(Collection<Class<? extends Enum<?>>> classes);
 
-	<C> ModelLoader<M> setContextHandler(ModelLoaderContextHandler<C> contextHandler);
+    <C> ModelLoader<M> setContextHandler(ModelLoaderContextHandler<C> contextHandler);
 
-	void load();
+    void load();
 
 }

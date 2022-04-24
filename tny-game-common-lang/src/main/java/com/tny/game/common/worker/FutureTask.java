@@ -28,6 +28,7 @@ import java.util.concurrent.locks.AbstractQueuedSynchronizer;
  * @since 1.5
  */
 public class FutureTask<V> implements RunnableFuture<V> {
+
     /**
      * Synchronization control for FutureTask
      */
@@ -41,8 +42,9 @@ public class FutureTask<V> implements RunnableFuture<V> {
      * @throws NullPointerException if callable is null
      */
     public FutureTask(Callable<V> callable) {
-        if (callable == null)
+        if (callable == null) {
             throw new NullPointerException();
+        }
         this.sync = new Sync(callable);
     }
 
@@ -168,16 +170,19 @@ public class FutureTask<V> implements RunnableFuture<V> {
      * Uses AQS sync state to represent run status
      */
     private final class Sync extends AbstractQueuedSynchronizer {
+
         private static final long serialVersionUID = -7828117401763700385L;
 
         /**
          * State value representing that task is running
          */
         private static final int RUNNING = 1;
+
         /**
          * State value representing that task ran
          */
         private static final int RAN = 2;
+
         /**
          * State value representing that task was cancelled
          */
@@ -187,10 +192,12 @@ public class FutureTask<V> implements RunnableFuture<V> {
          * The underlying callable
          */
         private final Callable<V> callable;
+
         /**
          * The result to return from get()
          */
         private V result;
+
         /**
          * The exception to throw from get()
          */
@@ -239,28 +246,34 @@ public class FutureTask<V> implements RunnableFuture<V> {
 
         V innerGet() throws InterruptedException, ExecutionException {
             acquireSharedInterruptibly(0);
-            if (getState() == CANCELLED)
+            if (getState() == CANCELLED) {
                 throw new CancellationException();
-            if (this.exception != null)
+            }
+            if (this.exception != null) {
                 throw new ExecutionException(this.exception);
+            }
             return this.result;
         }
 
         V innerGet(long nanosTimeout) throws InterruptedException, ExecutionException, TimeoutException {
-            if (!tryAcquireSharedNanos(0, nanosTimeout))
+            if (!tryAcquireSharedNanos(0, nanosTimeout)) {
                 throw new TimeoutException();
-            if (getState() == CANCELLED)
+            }
+            if (getState() == CANCELLED) {
                 throw new CancellationException();
-            if (this.exception != null)
+            }
+            if (this.exception != null) {
                 throw new ExecutionException(this.exception);
+            }
             return this.result;
         }
 
         void innerSet(V v) {
             for (; ; ) {
                 int s = getState();
-                if (s == RAN)
+                if (s == RAN) {
                     return;
+                }
                 if (s == CANCELLED) {
                     // aggressively release to set runner to null,
                     // in case we are racing with a cancel request
@@ -280,8 +293,9 @@ public class FutureTask<V> implements RunnableFuture<V> {
         void innerSetException(Throwable t) {
             for (; ; ) {
                 int s = getState();
-                if (s == RAN)
+                if (s == RAN) {
                     return;
+                }
                 if (s == CANCELLED) {
                     // aggressively release to set runner to null,
                     // in case we are racing with a cancel request
@@ -302,15 +316,18 @@ public class FutureTask<V> implements RunnableFuture<V> {
         boolean innerCancel(boolean mayInterruptIfRunning) {
             for (; ; ) {
                 int s = getState();
-                if (ranOrCancelled(s))
+                if (ranOrCancelled(s)) {
                     return false;
-                if (compareAndSetState(s, CANCELLED))
+                }
+                if (compareAndSetState(s, CANCELLED)) {
                     break;
+                }
             }
             if (mayInterruptIfRunning) {
                 Thread r = this.runner;
-                if (r != null)
+                if (r != null) {
                     r.interrupt();
+                }
             }
             releaseShared(0);
             done();
@@ -318,14 +335,17 @@ public class FutureTask<V> implements RunnableFuture<V> {
         }
 
         void innerRun() {
-            if (!compareAndSetState(0, RUNNING))
+            if (!compareAndSetState(0, RUNNING)) {
                 return;
+            }
             try {
                 this.runner = Thread.currentThread();
                 if (getState() == RUNNING) // recheck after setting thread
+                {
                     innerSet(this.callable.call());
-                else
+                } else {
                     releaseShared(0); // cancel
+                }
             } catch (Throwable ex) {
                 innerSetException(ex);
             }
@@ -336,12 +356,14 @@ public class FutureTask<V> implements RunnableFuture<V> {
         }
 
         boolean innerRunAndReset() {
-            if (!compareAndSetState(0, RUNNING))
+            if (!compareAndSetState(0, RUNNING)) {
                 return false;
+            }
             try {
                 this.runner = Thread.currentThread();
-                if (getState() == RUNNING)
+                if (getState() == RUNNING) {
                     this.callable.call(); // don't set result
+                }
                 this.runner = null;
                 return compareAndSetState(RUNNING, 0);
             } catch (Throwable ex) {
@@ -349,5 +371,7 @@ public class FutureTask<V> implements RunnableFuture<V> {
                 return false;
             }
         }
+
     }
+
 }

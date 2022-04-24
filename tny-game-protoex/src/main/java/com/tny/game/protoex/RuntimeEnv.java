@@ -35,7 +35,7 @@ public final class RuntimeEnv {
         Constructor<Object> c = null;
         Class<?> reflectionFactoryClass = null;
         try {
-            c = Object.class.getConstructor((Class[]) null);
+            c = Object.class.getConstructor((Class[])null);
             reflectionFactoryClass = Thread.currentThread().getContextClassLoader().loadClass("sun.reflect.ReflectionFactory");
         } catch (Exception e) {
             // ignore
@@ -45,8 +45,9 @@ public final class RuntimeEnv {
 
         newInstanceFromObjectInputStream = OBJECT_CONSTRUCTOR == null ? getMethodNewInstanceFromObjectInputStream() : null;
 
-        if (newInstanceFromObjectInputStream != null)
+        if (newInstanceFromObjectInputStream != null) {
             newInstanceFromObjectInputStream.setAccessible(true);
+        }
 
         Properties props = OBJECT_CONSTRUCTOR == null ? new Properties() : System.getProperties();
 
@@ -65,7 +66,7 @@ public final class RuntimeEnv {
     @SuppressWarnings("unchecked")
     static <T> Class<T> loadClass(String className) {
         try {
-            return (Class<T>) Thread.currentThread().getContextClassLoader().loadClass(className);
+            return (Class<T>)Thread.currentThread().getContextClassLoader().loadClass(className);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -75,10 +76,12 @@ public final class RuntimeEnv {
     }
 
     public static abstract class Instantiator<T> {
+
         /**
          * Creates a new instance of an object.
          */
         public abstract T newInstance();
+
     }
 
     static final class DefaultInstantiator<T> extends Instantiator<T> {
@@ -92,7 +95,7 @@ public final class RuntimeEnv {
 
         public T newInstance() {
             try {
-                return constructor.newInstance((Object[]) null);
+                return constructor.newInstance((Object[])null);
             } catch (IllegalArgumentException e) {
                 throw new RuntimeException(e);
             } catch (InstantiationException e) {
@@ -103,6 +106,7 @@ public final class RuntimeEnv {
                 throw new RuntimeException(e);
             }
         }
+
     }
 
     static final class Android2Instantiator<T> extends Instantiator<T> {
@@ -116,7 +120,7 @@ public final class RuntimeEnv {
         @SuppressWarnings("unchecked")
         public T newInstance() {
             try {
-                return (T) newInstanceFromObjectInputStream.invoke(null, clazz, Object.class);
+                return (T)newInstanceFromObjectInputStream.invoke(null, clazz, Object.class);
             } catch (IllegalArgumentException e) {
                 throw new RuntimeException(e);
             } catch (IllegalAccessException e) {
@@ -125,6 +129,7 @@ public final class RuntimeEnv {
                 throw new RuntimeException(e);
             }
         }
+
     }
 
 }

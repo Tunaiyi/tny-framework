@@ -9,7 +9,7 @@ public enum OpTradeType {
     public final byte ID;
 
     OpTradeType(int iD) {
-        ID = (byte) iD;
+        ID = (byte)iD;
     }
 
 }

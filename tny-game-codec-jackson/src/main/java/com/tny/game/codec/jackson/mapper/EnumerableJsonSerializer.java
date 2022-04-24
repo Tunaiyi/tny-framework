@@ -11,17 +11,17 @@ import java.io.IOException;
  */
 public class EnumerableJsonSerializer<E extends Enum<E> & Enumerable<ID>, ID> extends JsonSerializer<E> {
 
-	public EnumerableJsonSerializer() {
-	}
+    public EnumerableJsonSerializer() {
+    }
 
-	@Override
-	public void serialize(E value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-		if (value == null) {
-			gen.writeObject(null);
-		} else {
-			gen.writeObject(((Enumerable<?>)value).getId());
-		}
+    @Override
+    public void serialize(E value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+        if (value == null) {
+            gen.writeObject(null);
+        } else {
+            gen.writeObject(((Enumerable<?>)value).getId());
+        }
 
-	}
+    }
 
 }

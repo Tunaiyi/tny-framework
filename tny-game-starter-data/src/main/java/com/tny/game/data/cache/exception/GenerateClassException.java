@@ -10,19 +10,19 @@ import com.tny.game.common.exception.*;
  */
 public class GenerateClassException extends CommonRuntimeException {
 
-	public GenerateClassException() {
-	}
+    public GenerateClassException() {
+    }
 
-	public GenerateClassException(String message, Object... messageParams) {
-		super(message, messageParams);
-	}
+    public GenerateClassException(String message, Object... messageParams) {
+        super(message, messageParams);
+    }
 
-	public GenerateClassException(Throwable cause) {
-		super(cause);
-	}
+    public GenerateClassException(Throwable cause) {
+        super(cause);
+    }
 
-	public GenerateClassException(Throwable cause, String message, Object... messageParams) {
-		super(cause, message, messageParams);
-	}
+    public GenerateClassException(Throwable cause, String message, Object... messageParams) {
+        super(cause, message, messageParams);
+    }
 
 }

@@ -1,6 +1,5 @@
 package com.tny.game.actor.exception;
 
-
 import com.tny.game.actor.local.*;
 
 /**
@@ -20,4 +19,5 @@ public class ActorCommandExecuteException extends ActorCommandException {
     public ActorCommandExecuteException(ActorCommand<?> command, String message, Throwable cause) {
         super(command, message, cause);
     }
+
 }

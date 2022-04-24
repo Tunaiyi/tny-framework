@@ -9,6 +9,6 @@ import java.util.List;
  */
 public interface CapacityGroup extends IntEnumerable {
 
-	List<Capacity> getCapacities();
+    List<Capacity> getCapacities();
 
 }

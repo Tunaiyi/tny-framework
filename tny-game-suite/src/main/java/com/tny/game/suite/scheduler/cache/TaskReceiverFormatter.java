@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 import static com.tny.game.suite.SuiteProfiles.*;
 
-
 @Component
 @Profile({SCHEDULER_CACHE, SCHEDULER_DB, GAME})
 public class TaskReceiverFormatter extends CacheFormatter<GameTaskReceiver, byte[]> {
@@ -24,12 +23,12 @@ public class TaskReceiverFormatter extends CacheFormatter<GameTaskReceiver, byte
     public Object format2Save(String key, GameTaskReceiver object) {
         try {
             return TaskReceiverProto.newBuilder()
-                                    .setPlayerId(object.getPlayerId())
-                                    .setGroup(object.getGroup().toString())
-                                    .setLastHandlerTime(object.getLastHandlerTime())
-                                    .setActualLastHandlerTime(object.getActualLastHandlerTime())
-                                    .build()
-                                    .toByteArray();
+                    .setPlayerId(object.getPlayerId())
+                    .setGroup(object.getGroup().toString())
+                    .setLastHandlerTime(object.getLastHandlerTime())
+                    .setActualLastHandlerTime(object.getActualLastHandlerTime())
+                    .build()
+                    .toByteArray();
         } catch (Throwable e) {
             LOG.error("receiver id {} format exception", object.getPlayerId(), e);
             return null;
@@ -46,12 +45,12 @@ public class TaskReceiverFormatter extends CacheFormatter<GameTaskReceiver, byte
             throw new RuntimeException(e);
         }
         return TaskReceiverBuilder.create()
-                                  .setPlayerId(proto.getPlayerId())
-                                  .setLastHandlerTime(proto.getLastHandlerTime())
-                                  .setGroup(ReceiverType.valueOf(proto.getGroup()))
-                                  .setActualLastHandlerTime(
-                                          proto.hasActualLastHandlerTime() ? proto.getLastHandlerTime() : proto.getActualLastHandlerTime())
-                                  .build();
+                .setPlayerId(proto.getPlayerId())
+                .setLastHandlerTime(proto.getLastHandlerTime())
+                .setGroup(ReceiverType.valueOf(proto.getGroup()))
+                .setActualLastHandlerTime(
+                        proto.hasActualLastHandlerTime() ? proto.getLastHandlerTime() : proto.getActualLastHandlerTime())
+                .build();
     }
 
 }

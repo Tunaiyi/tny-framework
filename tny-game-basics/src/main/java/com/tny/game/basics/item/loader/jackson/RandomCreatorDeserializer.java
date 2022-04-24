@@ -16,23 +16,23 @@ import static com.tny.game.common.utils.StringAide.*;
  **/
 public class RandomCreatorDeserializer extends JsonDeserializer<RandomCreator<?, ?>> {
 
-	private static final RandomCreatorDeserializer DESERIALIZER = new RandomCreatorDeserializer();
+    private static final RandomCreatorDeserializer DESERIALIZER = new RandomCreatorDeserializer();
 
-	public static RandomCreatorDeserializer deserializer() {
-		return DESERIALIZER;
-	}
+    public static RandomCreatorDeserializer deserializer() {
+        return DESERIALIZER;
+    }
 
-	private RandomCreatorDeserializer() {
-	}
+    private RandomCreatorDeserializer() {
+    }
 
-	@Override
-	public RandomCreator<?, ?> deserialize(JsonParser p, DeserializationContext context) throws IOException {
-		String name = p.getValueAsString();
-		RandomCreatorFactory<?, ?> factory = RandomCreators.getFactory(name);
-		if (factory == null) {
-			throw new NullPointerException(format("找不到名字为 {} 的 RandomCreatorFactory", name));
-		}
-		return factory.getRandomCreator();
-	}
+    @Override
+    public RandomCreator<?, ?> deserialize(JsonParser p, DeserializationContext context) throws IOException {
+        String name = p.getValueAsString();
+        RandomCreatorFactory<?, ?> factory = RandomCreators.getFactory(name);
+        if (factory == null) {
+            throw new NullPointerException(format("找不到名字为 {} 的 RandomCreatorFactory", name));
+        }
+        return factory.getRandomCreator();
+    }
 
 }

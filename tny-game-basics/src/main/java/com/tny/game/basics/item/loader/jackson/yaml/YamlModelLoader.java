@@ -15,13 +15,13 @@ import com.tny.game.expr.*;
  **/
 public class YamlModelLoader<M extends Model> extends JacksonModelLoader<M> {
 
-	public YamlModelLoader(Class<? extends M> modelClass, ModelLoadHandler<M> loadHandler, ExprHolderFactory exprHolderFactory) {
-		super(modelClass, loadHandler, exprHolderFactory, new YAMLFactory());
-	}
+    public YamlModelLoader(Class<? extends M> modelClass, ModelLoadHandler<M> loadHandler, ExprHolderFactory exprHolderFactory) {
+        super(modelClass, loadHandler, exprHolderFactory, new YAMLFactory());
+    }
 
-	@Override
-	protected String getFileType() {
-		return "yaml";
-	}
+    @Override
+    protected String getFileType() {
+        return "yaml";
+    }
 
 }

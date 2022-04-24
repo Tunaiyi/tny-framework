@@ -8,15 +8,15 @@ package com.tny.game.net.rpc;
  */
 public class RpcSetting {
 
-	private long invokeTimeout = 5000L;
+    private long invokeTimeout = 5000L;
 
-	public long getInvokeTimeout() {
-		return invokeTimeout;
-	}
+    public long getInvokeTimeout() {
+        return invokeTimeout;
+    }
 
-	public RpcSetting setInvokeTimeout(long invokeTimeout) {
-		this.invokeTimeout = invokeTimeout;
-		return this;
-	}
+    public RpcSetting setInvokeTimeout(long invokeTimeout) {
+        this.invokeTimeout = invokeTimeout;
+        return this;
+    }
 
 }

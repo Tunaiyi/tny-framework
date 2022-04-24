@@ -15,23 +15,23 @@ import com.tny.game.scanner.filter.*;
  */
 public class MongoObjectMapperMixLoader {
 
-	private static final SimpleModule module = new SimpleModule();
+    private static final SimpleModule module = new SimpleModule();
 
-	@ClassSelectorProvider
-	static ClassSelector autoMixClassesSelector() {
-		return ClassSelector.create()
-				.addFilter(AnnotationClassFilter.ofInclude(MongoJsonAutoMixClasses.class))
-				.setHandler((classes) -> classes.forEach(mix -> {
-							MongoJsonAutoMixClasses mixClasses = mix.getAnnotation(MongoJsonAutoMixClasses.class);
-							for (Class<?> mixClass : mixClasses.value()) {
-								module.setMixInAnnotation(mixClass, mix);
-							}
-						})
-				);
-	}
+    @ClassSelectorProvider
+    static ClassSelector autoMixClassesSelector() {
+        return ClassSelector.create()
+                .addFilter(AnnotationClassFilter.ofInclude(MongoJsonAutoMixClasses.class))
+                .setHandler((classes) -> classes.forEach(mix -> {
+                            MongoJsonAutoMixClasses mixClasses = mix.getAnnotation(MongoJsonAutoMixClasses.class);
+                            for (Class<?> mixClass : mixClasses.value()) {
+                                module.setMixInAnnotation(mixClass, mix);
+                            }
+                        })
+                );
+    }
 
-	public static Module getModule() {
-		return module;
-	}
+    public static Module getModule() {
+        return module;
+    }
 
 }

@@ -10,33 +10,33 @@ import java.util.*;
  */
 public enum ServeNodeChangeStatus {
 
-	URL_CHANGE {
-		@Override
-		public boolean isChange(ServeNode oldOne, ServeNode newOne) {
-			return !Objects.equals(oldOne.getScheme(), newOne.getScheme()) ||
-					!Objects.equals(oldOne.getHost(), newOne.getHost()) ||
-					!Objects.equals(oldOne.getPort(), newOne.getPort());
-		}
-	},
+    URL_CHANGE {
+        @Override
+        public boolean isChange(ServeNode oldOne, ServeNode newOne) {
+            return !Objects.equals(oldOne.getScheme(), newOne.getScheme()) ||
+                    !Objects.equals(oldOne.getHost(), newOne.getHost()) ||
+                    !Objects.equals(oldOne.getPort(), newOne.getPort());
+        }
+    },
 
-	METADATA_CHANGE {
-		@Override
-		public boolean isChange(ServeNode oldOne, ServeNode newOne) {
-			return !Objects.equals(oldOne.isHealthy(), newOne.isHealthy()) ||
-					!Objects.equals(oldOne.getMetadata(), newOne.getMetadata());
-		}
-	};
+    METADATA_CHANGE {
+        @Override
+        public boolean isChange(ServeNode oldOne, ServeNode newOne) {
+            return !Objects.equals(oldOne.isHealthy(), newOne.isHealthy()) ||
+                    !Objects.equals(oldOne.getMetadata(), newOne.getMetadata());
+        }
+    };
 
-	public abstract boolean isChange(ServeNode oldOne, ServeNode newOne);
+    public abstract boolean isChange(ServeNode oldOne, ServeNode newOne);
 
-	public static List<ServeNodeChangeStatus> checkChange(ServeNode oldOne, ServeNode newOne) {
-		List<ServeNodeChangeStatus> changeStatuses = new ArrayList<>();
-		for (ServeNodeChangeStatus status : ServeNodeChangeStatus.values()) {
-			if (status.isChange(oldOne, newOne)) {
-				changeStatuses.add(status);
-			}
-		}
-		return changeStatuses;
-	}
+    public static List<ServeNodeChangeStatus> checkChange(ServeNode oldOne, ServeNode newOne) {
+        List<ServeNodeChangeStatus> changeStatuses = new ArrayList<>();
+        for (ServeNodeChangeStatus status : ServeNodeChangeStatus.values()) {
+            if (status.isChange(oldOne, newOne)) {
+                changeStatuses.add(status);
+            }
+        }
+        return changeStatuses;
+    }
 
 }

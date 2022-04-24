@@ -84,6 +84,7 @@ public enum Operation {
     });
 
     private final Map<AsyncDBState, AsyncDBState> OPERATION_CHANGE_MAP;
+
     private final Map<AsyncDBState, AsyncDBState> FAILED_REDO_MAP;
 
     Operation(AsyncDBState[][] optionChangeState, AsyncDBState[][] failedRedoState) {
@@ -105,8 +106,9 @@ public enum Operation {
 
     public AsyncDBState getChangeTo(AsyncDBState currentState) {
         AsyncDBState newState = this.OPERATION_CHANGE_MAP.get(currentState);
-        if (newState == null)
+        if (newState == null) {
             return currentState;
+        }
         return newState;
     }
 

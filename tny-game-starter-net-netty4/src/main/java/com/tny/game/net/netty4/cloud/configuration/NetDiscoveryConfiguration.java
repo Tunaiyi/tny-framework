@@ -14,11 +14,11 @@ import org.springframework.context.annotation.*;
 @ConditionalOnClass(ServiceRegistry.class)
 public class NetDiscoveryConfiguration {
 
-	@Bean
-	@ConditionalOnBean({ServiceRegistry.class, ServerGuideRegistrationFactory.class})
-	public NetAutoServiceRegister netAutoServiceRegister(
-			ServiceRegistry<Registration> serviceRegistry, ServerGuideRegistrationFactory registrationFactory) {
-		return new NetAutoServiceRegister(serviceRegistry, registrationFactory);
-	}
+    @Bean
+    @ConditionalOnBean({ServiceRegistry.class, ServerGuideRegistrationFactory.class})
+    public NetAutoServiceRegister netAutoServiceRegister(
+            ServiceRegistry<Registration> serviceRegistry, ServerGuideRegistrationFactory registrationFactory) {
+        return new NetAutoServiceRegister(serviceRegistry, registrationFactory);
+    }
 
 }

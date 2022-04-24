@@ -8,8 +8,8 @@ package com.tny.game.data.cache;
  */
 public interface EntityKeyMaker<K extends Comparable<?>, O> {
 
-	K make(O object);
+    K make(O object);
 
-	Class<K> getKeyClass();
+    Class<K> getKeyClass();
 
 }

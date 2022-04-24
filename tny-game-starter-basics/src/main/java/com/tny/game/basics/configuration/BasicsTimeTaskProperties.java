@@ -16,65 +16,65 @@ import static com.tny.game.basics.configuration.BasicsPropertiesConstants.*;
 @ConfigurationProperties(BASICS_TIME_TASK)
 public class BasicsTimeTaskProperties implements TimeTaskSchemesSetting {
 
-	private boolean enable = false;
+    private boolean enable = false;
 
-	private int id;
+    private int id;
 
-	private int maxTaskSize = 3000;
+    private int maxTaskSize = 3000;
 
-	private List<DefaultTimeTaskScheme> schemes = new ArrayList<>();
+    private List<DefaultTimeTaskScheme> schemes = new ArrayList<>();
 
-	@NestedConfigurationProperty
-	private TimeTaskPluginSetting plugin = new TimeTaskPluginSetting();
+    @NestedConfigurationProperty
+    private TimeTaskPluginSetting plugin = new TimeTaskPluginSetting();
 
-	public boolean isEnable() {
-		return enable;
-	}
+    public boolean isEnable() {
+        return enable;
+    }
 
-	public BasicsTimeTaskProperties setEnable(boolean enable) {
-		this.enable = enable;
-		return this;
-	}
+    public BasicsTimeTaskProperties setEnable(boolean enable) {
+        this.enable = enable;
+        return this;
+    }
 
-	public int getId() {
-		return id;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public BasicsTimeTaskProperties setId(int id) {
-		this.id = id;
-		return this;
-	}
+    public BasicsTimeTaskProperties setId(int id) {
+        this.id = id;
+        return this;
+    }
 
-	public List<DefaultTimeTaskScheme> getSchemes() {
-		return schemes;
-	}
+    public List<DefaultTimeTaskScheme> getSchemes() {
+        return schemes;
+    }
 
-	public BasicsTimeTaskProperties setSchemes(List<DefaultTimeTaskScheme> schemes) {
-		this.schemes = schemes;
-		return this;
-	}
+    public BasicsTimeTaskProperties setSchemes(List<DefaultTimeTaskScheme> schemes) {
+        this.schemes = schemes;
+        return this;
+    }
 
-	public TimeTaskPluginSetting getPlugin() {
-		return plugin;
-	}
+    public TimeTaskPluginSetting getPlugin() {
+        return plugin;
+    }
 
-	public BasicsTimeTaskProperties setPlugin(TimeTaskPluginSetting plugin) {
-		this.plugin = plugin;
-		return this;
-	}
+    public BasicsTimeTaskProperties setPlugin(TimeTaskPluginSetting plugin) {
+        this.plugin = plugin;
+        return this;
+    }
 
-	public int getMaxTaskSize() {
-		return maxTaskSize;
-	}
+    public int getMaxTaskSize() {
+        return maxTaskSize;
+    }
 
-	public BasicsTimeTaskProperties setMaxTaskSize(int maxTaskSize) {
-		this.maxTaskSize = maxTaskSize;
-		return this;
-	}
+    public BasicsTimeTaskProperties setMaxTaskSize(int maxTaskSize) {
+        this.maxTaskSize = maxTaskSize;
+        return this;
+    }
 
-	@Override
-	public List<TimeTaskScheme> getTimeTaskSchemeList() {
-		return new ArrayList<>(schemes);
-	}
+    @Override
+    public List<TimeTaskScheme> getTimeTaskSchemeList() {
+        return new ArrayList<>(schemes);
+    }
 
 }

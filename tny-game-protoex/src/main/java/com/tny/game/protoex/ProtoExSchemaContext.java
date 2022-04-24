@@ -1,6 +1,5 @@
 package com.tny.game.protoex;
 
-
 /**
  * protoEx描述模式上下文接口
  *

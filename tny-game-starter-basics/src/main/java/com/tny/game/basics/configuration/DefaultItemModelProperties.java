@@ -13,15 +13,15 @@ import static com.tny.game.basics.develop.ItemModelPaths.*;
 @ConfigurationProperties("tny.game.basics.item.default-item-model")
 public class DefaultItemModelProperties {
 
-	private String[] paths = {DEFAULT_ITEM_MODEL_CONFIG_PATH};
+    private String[] paths = {DEFAULT_ITEM_MODEL_CONFIG_PATH};
 
-	public String[] getPaths() {
-		return paths;
-	}
+    public String[] getPaths() {
+        return paths;
+    }
 
-	public DefaultItemModelProperties setPaths(String[] paths) {
-		this.paths = paths;
-		return this;
-	}
+    public DefaultItemModelProperties setPaths(String[] paths) {
+        this.paths = paths;
+        return this;
+    }
 
 }

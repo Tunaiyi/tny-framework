@@ -7,6 +7,6 @@ import java.util.Set;
  */
 public interface ItemTypesManager {
 
-	Set<ItemType> manageTypes();
+    Set<ItemType> manageTypes();
 
 }

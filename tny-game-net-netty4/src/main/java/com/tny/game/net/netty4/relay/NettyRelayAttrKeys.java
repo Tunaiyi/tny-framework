@@ -11,8 +11,8 @@ import io.netty.util.AttributeKey;
  */
 public class NettyRelayAttrKeys {
 
-	public static final AttributeKey<NetRelayLink> RELAY_LINK = AttributeKey.valueOf(NettyRelayAttrKeys.class + ".RELAY_LINK");
+    public static final AttributeKey<NetRelayLink> RELAY_LINK = AttributeKey.valueOf(NettyRelayAttrKeys.class + ".RELAY_LINK");
 
-	public static final AttributeKey<RelayTransporter> RELAY_TRANSPORTER = AttributeKey.valueOf(NettyRelayAttrKeys.class + ".RELAY_TRANSPORTER");
+    public static final AttributeKey<RelayTransporter> RELAY_TRANSPORTER = AttributeKey.valueOf(NettyRelayAttrKeys.class + ".RELAY_TRANSPORTER");
 
 }

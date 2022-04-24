@@ -11,16 +11,16 @@ import org.springframework.boot.context.properties.*;
 @ConfigurationProperties(prefix = "tny.data.object-cache.recycler.scheduled-recycler")
 public class CacheRecyclerProperties {
 
-	@NestedConfigurationProperty
-	private ScheduledCacheRecyclerSetting scheduled = new ScheduledCacheRecyclerSetting();
+    @NestedConfigurationProperty
+    private ScheduledCacheRecyclerSetting scheduled = new ScheduledCacheRecyclerSetting();
 
-	public ScheduledCacheRecyclerSetting getScheduled() {
-		return scheduled;
-	}
+    public ScheduledCacheRecyclerSetting getScheduled() {
+        return scheduled;
+    }
 
-	public CacheRecyclerProperties setScheduled(ScheduledCacheRecyclerSetting scheduled) {
-		this.scheduled = scheduled;
-		return this;
-	}
+    public CacheRecyclerProperties setScheduled(ScheduledCacheRecyclerSetting scheduled) {
+        this.scheduled = scheduled;
+        return this;
+    }
 
 }

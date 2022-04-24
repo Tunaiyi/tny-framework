@@ -19,4 +19,5 @@ public interface ProxyGatherCapacityGoal extends CapacityGoal {
     default Set<CapacityGroup> getSuppliersCapacityGroups() {
         return gather().getSuppliersCapacityGroups();
     }
+
 }

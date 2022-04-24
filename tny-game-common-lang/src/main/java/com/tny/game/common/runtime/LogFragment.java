@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 public class LogFragment {
 
     private String message;
+
     private Object[] params;
 
     public static LogFragment message(String message, Object... params) {

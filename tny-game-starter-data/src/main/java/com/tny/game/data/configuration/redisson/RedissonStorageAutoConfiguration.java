@@ -17,10 +17,10 @@ import org.springframework.context.annotation.*;
 @ConditionalOnClass(RedissonStorageAccessorFactory.class)
 @AutoConfigureBefore(DataAutoConfiguration.class)
 @Import({
-		ImportRedissonStorageAccessorFactoryDefinitionRegistrar.class
+        ImportRedissonStorageAccessorFactoryDefinitionRegistrar.class
 })
 @EnableConfigurationProperties({
-		RedissonStorageAccessorFactoryProperties.class
+        RedissonStorageAccessorFactoryProperties.class
 })
 @ConditionalOnProperty(value = "tny.data.enable", matchIfMissing = true)
 public class RedissonStorageAutoConfiguration {

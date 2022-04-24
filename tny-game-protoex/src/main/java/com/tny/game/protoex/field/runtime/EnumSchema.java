@@ -14,27 +14,27 @@ import static com.tny.game.common.utils.StringAide.*;
  */
 public class EnumSchema<E extends Enum<E>> extends RuntimePrimitiveSchema<E> {
 
-	private Class<E> typeClass;
+    private Class<E> typeClass;
 
-	protected EnumSchema(Class<E> clazz) {
-		super(0, clazz);
-		this.typeClass = clazz;
-		ProtoEx proto = this.typeClass.getAnnotation(ProtoEx.class);
-		if (proto == null) {
-			throw new RuntimeException(format("{} @{} is null", this.typeClass, ProtoEx.class));
-		}
-		this.protoExID = proto.value();
-		this.raw = false;
-	}
+    protected EnumSchema(Class<E> clazz) {
+        super(0, clazz);
+        this.typeClass = clazz;
+        ProtoEx proto = this.typeClass.getAnnotation(ProtoEx.class);
+        if (proto == null) {
+            throw new RuntimeException(format("{} @{} is null", this.typeClass, ProtoEx.class));
+        }
+        this.protoExID = proto.value();
+        this.raw = false;
+    }
 
-	@Override
-	public void writeValue(ProtoExOutputStream outputStream, E value, FieldOptions<?> options) {
-		outputStream.writeEnum(value);
-	}
+    @Override
+    public void writeValue(ProtoExOutputStream outputStream, E value, FieldOptions<?> options) {
+        outputStream.writeEnum(value);
+    }
 
-	@Override
-	public E readValue(ProtoExInputStream inputStream, Tag tag, FieldOptions<?> options) {
-		return inputStream.readEnum(this.typeClass);
-	}
+    @Override
+    public E readValue(ProtoExInputStream inputStream, Tag tag, FieldOptions<?> options) {
+        return inputStream.readEnum(this.typeClass);
+    }
 
 }

@@ -1,6 +1,5 @@
 package com.tny.game.actor.local;
 
-
 import com.tny.game.actor.*;
 
 /**

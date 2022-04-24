@@ -9,19 +9,19 @@ import java.util.*;
  */
 public class CapacityCollector {
 
-	private Map<Capacity, Number> capacities = new HashMap<>();
+    private Map<Capacity, Number> capacities = new HashMap<>();
 
-	private Map<Capacity, Number> visitCapacities = Collections.unmodifiableMap(capacities);
+    private Map<Capacity, Number> visitCapacities = Collections.unmodifiableMap(capacities);
 
-	public void collect(Capacity capacity, Number number) {
-		if (number == null) {
-			return;
-		}
-		capacities.merge(capacity, number, NumberAide::add);
-	}
+    public void collect(Capacity capacity, Number number) {
+        if (number == null) {
+            return;
+        }
+        capacities.merge(capacity, number, NumberAide::add);
+    }
 
-	public Map<Capacity, Number> getCapacities() {
-		return visitCapacities;
-	}
+    public Map<Capacity, Number> getCapacities() {
+        return visitCapacities;
+    }
 
 }

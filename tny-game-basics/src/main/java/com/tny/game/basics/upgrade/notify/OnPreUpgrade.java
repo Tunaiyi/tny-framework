@@ -7,6 +7,6 @@ import com.tny.game.basics.item.behavior.*;
  */
 public interface OnPreUpgrade<I> {
 
-	void preUpgrade(I item, Action action, long upLevel);
+    void preUpgrade(I item, Action action, long upLevel);
 
 }

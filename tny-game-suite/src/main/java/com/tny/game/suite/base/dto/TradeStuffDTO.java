@@ -12,57 +12,57 @@ import java.util.stream.Collectors;
 @ProtoEx(SuiteProtoIDs.TRADE_STUFF_DTO)
 public class TradeStuffDTO {
 
-	@ProtoExField(1)
-	@VarDoc("物品ID")
-	public int modelId;
+    @ProtoExField(1)
+    @VarDoc("物品ID")
+    public int modelId;
 
-	@ProtoExField(2)
-	@VarDoc("物品数量")
-	public long number;
+    @ProtoExField(2)
+    @VarDoc("物品数量")
+    public long number;
 
-	@ProtoExField(3)
-	@VarDoc("更改方式 1: 检测上下限 2: 不检测上下限(可超出) 3: 忽略多出")
-	public int alterType;
+    @ProtoExField(3)
+    @VarDoc("更改方式 1: 检测上下限 2: 不检测上下限(可超出) 3: 忽略多出")
+    public int alterType;
 
-	public static TradeStuffDTO stuff2DTO(TradeStuff stuff) {
-		TradeStuffDTO dto = new TradeStuffDTO();
-		dto.modelId = stuff.getItemId();
-		dto.number = stuff.getNumber();
-		dto.alterType = stuff.getAlterType();
-		return dto;
-	}
+    public static TradeStuffDTO stuff2DTO(TradeStuff stuff) {
+        TradeStuffDTO dto = new TradeStuffDTO();
+        dto.modelId = stuff.getItemId();
+        dto.number = stuff.getNumber();
+        dto.alterType = stuff.getAlterType();
+        return dto;
+    }
 
-	public static List<TradeStuffDTO> stuffs2DTO(Collection<TradeStuff> stuffList) {
-		return stuffList.stream().map(TradeStuffDTO::stuff2DTO).collect(Collectors.toList());
-	}
+    public static List<TradeStuffDTO> stuffs2DTO(Collection<TradeStuff> stuffList) {
+        return stuffList.stream().map(TradeStuffDTO::stuff2DTO).collect(Collectors.toList());
+    }
 
-	public int getModelId() {
-		return this.modelId;
-	}
+    public int getModelId() {
+        return this.modelId;
+    }
 
-	public long getNumber() {
-		return this.number;
-	}
+    public long getNumber() {
+        return this.number;
+    }
 
-	public void setModelId(int modelId) {
-		this.modelId = modelId;
-	}
+    public void setModelId(int modelId) {
+        this.modelId = modelId;
+    }
 
-	public void setNumber(long number) {
-		this.number = number;
-	}
+    public void setNumber(long number) {
+        this.number = number;
+    }
 
-	public int getAlterType() {
-		return alterType;
-	}
+    public int getAlterType() {
+        return alterType;
+    }
 
-	public void setAlterType(int alterType) {
-		this.alterType = alterType;
-	}
+    public void setAlterType(int alterType) {
+        this.alterType = alterType;
+    }
 
-	@Override
-	public String toString() {
-		return "itemId = " + modelId + " number = " + number + " alterType = " + alterType;
-	}
+    @Override
+    public String toString() {
+        return "itemId = " + modelId + " number = " + number + " alterType = " + alterType;
+    }
 
 }

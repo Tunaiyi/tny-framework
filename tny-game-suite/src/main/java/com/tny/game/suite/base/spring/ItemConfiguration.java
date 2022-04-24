@@ -26,10 +26,10 @@ public class ItemConfiguration {
     @Bean
     public GameItemModelContext itemModelContext() {
         ExprHolderFactory exprHolderFactory = new MvelExpressionHolderFactory();
-        if (this.exprHolderFactoryInitiator != null)
+        if (this.exprHolderFactoryInitiator != null) {
             this.exprHolderFactoryInitiator.init(exprHolderFactory);
+        }
         return new GameItemModelContext(this.explorer, exprHolderFactory);
     }
-
 
 }

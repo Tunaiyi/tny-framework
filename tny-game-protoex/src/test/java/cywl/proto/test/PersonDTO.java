@@ -161,10 +161,10 @@ public class PersonDTO {
     @Override
     public String toString() {
         return "Person [name=" + this.name + ", age=" + this.age + ", friend=" + ArrayUtils.toString(this.friendIDList) + ", equip=" + this.equip +
-               ", goodsList=" + ArrayUtils.toString(this.goodsList) + ", noteList="
-               + ArrayUtils.toString(this.noteList) + ", floatTest=" + this.floatTest + ", doubleTest=" + this.doubleTest + ", trueTest=" +
-               this.trueTest + ", falseTest=" + this.falseTest + ", paramBytes="
-               + Arrays.toString(this.paramBytes) + "]";
+                ", goodsList=" + ArrayUtils.toString(this.goodsList) + ", noteList="
+                + ArrayUtils.toString(this.noteList) + ", floatTest=" + this.floatTest + ", doubleTest=" + this.doubleTest + ", trueTest=" +
+                this.trueTest + ", falseTest=" + this.falseTest + ", paramBytes="
+                + Arrays.toString(this.paramBytes) + "]";
     }
 
     //	", friend=" + ArrayUtils.toString(friendIDList) + ", equip=" + equip + ", goodsList=" + ArrayUtils.toString(goodsList) +

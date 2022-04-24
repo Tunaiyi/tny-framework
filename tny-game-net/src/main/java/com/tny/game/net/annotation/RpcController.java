@@ -17,13 +17,13 @@ import java.lang.annotation.*;
 @Documented
 public @interface RpcController {
 
-	/**
-	 * @return 默认处理所有
-	 */
-	MessageMode[] modes() default {
-			MessageMode.REQUEST,
-			MessageMode.RESPONSE,
-			MessageMode.PUSH
-	};
+    /**
+     * @return 默认处理所有
+     */
+    MessageMode[] modes() default {
+            MessageMode.REQUEST,
+            MessageMode.RESPONSE,
+            MessageMode.PUSH
+    };
 
 }

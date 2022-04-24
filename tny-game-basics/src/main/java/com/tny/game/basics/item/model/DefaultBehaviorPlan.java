@@ -14,32 +14,32 @@ import java.util.*;
  */
 public class DefaultBehaviorPlan extends BaseBehaviorPlan {
 
-	/**
-	 * 行为方案列表,作为映射用
-	 */
-	protected List<BaseActionPlan> actionPlanList;
+    /**
+     * 行为方案列表,作为映射用
+     */
+    protected List<BaseActionPlan> actionPlanList;
 
-	@Override
-	public void doInit(ItemModel itemModel, ItemModelContext context) {
-		if (this.actionPlanList == null) {
-			this.actionPlanList = ImmutableList.of();
-		}
-		if (this.actionPlanMap == null) {
-			this.actionPlanMap = ImmutableMap.of();
-		}
+    @Override
+    public void doInit(ItemModel itemModel, ItemModelContext context) {
+        if (this.actionPlanList == null) {
+            this.actionPlanList = ImmutableList.of();
+        }
+        if (this.actionPlanMap == null) {
+            this.actionPlanMap = ImmutableMap.of();
+        }
 
-		Map<Action, ActionPlan> actionPlanMap = new HashMap<>();
-		for (BaseActionPlan actionPlan : actionPlanList) {
-			actionPlan.init(itemModel, context);
-			for (Action action : actionPlan.getActions()) {
-				actionPlanMap.put(action, actionPlan);
-			}
-		}
-		this.actionPlanList = Collections.unmodifiableList(actionPlanList);
-		this.actionPlanMap = Collections.unmodifiableMap(actionPlanMap);
-		for (String alias : this.attrAliasSet) {
-			AliasCollectUtils.addAlias(alias);
-		}
-	}
+        Map<Action, ActionPlan> actionPlanMap = new HashMap<>();
+        for (BaseActionPlan actionPlan : actionPlanList) {
+            actionPlan.init(itemModel, context);
+            for (Action action : actionPlan.getActions()) {
+                actionPlanMap.put(action, actionPlan);
+            }
+        }
+        this.actionPlanList = Collections.unmodifiableList(actionPlanList);
+        this.actionPlanMap = Collections.unmodifiableMap(actionPlanMap);
+        for (String alias : this.attrAliasSet) {
+            AliasCollectUtils.addAlias(alias);
+        }
+    }
 
 }

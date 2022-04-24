@@ -21,8 +21,9 @@ public class TriggerHolder {
     public Object triggerLoad(String key, Object object) {
         Object value = object;
         for (CacheTrigger trigger : this.triggers) {
-            if (value == null)
+            if (value == null) {
                 break;
+            }
             value = trigger.triggerLoad(key, object, value);
         }
         return value;
@@ -31,8 +32,9 @@ public class TriggerHolder {
     public Object triggerUpdate(String key, Object object) {
         Object value = object;
         for (CacheTrigger trigger : this.triggers) {
-            if (value == null)
+            if (value == null) {
                 break;
+            }
             value = trigger.triggerReplace(key, object, value);
         }
         return value;
@@ -41,8 +43,9 @@ public class TriggerHolder {
     public Object triggerInsert(String key, Object object) {
         Object value = object;
         for (CacheTrigger trigger : this.triggers) {
-            if (value == null)
+            if (value == null) {
                 break;
+            }
             value = trigger.triggerAdd(key, object, value);
         }
         return value;
@@ -51,8 +54,9 @@ public class TriggerHolder {
     public Object triggerSave(String key, Object object) {
         Object value = object;
         for (CacheTrigger trigger : this.triggers) {
-            if (value == null)
+            if (value == null) {
                 break;
+            }
             value = trigger.triggerSet(key, object, value);
         }
         return value;

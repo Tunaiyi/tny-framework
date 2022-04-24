@@ -9,41 +9,41 @@ package com.tny.game.net.relay.link;
  */
 public interface RemoteRelayLink extends NetRelayLink {
 
-	/**
-	 * 连接认证
-	 *
-	 * @param service    服务名
-	 * @param instanceId 实例 id
-	 */
-	void auth(String service, long instanceId);
+    /**
+     * 连接认证
+     *
+     * @param service    服务名
+     * @param instanceId 实例 id
+     */
+    void auth(String service, long instanceId);
 
-	/**
-	 * 切换link
-	 *
-	 * @param tunnel tunnel
-	 */
-	void switchTunnel(RemoteRelayTunnel<?> tunnel);
+    /**
+     * 切换link
+     *
+     * @param tunnel tunnel
+     */
+    void switchTunnel(RemoteRelayTunnel<?> tunnel);
 
-	/**
-	 * 断开link 与 tunnel的关联
-	 *
-	 * @param tunnel tunnel
-	 */
-	void delinkTunnel(RelayTunnel<?> tunnel);
+    /**
+     * 断开link 与 tunnel的关联
+     *
+     * @param tunnel tunnel
+     */
+    void delinkTunnel(RelayTunnel<?> tunnel);
 
-	//	/**
-	//	 * 绑定客户端传到
-	//	 *
-	//	 * @param tunnel 客户端管道
-	//	 * @return 成功返回true 失败返回 false
-	//	 */
-	//	boolean registerTunnel(RelayTunnel<?> tunnel);
-	//
-	//	/**
-	//	 * 反注册 tunnel
-	//	 *
-	//	 * @param tunnel 移除的tunnel
-	//	 */
-	//	void unregisterTunnel(RelayTunnel<?> tunnel);
+    //	/**
+    //	 * 绑定客户端传到
+    //	 *
+    //	 * @param tunnel 客户端管道
+    //	 * @return 成功返回true 失败返回 false
+    //	 */
+    //	boolean registerTunnel(RelayTunnel<?> tunnel);
+    //
+    //	/**
+    //	 * 反注册 tunnel
+    //	 *
+    //	 * @param tunnel 移除的tunnel
+    //	 */
+    //	void unregisterTunnel(RelayTunnel<?> tunnel);
 
 }

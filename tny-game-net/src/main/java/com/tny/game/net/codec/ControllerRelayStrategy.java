@@ -13,15 +13,15 @@ import com.tny.game.net.message.*;
 @Unit
 public class ControllerRelayStrategy implements MessageRelayStrategy {
 
-	private final MessageDispatcher messageDispatcher;
+    private final MessageDispatcher messageDispatcher;
 
-	public ControllerRelayStrategy(MessageDispatcher messageDispatcher) {
-		this.messageDispatcher = messageDispatcher;
-	}
+    public ControllerRelayStrategy(MessageDispatcher messageDispatcher) {
+        this.messageDispatcher = messageDispatcher;
+    }
 
-	@Override
-	public boolean isRelay(MessageHead head) {
-		return !messageDispatcher.isCanDispatch(head);
-	}
+    @Override
+    public boolean isRelay(MessageHead head) {
+        return !messageDispatcher.isCanDispatch(head);
+    }
 
 }

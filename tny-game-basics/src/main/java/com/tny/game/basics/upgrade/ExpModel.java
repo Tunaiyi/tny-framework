@@ -8,9 +8,9 @@ import com.tny.game.basics.item.*;
  */
 public interface ExpModel extends StuffModel {
 
-	/**
-	 * @return 获取经验类型
-	 */
-	ExpType getExpType();
+    /**
+     * @return 获取经验类型
+     */
+    ExpType getExpType();
 
 }

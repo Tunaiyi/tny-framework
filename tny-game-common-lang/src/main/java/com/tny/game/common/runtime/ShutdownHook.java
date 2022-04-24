@@ -37,10 +37,11 @@ public class ShutdownHook extends Thread {
 
     public static void runHook(boolean sync) {
         if (hook != null) {
-            if (sync)
+            if (sync) {
                 hook.run();
-            else
+            } else {
                 hook.start();
+            }
         }
     }
 
@@ -76,6 +77,7 @@ public class ShutdownHook extends Thread {
     private static class CloseResource implements Comparable<CloseResource> {
 
         private Closeable closeable;
+
         private int priority;
 
         public CloseResource(Closeable closeable, int priority) {
@@ -86,9 +88,12 @@ public class ShutdownHook extends Thread {
         @Override
         public int compareTo(CloseResource o) {
             int value = this.priority = o.priority;
-            if (value == 0)
+            if (value == 0) {
                 return 0;
+            }
             return value > 0 ? 1 : -1;
         }
+
     }
+
 }

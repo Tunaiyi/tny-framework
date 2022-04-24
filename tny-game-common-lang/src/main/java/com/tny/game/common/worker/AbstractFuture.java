@@ -28,6 +28,7 @@ import java.util.concurrent.locks.AbstractQueuedSynchronizer;
  * @since 1.5
  */
 public class AbstractFuture<V> implements Future<V> {
+
     /**
      * Synchronization control for FutureTask
      */
@@ -128,12 +129,14 @@ public class AbstractFuture<V> implements Future<V> {
      * Uses AQS sync state to represent run status
      */
     private final class Sync extends AbstractQueuedSynchronizer {
+
         private static final long serialVersionUID = -7828117401763700385L;
 
         /**
          * State value representing that task ran
          */
         private static final int RAN = 2;
+
         /**
          * State value representing that task was cancelled
          */
@@ -143,6 +146,7 @@ public class AbstractFuture<V> implements Future<V> {
          * The result to return from get()
          */
         private V result;
+
         /**
          * The exception to throw from get()
          */
@@ -190,28 +194,34 @@ public class AbstractFuture<V> implements Future<V> {
 
         V innerGet() throws InterruptedException, ExecutionException {
             acquireSharedInterruptibly(0);
-            if (getState() == CANCELLED)
+            if (getState() == CANCELLED) {
                 throw new CancellationException();
-            if (this.exception != null)
+            }
+            if (this.exception != null) {
                 throw new ExecutionException(this.exception);
+            }
             return this.result;
         }
 
         V innerGet(long nanosTimeout) throws InterruptedException, ExecutionException, TimeoutException {
-            if (!tryAcquireSharedNanos(0, nanosTimeout))
+            if (!tryAcquireSharedNanos(0, nanosTimeout)) {
                 throw new TimeoutException();
-            if (getState() == CANCELLED)
+            }
+            if (getState() == CANCELLED) {
                 throw new CancellationException();
-            if (this.exception != null)
+            }
+            if (this.exception != null) {
                 throw new ExecutionException(this.exception);
+            }
             return this.result;
         }
 
         void innerSet(V v) {
             for (; ; ) {
                 int s = getState();
-                if (s == RAN)
+                if (s == RAN) {
                     return;
+                }
                 if (s == CANCELLED) {
                     // aggressively release to set runner to null,
                     // in case we are racing with a cancel request
@@ -231,8 +241,9 @@ public class AbstractFuture<V> implements Future<V> {
         void innerSetException(Throwable t) {
             for (; ; ) {
                 int s = getState();
-                if (s == RAN)
+                if (s == RAN) {
                     return;
+                }
                 if (s == CANCELLED) {
                     // aggressively release to set runner to null,
                     // in case we are racing with a cancel request
@@ -253,15 +264,18 @@ public class AbstractFuture<V> implements Future<V> {
         boolean innerCancel(boolean mayInterruptIfRunning) {
             for (; ; ) {
                 int s = getState();
-                if (ranOrCancelled(s))
+                if (ranOrCancelled(s)) {
                     return false;
-                if (compareAndSetState(s, CANCELLED))
+                }
+                if (compareAndSetState(s, CANCELLED)) {
                     break;
+                }
             }
             if (mayInterruptIfRunning) {
                 Thread r = this.runner;
-                if (r != null)
+                if (r != null) {
                     r.interrupt();
+                }
             }
             releaseShared(0);
             done();
@@ -273,4 +287,5 @@ public class AbstractFuture<V> implements Future<V> {
         }
 
     }
+
 }

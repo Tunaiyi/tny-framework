@@ -33,4 +33,5 @@ public class CronTimeCycle implements TimeCycle {
     public Instant getTimeAfter(Instant instant) {
         return Instant.ofEpochMilli(this.expression.getTimeAfter(new Date(instant.toEpochMilli())).getTime());
     }
+
 }

@@ -15,10 +15,13 @@ public abstract class CacheTestTask {
     private static final long SLEEP_TIME = 1900L;
 
     private static String PLAYER_KEY_HEAD = "player" + CacheUtils.SEPARATOR;
+
     private static long[] PLAYER_INDEX = {1, 2, 3, 4, 5};
 
     private static int ID = 100;
+
     private static TestPlayer player = new TestPlayer(ID);
+
     private static Map<String, TestPlayer> PLAYER_MAP = new HashMap<>();
 
     static {

@@ -6,16 +6,16 @@ package com.tny.game.basics.item.capacity;
  */
 public interface CapacitySupplier extends CapacitySupply, CapacityObject {
 
-	/**
-	 * @return 是否提供
-	 */
-	default boolean isWorking() {
-		return true;
-	}
+    /**
+     * @return 是否提供
+     */
+    default boolean isWorking() {
+        return true;
+    }
 
-	/**
-	 * @return 返回能力提供者类型
-	 */
-	CapacitySupplierType getSupplierType();
+    /**
+     * @return 返回能力提供者类型
+     */
+    CapacitySupplierType getSupplierType();
 
 }

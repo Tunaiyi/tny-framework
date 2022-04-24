@@ -8,18 +8,18 @@ package com.tny.game.protoex.field;
  */
 public interface MapFieldOptions<M> extends FieldOptions<M> {
 
-	/**
-	 * key编码方式
-	 *
-	 * @return
-	 */
-	public FieldOptions<?> getKeyOptions();
+    /**
+     * key编码方式
+     *
+     * @return
+     */
+    public FieldOptions<?> getKeyOptions();
 
-	/**
-	 * value编码方式
-	 *
-	 * @return
-	 */
-	public FieldOptions<?> getValueOptions();
+    /**
+     * value编码方式
+     *
+     * @return
+     */
+    public FieldOptions<?> getValueOptions();
 
 }

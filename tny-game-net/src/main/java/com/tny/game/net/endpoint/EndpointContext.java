@@ -11,8 +11,8 @@ import com.tny.game.net.command.processor.*;
  */
 public interface EndpointContext {
 
-	MessageDispatcher getMessageDispatcher();
+    MessageDispatcher getMessageDispatcher();
 
-	CommandTaskBoxProcessor getCommandTaskProcessor();
+    CommandTaskBoxProcessor getCommandTaskProcessor();
 
 }

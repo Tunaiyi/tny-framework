@@ -15,14 +15,14 @@ import com.tny.game.net.rpc.annotation.*;
 @RpcService("game-service")
 public interface SpeakRemoteService {
 
-	@RpcCaller(value = CtrlerIds.SPEAK$SAY_FOR_RPC)
-	RpcResult<SayContentDTO> say(String message);
+    @RpcCaller(value = CtrlerIds.SPEAK$SAY_FOR_RPC)
+    RpcResult<SayContentDTO> say(String message);
 
-	@RpcBody
-	@RpcCaller(value = CtrlerIds.SPEAK$SAY_FOR_RPC)
-	SayContentDTO sayForBody(String message);
+    @RpcBody
+    @RpcCaller(value = CtrlerIds.SPEAK$SAY_FOR_RPC)
+    SayContentDTO sayForBody(String message);
 
-	@RpcCaller(value = CtrlerIds.SPEAK$SAY_FOR_RPC)
-	RpcFuture<SayContentDTO> asyncSay(String message);
+    @RpcCaller(value = CtrlerIds.SPEAK$SAY_FOR_RPC)
+    RpcFuture<SayContentDTO> asyncSay(String message);
 
 }

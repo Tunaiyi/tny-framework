@@ -8,10 +8,10 @@ package com.tny.game.data.storage;
  */
 public enum StoreExecuteAction {
 
-	NONE,
+    NONE,
 
-	WAIT,
+    WAIT,
 
-	YIELD,
+    YIELD,
 
 }

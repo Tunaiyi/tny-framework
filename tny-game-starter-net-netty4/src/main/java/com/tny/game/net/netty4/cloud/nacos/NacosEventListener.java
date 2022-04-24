@@ -13,25 +13,25 @@ import org.springframework.context.event.EventListener;
  */
 public class NacosEventListener implements AppClosed {
 
-	private final NetAutoServiceRegister netAutoServiceRegister;
+    private final NetAutoServiceRegister netAutoServiceRegister;
 
-	public NacosEventListener(NetAutoServiceRegister netAutoServiceRegister) {
-		this.netAutoServiceRegister = netAutoServiceRegister;
-	}
+    public NacosEventListener(NetAutoServiceRegister netAutoServiceRegister) {
+        this.netAutoServiceRegister = netAutoServiceRegister;
+    }
 
-	@EventListener
-	public void onNacosDiscoveryInfoChangedEvent(NacosDiscoveryInfoChangedEvent event) {
-		this.netAutoServiceRegister.restart();
-	}
+    @EventListener
+    public void onNacosDiscoveryInfoChangedEvent(NacosDiscoveryInfoChangedEvent event) {
+        this.netAutoServiceRegister.restart();
+    }
 
-	@EventListener
-	public void onNetApplicationStartEvent(NetApplicationStartEvent event) {
-		this.netAutoServiceRegister.start();
-	}
+    @EventListener
+    public void onNetApplicationStartEvent(NetApplicationStartEvent event) {
+        this.netAutoServiceRegister.start();
+    }
 
-	@Override
-	public void onClosed() {
-		this.netAutoServiceRegister.stop();
-	}
+    @Override
+    public void onClosed() {
+        this.netAutoServiceRegister.stop();
+    }
 
 }

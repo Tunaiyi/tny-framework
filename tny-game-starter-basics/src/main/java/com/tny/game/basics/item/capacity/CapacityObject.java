@@ -7,9 +7,9 @@ import com.tny.game.basics.item.*;
  */
 public interface CapacityObject extends Any {
 
-	/**
-	 * @return 获取能力提供者ID
-	 */
-	int getModelId();
+    /**
+     * @return 获取能力提供者ID
+     */
+    int getModelId();
 
 }

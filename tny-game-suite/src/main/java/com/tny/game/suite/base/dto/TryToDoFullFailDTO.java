@@ -27,14 +27,15 @@ public class TryToDoFullFailDTO implements Serializable {
     private List<DemandResultDTO> failDemands;
 
     public static TryToDoFullFailDTO tryToDoResult2DTO(TryToDoResult result) {
-        if (result.isSatisfy())
+        if (result.isSatisfy()) {
             return null;
+        }
         TryToDoFullFailDTO dto = new TryToDoFullFailDTO();
         dto.action = result.getAction().getId();
         dto.failDemands = result.getAllFailResults()
-                                .stream()
-                                .map(DemandResultDTO::demandResult2DTO)
-                                .collect(Collectors.toList());
+                .stream()
+                .map(DemandResultDTO::demandResult2DTO)
+                .collect(Collectors.toList());
         return dto;
     }
 

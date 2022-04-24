@@ -5,9 +5,9 @@ import com.tny.game.common.event.bus.*;
 
 public interface FeatureListener {
 
-	BindP1EventBus<FeatureListener, FeatureLauncher, Feature> OPEN_FEATURE_EVENT = EventBuses.of(FeatureListener.class,
-			FeatureListener::handleOpenFeature);
+    BindP1EventBus<FeatureListener, FeatureLauncher, Feature> OPEN_FEATURE_EVENT = EventBuses.of(FeatureListener.class,
+            FeatureListener::handleOpenFeature);
 
-	void handleOpenFeature(FeatureLauncher explorer, Feature openedFeature);
+    void handleOpenFeature(FeatureLauncher explorer, Feature openedFeature);
 
 }

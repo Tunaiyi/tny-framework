@@ -11,42 +11,42 @@ import javax.annotation.Resource;
  */
 public abstract class GameSaveByStorageManager<S extends Stuff<?>, O extends StuffOwner<?, S>> extends GameSaveByOtherManager<S, O> {
 
-	@Resource
-	private GameWarehouseManager gameWarehouseManager;
+    @Resource
+    private GameWarehouseManager gameWarehouseManager;
 
-	private ItemType ownItemType;
+    private ItemType ownItemType;
 
-	protected GameSaveByStorageManager(Class<? extends S> entityClass, ItemType ownItemType) {
-		super(entityClass);
-		this.ownItemType = ownItemType;
-	}
+    protected GameSaveByStorageManager(Class<? extends S> entityClass, ItemType ownItemType) {
+        super(entityClass);
+        this.ownItemType = ownItemType;
+    }
 
-	@Override
-	protected O getSaveObject(S item) {
-		return this.getSaveObject(item.getPlayerId());
-	}
+    @Override
+    protected O getSaveObject(S item) {
+        return this.getSaveObject(item.getPlayerId());
+    }
 
-	protected O getSaveObject(long playerId) {
-		GameWarehouse holder = this.gameWarehouseManager.getWarehouse(playerId);
-		if (holder == null) {
-			return null;
-		}
-		return (O)holder.getOwner(this.ownItemType);
-	}
+    protected O getSaveObject(long playerId) {
+        GameWarehouse holder = this.gameWarehouseManager.getWarehouse(playerId);
+        if (holder == null) {
+            return null;
+        }
+        return (O)holder.getOwner(this.ownItemType);
+    }
 
-	@Override
-	protected S get(long playerId, Object... object) {
-		O storage = this.getSaveObject(playerId);
-		return storage.getItemById(((Number)object[0]).longValue());
-	}
+    @Override
+    protected S get(long playerId, Object... object) {
+        O storage = this.getSaveObject(playerId);
+        return storage.getItemById(((Number)object[0]).longValue());
+    }
 
-	@Override
-	protected abstract Manager<O> getManager(S item);
+    @Override
+    protected abstract Manager<O> getManager(S item);
 
-	@Override
-	protected S getInstance(long playerId, Object... object) {
-		O storage = this.getSaveObject(playerId);
-		return storage.getItemById((long)object[0]);
-	}
+    @Override
+    protected S getInstance(long playerId, Object... object) {
+        O storage = this.getSaveObject(playerId);
+        return storage.getItemById((long)object[0]);
+    }
 
 }

@@ -97,7 +97,6 @@ public class CapacityDebugger {
         LOGGER.debug("\n{}", builder);
     }
 
-
     private void appendObject(StringBuilder builder, CapacityObject object, CapacityObjectType objectType) {
         ItemModel model = this.gameExplorer.getModel(object.getItemId());
         builder.append(format("{} [{} | {} | {} | {}] ({})\n", objectType, object.getId(), model.getId(), model.getAlias(), model.getDesc(),
@@ -113,8 +112,8 @@ public class CapacityDebugger {
                 builder.append(head).append(INDENT).append("能力值参数 : ");
                 builder.append("\n");
                 capacities.forEach((k, v) -> builder.append(head)
-                                                    .append(INDENT).append(INDENT)
-                                                    .append(format("{} : {}\n", k, v)));
+                        .append(INDENT).append(INDENT)
+                        .append(format("{} : {}\n", k, v)));
             } else {
                 builder.append("[空]\n");
             }

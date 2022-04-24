@@ -22,5 +22,4 @@ public class StringLocalAsyncObjectPool extends LocalAsyncObjectPool {
                 Configs.SUITE_CONFIG.getInt(Configs.SUITE_ASYNC_OBJ_POOL_RECYCLE_TIME, 10000));
     }
 
-
 }

@@ -13,21 +13,21 @@ import java.util.List;
 @DTODoc("消耗物品列表DTO")
 public class CostStuffListDTO {
 
-	@VarDoc("物品列表")
-	@ProtoExField(1)
-	private List<CostStuffDTO> stuffs;
+    @VarDoc("物品列表")
+    @ProtoExField(1)
+    private List<CostStuffDTO> stuffs;
 
-	public List<CostStuffDTO> getStuffs() {
-		return stuffs;
-	}
+    public List<CostStuffDTO> getStuffs() {
+        return stuffs;
+    }
 
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		for (CostStuffDTO dto : stuffs) {
-			builder.append(dto);
-		}
-		return builder.toString();
-	}
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        for (CostStuffDTO dto : stuffs) {
+            builder.append(dto);
+        }
+        return builder.toString();
+    }
 
 }

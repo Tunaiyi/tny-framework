@@ -45,7 +45,6 @@ public class Wrapper {
         return wrapperClass;
     }
 
-
     private static Class<?> doWrapper(Class<?> toClass) {
         if (toClass.equals(Integer.TYPE)) {
             return Integer.class;
@@ -107,4 +106,5 @@ public class Wrapper {
         }
         return false;
     }
+
 }

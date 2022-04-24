@@ -10,19 +10,19 @@ import com.tny.game.common.exception.*;
  */
 public class GetCacheIdException extends CommonRuntimeException {
 
-	public GetCacheIdException() {
-	}
+    public GetCacheIdException() {
+    }
 
-	public GetCacheIdException(String message, Object... messageParams) {
-		super(message, messageParams);
-	}
+    public GetCacheIdException(String message, Object... messageParams) {
+        super(message, messageParams);
+    }
 
-	public GetCacheIdException(Throwable cause) {
-		super(cause);
-	}
+    public GetCacheIdException(Throwable cause) {
+        super(cause);
+    }
 
-	public GetCacheIdException(Throwable cause, String message, Object... messageParams) {
-		super(cause, message, messageParams);
-	}
+    public GetCacheIdException(Throwable cause, String message, Object... messageParams) {
+        super(cause, message, messageParams);
+    }
 
 }

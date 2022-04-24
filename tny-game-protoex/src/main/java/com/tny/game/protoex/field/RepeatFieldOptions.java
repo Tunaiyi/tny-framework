@@ -8,11 +8,11 @@ package com.tny.game.protoex.field;
  */
 public interface RepeatFieldOptions<M> extends FieldOptions<M> {
 
-	/**
-	 * element编码方式
-	 *
-	 * @return
-	 */
-	FieldOptions<?> getElementOptions();
+    /**
+     * element编码方式
+     *
+     * @return
+     */
+    FieldOptions<?> getElementOptions();
 
 }

@@ -1,6 +1,5 @@
 package com.tny.game.actor.local;
 
-
 import com.tny.game.actor.*;
 import com.tny.game.common.result.*;
 
@@ -27,7 +26,7 @@ class ActorMailCommand<T> extends BaseActorCommand<T> implements ActorMail<Objec
 
     @Override
     protected Done<T> doHandle() {
-        return DoneResults.successNullable((T) this.actorCell.handle(this));
+        return DoneResults.successNullable((T)this.actorCell.handle(this));
     }
 
     @Override
@@ -37,7 +36,7 @@ class ActorMailCommand<T> extends BaseActorCommand<T> implements ActorMail<Objec
 
     @Override
     public <ACT extends Actor> ACT getSender() {
-        return (ACT) this.sender;
+        return (ACT)this.sender;
     }
 
 }

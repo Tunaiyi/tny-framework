@@ -8,17 +8,17 @@ import java.util.Map;
  */
 public interface CapacitySupply extends Capable {
 
-	/**
-	 * 是否存在 capacity 能力值
-	 *
-	 * @param capacity 能力类型
-	 * @return 存在 capacity 能力值返回 true, 否则返回false
-	 */
-	boolean isHasCapacity(Capacity capacity);
+    /**
+     * 是否存在 capacity 能力值
+     *
+     * @param capacity 能力类型
+     * @return 存在 capacity 能力值返回 true, 否则返回false
+     */
+    boolean isHasCapacity(Capacity capacity);
 
-	/**
-	 * @return 获取所有相关的所有 能力值
-	 */
-	Map<Capacity, Number> getAllCapacities();
+    /**
+     * @return 获取所有相关的所有 能力值
+     */
+    Map<Capacity, Number> getAllCapacities();
 
 }

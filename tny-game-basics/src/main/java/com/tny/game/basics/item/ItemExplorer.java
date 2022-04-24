@@ -9,26 +9,26 @@ import java.util.Collection;
  */
 public interface ItemExplorer {
 
-	boolean hasItemManager(ItemType itemType);
+    boolean hasItemManager(ItemType itemType);
 
-	<I extends Subject<?>> I getItem(long playerId, int modelId);
+    <I extends Subject<?>> I getItem(long playerId, int modelId);
 
-	<I extends Subject<?>> I getItem(AnyId anyId);
+    <I extends Subject<?>> I getItem(AnyId anyId);
 
-	boolean insertItem(Subject<?>... items);
+    boolean insertItem(Subject<?>... items);
 
-	<I extends Subject<?>> Collection<I> insertItem(Collection<I> itemCollection);
+    <I extends Subject<?>> Collection<I> insertItem(Collection<I> itemCollection);
 
-	boolean updateItem(Subject<?>... items);
+    boolean updateItem(Subject<?>... items);
 
-	<I extends Subject<?>> Collection<I> updateItem(Collection<I> itemCollection);
+    <I extends Subject<?>> Collection<I> updateItem(Collection<I> itemCollection);
 
-	boolean saveItem(Subject<?>... items);
+    boolean saveItem(Subject<?>... items);
 
-	<I extends Subject<?>> Collection<I> saveItem(Collection<I> itemCollection);
+    <I extends Subject<?>> Collection<I> saveItem(Collection<I> itemCollection);
 
-	void deleteItem(Subject<?>... items);
+    void deleteItem(Subject<?>... items);
 
-	<I extends Subject<?>> void deleteItem(Collection<I> itemCollection);
+    <I extends Subject<?>> void deleteItem(Collection<I> itemCollection);
 
 }

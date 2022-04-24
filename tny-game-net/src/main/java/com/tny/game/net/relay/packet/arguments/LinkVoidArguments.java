@@ -8,13 +8,13 @@ package com.tny.game.net.relay.packet.arguments;
  */
 public class LinkVoidArguments implements LinkPacketArguments {
 
-	private static final LinkVoidArguments VOID_ARGUMENTS = new LinkVoidArguments();
+    private static final LinkVoidArguments VOID_ARGUMENTS = new LinkVoidArguments();
 
-	public static LinkVoidArguments of() {
-		return VOID_ARGUMENTS;
-	}
+    public static LinkVoidArguments of() {
+        return VOID_ARGUMENTS;
+    }
 
-	private LinkVoidArguments() {
-	}
+    private LinkVoidArguments() {
+    }
 
 }

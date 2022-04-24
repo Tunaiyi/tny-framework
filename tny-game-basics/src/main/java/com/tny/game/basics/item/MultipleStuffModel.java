@@ -7,17 +7,17 @@ package com.tny.game.basics.item;
  */
 public interface MultipleStuffModel extends StuffModel {
 
-	/**
-	 * @return 是否有数量限制 <br>
-	 */
-	boolean isNumberLimit();
-	
-	/**
-	 * 数量上线 <br>
-	 *
-	 * @param stuff 计算参数
-	 * @return -1 表示无限制
-	 */
-	Number countNumberLimit(Stuff<?> stuff);
+    /**
+     * @return 是否有数量限制 <br>
+     */
+    boolean isNumberLimit();
+
+    /**
+     * 数量上线 <br>
+     *
+     * @param stuff 计算参数
+     * @return -1 表示无限制
+     */
+    Number countNumberLimit(Stuff<?> stuff);
 
 }

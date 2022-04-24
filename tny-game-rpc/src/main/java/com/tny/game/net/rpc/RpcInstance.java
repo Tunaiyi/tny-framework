@@ -13,50 +13,50 @@ import java.util.Map;
  */
 public class RpcInstance {
 
-	private final Class<?> rpcClass;
+    private final Class<?> rpcClass;
 
-	private final RpcSetting setting;
+    private final RpcSetting setting;
 
-	private final RpcRemoteServicer servicer;
+    private final RpcRemoteServicer servicer;
 
-	private final RpcRouteManager rpcRouteManager;
+    private final RpcRouteManager rpcRouteManager;
 
-	private Map<Method, RpcInvoker> invokerMap = ImmutableMap.of();
+    private Map<Method, RpcInvoker> invokerMap = ImmutableMap.of();
 
-	public RpcInstance(Class<?> rpcClass, RpcSetting setting, RpcRemoteServicer servicer, RpcRouteManager rpcRouteManager) {
-		this.rpcClass = rpcClass;
-		this.setting = setting;
-		this.servicer = servicer;
-		this.rpcRouteManager = rpcRouteManager;
-	}
+    public RpcInstance(Class<?> rpcClass, RpcSetting setting, RpcRemoteServicer servicer, RpcRouteManager rpcRouteManager) {
+        this.rpcClass = rpcClass;
+        this.setting = setting;
+        this.servicer = servicer;
+        this.rpcRouteManager = rpcRouteManager;
+    }
 
-	public Class<?> getRpcClass() {
-		return rpcClass;
-	}
+    public Class<?> getRpcClass() {
+        return rpcClass;
+    }
 
-	public RpcSetting getSetting() {
-		return setting;
-	}
+    public RpcSetting getSetting() {
+        return setting;
+    }
 
-	public RpcRemoteServicer getServicer() {
-		return servicer;
-	}
+    public RpcRemoteServicer getServicer() {
+        return servicer;
+    }
 
-	public <T> RpcRouter<T> getRouter(Class<?> routerClass) {
-		return rpcRouteManager.getRouter(routerClass);
-	}
+    public <T> RpcRouter<T> getRouter(Class<?> routerClass) {
+        return rpcRouteManager.getRouter(routerClass);
+    }
 
-	public Map<Method, RpcInvoker> getInvokerMap() {
-		return invokerMap;
-	}
+    public Map<Method, RpcInvoker> getInvokerMap() {
+        return invokerMap;
+    }
 
-	public RpcInvoker invoker(Method method) {
-		return invokerMap.get(method);
-	}
+    public RpcInvoker invoker(Method method) {
+        return invokerMap.get(method);
+    }
 
-	RpcInstance setInvokerMap(Map<Method, RpcInvoker> invokerMap) {
-		this.invokerMap = ImmutableMap.copyOf(invokerMap);
-		return this;
-	}
+    RpcInstance setInvokerMap(Map<Method, RpcInvoker> invokerMap) {
+        this.invokerMap = ImmutableMap.copyOf(invokerMap);
+        return this;
+    }
 
 }

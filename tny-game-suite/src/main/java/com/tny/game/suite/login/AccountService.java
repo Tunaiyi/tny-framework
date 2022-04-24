@@ -42,8 +42,9 @@ public class AccountService implements AppPrepareStart {
         Account accountObj = null;
         while (index < max) {
             accountObj = this.getAccount(account, ticket);
-            if (accountObj != null)
+            if (accountObj != null) {
                 return accountObj;
+            }
             long playerId = this.createUid(ticket.getServer());
             try {
                 AccountService.LOGGER.info("#FolSessionValidator#尝试为IP {} 创建帐号 {} 的PlayerID {}", ticket.getOpenId(), playerId);
@@ -64,16 +65,18 @@ public class AccountService implements AppPrepareStart {
     }
 
     private UIDCreator getUidCreator(int serverID) throws CommandException {
-        if (!GameInfo.isHasServer(serverID))
+        if (!GameInfo.isHasServer(serverID)) {
             throw new CommandException(SuiteResultCode.AUTH_USER_LOGIN_ERROR_SID);
+        }
         UIDCreator creator = this.UIDCreatorMap.get(serverID);
         if (creator == null) {
             synchronized (this) {
                 creator = this.UIDCreatorMap.computeIfAbsent(serverID, UIDCreator::new);
             }
         }
-        if (!GameInfo.info().getScopeType().isTest() && creator.isFull())
+        if (!GameInfo.info().getScopeType().isTest() && creator.isFull()) {
             throw new CommandException(SuiteResultCode.AUTH_USER_IS_FULL);
+        }
         return creator;
     }
 
@@ -95,8 +98,9 @@ public class AccountService implements AppPrepareStart {
             account.online(ip);
             account.setDevice(ticket.getDevice());
             account.setDeviceId(ticket.getDeviceId());
-            if (StringUtils.isNoneBlank(ticket.getPf()) && !Objects.equals(account.getPf(), ticket.getPf()))
+            if (StringUtils.isNoneBlank(ticket.getPf()) && !Objects.equals(account.getPf(), ticket.getPf())) {
                 account.setPf(ticket.getPf());
+            }
             this.accountManager.updateOnlineAt(account, ticket);
         } catch (Throwable e) {
             LOGGER.error("accountDAO.updateOnlineAt exception", e);
@@ -149,8 +153,9 @@ public class AccountService implements AppPrepareStart {
             this.manager = AccountService.this.accountManager;
             List<Long> emptyIDs = this.manager.findEmptyUid(this.uidRange.lowerEndpoint(), this.uidRange.upperEndpoint());
             this.idQueue.addAll(emptyIDs);
-            if (this.idQueue.isEmpty())
+            if (this.idQueue.isEmpty()) {
                 this.doGrow();
+            }
         }
 
         public int getServerId() {
@@ -175,8 +180,9 @@ public class AccountService implements AppPrepareStart {
 
         private void doGrow() {
             Long maxUID = this.manager.findMaxUid(this.uidRange.lowerEndpoint(), this.uidRange.upperEndpoint());
-            if (maxUID == null)
+            if (maxUID == null) {
                 maxUID = this.uidRange.lowerEndpoint() + 10000 + ThreadLocalRandom.current().nextInt(10000);
+            }
             maxUID = Math.min(maxUID, this.uidRange.upperEndpoint());
             List<Long> growthIDs = new ArrayList<>();
             for (int index = 0; index < this.growSize; index++)
@@ -185,15 +191,17 @@ public class AccountService implements AppPrepareStart {
             for (int index = 0; index < results.length; index++) {
                 int result = results[index];
                 if (result > 0 || result == java.sql.Statement.SUCCESS_NO_INFO) {
-                    if (index < growthIDs.size())
+                    if (index < growthIDs.size()) {
                         this.idQueue.add(growthIDs.get(index));
+                    }
                 }
             }
         }
 
         private void tryGrowUIDs() {
-            if (this.growing.get())
+            if (this.growing.get()) {
                 return;
+            }
             double current = this.idQueue.size();
             double usedPCT = current / this.growSize;
             if (usedPCT <= this.growAtPCT) {

@@ -22,8 +22,9 @@ public interface URLAide {
         Map<String, String> map = new HashMap<>(tmp.length);
         for (int i = 0; i < tmp.length; i++) {
             Matcher matcher = KVP_PATTERN.matcher(tmp[i]);
-            if (matcher.matches() == false)
+            if (matcher.matches() == false) {
                 continue;
+            }
             map.put(matcher.group(1), matcher.group(2));
         }
         return map;
@@ -41,8 +42,9 @@ public interface URLAide {
      * @return Parameters instance.
      */
     static Map<String, String> parseQueryString(String qs) {
-        if (qs == null || qs.length() == 0)
+        if (qs == null || qs.length() == 0) {
             return new HashMap<>();
+        }
         return parseKeyValuePair(qs, "\\&");
     }
 

@@ -19,7 +19,7 @@ public abstract class ParallelismLoadManager<O> extends GameCacheManager<O> {
     private int groupSize;
 
     private static final ForkJoinPool forkJoinPool = ForkJoinPool.getCommonPoolParallelism() >= 100 ?
-                                                     ForkJoinPool.commonPool() : new ForkJoinPool(20);
+            ForkJoinPool.commonPool() : new ForkJoinPool(20);
 
     private boolean parallelism;
 
@@ -48,54 +48,59 @@ public abstract class ParallelismLoadManager<O> extends GameCacheManager<O> {
 
     protected Collection<O> getObjects(long playerId) {
         List<String> keys = this.cacheDAO.getKeys(playerId, this.tableHead);
-        if (keys.isEmpty())
+        if (keys.isEmpty()) {
             return Collections.emptyList();
+        }
         return gets(keys, false);
     }
 
     protected Collection<O> getAllObjects() {
         List<String> keys = this.cacheDAO.getAllKeys(this.tableHead);
-        if (keys.isEmpty())
+        if (keys.isEmpty()) {
             return Collections.emptyList();
+        }
         return gets(keys, false);
     }
 
     protected Collection<O> getObjects(long playerId, boolean parallelism) {
         List<String> keys = this.cacheDAO.getKeys(playerId, this.tableHead);
-        if (keys.isEmpty())
+        if (keys.isEmpty()) {
             return Collections.emptyList();
+        }
         return gets(keys, parallelism);
     }
 
     protected Collection<O> getAllObjects(boolean parallelism) {
         List<String> keys = this.cacheDAO.getAllKeys(this.tableHead);
-        if (keys.isEmpty())
+        if (keys.isEmpty()) {
             return Collections.emptyList();
+        }
         return gets(keys, parallelism);
     }
 
     private Collection<O> doGet(Collection<String> keys, boolean parallelism) {
         List<List<String>> keysList = keys.parallelStream()
-                                          .collect(() -> {
-                                                      List<List<String>> newList = new ArrayList<>();
-                                                      newList.add(new ArrayList<>());
-                                                      return newList;
-                                                  },
-                                                  (list, v) -> {
-                                                      List<String> lastList = list.get(list.size() - 1);
-                                                      if (lastList.size() >= this.groupSize) {
-                                                          lastList = new ArrayList<>();
-                                                          list.add(lastList);
-                                                      }
-                                                      lastList.add(v);
-                                                  },
-                                                  List::addAll);
+                .collect(() -> {
+                            List<List<String>> newList = new ArrayList<>();
+                            newList.add(new ArrayList<>());
+                            return newList;
+                        },
+                        (list, v) -> {
+                            List<String> lastList = list.get(list.size() - 1);
+                            if (lastList.size() >= this.groupSize) {
+                                lastList = new ArrayList<>();
+                                list.add(lastList);
+                            }
+                            lastList.add(v);
+                        },
+                        List::addAll);
         Stream<List<String>> keySteam = parallelism ? keysList.parallelStream() : keysList.stream();
         return keySteam
                 .map(this::getByKeys)
                 .reduce(new ConcurrentLinkedQueue<>(), (total, value) -> {
-                    if (total != value)
+                    if (total != value) {
                         total.addAll(value);
+                    }
                     return total;
                 });
     }
@@ -105,10 +110,11 @@ public abstract class ParallelismLoadManager<O> extends GameCacheManager<O> {
     }
 
     protected Collection<O> gets(Collection<String> keys, boolean parallelism) {
-        if (parallelism)
+        if (parallelism) {
             return forkJoinPool.submit(() -> doGet(keys, true)).join();
-        else
+        } else {
             return doGet(keys, false);
+        }
     }
 
 }

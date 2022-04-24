@@ -23,7 +23,9 @@ public class KafkaOplogManager extends AbstractManager {
     private static KafkaOpLogProducerFactory producerFactory = new DefaultKafkaOpLogProducerFactory();
 
     private final Properties config = new Properties();
+
     private Producer<String, byte[]> producer = null;
+
     private final int timeoutMillis;
 
     private final String topic;
@@ -66,12 +68,12 @@ public class KafkaOplogManager extends AbstractManager {
         }
     }
 
-
     public void send(final Integer serverID, final String key, final byte[] msg) throws ExecutionException, InterruptedException, TimeoutException {
         if (producer != null) {
             producer.send(new ProducerRecord<>(this.topic + ObjectUtils.defaultIfNull(serverID, ""), key, msg), (metadata, exception) -> {
-                if (exception != null)
+                if (exception != null) {
                     LOGGER.error("", exception);
+                }
             });
         }
     }

@@ -8,8 +8,8 @@ package com.tny.game.net.relay.packet.arguments;
  */
 public interface TunnelPacketArguments extends RelayPacketArguments {
 
-	long getTunnelId();
+    long getTunnelId();
 
-	long getInstanceId();
+    long getInstanceId();
 
 }

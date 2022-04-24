@@ -13,40 +13,40 @@ import com.tny.game.net.relay.packet.arguments.*;
 @ProtobufClass
 public class LinkOpenArgumentsProto extends BaseLinkArgumentsProto<LinkOpenArguments> {
 
-	@Protobuf(order = 1)
-	private String serveName;
+    @Protobuf(order = 1)
+    private String serveName;
 
-	@Protobuf(order = 2, fieldType = FieldType.FIXED64)
-	private long instance;
+    @Protobuf(order = 2, fieldType = FieldType.FIXED64)
+    private long instance;
 
-	@Protobuf(order = 3)
-	private String key;
+    @Protobuf(order = 3)
+    private String key;
 
-	public LinkOpenArgumentsProto() {
-	}
+    public LinkOpenArgumentsProto() {
+    }
 
-	public LinkOpenArgumentsProto(LinkOpenArguments arguments) {
-		super(arguments);
-		this.serveName = arguments.getService();
-		this.instance = arguments.getInstance();
-		this.key = arguments.getKey();
-	}
+    public LinkOpenArgumentsProto(LinkOpenArguments arguments) {
+        super(arguments);
+        this.serveName = arguments.getService();
+        this.instance = arguments.getInstance();
+        this.key = arguments.getKey();
+    }
 
-	@Override
-	public LinkOpenArguments toArguments() {
-		return new LinkOpenArguments(this.serveName, this.instance, this.key);
-	}
+    @Override
+    public LinkOpenArguments toArguments() {
+        return new LinkOpenArguments(this.serveName, this.instance, this.key);
+    }
 
-	public String getServeName() {
-		return serveName;
-	}
+    public String getServeName() {
+        return serveName;
+    }
 
-	public long getInstance() {
-		return instance;
-	}
+    public long getInstance() {
+        return instance;
+    }
 
-	public String getKey() {
-		return key;
-	}
+    public String getKey() {
+        return key;
+    }
 
 }

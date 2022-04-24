@@ -12,46 +12,46 @@ import com.tny.game.net.relay.packet.arguments.*;
 @ProtobufClass
 public class TunnelConnectArgumentsProto extends BaseTunnelArgumentsProto<TunnelConnectArguments> {
 
-	@Packed
-	@Protobuf(order = 10)
-	private byte[] ipValue = new byte[4];
+    @Packed
+    @Protobuf(order = 10)
+    private byte[] ipValue = new byte[4];
 
-	@Protobuf(order = 11)
-	private int port;
+    @Protobuf(order = 11)
+    private int port;
 
-	public TunnelConnectArgumentsProto() {
-	}
+    public TunnelConnectArgumentsProto() {
+    }
 
-	public TunnelConnectArgumentsProto(TunnelConnectArguments arguments) {
-		super(arguments);
-		int[] ipValue = arguments.getIpValue();
-		for (int i = 0; i < ipValue.length; i++) {
-			this.ipValue[i] = (byte)ipValue[i];
-		}
-		this.port = arguments.getPort();
-	}
+    public TunnelConnectArgumentsProto(TunnelConnectArguments arguments) {
+        super(arguments);
+        int[] ipValue = arguments.getIpValue();
+        for (int i = 0; i < ipValue.length; i++) {
+            this.ipValue[i] = (byte)ipValue[i];
+        }
+        this.port = arguments.getPort();
+    }
 
-	public byte[] getIpValue() {
-		return ipValue;
-	}
+    public byte[] getIpValue() {
+        return ipValue;
+    }
 
-	public TunnelConnectArgumentsProto setIpValue(byte[] ipValue) {
-		this.ipValue = ipValue;
-		return this;
-	}
+    public TunnelConnectArgumentsProto setIpValue(byte[] ipValue) {
+        this.ipValue = ipValue;
+        return this;
+    }
 
-	public int getPort() {
-		return port;
-	}
+    public int getPort() {
+        return port;
+    }
 
-	public TunnelConnectArgumentsProto setPort(int port) {
-		this.port = port;
-		return this;
-	}
+    public TunnelConnectArgumentsProto setPort(int port) {
+        this.port = port;
+        return this;
+    }
 
-	@Override
-	public TunnelConnectArguments toArguments() {
-		return new TunnelConnectArguments(this.getInstanceId(), this.getTunnelId(), this.ipValue, this.port);
-	}
+    @Override
+    public TunnelConnectArguments toArguments() {
+        return new TunnelConnectArguments(this.getInstanceId(), this.getTunnelId(), this.ipValue, this.port);
+    }
 
 }

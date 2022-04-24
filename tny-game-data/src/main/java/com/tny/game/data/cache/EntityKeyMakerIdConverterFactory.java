@@ -10,9 +10,9 @@ import com.tny.game.data.*;
  */
 public class EntityKeyMakerIdConverterFactory implements EntityIdConverterFactory {
 
-	@Override
-	public EntityIdConverter<?, ?, ?> createConverter(EntityScheme scheme, EntityKeyMaker<?, ?> keyMaker) {
-		return EntityKeyMakerIdConverter.wrapper(keyMaker);
-	}
+    @Override
+    public EntityIdConverter<?, ?, ?> createConverter(EntityScheme scheme, EntityKeyMaker<?, ?> keyMaker) {
+        return EntityKeyMakerIdConverter.wrapper(keyMaker);
+    }
 
 }

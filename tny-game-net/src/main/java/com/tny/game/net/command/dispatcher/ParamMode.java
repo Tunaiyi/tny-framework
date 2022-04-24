@@ -5,33 +5,33 @@ package com.tny.game.net.command.dispatcher;
  */
 public enum ParamMode {
 
-	NONE,
+    NONE,
 
-	MESSAGE,
+    MESSAGE,
 
-	TUNNEL,
+    TUNNEL,
 
-	RELAY_TUNNEL,
+    RELAY_TUNNEL,
 
-	SESSION,
+    SESSION,
 
-	CLIENT,
+    CLIENT,
 
-	ENDPOINT,
+    ENDPOINT,
 
-	SETTING,
+    SETTING,
 
-	BODY,
+    BODY,
 
-	UserID,
+    UserID,
 
-	INDEX_PARAM,
+    INDEX_PARAM,
 
-	KEY_PARAM,
+    KEY_PARAM,
 
-	CODE,
+    CODE,
 
-	CODE_NUM,
+    CODE_NUM,
 
-	;
+    ;
 }

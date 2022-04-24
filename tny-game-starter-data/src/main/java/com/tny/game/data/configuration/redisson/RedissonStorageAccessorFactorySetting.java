@@ -11,37 +11,37 @@ import com.tny.game.data.cache.*;
  */
 public class RedissonStorageAccessorFactorySetting {
 
-	private String dataSource;
+    private String dataSource;
 
-	private String tableHead;
+    private String tableHead;
 
-	private String idConverterFactory = BeanNameUtils.lowerCamelName(EntityKeyMakerIdConverterFactory.class);
+    private String idConverterFactory = BeanNameUtils.lowerCamelName(EntityKeyMakerIdConverterFactory.class);
 
-	public String getDataSource() {
-		return dataSource;
-	}
+    public String getDataSource() {
+        return dataSource;
+    }
 
-	public RedissonStorageAccessorFactorySetting setDataSource(String dataSource) {
-		this.dataSource = dataSource;
-		return this;
-	}
+    public RedissonStorageAccessorFactorySetting setDataSource(String dataSource) {
+        this.dataSource = dataSource;
+        return this;
+    }
 
-	public String getTableHead() {
-		return tableHead;
-	}
+    public String getTableHead() {
+        return tableHead;
+    }
 
-	public RedissonStorageAccessorFactorySetting setTableHead(String tableHead) {
-		this.tableHead = tableHead;
-		return this;
-	}
+    public RedissonStorageAccessorFactorySetting setTableHead(String tableHead) {
+        this.tableHead = tableHead;
+        return this;
+    }
 
-	public String getIdConverterFactory() {
-		return idConverterFactory;
-	}
+    public String getIdConverterFactory() {
+        return idConverterFactory;
+    }
 
-	public RedissonStorageAccessorFactorySetting setIdConverterFactory(String idConverterFactory) {
-		this.idConverterFactory = idConverterFactory;
-		return this;
-	}
+    public RedissonStorageAccessorFactorySetting setIdConverterFactory(String idConverterFactory) {
+        this.idConverterFactory = idConverterFactory;
+        return this;
+    }
 
 }

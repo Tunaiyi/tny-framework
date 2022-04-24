@@ -35,4 +35,5 @@ public class LocalString implements CharSequence {
     public String toString() {
         return value.toString();
     }
+
 }

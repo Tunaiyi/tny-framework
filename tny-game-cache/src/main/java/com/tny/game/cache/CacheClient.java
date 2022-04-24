@@ -166,4 +166,5 @@ public interface CacheClient {
      * 关闭连接<br>
      */
     void shutdown();
+
 }

@@ -8,12 +8,12 @@ package com.tny.game.net.transport;
  */
 public interface Sender {
 
-	/**
-	 * 异步发送消息
-	 *
-	 * @param messageContext 发送消息上下文
-	 * @return 返回发送上下文
-	 */
-	SendReceipt send(MessageContext messageContext);
+    /**
+     * 异步发送消息
+     *
+     * @param messageContext 发送消息上下文
+     * @return 返回发送上下文
+     */
+    SendReceipt send(MessageContext messageContext);
 
 }

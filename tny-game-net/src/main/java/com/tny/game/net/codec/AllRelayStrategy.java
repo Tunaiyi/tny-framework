@@ -12,9 +12,9 @@ import com.tny.game.net.message.*;
 @Unit
 public class AllRelayStrategy implements MessageRelayStrategy {
 
-	@Override
-	public boolean isRelay(MessageHead head) {
-		return true;
-	}
+    @Override
+    public boolean isRelay(MessageHead head) {
+        return true;
+    }
 
 }

@@ -12,10 +12,13 @@ public class Account implements Owned {
 
     private static BindVoidEventBus<AccountListener, Account> ON_CREATE =
             EventBuses.of(AccountListener.class, AccountListener::onCreate);
+
     private static BindVoidEventBus<AccountListener, Account> ON_ONLINE =
             EventBuses.of(AccountListener.class, AccountListener::onOnline);
+
     private static BindVoidEventBus<AccountListener, Account> ON_OFFLINE =
             EventBuses.of(AccountListener.class, AccountListener::onOffline);
+
     private static BindVoidEventBus<AccountListener, Account> ON_CREATE_ROLE =
             EventBuses.of(AccountListener.class, AccountListener::onCreateRole);
 

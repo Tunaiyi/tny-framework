@@ -22,59 +22,59 @@ import java.net.InetSocketAddress;
  */
 public interface RelayLink {
 
-	/**
-	 * @return 线路 唯一 Id
-	 */
-	String getId();
+    /**
+     * @return 线路 唯一 Id
+     */
+    String getId();
 
-	/**
-	 * @return link 唯一 key
-	 */
-	String getKey();
+    /**
+     * @return link 唯一 key
+     */
+    String getKey();
 
-	/**
-	 * @return 发现服务器服务名
-	 */
-	String getService();
+    /**
+     * @return 发现服务器服务名
+     */
+    String getService();
 
-	/**
-	 * @return 节点 id
-	 */
-	long getInstanceId();
+    /**
+     * @return 节点 id
+     */
+    long getInstanceId();
 
-	/**
-	 * @return 创建时间
-	 */
-	long getCreateTime();
+    /**
+     * @return 创建时间
+     */
+    long getCreateTime();
 
-	/**
-	 * @return 获取 Tunnel 状态
-	 */
-	RelayLinkStatus getStatus();
+    /**
+     * @return 获取 Tunnel 状态
+     */
+    RelayLinkStatus getStatus();
 
-	/**
-	 * @return 返回远程地址
-	 */
-	InetSocketAddress getRemoteAddress();
+    /**
+     * @return 返回远程地址
+     */
+    InetSocketAddress getRemoteAddress();
 
-	/**
-	 * @return 返回本地地址
-	 */
-	InetSocketAddress getLocalAddress();
+    /**
+     * @return 返回本地地址
+     */
+    InetSocketAddress getLocalAddress();
 
-	/**
-	 * 关闭
-	 */
-	void close();
+    /**
+     * 关闭
+     */
+    void close();
 
-	/**
-	 * 关闭
-	 */
-	void disconnect();
+    /**
+     * 关闭
+     */
+    void disconnect();
 
-	/**
-	 * 是否活跃
-	 */
-	boolean isActive();
+    /**
+     * 是否活跃
+     */
+    boolean isActive();
 
 }

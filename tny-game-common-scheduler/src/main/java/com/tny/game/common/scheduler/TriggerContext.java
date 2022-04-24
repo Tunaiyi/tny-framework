@@ -15,28 +15,30 @@ public class TriggerContext {
 
     public int countHandler(Class<? extends TimeTaskHandler> handleClass) {
         return this.events.stream()
-                          .mapToInt(e -> {
-                              int times = 0;
-                              for (TimeTaskHandler h : e.getHandlerList()) {
-                                  if (handleClass.isInstance(h))
-                                      times++;
-                              }
-                              return times;
-                          })
-                          .sum();
+                .mapToInt(e -> {
+                    int times = 0;
+                    for (TimeTaskHandler h : e.getHandlerList()) {
+                        if (handleClass.isInstance(h)) {
+                            times++;
+                        }
+                    }
+                    return times;
+                })
+                .sum();
     }
 
     public int countHandler(TimeTaskHandler handler) {
         return this.events.stream()
-                          .mapToInt(e -> {
-                              int times = 0;
-                              for (TimeTaskHandler h : e.getHandlerList()) {
-                                  if (h.equals(handler))
-                                      times++;
-                              }
-                              return times;
-                          })
-                          .sum();
+                .mapToInt(e -> {
+                    int times = 0;
+                    for (TimeTaskHandler h : e.getHandlerList()) {
+                        if (h.equals(handler)) {
+                            times++;
+                        }
+                    }
+                    return times;
+                })
+                .sum();
     }
 
 }

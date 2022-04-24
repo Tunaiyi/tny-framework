@@ -11,6 +11,6 @@ import com.tny.game.basics.item.*;
  **/
 public interface ModelLoaderFactory {
 
-	<M extends Model> ModelLoader<M> createLoader(Class<? extends M> modelClass, ModelLoadHandler<M> loadHandler);
+    <M extends Model> ModelLoader<M> createLoader(Class<? extends M> modelClass, ModelLoadHandler<M> loadHandler);
 
 }

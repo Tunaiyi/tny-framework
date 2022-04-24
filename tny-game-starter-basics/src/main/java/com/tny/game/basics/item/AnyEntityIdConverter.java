@@ -11,20 +11,20 @@ import com.tny.game.data.cache.*;
  */
 public class AnyEntityIdConverter implements EntityIdConverter<AnyId, Any, String> {
 
-	private final AnyIdConverter converter;
+    private final AnyIdConverter converter;
 
-	public AnyEntityIdConverter(EntityScheme scheme) {
-		converter = new AnyIdConverter(scheme);
-	}
+    public AnyEntityIdConverter(EntityScheme scheme) {
+        converter = new AnyIdConverter(scheme);
+    }
 
-	@Override
-	public String keyToId(AnyId key) {
-		return converter.anyId2Key(key);
-	}
+    @Override
+    public String keyToId(AnyId key) {
+        return converter.anyId2Key(key);
+    }
 
-	@Override
-	public String entityToId(Any object) {
-		return converter.any2Key(object);
-	}
+    @Override
+    public String entityToId(Any object) {
+        return converter.any2Key(object);
+    }
 
 }

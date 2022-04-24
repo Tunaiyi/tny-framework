@@ -11,40 +11,40 @@ import com.tny.game.net.relay.link.*;
  */
 public class NettyRemoteServeCluster extends BaseRemoteServeCluster {
 
-	private final RemoteServeClusterContext clusterContext;
+    private final RemoteServeClusterContext clusterContext;
 
-	public NettyRemoteServeCluster(RemoteServeClusterContext clusterContext) {
-		super(clusterContext.getServeName(),
-				clusterContext.getService(),
-				clusterContext.getUsername(),
-				clusterContext.getServeInstanceAllotStrategy(),
-				clusterContext.getRelayLinkAllotStrategy());
-		this.clusterContext = clusterContext;
-	}
+    public NettyRemoteServeCluster(RemoteServeClusterContext clusterContext) {
+        super(clusterContext.getServeName(),
+                clusterContext.getService(),
+                clusterContext.getUsername(),
+                clusterContext.getServeInstanceAllotStrategy(),
+                clusterContext.getRelayLinkAllotStrategy());
+        this.clusterContext = clusterContext;
+    }
 
-	@Override
-	public RemoteServeClusterContext getContext() {
-		return this.clusterContext;
-	}
+    @Override
+    public RemoteServeClusterContext getContext() {
+        return this.clusterContext;
+    }
 
-	public void heartbeat() {
-		for (NetRemoteServeInstance instance : this.instances()) {
-			ExeAide.runQuietly(instance::heartbeat, LOGGER);
-		}
-	}
+    public void heartbeat() {
+        for (NetRemoteServeInstance instance : this.instances()) {
+            ExeAide.runQuietly(instance::heartbeat, LOGGER);
+        }
+    }
 
-	//	/**
-	//	 * @param url url
-	//	 */
-	//	public void connect(URL url, RelayConnectCallback callback) {
-	//		guide.connect(url, callback);
-	//	}
-	//
-	//	/**
-	//	 * @param url url
-	//	 */
-	//	public void connect(URL url, long delayTime, RelayConnectCallback callback) {
-	//		executorService.schedule(() -> guide.connect(url, callback), delayTime, TimeUnit.MILLISECONDS);
-	//	}
+    //	/**
+    //	 * @param url url
+    //	 */
+    //	public void connect(URL url, RelayConnectCallback callback) {
+    //		guide.connect(url, callback);
+    //	}
+    //
+    //	/**
+    //	 * @param url url
+    //	 */
+    //	public void connect(URL url, long delayTime, RelayConnectCallback callback) {
+    //		executorService.schedule(() -> guide.connect(url, callback), delayTime, TimeUnit.MILLISECONDS);
+    //	}
 
 }

@@ -14,9 +14,9 @@ import java.util.List;
 @Configuration(proxyBeanMethods = false)
 public class ObjectCodecAutoConfiguration {
 
-	@Bean
-	public ObjectCodecService objectCodecService(List<ObjectCodecorFactory> codecorFactories) {
-		return new ObjectCodecService(codecorFactories);
-	}
+    @Bean
+    public ObjectCodecService objectCodecService(List<ObjectCodecorFactory> codecorFactories) {
+        return new ObjectCodecService(codecorFactories);
+    }
 
 }

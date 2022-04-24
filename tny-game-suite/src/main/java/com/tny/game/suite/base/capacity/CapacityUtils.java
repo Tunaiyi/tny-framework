@@ -23,8 +23,9 @@ public interface CapacityUtils {
     static <C extends Capacitiable> Number countFinalValue(Number baseValue, C owner, BiFunction<C, Capacity, Number> valueGetter,
             Capacity... capacities) {
         long base = baseValue.longValue();
-        if (capacities.length == 0)
+        if (capacities.length == 0) {
             return base;
+        }
         Capacity baseCapacity = capacities[0];
         long alterValue = 0L;
         double pctValue = 0.0;
@@ -57,7 +58,7 @@ public interface CapacityUtils {
         switch (baseCapacity.getValueType()) {
             case BASE:
                 return Math.max((base * Math.max(((10000.0 + pctValue) / 10000.0), 0.0) + alterValue), 0) /
-                       ((10000.0 + Math.max(effValue, 0)) / 10000.0);
+                        ((10000.0 + Math.max(effValue, 0)) / 10000.0);
             case INC:
             case RED:
                 return Math.max(base + alterValue, 0.0);

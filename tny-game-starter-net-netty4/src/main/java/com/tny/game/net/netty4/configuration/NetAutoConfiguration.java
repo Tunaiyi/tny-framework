@@ -36,7 +36,8 @@ import org.springframework.context.annotation.*;
  * Created by Kun Yang on 16/1/27.
  */
 @Configuration(proxyBeanMethods = false)
-@EnableConfigurationProperties({SpringNetAppProperties.class, SpringNetEndpointProperties.class, ReadIdlePipelineChainProperties.class, DisruptorEndpointCommandTaskProcessorProperties.class, ForkJoinEndpointCommandTaskProcessorProperties.class,})
+@EnableConfigurationProperties({SpringNetAppProperties.class, SpringNetEndpointProperties.class, ReadIdlePipelineChainProperties.class,
+        DisruptorEndpointCommandTaskProcessorProperties.class, ForkJoinEndpointCommandTaskProcessorProperties.class,})
 @Import({TextFilterAutoConfiguration.class, ImportControllerBeanDefinitionRegistrar.class,})
 public class NetAutoConfiguration {
 
@@ -48,7 +49,8 @@ public class NetAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean(EndpointKeeperManager.class)
     public EndpointKeeperManager endpointKeeperManager(SpringNetEndpointProperties configure) {
-        return new CommonEndpointKeeperManager(configure.getSessionKeeper(), configure.getTerminalKeeper(), configure.getSessionKeeperSettings(), configure.getTerminalKeeperSettings());
+        return new CommonEndpointKeeperManager(configure.getSessionKeeper(), configure.getTerminalKeeper(), configure.getSessionKeeperSettings(),
+                configure.getTerminalKeeperSettings());
     }
 
     @Bean
@@ -96,7 +98,8 @@ public class NetAutoConfiguration {
 
     @Bean
     @ConditionalOnBean({EndpointKeeperManager.class, NetAppContext.class})
-    public MessageDispatcher defaultMessageDispatcher(NetAppContext appContext, EndpointKeeperManager endpointKeeperManager, ExprHolderFactory exprHolderFactory) {
+    public MessageDispatcher defaultMessageDispatcher(NetAppContext appContext, EndpointKeeperManager endpointKeeperManager,
+            ExprHolderFactory exprHolderFactory) {
         return new SpringBootMessageDispatcher(appContext, endpointKeeperManager, exprHolderFactory);
     }
 

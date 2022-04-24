@@ -16,21 +16,22 @@ public interface ProxyVisitorCapacityGoal extends ProxyGatherCapacityGoal {
     @Override
     default Collection<? extends CapacitySupplier> suppliers() {
         return visitor().findGoal(this.getId())
-                        .map(CapacityGather::suppliers)
-                        .orElse(ImmutableList.of());
+                .map(CapacityGather::suppliers)
+                .orElse(ImmutableList.of());
     }
 
     @Override
     default Stream<? extends CapacitySupplier> suppliersStream() {
         return visitor().findGoal(this.getId())
-                        .map(CapacityGather::suppliersStream)
-                        .orElse(Stream.empty());
+                .map(CapacityGather::suppliersStream)
+                .orElse(Stream.empty());
     }
 
     @Override
     default Set<CapacityGroup> getSuppliersCapacityGroups() {
         return visitor().findGoal(this.getId())
-                        .map(CapacityGoal::getSuppliersCapacityGroups)
-                        .orElse(ImmutableSet.of());
+                .map(CapacityGoal::getSuppliersCapacityGroups)
+                .orElse(ImmutableSet.of());
     }
+
 }

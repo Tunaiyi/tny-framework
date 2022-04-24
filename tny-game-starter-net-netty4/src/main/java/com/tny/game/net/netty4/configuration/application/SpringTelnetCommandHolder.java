@@ -8,15 +8,15 @@ import java.util.*;
 
 public class SpringTelnetCommandHolder extends BaseTelnetCommandHolder implements TelnetCommandHolder, ApplicationContextAware {
 
-	@Override
-	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-		Map<String, TelnetCommand> map = applicationContext.getBeansOfType(TelnetCommand.class);
-		for (TelnetCommand command : map.values()) {
-			CommandType commandType = command.getCommandType();
-			List<TelnetCommand> commandList = this.commandTypeMap.computeIfAbsent(commandType, k -> new ArrayList<>());
-			commandList.add(command);
-			this.commandMap.put(command.command().toLowerCase(), command);
-		}
-	}
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        Map<String, TelnetCommand> map = applicationContext.getBeansOfType(TelnetCommand.class);
+        for (TelnetCommand command : map.values()) {
+            CommandType commandType = command.getCommandType();
+            List<TelnetCommand> commandList = this.commandTypeMap.computeIfAbsent(commandType, k -> new ArrayList<>());
+            commandList.add(command);
+            this.commandMap.put(command.command().toLowerCase(), command);
+        }
+    }
 
 }

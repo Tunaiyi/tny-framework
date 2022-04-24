@@ -6,25 +6,25 @@ package com.tny.game.basics.item.capacity;
  */
 public interface CapacityContainer extends CapacitySupply {
 
-	/**
-	 * 刷新
-	 *
-	 * @param supplier 持有的提供器
-	 */
-	void refresh(CapacitySupplier supplier);
+    /**
+     * 刷新
+     *
+     * @param supplier 持有的提供器
+     */
+    void refresh(CapacitySupplier supplier);
 
-	/**
-	 * 失效
-	 *
-	 * @param supplier 持有的提供器
-	 */
-	void invalid(CapacitySupplier supplier);
+    /**
+     * 失效
+     *
+     * @param supplier 持有的提供器
+     */
+    void invalid(CapacitySupplier supplier);
 
-	/**
-	 * 生效
-	 *
-	 * @param supplier 持有的提供器
-	 */
-	void effect(CapacitySupplier supplier);
+    /**
+     * 生效
+     *
+     * @param supplier 持有的提供器
+     */
+    void effect(CapacitySupplier supplier);
 
 }

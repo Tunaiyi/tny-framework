@@ -14,4 +14,5 @@ public interface ClassExcludeFilter extends ClassFilter {
     default boolean include(MetadataReader reader) {
         return true;
     }
+
 }

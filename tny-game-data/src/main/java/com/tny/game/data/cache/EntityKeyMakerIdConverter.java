@@ -10,24 +10,24 @@ import com.tny.game.data.*;
  */
 public class EntityKeyMakerIdConverter<K extends Comparable<?>, O> implements EntityIdConverter<K, O, K> {
 
-	private final EntityKeyMaker<K, O> keyMaker;
+    private final EntityKeyMaker<K, O> keyMaker;
 
-	public static <K extends Comparable<?>, O> EntityIdConverter<K, O, K> wrapper(EntityKeyMaker<K, O> keyMaker) {
-		return new EntityKeyMakerIdConverter<>(keyMaker);
-	}
+    public static <K extends Comparable<?>, O> EntityIdConverter<K, O, K> wrapper(EntityKeyMaker<K, O> keyMaker) {
+        return new EntityKeyMakerIdConverter<>(keyMaker);
+    }
 
-	private EntityKeyMakerIdConverter(EntityKeyMaker<K, O> keyMaker) {
-		this.keyMaker = keyMaker;
-	}
+    private EntityKeyMakerIdConverter(EntityKeyMaker<K, O> keyMaker) {
+        this.keyMaker = keyMaker;
+    }
 
-	@Override
-	public K keyToId(K key) {
-		return key;
-	}
+    @Override
+    public K keyToId(K key) {
+        return key;
+    }
 
-	@Override
-	public K entityToId(O object) {
-		return keyMaker.make(object);
-	}
+    @Override
+    public K entityToId(O object) {
+        return keyMaker.make(object);
+    }
 
 }

@@ -12,10 +12,10 @@ import com.tny.game.common.result.*;
  */
 public interface TradeService {
 
-	void deal(long playerId, Trade trade, AttrEntry<?>... entries);
+    void deal(long playerId, Trade trade, AttrEntry<?>... entries);
 
-	void deal(long playerId, TryToDoResult result, AttrEntry<?>... entries);
+    void deal(long playerId, TryToDoResult result, AttrEntry<?>... entries);
 
-	ResultCode checkBound(long playerId, Trade trade);
+    ResultCode checkBound(long playerId, Trade trade);
 
 }

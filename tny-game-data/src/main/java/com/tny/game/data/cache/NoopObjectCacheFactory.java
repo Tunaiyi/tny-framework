@@ -10,11 +10,11 @@ import com.tny.game.data.*;
  */
 public class NoopObjectCacheFactory extends AbstractCachedFactory<Class<?>, ObjectCache<?, ?>> implements ObjectCacheFactory {
 
-	public static final String CACHE_NAME = "noopObjectCacheFactory";
+    public static final String CACHE_NAME = "noopObjectCacheFactory";
 
-	@Override
-	public <K extends Comparable<?>, O> ObjectCache<K, O> createCache(EntityScheme cacheScheme, EntityKeyMaker<K, O> keyMaker) {
-		return loadOrCreate(cacheScheme.getEntityClass(), (key) -> new NoopObjectCache<>(cacheScheme));
-	}
+    @Override
+    public <K extends Comparable<?>, O> ObjectCache<K, O> createCache(EntityScheme cacheScheme, EntityKeyMaker<K, O> keyMaker) {
+        return loadOrCreate(cacheScheme.getEntityClass(), (key) -> new NoopObjectCache<>(cacheScheme));
+    }
 
 }

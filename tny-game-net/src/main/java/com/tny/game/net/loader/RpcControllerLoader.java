@@ -16,23 +16,23 @@ import java.util.*;
  */
 public final class RpcControllerLoader {
 
-	private static final Set<Class<?>> CLASSES = new ConcurrentHashSet<>();
+    private static final Set<Class<?>> CLASSES = new ConcurrentHashSet<>();
 
-	private RpcControllerLoader() {
-	}
+    private RpcControllerLoader() {
+    }
 
-	@ClassSelectorProvider
-	public static ClassSelector controllerSelector() {
-		return ClassSelector.create()
-				.addFilter(AnnotationClassFilter.ofInclude(RpcController.class))
-				.setHandler((classes) -> classes.stream()
-						.filter((c) -> !c.isInterface() && !Modifier.isAbstract(c.getModifiers()))
-						.forEach(CLASSES::add)
-				);
-	}
+    @ClassSelectorProvider
+    public static ClassSelector controllerSelector() {
+        return ClassSelector.create()
+                .addFilter(AnnotationClassFilter.ofInclude(RpcController.class))
+                .setHandler((classes) -> classes.stream()
+                        .filter((c) -> !c.isInterface() && !Modifier.isAbstract(c.getModifiers()))
+                        .forEach(CLASSES::add)
+                );
+    }
 
-	public static Set<Class<?>> getControllerClasses() {
-		return Collections.unmodifiableSet(CLASSES);
-	}
+    public static Set<Class<?>> getControllerClasses() {
+        return Collections.unmodifiableSet(CLASSES);
+    }
 
 }

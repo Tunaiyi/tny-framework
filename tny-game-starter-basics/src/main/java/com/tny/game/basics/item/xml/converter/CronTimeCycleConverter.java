@@ -11,24 +11,24 @@ import java.text.ParseException;
  */
 public class CronTimeCycleConverter implements SingleValueConverter {
 
-	@Override
-	public String toString(Object obj) {
-		CronTimeCycle cycle = ObjectAide.as(obj);
-		return cycle.getExpression().getCronExpression();
-	}
+    @Override
+    public String toString(Object obj) {
+        CronTimeCycle cycle = ObjectAide.as(obj);
+        return cycle.getExpression().getCronExpression();
+    }
 
-	@Override
-	public Object fromString(String str) {
-		try {
-			return CronTimeCycle.of(str);
-		} catch (ParseException e) {
-			throw new IllegalArgumentException(e);
-		}
-	}
+    @Override
+    public Object fromString(String str) {
+        try {
+            return CronTimeCycle.of(str);
+        } catch (ParseException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
 
-	@Override
-	public boolean canConvert(Class type) {
-		return CronTimeCycle.class.isAssignableFrom(type);
-	}
+    @Override
+    public boolean canConvert(Class type) {
+        return CronTimeCycle.class.isAssignableFrom(type);
+    }
 
 }

@@ -20,8 +20,8 @@ public abstract class XMLCapacityItemModel extends XMLItemModel implements Capac
         super.init(context);
         capacities = Collections.unmodifiableSet(this.getAbilityTypes(Capacity.class));
         capacityGroups = Collections.unmodifiableSet(this.capacities.stream()
-                                                                    .map(Capacity::getGroup)
-                                                                    .collect(Collectors.toSet()));
+                .map(Capacity::getGroup)
+                .collect(Collectors.toSet()));
 
     }
 

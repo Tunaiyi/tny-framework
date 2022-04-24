@@ -38,7 +38,7 @@ public class KafkaOpLogLayout extends AbstractStringLayout {
     public String toSerializable(LogEvent event) {
         Message message = event.getMessage();
         if (message instanceof LogMessage) {
-            LogMessage logMessage = (LogMessage) message;
+            LogMessage logMessage = (LogMessage)message;
             Log loggable = logMessage.getLog();
             ObjectMapper mapper = OpLogMapper.getMapper();
             try {

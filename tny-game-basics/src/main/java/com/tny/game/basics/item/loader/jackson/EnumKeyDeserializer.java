@@ -13,19 +13,19 @@ import java.text.MessageFormat;
  **/
 public class EnumKeyDeserializer<T> extends KeyDeserializer {
 
-	private final EnumMapper<T> enumMapper;
+    private final EnumMapper<T> enumMapper;
 
-	public EnumKeyDeserializer(EnumMapper<T> enumMapper) {
-		this.enumMapper = enumMapper;
-	}
+    public EnumKeyDeserializer(EnumMapper<T> enumMapper) {
+        this.enumMapper = enumMapper;
+    }
 
-	@Override
-	public Object deserializeKey(String key, DeserializationContext ctxt) throws IOException {
-		Object enumObject = this.enumMapper.getEnum(key);
-		if (enumObject == null) {
-			throw new NullPointerException(MessageFormat.format("无法找到{0}枚举类型", key));
-		}
-		return enumObject;
-	}
+    @Override
+    public Object deserializeKey(String key, DeserializationContext ctxt) throws IOException {
+        Object enumObject = this.enumMapper.getEnum(key);
+        if (enumObject == null) {
+            throw new NullPointerException(MessageFormat.format("无法找到{0}枚举类型", key));
+        }
+        return enumObject;
+    }
 
 }

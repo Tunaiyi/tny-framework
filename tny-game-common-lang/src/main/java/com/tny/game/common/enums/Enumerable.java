@@ -8,11 +8,11 @@ import com.tny.game.common.utils.*;
 
 public interface Enumerable<ID> {
 
-	ID getId();
+    ID getId();
 
-	default void checkEnum() {
-		ID id = getId();
-		ConfigChecker.check(this.getClass(), id, "{}-[{}-ID:{}]发生重复", this.getClass(), this, id);
-	}
+    default void checkEnum() {
+        ID id = getId();
+        ConfigChecker.check(this.getClass(), id, "{}-[{}-ID:{}]发生重复", this.getClass(), this, id);
+    }
 
 }

@@ -15,44 +15,44 @@ import static com.tny.game.net.base.NetLogger.*;
 
 public class DatagramPackEncodeHandler extends MessageToByteEncoder<Object> implements DatagramPackCodecErrorHandler {
 
-	/**
-	 * 日志
-	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(NetLogger.CODER);
+    /**
+     * 日志
+     */
+    private static final Logger LOGGER = LoggerFactory.getLogger(NetLogger.CODER);
 
-	private final DatagramPackEncoder encoder;
+    private final DatagramPackEncoder encoder;
 
-	private final boolean closeOnError;
+    private final boolean closeOnError;
 
-	public DatagramPackEncodeHandler(DatagramPackEncoder encoder, boolean closeOnError) {
-		this.encoder = encoder;
-		this.closeOnError = closeOnError;
-	}
+    public DatagramPackEncodeHandler(DatagramPackEncoder encoder, boolean closeOnError) {
+        this.encoder = encoder;
+        this.closeOnError = closeOnError;
+    }
 
-	@Override
-	protected void encode(ChannelHandlerContext ctx, Object msg, ByteBuf out) throws Exception {
-		try (ProcessTracer ignored = MESSAGE_ENCODE_WATCHER.trace()) {
-			if (msg instanceof ByteBuf) {
-				out.writeBytes((ByteBuf)msg);
-				return;
-			} else if (msg instanceof byte[]) {
-				out.writeBytes((byte[])msg);
-				return;
-			}
-			if (msg instanceof ByteBuffer) {
-				out.writeBytes((ByteBuffer)msg);
-				return;
-			}
-			if (msg instanceof Message) {
-				try {
-					this.encoder.encodeObject(ctx, (Message)msg, out);
-				} catch (Throwable e) {
-					handleOnEncodeError(LOGGER, ctx, e, closeOnError);
-				}
-				return;
-			}
-		}
-		throw NetCodecException.causeEncodeFailed("can not encode {}", msg.getClass());
-	}
+    @Override
+    protected void encode(ChannelHandlerContext ctx, Object msg, ByteBuf out) throws Exception {
+        try (ProcessTracer ignored = MESSAGE_ENCODE_WATCHER.trace()) {
+            if (msg instanceof ByteBuf) {
+                out.writeBytes((ByteBuf)msg);
+                return;
+            } else if (msg instanceof byte[]) {
+                out.writeBytes((byte[])msg);
+                return;
+            }
+            if (msg instanceof ByteBuffer) {
+                out.writeBytes((ByteBuffer)msg);
+                return;
+            }
+            if (msg instanceof Message) {
+                try {
+                    this.encoder.encodeObject(ctx, (Message)msg, out);
+                } catch (Throwable e) {
+                    handleOnEncodeError(LOGGER, ctx, e, closeOnError);
+                }
+                return;
+            }
+        }
+        throw NetCodecException.causeEncodeFailed("can not encode {}", msg.getClass());
+    }
 
 }

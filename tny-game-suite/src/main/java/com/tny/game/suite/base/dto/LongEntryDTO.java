@@ -14,18 +14,23 @@ public class LongEntryDTO {
     @VarDoc("key")
     @ProtoExField(1)
     private long key;
+
     @VarDoc("int")
     @ProtoExField(2)
     private Integer intValue;
+
     @VarDoc("float")
     @ProtoExField(3)
     private Float floatValue;
+
     @VarDoc("double")
     @ProtoExField(4)
     private Double doubleValue;
+
     @VarDoc("long")
     @ProtoExField(5)
     private Long longValue;
+
     @VarDoc("string")
     @ProtoExField(6)
     private String stringValue;
@@ -88,16 +93,18 @@ public class LongEntryDTO {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append(key).append(":");
-        if (intValue != null)
+        if (intValue != null) {
             builder.append(intValue);
-        else if (floatValue != null)
+        } else if (floatValue != null) {
             builder.append(floatValue);
-        else if (doubleValue != null)
+        } else if (doubleValue != null) {
             builder.append(doubleValue);
-        else if (longValue != null)
+        } else if (longValue != null) {
             builder.append(longValue);
-        else if (stringValue != null)
+        } else if (stringValue != null) {
             builder.append(stringValue);
+        }
         return builder.toString();
     }
+
 }

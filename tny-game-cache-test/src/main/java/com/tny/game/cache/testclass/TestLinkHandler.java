@@ -11,8 +11,9 @@ public class TestLinkHandler extends CacheFormatter<Object, Object> {
 
     @Override
     public Object format2Save(String key, Object object) {
-        if (object == null)
+        if (object == null) {
             return null;
+        }
         ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
         ObjectOutputStream objectOut = null;
         try {
@@ -33,9 +34,10 @@ public class TestLinkHandler extends CacheFormatter<Object, Object> {
 
     @Override
     public Object format2Load(String key, Object bytes) {
-        if (bytes == null)
+        if (bytes == null) {
             return null;
-        ByteArrayInputStream byteIn = new ByteArrayInputStream(Base64.decodeBase64((String) bytes));
+        }
+        ByteArrayInputStream byteIn = new ByteArrayInputStream(Base64.decodeBase64((String)bytes));
         ObjectInputStream objectIn = null;
         try {
             objectIn = new ObjectInputStream(byteIn);

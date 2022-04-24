@@ -24,176 +24,176 @@ import static com.tny.game.common.utils.StringAide.*;
 @Unit
 public class CommonEndpointKeeperManager implements EndpointKeeperManager, AppPrepareStart {
 
-	private static final String DEFAULT_KEY = "default";
+    private static final String DEFAULT_KEY = "default";
 
-	private final Map<String, NetEndpointKeeper<?, ?>> endpointKeeperMap = new ConcurrentHashMap<>();
+    private final Map<String, NetEndpointKeeper<?, ?>> endpointKeeperMap = new ConcurrentHashMap<>();
 
-	private Map<String, SessionKeeperSetting> sessionKeeperSettingMap = ImmutableMap.of();
+    private Map<String, SessionKeeperSetting> sessionKeeperSettingMap = ImmutableMap.of();
 
-	private Map<String, TerminalKeeperSetting> terminalKeeperSettingMap = ImmutableMap.of();
+    private Map<String, TerminalKeeperSetting> terminalKeeperSettingMap = ImmutableMap.of();
 
-	private final Map<String, SessionKeeperFactory<?, SessionKeeperSetting>> sessionFactoryMap = new ConcurrentHashMap<>();
+    private final Map<String, SessionKeeperFactory<?, SessionKeeperSetting>> sessionFactoryMap = new ConcurrentHashMap<>();
 
-	private final Map<String, TerminalKeeperFactory<?, TerminalKeeperSetting>> terminalFactoryMap = new ConcurrentHashMap<>();
+    private final Map<String, TerminalKeeperFactory<?, TerminalKeeperSetting>> terminalFactoryMap = new ConcurrentHashMap<>();
 
-	@SuppressWarnings({"unchecked", "rawtypes"})
-	private static final BindVoidEventBus<EndpointKeeperCreateListener, EndpointKeeper> ON_CREATE =
-			EventBuses.of(EndpointKeeperCreateListener.class, EndpointKeeperCreateListener::onCreate);
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private static final BindVoidEventBus<EndpointKeeperCreateListener, EndpointKeeper> ON_CREATE =
+            EventBuses.of(EndpointKeeperCreateListener.class, EndpointKeeperCreateListener::onCreate);
 
-	public CommonEndpointKeeperManager() {
-		EndpointEventBuses buses = EndpointEventBuses.buses();
-		buses.onlineEvent().add(this::notifyEndpointOnline);
-		buses.offlineEvent().add(this::notifyEndpointOffline);
-		buses.closeEvent().add(this::notifyEndpointClose);
-	}
+    public CommonEndpointKeeperManager() {
+        EndpointEventBuses buses = EndpointEventBuses.buses();
+        buses.onlineEvent().add(this::notifyEndpointOnline);
+        buses.offlineEvent().add(this::notifyEndpointOffline);
+        buses.closeEvent().add(this::notifyEndpointClose);
+    }
 
-	public CommonEndpointKeeperManager(
-			SessionKeeperSetting defaultSessionKeeperSetting,
-			TerminalKeeperSetting defaultTerminalKeeperSetting,
-			Map<String, ? extends SessionKeeperSetting> sessionKeeperSettingMap,
-			Map<String, ? extends TerminalKeeperSetting> terminalKeeperSettingMap) {
-		this();
-		Map<String, SessionKeeperSetting> sessionSettingMap = new HashMap<>();
-		Map<String, TerminalKeeperSetting> terminalSettingMap = new HashMap<>();
-		if (MapUtils.isNotEmpty(sessionKeeperSettingMap)) {
-			sessionKeeperSettingMap.forEach((name, setting) -> sessionSettingMap.put(StringAide.ifBlank(setting.getUserType(), name), setting));
-		}
-		if (MapUtils.isNotEmpty(terminalKeeperSettingMap)) {
-			terminalKeeperSettingMap.forEach((name, setting) -> terminalSettingMap.put(StringAide.ifBlank(setting.getUserType(), name), setting));
-		}
-		if (defaultSessionKeeperSetting != null) {
-			sessionSettingMap.put(DEFAULT_KEY, defaultSessionKeeperSetting);
-			sessionSettingMap.put(StringAide.ifBlank(defaultSessionKeeperSetting.getUserType(), DEFAULT_KEY), defaultSessionKeeperSetting);
-		}
-		if (defaultTerminalKeeperSetting != null) {
-			terminalSettingMap.put(DEFAULT_KEY, defaultTerminalKeeperSetting);
-			terminalSettingMap.put(StringAide.ifBlank(defaultTerminalKeeperSetting.getUserType(), DEFAULT_KEY), defaultTerminalKeeperSetting);
-		}
-		this.sessionKeeperSettingMap = ImmutableMap.copyOf(sessionSettingMap);
-		this.terminalKeeperSettingMap = ImmutableMap.copyOf(terminalSettingMap);
-	}
+    public CommonEndpointKeeperManager(
+            SessionKeeperSetting defaultSessionKeeperSetting,
+            TerminalKeeperSetting defaultTerminalKeeperSetting,
+            Map<String, ? extends SessionKeeperSetting> sessionKeeperSettingMap,
+            Map<String, ? extends TerminalKeeperSetting> terminalKeeperSettingMap) {
+        this();
+        Map<String, SessionKeeperSetting> sessionSettingMap = new HashMap<>();
+        Map<String, TerminalKeeperSetting> terminalSettingMap = new HashMap<>();
+        if (MapUtils.isNotEmpty(sessionKeeperSettingMap)) {
+            sessionKeeperSettingMap.forEach((name, setting) -> sessionSettingMap.put(StringAide.ifBlank(setting.getUserType(), name), setting));
+        }
+        if (MapUtils.isNotEmpty(terminalKeeperSettingMap)) {
+            terminalKeeperSettingMap.forEach((name, setting) -> terminalSettingMap.put(StringAide.ifBlank(setting.getUserType(), name), setting));
+        }
+        if (defaultSessionKeeperSetting != null) {
+            sessionSettingMap.put(DEFAULT_KEY, defaultSessionKeeperSetting);
+            sessionSettingMap.put(StringAide.ifBlank(defaultSessionKeeperSetting.getUserType(), DEFAULT_KEY), defaultSessionKeeperSetting);
+        }
+        if (defaultTerminalKeeperSetting != null) {
+            terminalSettingMap.put(DEFAULT_KEY, defaultTerminalKeeperSetting);
+            terminalSettingMap.put(StringAide.ifBlank(defaultTerminalKeeperSetting.getUserType(), DEFAULT_KEY), defaultTerminalKeeperSetting);
+        }
+        this.sessionKeeperSettingMap = ImmutableMap.copyOf(sessionSettingMap);
+        this.terminalKeeperSettingMap = ImmutableMap.copyOf(terminalSettingMap);
+    }
 
-	private NetEndpointKeeper<?, ?> create(String userType, TunnelMode tunnelMode) {
-		if (tunnelMode == TunnelMode.SERVER) {
-			SessionKeeperSetting setting = this.sessionKeeperSettingMap.get(userType);
-			if (setting == null) {
-				setting = this.sessionKeeperSettingMap.get(DEFAULT_KEY);
-			}
-			return create(userType, tunnelMode, setting, this.sessionFactoryMap.get(setting.getKeeperFactory()));
-		} else {
-			TerminalKeeperSetting setting = this.terminalKeeperSettingMap.get(userType);
-			if (setting == null) {
-				setting = this.terminalKeeperSettingMap.get(DEFAULT_KEY);
-			}
-			return create(userType, tunnelMode, setting, this.terminalFactoryMap.get(setting.getKeeperFactory()));
-		}
-	}
+    private NetEndpointKeeper<?, ?> create(String userType, TunnelMode tunnelMode) {
+        if (tunnelMode == TunnelMode.SERVER) {
+            SessionKeeperSetting setting = this.sessionKeeperSettingMap.get(userType);
+            if (setting == null) {
+                setting = this.sessionKeeperSettingMap.get(DEFAULT_KEY);
+            }
+            return create(userType, tunnelMode, setting, this.sessionFactoryMap.get(setting.getKeeperFactory()));
+        } else {
+            TerminalKeeperSetting setting = this.terminalKeeperSettingMap.get(userType);
+            if (setting == null) {
+                setting = this.terminalKeeperSettingMap.get(DEFAULT_KEY);
+            }
+            return create(userType, tunnelMode, setting, this.terminalFactoryMap.get(setting.getKeeperFactory()));
+        }
+    }
 
-	private <E extends Endpoint<?>, EK extends NetEndpointKeeper<?, E>, S extends EndpointKeeperSetting> EK create(
-			String userType, TunnelMode endpointType, S setting, EndpointKeeperFactory<?, EK, S> factory) {
-		Asserts.checkNotNull(factory, "can not found {}.{} session factory", endpointType, userType);
-		return factory.createKeeper(userType, setting);
-	}
+    private <E extends Endpoint<?>, EK extends NetEndpointKeeper<?, E>, S extends EndpointKeeperSetting> EK create(
+            String userType, TunnelMode endpointType, S setting, EndpointKeeperFactory<?, EK, S> factory) {
+        Asserts.checkNotNull(factory, "can not found {}.{} session factory", endpointType, userType);
+        return factory.createKeeper(userType, setting);
+    }
 
-	@Override
-	public <UID, K extends EndpointKeeper<UID, ? extends Endpoint<UID>>> K loadEndpoint(String userType, TunnelMode tunnelMode) {
-		EndpointKeeper<?, ?> keeper = this.endpointKeeperMap.get(userType);
-		if (keeper != null) {
-			return as(keeper);
-		}
-		NetEndpointKeeper<?, ?> newOne = create(userType, tunnelMode);
-		keeper = as(this.endpointKeeperMap.computeIfAbsent(userType, (k) -> newOne));
-		if (keeper == newOne) {
-			ON_CREATE.notify(keeper);
-		}
-		return as(keeper);
-	}
+    @Override
+    public <UID, K extends EndpointKeeper<UID, ? extends Endpoint<UID>>> K loadEndpoint(String userType, TunnelMode tunnelMode) {
+        EndpointKeeper<?, ?> keeper = this.endpointKeeperMap.get(userType);
+        if (keeper != null) {
+            return as(keeper);
+        }
+        NetEndpointKeeper<?, ?> newOne = create(userType, tunnelMode);
+        keeper = as(this.endpointKeeperMap.computeIfAbsent(userType, (k) -> newOne));
+        if (keeper == newOne) {
+            ON_CREATE.notify(keeper);
+        }
+        return as(keeper);
+    }
 
-	@Override
-	public <UID, K extends EndpointKeeper<UID, ? extends Endpoint<UID>>> Optional<K> getKeeper(String userType) {
-		return Optional.ofNullable(as(this.endpointKeeperMap.get(userType)));
-	}
+    @Override
+    public <UID, K extends EndpointKeeper<UID, ? extends Endpoint<UID>>> Optional<K> getKeeper(String userType) {
+        return Optional.ofNullable(as(this.endpointKeeperMap.get(userType)));
+    }
 
-	@Override
-	public <UID, K extends SessionKeeper<UID>> Optional<K> getSessionKeeper(String userType) {
-		return this.getKeeper(userType, SessionKeeper.class);
-	}
+    @Override
+    public <UID, K extends SessionKeeper<UID>> Optional<K> getSessionKeeper(String userType) {
+        return this.getKeeper(userType, SessionKeeper.class);
+    }
 
-	@Override
-	public <UID, K extends TerminalKeeper<UID>> Optional<K> getTerminalKeeper(String userType) {
-		return this.getKeeper(userType, TerminalKeeper.class);
-	}
+    @Override
+    public <UID, K extends TerminalKeeper<UID>> Optional<K> getTerminalKeeper(String userType) {
+        return this.getKeeper(userType, TerminalKeeper.class);
+    }
 
-	private <K extends EndpointKeeper<?, ?>, EK extends K> Optional<EK> getKeeper(String userType, Class<K> keeperClass) {
-		EndpointKeeper<?, ?> keeper = this.endpointKeeperMap.get(userType);
-		if (keeper == null) {
-			return Optional.empty();
-		}
-		if (keeperClass.isInstance(keeper)) {
-			return Optional.of(as(keeper));
-		}
-		throw new ClassCastException(format("{} not instance of {}", keeper, keeperClass));
-	}
+    private <K extends EndpointKeeper<?, ?>, EK extends K> Optional<EK> getKeeper(String userType, Class<K> keeperClass) {
+        EndpointKeeper<?, ?> keeper = this.endpointKeeperMap.get(userType);
+        if (keeper == null) {
+            return Optional.empty();
+        }
+        if (keeperClass.isInstance(keeper)) {
+            return Optional.of(as(keeper));
+        }
+        throw new ClassCastException(format("{} not instance of {}", keeper, keeperClass));
+    }
 
-	@Override
-	public PrepareStarter getPrepareStarter() {
-		return PrepareStarter.value(this.getClass(), SYSTEM_LEVEL_10);
-	}
+    @Override
+    public PrepareStarter getPrepareStarter() {
+        return PrepareStarter.value(this.getClass(), SYSTEM_LEVEL_10);
+    }
 
-	@Override
-	public void prepareStart() {
-		this.sessionKeeperSettingMap.forEach((name, setting) -> {
-			this.sessionFactoryMap
-					.computeIfAbsent(setting.getKeeperFactory(), f -> UnitLoader.getLoader(SessionKeeperFactory.class).checkUnit(f));
-		});
-		this.terminalKeeperSettingMap.forEach((name, setting) -> {
-			this.terminalFactoryMap
-					.computeIfAbsent(setting.getKeeperFactory(), f -> UnitLoader.getLoader(TerminalKeeperFactory.class).checkUnit(f));
-		});
+    @Override
+    public void prepareStart() {
+        this.sessionKeeperSettingMap.forEach((name, setting) -> {
+            this.sessionFactoryMap
+                    .computeIfAbsent(setting.getKeeperFactory(), f -> UnitLoader.getLoader(SessionKeeperFactory.class).checkUnit(f));
+        });
+        this.terminalKeeperSettingMap.forEach((name, setting) -> {
+            this.terminalFactoryMap
+                    .computeIfAbsent(setting.getKeeperFactory(), f -> UnitLoader.getLoader(TerminalKeeperFactory.class).checkUnit(f));
+        });
 
-		//        UnitLoader.getLoader(SessionKeeperSetting.class).getAllUnits().forEach(unit -> {
-		//            this.sessionKeeperSettingMap.put(unit.getName(), as(unit));
-		//            this.sessionFactoryMap
-		//                    .computeIfAbsent(unit.getKeeperFactory(), f -> UnitLoader.getLoader(SessionKeeperFactory.class).getUnitAnCheck(f));
-		//        });
-		//        UnitLoader.getLoader(TerminalKeeperSetting.class).getAllUnits().forEach(unit -> {
-		//            this.terminalKeeperSettingMap.put(unit.getName(), as(unit));
-		//            this.terminalFactoryMap
-		//                    .computeIfAbsent(unit.getKeeperFactory(), f -> UnitLoader.getLoader(TerminalKeeperFactory.class).getUnitAnCheck(f));
-		//        });
-	}
+        //        UnitLoader.getLoader(SessionKeeperSetting.class).getAllUnits().forEach(unit -> {
+        //            this.sessionKeeperSettingMap.put(unit.getName(), as(unit));
+        //            this.sessionFactoryMap
+        //                    .computeIfAbsent(unit.getKeeperFactory(), f -> UnitLoader.getLoader(SessionKeeperFactory.class).getUnitAnCheck(f));
+        //        });
+        //        UnitLoader.getLoader(TerminalKeeperSetting.class).getAllUnits().forEach(unit -> {
+        //            this.terminalKeeperSettingMap.put(unit.getName(), as(unit));
+        //            this.terminalFactoryMap
+        //                    .computeIfAbsent(unit.getKeeperFactory(), f -> UnitLoader.getLoader(TerminalKeeperFactory.class).getUnitAnCheck(f));
+        //        });
+    }
 
-	private void notifyEndpointOnline(Endpoint<?> endpoint) {
-		if (!endpoint.isAuthenticated()) {
-			return;
-		}
-		String userType = endpoint.getUserType();
-		NetEndpointKeeper<?, ?> keeper = endpointKeeperMap.get(userType);
-		if (keeper != null) {
-			keeper.notifyEndpointOnline(endpoint);
-		}
-	}
+    private void notifyEndpointOnline(Endpoint<?> endpoint) {
+        if (!endpoint.isAuthenticated()) {
+            return;
+        }
+        String userType = endpoint.getUserType();
+        NetEndpointKeeper<?, ?> keeper = endpointKeeperMap.get(userType);
+        if (keeper != null) {
+            keeper.notifyEndpointOnline(endpoint);
+        }
+    }
 
-	private void notifyEndpointOffline(Endpoint<?> endpoint) {
-		if (!endpoint.isAuthenticated()) {
-			return;
-		}
-		String userType = endpoint.getUserType();
-		NetEndpointKeeper<?, ?> keeper = endpointKeeperMap.get(userType);
-		if (keeper != null) {
-			keeper.notifyEndpointOffline(endpoint);
-		}
-	}
+    private void notifyEndpointOffline(Endpoint<?> endpoint) {
+        if (!endpoint.isAuthenticated()) {
+            return;
+        }
+        String userType = endpoint.getUserType();
+        NetEndpointKeeper<?, ?> keeper = endpointKeeperMap.get(userType);
+        if (keeper != null) {
+            keeper.notifyEndpointOffline(endpoint);
+        }
+    }
 
-	private void notifyEndpointClose(Endpoint<?> endpoint) {
-		if (!endpoint.isAuthenticated()) {
-			return;
-		}
-		String userType = endpoint.getUserType();
-		NetEndpointKeeper<?, ?> keeper = endpointKeeperMap.get(userType);
-		if (keeper != null) {
-			keeper.notifyEndpointClose(endpoint);
-		}
-	}
+    private void notifyEndpointClose(Endpoint<?> endpoint) {
+        if (!endpoint.isAuthenticated()) {
+            return;
+        }
+        String userType = endpoint.getUserType();
+        NetEndpointKeeper<?, ?> keeper = endpointKeeperMap.get(userType);
+        if (keeper != null) {
+            keeper.notifyEndpointClose(endpoint);
+        }
+    }
 
 }

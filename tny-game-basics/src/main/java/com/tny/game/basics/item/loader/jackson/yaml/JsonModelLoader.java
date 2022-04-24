@@ -15,13 +15,13 @@ import com.tny.game.expr.*;
  **/
 public class JsonModelLoader<M extends Model> extends JacksonModelLoader<M> {
 
-	public JsonModelLoader(Class<? extends M> modelClass, ModelLoadHandler<M> loadHandler, ExprHolderFactory exprHolderFactory) {
-		super(modelClass, loadHandler, exprHolderFactory, new JsonFactory());
-	}
+    public JsonModelLoader(Class<? extends M> modelClass, ModelLoadHandler<M> loadHandler, ExprHolderFactory exprHolderFactory) {
+        super(modelClass, loadHandler, exprHolderFactory, new JsonFactory());
+    }
 
-	@Override
-	protected String getFileType() {
-		return "json";
-	}
+    @Override
+    protected String getFileType() {
+        return "json";
+    }
 
 }

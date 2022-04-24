@@ -6,6 +6,6 @@ import io.netty.channel.ChannelHandlerContext;
 
 public interface RelayPackEncoder {
 
-	void encodeObject(ChannelHandlerContext ctx, RelayPacket<?> relay, ByteBuf out) throws Exception;
+    void encodeObject(ChannelHandlerContext ctx, RelayPacket<?> relay, ByteBuf out) throws Exception;
 
 }

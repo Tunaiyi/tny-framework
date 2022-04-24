@@ -19,50 +19,50 @@ import java.lang.reflect.Type;
  */
 public class ObjectCodecableCodec extends TypedBaseCodec {
 
-	private final ObjectCodec<Object> codecor;
+    private final ObjectCodec<Object> codecor;
 
-	public ObjectCodecableCodec(Type type, ObjectCodec<Object> codecor) {
-		super(type, null, false);
-		this.codecor = codecor;
-	}
+    public ObjectCodecableCodec(Type type, ObjectCodec<Object> codecor) {
+        super(type, null, false);
+        this.codecor = codecor;
+    }
 
-	public ObjectCodecableCodec(Type type, String mimeType, ObjectCodecService objectCodecService) {
-		this(type, mimeType, objectCodecService, null);
-	}
+    public ObjectCodecableCodec(Type type, String mimeType, ObjectCodecService objectCodecService) {
+        this(type, mimeType, objectCodecService, null);
+    }
 
-	public ObjectCodecableCodec(Type type, String mimeType, ObjectCodecService objectCodecService, Codec keyCodec) {
-		super(type, keyCodec, false);
-		this.codecor = objectCodecService.codec(type, mimeType);
-		this.initCodec();
-	}
+    public ObjectCodecableCodec(Type type, String mimeType, ObjectCodecService objectCodecService, Codec keyCodec) {
+        super(type, keyCodec, false);
+        this.codecor = objectCodecService.codec(type, mimeType);
+        this.initCodec();
+    }
 
-	@Override
-	protected Decoder<Object> createDecoder(Type type) {
-		return (buf, state) -> this.codecor.decode(ByteBufUtil.getBytes(buf));
-	}
+    @Override
+    protected Decoder<Object> createDecoder(Type type) {
+        return (buf, state) -> this.codecor.decode(ByteBufUtil.getBytes(buf));
+    }
 
-	@Override
-	protected Encoder createEncoder(Type type) {
-		return in -> {
-			ByteBuf out = ByteBufAllocator.DEFAULT.buffer();
-			try (ByteBufOutputStream os = new ByteBufOutputStream(out)) {
-				if (in instanceof byte[]) {
-					os.write((byte[])in);
-				} else if (ClassUtils.isPrimitiveOrWrapper(in.getClass()) || in instanceof CharSequence) {
-					os.write(in.toString().getBytes(CoderCharsets.DEFAULT));
-				} else {
-					os.write(this.codecor.encode(in));
-				}
-				return os.buffer();
-			} catch (IOException e) {
-				ReferenceCountUtil.release(out);
-				throw e;
-			}
-		};
-	}
+    @Override
+    protected Encoder createEncoder(Type type) {
+        return in -> {
+            ByteBuf out = ByteBufAllocator.DEFAULT.buffer();
+            try (ByteBufOutputStream os = new ByteBufOutputStream(out)) {
+                if (in instanceof byte[]) {
+                    os.write((byte[])in);
+                } else if (ClassUtils.isPrimitiveOrWrapper(in.getClass()) || in instanceof CharSequence) {
+                    os.write(in.toString().getBytes(CoderCharsets.DEFAULT));
+                } else {
+                    os.write(this.codecor.encode(in));
+                }
+                return os.buffer();
+            } catch (IOException e) {
+                ReferenceCountUtil.release(out);
+                throw e;
+            }
+        };
+    }
 
-	public static void main(String[] args) {
-		System.out.println(MimeTypeUtils.parseMimeType("json"));
-	}
+    public static void main(String[] args) {
+        System.out.println(MimeTypeUtils.parseMimeType("json"));
+    }
 
 }

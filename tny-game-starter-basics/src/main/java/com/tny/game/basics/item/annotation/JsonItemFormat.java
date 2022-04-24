@@ -24,6 +24,6 @@ import java.lang.annotation.*;
 @Documented
 public @interface JsonItemFormat {
 
-	Class<? extends Manager<?>> value();
+    Class<? extends Manager<?>> value();
 
 }

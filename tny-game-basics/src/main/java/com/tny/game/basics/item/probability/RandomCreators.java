@@ -11,6 +11,7 @@ import java.util.*;
 public class RandomCreators {
 
     private final static Map<Class<?>, RandomCreatorFactory<?, ?>> DEFAULT_FACTORIES = new CopyOnWriteMap<>();
+
     private final static Map<String, RandomCreatorFactory<?, ?>> FACTORIES = new CopyOnWriteMap<>();
 
     static {

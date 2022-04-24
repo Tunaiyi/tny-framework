@@ -127,26 +127,32 @@ public class TestPlayer implements Serializable {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
-        result = prime * result + (int) (this.playerId ^ (this.playerId >>> 32));
+        result = prime * result + (int)(this.playerId ^ (this.playerId >>> 32));
         return result;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (this.getClass() != obj.getClass())
+        }
+        if (this.getClass() != obj.getClass()) {
             return false;
-        TestPlayer other = (TestPlayer) obj;
+        }
+        TestPlayer other = (TestPlayer)obj;
         if (this.name == null) {
-            if (other.name != null)
+            if (other.name != null) {
                 return false;
-        } else if (!this.name.equals(other.name))
+            }
+        } else if (!this.name.equals(other.name)) {
             return false;
-        if (this.playerId != other.playerId)
+        }
+        if (this.playerId != other.playerId) {
             return false;
+        }
         return true;
     }
 

@@ -14,19 +14,19 @@ import static com.tny.game.common.utils.ObjectAide.*;
  */
 public class DefaultRpcRouteManager implements RpcRouteManager {
 
-	private final Map<Class<?>, RpcRouter<?>> routerMap;
+    private final Map<Class<?>, RpcRouter<?>> routerMap;
 
-	public DefaultRpcRouteManager(Collection<RpcRouter<?>> routers) {
-		Map<Class<?>, RpcRouter<?>> routerMap = new HashMap<>();
-		for (RpcRouter<?> router : routers) {
-			routerMap.put(router.getClass(), router);
-		}
-		this.routerMap = ImmutableMap.copyOf(routerMap);
-	}
+    public DefaultRpcRouteManager(Collection<RpcRouter<?>> routers) {
+        Map<Class<?>, RpcRouter<?>> routerMap = new HashMap<>();
+        for (RpcRouter<?> router : routers) {
+            routerMap.put(router.getClass(), router);
+        }
+        this.routerMap = ImmutableMap.copyOf(routerMap);
+    }
 
-	@Override
-	public <T> RpcRouter<T> getRouter(Class<?> routerClass) {
-		return as(this.routerMap.get(routerClass));
-	}
+    @Override
+    public <T> RpcRouter<T> getRouter(Class<?> routerClass) {
+        return as(this.routerMap.get(routerClass));
+    }
 
 }

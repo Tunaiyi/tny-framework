@@ -12,8 +12,8 @@ import com.tny.game.net.relay.packet.arguments.*;
  */
 public class LinkOpenArgumentsCodecor extends BaseProtobufPacketArgumentsCodecor<LinkOpenArguments, LinkOpenArgumentsProto> {
 
-	public LinkOpenArgumentsCodecor() {
-		super(LinkOpenArguments.class, LinkOpenArgumentsProto.class, LinkOpenArgumentsProto::new);
-	}
+    public LinkOpenArgumentsCodecor() {
+        super(LinkOpenArguments.class, LinkOpenArgumentsProto.class, LinkOpenArgumentsProto::new);
+    }
 
 }

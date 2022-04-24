@@ -9,12 +9,12 @@ import com.tny.game.common.event.bus.*;
  */
 public interface TradeEvents {
 
-	BindP2EventBus<TradeListener, Warehouse, Trade, Attributes>
-			REWARD_EVENT = EventBuses.of(TradeListener.class,
-			TradeListener::handleReward);
+    BindP2EventBus<TradeListener, Warehouse, Trade, Attributes>
+            REWARD_EVENT = EventBuses.of(TradeListener.class,
+            TradeListener::handleReward);
 
-	BindP2EventBus<TradeListener, Warehouse, Trade, Attributes>
-			CONSUME_EVENT = EventBuses.of(TradeListener.class,
-			TradeListener::handleConsume);
+    BindP2EventBus<TradeListener, Warehouse, Trade, Attributes>
+            CONSUME_EVENT = EventBuses.of(TradeListener.class,
+            TradeListener::handleConsume);
 
 }

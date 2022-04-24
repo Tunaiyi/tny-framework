@@ -18,18 +18,23 @@ public class TestSubObject extends TestObject {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (!super.equals(obj))
+        }
+        if (!super.equals(obj)) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
-        TestSubObject other = (TestSubObject) obj;
+        }
+        TestSubObject other = (TestSubObject)obj;
         if (subField == null) {
-            if (other.subField != null)
+            if (other.subField != null) {
                 return false;
-        } else if (!subField.equals(other.subField))
+            }
+        } else if (!subField.equals(other.subField)) {
             return false;
+        }
         return true;
     }
 

@@ -5,21 +5,21 @@ package com.tny.game.net.message;
  */
 public interface MessageHead extends MessageSchema {
 
-	/**
-	 * @return 返回请求Id
-	 */
-	long getId();
+    /**
+     * @return 返回请求Id
+     */
+    long getId();
 
-	/**
-	 * @return 消息响应码
-	 */
-	int getCode();
+    /**
+     * @return 消息响应码
+     */
+    int getCode();
 
-	/**
-	 * 获取请求时间
-	 *
-	 * @return 返回请求时间
-	 */
-	long getTime();
+    /**
+     * 获取请求时间
+     *
+     * @return 返回请求时间
+     */
+    long getTime();
 
 }

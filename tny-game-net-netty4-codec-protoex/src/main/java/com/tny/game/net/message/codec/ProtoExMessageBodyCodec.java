@@ -9,21 +9,21 @@ import io.netty.buffer.ByteBuf;
 @Unit
 public class ProtoExMessageBodyCodec<T> implements MessageBodyCodec<T> {
 
-	@Override
-	public T decode(ByteBuf buffer) {
-		try (ProtoExReader bodyReader = new ProtoExReader(new ProtoExInputStream(buffer.nioBuffer()))) {
-			return bodyReader.readMessage();
-		}
-	}
+    @Override
+    public T decode(ByteBuf buffer) {
+        try (ProtoExReader bodyReader = new ProtoExReader(new ProtoExInputStream(buffer.nioBuffer()))) {
+            return bodyReader.readMessage();
+        }
+    }
 
-	@Override
-	public void encode(T object, ByteBuf code) {
-		try (ProtoExWriter writer = new ProtoExWriter()) {
-			if (object != null) {
-				writer.writeMessage(object, TypeEncode.EXPLICIT);
-			}
-			code.writeBytes(writer.toByteArray());
-		}
-	}
+    @Override
+    public void encode(T object, ByteBuf code) {
+        try (ProtoExWriter writer = new ProtoExWriter()) {
+            if (object != null) {
+                writer.writeMessage(object, TypeEncode.EXPLICIT);
+            }
+            code.writeBytes(writer.toByteArray());
+        }
+    }
 
 }

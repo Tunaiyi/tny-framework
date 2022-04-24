@@ -10,14 +10,14 @@ import com.tny.game.net.relay.packet.arguments.*;
  */
 public class TunnelSwitchLinkPacket extends BaseTunnelPacket<TunnelVoidArguments> {
 
-	public static final RelayPacketFactory<TunnelSwitchLinkPacket, TunnelVoidArguments> FACTORY = TunnelSwitchLinkPacket::new;
+    public static final RelayPacketFactory<TunnelSwitchLinkPacket, TunnelVoidArguments> FACTORY = TunnelSwitchLinkPacket::new;
 
-	public TunnelSwitchLinkPacket(int id, TunnelVoidArguments arguments) {
-		super(id, RelayPacketType.TUNNEL_SWITCH_LINK, arguments);
-	}
+    public TunnelSwitchLinkPacket(int id, TunnelVoidArguments arguments) {
+        super(id, RelayPacketType.TUNNEL_SWITCH_LINK, arguments);
+    }
 
-	public TunnelSwitchLinkPacket(int id, TunnelVoidArguments arguments, long time) {
-		super(id, RelayPacketType.TUNNEL_CONNECT, time, arguments);
-	}
+    public TunnelSwitchLinkPacket(int id, TunnelVoidArguments arguments, long time) {
+        super(id, RelayPacketType.TUNNEL_CONNECT, time, arguments);
+    }
 
 }

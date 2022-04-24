@@ -29,5 +29,4 @@ public class ShortRangeLimitParamFilter extends RangeLimitParamFilter<ShortRange
         return annotation.illegalCode();
     }
 
-
 }

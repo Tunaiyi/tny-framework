@@ -14,18 +14,18 @@ import com.tny.game.data.mongodb.mapper.*;
  */
 public class MongoBasicsObjectMapperCustomizer implements ObjectMapperCustomizer {
 
-	public MongoBasicsObjectMapperCustomizer() {
-	}
+    public MongoBasicsObjectMapperCustomizer() {
+    }
 
-	@Override
-	public void customize(ObjectMapper mapper) {
-		mapper.registerModule(MongoObjectMapperMixLoader.getModule())
-				.setAnnotationIntrospector(new MongoIdIntrospector())
-				.configure(MapperFeature.PROPAGATE_TRANSIENT_MARKER, true)
-				.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-				.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY)
-				.configure(MapperFeature.AUTO_DETECT_GETTERS, false)
-				.configure(MapperFeature.AUTO_DETECT_IS_GETTERS, false);
-	}
+    @Override
+    public void customize(ObjectMapper mapper) {
+        mapper.registerModule(MongoObjectMapperMixLoader.getModule())
+                .setAnnotationIntrospector(new MongoIdIntrospector())
+                .configure(MapperFeature.PROPAGATE_TRANSIENT_MARKER, true)
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                .setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY)
+                .configure(MapperFeature.AUTO_DETECT_GETTERS, false)
+                .configure(MapperFeature.AUTO_DETECT_IS_GETTERS, false);
+    }
 
 }

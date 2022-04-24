@@ -9,9 +9,9 @@ package com.tny.game.net.relay.cluster;
  */
 public interface ServeInstance extends ServeNode {
 
-	/**
-	 * @return 是否关闭
-	 */
-	boolean isClose();
+    /**
+     * @return 是否关闭
+     */
+    boolean isClose();
 
 }

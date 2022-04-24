@@ -20,6 +20,7 @@ public class LinkedLock implements Lock {
      * @uml.associationEnd multiplicity="(1 1)"
      */
     private final ObjectLock current;
+
     /**
      * 下一个锁节点
      *

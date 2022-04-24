@@ -11,15 +11,15 @@ import org.springframework.context.ApplicationEvent;
  */
 public class NetApplicationEvent extends ApplicationEvent {
 
-	private final NetApplication application;
+    private final NetApplication application;
 
-	public NetApplicationEvent(NetApplication application) {
-		super(application);
-		this.application = application;
-	}
+    public NetApplicationEvent(NetApplication application) {
+        super(application);
+        this.application = application;
+    }
 
-	public NetApplication getApplication() {
-		return application;
-	}
+    public NetApplication getApplication() {
+        return application;
+    }
 
 }

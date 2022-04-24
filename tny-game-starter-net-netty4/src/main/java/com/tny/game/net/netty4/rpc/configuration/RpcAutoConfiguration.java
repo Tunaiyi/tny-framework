@@ -19,66 +19,66 @@ import java.util.stream.Collectors;
  */
 @Configuration(proxyBeanMethods = false)
 @Import({
-		ImportRpcServiceDefinitionRegistrar.class,
-		ImportRpcConnectorDefinitionRegistrar.class
+        ImportRpcServiceDefinitionRegistrar.class,
+        ImportRpcConnectorDefinitionRegistrar.class
 })
 @EnableConfigurationProperties(RpcProperties.class)
 public class RpcAutoConfiguration {
 
-	@Bean
-	public RpcRouter<?> rpcRouter() {
-		return new FirstRpcRouter();
-	}
+    @Bean
+    public RpcRouter<?> rpcRouter() {
+        return new FirstRpcRouter();
+    }
 
-	@Bean
-	@ConditionalOnMissingBean(RpcRemoteService.class)
-	public RpcRemoteService rpcRemoteService(RpcProperties properties) {
-		return new DefaultRpcRemoteService(properties.getClient());
-	}
+    @Bean
+    @ConditionalOnMissingBean(RpcRemoteService.class)
+    public RpcRemoteService rpcRemoteService(RpcProperties properties) {
+        return new DefaultRpcRemoteService(properties.getClient());
+    }
 
-	@Bean
-	public RpcRouteManager rpcRouteManager(ObjectProvider<RpcRouter<?>> rpcRoutersProvider) {
-		return new DefaultRpcRouteManager(rpcRoutersProvider.stream().collect(Collectors.toList()));
-	}
+    @Bean
+    public RpcRouteManager rpcRouteManager(ObjectProvider<RpcRouter<?>> rpcRoutersProvider) {
+        return new DefaultRpcRouteManager(rpcRoutersProvider.stream().collect(Collectors.toList()));
+    }
 
-	@Bean
-	public RpcInstanceFactory rpcInstanceFactory(RpcSetting setting, RpcRemoteService service, RpcRouteManager manager) {
-		return new RpcInstanceFactory(setting, service, manager);
-	}
+    @Bean
+    public RpcInstanceFactory rpcInstanceFactory(RpcSetting setting, RpcRemoteService service, RpcRouteManager manager) {
+        return new RpcInstanceFactory(setting, service, manager);
+    }
 
-	@Bean
-	public RpcServeNodeWatchService rpcServeNodeWatchService(
-			@Autowired(required = false) ServeNodeClient client,
-			ObjectProvider<RpcClientFactory> connectorProvider) {
-		return new RpcServeNodeWatchService(client, connectorProvider.stream().collect(Collectors.toList()));
-	}
+    @Bean
+    public RpcServeNodeWatchService rpcServeNodeWatchService(
+            @Autowired(required = false) ServeNodeClient client,
+            ObjectProvider<RpcClientFactory> connectorProvider) {
+        return new RpcServeNodeWatchService(client, connectorProvider.stream().collect(Collectors.toList()));
+    }
 
-	@Bean
-	@ConditionalOnMissingBean(RpcAuthController.class)
-	public RpcAuthController rpcAuthController() {
-		return new RpcAuthController();
-	}
+    @Bean
+    @ConditionalOnMissingBean(RpcAuthController.class)
+    public RpcAuthController rpcAuthController() {
+        return new RpcAuthController();
+    }
 
-	@Bean
-	@ConditionalOnMissingBean(RpcUserPasswordManager.class)
-	public RpcUserPasswordManager rpcUserPasswordManager() {
-		return new NoopRpcUserPasswordManager();
-	}
+    @Bean
+    @ConditionalOnMissingBean(RpcUserPasswordManager.class)
+    public RpcUserPasswordManager rpcUserPasswordManager() {
+        return new NoopRpcUserPasswordManager();
+    }
 
-	@Bean
-	@ConditionalOnMissingBean(RpcAuthService.class)
-	public RpcAuthService rpcAuthService(NetAppContext netAppContext, RpcUserPasswordManager rpcUserPasswordManager) {
-		return new DefaultRpcAuthService(netAppContext, rpcUserPasswordManager);
-	}
+    @Bean
+    @ConditionalOnMissingBean(RpcAuthService.class)
+    public RpcAuthService rpcAuthService(NetAppContext netAppContext, RpcUserPasswordManager rpcUserPasswordManager) {
+        return new DefaultRpcAuthService(netAppContext, rpcUserPasswordManager);
+    }
 
-	@Bean
-	public RpcPasswordValidator PasswordValidator(RpcAuthService rpcAuthService) {
-		return new RpcPasswordValidator(rpcAuthService);
-	}
+    @Bean
+    public RpcPasswordValidator PasswordValidator(RpcAuthService rpcAuthService) {
+        return new RpcPasswordValidator(rpcAuthService);
+    }
 
-	@Bean
-	public RpcTokenValidator tokenValidator(RpcAuthService rpcAuthService) {
-		return new RpcTokenValidator(rpcAuthService);
-	}
+    @Bean
+    public RpcTokenValidator tokenValidator(RpcAuthService rpcAuthService) {
+        return new RpcTokenValidator(rpcAuthService);
+    }
 
 }

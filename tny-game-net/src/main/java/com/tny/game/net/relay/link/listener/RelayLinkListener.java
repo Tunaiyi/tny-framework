@@ -10,12 +10,12 @@ import com.tny.game.net.relay.link.*;
  */
 public interface RelayLinkListener {
 
-	void onOpen(NetRelayLink link);
+    void onOpen(NetRelayLink link);
 
-	void onDisconnect(NetRelayLink link);
+    void onDisconnect(NetRelayLink link);
 
-	void onClosing(NetRelayLink link);
+    void onClosing(NetRelayLink link);
 
-	void onClosed(NetRelayLink link);
+    void onClosed(NetRelayLink link);
 
 }

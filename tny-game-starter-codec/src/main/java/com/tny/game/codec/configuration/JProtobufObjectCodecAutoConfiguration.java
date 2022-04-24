@@ -14,10 +14,10 @@ import org.springframework.context.annotation.*;
 @ConditionalOnClass(ProtobufObjectCodecFactory.class)
 public class JProtobufObjectCodecAutoConfiguration {
 
-	@Bean
-	@ConditionalOnMissingBean(ProtobufObjectCodecFactory.class)
-	public ProtobufObjectCodecFactory protobufObjectCodecorFactory() {
-		return new ProtobufObjectCodecFactory();
-	}
+    @Bean
+    @ConditionalOnMissingBean(ProtobufObjectCodecFactory.class)
+    public ProtobufObjectCodecFactory protobufObjectCodecorFactory() {
+        return new ProtobufObjectCodecFactory();
+    }
 
 }

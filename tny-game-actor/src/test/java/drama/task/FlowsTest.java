@@ -12,7 +12,6 @@ import java.util.function.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
 /**
  * Created by Kun Yang on 16/1/25.
  */
@@ -31,7 +30,6 @@ public class FlowsTest extends FlowTestUnits {
         );
         this.context.assertIsSatisfied();
     }
-
 
     @Test
     public void testSupply() throws Exception {
@@ -162,4 +160,5 @@ public class FlowsTest extends FlowTestUnits {
         this.context.assertIsSatisfied();
 
     }
+
 }

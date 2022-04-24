@@ -9,19 +9,19 @@ import java.util.Set;
  */
 public interface CapacitySupplierItemModel extends ItemModel {
 
-	/**
-	 * @return 提供器类型
-	 */
-	CapacitySupplierType getSupplierType();
+    /**
+     * @return 提供器类型
+     */
+    CapacitySupplierType getSupplierType();
 
-	/**
-	 * @return 能力值类型
-	 */
-	Set<Capacity> getCapacities();
+    /**
+     * @return 能力值类型
+     */
+    Set<Capacity> getCapacities();
 
-	/**
-	 * @return 能力值组
-	 */
-	Set<CapacityGroup> getCapacityGroups();
+    /**
+     * @return 能力值组
+     */
+    Set<CapacityGroup> getCapacityGroups();
 
 }

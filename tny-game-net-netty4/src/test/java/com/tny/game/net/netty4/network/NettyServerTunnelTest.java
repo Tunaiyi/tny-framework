@@ -13,36 +13,36 @@ import io.netty.channel.embedded.EmbeddedChannel;
  */
 public class NettyServerTunnelTest extends NettyTunnelTest<NetSession<Long>, TestGeneralServerTunnel, MockNetEndpoint> {
 
-	public static final NetIdGenerator ID_GENERATOR = new AutoIncrementIdGenerator();
+    public static final NetIdGenerator ID_GENERATOR = new AutoIncrementIdGenerator();
 
-	@Override
-	protected TunnelTestInstance<TestGeneralServerTunnel, MockNetEndpoint> create(Certificate<Long> certificate, boolean open) {
-		MockNetEndpoint endpoint = createEndpoint(certificate);
-		TestGeneralServerTunnel tunnel = this.newTunnel(open);
-		tunnel.bind(endpoint);
-		//        if (certificate.isAuthenticated()) {
-		//            tunnel.bind(endpoint);
-		//        }
-		return new TunnelTestInstance<>(tunnel, endpoint);
-	}
+    @Override
+    protected TunnelTestInstance<TestGeneralServerTunnel, MockNetEndpoint> create(Certificate<Long> certificate, boolean open) {
+        MockNetEndpoint endpoint = createEndpoint(certificate);
+        TestGeneralServerTunnel tunnel = this.newTunnel(open);
+        tunnel.bind(endpoint);
+        //        if (certificate.isAuthenticated()) {
+        //            tunnel.bind(endpoint);
+        //        }
+        return new TunnelTestInstance<>(tunnel, endpoint);
+    }
 
-	@Override
-	protected MockNetEndpoint createEndpoint(Certificate<Long> certificate) {
-		return new MockNetEndpoint(certificate);
-	}
+    @Override
+    protected MockNetEndpoint createEndpoint(Certificate<Long> certificate) {
+        return new MockNetEndpoint(certificate);
+    }
 
-	private TestGeneralServerTunnel newTunnel(boolean open) {
-		TestGeneralServerTunnel tunnel = new TestGeneralServerTunnel(ID_GENERATOR.generate(), new NettyChannelMessageTransporter(mockChannel()),
-				new NetBootstrapContext(null, null, null, new CommonMessageFactory(), null));
-		if (open) {
-			tunnel.open();
-		}
-		return tunnel;
-	}
+    private TestGeneralServerTunnel newTunnel(boolean open) {
+        TestGeneralServerTunnel tunnel = new TestGeneralServerTunnel(ID_GENERATOR.generate(), new NettyChannelMessageTransporter(mockChannel()),
+                new NetBootstrapContext(null, null, null, new CommonMessageFactory(), null));
+        if (open) {
+            tunnel.open();
+        }
+        return tunnel;
+    }
 
-	@Override
-	protected EmbeddedChannel embeddedChannel(TestGeneralServerTunnel tunnel) {
-		return (EmbeddedChannel)((NettyChannelMessageTransporter)tunnel.getTransporter()).getChannel();
-	}
+    @Override
+    protected EmbeddedChannel embeddedChannel(TestGeneralServerTunnel tunnel) {
+        return (EmbeddedChannel)((NettyChannelMessageTransporter)tunnel.getTransporter()).getChannel();
+    }
 
 }

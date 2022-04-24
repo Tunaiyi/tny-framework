@@ -9,9 +9,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class DemoAutoConfiguration {
 
-	//    @Bean
-	//    public JProtobufMessageBodyCodec<?> protobufBodyCodec() {
-	//        return new JProtobufMessageBodyCodec<>();
-	//    }
+    //    @Bean
+    //    public JProtobufMessageBodyCodec<?> protobufBodyCodec() {
+    //        return new JProtobufMessageBodyCodec<>();
+    //    }
 
 }

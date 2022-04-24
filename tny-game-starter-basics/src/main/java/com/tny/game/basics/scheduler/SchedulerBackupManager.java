@@ -10,8 +10,8 @@ import com.tny.game.common.scheduler.*;
  */
 public interface SchedulerBackupManager {
 
-	SchedulerBackup getBackup(long id);
+    SchedulerBackup getBackup(long id);
 
-	boolean saveBackup(SchedulerBackup receiver);
+    boolean saveBackup(SchedulerBackup receiver);
 
 }

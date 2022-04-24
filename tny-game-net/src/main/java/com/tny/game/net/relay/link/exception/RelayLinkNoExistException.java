@@ -10,8 +10,8 @@ import com.tny.game.net.base.*;
  */
 public class RelayLinkNoExistException extends RelayLinkException {
 
-	public RelayLinkNoExistException(String message, Object... messageParams) {
-		super(NetResultCode.CLUSTER_NETWORK_UNCONNECTED_ERROR, message, messageParams);
-	}
+    public RelayLinkNoExistException(String message, Object... messageParams) {
+        super(NetResultCode.CLUSTER_NETWORK_UNCONNECTED_ERROR, message, messageParams);
+    }
 
 }

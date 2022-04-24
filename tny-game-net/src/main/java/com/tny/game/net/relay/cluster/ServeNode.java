@@ -15,35 +15,35 @@ import java.util.Comparator;
  */
 public interface ServeNode extends NetAccessPoint, Serve, Comparable<ServeNode> {
 
-	Comparator<ServeNode> COMPARATOR = Comparator.comparingLong(ServeNode::getId);
+    Comparator<ServeNode> COMPARATOR = Comparator.comparingLong(ServeNode::getId);
 
-	/**
-	 * @return app 类型
-	 */
-	String getAppType();
+    /**
+     * @return app 类型
+     */
+    String getAppType();
 
-	/**
-	 * @return scope 类型
-	 */
-	String getScopeType();
+    /**
+     * @return scope 类型
+     */
+    String getScopeType();
 
-	/**
-	 * @return app 类型枚举
-	 */
-	default AppType appType() {
-		return AppTypes.of(this.getAppType());
-	}
+    /**
+     * @return app 类型枚举
+     */
+    default AppType appType() {
+        return AppTypes.of(this.getAppType());
+    }
 
-	/**
-	 * @return scope 类型枚举
-	 */
-	default ScopeType scopeType() {
-		return ScopeTypes.of(this.getScopeType());
-	}
+    /**
+     * @return scope 类型枚举
+     */
+    default ScopeType scopeType() {
+        return ScopeTypes.of(this.getScopeType());
+    }
 
-	@Override
-	default int compareTo(@Nonnull ServeNode o) {
-		return COMPARATOR.compare(this, o);
-	}
+    @Override
+    default int compareTo(@Nonnull ServeNode o) {
+        return COMPARATOR.compare(this, o);
+    }
 
 }

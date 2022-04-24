@@ -12,29 +12,29 @@ import com.tny.game.net.relay.packet.arguments.*;
 @ProtobufClass
 public class LinkOpenedArgumentsProto extends BaseLinkArgumentsProto<LinkOpenedArguments> {
 
-	@Protobuf(order = 1)
-	private boolean result;
+    @Protobuf(order = 1)
+    private boolean result;
 
-	public LinkOpenedArgumentsProto() {
-		super();
-	}
+    public LinkOpenedArgumentsProto() {
+        super();
+    }
 
-	public LinkOpenedArgumentsProto(LinkOpenedArguments arguments) {
-		this.result = arguments.getResult();
-	}
+    public LinkOpenedArgumentsProto(LinkOpenedArguments arguments) {
+        this.result = arguments.getResult();
+    }
 
-	@Override
-	public LinkOpenedArguments toArguments() {
-		return LinkOpenedArguments.of(this.result);
-	}
+    @Override
+    public LinkOpenedArguments toArguments() {
+        return LinkOpenedArguments.of(this.result);
+    }
 
-	public boolean isResult() {
-		return result;
-	}
+    public boolean isResult() {
+        return result;
+    }
 
-	public LinkOpenedArgumentsProto setResult(boolean result) {
-		this.result = result;
-		return this;
-	}
+    public LinkOpenedArgumentsProto setResult(boolean result) {
+        this.result = result;
+        return this;
+    }
 
 }

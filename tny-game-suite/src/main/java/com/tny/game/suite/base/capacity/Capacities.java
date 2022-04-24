@@ -13,6 +13,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 public class Capacities {
 
     private static final Map<CapacityGroup, Set<Capacity>> groupCapacities = new CopyOnWriteMap<>();
+
     private static final Map<Integer, CapacityGroup> groupMap = new CopyOnWriteMap<>();
 
     static void register(Capacity capacity) {

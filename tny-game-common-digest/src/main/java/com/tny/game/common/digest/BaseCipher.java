@@ -33,8 +33,9 @@ public abstract class BaseCipher implements AnyCipher {
     public BaseCipher(byte[] secretKey, String ivParameter, String transform) throws Exception {
         this.secretKeySpec = keyGenerate(secretKey);
         this.transform = transform;
-        if (StringUtils.isNotBlank(ivParameter))
+        if (StringUtils.isNotBlank(ivParameter)) {
             this.ivParameterSpec = new IvParameterSpec(ivParameter.getBytes());
+        }
         this.init();
     }
 

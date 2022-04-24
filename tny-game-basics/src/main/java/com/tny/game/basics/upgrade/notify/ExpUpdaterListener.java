@@ -8,10 +8,10 @@ import com.tny.game.basics.upgrade.*;
  */
 public interface ExpUpdaterListener {
 
-	default void onUpgrade(ExpUpdater<?> source, Action action, int oldLevel, int alterLevel) {
-	}
+    default void onUpgrade(ExpUpdater<?> source, Action action, int oldLevel, int alterLevel) {
+    }
 
-	default void onReceiveExp(ExpUpdater<?> source, ExpModel expModel, Action action, long oldNum, long receiveNum) {
-	}
+    default void onReceiveExp(ExpUpdater<?> source, ExpModel expModel, Action action, long oldNum, long receiveNum) {
+    }
 
 }

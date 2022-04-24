@@ -35,31 +35,36 @@ public class ServiceNodeHolder {
 
     public synchronized void addNode(ServiceNode node) {
         ServiceNode oldNode = this.nodeMap.put(node.getServerId(), node);
-        if (oldNode == null)
+        if (oldNode == null) {
             ON_ADD.notify(this, node);
-        else
+        } else {
             ON_CHANGE.notify(this, node, oldNode);
+        }
         this.lastKey = this.nodeMap.lastKey();
     }
 
     public synchronized void removeNode(int serviceID) {
         ServiceNode node = this.nodeMap.remove(serviceID);
-        if (node != null)
+        if (node != null) {
             ON_REMOVE.notify(this, node);
-        if (!this.nodeMap.isEmpty())
+        }
+        if (!this.nodeMap.isEmpty()) {
             this.lastKey = this.nodeMap.lastKey();
-        else
+        } else {
             this.lastKey = null;
+        }
     }
 
     public ServiceNode randNode() {
-        if (this.lastKey == null)
+        if (this.lastKey == null) {
             return null;
+        }
         while (!this.nodeMap.isEmpty()) {
             int randValue = ThreadLocalRandom.current().nextInt(lastKey) + 1;
             Entry<Integer, ServiceNode> entry = this.nodeMap.floorEntry(randValue);
-            if (entry != null)
+            if (entry != null) {
                 return entry.getValue();
+            }
         }
         return null;
     }
@@ -79,7 +84,6 @@ public class ServiceNodeHolder {
     public ServiceNode getNode(int serviceID) {
         return this.nodeMap.get(serviceID);
     }
-
 
     // public URL randURL(String urlProtocol) {
     //     ServiceNode node = randNode();

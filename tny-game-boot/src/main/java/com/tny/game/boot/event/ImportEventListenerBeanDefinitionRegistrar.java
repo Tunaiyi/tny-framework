@@ -16,13 +16,13 @@ import java.util.Set;
  */
 public class ImportEventListenerBeanDefinitionRegistrar implements ImportBeanDefinitionRegistrar {
 
-	@Override
-	public void registerBeanDefinitions(@Nonnull AnnotationMetadata annotationMetadata, BeanDefinitionRegistry registry) {
-		Set<Class<?>> classes = EventListenerLoader.getEventListenerClasses();
-		for (Class<?> listenerClass : classes) {
-			registry.registerBeanDefinition(BeanNameUtils.lowerCamelName(listenerClass),
-					BeanDefinitionBuilder.genericBeanDefinition(listenerClass).getBeanDefinition());
-		}
-	}
+    @Override
+    public void registerBeanDefinitions(@Nonnull AnnotationMetadata annotationMetadata, BeanDefinitionRegistry registry) {
+        Set<Class<?>> classes = EventListenerLoader.getEventListenerClasses();
+        for (Class<?> listenerClass : classes) {
+            registry.registerBeanDefinition(BeanNameUtils.lowerCamelName(listenerClass),
+                    BeanDefinitionBuilder.genericBeanDefinition(listenerClass).getBeanDefinition());
+        }
+    }
 
 }

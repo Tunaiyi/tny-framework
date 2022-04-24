@@ -133,165 +133,218 @@ public class CTestObject {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (this.getClass() != obj.getClass())
+        }
+        if (this.getClass() != obj.getClass()) {
             return false;
-        CTestObject other = (CTestObject) obj;
+        }
+        CTestObject other = (CTestObject)obj;
         if (this.testAllExpMap == null) {
-            if (other.testAllExpMap != null)
+            if (other.testAllExpMap != null) {
                 return false;
-        } else if (!this.testAllExpMap.equals(other.testAllExpMap))
+            }
+        } else if (!this.testAllExpMap.equals(other.testAllExpMap)) {
             return false;
+        }
         if (this.testAllImpMap == null) {
-            if (other.testAllImpMap != null)
+            if (other.testAllImpMap != null) {
                 return false;
-        } else if (!this.testAllImpMap.equals(other.testAllImpMap))
+            }
+        } else if (!this.testAllImpMap.equals(other.testAllImpMap)) {
             return false;
+        }
         if (this.testBoolean == null) {
-            if (other.testBoolean != null)
+            if (other.testBoolean != null) {
                 return false;
-        } else if (!this.testBoolean.equals(other.testBoolean))
+            }
+        } else if (!this.testBoolean.equals(other.testBoolean)) {
             return false;
+        }
         if (this.testByte == null) {
-            if (other.testByte != null)
+            if (other.testByte != null) {
                 return false;
-        } else if (!this.testByte.equals(other.testByte))
+            }
+        } else if (!this.testByte.equals(other.testByte)) {
             return false;
-        if (!Arrays.equals(this.testBytes, other.testBytes))
+        }
+        if (!Arrays.equals(this.testBytes, other.testBytes)) {
             return false;
+        }
         if (this.testChar == null) {
-            if (other.testChar != null)
+            if (other.testChar != null) {
                 return false;
-        } else if (!this.testChar.equals(other.testChar))
+            }
+        } else if (!this.testChar.equals(other.testChar)) {
             return false;
+        }
         if (this.testDouble == null) {
-            if (other.testDouble != null)
+            if (other.testDouble != null) {
                 return false;
-        } else if (!this.testDouble.equals(other.testDouble))
+            }
+        } else if (!this.testDouble.equals(other.testDouble)) {
             return false;
+        }
         if (this.testExcessInt == null) {
-            if (other.testExcessInt != null)
+            if (other.testExcessInt != null) {
                 return false;
-        } else if (!this.testExcessInt.equals(other.testExcessInt))
+            }
+        } else if (!this.testExcessInt.equals(other.testExcessInt)) {
             return false;
+        }
         if (this.testExcessObject == null) {
-            if (other.testExcessObject != null)
+            if (other.testExcessObject != null) {
                 return false;
-        } else if (!this.testExcessObject.equals(other.testExcessObject))
+            }
+        } else if (!this.testExcessObject.equals(other.testExcessObject)) {
             return false;
+        }
         if (this.testFloat == null) {
-            if (other.testFloat != null)
+            if (other.testFloat != null) {
                 return false;
-        } else if (!this.testFloat.equals(other.testFloat))
+            }
+        } else if (!this.testFloat.equals(other.testFloat)) {
             return false;
+        }
         if (this.testImpObject == null) {
-            if (other.testImpObject != null)
+            if (other.testImpObject != null) {
                 return false;
-        } else if (!this.testImpObject.equals(other.testImpObject))
+            }
+        } else if (!this.testImpObject.equals(other.testImpObject)) {
             return false;
+        }
         if (this.testInt == null) {
-            if (other.testInt != null)
+            if (other.testInt != null) {
                 return false;
-        } else if (!this.testInt.equals(other.testInt))
+            }
+        } else if (!this.testInt.equals(other.testInt)) {
             return false;
+        }
         if (this.testIntValues == null) {
-            if (other.testIntValues != null)
+            if (other.testIntValues != null) {
                 return false;
-        } else if (!this.testIntValues.equals(other.testIntValues))
+            }
+        } else if (!this.testIntValues.equals(other.testIntValues)) {
             return false;
+        }
         if (this.testKeyExpMap == null) {
-            if (other.testKeyExpMap != null)
+            if (other.testKeyExpMap != null) {
                 return false;
-        } else if (!this.testKeyExpMap.equals(other.testKeyExpMap))
+            }
+        } else if (!this.testKeyExpMap.equals(other.testKeyExpMap)) {
             return false;
+        }
         if (this.testKeyExpValues == null) {
-            if (other.testKeyExpValues != null)
+            if (other.testKeyExpValues != null) {
                 return false;
-        } else if (!this.testKeyExpValues.equals(other.testKeyExpValues))
+            }
+        } else if (!this.testKeyExpValues.equals(other.testKeyExpValues)) {
             return false;
+        }
         if (this.testKeyImpMap == null) {
-            if (other.testKeyImpMap != null)
+            if (other.testKeyImpMap != null) {
                 return false;
-        } else if (!this.testKeyImpMap.equals(other.testKeyImpMap))
+            }
+        } else if (!this.testKeyImpMap.equals(other.testKeyImpMap)) {
             return false;
+        }
         if (this.testKeyImpValues == null) {
-            if (other.testKeyImpValues != null)
+            if (other.testKeyImpValues != null) {
                 return false;
-        } else if (!this.testKeyImpValues.equals(other.testKeyImpValues))
+            }
+        } else if (!this.testKeyImpValues.equals(other.testKeyImpValues)) {
             return false;
+        }
         if (this.testKeyUnpackedExpValues == null) {
-            if (other.testKeyUnpackedExpValues != null)
+            if (other.testKeyUnpackedExpValues != null) {
                 return false;
-        } else if (!this.testKeyUnpackedExpValues.equals(other.testKeyUnpackedExpValues))
+            }
+        } else if (!this.testKeyUnpackedExpValues.equals(other.testKeyUnpackedExpValues)) {
             return false;
+        }
         if (this.testKeyUnpackedImpValues == null) {
-            if (other.testKeyUnpackedImpValues != null)
+            if (other.testKeyUnpackedImpValues != null) {
                 return false;
-        } else if (!this.testKeyUnpackedImpValues.equals(other.testKeyUnpackedImpValues))
+            }
+        } else if (!this.testKeyUnpackedImpValues.equals(other.testKeyUnpackedImpValues)) {
             return false;
+        }
         if (this.testLong == null) {
-            if (other.testLong != null)
+            if (other.testLong != null) {
                 return false;
-        } else if (!this.testLong.equals(other.testLong))
+            }
+        } else if (!this.testLong.equals(other.testLong)) {
             return false;
+        }
         if (this.testObject == null) {
-            if (other.testObject != null)
+            if (other.testObject != null) {
                 return false;
-        } else if (!this.testObject.equals(other.testObject))
+            }
+        } else if (!this.testObject.equals(other.testObject)) {
             return false;
+        }
         if (this.testShot == null) {
-            if (other.testShot != null)
+            if (other.testShot != null) {
                 return false;
-        } else if (!this.testShot.equals(other.testShot))
+            }
+        } else if (!this.testShot.equals(other.testShot)) {
             return false;
+        }
         if (this.testString == null) {
-            if (other.testString != null)
+            if (other.testString != null) {
                 return false;
-        } else if (!this.testString.equals(other.testString))
+            }
+        } else if (!this.testString.equals(other.testString)) {
             return false;
+        }
         if (this.testValueExpMap == null) {
-            if (other.testValueExpMap != null)
+            if (other.testValueExpMap != null) {
                 return false;
-        } else if (!this.testValueExpMap.equals(other.testValueExpMap))
+            }
+        } else if (!this.testValueExpMap.equals(other.testValueExpMap)) {
             return false;
+        }
         if (this.testValueImpMap == null) {
-            if (other.testValueImpMap != null)
+            if (other.testValueImpMap != null) {
                 return false;
-        } else if (!this.testValueImpMap.equals(other.testValueImpMap))
+            }
+        } else if (!this.testValueImpMap.equals(other.testValueImpMap)) {
             return false;
+        }
         return true;
     }
 
     @Override
     public String toString() {
         return "CTestObject [\n"
-               + "\t testLong=" + this.testLong + ",\n"
-               + "\t testShot=" + this.testShot + ",\n"
-               + "\t testInt=" + this.testInt + ",\n"
-               + "\t testByte=" + this.testByte + ",\n"
-               + "\t testFloat=" + this.testFloat + "\n"
-               + "\t testDouble=" + this.testDouble + ",\n"
-               + "\t testString=" + this.testString + ",\n"
-               + "\t testBytes=" + Arrays.toString(this.testBytes) + ",\n"
-               + "\t testChar=" + this.testChar + ",\n"
-               + "\t testBoolean=" + this.testBoolean + ",\n"
-               + "\t testIntValues=" + this.testIntValues + ",\n"
-               + "\t testKeyExpValues=" + this.testKeyExpValues + ",\n"
-               + "\t testKeyImpValues=" + this.testKeyImpValues + ",\n"
-               + "\t testValueExpMap=" + this.testValueExpMap + ",\n"
-               + "\t testValueImpMap=" + this.testValueImpMap + ",\n"
-               + "\t testKeyExpMap=" + this.testKeyExpMap + ",\n"
-               + "\t testKeyImpMap=" + this.testKeyImpMap + ",\n"
-               + "\t testAllExpMap=" + this.testAllExpMap + ",\n"
-               + "\t testAllImpMap=" + this.testAllImpMap + ",\n"
-               + "\t testObject=" + this.testObject + ",\n"
-               + "\t testImpObject=" + this.testImpObject + ",\n"
-               + "\t testExcessObject=" + this.testExcessObject + ",\n"
-               + "\t testExcessInt=" + this.testExcessInt + ",\n"
-               + "\t testKeyUnpackedExpValues=" + this.testKeyUnpackedExpValues + ",\n"
-               + "\t testKeyUnpackedImpValues=" + this.testKeyUnpackedImpValues + "\n]";
+                + "\t testLong=" + this.testLong + ",\n"
+                + "\t testShot=" + this.testShot + ",\n"
+                + "\t testInt=" + this.testInt + ",\n"
+                + "\t testByte=" + this.testByte + ",\n"
+                + "\t testFloat=" + this.testFloat + "\n"
+                + "\t testDouble=" + this.testDouble + ",\n"
+                + "\t testString=" + this.testString + ",\n"
+                + "\t testBytes=" + Arrays.toString(this.testBytes) + ",\n"
+                + "\t testChar=" + this.testChar + ",\n"
+                + "\t testBoolean=" + this.testBoolean + ",\n"
+                + "\t testIntValues=" + this.testIntValues + ",\n"
+                + "\t testKeyExpValues=" + this.testKeyExpValues + ",\n"
+                + "\t testKeyImpValues=" + this.testKeyImpValues + ",\n"
+                + "\t testValueExpMap=" + this.testValueExpMap + ",\n"
+                + "\t testValueImpMap=" + this.testValueImpMap + ",\n"
+                + "\t testKeyExpMap=" + this.testKeyExpMap + ",\n"
+                + "\t testKeyImpMap=" + this.testKeyImpMap + ",\n"
+                + "\t testAllExpMap=" + this.testAllExpMap + ",\n"
+                + "\t testAllImpMap=" + this.testAllImpMap + ",\n"
+                + "\t testObject=" + this.testObject + ",\n"
+                + "\t testImpObject=" + this.testImpObject + ",\n"
+                + "\t testExcessObject=" + this.testExcessObject + ",\n"
+                + "\t testExcessInt=" + this.testExcessInt + ",\n"
+                + "\t testKeyUnpackedExpValues=" + this.testKeyUnpackedExpValues + ",\n"
+                + "\t testKeyUnpackedImpValues=" + this.testKeyUnpackedImpValues + "\n]";
     }
+
 }

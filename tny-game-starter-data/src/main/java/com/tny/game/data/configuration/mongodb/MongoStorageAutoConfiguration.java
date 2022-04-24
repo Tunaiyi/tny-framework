@@ -28,35 +28,35 @@ import java.util.stream.Collectors;
 @AutoConfigureAfter({MongodbAutoConfiguration.class})
 @AutoConfigureBefore(DataAutoConfiguration.class)
 @Import({
-		ImportMongoStorageAccessorFactoryDefinitionRegistrar.class,
+        ImportMongoStorageAccessorFactoryDefinitionRegistrar.class,
 })
 @EnableConfigurationProperties({
-		MongoStorageAccessorFactoryProperties.class,
+        MongoStorageAccessorFactoryProperties.class,
 })
 @ConditionalOnProperty(value = "tny.data.enable", matchIfMissing = true)
 public class MongoStorageAutoConfiguration {
 
-	@Bean
-	@ConditionalOnClass(EntityIdConverter.class)
-	public MongoEntityIdConverterFactory mongoEntityIdConverterFactory() {
-		return new MongoEntityIdConverterFactory();
-	}
+    @Bean
+    @ConditionalOnClass(EntityIdConverter.class)
+    public MongoEntityIdConverterFactory mongoEntityIdConverterFactory() {
+        return new MongoEntityIdConverterFactory();
+    }
 
-	@Bean
-	@ConditionalOnMissingBean(JsonMongoEntityConverter.class)
-	JsonMongoEntityConverter jsonMongoEntityConverter(
-			ObjectProvider<MongoDocumentEnhance<?>> enhances,
-			ObjectProvider<ObjectMapperCustomizer> mapperCustomizers) {
-		ObjectMapper mapper = ObjectMapperFactory.createMapper();
-		mapper.registerModule(MongoObjectMapperMixLoader.getModule())
-				.setAnnotationIntrospector(new MongoIdIntrospector())
-				.configure(MapperFeature.PROPAGATE_TRANSIENT_MARKER, true)
-				.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-				.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY)
-				.configure(MapperFeature.AUTO_DETECT_GETTERS, false)
-				.configure(MapperFeature.AUTO_DETECT_IS_GETTERS, false);
-		mapperCustomizers.forEach((action) -> action.customize(mapper));
-		return new JsonMongoEntityConverter(mapper, enhances.stream().collect(Collectors.toList()));
-	}
+    @Bean
+    @ConditionalOnMissingBean(JsonMongoEntityConverter.class)
+    JsonMongoEntityConverter jsonMongoEntityConverter(
+            ObjectProvider<MongoDocumentEnhance<?>> enhances,
+            ObjectProvider<ObjectMapperCustomizer> mapperCustomizers) {
+        ObjectMapper mapper = ObjectMapperFactory.createMapper();
+        mapper.registerModule(MongoObjectMapperMixLoader.getModule())
+                .setAnnotationIntrospector(new MongoIdIntrospector())
+                .configure(MapperFeature.PROPAGATE_TRANSIENT_MARKER, true)
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                .setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY)
+                .configure(MapperFeature.AUTO_DETECT_GETTERS, false)
+                .configure(MapperFeature.AUTO_DETECT_IS_GETTERS, false);
+        mapperCustomizers.forEach((action) -> action.customize(mapper));
+        return new JsonMongoEntityConverter(mapper, enhances.stream().collect(Collectors.toList()));
+    }
 
 }

@@ -1,6 +1,5 @@
 package com.tny.game.actor.stage;
 
-
 import com.tny.game.actor.stage.Stages.*;
 
 /**
@@ -37,9 +36,10 @@ class JoinStage<T> extends BaseStage<Stage<T>> {
     public void run(Object returnVal, Throwable e) {
         if (!this.targetFragment.isDone()) {
             targetFragment.execute(returnVal, e);
-            if (!targetFragment.isDone())
+            if (!targetFragment.isDone()) {
                 return;
-            InnerStage stage = (InnerStage) targetFragment.getStage();
+            }
+            InnerStage stage = (InnerStage)targetFragment.getStage();
             stage.setNext(this.next);
             this.setNext(stage);
         }

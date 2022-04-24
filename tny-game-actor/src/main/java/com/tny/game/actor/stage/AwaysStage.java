@@ -10,7 +10,7 @@ class AwaysStage extends BaseStage<Void> {
     @SuppressWarnings("unchecked")
     public AwaysStage(Object name, Fragment<?, ?> fragment) {
         super(name);
-        this.fragment = (Fragment<Object, Object>) fragment;
+        this.fragment = (Fragment<Object, Object>)fragment;
     }
 
     @Override

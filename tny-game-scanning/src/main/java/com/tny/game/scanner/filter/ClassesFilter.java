@@ -7,6 +7,7 @@ import java.util.*;
 public class ClassesFilter implements ClassFilter {
 
     private Set<Class<?>> includes = new HashSet<>();
+
     private Set<Class<?>> excludes = new HashSet<>();
 
     public ClassesFilter(Collection<Class<?>> includes) {
@@ -24,10 +25,11 @@ public class ClassesFilter implements ClassFilter {
     }
 
     public ClassesFilter(Collection<Class<?>> filters, boolean exclude) {
-        if (!exclude)
+        if (!exclude) {
             this.includes.addAll(filters);
-        else
+        } else {
             this.excludes.addAll(filters);
+        }
     }
 
     public ClassesFilter(
@@ -40,27 +42,32 @@ public class ClassesFilter implements ClassFilter {
     private boolean check(MetadataReader reader, Set<Class<?>> filter) {
         for (Class<?> clazz : this.includes) {
             String className = reader.getClassMetadata().getClassName();
-            if (clazz.getName().equals(className))
+            if (clazz.getName().equals(className)) {
                 return true;
+            }
         }
         return false;
     }
 
     @Override
     public boolean include(MetadataReader reader) {
-        if (this.includes.isEmpty())
+        if (this.includes.isEmpty()) {
             return true;
-        if (this.check(reader, this.includes))
+        }
+        if (this.check(reader, this.includes)) {
             return true;
+        }
         return false;
     }
 
     @Override
     public boolean exclude(MetadataReader reader) {
-        if (this.excludes.isEmpty())
+        if (this.excludes.isEmpty()) {
             return false;
-        if (this.check(reader, this.includes))
+        }
+        if (this.check(reader, this.includes)) {
             return true;
+        }
         return false;
     }
 

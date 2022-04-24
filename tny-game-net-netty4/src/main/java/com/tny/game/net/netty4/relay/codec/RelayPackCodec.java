@@ -12,12 +12,12 @@ import io.netty.channel.ChannelHandlerContext;
  */
 public interface RelayPackCodec {
 
-	default RelayLink getRelayPipe(ChannelHandlerContext ctx) {
-		return ctx.channel().attr(NettyRelayAttrKeys.RELAY_LINK).get();
-	}
+    default RelayLink getRelayPipe(ChannelHandlerContext ctx) {
+        return ctx.channel().attr(NettyRelayAttrKeys.RELAY_LINK).get();
+    }
 
-	default RelayLink loadOrCreateRelayPipe(ChannelHandlerContext ctx, long id) {
-		return ctx.channel().attr(NettyRelayAttrKeys.RELAY_LINK).get();
-	}
+    default RelayLink loadOrCreateRelayPipe(ChannelHandlerContext ctx, long id) {
+        return ctx.channel().attr(NettyRelayAttrKeys.RELAY_LINK).get();
+    }
 
 }

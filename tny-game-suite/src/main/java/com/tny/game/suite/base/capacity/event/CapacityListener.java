@@ -1,6 +1,5 @@
 package com.tny.game.suite.base.capacity.event;
 
-
 import com.tny.game.suite.base.capacity.*;
 
 /**

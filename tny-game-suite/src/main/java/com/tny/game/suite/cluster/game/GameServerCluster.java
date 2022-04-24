@@ -17,7 +17,9 @@ public class GameServerCluster extends SpringBaseCluster {
     private final static Logger LOGGER = LoggerFactory.getLogger(GameServerCluster.class);
 
     private static final String DB_HOST = "jdbc.datasource.host";
+
     private static final String DB_PORT = "jdbc.datasource.port";
+
     private static final String DB_NAME = "jdbc.datasource.db";
 
     private static final BindP1EventBus<GameServerClusterListener, GameServerCluster, ServerSetting> ON_SETTING_CHANGE =

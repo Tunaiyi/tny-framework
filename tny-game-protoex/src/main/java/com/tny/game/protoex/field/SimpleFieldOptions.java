@@ -13,45 +13,45 @@ import java.lang.reflect.*;
  */
 public class SimpleFieldOptions<T> extends BaseFieldOptions<T> {
 
-	public SimpleFieldOptions(Class<T> type, int fieldIndex, ProtoExConf conf) {
-		super(ProtoExType.getProtoExType(type), type, "element", fieldIndex, conf);
-	}
+    public SimpleFieldOptions(Class<T> type, int fieldIndex, ProtoExConf conf) {
+        super(ProtoExType.getProtoExType(type), type, "element", fieldIndex, conf);
+    }
 
-	public SimpleFieldOptions(Class<T> type, int fieldIndex, TypeEncode typeEncode, FieldFormat format) {
-		super(ProtoExType.getProtoExType(type), type, "element", fieldIndex, typeEncode, format);
-	}
+    public SimpleFieldOptions(Class<T> type, int fieldIndex, TypeEncode typeEncode, FieldFormat format) {
+        super(ProtoExType.getProtoExType(type), type, "element", fieldIndex, typeEncode, format);
+    }
 
-	public SimpleFieldOptions(EntryType entryType, Class<T> type, ProtoExConf conf) {
-		this(entryType, type, conf.typeEncode(), conf.format());
-	}
+    public SimpleFieldOptions(EntryType entryType, Class<T> type, ProtoExConf conf) {
+        this(entryType, type, conf.typeEncode(), conf.format());
+    }
 
-	public SimpleFieldOptions(EntryType entryType, Class<T> type, TypeEncode typeEncode, FieldFormat format) {
-		super(ProtoExType.getProtoExType(type), type, entryType.name(), entryType.getFieldIndex(), typeEncode, format);
-		this.packed = false;
-	}
+    public SimpleFieldOptions(EntryType entryType, Class<T> type, TypeEncode typeEncode, FieldFormat format) {
+        super(ProtoExType.getProtoExType(type), type, entryType.name(), entryType.getFieldIndex(), typeEncode, format);
+        this.packed = false;
+    }
 
-	private static class TC {
+    private static class TC {
 
-		int[] ints;
+        int[] ints;
 
-		Object[] objects;
+        Object[] objects;
 
-		String[] strings;
+        String[] strings;
 
-		String type;
+        String type;
 
-	}
+    }
 
-	public static void main(String[] args) {
-		for (Field field : TC.class.getDeclaredFields()) {
-			// Arrays.
-			Class<?> czz = field.getType().getComponentType();
-			if (czz != null) {
-				System.out.println(Array.newInstance(czz, 10));
-			}
-			System.out.println(field.getGenericType() instanceof GenericArrayType);
-		}
+    public static void main(String[] args) {
+        for (Field field : TC.class.getDeclaredFields()) {
+            // Arrays.
+            Class<?> czz = field.getType().getComponentType();
+            if (czz != null) {
+                System.out.println(Array.newInstance(czz, 10));
+            }
+            System.out.println(field.getGenericType() instanceof GenericArrayType);
+        }
 
-	}
+    }
 
 }

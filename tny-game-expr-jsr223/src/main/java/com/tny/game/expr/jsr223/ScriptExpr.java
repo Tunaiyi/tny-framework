@@ -30,7 +30,7 @@ public class ScriptExpr extends AbstractExpr {
         if (this.number == null) {
             this.expressionStr = expression;
             try {
-                this.script = ((Compilable) engine).compile(expression);
+                this.script = ((Compilable)engine).compile(expression);
             } catch (ScriptException e) {
                 throw new ExprException("编译 expression 异常", e);
             }

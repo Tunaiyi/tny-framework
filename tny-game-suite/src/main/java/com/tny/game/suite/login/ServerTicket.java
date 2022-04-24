@@ -8,7 +8,6 @@ import org.apache.commons.lang3.EnumUtils;
 
 import java.io.Serializable;
 
-
 @JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE,
         isGetterVisibility = JsonAutoDetect.Visibility.NONE)
 @ProtoEx(SuiteProtoIDs.AUTH_$SERVE_TICKET)
@@ -48,8 +47,9 @@ public class ServerTicket implements Serializable {
         this.serverType = appType;
         this.serverID = server;
         this.time = System.currentTimeMillis();
-        if (maker != null)
+        if (maker != null) {
             this.secret = maker.make(this);
+        }
     }
 
     public ServerTicket(AppType appType, int server, TicketMaker<ServerTicket> maker, boolean confirm) {
@@ -57,8 +57,9 @@ public class ServerTicket implements Serializable {
         this.serverType = appType.getName();
         this.serverID = server;
         this.time = System.currentTimeMillis();
-        if (maker != null)
+        if (maker != null) {
             this.secret = maker.make(this);
+        }
     }
 
     public String getServerType() {
@@ -89,20 +90,23 @@ public class ServerTicket implements Serializable {
         return confirm;
     }
 
-
     @Override
     public boolean equals(Object o) {
-        if (this == o)
+        if (this == o) {
             return true;
-        if (o == null || getClass() != o.getClass())
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
+        }
 
-        ServerTicket serveTicket = (ServerTicket) o;
+        ServerTicket serveTicket = (ServerTicket)o;
 
-        if (serverID != serveTicket.serverID)
+        if (serverID != serveTicket.serverID) {
             return false;
-        if (time != serveTicket.time)
+        }
+        if (time != serveTicket.time) {
             return false;
+        }
         return secret.equals(serveTicket.secret);
 
     }
@@ -110,7 +114,7 @@ public class ServerTicket implements Serializable {
     @Override
     public int hashCode() {
         int result = serverID;
-        result = 31 * result + (int) (time ^ (time >>> 32));
+        result = 31 * result + (int)(time ^ (time >>> 32));
         result = 31 * result + secret.hashCode();
         return result;
     }
@@ -118,9 +122,10 @@ public class ServerTicket implements Serializable {
     @Override
     public String toString() {
         return "APITicket{" +
-               "serverID=" + serverID +
-               ", time=" + time +
-               ", secret='" + secret + '\'' +
-               '}';
+                "serverID=" + serverID +
+                ", time=" + time +
+                ", secret='" + secret + '\'' +
+                '}';
     }
+
 }

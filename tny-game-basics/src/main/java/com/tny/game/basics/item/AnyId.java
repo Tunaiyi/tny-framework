@@ -14,132 +14,132 @@ import java.util.stream.Collectors;
  */
 public class AnyId implements Comparable<AnyId> {
 
-	/**
-	 * 玩家id
-	 */
-	private long playerId;
+    /**
+     * 玩家id
+     */
+    private long playerId;
 
-	/**
-	 * item 对象 id
-	 */
-	private long id;
+    /**
+     * item 对象 id
+     */
+    private long id;
 
-	public static AnyId idOf(Any item) {
-		return new AnyId(item);
-	}
+    public static AnyId idOf(Any item) {
+        return new AnyId(item);
+    }
 
-	public static AnyId idOf(long playerId) {
-		return new AnyId(playerId, 0);
-	}
+    public static AnyId idOf(long playerId) {
+        return new AnyId(playerId, 0);
+    }
 
-	public static AnyId idOf(long playerId, long id) {
-		return new AnyId(playerId, id);
-	}
+    public static AnyId idOf(long playerId, long id) {
+        return new AnyId(playerId, id);
+    }
 
-	public static Collection<AnyId> idsOf(Collection<? extends Item<?>> items) {
-		return items.stream().map(AnyId::idOf).collect(Collectors.toList());
-	}
+    public static Collection<AnyId> idsOf(Collection<? extends Item<?>> items) {
+        return items.stream().map(AnyId::idOf).collect(Collectors.toList());
+    }
 
-	public static AnyId parseId(String anyId) {
-		String[] values = StringUtils.split(anyId, "-");
-		long playerId = Long.parseUnsignedLong(values[0], 32);
-		if (values.length == 1) {
-			return new AnyId(playerId, 0);
-		}
-		long id = Long.parseUnsignedLong(values[1], 32);
-		return new AnyId(playerId, id);
-	}
+    public static AnyId parseId(String anyId) {
+        String[] values = StringUtils.split(anyId, "-");
+        long playerId = Long.parseUnsignedLong(values[0], 32);
+        if (values.length == 1) {
+            return new AnyId(playerId, 0);
+        }
+        long id = Long.parseUnsignedLong(values[1], 32);
+        return new AnyId(playerId, id);
+    }
 
-	/**
-	 * @return 转化为 String 的 uid
-	 */
-	public static String formatId(Any any) {
-		return formatId(any.getPlayerId(), any.getId());
-	}
+    /**
+     * @return 转化为 String 的 uid
+     */
+    public static String formatId(Any any) {
+        return formatId(any.getPlayerId(), any.getId());
+    }
 
-	/**
-	 * @return 转化为 String 的 uid
-	 */
-	public static String formatId(long playerId, long id) {
-		String tail = Long.toUnsignedString(id, 32);
-		if (id == 0) {
-			return String.valueOf(playerId);
-		}
-		return playerId + "-" + tail;
-	}
+    /**
+     * @return 转化为 String 的 uid
+     */
+    public static String formatId(long playerId, long id) {
+        String tail = Long.toUnsignedString(id, 32);
+        if (id == 0) {
+            return String.valueOf(playerId);
+        }
+        return playerId + "-" + tail;
+    }
 
-	public AnyId() {
-	}
+    public AnyId() {
+    }
 
-	private AnyId(Any any) {
-		this.id = any.getId();
-		this.playerId = any.getPlayerId();
-	}
+    private AnyId(Any any) {
+        this.id = any.getId();
+        this.playerId = any.getPlayerId();
+    }
 
-	private AnyId(long playerId, long id) {
-		this.playerId = playerId;
-		this.id = id;
-	}
+    private AnyId(long playerId, long id) {
+        this.playerId = playerId;
+        this.id = id;
+    }
 
-	/**
-	 * @return 获取玩家id
-	 */
-	public long getPlayerId() {
-		return playerId;
-	}
+    /**
+     * @return 获取玩家id
+     */
+    public long getPlayerId() {
+        return playerId;
+    }
 
-	/**
-	 * @return 对象 ID
-	 */
-	public long getId() {
-		return id;
-	}
+    /**
+     * @return 对象 ID
+     */
+    public long getId() {
+        return id;
+    }
 
-	/**
-	 * @return 转化为 String 的 uid
-	 */
-	public String toUuid() {
-		return formatId(this.playerId, this.id);
-	}
+    /**
+     * @return 转化为 String 的 uid
+     */
+    public String toUuid() {
+        return formatId(this.playerId, this.id);
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
 
-		if (!(o instanceof AnyId)) {
-			return false;
-		}
+        if (!(o instanceof AnyId)) {
+            return false;
+        }
 
-		AnyId itemKey = (AnyId)o;
+        AnyId itemKey = (AnyId)o;
 
-		return new EqualsBuilder().append(getPlayerId(), itemKey.getPlayerId())
-				.append(getId(), itemKey.getId())
-				.isEquals();
-	}
+        return new EqualsBuilder().append(getPlayerId(), itemKey.getPlayerId())
+                .append(getId(), itemKey.getId())
+                .isEquals();
+    }
 
-	@Override
-	public int hashCode() {
-		return new HashCodeBuilder(17, 37).append(getPlayerId()).append(getId()).toHashCode();
-	}
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37).append(getPlayerId()).append(getId()).toHashCode();
+    }
 
-	@Override
-	public String toString() {
-		return playerId + ":" + id;
-	}
+    @Override
+    public String toString() {
+        return playerId + ":" + id;
+    }
 
-	@Override
-	public int compareTo(AnyId o) {
-		long value = this.playerId - o.playerId;
-		if (value != 0) {
-			return value > 0 ? 1 : 0;
-		}
-		value = this.id - o.id;
-		if (value == 0) {
-			return 0;
-		}
-		return value > 0 ? 1 : 0;
-	}
+    @Override
+    public int compareTo(AnyId o) {
+        long value = this.playerId - o.playerId;
+        if (value != 0) {
+            return value > 0 ? 1 : 0;
+        }
+        value = this.id - o.id;
+        if (value == 0) {
+            return 0;
+        }
+        return value > 0 ? 1 : 0;
+    }
 
 }

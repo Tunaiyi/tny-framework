@@ -12,31 +12,31 @@ import static com.tny.game.common.utils.ObjectAide.*;
  */
 public class NettyChannelMakerSetting {
 
-	private Class<? extends ChannelMaker<?>> makerClass;
+    private Class<? extends ChannelMaker<?>> makerClass;
 
-	private List<String> pipelineChains = new ArrayList<>();
+    private List<String> pipelineChains = new ArrayList<>();
 
-	@SuppressWarnings({"rawtypes"})
-	public NettyChannelMakerSetting(Class<? extends ChannelMaker> makerClass) {
-		this.makerClass = as(makerClass);
-	}
+    @SuppressWarnings({"rawtypes"})
+    public NettyChannelMakerSetting(Class<? extends ChannelMaker> makerClass) {
+        this.makerClass = as(makerClass);
+    }
 
-	public Class<? extends ChannelMaker<?>> getMakerClass() {
-		return makerClass;
-	}
+    public Class<? extends ChannelMaker<?>> getMakerClass() {
+        return makerClass;
+    }
 
-	public NettyChannelMakerSetting setMakerClass(Class<? extends ChannelMaker<?>> makerClass) {
-		this.makerClass = makerClass;
-		return this;
-	}
+    public NettyChannelMakerSetting setMakerClass(Class<? extends ChannelMaker<?>> makerClass) {
+        this.makerClass = makerClass;
+        return this;
+    }
 
-	public List<String> getPipelineChains() {
-		return Collections.unmodifiableList(pipelineChains);
-	}
+    public List<String> getPipelineChains() {
+        return Collections.unmodifiableList(pipelineChains);
+    }
 
-	public NettyChannelMakerSetting setPipelineChains(List<String> pipelineChains) {
-		this.pipelineChains = pipelineChains;
-		return this;
-	}
+    public NettyChannelMakerSetting setPipelineChains(List<String> pipelineChains) {
+        this.pipelineChains = pipelineChains;
+        return this;
+    }
 
 }

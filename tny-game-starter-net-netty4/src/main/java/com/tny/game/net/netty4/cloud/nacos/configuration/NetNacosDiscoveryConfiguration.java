@@ -22,16 +22,16 @@ import java.util.List;
 @AutoConfigureBefore(NetDiscoveryConfiguration.class)
 public class NetNacosDiscoveryConfiguration {
 
-	@Bean
-	@ConditionalOnBean(NacosDiscoveryProperties.class)
-	public ServerGuideRegistrationFactory nacosServerGuideRegistrationFactory(
-			NacosDiscoveryProperties properties,
-			ObjectProvider<List<NacosRegistrationCustomizer>> registrationCustomizers,
-			ObjectProvider<List<LocalServerNodeCustomizer>> localServerNodeCustomizer) {
-		return new NacosServerGuideRegistrationFactory(properties,
-				registrationCustomizers.getIfAvailable(),
-				localServerNodeCustomizer.getIfAvailable());
-	}
+    @Bean
+    @ConditionalOnBean(NacosDiscoveryProperties.class)
+    public ServerGuideRegistrationFactory nacosServerGuideRegistrationFactory(
+            NacosDiscoveryProperties properties,
+            ObjectProvider<List<NacosRegistrationCustomizer>> registrationCustomizers,
+            ObjectProvider<List<LocalServerNodeCustomizer>> localServerNodeCustomizer) {
+        return new NacosServerGuideRegistrationFactory(properties,
+                registrationCustomizers.getIfAvailable(),
+                localServerNodeCustomizer.getIfAvailable());
+    }
 
 }
 

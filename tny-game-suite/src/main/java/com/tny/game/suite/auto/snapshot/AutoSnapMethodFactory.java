@@ -5,6 +5,6 @@ import java.lang.reflect.Method;
 @FunctionalInterface
 public interface AutoSnapMethodFactory {
 
-	AutoSnapMethod<?> create(Method method);
+    AutoSnapMethod<?> create(Method method);
 
 }

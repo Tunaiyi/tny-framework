@@ -11,6 +11,6 @@ import com.tny.game.net.relay.packet.arguments.*;
  */
 public interface TunnelPacket<A extends RelayPacketArguments> extends RelayPacket<A> {
 
-	long getTunnelId();
+    long getTunnelId();
 
 }

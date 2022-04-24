@@ -23,8 +23,9 @@ public class UidRange {
     }
 
     public long size() {
-        if (this.max == null && this.min == null)
+        if (this.max == null && this.min == null) {
             return 0;
+        }
         return (this.max - this.min) + 1;
     }
 

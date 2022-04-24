@@ -10,15 +10,15 @@ import java.util.*;
  */
 public class RpcClientSetting {
 
-	private List<RpcServiceSetting> services = new ArrayList<>();
+    private List<RpcServiceSetting> services = new ArrayList<>();
 
-	public List<RpcServiceSetting> getServices() {
-		return services;
-	}
+    public List<RpcServiceSetting> getServices() {
+        return services;
+    }
 
-	public RpcClientSetting setServices(List<RpcServiceSetting> services) {
-		this.services = services;
-		return this;
-	}
+    public RpcClientSetting setServices(List<RpcServiceSetting> services) {
+        this.services = services;
+        return this;
+    }
 
 }

@@ -8,12 +8,12 @@ package com.tny.game.data.storage;
  */
 public interface AsyncObjectStorage<K extends Comparable<?>, O> extends ObjectStorage<K, O> {
 
-	ObjectStorageMonitor getMonitor();
+    ObjectStorageMonitor getMonitor();
 
-	int queueSize();
+    int queueSize();
 
-	StoreExecuteAction store(int maxSize, int tryTimes);
+    StoreExecuteAction store(int maxSize, int tryTimes);
 
-	void operateAll();
+    void operateAll();
 
 }

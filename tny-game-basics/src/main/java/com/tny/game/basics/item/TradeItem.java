@@ -7,13 +7,13 @@ package com.tny.game.basics.item;
  */
 public interface TradeItem<I extends StuffModel> extends DealItem<I> {
 
-	AlterType getAlertType();
+    AlterType getAlertType();
 
-	boolean isValid();
+    boolean isValid();
 
-	@SuppressWarnings("unchecked")
-	default <IM extends I> TradeItem<IM> as() {
-		return (TradeItem<IM>)this;
-	}
+    @SuppressWarnings("unchecked")
+    default <IM extends I> TradeItem<IM> as() {
+        return (TradeItem<IM>)this;
+    }
 
 }

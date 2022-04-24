@@ -5,8 +5,8 @@ import com.tny.game.basics.item.behavior.*;
 
 public class SimpleDemandParamEntry<T> extends DemandParamEntry<T> {
 
-	SimpleDemandParamEntry(DemandParam param, T value) {
-		super(param, value);
-	}
+    SimpleDemandParamEntry(DemandParam param, T value) {
+        super(param, value);
+    }
 
 }

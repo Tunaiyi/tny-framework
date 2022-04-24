@@ -12,14 +12,23 @@ public abstract class ClientTestTask {
     private CacheClient cacheClient;
 
     private static int size = 100;
+
     private static Person p1 = new Person(1, "2", 2, 1);
+
     private static Person p2 = new Person(1, "2", 2, 2);
+
     private static List<CacheItem<Person>> personItemList = new ArrayList<>();
+
     private static List<CacheItem<Person>> changePersonItemList = new ArrayList<>();
+
     private static Map<String, Person> personMap = new HashMap<>();
+
     private static Map<String, Person> changePersonMap = new HashMap<>();
+
     private static List<Person> personList = new ArrayList<>();
+
     private static List<Person> changePersonList = new ArrayList<>();
+
     private static List<String> keyList = new ArrayList<>();
 
     static {
@@ -276,13 +285,13 @@ public abstract class ClientTestTask {
     @SuppressWarnings("unchecked")
     public void testCas() {
         this.cacheClient.set("Test", p1, 0L);
-        CasItem<Person> item = (CasItem<Person>) this.cacheClient.gets("Test");
+        CasItem<Person> item = (CasItem<Person>)this.cacheClient.gets("Test");
         long currentVersion = item.getVersion();
         assertEquals(item.getData(), p1);
         item = new SimpleCasItem<>(item, p2);
         assertEquals(this.cacheClient.get("Test"), p1);
         assertEquals(this.cacheClient.cas(item, 0L), true);
-        item = (CasItem<Person>) this.cacheClient.gets("Test");
+        item = (CasItem<Person>)this.cacheClient.gets("Test");
         assertEquals(item.getData(), p2);
         assertEquals(item.getVersion(), currentVersion + 1);
 

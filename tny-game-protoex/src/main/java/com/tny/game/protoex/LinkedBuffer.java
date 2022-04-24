@@ -50,8 +50,9 @@ public final class LinkedBuffer {
      * previous buffer.
      */
     public static LinkedBuffer allocate(int size, LinkedBuffer previous) {
-        if (size < MIN_BUFFER_SIZE)
+        if (size < MIN_BUFFER_SIZE) {
             throw new IllegalArgumentException(MIN_BUFFER_SIZE + " is the minimum buffer size.");
+        }
 
         return new LinkedBuffer(size, previous);
     }
@@ -75,8 +76,9 @@ public final class LinkedBuffer {
      */
     public static LinkedBuffer use(byte[] buffer, int start) {
         assert start >= 0;
-        if (buffer.length - start < MIN_BUFFER_SIZE)
+        if (buffer.length - start < MIN_BUFFER_SIZE) {
             throw new IllegalArgumentException(MIN_BUFFER_SIZE + " is the minimum buffer size.");
+        }
 
         return new LinkedBuffer(buffer, start, start);
     }

@@ -5,4 +5,5 @@ public interface OpLogExecutor {
     void submit(OpLog opLog);
 
     void shutdown();
+
 }

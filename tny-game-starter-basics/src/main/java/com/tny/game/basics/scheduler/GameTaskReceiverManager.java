@@ -4,10 +4,10 @@ import com.tny.game.common.scheduler.*;
 
 public interface GameTaskReceiverManager {
 
-	GameTaskReceiver getReceiver(long playerId, TaskReceiverType receiverType);
+    GameTaskReceiver getReceiver(long playerId, TaskReceiverType receiverType);
 
-	boolean insertReceiver(GameTaskReceiver receiver);
+    boolean insertReceiver(GameTaskReceiver receiver);
 
-	boolean saveReceiver(GameTaskReceiver receiver);
+    boolean saveReceiver(GameTaskReceiver receiver);
 
 }

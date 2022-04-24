@@ -8,9 +8,9 @@ package com.tny.game.net.rpc.auth;
  */
 public class NoopRpcUserPasswordManager implements RpcUserPasswordManager {
 
-	@Override
-	public boolean auth(String service, long serverId, long instance, String password) {
-		return true;
-	}
+    @Override
+    public boolean auth(String service, long serverId, long instance, String password) {
+        return true;
+    }
 
 }

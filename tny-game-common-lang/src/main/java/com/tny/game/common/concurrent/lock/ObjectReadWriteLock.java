@@ -51,8 +51,8 @@ class ObjectReadWriteLock extends AbstractTimeLimiter implements ObjectLock {
      */
     public static Object getIdentity(Object object) {
         return LockEntity.class.isAssignableFrom(object.getClass()) ?
-               ((LockEntity)object).getIdentity() :
-               System.identityHashCode(object);
+                ((LockEntity)object).getIdentity() :
+                System.identityHashCode(object);
     }
 
     /**

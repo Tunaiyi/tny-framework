@@ -12,38 +12,38 @@ import com.tny.game.net.relay.packet.arguments.*;
  */
 public abstract class BaseTunnelArgumentsProto<T extends TunnelPacketArguments> implements PacketArgumentsProto<T> {
 
-	@Packed
-	@Protobuf(order = 1, fieldType = FieldType.FIXED64)
-	private long instanceId;
+    @Packed
+    @Protobuf(order = 1, fieldType = FieldType.FIXED64)
+    private long instanceId;
 
-	@Packed
-	@Protobuf(order = 2, fieldType = FieldType.FIXED64)
-	private long tunnelId;
+    @Packed
+    @Protobuf(order = 2, fieldType = FieldType.FIXED64)
+    private long tunnelId;
 
-	protected BaseTunnelArgumentsProto() {
-	}
+    protected BaseTunnelArgumentsProto() {
+    }
 
-	protected BaseTunnelArgumentsProto(T arguments) {
-		this.instanceId = arguments.getInstanceId();
-		this.tunnelId = arguments.getTunnelId();
-	}
+    protected BaseTunnelArgumentsProto(T arguments) {
+        this.instanceId = arguments.getInstanceId();
+        this.tunnelId = arguments.getTunnelId();
+    }
 
-	public long getInstanceId() {
-		return instanceId;
-	}
+    public long getInstanceId() {
+        return instanceId;
+    }
 
-	public long getTunnelId() {
-		return tunnelId;
-	}
+    public long getTunnelId() {
+        return tunnelId;
+    }
 
-	public BaseTunnelArgumentsProto<T> setTunnelId(long tunnelId) {
-		this.tunnelId = tunnelId;
-		return this;
-	}
+    public BaseTunnelArgumentsProto<T> setTunnelId(long tunnelId) {
+        this.tunnelId = tunnelId;
+        return this;
+    }
 
-	public BaseTunnelArgumentsProto<T> setInstanceId(long instanceId) {
-		this.instanceId = instanceId;
-		return this;
-	}
+    public BaseTunnelArgumentsProto<T> setInstanceId(long instanceId) {
+        this.instanceId = instanceId;
+        return this;
+    }
 
 }

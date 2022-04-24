@@ -62,4 +62,5 @@ public class TradeStuff {
         this.alterType = alterType;
         return this;
     }
+
 }

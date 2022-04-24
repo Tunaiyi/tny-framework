@@ -23,65 +23,65 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class NetAutoServiceRegister implements ApplicationContextAware {
 
-	public static final Logger LOGGER = LoggerFactory.getLogger(NetAutoServiceRegister.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(NetAutoServiceRegister.class);
 
-	private final AtomicBoolean running = new AtomicBoolean(false);
+    private final AtomicBoolean running = new AtomicBoolean(false);
 
-	private ApplicationContext applicationContext;
+    private ApplicationContext applicationContext;
 
-	private final List<Registration> registrations = new CopyOnWriteArrayList<>();
+    private final List<Registration> registrations = new CopyOnWriteArrayList<>();
 
-	private final ServiceRegistry<Registration> serviceRegistry;
+    private final ServiceRegistry<Registration> serviceRegistry;
 
-	private final ServerGuideRegistrationFactory registrationFactory;
+    private final ServerGuideRegistrationFactory registrationFactory;
 
-	public NetAutoServiceRegister(ServiceRegistry<Registration> serviceRegistry, ServerGuideRegistrationFactory registrationFactory) {
-		this.serviceRegistry = serviceRegistry;
-		this.registrationFactory = registrationFactory;
-	}
+    public NetAutoServiceRegister(ServiceRegistry<Registration> serviceRegistry, ServerGuideRegistrationFactory registrationFactory) {
+        this.serviceRegistry = serviceRegistry;
+        this.registrationFactory = registrationFactory;
+    }
 
-	@Override
-	public void setApplicationContext(@Nonnull ApplicationContext applicationContext) throws BeansException {
-		this.applicationContext = applicationContext;
-	}
+    @Override
+    public void setApplicationContext(@Nonnull ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
 
-	private void register() {
-		NetApplication application = applicationContext.getBean(NetApplication.class);
-		Set<ServerGuide> guides = SpringBeanUtils.beansOfType(applicationContext, ServerGuide.class);
-		this.applicationContext.publishEvent(new NetApplicationPreRegisteredEvent(application));
-		for (ServerGuide guide : guides) {
-			this.applicationContext.publishEvent(new ServerGuidePreRegisteredEvent(application, guide));
-			Registration current = registrationFactory.create(guide, application.getAppContext());
-			serviceRegistry.register(current);
-			this.applicationContext.publishEvent(new ServerGuideRegisteredEvent(application, guide));
-		}
-		this.applicationContext.publishEvent(new NetApplicationRegisteredEvent(application));
-	}
+    private void register() {
+        NetApplication application = applicationContext.getBean(NetApplication.class);
+        Set<ServerGuide> guides = SpringBeanUtils.beansOfType(applicationContext, ServerGuide.class);
+        this.applicationContext.publishEvent(new NetApplicationPreRegisteredEvent(application));
+        for (ServerGuide guide : guides) {
+            this.applicationContext.publishEvent(new ServerGuidePreRegisteredEvent(application, guide));
+            Registration current = registrationFactory.create(guide, application.getAppContext());
+            serviceRegistry.register(current);
+            this.applicationContext.publishEvent(new ServerGuideRegisteredEvent(application, guide));
+        }
+        this.applicationContext.publishEvent(new NetApplicationRegisteredEvent(application));
+    }
 
-	private void deregister() {
-		for (Registration registration : registrations) {
-			this.serviceRegistry.deregister(registration);
-		}
-	}
+    private void deregister() {
+        for (Registration registration : registrations) {
+            this.serviceRegistry.deregister(registration);
+        }
+    }
 
-	public void restart() {
-		this.stop();
-		this.start();
-	}
+    public void restart() {
+        this.stop();
+        this.start();
+    }
 
-	public void start() {
-		if (this.running.compareAndSet(false, true)) {
-			register();
-		}
-	}
+    public void start() {
+        if (this.running.compareAndSet(false, true)) {
+            register();
+        }
+    }
 
-	public void stop() {
-		if (this.running.compareAndSet(true, false)) {
-			deregister();
-			this.registrations.clear();
-			this.serviceRegistry.close();
-		}
+    public void stop() {
+        if (this.running.compareAndSet(true, false)) {
+            deregister();
+            this.registrations.clear();
+            this.serviceRegistry.close();
+        }
 
-	}
+    }
 
 }

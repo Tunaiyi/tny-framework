@@ -13,20 +13,20 @@ import com.tny.game.net.codec.*;
 @Unit
 public class XOrCodecCrypto implements CodecCrypto {
 
-	private byte[] xor(DataPackageContext context, byte[] bytes, int offset, int length) {
-		byte[] security = context.getPackSecurityKey();
-		byte[] code = BytesAide.int2Bytes(context.getPacketCode());
-		return BytesAide.xor(bytes, offset, length, security, code);
-	}
+    private byte[] xor(DataPackageContext context, byte[] bytes, int offset, int length) {
+        byte[] security = context.getPackSecurityKey();
+        byte[] code = BytesAide.int2Bytes(context.getPacketCode());
+        return BytesAide.xor(bytes, offset, length, security, code);
+    }
 
-	@Override
-	public byte[] encrypt(DataPackageContext context, byte[] bytes, int offset, int length) {
-		return xor(context, bytes, offset, length);
-	}
+    @Override
+    public byte[] encrypt(DataPackageContext context, byte[] bytes, int offset, int length) {
+        return xor(context, bytes, offset, length);
+    }
 
-	@Override
-	public byte[] decrypt(DataPackageContext context, byte[] bytes, int offset, int length) {
-		return xor(context, bytes, offset, length);
-	}
+    @Override
+    public byte[] decrypt(DataPackageContext context, byte[] bytes, int offset, int length) {
+        return xor(context, bytes, offset, length);
+    }
 
 }

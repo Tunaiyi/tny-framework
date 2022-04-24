@@ -19,6 +19,7 @@ public class ZKClient {
     private ZooKeeper zooKeeper;
 
     private volatile CountDownLatch latch = new CountDownLatch(1);
+
     ;
 
     private AtomicBoolean connected = new AtomicBoolean(false);
@@ -52,8 +53,9 @@ public class ZKClient {
                             task.renew(state, ZKClient.this);
                     }
                 }
-                if (ZKClient.this.childWatcher != null)
+                if (ZKClient.this.childWatcher != null) {
                     ZKClient.this.childWatcher.process(event);
+                }
             } catch (IOException e) {
                 ZKClient.this.LOGGER.error("ConnectedWatch process {} {} IOException ", eventType, state, e);
             } catch (Exception e) {
@@ -71,8 +73,9 @@ public class ZKClient {
         this.connectString = connectString;
         this.sessionTimeout = sessionTimeout;
         this.childWatcher = watcher;
-        if (task != null)
+        if (task != null) {
             this.renewTaskList.add(task);
+        }
     }
 
     public void addRenewTask(RenewTask task) {
@@ -112,8 +115,9 @@ public class ZKClient {
         if (this.zooKeeper != null) {
             try {
                 this.LOGGER.info("正在关闭{}", this.zooKeeper);
-                if (this.zooKeeper != null)
+                if (this.zooKeeper != null) {
                     this.zooKeeper.close();
+                }
                 this.connected.set(false);
                 this.zooKeeper = null;
             } catch (InterruptedException e) {

@@ -18,4 +18,5 @@ public @interface PatternMatch {
      * @return 207
      */
     int illegalCode();
+
 }

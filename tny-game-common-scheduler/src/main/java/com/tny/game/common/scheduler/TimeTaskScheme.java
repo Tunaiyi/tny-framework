@@ -10,8 +10,8 @@ import java.util.List;
  */
 public interface TimeTaskScheme {
 
-	String getCron();
+    String getCron();
 
-	List<String> getTasks();
+    List<String> getTasks();
 
 }

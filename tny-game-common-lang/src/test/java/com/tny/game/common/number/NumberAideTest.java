@@ -22,4 +22,5 @@ public class NumberAideTest {
             System.out.println(NumberAide.numberConverter(index, set));
         }
     }
+
 }

@@ -5,71 +5,71 @@ package com.tny.game.basics.item.capacity;
  * Created by Kun Yang on 16/3/12.
  */
 public abstract class ContainerCapacitySupplierItem<IM extends CapacitySupplierItemModel>
-		extends CapacitySupplierItem<IM> implements ContainerCapacitySupplier {
+        extends CapacitySupplierItem<IM> implements ContainerCapacitySupplier {
 
-	private transient CapacityContainer container;
+    private transient CapacityContainer container;
 
-	protected ContainerCapacitySupplierItem() {
-	}
+    protected ContainerCapacitySupplierItem() {
+    }
 
-	protected ContainerCapacitySupplierItem(long playerId, IM model) {
-		super(playerId, model);
-	}
+    protected ContainerCapacitySupplierItem(long playerId, IM model) {
+        super(playerId, model);
+    }
 
-	@Override
-	protected void setModel(IM model) {
-		super.setModel(model);
-		this.initContainer();
-	}
+    @Override
+    protected void setModel(IM model) {
+        super.setModel(model);
+        this.initContainer();
+    }
 
-	private void initContainer() {
-		if (this.container == null) {
-			this.container = createContainer();
-		}
-	}
+    private void initContainer() {
+        if (this.container == null) {
+            this.container = createContainer();
+        }
+    }
 
-	protected abstract CapacityContainer createContainer();
+    protected abstract CapacityContainer createContainer();
 
-	private CapacityContainer container() {
-		if (this.container == null) {
-			initContainer();
-		}
-		return this.container;
-	}
+    private CapacityContainer container() {
+        if (this.container == null) {
+            initContainer();
+        }
+        return this.container;
+    }
 
-	@Override
-	public CapacitySupply supply() {
-		return container();
-	}
+    @Override
+    public CapacitySupply supply() {
+        return container();
+    }
 
-	@Override
-	public CapacitySupplierType getSupplierType() {
-		return model.getSupplierType();
-	}
+    @Override
+    public CapacitySupplierType getSupplierType() {
+        return model.getSupplierType();
+    }
 
-	@Override
-	protected void refresh() {
-		this.container().refresh(this);
-	}
+    @Override
+    protected void refresh() {
+        this.container().refresh(this);
+    }
 
-	@Override
-	protected void invalid() {
-		this.container().refresh(this);
-	}
+    @Override
+    protected void invalid() {
+        this.container().refresh(this);
+    }
 
-	@Override
-	protected void effect() {
-		this.container().effect(this);
-	}
+    @Override
+    protected void effect() {
+        this.container().effect(this);
+    }
 
-	@Override
-	public int getModelId() {
-		return super.getModelId();
-	}
+    @Override
+    public int getModelId() {
+        return super.getModelId();
+    }
 
-	@Override
-	public long getPlayerId() {
-		return super.getPlayerId();
-	}
+    @Override
+    public long getPlayerId() {
+        return super.getPlayerId();
+    }
 
 }

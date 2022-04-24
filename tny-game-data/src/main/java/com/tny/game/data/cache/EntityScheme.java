@@ -9,59 +9,59 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class EntityScheme {
 
-	/**
-	 * 实体类
-	 */
-	private final Class<?> entityClass;
+    /**
+     * 实体类
+     */
+    private final Class<?> entityClass;
 
-	/**
-	 * 视图配置
-	 */
-	private final EntityObject entityObject;
+    /**
+     * 视图配置
+     */
+    private final EntityObject entityObject;
 
-	public EntityScheme(Class<?> entityClass) {
-		this.entityClass = entityClass;
-		this.entityObject = entityClass.getAnnotation(EntityObject.class);
-	}
+    public EntityScheme(Class<?> entityClass) {
+        this.entityClass = entityClass;
+        this.entityObject = entityClass.getAnnotation(EntityObject.class);
+    }
 
-	public String prefix() {
-		return entityObject.prefix();
-	}
+    public String prefix() {
+        return entityObject.prefix();
+    }
 
-	public boolean isHasPrefix() {
-		return StringUtils.isNoneBlank(entityObject.prefix());
-	}
+    public boolean isHasPrefix() {
+        return StringUtils.isNoneBlank(entityObject.prefix());
+    }
 
-	public String cacheFactory() {
-		return entityObject.cacheFactory();
-	}
+    public String cacheFactory() {
+        return entityObject.cacheFactory();
+    }
 
-	public String storageFactory() {
-		return entityObject.storageFactory();
-	}
+    public String storageFactory() {
+        return entityObject.storageFactory();
+    }
 
-	public String keyMakerFactory() {
-		return entityObject.keyMakerFactory();
-	}
+    public String keyMakerFactory() {
+        return entityObject.keyMakerFactory();
+    }
 
-	public Class<?> getEntityClass() {
-		return this.entityClass;
-	}
+    public Class<?> getEntityClass() {
+        return this.entityClass;
+    }
 
-	public Class<?> getCacheClass() {
-		return entityObject.cache() == Self.class ? entityClass : entityObject.cache();
-	}
+    public Class<?> getCacheClass() {
+        return entityObject.cache() == Self.class ? entityClass : entityObject.cache();
+    }
 
-	public boolean isCacheSelf() {
-		return entityObject.cache() == Self.class;
-	}
+    public boolean isCacheSelf() {
+        return entityObject.cache() == Self.class;
+    }
 
-	public long maxCacheSize() {
-		return this.entityObject.maxCacheSize();
-	}
+    public long maxCacheSize() {
+        return this.entityObject.maxCacheSize();
+    }
 
-	public int concurrencyLevel() {
-		return this.entityObject.concurrencyLevel();
-	}
+    public int concurrencyLevel() {
+        return this.entityObject.concurrencyLevel();
+    }
 
 }

@@ -63,32 +63,37 @@ public class WebResult<O> {
     }
 
     public static <V, D> WebResult<D> mapOn(DoneResult<V> done, D successBody, D failureBody) {
-        if (done.isFailure())
+        if (done.isFailure()) {
             return WebResult.map(done, failureBody);
+        }
         return WebResult.success(successBody);
     }
 
     public static <V, D> WebResult<D> mapOnSuccess(DoneResult<V> done, D body) {
-        if (done.isFailure())
+        if (done.isFailure()) {
             return WebResult.codeOf(done);
+        }
         return WebResult.success(body);
     }
 
     public static <V, D> WebResult<D> mapOnSuccess(DoneResult<V> done, Function<V, D> mapper) {
-        if (done.isFailure())
+        if (done.isFailure()) {
             return WebResult.codeOf(done);
+        }
         return WebResult.success(mapper.apply(done.get()));
     }
 
     public static <V, D> WebResult<D> mapOnFailure(DoneResult<V> done, D body) {
-        if (done.isFailure())
+        if (done.isFailure()) {
             return WebResult.map(done, body);
+        }
         return WebResult.success();
     }
 
     public static <V, D> WebResult<D> mapOnFailure(DoneResult<V> done, Function<V, D> mapper) {
-        if (done.isFailure())
+        if (done.isFailure()) {
             return WebResult.map(done, mapper.apply(done.get()));
+        }
         return WebResult.success();
     }
 
@@ -168,8 +173,9 @@ public class WebResult<O> {
 
     public void ifPresent(Consumer<? super O> consumer) {
         O object = getBody();
-        if (object != null)
+        if (object != null) {
             consumer.accept(object);
+        }
     }
 
     public Optional<O> optional() {
@@ -177,13 +183,15 @@ public class WebResult<O> {
     }
 
     public void ifSuccess(Consumer<? super O> consumer) {
-        if (this.isSuccess())
+        if (this.isSuccess()) {
             consumer.accept(this.body);
+        }
     }
 
     public void ifFailure(Consumer<? super O> consumer) {
-        if (this.isFailure())
+        if (this.isFailure()) {
             consumer.accept(this.body);
+        }
     }
 
     public String getMessage() {

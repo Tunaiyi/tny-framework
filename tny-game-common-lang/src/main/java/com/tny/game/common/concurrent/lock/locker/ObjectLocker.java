@@ -12,14 +12,14 @@ import java.util.concurrent.locks.Lock;
  */
 public interface ObjectLocker<O> {
 
-	Lock lock(O object);
+    Lock lock(O object);
 
-	Lock lockInterruptibly(O object) throws InterruptedException;
+    Lock lockInterruptibly(O object) throws InterruptedException;
 
-	Optional<Lock> tryLock(O object);
+    Optional<Lock> tryLock(O object);
 
-	Optional<Lock> tryLock(O object, long timeout, TimeUnit unit) throws InterruptedException;
+    Optional<Lock> tryLock(O object, long timeout, TimeUnit unit) throws InterruptedException;
 
-	void unlock(O object, Lock lock);
+    void unlock(O object, Lock lock);
 
 }

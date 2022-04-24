@@ -11,26 +11,26 @@ import com.tny.game.data.cache.*;
  */
 public class LocalObjectCacheFactorySetting {
 
-	private String releaseStrategyFactory = BeanNameUtils.lowerCamelName(TimeoutReleaseStrategyFactory.class);
+    private String releaseStrategyFactory = BeanNameUtils.lowerCamelName(TimeoutReleaseStrategyFactory.class);
 
-	private String recycler = BeanNameUtils.lowerCamelName(ScheduledCacheRecycler.class);
+    private String recycler = BeanNameUtils.lowerCamelName(ScheduledCacheRecycler.class);
 
-	public String getRecycler() {
-		return recycler;
-	}
+    public String getRecycler() {
+        return recycler;
+    }
 
-	public LocalObjectCacheFactorySetting setRecycler(String recycler) {
-		this.recycler = recycler;
-		return this;
-	}
+    public LocalObjectCacheFactorySetting setRecycler(String recycler) {
+        this.recycler = recycler;
+        return this;
+    }
 
-	public String getReleaseStrategyFactory() {
-		return releaseStrategyFactory;
-	}
+    public String getReleaseStrategyFactory() {
+        return releaseStrategyFactory;
+    }
 
-	public LocalObjectCacheFactorySetting setReleaseStrategyFactory(String releaseStrategyFactory) {
-		this.releaseStrategyFactory = releaseStrategyFactory;
-		return this;
-	}
+    public LocalObjectCacheFactorySetting setReleaseStrategyFactory(String releaseStrategyFactory) {
+        this.releaseStrategyFactory = releaseStrategyFactory;
+        return this;
+    }
 
 }

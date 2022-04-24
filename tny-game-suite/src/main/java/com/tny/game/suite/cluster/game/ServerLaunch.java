@@ -13,8 +13,10 @@ public class ServerLaunch {
 
     @ProtoExField(1)
     private int serverID;
+
     @ProtoExField(2)
     private String launchDate;
+
     @ProtoExField(3)
     private String launchTime;
 
@@ -47,8 +49,8 @@ public class ServerLaunch {
 
     public static void main(String[] args) throws InvalidProtocolBufferException {
         byte[] data = StringEntryProto.newBuilder()
-                                      .setIntValue(199)
-                                      .build().toByteArray();
+                .setIntValue(199)
+                .build().toByteArray();
         StringEntryProto proto = StringEntryProto.parseFrom(data);
         System.out.println(proto.getKey());
     }

@@ -7,8 +7,11 @@ import java.lang.reflect.*;
 public class JSsistPropertyAccessor implements PropertyAccessor {
 
     private String name;
+
     private MethodAccessor reader;
+
     private MethodAccessor writer;
+
     private Class<?> type;
 
     @Override

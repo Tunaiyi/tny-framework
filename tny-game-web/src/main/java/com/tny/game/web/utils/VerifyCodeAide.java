@@ -6,6 +6,7 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class VerifyCodeAide {
+
     /**
      * 验证码类型为仅数字,即0~9
      */
@@ -103,8 +104,8 @@ public class VerifyCodeAide {
             case TYPE_LETTER_ONLY:
                 while (i < length) {
                     int t = random.nextInt(123);
-                    if ((t >= 97 || (t >= 65 && t <= 90)) && (null == excludeString || excludeString.indexOf((char) t) < 0)) {
-                        verifyCode.append((char) t);
+                    if ((t >= 97 || (t >= 65 && t <= 90)) && (null == excludeString || excludeString.indexOf((char)t) < 0)) {
+                        verifyCode.append((char)t);
                         i++;
                     }
                 }
@@ -112,8 +113,8 @@ public class VerifyCodeAide {
             case TYPE_ALL_MIXED:
                 while (i < length) {
                     int t = random.nextInt(123);
-                    if ((t >= 97 || (t >= 65 && t <= 90) || (t >= 48 && t <= 57)) && (null == excludeString || excludeString.indexOf((char) t) < 0)) {
-                        verifyCode.append((char) t);
+                    if ((t >= 97 || (t >= 65 && t <= 90) || (t >= 48 && t <= 57)) && (null == excludeString || excludeString.indexOf((char)t) < 0)) {
+                        verifyCode.append((char)t);
                         i++;
                     }
                 }
@@ -121,8 +122,8 @@ public class VerifyCodeAide {
             case TYPE_NUM_UPPER:
                 while (i < length) {
                     int t = random.nextInt(91);
-                    if ((t >= 65 || (t >= 48 && t <= 57)) && (null == excludeString || excludeString.indexOf((char) t) < 0)) {
-                        verifyCode.append((char) t);
+                    if ((t >= 65 || (t >= 48 && t <= 57)) && (null == excludeString || excludeString.indexOf((char)t) < 0)) {
+                        verifyCode.append((char)t);
                         i++;
                     }
                 }
@@ -130,8 +131,8 @@ public class VerifyCodeAide {
             case TYPE_NUM_LOWER:
                 while (i < length) {
                     int t = random.nextInt(123);
-                    if ((t >= 97 || (t >= 48 && t <= 57)) && (null == excludeString || excludeString.indexOf((char) t) < 0)) {
-                        verifyCode.append((char) t);
+                    if ((t >= 97 || (t >= 48 && t <= 57)) && (null == excludeString || excludeString.indexOf((char)t) < 0)) {
+                        verifyCode.append((char)t);
                         i++;
                     }
                 }
@@ -139,8 +140,8 @@ public class VerifyCodeAide {
             case TYPE_UPPER_ONLY:
                 while (i < length) {
                     int t = random.nextInt(91);
-                    if ((t >= 65) && (null == excludeString || excludeString.indexOf((char) t) < 0)) {
-                        verifyCode.append((char) t);
+                    if ((t >= 65) && (null == excludeString || excludeString.indexOf((char)t) < 0)) {
+                        verifyCode.append((char)t);
                         i++;
                     }
                 }
@@ -148,8 +149,8 @@ public class VerifyCodeAide {
             case TYPE_LOWER_ONLY:
                 while (i < length) {
                     int t = random.nextInt(123);
-                    if ((t >= 97) && (null == excludeString || excludeString.indexOf((char) t) < 0)) {
-                        verifyCode.append((char) t);
+                    if ((t >= 97) && (null == excludeString || excludeString.indexOf((char)t) < 0)) {
+                        verifyCode.append((char)t);
                         i++;
                     }
                 }
@@ -191,14 +192,14 @@ public class VerifyCodeAide {
             }
         }
         //字体大小为图片高度的80%
-        int fsize = (int) (height * 0.8);
+        int fsize = (int)(height * 0.8);
         int fx = height - fsize;
         int fy = fsize;
         //设定字体
         graphics.setFont(new Font("Default", Font.PLAIN, fsize));
         //写验证码字符
         for (int i = 0; i < textCode.length(); i++) {
-            fy = randomLocation ? (int) ((Math.random() * 0.3 + 0.6) * height) : fy;
+            fy = randomLocation ? (int)((Math.random() * 0.3 + 0.6) * height) : fy;
             graphics.setColor(null == foreColor ? generateRandomColor() : foreColor);
             //将验证码字符显示到图象中
             graphics.drawString(textCode.charAt(i) + "", fx, fy);
@@ -216,4 +217,5 @@ public class VerifyCodeAide {
         graphics.dispose();
         return bufferedImage;
     }
+
 }

@@ -53,4 +53,5 @@ public class CommandException extends RuntimeException {
     public Object getBody() {
         return body;
     }
+
 }

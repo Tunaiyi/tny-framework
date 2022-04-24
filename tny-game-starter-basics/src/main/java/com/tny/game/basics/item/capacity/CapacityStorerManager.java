@@ -8,10 +8,10 @@ import com.tny.game.data.*;
  */
 public abstract class CapacityStorerManager<SC extends CapacityObjectStorer> extends GameCacheManager<SC> {
 
-	protected CapacityStorerManager(Class<SC> storerClass, EntityCacheManager<AnyId, SC> manager) {
-		super(storerClass, manager);
-	}
+    protected CapacityStorerManager(Class<SC> storerClass, EntityCacheManager<AnyId, SC> manager) {
+        super(storerClass, manager);
+    }
 
-	public abstract SC getStorer(long playerId);
+    public abstract SC getStorer(long playerId);
 
 }

@@ -12,15 +12,15 @@ import java.util.*;
  */
 public class TimeTasksSchemeModel {
 
-	private List<TimeTask> timeTasks = new ArrayList<>();
+    private List<TimeTask> timeTasks = new ArrayList<>();
 
-	public List<TimeTask> getTimeTasks() {
-		return timeTasks;
-	}
+    public List<TimeTask> getTimeTasks() {
+        return timeTasks;
+    }
 
-	public TimeTasksSchemeModel setTimeTasks(List<TimeTask> timeTasks) {
-		this.timeTasks = timeTasks;
-		return this;
-	}
+    public TimeTasksSchemeModel setTimeTasks(List<TimeTask> timeTasks) {
+        this.timeTasks = timeTasks;
+        return this;
+    }
 
 }

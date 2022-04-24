@@ -70,15 +70,17 @@ public class AccountManager {
 
     public void updateOfflineAt(Account accountObj) {
         Instant dateTime = accountObj.getOfflineTime();
-        if (dateTime == null)
+        if (dateTime == null) {
             dateTime = Instant.now();
+        }
         this.accountDAO.updateOfflineAt(accountObj.getUid(), DateTimeAide.date2Int(dateTime), dateTime.toEpochMilli());
     }
 
     public void updateOnlineAt(Account account, GameTicket ticket) {
         Instant dateTime = account.getOnlineTime();
-        if (dateTime == null)
+        if (dateTime == null) {
             dateTime = Instant.now();
+        }
         this.accountDAO.updateOnlineAt(
                 account.getUid(),
                 DateTimeAide.date2Int(dateTime),
@@ -87,8 +89,9 @@ public class AccountManager {
 
     public void updateCreateRole(Account account) {
         Instant dateTime = account.getCreateDateTime();
-        if (dateTime == null)
+        if (dateTime == null) {
             return;
+        }
         this.accountDAO.updateCreateRole(
                 account.getUid(), account.getName(), DateTimeAide.date2Int(dateTime), dateTime.toEpochMilli());
     }
@@ -108,4 +111,5 @@ public class AccountManager {
     public int[] insert(List<Long> uids) {
         return this.accountDAO.insert(uids);
     }
+
 }

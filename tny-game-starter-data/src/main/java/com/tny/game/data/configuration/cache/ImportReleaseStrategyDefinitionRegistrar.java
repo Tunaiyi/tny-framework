@@ -16,22 +16,22 @@ import javax.annotation.Nonnull;
  */
 public class ImportReleaseStrategyDefinitionRegistrar extends ImportConfigurationBeanDefinitionRegistrar {
 
-	@Override
-	public void registerBeanDefinitions(@Nonnull AnnotationMetadata importingClassMetadata, @Nonnull BeanDefinitionRegistry registry) {
-		ReleaseStrategyProperties properties = loadProperties(ReleaseStrategyProperties.class);
-		if (properties.getStrategy() != null) {
-			registerTimeoutReleaseStrategyFactory(registry, properties.getStrategy(),
-					BeanNameUtils.lowerCamelName(TimeoutReleaseStrategyFactory.class));
-		}
-		properties.getStrategies().forEach((name, setting) -> registerTimeoutReleaseStrategyFactory(registry, setting, name));
-	}
+    @Override
+    public void registerBeanDefinitions(@Nonnull AnnotationMetadata importingClassMetadata, @Nonnull BeanDefinitionRegistry registry) {
+        ReleaseStrategyProperties properties = loadProperties(ReleaseStrategyProperties.class);
+        if (properties.getStrategy() != null) {
+            registerTimeoutReleaseStrategyFactory(registry, properties.getStrategy(),
+                    BeanNameUtils.lowerCamelName(TimeoutReleaseStrategyFactory.class));
+        }
+        properties.getStrategies().forEach((name, setting) -> registerTimeoutReleaseStrategyFactory(registry, setting, name));
+    }
 
-	private void registerTimeoutReleaseStrategyFactory(BeanDefinitionRegistry registry, TimeoutReleaseStrategySetting setting,
-			String beanName) {
-		TimeoutReleaseStrategyFactory<?, ?> factory = new TimeoutReleaseStrategyFactory<>(setting);
-		registry.registerBeanDefinition(beanName, BeanDefinitionBuilder
-				.genericBeanDefinition(TimeoutReleaseStrategyFactory.class, () -> factory)
-				.getBeanDefinition());
-	}
+    private void registerTimeoutReleaseStrategyFactory(BeanDefinitionRegistry registry, TimeoutReleaseStrategySetting setting,
+            String beanName) {
+        TimeoutReleaseStrategyFactory<?, ?> factory = new TimeoutReleaseStrategyFactory<>(setting);
+        registry.registerBeanDefinition(beanName, BeanDefinitionBuilder
+                .genericBeanDefinition(TimeoutReleaseStrategyFactory.class, () -> factory)
+                .getBeanDefinition());
+    }
 
 }

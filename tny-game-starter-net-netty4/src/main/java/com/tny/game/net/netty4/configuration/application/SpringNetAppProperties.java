@@ -14,70 +14,70 @@ import java.util.List;
 @ConfigurationProperties("tny.app")
 public class SpringNetAppProperties {
 
-	private String name;
+    private String name;
 
-	private int serverId;
+    private int serverId;
 
-	private String appType = "default";
+    private String appType = "default";
 
-	private String scopeType = "online";
+    private String scopeType = "online";
 
-	private String locale = "zh-CN";
+    private String locale = "zh-CN";
 
-	private List<String> basePackages = ImmutableList.of();
+    private List<String> basePackages = ImmutableList.of();
 
-	public int getServerId() {
-		return this.serverId;
-	}
+    public int getServerId() {
+        return this.serverId;
+    }
 
-	public SpringNetAppProperties setServerId(int serverId) {
-		this.serverId = serverId;
-		return this;
-	}
+    public SpringNetAppProperties setServerId(int serverId) {
+        this.serverId = serverId;
+        return this;
+    }
 
-	public String getName() {
-		return this.name;
-	}
+    public String getName() {
+        return this.name;
+    }
 
-	public SpringNetAppProperties setName(String name) {
-		this.name = name;
-		return this;
-	}
+    public SpringNetAppProperties setName(String name) {
+        this.name = name;
+        return this;
+    }
 
-	public String getLocale() {
-		return this.locale;
-	}
+    public String getLocale() {
+        return this.locale;
+    }
 
-	public SpringNetAppProperties setLocale(String locale) {
-		this.locale = locale;
-		return this;
-	}
+    public SpringNetAppProperties setLocale(String locale) {
+        this.locale = locale;
+        return this;
+    }
 
-	public String getAppType() {
-		return this.appType;
-	}
+    public String getAppType() {
+        return this.appType;
+    }
 
-	public SpringNetAppProperties setAppType(String appType) {
-		this.appType = appType;
-		return this;
-	}
+    public SpringNetAppProperties setAppType(String appType) {
+        this.appType = appType;
+        return this;
+    }
 
-	public String getScopeType() {
-		return this.scopeType;
-	}
+    public String getScopeType() {
+        return this.scopeType;
+    }
 
-	public SpringNetAppProperties setScopeType(String scopeType) {
-		this.scopeType = scopeType;
-		return this;
-	}
+    public SpringNetAppProperties setScopeType(String scopeType) {
+        this.scopeType = scopeType;
+        return this;
+    }
 
-	public List<String> getBasePackages() {
-		return this.basePackages;
-	}
+    public List<String> getBasePackages() {
+        return this.basePackages;
+    }
 
-	public SpringNetAppProperties setBasePackages(List<String> basePackages) {
-		this.basePackages = ImmutableList.copyOf(basePackages);
-		return this;
-	}
+    public SpringNetAppProperties setBasePackages(List<String> basePackages) {
+        this.basePackages = ImmutableList.copyOf(basePackages);
+        return this;
+    }
 
 }

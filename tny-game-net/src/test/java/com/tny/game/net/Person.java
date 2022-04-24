@@ -3,6 +3,7 @@ package com.tny.game.net;
 import java.io.Serializable;
 
 public class Person implements Serializable {
+
     /**
      * serialVersionUID
      */
@@ -69,25 +70,33 @@ public class Person implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
-        Person other = (Person) obj;
-        if (age != other.age)
+        }
+        Person other = (Person)obj;
+        if (age != other.age) {
             return false;
+        }
         if (home == null) {
-            if (other.home != null)
+            if (other.home != null) {
                 return false;
-        } else if (!home.equals(other.home))
+            }
+        } else if (!home.equals(other.home)) {
             return false;
+        }
         if (name == null) {
-            if (other.name != null)
+            if (other.name != null) {
                 return false;
-        } else if (!name.equals(other.name))
+            }
+        } else if (!name.equals(other.name)) {
             return false;
+        }
         return true;
     }
 
@@ -128,27 +137,33 @@ public class Person implements Serializable {
         public int hashCode() {
             final int prime = 31;
             int result = 1;
-            result = prime * result + (int) (number ^ (number >>> 32));
+            result = prime * result + (int)(number ^ (number >>> 32));
             result = prime * result + ((type == null) ? 0 : type.hashCode());
             return result;
         }
 
         @Override
         public boolean equals(Object obj) {
-            if (this == obj)
+            if (this == obj) {
                 return true;
-            if (obj == null)
+            }
+            if (obj == null) {
                 return false;
-            if (getClass() != obj.getClass())
+            }
+            if (getClass() != obj.getClass()) {
                 return false;
-            PhoneNum other = (PhoneNum) obj;
-            if (number != other.number)
+            }
+            PhoneNum other = (PhoneNum)obj;
+            if (number != other.number) {
                 return false;
+            }
             if (type == null) {
-                if (other.type != null)
+                if (other.type != null) {
                     return false;
-            } else if (!type.equals(other.type))
+                }
+            } else if (!type.equals(other.type)) {
                 return false;
+            }
             return true;
         }
 

@@ -14,22 +14,31 @@ import static org.junit.jupiter.api.Assertions.*;
 public abstract class MessageHeadTest extends ProtocolTest {
 
     private long id = 10L;
+
     private long toMessage = 8L;
+
     public static final int protocol = 100;
 
     private static long now = System.currentTimeMillis();
+
     private String head = "I'm message head";
+
     private List<String> listHead = Arrays.asList("I'm message head", "I'm message head", "I'm message head", "I'm message head");
 
     private static ReferenceType<List<String>> LIST_HEAD_TYPE = new ReferenceType<List<String>>() {
+
     };
 
     private static ReferenceType<Map<String, String>> MAP_HEAD_TYPE = new ReferenceType<Map<String, String>>() {
+
     };
 
     private MessageHead REQUEST_HEAD = create(this.id, MessageMode.REQUEST, protocol, ResultCode.SUCCESS_CODE, now, 0);
+
     private MessageHead SUCCESS_RESPONSE_HEAD = create(this.id, MessageMode.RESPONSE, protocol, ResultCode.SUCCESS_CODE, now, this.toMessage);
+
     private MessageHead FAIL_RESPONSE_HEAD = create(this.id, MessageMode.RESPONSE, protocol, ResultCode.FAILURE_CODE, now, this.toMessage);
+
     private MessageHead PUSH_HEAD = create(this.id, MessageMode.PUSH, protocol, ResultCode.SUCCESS_CODE, now, MessageAide.EMPTY_MESSAGE_ID);
 
     public MessageHeadTest() {

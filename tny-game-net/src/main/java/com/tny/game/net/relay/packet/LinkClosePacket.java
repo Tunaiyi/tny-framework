@@ -10,18 +10,18 @@ import com.tny.game.net.relay.packet.arguments.*;
  */
 public class LinkClosePacket extends BaseLinkPacket<LinkVoidArguments> {
 
-	public static final RelayPacketFactory<LinkClosePacket, LinkVoidArguments> FACTORY = LinkClosePacket::new;
+    public static final RelayPacketFactory<LinkClosePacket, LinkVoidArguments> FACTORY = LinkClosePacket::new;
 
-	public LinkClosePacket(int id) {
-		super(id, RelayPacketType.LINK_CLOSE, LinkVoidArguments.of());
-	}
+    public LinkClosePacket(int id) {
+        super(id, RelayPacketType.LINK_CLOSE, LinkVoidArguments.of());
+    }
 
-	public LinkClosePacket(int id, long time) {
-		super(id, RelayPacketType.LINK_CLOSE, time, LinkVoidArguments.of());
-	}
+    public LinkClosePacket(int id, long time) {
+        super(id, RelayPacketType.LINK_CLOSE, time, LinkVoidArguments.of());
+    }
 
-	public LinkClosePacket(int id, LinkVoidArguments arguments, long time) {
-		super(id, RelayPacketType.LINK_CLOSE, time, arguments);
-	}
+    public LinkClosePacket(int id, LinkVoidArguments arguments, long time) {
+        super(id, RelayPacketType.LINK_CLOSE, time, arguments);
+    }
 
 }

@@ -8,5 +8,4 @@ package com.tny.game.net.message;
  */
 public interface NetMessageTail extends MessageTail {
 
-
 }

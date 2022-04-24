@@ -16,32 +16,32 @@ import javax.annotation.Nonnull;
  */
 public class ImportRpcConnectorDefinitionRegistrar extends ImportConfigurationBeanDefinitionRegistrar {
 
-	public static final Logger LOGGER = LoggerFactory.getLogger(ImportRpcConnectorDefinitionRegistrar.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(ImportRpcConnectorDefinitionRegistrar.class);
 
-	@Override
-	public void registerBeanDefinitions(@Nonnull AnnotationMetadata importingClassMetadata, @Nonnull BeanDefinitionRegistry registry) {
-		RpcProperties rpcProperties = loadProperties(RpcProperties.class);
-		RpcClientSetting setting = rpcProperties.getClient();
-		if (setting == null) {
-			return;
-		}
-		for (RpcServiceSetting serviceSetting : setting.getServices()) {
-			registerRpcConnector(registry, serviceSetting);
-		}
-	}
+    @Override
+    public void registerBeanDefinitions(@Nonnull AnnotationMetadata importingClassMetadata, @Nonnull BeanDefinitionRegistry registry) {
+        RpcProperties rpcProperties = loadProperties(RpcProperties.class);
+        RpcClientSetting setting = rpcProperties.getClient();
+        if (setting == null) {
+            return;
+        }
+        for (RpcServiceSetting serviceSetting : setting.getServices()) {
+            registerRpcConnector(registry, serviceSetting);
+        }
+    }
 
-	private <T> void registerRpcConnector(BeanDefinitionRegistry registry, RpcServiceSetting serviceSetting) {
-		String beanName = BeanNameUtils.lowerCamelName(serviceSetting.serviceName() + RpcClientFactory.class.getSimpleName());
-		BeanDefinitionBuilder builder = BeanDefinitionBuilder
-				.genericBeanDefinition(RpcClientFactory.class)
-				.addAutowiredProperty("appContext")
-				.addPropertyValue("setting", serviceSetting);
-		if (serviceSetting.isHasGuide()) {
-			builder.addPropertyReference("clientGuide", serviceSetting.getGuide());
-		} else {
-			builder.addAutowiredProperty("clientGuide");
-		}
-		registry.registerBeanDefinition(beanName, builder.getBeanDefinition());
-	}
+    private <T> void registerRpcConnector(BeanDefinitionRegistry registry, RpcServiceSetting serviceSetting) {
+        String beanName = BeanNameUtils.lowerCamelName(serviceSetting.serviceName() + RpcClientFactory.class.getSimpleName());
+        BeanDefinitionBuilder builder = BeanDefinitionBuilder
+                .genericBeanDefinition(RpcClientFactory.class)
+                .addAutowiredProperty("appContext")
+                .addPropertyValue("setting", serviceSetting);
+        if (serviceSetting.isHasGuide()) {
+            builder.addPropertyReference("clientGuide", serviceSetting.getGuide());
+        } else {
+            builder.addAutowiredProperty("clientGuide");
+        }
+        registry.registerBeanDefinition(beanName, builder.getBeanDefinition());
+    }
 
 }

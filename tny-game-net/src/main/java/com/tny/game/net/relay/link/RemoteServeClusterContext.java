@@ -14,18 +14,18 @@ import java.util.List;
  */
 public interface RemoteServeClusterContext extends RemoteServeClusterSetting {
 
-	List<NetAccessPoint> getInstances();
+    List<NetAccessPoint> getInstances();
 
-	ServeInstanceAllotStrategy getServeInstanceAllotStrategy();
+    ServeInstanceAllotStrategy getServeInstanceAllotStrategy();
 
-	RelayLinkAllotStrategy getRelayLinkAllotStrategy();
+    RelayLinkAllotStrategy getRelayLinkAllotStrategy();
 
-	/**
-	 * 连接 link
-	 *
-	 * @param url      连接服务器 url
-	 * @param callback 回调
-	 */
-	void connect(URL url, RelayConnectCallback callback);
+    /**
+     * 连接 link
+     *
+     * @param url      连接服务器 url
+     * @param callback 回调
+     */
+    void connect(URL url, RelayConnectCallback callback);
 
 }

@@ -1,6 +1,5 @@
 package com.tny.game.suite.scheduler.database;
 
-
 import com.tny.game.common.scheduler.*;
 import com.tny.game.suite.scheduler.*;
 import com.tny.game.suite.scheduler.cache.*;
@@ -30,7 +29,7 @@ public class SchedulerObjectManager {
     private TaskReceiverFormatter receiverFormatter;
 
     public void saveSchedulerBackup(CacheSchedulerBackup cacheSchedulerBackup) {
-        byte[] data = (byte[]) this.backupFormatter.format2Save(null, cacheSchedulerBackup);
+        byte[] data = (byte[])this.backupFormatter.format2Save(null, cacheSchedulerBackup);
         if (data != null) {
             try {
                 this.schedulerBackupDAO.set(SchedulerObjectDAO.BACK_UP_KEY, new SerialBlob(data));
@@ -44,8 +43,8 @@ public class SchedulerObjectManager {
         Blob blob = this.schedulerBackupDAO.get(SchedulerObjectDAO.BACK_UP_KEY);
         if (blob != null) {
             try {
-                byte[] data = blob.getBytes(1, (int) blob.length());
-                return (CacheSchedulerBackup) this.backupFormatter.format2Load(null, data);
+                byte[] data = blob.getBytes(1, (int)blob.length());
+                return (CacheSchedulerBackup)this.backupFormatter.format2Load(null, data);
             } catch (SQLException e) {
                 logger.error("", e);
             }
@@ -54,7 +53,7 @@ public class SchedulerObjectManager {
     }
 
     public void saveTaskReceiver(GameTaskReceiver taskReceiver) {
-        byte[] data = (byte[]) this.receiverFormatter.format2Save(null, taskReceiver);
+        byte[] data = (byte[])this.receiverFormatter.format2Save(null, taskReceiver);
         if (data != null) {
             try {
                 this.schedulerBackupDAO.set(SchedulerObjectDAO.RECEIVER_KEY, new SerialBlob(data));
@@ -68,8 +67,8 @@ public class SchedulerObjectManager {
         Blob blob = this.schedulerBackupDAO.get(SchedulerObjectDAO.RECEIVER_KEY);
         if (blob != null) {
             try {
-                byte[] data = blob.getBytes(1, (int) blob.length());
-                return (TaskReceiver) this.receiverFormatter.format2Load(null, data);
+                byte[] data = blob.getBytes(1, (int)blob.length());
+                return (TaskReceiver)this.receiverFormatter.format2Load(null, data);
             } catch (SQLException e) {
                 logger.error("", e);
             }

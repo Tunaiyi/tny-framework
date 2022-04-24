@@ -8,10 +8,10 @@ package com.tny.game.asyndb;
  */
 public enum ObjectCacheStatus {
 
-	INIT,
+    INIT,
 
-	START,
+    START,
 
-	CLOSE,
+    CLOSE,
 
 }

@@ -11,12 +11,12 @@ import com.tny.game.net.relay.packet.arguments.*;
  */
 public abstract class BaseLinkPacket<A extends LinkPacketArguments> extends BaseRelayPacket<A> {
 
-	public BaseLinkPacket(int id, RelayPacketType type, A arguments) {
-		super(id, type, arguments);
-	}
+    public BaseLinkPacket(int id, RelayPacketType type, A arguments) {
+        super(id, type, arguments);
+    }
 
-	public BaseLinkPacket(int id, RelayPacketType type, long time, A arguments) {
-		super(id, type, time, arguments);
-	}
+    public BaseLinkPacket(int id, RelayPacketType type, long time, A arguments) {
+        super(id, type, time, arguments);
+    }
 
 }

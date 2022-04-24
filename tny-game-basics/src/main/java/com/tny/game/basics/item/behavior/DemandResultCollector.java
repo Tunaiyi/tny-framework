@@ -16,7 +16,7 @@ public class DemandResultCollector {
         if (!result.isSatisfy()) {
             failedDemands.add(result);
         } else if (result instanceof CostDemandResult) {
-            costDemands.add((CostDemandResult) result);
+            costDemands.add((CostDemandResult)result);
         }
     }
 
@@ -36,4 +36,5 @@ public class DemandResultCollector {
     public List<CostDemandResult> getCostDemands() {
         return costDemands;
     }
+
 }

@@ -19,61 +19,61 @@ import java.util.*;
  */
 public class EntitySchemeLoader {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(EntitySchemeLoader.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EntitySchemeLoader.class);
 
-	private static final Set<Class<?>> cacheObjectClasses = new ConcurrentHashSet<>();
+    private static final Set<Class<?>> cacheObjectClasses = new ConcurrentHashSet<>();
 
-	private static final Set<EntityScheme> cacheSchemes = new ConcurrentHashSet<>();
+    private static final Set<EntityScheme> cacheSchemes = new ConcurrentHashSet<>();
 
-	private static final Map<Class<?>, EntityScheme> cacheSchemeMap = new CopyOnWriteMap<>();
+    private static final Map<Class<?>, EntityScheme> cacheSchemeMap = new CopyOnWriteMap<>();
 
-	@ClassSelectorProvider
-	static ClassSelector cacheObjectSelector() {
-		return ClassSelector.create()
-				.addFilter(AnnotationClassFilter.ofInclude(EntityObject.class))
-				.setHandler((classes) -> {
-					cacheObjectClasses.addAll(classes);
-					registerScheme(classes);
-					LOGGER.info("DataClassLoader.CacheObject : {}", cacheObjectClasses.size());
-				});
-	}
+    @ClassSelectorProvider
+    static ClassSelector cacheObjectSelector() {
+        return ClassSelector.create()
+                .addFilter(AnnotationClassFilter.ofInclude(EntityObject.class))
+                .setHandler((classes) -> {
+                    cacheObjectClasses.addAll(classes);
+                    registerScheme(classes);
+                    LOGGER.info("DataClassLoader.CacheObject : {}", cacheObjectClasses.size());
+                });
+    }
 
-	public static Set<Class<?>> getAllCacheEntityClasses() {
-		return Collections.unmodifiableSet(cacheObjectClasses);
-	}
+    public static Set<Class<?>> getAllCacheEntityClasses() {
+        return Collections.unmodifiableSet(cacheObjectClasses);
+    }
 
-	public static Set<EntityScheme> getAllCacheSchemes() {
-		return Collections.unmodifiableSet(cacheSchemes);
-	}
+    public static Set<EntityScheme> getAllCacheSchemes() {
+        return Collections.unmodifiableSet(cacheSchemes);
+    }
 
-	public static EntityScheme getCacheScheme(Class<?> clazz) {
-		return cacheSchemeMap.get(clazz);
-	}
+    public static EntityScheme getCacheScheme(Class<?> clazz) {
+        return cacheSchemeMap.get(clazz);
+    }
 
-	private static void registerScheme(Collection<Class<?>> classes) {
-		cacheObjectClasses.addAll(classes);
-		Map<Class<?>, EntityScheme> schemeMap = new HashMap<>();
-		for (Class<?> clazz : classes) {
-			parseScheme(clazz, schemeMap);
-		}
-		cacheSchemes.addAll(schemeMap.values());
-		cacheSchemeMap.putAll(schemeMap);
-	}
+    private static void registerScheme(Collection<Class<?>> classes) {
+        cacheObjectClasses.addAll(classes);
+        Map<Class<?>, EntityScheme> schemeMap = new HashMap<>();
+        for (Class<?> clazz : classes) {
+            parseScheme(clazz, schemeMap);
+        }
+        cacheSchemes.addAll(schemeMap.values());
+        cacheSchemeMap.putAll(schemeMap);
+    }
 
-	private static EntityScheme parseScheme(Class<?> clazz, Map<Class<?>, EntityScheme> schemeMap) {
-		EntityScheme scheme = schemeMap.get(clazz);
-		if (scheme != null) {
-			return scheme;
-		}
-		scheme = new EntityScheme(clazz);
-		if (scheme.isCacheSelf()) {
-			schemeMap.put(scheme.getEntityClass(), scheme);
-			return scheme;
-		} else {
-			scheme = parseScheme(scheme.getCacheClass(), schemeMap);
-			schemeMap.put(clazz, scheme);
-		}
-		return scheme;
-	}
+    private static EntityScheme parseScheme(Class<?> clazz, Map<Class<?>, EntityScheme> schemeMap) {
+        EntityScheme scheme = schemeMap.get(clazz);
+        if (scheme != null) {
+            return scheme;
+        }
+        scheme = new EntityScheme(clazz);
+        if (scheme.isCacheSelf()) {
+            schemeMap.put(scheme.getEntityClass(), scheme);
+            return scheme;
+        } else {
+            scheme = parseScheme(scheme.getCacheClass(), schemeMap);
+            schemeMap.put(clazz, scheme);
+        }
+        return scheme;
+    }
 
 }

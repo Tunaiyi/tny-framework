@@ -15,33 +15,33 @@ import com.tny.game.protoex.annotations.*;
 @TypeProtobuf(1000_01_01)
 public class SayContentDTO {
 
-	@ProtoExField(1)
-	@Protobuf(order = 1)
-	private long userId;
+    @ProtoExField(1)
+    @Protobuf(order = 1)
+    private long userId;
 
-	@ProtoExField(2)
-	@Protobuf(order = 2)
-	private String message;
+    @ProtoExField(2)
+    @Protobuf(order = 2)
+    private String message;
 
-	public SayContentDTO() {
-	}
+    public SayContentDTO() {
+    }
 
-	public SayContentDTO(long userId, String message) {
-		this.userId = userId;
-		this.message = message;
-	}
+    public SayContentDTO(long userId, String message) {
+        this.userId = userId;
+        this.message = message;
+    }
 
-	public long getUserId() {
-		return this.userId;
-	}
+    public long getUserId() {
+        return this.userId;
+    }
 
-	public String getMessage() {
-		return this.message;
-	}
+    public String getMessage() {
+        return this.message;
+    }
 
-	@Override
-	public String toString() {
-		return "SayContentDTO[\"message\" : \"" + this.message + "\"]";
-	}
+    @Override
+    public String toString() {
+        return "SayContentDTO[\"message\" : \"" + this.message + "\"]";
+    }
 
 }

@@ -10,6 +10,6 @@ import com.tny.game.common.worker.command.*;
  */
 public interface CommandTask {
 
-	Command createCommand();
+    Command createCommand();
 
 }

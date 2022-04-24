@@ -8,6 +8,6 @@ import com.tny.game.basics.upgrade.*;
  */
 public interface OnPreReceiveExp<I, EM extends ExpModel> {
 
-	void preReceiveExp(I item, Action action, EM expModel, long recvExp);
+    void preReceiveExp(I item, Action action, EM expModel, long recvExp);
 
 }

@@ -42,7 +42,9 @@ public enum TrackPrintOption {
     ;
 
     private final boolean onStart;
+
     private final boolean onEnd;
+
     private final boolean onSettle;
 
     TrackPrintOption(boolean onStart, boolean onEnd, boolean onSettle) {

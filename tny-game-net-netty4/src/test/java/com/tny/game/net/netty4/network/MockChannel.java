@@ -10,6 +10,7 @@ import java.net.SocketAddress;
 public class MockChannel extends EmbeddedChannel {
 
     private volatile SocketAddress localAddress;
+
     private volatile SocketAddress remoteAddress;
 
     public MockChannel(SocketAddress localAddress, SocketAddress remoteAddress) {

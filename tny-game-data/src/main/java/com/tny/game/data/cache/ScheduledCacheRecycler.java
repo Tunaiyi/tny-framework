@@ -15,42 +15,42 @@ import java.util.concurrent.*;
  */
 public class ScheduledCacheRecycler implements CacheRecycler {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ScheduledCacheRecycler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ScheduledCacheRecycler.class);
 
-	private static final ScheduledExecutorService SCHEDULED_EXECUTOR_SERVICE = Executors.newScheduledThreadPool(1,
-			new CoreThreadFactory("TimerCacheRecyclerScheduled", true));
+    private static final ScheduledExecutorService SCHEDULED_EXECUTOR_SERVICE = Executors.newScheduledThreadPool(1,
+            new CoreThreadFactory("TimerCacheRecyclerScheduled", true));
 
-	private long recycleIntervalTime = 15000;
+    private long recycleIntervalTime = 15000;
 
-	private final Set<RecyclableCache> caches = new ConcurrentHashSet<>();
+    private final Set<RecyclableCache> caches = new ConcurrentHashSet<>();
 
-	public ScheduledCacheRecycler() {
-	}
+    public ScheduledCacheRecycler() {
+    }
 
-	public ScheduledCacheRecycler(long recycleIntervalTime) {
-		this.recycleIntervalTime = recycleIntervalTime;
-	}
+    public ScheduledCacheRecycler(long recycleIntervalTime) {
+        this.recycleIntervalTime = recycleIntervalTime;
+    }
 
-	@Override
-	public void accept(RecyclableCache cache) {
-		if (caches.add(cache)) {
-			scheduled(cache, recycleIntervalTime + ThreadLocalRandom.current().nextLong(recycleIntervalTime));
-		}
-	}
+    @Override
+    public void accept(RecyclableCache cache) {
+        if (caches.add(cache)) {
+            scheduled(cache, recycleIntervalTime + ThreadLocalRandom.current().nextLong(recycleIntervalTime));
+        }
+    }
 
-	private void scheduled(RecyclableCache cache, long delay) {
-		SCHEDULED_EXECUTOR_SERVICE.schedule(() -> {
-			if (!caches.contains(cache)) {
-				return;
-			}
-			try {
-				cache.recycle();
-			} catch (Throwable e) {
-				LOGGER.error("recycle {} exception", cache, e);
-			} finally {
-				scheduled(cache, recycleIntervalTime);
-			}
-		}, delay, TimeUnit.MILLISECONDS);
-	}
+    private void scheduled(RecyclableCache cache, long delay) {
+        SCHEDULED_EXECUTOR_SERVICE.schedule(() -> {
+            if (!caches.contains(cache)) {
+                return;
+            }
+            try {
+                cache.recycle();
+            } catch (Throwable e) {
+                LOGGER.error("recycle {} exception", cache, e);
+            } finally {
+                scheduled(cache, recycleIntervalTime);
+            }
+        }, delay, TimeUnit.MILLISECONDS);
+    }
 
 }

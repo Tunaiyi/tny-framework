@@ -12,15 +12,15 @@ import io.netty.util.*;
  */
 public class TimerCommandTaskBoxDriver extends CommandTaskBoxDriver implements TimerTask {
 
-	protected TimerCommandTaskBoxDriver(CommandTaskBox taskBox, EndpointCommandTaskBoxProcessor<?> processor) {
-		super(taskBox, processor);
-	}
+    protected TimerCommandTaskBoxDriver(CommandTaskBox taskBox, EndpointCommandTaskBoxProcessor<?> processor) {
+        super(taskBox, processor);
+    }
 
-	@Override
-	public void run(Timeout timeout) {
-		if (!timeout.isCancelled()) {
-			this.trySubmit();
-		}
-	}
+    @Override
+    public void run(Timeout timeout) {
+        if (!timeout.isCancelled()) {
+            this.trySubmit();
+        }
+    }
 
 }

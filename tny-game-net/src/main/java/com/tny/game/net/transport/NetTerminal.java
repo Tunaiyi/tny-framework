@@ -9,18 +9,18 @@ import java.util.List;
  */
 public interface NetTerminal<UID> extends NetEndpoint<UID>, Terminal<UID> {
 
-	long getConnectTimeout();
+    long getConnectTimeout();
 
-	int getConnectRetryTimes();
+    int getConnectRetryTimes();
 
-	List<Long> getConnectRetryIntervals();
+    List<Long> getConnectRetryIntervals();
 
-	boolean isAsyncConnect();
+    boolean isAsyncConnect();
 
-	MessageTransporter connect();
+    MessageTransporter connect();
 
-	void reconnect();
+    void reconnect();
 
-	void onConnected(NetTunnel<UID> tunnel);
+    void onConnected(NetTunnel<UID> tunnel);
 
 }

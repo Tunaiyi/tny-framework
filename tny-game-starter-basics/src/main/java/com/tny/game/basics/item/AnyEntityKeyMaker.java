@@ -10,20 +10,20 @@ import com.tny.game.data.cache.*;
  */
 public class AnyEntityKeyMaker implements EntityKeyMaker<AnyId, Any> {
 
-	private final AnyIdConverter converter;
+    private final AnyIdConverter converter;
 
-	public AnyEntityKeyMaker(EntityScheme scheme) {
-		this.converter = new AnyIdConverter(scheme);
-	}
+    public AnyEntityKeyMaker(EntityScheme scheme) {
+        this.converter = new AnyIdConverter(scheme);
+    }
 
-	@Override
-	public AnyId make(Any object) {
-		return converter.any2AnyId(object);
-	}
+    @Override
+    public AnyId make(Any object) {
+        return converter.any2AnyId(object);
+    }
 
-	@Override
-	public Class<AnyId> getKeyClass() {
-		return AnyId.class;
-	}
+    @Override
+    public Class<AnyId> getKeyClass() {
+        return AnyId.class;
+    }
 
 }

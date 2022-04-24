@@ -7,21 +7,21 @@ package com.tny.game.basics.item;
  */
 public interface SingleStuffModel extends ItemModel {
 
-	/**
-	 * @return 是否有数量限制 <br>
-	 */
-	default boolean isNumberLimit() {
-		return false;
-	}
+    /**
+     * @return 是否有数量限制 <br>
+     */
+    default boolean isNumberLimit() {
+        return false;
+    }
 
-	/**
-	 * 数量上线 <br>
-	 *
-	 * @param stuff 计算参数
-	 * @return -1 表示无限制
-	 */
-	default Number countNumberLimit(Stuff<?> stuff) {
-		return -1;
-	}
+    /**
+     * 数量上线 <br>
+     *
+     * @param stuff 计算参数
+     * @return -1 表示无限制
+     */
+    default Number countNumberLimit(Stuff<?> stuff) {
+        return -1;
+    }
 
 }

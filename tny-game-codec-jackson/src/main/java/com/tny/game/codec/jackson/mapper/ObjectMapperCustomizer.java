@@ -10,6 +10,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public interface ObjectMapperCustomizer {
 
-	void customize(ObjectMapper mapper);
+    void customize(ObjectMapper mapper);
 
 }

@@ -10,8 +10,8 @@ import java.util.List;
  */
 public interface AnyIdLoader<I> {
 
-	List<AnyId> findIdList(Class<I> itemClass, long player);
+    List<AnyId> findIdList(Class<I> itemClass, long player);
 
-	List<AnyId> findAllIdList(Class<I> itemClass);
+    List<AnyId> findAllIdList(Class<I> itemClass);
 
 }

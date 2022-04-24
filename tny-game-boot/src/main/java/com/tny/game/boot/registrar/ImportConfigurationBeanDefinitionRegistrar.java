@@ -21,35 +21,35 @@ import javax.annotation.Nonnull;
  */
 public class ImportConfigurationBeanDefinitionRegistrar implements ImportBeanDefinitionRegistrar, EnvironmentAware, BeanFactoryAware {
 
-	protected Environment environment;
+    protected Environment environment;
 
-	protected BeanFactory beanFactory;
+    protected BeanFactory beanFactory;
 
-	@Override
-	public void setBeanFactory(@Nonnull BeanFactory beanFactory) throws BeansException {
-		this.beanFactory = beanFactory;
-	}
+    @Override
+    public void setBeanFactory(@Nonnull BeanFactory beanFactory) throws BeansException {
+        this.beanFactory = beanFactory;
+    }
 
-	@Override
-	public void setEnvironment(@Nonnull Environment environment) {
-		this.environment = environment;
-	}
+    @Override
+    public void setEnvironment(@Nonnull Environment environment) {
+        this.environment = environment;
+    }
 
-	protected <P> P loadProperties(Class<P> propertiesClass) {
-		ConfigurationProperties configurationProperties = propertiesClass.getAnnotation(ConfigurationProperties.class);
-		Asserts.checkNotNull(configurationProperties, "{} @ConfigurationProperties annotation is null", propertiesClass);
-		String keyHead = configurationProperties.prefix();
-		if (StringUtils.isBlank(keyHead)) {
-			keyHead = configurationProperties.value();
-		}
-		return loadProperties(keyHead, propertiesClass);
-	}
+    protected <P> P loadProperties(Class<P> propertiesClass) {
+        ConfigurationProperties configurationProperties = propertiesClass.getAnnotation(ConfigurationProperties.class);
+        Asserts.checkNotNull(configurationProperties, "{} @ConfigurationProperties annotation is null", propertiesClass);
+        String keyHead = configurationProperties.prefix();
+        if (StringUtils.isBlank(keyHead)) {
+            keyHead = configurationProperties.value();
+        }
+        return loadProperties(keyHead, propertiesClass);
+    }
 
-	protected <P> P loadProperties(String keyHead, Class<P> propertiesClass) {
-		return Binder.get(this.environment)
-				.bind(keyHead, propertiesClass)
-				.orElseGet(() -> ExeAide.callUnchecked(propertiesClass::newInstance)
-						.orElse(null));
-	}
+    protected <P> P loadProperties(String keyHead, Class<P> propertiesClass) {
+        return Binder.get(this.environment)
+                .bind(keyHead, propertiesClass)
+                .orElseGet(() -> ExeAide.callUnchecked(propertiesClass::newInstance)
+                        .orElse(null));
+    }
 
 }

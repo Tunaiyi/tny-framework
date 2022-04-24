@@ -12,15 +12,15 @@ import com.tny.game.net.relay.link.*;
  */
 public class FirstRelayMessageRouter implements RelayMessageRouter {
 
-	public FirstRelayMessageRouter() {
-	}
+    public FirstRelayMessageRouter() {
+    }
 
-	@Override
-	public String route(RemoteRelayTunnel<?> tunnel, MessageSchema schema) {
-		for (String key : tunnel.getLinkKeys()) {
-			return key;
-		}
-		return null;
-	}
+    @Override
+    public String route(RemoteRelayTunnel<?> tunnel, MessageSchema schema) {
+        for (String key : tunnel.getLinkKeys()) {
+            return key;
+        }
+        return null;
+    }
 
 }

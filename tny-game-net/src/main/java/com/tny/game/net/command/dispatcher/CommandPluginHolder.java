@@ -18,50 +18,50 @@ import static com.tny.game.common.utils.ObjectAide.*;
  */
 public class CommandPluginHolder {
 
-	private static final String EXPR_PREFIX = "@";
+    private static final String EXPR_PREFIX = "@";
 
-	private static final String NULL_EXPR = "@null";
+    private static final String NULL_EXPR = "@null";
 
-	private static final Logger DISPATCHER_LOG = LoggerFactory.getLogger(NetLogger.DISPATCHER);
+    private static final Logger DISPATCHER_LOG = LoggerFactory.getLogger(NetLogger.DISPATCHER);
 
-	private final CommandPlugin<Object, Object> plugin;
+    private final CommandPlugin<Object, Object> plugin;
 
-	private final ControllerHolder controller;
+    private final ControllerHolder controller;
 
-	private final Object attributes;
+    private final Object attributes;
 
-	public CommandPluginHolder(ControllerHolder controller, CommandPlugin<?, ?> plugin, BeforePlugin annotation,
-			ExprHolderFactory exprHolderFactory) {
-		this(controller, plugin, annotation.attribute(), exprHolderFactory);
-	}
+    public CommandPluginHolder(ControllerHolder controller, CommandPlugin<?, ?> plugin, BeforePlugin annotation,
+            ExprHolderFactory exprHolderFactory) {
+        this(controller, plugin, annotation.attribute(), exprHolderFactory);
+    }
 
-	public CommandPluginHolder(ControllerHolder controller, CommandPlugin<?, ?> plugin, AfterPlugin annotation,
-			ExprHolderFactory exprHolderFactory) {
-		this(controller, plugin, annotation.attribute(), exprHolderFactory);
-	}
+    public CommandPluginHolder(ControllerHolder controller, CommandPlugin<?, ?> plugin, AfterPlugin annotation,
+            ExprHolderFactory exprHolderFactory) {
+        this(controller, plugin, annotation.attribute(), exprHolderFactory);
+    }
 
-	private CommandPluginHolder(ControllerHolder controller, CommandPlugin<?, ?> plugin, String attributes, ExprHolderFactory exprHolderFactory) {
-		this.plugin = as(plugin);
-		this.controller = controller;
-		if (exprHolderFactory == null) {
-			exprHolderFactory = new GroovyExprHolderFactory();
-		}
-		if (attributes.equals(NULL_EXPR)) {
-			this.attributes = null;
-		} else if (StringUtils.startsWith(attributes, EXPR_PREFIX)) {
-			this.attributes = exprHolderFactory.create(attributes.substring(1))
-					.createExpr()
-					.execute(plugin.getAttributesClass());
-		} else {
-			this.attributes = attributes;
-		}
-	}
+    private CommandPluginHolder(ControllerHolder controller, CommandPlugin<?, ?> plugin, String attributes, ExprHolderFactory exprHolderFactory) {
+        this.plugin = as(plugin);
+        this.controller = controller;
+        if (exprHolderFactory == null) {
+            exprHolderFactory = new GroovyExprHolderFactory();
+        }
+        if (attributes.equals(NULL_EXPR)) {
+            this.attributes = null;
+        } else if (StringUtils.startsWith(attributes, EXPR_PREFIX)) {
+            this.attributes = exprHolderFactory.create(attributes.substring(1))
+                    .createExpr()
+                    .execute(plugin.getAttributesClass());
+        } else {
+            this.attributes = attributes;
+        }
+    }
 
-	public void invokePlugin(Tunnel<?> tunnel, Message message, MessageCommandContext context) throws Exception {
-		if (DISPATCHER_LOG.isDebugEnabled()) {
-			DISPATCHER_LOG.debug("调用 {}.{} | 触发插件 {}", this.controller.getControllerClass(), this.controller.getName(), this.plugin.getClass());
-		}
-		this.plugin.execute(as(tunnel), message, context, this.attributes);
-	}
+    public void invokePlugin(Tunnel<?> tunnel, Message message, MessageCommandContext context) throws Exception {
+        if (DISPATCHER_LOG.isDebugEnabled()) {
+            DISPATCHER_LOG.debug("调用 {}.{} | 触发插件 {}", this.controller.getControllerClass(), this.controller.getName(), this.plugin.getClass());
+        }
+        this.plugin.execute(as(tunnel), message, context, this.attributes);
+    }
 
 }

@@ -2,20 +2,20 @@ package com.tny.game.basics.persistent.annotation;
 
 public enum Modify {
 
-	INSERT("INSERT"),
+    INSERT("INSERT"),
 
-	UPDATE("UPDATE"),
+    UPDATE("UPDATE"),
 
-	SAVE("SAVE"),
+    SAVE("SAVE"),
 
-	DELETE("DELETE"),
+    DELETE("DELETE"),
 
-	//
-	;
+    //
+    ;
 
-	String value;
+    String value;
 
-	Modify(String value) {
-		this.value = value;
-	}
+    Modify(String value) {
+        this.value = value;
+    }
 }

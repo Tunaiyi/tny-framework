@@ -13,15 +13,15 @@ import static com.tny.game.basics.configuration.BasicsPropertiesConstants.*;
 @ConfigurationProperties(BASICS_WAREHOUSE_MODULE)
 public class BasicsWarehouseModuleProperties {
 
-	private boolean enable = false;
+    private boolean enable = false;
 
-	public boolean isEnable() {
-		return enable;
-	}
+    public boolean isEnable() {
+        return enable;
+    }
 
-	public BasicsWarehouseModuleProperties setEnable(boolean enable) {
-		this.enable = enable;
-		return this;
-	}
+    public BasicsWarehouseModuleProperties setEnable(boolean enable) {
+        this.enable = enable;
+        return this;
+    }
 
 }

@@ -23,4 +23,5 @@ public class DateTimeConverter extends AbstractSingleValueConverter {
     public Object fromString(String value) {
         return Instant.from(this.format.parse(value));
     }
+
 }

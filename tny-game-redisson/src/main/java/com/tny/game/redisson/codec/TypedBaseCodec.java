@@ -19,9 +19,11 @@ public abstract class TypedBaseCodec extends BaseCodec {
     private static final StringCodec DEFAULT_KEY_CODEC = new StringCodec(DEFAULT);
 
     private final Type type;
+
     private final Codec keyCodec;
 
     private Encoder valueEncoder;
+
     private Decoder<Object> valueDecoder;
 
     public TypedBaseCodec(Type type, boolean initCodec) {

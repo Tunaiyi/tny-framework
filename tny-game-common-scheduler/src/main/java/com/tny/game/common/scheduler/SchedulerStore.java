@@ -7,18 +7,18 @@ package com.tny.game.common.scheduler;
  */
 public interface SchedulerStore {
 
-	/**
-	 * 保存存储方案
-	 *
-	 * @param timeTaskScheduler
-	 */
-	void store(TimeTaskScheduler timeTaskScheduler);
+    /**
+     * 保存存储方案
+     *
+     * @param timeTaskScheduler
+     */
+    void store(TimeTaskScheduler timeTaskScheduler);
 
-	/**
-	 * 读取存储方案
-	 *
-	 * @return
-	 */
-	SchedulerBackup restore();
+    /**
+     * 读取存储方案
+     *
+     * @return
+     */
+    SchedulerBackup restore();
 
 }

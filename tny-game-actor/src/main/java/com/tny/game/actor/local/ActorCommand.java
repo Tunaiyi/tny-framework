@@ -26,15 +26,17 @@ public abstract class ActorCommand<T> implements Command {
     public abstract Answer<T> getAnswer();
 
     public Done<T> getDone() {
-        if (this.isDone())
+        if (this.isDone()) {
             return DoneResults.failure();
+        }
         return DoneResults.successNullable(this.getResult());
     }
 
     @Override
     public void execute() {
-        if (isDone())
+        if (isDone()) {
             return;
+        }
         this.actorCell.execute(this);
     }
 

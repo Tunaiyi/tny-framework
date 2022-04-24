@@ -52,13 +52,15 @@ public class DBInitiator implements BeanFactoryPostProcessor {
     }
 
     private void runInitSQLs(Connection connection) throws SQLException {
-        if (this.initSQLs != null && !this.initSQLs.isEmpty())
+        if (this.initSQLs != null && !this.initSQLs.isEmpty()) {
             this.doRunSQLScript(connection, this.initSQLs);
+        }
     }
 
     private void startSQLs(Connection connection) throws SQLException {
-        if (this.initSQLs != null && !this.initSQLs.isEmpty())
+        if (this.initSQLs != null && !this.initSQLs.isEmpty()) {
             this.doRunSQLScript(connection, this.startSQLs);
+        }
     }
 
     private void runScript() throws SQLException {

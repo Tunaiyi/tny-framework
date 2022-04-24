@@ -13,15 +13,15 @@ import com.tny.game.expr.*;
  **/
 public class JsonModelLoaderFactory implements ModelLoaderFactory {
 
-	private final ExprHolderFactory exprHolderFactory;
+    private final ExprHolderFactory exprHolderFactory;
 
-	public JsonModelLoaderFactory(ExprHolderFactory exprHolderFactory) {
-		this.exprHolderFactory = exprHolderFactory;
-	}
+    public JsonModelLoaderFactory(ExprHolderFactory exprHolderFactory) {
+        this.exprHolderFactory = exprHolderFactory;
+    }
 
-	@Override
-	public <M extends Model> ModelLoader<M> createLoader(Class<? extends M> modelClass, ModelLoadHandler<M> loadHandler) {
-		return new JsonModelLoader<>(modelClass, loadHandler, exprHolderFactory);
-	}
+    @Override
+    public <M extends Model> ModelLoader<M> createLoader(Class<? extends M> modelClass, ModelLoadHandler<M> loadHandler) {
+        return new JsonModelLoader<>(modelClass, loadHandler, exprHolderFactory);
+    }
 
 }

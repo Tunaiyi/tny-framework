@@ -13,7 +13,9 @@ import static org.junit.jupiter.api.Assertions.*;
 public class JavassistAccessorsTest {
 
     private static final int LEVEL = 1;
+
     private static final String NAME = "name";
+
     private static final int AGE = 23;
 
     @Test
@@ -27,7 +29,9 @@ public class JavassistAccessorsTest {
     public static class Player {
 
         private int level = LEVEL;
+
         private String name = NAME;
+
         private int age = AGE;
 
         public int getLevel() {

@@ -11,18 +11,18 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties("tny.net.relay.router.fixed-message-router")
 public class FixedRelayMessageRoutersProperties {
 
-	/**
-	 * name : serveName
-	 */
-	private String service;
+    /**
+     * name : serveName
+     */
+    private String service;
 
-	public String getService() {
-		return service;
-	}
+    public String getService() {
+        return service;
+    }
 
-	public FixedRelayMessageRoutersProperties setService(String service) {
-		this.service = service;
-		return this;
-	}
+    public FixedRelayMessageRoutersProperties setService(String service) {
+        this.service = service;
+        return this;
+    }
 
 }

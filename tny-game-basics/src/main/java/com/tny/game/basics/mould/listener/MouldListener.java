@@ -5,9 +5,9 @@ import com.tny.game.common.event.bus.*;
 
 public interface MouldListener {
 
-	BindP1EventBus<MouldListener, FeatureLauncher, Mould> OPEN_MOULD_EVENT = EventBuses.of(MouldListener.class,
-			MouldListener::handleOpenMould);
+    BindP1EventBus<MouldListener, FeatureLauncher, Mould> OPEN_MOULD_EVENT = EventBuses.of(MouldListener.class,
+            MouldListener::handleOpenMould);
 
-	void handleOpenMould(FeatureLauncher explorer, Mould openedMould);
+    void handleOpenMould(FeatureLauncher explorer, Mould openedMould);
 
 }

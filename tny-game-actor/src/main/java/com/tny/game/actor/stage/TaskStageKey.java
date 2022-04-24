@@ -5,5 +5,4 @@ package com.tny.game.actor.stage;
  */
 interface TaskStageKey {
 
-
 }

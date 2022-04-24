@@ -18,31 +18,31 @@ import org.springframework.util.MimeType;
  */
 public class ProtobufObjectLoader {
 
-	public static final Logger LOGGER = LoggerFactory.getLogger(ProtobufObjectLoader.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(ProtobufObjectLoader.class);
 
-	private static final ProtobufObjectCodecFactory FACTORY = new ProtobufObjectCodecFactory();
+    private static final ProtobufObjectCodecFactory FACTORY = new ProtobufObjectCodecFactory();
 
-	@ClassSelectorProvider
-	static ClassSelector autoMixClassesSelector() {
-		return ClassSelector.create()
-				.addFilter(AnnotationClassFilter.ofInclude(Codecable.class))
-				.setHandler((classes) -> {
-					MimeType findType = MimeType.valueOf(ProtobufMimeType.PROTOBUF_WILDCARD);
-					classes.forEach(cl -> {
-						Codecable codecable = cl.getAnnotation(Codecable.class);
-						String mime = MimeTypeAide.getMimeType(codecable);
-						Asserts.checkArgument(StringUtils.isNoneBlank(mime), "{} mime {} is blank", cl, mime);
-						MimeType mimeType = MimeType.valueOf(mime);
-						if (findType.isCompatibleWith(mimeType)) {
-							try {
-								FACTORY.createCodec(cl);
-							} catch (Throwable e) {
-								LOGGER.error("{} create codecor exception", cl, e);
-								throw e;
-							}
-						}
-					});
-				});
-	}
+    @ClassSelectorProvider
+    static ClassSelector autoMixClassesSelector() {
+        return ClassSelector.create()
+                .addFilter(AnnotationClassFilter.ofInclude(Codecable.class))
+                .setHandler((classes) -> {
+                    MimeType findType = MimeType.valueOf(ProtobufMimeType.PROTOBUF_WILDCARD);
+                    classes.forEach(cl -> {
+                        Codecable codecable = cl.getAnnotation(Codecable.class);
+                        String mime = MimeTypeAide.getMimeType(codecable);
+                        Asserts.checkArgument(StringUtils.isNoneBlank(mime), "{} mime {} is blank", cl, mime);
+                        MimeType mimeType = MimeType.valueOf(mime);
+                        if (findType.isCompatibleWith(mimeType)) {
+                            try {
+                                FACTORY.createCodec(cl);
+                            } catch (Throwable e) {
+                                LOGGER.error("{} create codecor exception", cl, e);
+                                throw e;
+                            }
+                        }
+                    });
+                });
+    }
 
 }

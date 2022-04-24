@@ -7,6 +7,6 @@ package com.tny.game.basics.item;
  */
 public interface StuffModel extends ItemModel {
 
-	ItemType getOwnerType();
+    ItemType getOwnerType();
 
 }

@@ -9,113 +9,113 @@ import java.util.*;
 
 public abstract class FileLoader implements Reloadable, NoticeReload {
 
-	private static final Logger LOG = LoggerFactory.getLogger(LogAide.LOADER);
+    private static final Logger LOG = LoggerFactory.getLogger(LogAide.LOADER);
 
-	private final String modelPath;
+    private final String modelPath;
 
-	private final Set<Reloadable> loadAfterList = new HashSet<>();
+    private final Set<Reloadable> loadAfterList = new HashSet<>();
 
-	private boolean load = false;
+    private boolean load = false;
 
-	private boolean deleted = false;
+    private boolean deleted = false;
 
-	protected FileLoader(String modelPath) {
-		this.modelPath = modelPath;
-	}
+    protected FileLoader(String modelPath) {
+        this.modelPath = modelPath;
+    }
 
-	protected String getPath() {
-		return this.modelPath;
-	}
+    protected String getPath() {
+        return this.modelPath;
+    }
 
-	public void load() throws Exception {
-		InputStream input = FileIOAide.openInputStream(this.modelPath, new FileListener(this));
-		if (input == null) {
-			throw new FileNotFoundException(this.modelPath);
-		}
-		this.readConfig(input, false);
-		this.load = true;
-	}
+    public void load() throws Exception {
+        InputStream input = FileIOAide.openInputStream(this.modelPath, new FileListener(this));
+        if (input == null) {
+            throw new FileNotFoundException(this.modelPath);
+        }
+        this.readConfig(input, false);
+        this.load = true;
+    }
 
-	private void readConfig(InputStream inputStream, boolean reload) throws Exception {
-		if (inputStream != null) {
-			this.doLoad(inputStream, reload);
-		}
-	}
+    private void readConfig(InputStream inputStream, boolean reload) throws Exception {
+        if (inputStream != null) {
+            this.doLoad(inputStream, reload);
+        }
+    }
 
-	@Override
-	public void reload() {
-		try {
-			InputStream input = FileIOAide.openInputStream(this.modelPath);
-			if (input == null) {
-				throw new FileNotFoundException(this.modelPath);
-			}
-			this.readConfig(input, true);
-			for (Reloadable loader : this.loadAfterList)
-				loader.reload();
-		} catch (Exception e) {
-			LOG.error("重新读取配置文件{}出错", this.modelPath, e);
-		}
-	}
+    @Override
+    public void reload() {
+        try {
+            InputStream input = FileIOAide.openInputStream(this.modelPath);
+            if (input == null) {
+                throw new FileNotFoundException(this.modelPath);
+            }
+            this.readConfig(input, true);
+            for (Reloadable loader : this.loadAfterList)
+                loader.reload();
+        } catch (Exception e) {
+            LOG.error("重新读取配置文件{}出错", this.modelPath, e);
+        }
+    }
 
-	public void addModelLoader(FileLoader loader) {
-		this.loadAfterList.add(loader);
-	}
+    public void addModelLoader(FileLoader loader) {
+        this.loadAfterList.add(loader);
+    }
 
-	@Override
-	public void addReloadable(Reloadable reloadable) {
-		this.loadAfterList.add(reloadable);
-	}
+    @Override
+    public void addReloadable(Reloadable reloadable) {
+        this.loadAfterList.add(reloadable);
+    }
 
-	@Override
-	public void removeReloadable(Reloadable reloadable) {
-		this.loadAfterList.remove(reloadable);
-	}
+    @Override
+    public void removeReloadable(Reloadable reloadable) {
+        this.loadAfterList.remove(reloadable);
+    }
 
-	@Override
-	public void clearReloadable() {
-		this.loadAfterList.clear();
-	}
+    @Override
+    public void clearReloadable() {
+        this.loadAfterList.clear();
+    }
 
-	protected abstract void doLoad(InputStream inputStream, boolean reload) throws Exception;
+    protected abstract void doLoad(InputStream inputStream, boolean reload) throws Exception;
 
-	/**
-	 * @author KGTny
-	 */
-	public class FileListener extends FileAlterationListenerAdaptor {
+    /**
+     * @author KGTny
+     */
+    public class FileListener extends FileAlterationListenerAdaptor {
 
-		/**
-		 * 模型管理器
-		 *
-		 * @uml.property name="reloadable"
-		 * @uml.associationEnd
-		 */
-		private Reloadable reloadable = null;
+        /**
+         * 模型管理器
+         *
+         * @uml.property name="reloadable"
+         * @uml.associationEnd
+         */
+        private Reloadable reloadable = null;
 
-		public FileListener(Reloadable reloadable) {
-			super();
-			this.reloadable = reloadable;
-		}
+        public FileListener(Reloadable reloadable) {
+            super();
+            this.reloadable = reloadable;
+        }
 
-		@Override
-		public void onFileChange(File file) {
-			if (FileLoader.this.load) {
-				this.reloadable.reload();
-			}
-		}
+        @Override
+        public void onFileChange(File file) {
+            if (FileLoader.this.load) {
+                this.reloadable.reload();
+            }
+        }
 
-		@Override
-		public void onFileDelete(File file) {
-			FileLoader.this.deleted = true;
-		}
+        @Override
+        public void onFileDelete(File file) {
+            FileLoader.this.deleted = true;
+        }
 
-		@Override
-		public void onFileCreate(File file) {
-			if (FileLoader.this.load && FileLoader.this.deleted) {
-				this.reloadable.reload();
-				FileLoader.this.deleted = false;
-			}
-		}
+        @Override
+        public void onFileCreate(File file) {
+            if (FileLoader.this.load && FileLoader.this.deleted) {
+                this.reloadable.reload();
+                FileLoader.this.deleted = false;
+            }
+        }
 
-	}
+    }
 
 }

@@ -20,4 +20,5 @@ public class ConcurrentHashSet<E> extends MapBackedSet<E> {
         Boolean answer = this.map.putIfAbsent(o, Boolean.TRUE);
         return answer == null;
     }
+
 }

@@ -26,6 +26,7 @@ public abstract class BaseRedisCacheClient implements CacheClient {
     public static final Logger LOGGER = LoggerFactory.getLogger(BaseRedisCacheClient.class);
 
     protected static final SetParams NX_PARAMS = SetParams.setParams().nx();
+
     protected static final SetParams XX_PARAMS = SetParams.setParams().xx();
 
     private String name;

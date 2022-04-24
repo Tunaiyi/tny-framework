@@ -10,8 +10,8 @@ import com.tny.game.net.netty4.configuration.application.*;
  */
 public class NetApplicationStopEvent extends NetApplicationEvent {
 
-	public NetApplicationStopEvent(NetApplication application) {
-		super(application);
-	}
+    public NetApplicationStopEvent(NetApplication application) {
+        super(application);
+    }
 
 }

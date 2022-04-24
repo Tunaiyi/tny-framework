@@ -9,18 +9,18 @@ import com.tny.game.basics.item.*;
  */
 public abstract class MemoryItemModel extends BaseItemModel {
 
-	private final ItemType itemType;
+    private final ItemType itemType;
 
-	protected MemoryItemModel(ItemType itemType, String alisa, String desc) {
-		this.id = itemType.getId();
-		this.itemType = itemType;
-		this.alias = itemType.alisaOf(alisa);
-		this.desc = desc;
-	}
+    protected MemoryItemModel(ItemType itemType, String alisa, String desc) {
+        this.id = itemType.getId();
+        this.itemType = itemType;
+        this.alias = itemType.alisaOf(alisa);
+        this.desc = desc;
+    }
 
-	@Override
-	public ItemType itemType() {
-		return itemType;
-	}
+    @Override
+    public ItemType itemType() {
+        return itemType;
+    }
 
 }

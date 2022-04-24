@@ -17,27 +17,27 @@ import static com.tny.game.basics.configuration.BasicsPropertiesConstants.*;
 @ConditionalOnProperty(name = BASICS_FEATURE_MANAGER_ENABLE, havingValue = "true")
 public class BasicsFeatureConfiguration {
 
-	@Bean
-	@ConditionalOnMissingBean(FeatureModelManager.class)
-	public FeatureModelManager<?> featureModelManager(BasicsFeatureProperties properties) {
-		return new FeatureModelManager<>(properties.getPath(), properties.getModelClass());
-	}
+    @Bean
+    @ConditionalOnMissingBean(FeatureModelManager.class)
+    public FeatureModelManager<?> featureModelManager(BasicsFeatureProperties properties) {
+        return new FeatureModelManager<>(properties.getPath(), properties.getModelClass());
+    }
 
-	@Bean
-	@ConditionalOnBean({FeatureLauncherManager.class})
-	@ConditionalOnMissingBean(MouldService.class)
-	public MouldService moduleService(FeatureLauncherManager featureLauncherManager) {
-		return new DefaultMouldService(featureLauncherManager);
-	}
+    @Bean
+    @ConditionalOnBean({FeatureLauncherManager.class})
+    @ConditionalOnMissingBean(MouldService.class)
+    public MouldService moduleService(FeatureLauncherManager featureLauncherManager) {
+        return new DefaultMouldService(featureLauncherManager);
+    }
 
-	@Bean
-	@ConditionalOnBean({FeatureLauncherManager.class})
-	@ConditionalOnMissingBean(FeatureService.class)
-	public FeatureService featureService(
-			FeatureLauncherManager featureLauncherManager,
-			MouldService moduleService,
-			FeatureModelManager<? extends FeatureModel> featureModelManager) {
-		return new DefaultFeatureService(featureLauncherManager, moduleService, featureModelManager);
-	}
+    @Bean
+    @ConditionalOnBean({FeatureLauncherManager.class})
+    @ConditionalOnMissingBean(FeatureService.class)
+    public FeatureService featureService(
+            FeatureLauncherManager featureLauncherManager,
+            MouldService moduleService,
+            FeatureModelManager<? extends FeatureModel> featureModelManager) {
+        return new DefaultFeatureService(featureLauncherManager, moduleService, featureModelManager);
+    }
 
 }

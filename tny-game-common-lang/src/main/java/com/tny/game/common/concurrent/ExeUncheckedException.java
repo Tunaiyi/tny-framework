@@ -23,4 +23,5 @@ public class ExeUncheckedException extends RuntimeException {
     public ExeUncheckedException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
+
 }

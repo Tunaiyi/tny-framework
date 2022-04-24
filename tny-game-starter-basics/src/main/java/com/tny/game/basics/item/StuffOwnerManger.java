@@ -12,13 +12,13 @@ import java.util.Set;
  */
 public interface StuffOwnerManger<O extends StuffOwner<?, ?>> extends Manager<O>, ItemTypesManager {
 
-	O getOwner(long playerId);
+    O getOwner(long playerId);
 
-	ItemType getOwnerItemType();
+    ItemType getOwnerItemType();
 
-	@Override
-	default Set<ItemType> manageTypes() {
-		return ImmutableSet.of(getOwnerItemType());
-	}
+    @Override
+    default Set<ItemType> manageTypes() {
+        return ImmutableSet.of(getOwnerItemType());
+    }
 
 }

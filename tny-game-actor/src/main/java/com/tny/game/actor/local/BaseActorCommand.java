@@ -47,18 +47,21 @@ public abstract class BaseActorCommand<T> extends ActorCommand<T> {
 
     @Override
     protected void setAnswer(ActorAnswer<T> answer) {
-        if (this.answer == null)
+        if (this.answer == null) {
             this.answer = answer;
+        }
     }
 
     @Override
     @SuppressWarnings("unchecked")
     protected void handle() throws Throwable {
-        if (isDone())
+        if (isDone()) {
             return;
+        }
         synchronized (this) {
-            if (isDone())
+            if (isDone()) {
                 return;
+            }
             if (this.cancelled) {
                 this.fail(new ActorCommandCancelledException(this), true);
             } else {
@@ -89,8 +92,9 @@ public abstract class BaseActorCommand<T> extends ActorCommand<T> {
             this.result = result;
             this.cause = null;
             this.postSuccess(result);
-            if (this.answer != null)
+            if (this.answer != null) {
                 this.answer.success(result);
+            }
         }
     }
 
@@ -105,27 +109,30 @@ public abstract class BaseActorCommand<T> extends ActorCommand<T> {
             this.done = true;
             this.result = null;
             this.cause = new ActorCommandExecuteException(this, cause);
-            if (cancelled)
+            if (cancelled) {
                 this.postCancel();
+            }
             this.postFail(this.cause);
-            if (this.answer != null)
+            if (this.answer != null) {
                 this.answer.fail(cause);
+            }
             throw this.cause;
         }
     }
 
     @Override
     protected boolean cancel() {
-        if (this.done)
+        if (this.done) {
             return false;
+        }
         synchronized (this) {
-            if (this.done)
+            if (this.done) {
                 return false;
+            }
             this.cancelled = true;
             return true;
         }
     }
-
 
     protected void postSuccess(T result) {
     }

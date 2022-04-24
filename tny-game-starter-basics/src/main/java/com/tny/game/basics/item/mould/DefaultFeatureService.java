@@ -10,11 +10,11 @@ import com.tny.game.basics.mould.*;
  */
 public class DefaultFeatureService extends FeatureService {
 
-	public DefaultFeatureService(
-			FeatureLauncherManager featureLauncherManager,
-			MouldService mouldService,
-			FeatureModelManager<? extends FeatureModel> featureModelManager) {
-		super(featureLauncherManager, mouldService, featureModelManager);
-	}
+    public DefaultFeatureService(
+            FeatureLauncherManager featureLauncherManager,
+            MouldService mouldService,
+            FeatureModelManager<? extends FeatureModel> featureModelManager) {
+        super(featureLauncherManager, mouldService, featureModelManager);
+    }
 
 }

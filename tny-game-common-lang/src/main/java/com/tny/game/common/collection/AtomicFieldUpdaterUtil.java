@@ -15,6 +15,7 @@ class AtomicFieldUpdaterUtil {
      * @author KGTny
      */
     static final class Node {
+
         /**
          * @uml.property name="next"
          * @uml.associationEnd
@@ -24,6 +25,7 @@ class AtomicFieldUpdaterUtil {
         Node() {
             super();
         }
+
     }
 
     static {
@@ -68,4 +70,5 @@ class AtomicFieldUpdaterUtil {
     private AtomicFieldUpdaterUtil() {
         // Unused
     }
+
 }

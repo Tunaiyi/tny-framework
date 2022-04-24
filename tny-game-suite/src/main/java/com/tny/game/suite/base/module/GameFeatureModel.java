@@ -33,10 +33,11 @@ public class GameFeatureModel extends XMLModel implements FeatureModel {
 
     @Override
     protected void doInit() {
-        if (this.openPlans == null)
+        if (this.openPlans == null) {
             this.openPlans = ImmutableSet.of();
-        else
+        } else {
             this.openPlans = ImmutableSet.copyOf(this.openPlans);
+        }
         this.openPlanMap = ImmutableMap.copyOf(
                 this.openPlans.stream().collect(Collectors.toMap(OpenPlan::getMode, ObjectAide::self)));
     }
@@ -89,8 +90,9 @@ public class GameFeatureModel extends XMLModel implements FeatureModel {
     @Override
     public int getOpenLevel(OpenMode<?> mode) {
         OpenPlan plan = this.openPlanMap.get(mode);
-        if (plan == null)
+        if (plan == null) {
             return Integer.MAX_VALUE;
+        }
         return plan.getLevel();
     }
 
@@ -102,11 +104,11 @@ public class GameFeatureModel extends XMLModel implements FeatureModel {
     @Override
     public String toString() {
         return "GameFeatureModel{" +
-               "feature=" + this.feature +
-               ", id=" + this.id +
-               ", desc='" + this.desc + '\'' +
-               ", effect=" + this.effect +
-               '}';
+                "feature=" + this.feature +
+                ", id=" + this.id +
+                ", desc='" + this.desc + '\'' +
+                ", effect=" + this.effect +
+                '}';
     }
 
 }

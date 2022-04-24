@@ -117,4 +117,5 @@ public class RedisHashCacheClient extends BaseRedisCacheClient {
     protected Response<?> jedisSetPX(Pipeline pipeline, byte[] key, byte[] value, long time) {
         return pipeline.hset(this.nameBytes, key, value);
     }
+
 }

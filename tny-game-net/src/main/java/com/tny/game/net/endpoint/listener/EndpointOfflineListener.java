@@ -5,6 +5,6 @@ import com.tny.game.net.endpoint.*;
 @FunctionalInterface
 public interface EndpointOfflineListener<UID> extends EndpointListener {
 
-	void onOffline(Endpoint<UID> endpoint);
+    void onOffline(Endpoint<UID> endpoint);
 
 }

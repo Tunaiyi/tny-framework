@@ -11,14 +11,14 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class AnnotationEntityKeyMakerFactory implements EntityKeyMakerFactory {
 
-	public static final String MAKER_NAME = "annotationEntityKeyMakerFactory";
+    public static final String MAKER_NAME = "annotationEntityKeyMakerFactory";
 
-	private static final Map<Class<?>, EntityKeyMaker<?, ?>> makerMap = new ConcurrentHashMap<>();
+    private static final Map<Class<?>, EntityKeyMaker<?, ?>> makerMap = new ConcurrentHashMap<>();
 
-	@Override
-	public EntityKeyMaker<?, ?> createMaker(EntityScheme scheme) {
-		Class<?> entityClass = scheme.getEntityClass();
-		return makerMap.computeIfAbsent(entityClass, AnnotationEntityKeyMaker::new);
-	}
+    @Override
+    public EntityKeyMaker<?, ?> createMaker(EntityScheme scheme) {
+        Class<?> entityClass = scheme.getEntityClass();
+        return makerMap.computeIfAbsent(entityClass, AnnotationEntityKeyMaker::new);
+    }
 
 }

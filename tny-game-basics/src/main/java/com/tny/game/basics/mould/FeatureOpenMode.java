@@ -4,8 +4,8 @@ import com.tny.game.common.enums.*;
 
 public interface FeatureOpenMode<FM extends FeatureModel> extends IntEnumerable {
 
-	String name();
+    String name();
 
-	boolean check(FeatureLauncher explorer, FM model, Object context);
+    boolean check(FeatureLauncher explorer, FM model, Object context);
 
 }

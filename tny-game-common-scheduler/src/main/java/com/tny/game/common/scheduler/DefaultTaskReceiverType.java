@@ -8,21 +8,21 @@ package com.tny.game.common.scheduler;
  */
 public enum DefaultTaskReceiverType implements TaskReceiverType {
 
-	SYSTEM(1),
+    SYSTEM(1),
 
-	PLAYER(2),
+    PLAYER(2),
 
-	//
-	;
+    //
+    ;
 
-	int id;
+    int id;
 
-	DefaultTaskReceiverType(int id) {
-		this.id = id;
-	}
+    DefaultTaskReceiverType(int id) {
+        this.id = id;
+    }
 
-	@Override
-	public int id() {
-		return id;
-	}
+    @Override
+    public int id() {
+        return id;
+    }
 }

@@ -21,10 +21,12 @@ public class ActionTrades {
 
     public ActionTrades(Action action, Trade awardTrade, Trade costTrade) {
         this.action = action;
-        if (awardTrade != null && !awardTrade.isEmpty())
+        if (awardTrade != null && !awardTrade.isEmpty()) {
             this.awardTrade = awardTrade;
-        if (costTrade != null && !costTrade.isEmpty())
+        }
+        if (costTrade != null && !costTrade.isEmpty()) {
             this.costTrade = costTrade;
+        }
     }
 
     public Action getAction() {
@@ -38,4 +40,5 @@ public class ActionTrades {
     public Optional<Trade> getCostTrade() {
         return Optional.ofNullable(costTrade);
     }
+
 }

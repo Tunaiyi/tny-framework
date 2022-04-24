@@ -10,25 +10,25 @@ import java.util.Collection;
  */
 public abstract class BaseCapablerItem<IM extends ItemModel> extends BaseItem<IM> implements Capabler {
 
-	protected BaseCapablerItem() {
-	}
+    protected BaseCapablerItem() {
+    }
 
-	protected BaseCapablerItem(long playerId, IM model) {
-		super(playerId, model);
-	}
+    protected BaseCapablerItem(long playerId, IM model) {
+        super(playerId, model);
+    }
 
-	protected abstract void accept(CapacitySupplier supplier);
+    protected abstract void accept(CapacitySupplier supplier);
 
-	protected abstract void accept(Collection<? extends CapacitySupplier> suppliers);
+    protected abstract void accept(Collection<? extends CapacitySupplier> suppliers);
 
-	protected abstract void remove(CapacitySupplier supplier);
+    protected abstract void remove(CapacitySupplier supplier);
 
-	protected abstract void remove(Collection<CapacitySupplier> suppliers);
+    protected abstract void remove(Collection<CapacitySupplier> suppliers);
 
-	protected abstract void clear();
+    protected abstract void clear();
 
-	protected abstract void invalid();
+    protected abstract void invalid();
 
-	protected abstract void effect();
+    protected abstract void effect();
 
 }

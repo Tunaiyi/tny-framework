@@ -11,11 +11,11 @@ import io.netty.channel.Channel;
  */
 public class DefaultDatagramChannelMaker<C extends Channel> extends DatagramChannelMaker<C> {
 
-	public DefaultDatagramChannelMaker() {
-	}
+    public DefaultDatagramChannelMaker() {
+    }
 
-	public DefaultDatagramChannelMaker(DatagramPackEncoder encoder, DatagramPackDecoder decoder) {
-		super(encoder, decoder);
-	}
+    public DefaultDatagramChannelMaker(DatagramPackEncoder encoder, DatagramPackDecoder decoder) {
+        super(encoder, decoder);
+    }
 
 }

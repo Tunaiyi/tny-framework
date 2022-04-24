@@ -8,41 +8,41 @@ package com.tny.game.net.netty4.relay;
  */
 enum RelayConnectorStatus {
 
-	/**
-	 * 初始化
-	 */
-	INIT(true),
+    /**
+     * 初始化
+     */
+    INIT(true),
 
-	/**
-	 * 连接中
-	 */
-	CONNECTING(false),
+    /**
+     * 连接中
+     */
+    CONNECTING(false),
 
-	/**
-	 * 打开
-	 */
-	OPEN(false),
+    /**
+     * 打开
+     */
+    OPEN(false),
 
-	/**
-	 * 失败
-	 */
-	DISCONNECT(true),
+    /**
+     * 失败
+     */
+    DISCONNECT(true),
 
-	/**
-	 * 关闭
-	 */
-	CLOSE(false),
+    /**
+     * 关闭
+     */
+    CLOSE(false),
 
-	//
-	;
+    //
+    ;
 
-	private final boolean canConnect;
+    private final boolean canConnect;
 
-	RelayConnectorStatus(boolean canConnect) {
-		this.canConnect = canConnect;
-	}
+    RelayConnectorStatus(boolean canConnect) {
+        this.canConnect = canConnect;
+    }
 
-	boolean isCanConnect() {
-		return canConnect;
-	}
+    boolean isCanConnect() {
+        return canConnect;
+    }
 }

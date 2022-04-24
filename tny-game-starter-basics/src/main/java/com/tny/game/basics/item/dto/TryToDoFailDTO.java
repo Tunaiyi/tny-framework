@@ -12,30 +12,30 @@ import java.io.Serializable;
 @DTODoc("判断结果DTO")
 public class TryToDoFailDTO extends DemandResultDTO implements Serializable {
 
-	/**
-	 *
-	 */
-	private static final long serialVersionUID = 1L;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
 
-	@VarDoc("操作")
-	@ProtoExField(103)
-	private int action;
+    @VarDoc("操作")
+    @ProtoExField(103)
+    private int action;
 
-	public static TryToDoFailDTO tryToDoResult2DTO(TryToDoResult result) {
-		if (result.isSatisfy()) {
-			return null;
-		}
-		TryToDoFailDTO dto = new TryToDoFailDTO();
-		setDTO(dto, result.getFailResult());
-		dto.action = result.getAction().getId();
-		return dto;
-	}
+    public static TryToDoFailDTO tryToDoResult2DTO(TryToDoResult result) {
+        if (result.isSatisfy()) {
+            return null;
+        }
+        TryToDoFailDTO dto = new TryToDoFailDTO();
+        setDTO(dto, result.getFailResult());
+        dto.action = result.getAction().getId();
+        return dto;
+    }
 
-	public static TryToDoFailDTO exception2DTO(TryToDoException exception) {
-		TryToDoFailDTO dto = new TryToDoFailDTO();
-		setDTO(dto, exception.getDemandResult());
-		dto.action = exception.getAction().getId();
-		return dto;
-	}
+    public static TryToDoFailDTO exception2DTO(TryToDoException exception) {
+        TryToDoFailDTO dto = new TryToDoFailDTO();
+        setDTO(dto, exception.getDemandResult());
+        dto.action = exception.getAction().getId();
+        return dto;
+    }
 
 }

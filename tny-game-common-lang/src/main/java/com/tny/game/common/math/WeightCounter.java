@@ -23,8 +23,9 @@ public class WeightCounter<V> {
 
     public SortedMap<Integer, V> parseProMap(Object... params) {
         SortedMap<Integer, V> proMap = new TreeMap<>();
-        if (this.weights.isEmpty())
+        if (this.weights.isEmpty()) {
             return proMap;
+        }
         List<WeightNum<V>> weightNums = new ArrayList<>();
         int allWeight = 0;
         for (Weight<V> weight : this.weights) {
@@ -33,10 +34,11 @@ public class WeightCounter<V> {
             weightNums.add(num);
         }
         int allPro = this.totalPro == null ? allWeight : this.totalPro;
-        if (weightNums.isEmpty())
+        if (weightNums.isEmpty()) {
             return proMap;
+        }
         WeightNum<V> lastOne = weightNums.get(weightNums.size() - 1);
-        float perNum = (float) allPro / allWeight;
+        float perNum = (float)allPro / allWeight;
         int stepPro = 0;
         for (WeightNum<V> num : weightNums) {
             if (num == lastOne) {
@@ -57,4 +59,5 @@ public class WeightCounter<V> {
         WeightCounter<String> counter = new WeightCounter<>(10000, weights);
         System.out.println(counter.parseProMap());
     }
+
 }

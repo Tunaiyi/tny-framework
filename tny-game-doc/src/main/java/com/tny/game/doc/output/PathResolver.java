@@ -7,6 +7,6 @@ import java.io.File;
  */
 public interface PathResolver {
 
-	File resolve(Class<?> clazz);
+    File resolve(Class<?> clazz);
 
 }

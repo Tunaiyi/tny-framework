@@ -16,20 +16,20 @@ import io.netty.channel.Channel;
  */
 public class RelayTunnelFactory implements NettyTunnelFactory {
 
-	private final RemoteRelayExplorer remoteRelayExplorer;
+    private final RemoteRelayExplorer remoteRelayExplorer;
 
-	public RelayTunnelFactory(RemoteRelayExplorer remoteRelayExplorer) {
-		this.remoteRelayExplorer = remoteRelayExplorer;
-	}
+    public RelayTunnelFactory(RemoteRelayExplorer remoteRelayExplorer) {
+        this.remoteRelayExplorer = remoteRelayExplorer;
+    }
 
-	@Override
-	public <T> NetTunnel<T> create(long id, Channel channel, NetworkContext context) {
-		MessageTransporter transport = new NettyChannelMessageTransporter(channel);
-		DoneResult<RemoteRelayTunnel<T>> result = remoteRelayExplorer.createTunnel(id, transport, context);
-		if (result.isFailure()) {
-			throw new NetGeneralException(result.getCode());
-		}
-		return result.get();
-	}
+    @Override
+    public <T> NetTunnel<T> create(long id, Channel channel, NetworkContext context) {
+        MessageTransporter transport = new NettyChannelMessageTransporter(channel);
+        DoneResult<RemoteRelayTunnel<T>> result = remoteRelayExplorer.createTunnel(id, transport, context);
+        if (result.isFailure()) {
+            throw new NetGeneralException(result.getCode());
+        }
+        return result.get();
+    }
 
 }

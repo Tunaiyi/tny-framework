@@ -13,16 +13,16 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RedisObject {
 
-	/**
-	 * @return 数据源 beam名字
-	 */
-	String source() default "";
+    /**
+     * @return 数据源 beam名字
+     */
+    String source() default "";
 
-	/**
-	 * 如果配置优先查看是否由 CodecableObject 注解
-	 *
-	 * @return 序列化类型
-	 */
-	Codecable codec() default @Codecable("");
+    /**
+     * 如果配置优先查看是否由 CodecableObject 注解
+     *
+     * @return 序列化类型
+     */
+    Codecable codec() default @Codecable("");
 
 }

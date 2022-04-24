@@ -14,101 +14,101 @@ import static com.tny.game.common.utils.ObjectAide.*;
 
 public abstract class DatagramPackV1Codec implements AppPrepareStart {
 
-	protected final Logger logger;
+    protected final Logger logger;
 
-	protected NettyMessageCodec messageCodec;
+    protected NettyMessageCodec messageCodec;
 
-	protected CodecVerifier verifier;
+    protected CodecVerifier verifier;
 
-	protected CodecCrypto crypto;
+    protected CodecCrypto crypto;
 
-	protected DatagramPackCodecSetting config;
+    protected DatagramPackCodecSetting config;
 
-	public DatagramPackV1Codec() {
-		logger = LoggerFactory.getLogger(this.getClass());
-	}
+    public DatagramPackV1Codec() {
+        logger = LoggerFactory.getLogger(this.getClass());
+    }
 
-	public DatagramPackV1Codec(DatagramPackCodecSetting config) {
-		super();
-		logger = LoggerFactory.getLogger(this.getClass());
-		this.config = config;
-	}
+    public DatagramPackV1Codec(DatagramPackCodecSetting config) {
+        super();
+        logger = LoggerFactory.getLogger(this.getClass());
+        this.config = config;
+    }
 
-	@Override
-	public PrepareStarter getPrepareStarter() {
-		return PrepareStarter.value(this.getClass(), LifecycleLevel.SYSTEM_LEVEL_6);
-	}
+    @Override
+    public PrepareStarter getPrepareStarter() {
+        return PrepareStarter.value(this.getClass(), LifecycleLevel.SYSTEM_LEVEL_6);
+    }
 
-	@Override
-	public void prepareStart() {
-		MessageBodyCodec<Object> bodyCoder = as(UnitLoader.getLoader(MessageBodyCodec.class).checkUnit(this.config.getMessageBodyCodec()));
-		MessageRelayStrategy messageRelayStrategy;
-		if (this.config.isHasMessageRelayStrategy()) {
-			messageRelayStrategy = as(UnitLoader.getLoader(MessageRelayStrategy.class).checkUnit(this.config.getMessageRelayStrategy()));
-		} else {
-			messageRelayStrategy = MessageRelayStrategy.NO_RELAY_STRATEGY;
-		}
-		this.messageCodec = new DefaultNettyMessageCodec(bodyCoder, messageRelayStrategy);
-		this.verifier = UnitLoader.getLoader(CodecVerifier.class).checkUnit(this.config.getVerifier());
-		this.crypto = UnitLoader.getLoader(CodecCrypto.class).checkUnit(this.config.getCrypto());
-	}
+    @Override
+    public void prepareStart() {
+        MessageBodyCodec<Object> bodyCoder = as(UnitLoader.getLoader(MessageBodyCodec.class).checkUnit(this.config.getMessageBodyCodec()));
+        MessageRelayStrategy messageRelayStrategy;
+        if (this.config.isHasMessageRelayStrategy()) {
+            messageRelayStrategy = as(UnitLoader.getLoader(MessageRelayStrategy.class).checkUnit(this.config.getMessageRelayStrategy()));
+        } else {
+            messageRelayStrategy = MessageRelayStrategy.NO_RELAY_STRATEGY;
+        }
+        this.messageCodec = new DefaultNettyMessageCodec(bodyCoder, messageRelayStrategy);
+        this.verifier = UnitLoader.getLoader(CodecVerifier.class).checkUnit(this.config.getVerifier());
+        this.crypto = UnitLoader.getLoader(CodecCrypto.class).checkUnit(this.config.getCrypto());
+    }
 
-	public DatagramPackV1Codec setMessageCodec(NettyMessageCodec messageCodec) {
-		this.messageCodec = messageCodec;
-		return this;
-	}
+    public DatagramPackV1Codec setMessageCodec(NettyMessageCodec messageCodec) {
+        this.messageCodec = messageCodec;
+        return this;
+    }
 
-	public DatagramPackV1Codec setVerifier(CodecVerifier verifier) {
-		this.verifier = verifier;
-		return this;
-	}
+    public DatagramPackV1Codec setVerifier(CodecVerifier verifier) {
+        this.verifier = verifier;
+        return this;
+    }
 
-	public DatagramPackV1Codec setCrypto(CodecCrypto crypto) {
-		this.crypto = crypto;
-		return this;
-	}
+    public DatagramPackV1Codec setCrypto(CodecCrypto crypto) {
+        this.crypto = crypto;
+        return this;
+    }
 
-	public DatagramPackV1Codec setConfig(DatagramPackCodecSetting config) {
-		this.config = config;
-		return this;
-	}
+    public DatagramPackV1Codec setConfig(DatagramPackCodecSetting config) {
+        this.config = config;
+        return this;
+    }
 
-	protected void handleOnDecodeError(ChannelHandlerContext ctx, Throwable exception) {
-		handleOnError(ctx, exception, "Message解码");
-	}
+    protected void handleOnDecodeError(ChannelHandlerContext ctx, Throwable exception) {
+        handleOnError(ctx, exception, "Message解码");
+    }
 
-	protected void handleOnEncodeError(ChannelHandlerContext ctx, Throwable exception) {
-		handleOnError(ctx, exception, "Message编码");
-	}
+    protected void handleOnEncodeError(ChannelHandlerContext ctx, Throwable exception) {
+        handleOnError(ctx, exception, "Message编码");
+    }
 
-	private void handleOnError(ChannelHandlerContext ctx, Throwable exception, String action) {
-		Tunnel<?> tunnel = null;
-		Channel channel = null;
-		if (ctx != null) {
-			channel = ctx.channel();
-			tunnel = channel.attr(NettyNetAttrKeys.TUNNEL).get();
-		}
-		boolean close = false;
-		if (channel != null) {
-			if (config.isCloseOnError()) {
-				close = true;
-			} else {
-				ResultCode code = null;
-				if (exception instanceof ResultCodeRuntimeException) {
-					code = ((ResultCodeRuntimeException)exception).getCode();
-				}
-				if (exception instanceof ResultCodeException) {
-					code = ((ResultCodeException)exception).getCode();
-				}
-				if (code != null && code.getLevel() == ResultLevel.ERROR) {
-					close = true;
-				}
-			}
-			if (close) {
-				channel.close();
-			}
-		}
-		logger.error("# Tunnel ({}) [{}] {}异常 {}", tunnel, channel, action, close ? ", 服务器主动关闭连接" : "", exception);
-	}
+    private void handleOnError(ChannelHandlerContext ctx, Throwable exception, String action) {
+        Tunnel<?> tunnel = null;
+        Channel channel = null;
+        if (ctx != null) {
+            channel = ctx.channel();
+            tunnel = channel.attr(NettyNetAttrKeys.TUNNEL).get();
+        }
+        boolean close = false;
+        if (channel != null) {
+            if (config.isCloseOnError()) {
+                close = true;
+            } else {
+                ResultCode code = null;
+                if (exception instanceof ResultCodeRuntimeException) {
+                    code = ((ResultCodeRuntimeException)exception).getCode();
+                }
+                if (exception instanceof ResultCodeException) {
+                    code = ((ResultCodeException)exception).getCode();
+                }
+                if (code != null && code.getLevel() == ResultLevel.ERROR) {
+                    close = true;
+                }
+            }
+            if (close) {
+                channel.close();
+            }
+        }
+        logger.error("# Tunnel ({}) [{}] {}异常 {}", tunnel, channel, action, close ? ", 服务器主动关闭连接" : "", exception);
+    }
 
 }

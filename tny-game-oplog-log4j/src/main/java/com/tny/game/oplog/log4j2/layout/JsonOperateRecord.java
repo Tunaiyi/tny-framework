@@ -80,24 +80,25 @@ public class JsonOperateRecord {
         this.coss = conver(log.getConsumeLogs(), ConsumeRecord::new);
         Collection<Snapshot> snapshots = log.getSnapshots();
         this.snaps = CollectionUtils.isEmpty(snapshots) ? null : snapshots.stream()
-                                                                          .map(snap -> {
-                                                                              try {
-                                                                                  return mapper.writeValueAsString(snap);
-                                                                              } catch (Throwable e) {
-                                                                                  LOGGER.error("", e);
-                                                                              }
-                                                                              return null;
-                                                                          })
-                                                                          .filter(Objects::nonNull)
-                                                                          .collect(Collectors.toList());
+                .map(snap -> {
+                    try {
+                        return mapper.writeValueAsString(snap);
+                    } catch (Throwable e) {
+                        LOGGER.error("", e);
+                    }
+                    return null;
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 
     private <T extends StuffTradeLog> List<T> conver(Collection<StuffTradeLog> logs, Function<StuffTradeLog, T> builder) {
-        if (logs == null)
+        if (logs == null) {
             return null;
+        }
         return logs.stream()
-                   .map(builder)
-                   .collect(Collectors.toList());
+                .map(builder)
+                .collect(Collectors.toList());
 
     }
 
@@ -159,10 +160,9 @@ public class JsonOperateRecord {
 
     public String toString() {
         return "OperateLogDTO [uid=" + this.uid + ", name=" + this.name + ", acid=" + this.acid + ", sid=" + this.sid + ", at=" + this.at + ", op=" +
-               this.op
-               + ", lv=" + this.lv
-               + ", revs=" + this.revs + ", coss=" + this.coss + ", snaps=" + this.snaps + "]";
+                this.op
+                + ", lv=" + this.lv
+                + ", revs=" + this.revs + ", coss=" + this.coss + ", snaps=" + this.snaps + "]";
     }
-
 
 }

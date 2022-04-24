@@ -10,45 +10,45 @@ import com.tny.game.net.message.*;
  */
 public enum RpcMode {
 
-	/**
-	 * 推送
-	 */
-	PUSH(MessageMode.PUSH, 0, 1),
+    /**
+     * 推送
+     */
+    PUSH(MessageMode.PUSH, 0, 1),
 
-	/**
-	 * 请求
-	 */
-	REQUEST(MessageMode.REQUEST, 0, 20),
+    /**
+     * 请求
+     */
+    REQUEST(MessageMode.REQUEST, 0, 20),
 
-	//
-	;
+    //
+    ;
 
-	private final MessageMode mode;
+    private final MessageMode mode;
 
-	private final int minParamSizeLimit;
+    private final int minParamSizeLimit;
 
-	private final int maxParamSizeLimit;
+    private final int maxParamSizeLimit;
 
-	RpcMode(MessageMode mode, int minParamSizeLimit, int maxParamSizeLimit) {
-		this.mode = mode;
-		this.minParamSizeLimit = minParamSizeLimit;
-		this.maxParamSizeLimit = maxParamSizeLimit;
-	}
+    RpcMode(MessageMode mode, int minParamSizeLimit, int maxParamSizeLimit) {
+        this.mode = mode;
+        this.minParamSizeLimit = minParamSizeLimit;
+        this.maxParamSizeLimit = maxParamSizeLimit;
+    }
 
-	public MessageMode getMode() {
-		return mode;
-	}
+    public MessageMode getMode() {
+        return mode;
+    }
 
-	public int getMinParamSizeLimit() {
-		return minParamSizeLimit;
-	}
+    public int getMinParamSizeLimit() {
+        return minParamSizeLimit;
+    }
 
-	public int getMaxParamSizeLimit() {
-		return maxParamSizeLimit;
-	}
+    public int getMaxParamSizeLimit() {
+        return maxParamSizeLimit;
+    }
 
-	public boolean checkParamsSize(int size) {
-		return size >= minParamSizeLimit && size <= maxParamSizeLimit;
-	}
+    public boolean checkParamsSize(int size) {
+        return size >= minParamSizeLimit && size <= maxParamSizeLimit;
+    }
 
 }

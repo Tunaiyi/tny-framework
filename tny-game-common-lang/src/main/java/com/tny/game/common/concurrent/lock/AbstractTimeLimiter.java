@@ -36,8 +36,9 @@ public abstract class AbstractTimeLimiter implements TimeLimited {
         long now = System.currentTimeMillis();
         long lastTime = this.last.get();
         while (true) {
-            if (this.last.compareAndSet(lastTime, now <= lastTime ? now + this.interval : -1L))
+            if (this.last.compareAndSet(lastTime, now <= lastTime ? now + this.interval : -1L)) {
                 return this.last.get() > -1;
+            }
             now = System.currentTimeMillis();
             lastTime = this.last.get();
         }
@@ -53,18 +54,23 @@ public abstract class AbstractTimeLimiter implements TimeLimited {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
-        AbstractTimeLimiter other = (AbstractTimeLimiter) obj;
+        }
+        AbstractTimeLimiter other = (AbstractTimeLimiter)obj;
         if (this.last == null) {
-            if (other.last != null)
+            if (other.last != null) {
                 return false;
-        } else if (!this.last.equals(other.last))
+            }
+        } else if (!this.last.equals(other.last)) {
             return false;
+        }
         return true;
     }
 

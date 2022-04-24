@@ -8,37 +8,37 @@ package com.tny.game.net.netty4.network.codec;
  */
 public class DatagramPackDecodeMarker {
 
-	private byte option = 0;
+    private byte option = 0;
 
-	private int payloadLength = 0;
+    private int payloadLength = 0;
 
-	private boolean mark = false;
+    private boolean mark = false;
 
-	public DatagramPackDecodeMarker() {
-	}
+    public DatagramPackDecodeMarker() {
+    }
 
-	public boolean isMark() {
-		return this.mark;
-	}
+    public boolean isMark() {
+        return this.mark;
+    }
 
-	byte getOption() {
-		return this.option;
-	}
+    byte getOption() {
+        return this.option;
+    }
 
-	int getPayloadLength() {
-		return this.payloadLength;
-	}
+    int getPayloadLength() {
+        return this.payloadLength;
+    }
 
-	void record(byte option, int payloadLength) {
-		this.option = option;
-		this.payloadLength = payloadLength;
-		this.mark = true;
-	}
+    void record(byte option, int payloadLength) {
+        this.option = option;
+        this.payloadLength = payloadLength;
+        this.mark = true;
+    }
 
-	void reset() {
-		this.option = 0;
-		this.payloadLength = 0;
-		this.mark = false;
-	}
+    void reset() {
+        this.option = 0;
+        this.payloadLength = 0;
+        this.mark = false;
+    }
 
 }

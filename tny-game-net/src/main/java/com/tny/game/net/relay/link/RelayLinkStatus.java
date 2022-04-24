@@ -10,44 +10,44 @@ import com.tny.game.common.enums.*;
  */
 public enum RelayLinkStatus implements IntEnumerable {
 
-	/**
-	 * 初始化
-	 **/
-	INIT(1, false),
-	/**
-	 * 打开
-	 **/
-	OPEN(2, false),
-	/**
-	 * 打开
-	 **/
-	DISCONNECT(3, false),
-	/**
-	 * 关闭中
-	 */
-	CLOSING(4, true),
-	/**
-	 * 关闭
-	 **/
-	CLOSED(5, true);
-	//
-	;
+    /**
+     * 初始化
+     **/
+    INIT(1, false),
+    /**
+     * 打开
+     **/
+    OPEN(2, false),
+    /**
+     * 打开
+     **/
+    DISCONNECT(3, false),
+    /**
+     * 关闭中
+     */
+    CLOSING(4, true),
+    /**
+     * 关闭
+     **/
+    CLOSED(5, true);
+    //
+    ;
 
-	private final int id;
+    private final int id;
 
-	private final boolean closeStatus;
+    private final boolean closeStatus;
 
-	RelayLinkStatus(int id, boolean closeStatus) {
-		this.id = id;
-		this.closeStatus = closeStatus;
-	}
+    RelayLinkStatus(int id, boolean closeStatus) {
+        this.id = id;
+        this.closeStatus = closeStatus;
+    }
 
-	@Override
-	public int id() {
-		return this.id;
-	}
+    @Override
+    public int id() {
+        return this.id;
+    }
 
-	public boolean isCloseStatus() {
-		return this.closeStatus;
-	}
+    public boolean isCloseStatus() {
+        return this.closeStatus;
+    }
 }

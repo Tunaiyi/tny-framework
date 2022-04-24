@@ -1,6 +1,5 @@
 package com.tny.game.actor.local;
 
-
 import org.slf4j.*;
 
 /**

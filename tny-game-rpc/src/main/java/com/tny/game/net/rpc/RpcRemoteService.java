@@ -8,8 +8,8 @@ package com.tny.game.net.rpc;
  */
 public interface RpcRemoteService {
 
-	RpcRemoteServicer loadOrCreate(String service);
+    RpcRemoteServicer loadOrCreate(String service);
 
-	RpcRemoteServicer getServicer(String name);
+    RpcRemoteServicer getServicer(String name);
 
 }

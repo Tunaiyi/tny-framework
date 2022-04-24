@@ -12,6 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class PID<M> {
 
     private static final Map<Integer, PID<?>> PID_MAP = new ConcurrentHashMap<>();
+
     private int pid;
 
     public int getPid() {
@@ -25,8 +26,9 @@ public class PID<M> {
     public static <T> PID<T> create(int pid) {
         PID<T> pidObject = new PID<>(pid);
         PID<?> old = PID_MAP.putIfAbsent(pidObject.pid, pidObject);
-        if (old != null)
+        if (old != null) {
             throw new IllegalArgumentException();
+        }
         return pidObject;
     }
 

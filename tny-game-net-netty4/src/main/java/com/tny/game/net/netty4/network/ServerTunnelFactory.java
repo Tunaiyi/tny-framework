@@ -14,10 +14,10 @@ import io.netty.channel.Channel;
 @Unit
 public class ServerTunnelFactory implements NettyTunnelFactory {
 
-	@Override
-	public <T> NetTunnel<T> create(long id, Channel channel, NetworkContext context) {
-		MessageTransporter transport = new NettyChannelMessageTransporter(channel);
-		return new GeneralServerTunnel<>(id, transport, context); // 创建 Tunnel 已经transport.bind
-	}
+    @Override
+    public <T> NetTunnel<T> create(long id, Channel channel, NetworkContext context) {
+        MessageTransporter transport = new NettyChannelMessageTransporter(channel);
+        return new GeneralServerTunnel<>(id, transport, context); // 创建 Tunnel 已经transport.bind
+    }
 
 }

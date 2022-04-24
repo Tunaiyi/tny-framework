@@ -11,10 +11,15 @@ import java.time.Instant;
 public class TimeTriggerBuilder<C extends TimeCycle> {
 
     private C timeCycle = null;
+
     private Instant startTime = null;
+
     private Instant previousTime = null;
+
     private Instant endTime = null;
+
     private long speedMills = 0;
+
     private Instant suspendTime = null;
 
     private TimeTriggerBuilder() {

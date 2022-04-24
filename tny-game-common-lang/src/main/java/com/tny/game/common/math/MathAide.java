@@ -72,7 +72,7 @@ public class MathAide {
      * @return
      */
     public static int toPow(int a, int b) {
-        return (int) Math.pow(a, b);
+        return (int)Math.pow(a, b);
     }
 
     /**
@@ -82,7 +82,7 @@ public class MathAide {
      * @return
      */
     public static int toSqrt(int a) {
-        return (int) Math.sqrt(a);
+        return (int)Math.sqrt(a);
     }
 
     /**
@@ -99,8 +99,9 @@ public class MathAide {
      * @return 随机 from 到 to 范围的随机数
      */
     public static int rand(final int from, final int to) {
-        if (to < from)
+        if (to < from) {
             throw new IllegalArgumentException(StringAide.format("to {} < from {}", to, from));
+        }
         return MathAide.rand((to - from) + 1) + from;
     }
 
@@ -117,15 +118,16 @@ public class MathAide {
         List<RandomObject<V>> itemList = new ArrayList<>();
         int number = 0;
         for (int index = 0; index < randomItemList.size(); index = index + 2) {
-            Integer value = (Integer) randomItemList.get(index);
+            Integer value = (Integer)randomItemList.get(index);
             V object = ObjectAide.as(randomItemList.get(index + 1));
             number += value;
             itemList.add(new RandomObject<>(object, number));
         }
         int value = ThreadLocalRandom.current().nextInt(number);
         for (RandomObject<V> item : itemList) {
-            if (value < item.getValue())
+            if (value < item.getValue()) {
                 return item.getObject();
+            }
         }
         return null;
     }
@@ -171,8 +173,9 @@ public class MathAide {
     public static <V> V randObject(int number, List<RandomObject<V>> items, V defItem) {
         int value = ThreadLocalRandom.current().nextInt(number);
         for (RandomObject<V> item : items) {
-            if (value < item.getValue())
+            if (value < item.getValue()) {
                 return item.getObject();
+            }
         }
         return defItem;
     }
@@ -181,14 +184,13 @@ public class MathAide {
         List<RandomObject<V>> itemList = new ArrayList<>();
         int number = 0;
         for (int index = 0; index < randomItemList.size(); index = index + 2) {
-            Integer value = (Integer) randomItemList.get(index);
+            Integer value = (Integer)randomItemList.get(index);
             V object = ObjectAide.as(randomItemList.get(index + 1));
             number += value;
             itemList.add(new RandomObject<>(object, number));
         }
         return itemList;
     }
-
 
     /**
      * 随机获取对象
@@ -220,7 +222,7 @@ public class MathAide {
     public static <V> V rand(final int number, List<Object> randomItemList, V defaultObject) {
         List<RandomObject<V>> itemList = new ArrayList<>();
         for (int index = 0; index < randomItemList.size(); index = index + 2) {
-            Integer value = (Integer) randomItemList.get(index);
+            Integer value = (Integer)randomItemList.get(index);
             V object = ObjectAide.as(randomItemList.get(index + 1));
             itemList.add(new RandomObject<>(object, value));
         }
@@ -318,25 +320,28 @@ public class MathAide {
             int moreTime = currentTime % time;
             Integer prob = null;
             SortedMap<Integer, Integer> sortedMap;
-            if (timesProbsMap instanceof SortedMap)
-                sortedMap = (SortedMap<Integer, Integer>) timesProbsMap;
-            else
+            if (timesProbsMap instanceof SortedMap) {
+                sortedMap = (SortedMap<Integer, Integer>)timesProbsMap;
+            } else {
                 sortedMap = new TreeMap<>(timesProbsMap);
+            }
             for (Entry<Integer, Integer> entry : sortedMap.entrySet()) {
                 if (moreTime < entry.getKey()) {
                     prob = entry.getValue();
                     break;
                 }
             }
-            if (prob == null)
+            if (prob == null) {
                 prob = sortedMap.lastKey();
+            }
             int randValue = rand(0, 10000);
             drop = randValue < prob;
         } else {
             drop = certainly > 0;
         }
-        if (LOGGER.isDebugEnabled())
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("随机结果 : " + drop);
+        }
         return drop;
     }
 
@@ -387,8 +392,9 @@ public class MathAide {
         } else {
             drop = certainly > 0;
         }
-        if (LOGGER.isDebugEnabled())
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("随机结果 : " + drop);
+        }
         return drop;
     }
 
@@ -477,8 +483,9 @@ public class MathAide {
      * @return 返回有效数
      */
     public static <T extends Comparable<T>> T clamp(Range<T> range, T value) {
-        if (range.contains(value))
+        if (range.contains(value)) {
             return value;
+        }
         return value.compareTo(range.lowerEndpoint()) < 0 ? range.lowerEndpoint() : range.upperEndpoint();
     }
 
@@ -493,8 +500,9 @@ public class MathAide {
         ThreadLocalRandom random = ThreadLocalRandom.current();
         int done = 0;
         for (int time = 0; time < times; time++) {
-            if (random.nextInt(10000) < prob)
+            if (random.nextInt(10000) < prob) {
                 done++;
+            }
         }
         return done;
     }

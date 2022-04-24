@@ -14,53 +14,53 @@ import java.util.Map;
  */
 public interface NetAccessPoint {
 
-	/**
-	 * @return 集群服务实例 id
-	 */
-	long getId();
+    /**
+     * @return 集群服务实例 id
+     */
+    long getId();
 
-	/**
-	 * @return 网络协议 http/https/tcp
-	 */
-	String getScheme();
+    /**
+     * @return 网络协议 http/https/tcp
+     */
+    String getScheme();
 
-	/**
-	 * @return host
-	 */
-	String getHost();
+    /**
+     * @return host
+     */
+    String getHost();
 
-	/**
-	 * @return 端口
-	 */
-	int getPort();
+    /**
+     * @return 端口
+     */
+    int getPort();
 
-	/**
-	 * @return 是否监控
-	 */
-	boolean isHealthy();
+    /**
+     * @return 是否监控
+     */
+    boolean isHealthy();
 
-	/**
-	 * @return 获取 url
-	 */
-	default String getUrl() {
-		return url().toString();
-	}
+    /**
+     * @return 获取 url
+     */
+    default String getUrl() {
+        return url().toString();
+    }
 
-	/**
-	 * @return 获取地址
-	 */
-	default URL url() {
-		return new URL(this.getScheme(), this.getHost(), this.getPort());
-	}
+    /**
+     * @return 获取地址
+     */
+    default URL url() {
+        return new URL(this.getScheme(), this.getHost(), this.getPort());
+    }
 
-	/**
-	 * @return 获取元数据
-	 */
-	MapAccessor metadata();
+    /**
+     * @return 获取元数据
+     */
+    MapAccessor metadata();
 
-	/**
-	 * @return 获取元数据
-	 */
-	Map<String, Object> getMetadata();
+    /**
+     * @return 获取元数据
+     */
+    Map<String, Object> getMetadata();
 
 }

@@ -4,6 +4,6 @@ import java.lang.reflect.Type;
 
 public interface TypeFormatter {
 
-	String format(Type type);
+    String format(Type type);
 
 }

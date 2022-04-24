@@ -19,22 +19,25 @@ public interface ProxySupplyCapacitySupplier extends CapacitySupplier {
 
     @Override
     default Number getValue(Capacity capacity) {
-        if (!isSupplying())
+        if (!isSupplying()) {
             return null;
+        }
         return supply().getValue(capacity);
     }
 
     @Override
     default Number getValue(Capacity capacity, Number defaultNum) {
-        if (!isSupplying())
+        if (!isSupplying()) {
             return defaultNum;
+        }
         return supply().getValue(capacity, defaultNum);
     }
 
     @Override
     default Map<Capacity, Number> getAllValues() {
-        if (!isSupplying())
+        if (!isSupplying()) {
             return ImmutableMap.of();
+        }
         return supply().getAllValues();
     }
 
@@ -47,4 +50,5 @@ public interface ProxySupplyCapacitySupplier extends CapacitySupplier {
     default Set<CapacityGroup> getAllCapacityGroups() {
         return supply().getAllCapacityGroups();
     }
+
 }

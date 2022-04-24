@@ -13,99 +13,99 @@ import java.util.stream.Collectors;
  */
 public class ClassSelector {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ClassSelector.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ClassSelector.class);
 
-	private List<ClassFilter> filters = new ArrayList<>();
+    private List<ClassFilter> filters = new ArrayList<>();
 
-	private List<Class<?>> classes = Collections.emptyList();
+    private List<Class<?>> classes = Collections.emptyList();
 
-	private Map<Thread, Set<Class<?>>> mapClass = new ConcurrentHashMap<>();
+    private Map<Thread, Set<Class<?>>> mapClass = new ConcurrentHashMap<>();
 
-	private ClassSelectedHandler handler;
+    private ClassSelectedHandler handler;
 
-	private ClassSelector() {
-	}
+    private ClassSelector() {
+    }
 
-	public static ClassSelector create(Collection<ClassFilter> filters) {
-		return new ClassSelector().addFilter(filters);
-	}
+    public static ClassSelector create(Collection<ClassFilter> filters) {
+        return new ClassSelector().addFilter(filters);
+    }
 
-	public static ClassSelector create(ClassFilter... filters) {
-		return new ClassSelector().addFilter(filters);
-	}
+    public static ClassSelector create(ClassFilter... filters) {
+        return new ClassSelector().addFilter(filters);
+    }
 
-	public static ClassSelector create() {
-		return new ClassSelector();
-	}
+    public static ClassSelector create() {
+        return new ClassSelector();
+    }
 
-	public static ClassSelector create(ClassSelectedHandler handler) {
-		return new ClassSelector()
-				.setHandler(handler);
-	}
+    public static ClassSelector create(ClassSelectedHandler handler) {
+        return new ClassSelector()
+                .setHandler(handler);
+    }
 
-	public ClassSelector setHandler(ClassSelectedHandler handler) {
-		this.handler = handler;
-		return this;
-	}
+    public ClassSelector setHandler(ClassSelectedHandler handler) {
+        this.handler = handler;
+        return this;
+    }
 
-	public Collection<Class<?>> getClasses() {
-		return Collections.unmodifiableCollection(this.classes);
-	}
+    public Collection<Class<?>> getClasses() {
+        return Collections.unmodifiableCollection(this.classes);
+    }
 
-	public ClassSelector addFilter(ClassFilter... filters) {
-		this.filters.addAll(Arrays.asList(filters));
-		return this;
-	}
+    public ClassSelector addFilter(ClassFilter... filters) {
+        this.filters.addAll(Arrays.asList(filters));
+        return this;
+    }
 
-	public ClassSelector addFilter(Collection<ClassFilter> filters) {
-		this.filters.addAll(filters);
-		return this;
-	}
+    public ClassSelector addFilter(Collection<ClassFilter> filters) {
+        this.filters.addAll(filters);
+        return this;
+    }
 
-	Class<?> selector(MetadataReader reader, ClassLoader loader, Class<?> clazz) {
-		if (filter(reader)) {
-			String fullClassName = reader.getClassMetadata().getClassName();
-			try {
-				Thread current = Thread.currentThread();
-				if (clazz == null) {
-					if (loader == null) {
-						loader = current.getContextClassLoader();
-					}
-					clazz = loader.loadClass(fullClassName);
-				}
-				this.mapClass.computeIfAbsent(current, (k) -> new HashSet<>())
-						.add(clazz);
-				return clazz;
-			} catch (Throwable e) {
-				LOG.error("添加用户自定义视图类错误 找不到此类的{}文件", fullClassName, e);
-			}
-		}
-		return null;
-	}
+    Class<?> selector(MetadataReader reader, ClassLoader loader, Class<?> clazz) {
+        if (filter(reader)) {
+            String fullClassName = reader.getClassMetadata().getClassName();
+            try {
+                Thread current = Thread.currentThread();
+                if (clazz == null) {
+                    if (loader == null) {
+                        loader = current.getContextClassLoader();
+                    }
+                    clazz = loader.loadClass(fullClassName);
+                }
+                this.mapClass.computeIfAbsent(current, (k) -> new HashSet<>())
+                        .add(clazz);
+                return clazz;
+            } catch (Throwable e) {
+                LOG.error("添加用户自定义视图类错误 找不到此类的{}文件", fullClassName, e);
+            }
+        }
+        return null;
+    }
 
-	private boolean filter(MetadataReader reader) {
-		for (ClassFilter fileFilter : this.filters) {
-			if (!fileFilter.include(reader) || fileFilter.exclude(reader)) {
-				return false;
-			}
-		}
-		return true;
-	}
+    private boolean filter(MetadataReader reader) {
+        for (ClassFilter fileFilter : this.filters) {
+            if (!fileFilter.include(reader) || fileFilter.exclude(reader)) {
+                return false;
+            }
+        }
+        return true;
+    }
 
-	void selected() {
-		this.classes = this.mapClass.values().stream()
-				.flatMap(Collection::stream)
-				.distinct()
-				.collect(Collectors.toList());
-		this.mapClass.clear();
-		this.mapClass = null;
-		if (this.handler != null) {
-			this.handler.selected(this.getClasses());
-		}
-	}
+    void selected() {
+        this.classes = this.mapClass.values().stream()
+                .flatMap(Collection::stream)
+                .distinct()
+                .collect(Collectors.toList());
+        this.mapClass.clear();
+        this.mapClass = null;
+        if (this.handler != null) {
+            this.handler.selected(this.getClasses());
+        }
+    }
 
-	public void clear() {
-		this.classes = Collections.emptyList();
-	}
+    public void clear() {
+        this.classes = Collections.emptyList();
+    }
 
 }

@@ -13,18 +13,18 @@ import com.tny.game.net.transport.*;
  */
 public class RespondCommandTask implements CommandTask {
 
-	private final Message message;
+    private final Message message;
 
-	private final MessageRespondAwaiter respondFuture;
+    private final MessageRespondAwaiter respondFuture;
 
-	public RespondCommandTask(Message message, MessageRespondAwaiter respondFuture) {
-		this.message = message;
-		this.respondFuture = respondFuture;
-	}
+    public RespondCommandTask(Message message, MessageRespondAwaiter respondFuture) {
+        this.message = message;
+        this.respondFuture = respondFuture;
+    }
 
-	@Override
-	public Command createCommand() {
-		return new RespondFutureCommand(this.message, this.respondFuture);
-	}
+    @Override
+    public Command createCommand() {
+        return new RespondFutureCommand(this.message, this.respondFuture);
+    }
 
 }

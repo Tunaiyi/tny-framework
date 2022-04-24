@@ -14,24 +14,24 @@ import static com.tny.game.net.command.Certificates.*;
  */
 public class TimeTaskPluginSetting {
 
-	private Map<String, TaskReceiverType> receiverTypeMapper = new HashMap<>();
+    private Map<String, TaskReceiverType> receiverTypeMapper = new HashMap<>();
 
-	public TimeTaskPluginSetting() {
-		this.receiverTypeMapper.put(DEFAULT_USER_TYPE, DefaultTaskReceiverType.PLAYER);
-	}
+    public TimeTaskPluginSetting() {
+        this.receiverTypeMapper.put(DEFAULT_USER_TYPE, DefaultTaskReceiverType.PLAYER);
+    }
 
-	public Map<String, TaskReceiverType> getReceiverTypeMapper() {
-		return Collections.unmodifiableMap(receiverTypeMapper);
-	}
+    public Map<String, TaskReceiverType> getReceiverTypeMapper() {
+        return Collections.unmodifiableMap(receiverTypeMapper);
+    }
 
-	public TimeTaskPluginSetting setReceiverTypeMapper(
-			Map<String, TaskReceiverType> receiverTypeMapper) {
-		this.receiverTypeMapper = receiverTypeMapper;
-		return this;
-	}
+    public TimeTaskPluginSetting setReceiverTypeMapper(
+            Map<String, TaskReceiverType> receiverTypeMapper) {
+        this.receiverTypeMapper = receiverTypeMapper;
+        return this;
+    }
 
-	public TaskReceiverType getReceiverType(String userType) {
-		return this.receiverTypeMapper.get(userType);
-	}
+    public TaskReceiverType getReceiverType(String userType) {
+        return this.receiverTypeMapper.get(userType);
+    }
 
 }

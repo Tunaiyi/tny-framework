@@ -7,10 +7,10 @@ package com.tny.game.basics.item;
  */
 public interface ModelExplorer {
 
-	<IM extends Model> IM getModel(int modelId);
+    <IM extends Model> IM getModel(int modelId);
 
-	<IM extends Model> IM getModelByAlias(String itemAlias);
+    <IM extends Model> IM getModelByAlias(String itemAlias);
 
-	<M extends ModelManager<? extends Model>> M getModelManager(ItemType itemType);
+    <M extends ModelManager<? extends Model>> M getModelManager(ItemType itemType);
 
 }

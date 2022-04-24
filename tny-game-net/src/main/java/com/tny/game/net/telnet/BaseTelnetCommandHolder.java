@@ -11,8 +11,9 @@ public abstract class BaseTelnetCommandHolder implements TelnetCommandHolder {
     @Override
     public List<TelnetCommand> getCommandByType(CommandType commandType) {
         List<TelnetCommand> telnetCommands = commandTypeMap.get(commandType);
-        if (telnetCommands == null)
+        if (telnetCommands == null) {
             return Collections.emptyList();
+        }
         return telnetCommands;
     }
 
@@ -24,8 +25,9 @@ public abstract class BaseTelnetCommandHolder implements TelnetCommandHolder {
     @Override
     public String execute(String[] commands) {
         TelnetCommand command = getCommand(commands[0]);
-        if (command == null)
+        if (command == null) {
             return commands[0] + " is not exist!";
+        }
         return command.handlerCommand(null, new TelnetArgument(commands));
     }
 

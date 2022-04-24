@@ -15,40 +15,40 @@ import static com.tny.game.common.utils.ObjectAide.*;
  */
 public class QueueObjectStorageFactory extends AbstractCachedFactory<Class<?>, ObjectStorage<?, ?>> implements ObjectStorageFactory {
 
-	public static final String STORAGE_NAME = "queueObjectCacheFactory";
+    public static final String STORAGE_NAME = "queueObjectCacheFactory";
 
-	private AsyncObjectStoreExecutor storeExecutor;
+    private AsyncObjectStoreExecutor storeExecutor;
 
-	private StorageAccessorFactory accessorFactory;
+    private StorageAccessorFactory accessorFactory;
 
-	public QueueObjectStorageFactory() {
-	}
+    public QueueObjectStorageFactory() {
+    }
 
-	public QueueObjectStorageFactory(AsyncObjectStoreExecutor storeExecutor,
-			StorageAccessorFactory accessorFactory) {
-		this.storeExecutor = storeExecutor;
-		this.accessorFactory = accessorFactory;
-	}
+    public QueueObjectStorageFactory(AsyncObjectStoreExecutor storeExecutor,
+            StorageAccessorFactory accessorFactory) {
+        this.storeExecutor = storeExecutor;
+        this.accessorFactory = accessorFactory;
+    }
 
-	public QueueObjectStorageFactory setStoreExecutor(AsyncObjectStoreExecutor storeExecutor) {
-		this.storeExecutor = storeExecutor;
-		return this;
-	}
+    public QueueObjectStorageFactory setStoreExecutor(AsyncObjectStoreExecutor storeExecutor) {
+        this.storeExecutor = storeExecutor;
+        return this;
+    }
 
-	public QueueObjectStorageFactory setAccessorFactory(StorageAccessorFactory accessorFactory) {
-		this.accessorFactory = accessorFactory;
-		return this;
-	}
+    public QueueObjectStorageFactory setAccessorFactory(StorageAccessorFactory accessorFactory) {
+        this.accessorFactory = accessorFactory;
+        return this;
+    }
 
-	@Override
-	public <K extends Comparable<?>, O> ObjectStorage<K, O> createStorage(EntityScheme scheme, EntityKeyMaker<K, O> keyMaker) {
-		return loadOrCreate(scheme.getEntityClass(), (key) -> {
-			StorageAccessor<K, O> accessor = accessorFactory.createAccessor(scheme, keyMaker);
-			AsyncObjectStorage<K, O> storage = new QueueObjectStorage<>(
-					as(scheme.getEntityClass()), accessor, new HashObjectLocker<>(scheme.concurrencyLevel()));
-			storeExecutor.register(storage);
-			return storage;
-		});
-	}
+    @Override
+    public <K extends Comparable<?>, O> ObjectStorage<K, O> createStorage(EntityScheme scheme, EntityKeyMaker<K, O> keyMaker) {
+        return loadOrCreate(scheme.getEntityClass(), (key) -> {
+            StorageAccessor<K, O> accessor = accessorFactory.createAccessor(scheme, keyMaker);
+            AsyncObjectStorage<K, O> storage = new QueueObjectStorage<>(
+                    as(scheme.getEntityClass()), accessor, new HashObjectLocker<>(scheme.concurrencyLevel()));
+            storeExecutor.register(storage);
+            return storage;
+        });
+    }
 
 }

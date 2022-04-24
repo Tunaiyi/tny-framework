@@ -106,7 +106,7 @@ public final class Tag {
     @Override
     public String toString() {
         return "Tag [protoExID=" + this.protoExID + ", raw=" + this.raw + ", explicit=" + this.explicit + ", fieldNumber=" + this.fieldNumber +
-               ", fieldFormat=" + this.fieldFormat + "]";
+                ", fieldFormat=" + this.fieldFormat + "]";
     }
 
     //	public int getLength() {

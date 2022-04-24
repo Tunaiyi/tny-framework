@@ -7,6 +7,6 @@ import com.tny.game.basics.item.behavior.*;
  */
 public interface OnUpgrade<I> {
 
-	void upgrade(I item, Action action, int oldLevel, int upLevel);
+    void upgrade(I item, Action action, int oldLevel, int upLevel);
 
 }

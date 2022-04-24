@@ -7,17 +7,17 @@ package com.tny.game.data.cache;
  */
 public interface ReleaseStrategy<K extends Comparable<?>, O> {
 
-	/**
-	 * 是否释放该对象
-	 *
-	 * @param entity 释放的对象
-	 * @return 释放则返回true， 不是放返回 false
-	 */
-	boolean release(CacheEntry<K, O> entity, long releaseAt);
+    /**
+     * 是否释放该对象
+     *
+     * @param entity 释放的对象
+     * @return 释放则返回true， 不是放返回 false
+     */
+    boolean release(CacheEntry<K, O> entity, long releaseAt);
 
-	/**
-	 * 访问
-	 */
-	void visit();
+    /**
+     * 访问
+     */
+    void visit();
 
 }

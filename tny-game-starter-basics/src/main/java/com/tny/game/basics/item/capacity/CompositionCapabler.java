@@ -8,16 +8,16 @@ import java.util.*;
  */
 public interface CompositionCapabler extends Capabler {
 
-	CapableComposition composition();
+    CapableComposition composition();
 
-	@Override
-	default Collection<? extends CapacitySupplier> suppliers() {
-		return composition().suppliers();
-	}
+    @Override
+    default Collection<? extends CapacitySupplier> suppliers() {
+        return composition().suppliers();
+    }
 
-	@Override
-	default Set<CapacityGroup> getAllCapacityGroups() {
-		return composition().getAllCapacityGroups();
-	}
+    @Override
+    default Set<CapacityGroup> getAllCapacityGroups() {
+        return composition().getAllCapacityGroups();
+    }
 
 }

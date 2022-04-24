@@ -10,27 +10,27 @@ import org.slf4j.*;
 
 public class TaskReceiverSchedulerPlugin implements VoidCommandPlugin<Long> {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(TaskReceiverSchedulerPlugin.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TaskReceiverSchedulerPlugin.class);
 
-	private BasicsTimeTaskProperties properties;
+    private BasicsTimeTaskProperties properties;
 
-	private TimeTaskService timeTaskService;
+    private TimeTaskService timeTaskService;
 
-	public TaskReceiverSchedulerPlugin(BasicsTimeTaskProperties properties, TimeTaskService timeTaskService) {
-		this.properties = properties;
-		this.timeTaskService = timeTaskService;
-	}
+    public TaskReceiverSchedulerPlugin(BasicsTimeTaskProperties properties, TimeTaskService timeTaskService) {
+        this.properties = properties;
+        this.timeTaskService = timeTaskService;
+    }
 
-	@Override
-	public void doExecute(Tunnel<Long> tunnel, Message message, MessageCommandContext context) throws Exception {
-		TaskReceiverType type = properties.getPlugin().getReceiverType(tunnel.getUserType());
-		if (type != null) {
-			try {
-				this.timeTaskService.checkTask(tunnel.getUserId(), type);
-			} catch (Exception e) {
-				LOGGER.error("", e);
-			}
-		}
-	}
+    @Override
+    public void doExecute(Tunnel<Long> tunnel, Message message, MessageCommandContext context) throws Exception {
+        TaskReceiverType type = properties.getPlugin().getReceiverType(tunnel.getUserType());
+        if (type != null) {
+            try {
+                this.timeTaskService.checkTask(tunnel.getUserId(), type);
+            } catch (Exception e) {
+                LOGGER.error("", e);
+            }
+        }
+    }
 
 }

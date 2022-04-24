@@ -5,6 +5,6 @@ package com.tny.game.basics.item;
  */
 public interface WarehouseManager {
 
-	Warehouse load(long playerId);
+    Warehouse load(long playerId);
 
 }

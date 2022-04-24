@@ -13,22 +13,22 @@ import java.util.List;
  */
 public class JsonMongoEntityConverter extends JsonMongoDocumentConverter implements MongoEntityConverter {
 
-	public JsonMongoEntityConverter(List<MongoDocumentEnhance<?>> enhances) {
-		super(enhances);
-	}
+    public JsonMongoEntityConverter(List<MongoDocumentEnhance<?>> enhances) {
+        super(enhances);
+    }
 
-	public JsonMongoEntityConverter(ObjectMapper objectMapper, List<MongoDocumentEnhance<?>> enhances) {
-		super(objectMapper, enhances);
-	}
+    public JsonMongoEntityConverter(ObjectMapper objectMapper, List<MongoDocumentEnhance<?>> enhances) {
+        super(objectMapper, enhances);
+    }
 
-	@Override
-	public <T> T convertToRead(Document source, Class<T> targetClass) {
-		return format(source, targetClass);
-	}
+    @Override
+    public <T> T convertToRead(Document source, Class<T> targetClass) {
+        return format(source, targetClass);
+    }
 
-	@Override
-	public Document convertToWrite(Object id, Object source) {
-		return format(source, Document.class);
-	}
+    @Override
+    public Document convertToWrite(Object id, Object source) {
+        return format(source, Document.class);
+    }
 
 }

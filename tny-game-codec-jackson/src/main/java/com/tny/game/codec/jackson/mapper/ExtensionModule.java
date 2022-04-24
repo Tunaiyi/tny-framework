@@ -14,14 +14,14 @@ import java.time.Instant;
  */
 public class ExtensionModule extends SimpleModule {
 
-	public ExtensionModule() {
-		extensionModule(Instant.class, InstantJsonSerializer.getDefault(), InstantJsonDeserializer.getDefault());
-		extensionModule(ResultCode.class, ResultCodeJsonSerializer.getDefault(), ResultCodeJsonDeserializer.getDefault());
-	}
+    public ExtensionModule() {
+        extensionModule(Instant.class, InstantJsonSerializer.getDefault(), InstantJsonDeserializer.getDefault());
+        extensionModule(ResultCode.class, ResultCodeJsonSerializer.getDefault(), ResultCodeJsonDeserializer.getDefault());
+    }
 
-	public <T> void extensionModule(Class<T> clazz, JsonSerializer<T> serializer, JsonDeserializer<T> deserializer) {
-		this.addSerializer(clazz, serializer);
-		this.addDeserializer(clazz, deserializer);
-	}
+    public <T> void extensionModule(Class<T> clazz, JsonSerializer<T> serializer, JsonDeserializer<T> deserializer) {
+        this.addSerializer(clazz, serializer);
+        this.addDeserializer(clazz, deserializer);
+    }
 
 }

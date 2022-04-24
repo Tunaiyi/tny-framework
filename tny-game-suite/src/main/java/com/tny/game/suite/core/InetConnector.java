@@ -60,11 +60,13 @@ public class InetConnector {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
+        if (this == o) {
             return true;
-        if (!(o instanceof InetConnector))
+        }
+        if (!(o instanceof InetConnector)) {
             return false;
-        InetConnector that = (InetConnector) o;
+        }
+        InetConnector that = (InetConnector)o;
         return new EqualsBuilder()
                 .append(getHost(), that.getHost())
                 .append(getPort(), that.getPort())
@@ -78,4 +80,5 @@ public class InetConnector {
                 .append(getPort())
                 .toHashCode();
     }
+
 }

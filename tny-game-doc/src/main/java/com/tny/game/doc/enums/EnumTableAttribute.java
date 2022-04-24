@@ -13,48 +13,48 @@ import static com.tny.game.doc.holder.EnumDocHolder.*;
 
 public class EnumTableAttribute implements TableAttribute {
 
-	private EnumConfiger enumeration;
+    private EnumConfiger enumeration;
 
-	@XStreamOmitField
-	private ExportHolder exportHolder;
+    @XStreamOmitField
+    private ExportHolder exportHolder;
 
-	public EnumTableAttribute() {
-	}
+    public EnumTableAttribute() {
+    }
 
-	@SuppressWarnings({"rawtypes", "unchecked"})
-	public EnumTableAttribute(Class<Enum> clazz, TypeFormatter typeFormatter) {
-		this.enumeration = new EnumConfiger();
-		this.enumeration.setEnumDocHolder(create(clazz), typeFormatter);
-		this.exportHolder = ExportHolder.create(clazz);
-	}
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public EnumTableAttribute(Class<Enum> clazz, TypeFormatter typeFormatter) {
+        this.enumeration = new EnumConfiger();
+        this.enumeration.setEnumDocHolder(create(clazz), typeFormatter);
+        this.exportHolder = ExportHolder.create(clazz);
+    }
 
-	@Override
-	@SuppressWarnings({"rawtypes", "unchecked"})
-	public void putAttribute(Class<?> clazz, TypeFormatter typeFormatter, Attributes attributes) {
-		this.enumeration = new EnumConfiger();
-		this.enumeration.setEnumDocHolder(create((Class<Enum>)clazz), typeFormatter);
-		this.exportHolder = ExportHolder.create(clazz);
-	}
+    @Override
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public void putAttribute(Class<?> clazz, TypeFormatter typeFormatter, Attributes attributes) {
+        this.enumeration = new EnumConfiger();
+        this.enumeration.setEnumDocHolder(create((Class<Enum>)clazz), typeFormatter);
+        this.exportHolder = ExportHolder.create(clazz);
+    }
 
-	public EnumConfiger getEnumeration() {
-		return this.enumeration;
-	}
+    public EnumConfiger getEnumeration() {
+        return this.enumeration;
+    }
 
-	@Override
-	public String getOutput() {
-		return this.exportHolder.getOutput();
-	}
+    @Override
+    public String getOutput() {
+        return this.exportHolder.getOutput();
+    }
 
-	@Override
-	public Map<String, Object> getContext() {
-		return MapBuilder.<String, Object>newBuilder()
-				.put("enumeration", enumeration)
-				.build();
-	}
+    @Override
+    public Map<String, Object> getContext() {
+        return MapBuilder.<String, Object>newBuilder()
+                .put("enumeration", enumeration)
+                .build();
+    }
 
-	@Override
-	public String getTemplate() {
-		return this.exportHolder.getTemplate();
-	}
+    @Override
+    public String getTemplate() {
+        return this.exportHolder.getTemplate();
+    }
 
 }

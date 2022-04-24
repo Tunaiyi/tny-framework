@@ -11,13 +11,13 @@ import org.springframework.test.context.ActiveProfiles;
  */
 @ActiveProfiles("test")
 @SpringBootApplication(
-		scanBasePackages = {"com.tny.game"})
+        scanBasePackages = {"com.tny.game"})
 public class GameTestApp {
 
-	public static void main(String[] args) throws InterruptedException {
-		ApplicationLauncherContext.register(GameTestApp.class);
-		ApplicationContext context = SpringApplication.run(GameTestApp.class, args);
-		Thread.sleep(600000);
-	}
+    public static void main(String[] args) throws InterruptedException {
+        ApplicationLauncherContext.register(GameTestApp.class);
+        ApplicationContext context = SpringApplication.run(GameTestApp.class, args);
+        Thread.sleep(600000);
+    }
 
 }

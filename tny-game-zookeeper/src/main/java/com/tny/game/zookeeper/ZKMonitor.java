@@ -67,8 +67,9 @@ public class ZKMonitor {
      */
     private synchronized boolean putNodeData(Collection<ZKMonitorNode<?>> nodeCollection) {
         for (ZKMonitorNode<?> node : nodeCollection) {
-            if (!this.putNodeData(node))
+            if (!this.putNodeData(node)) {
                 return false;
+            }
         }
         return true;
     }
@@ -89,9 +90,10 @@ public class ZKMonitor {
 
     @SuppressWarnings("unchecked")
     public <T> T getNodeData(String path, CreateMode createMode, NodeDataFormatter formatter) {
-        ZKMonitorNode<T> node = (ZKMonitorNode<T>) this.nodeMap.get(path);
-        if (node != null)
+        ZKMonitorNode<T> node = (ZKMonitorNode<T>)this.nodeMap.get(path);
+        if (node != null) {
             return node.getData();
+        }
         Stat stat = new Stat();
         byte[] bytes;
         try {
@@ -103,12 +105,13 @@ public class ZKMonitor {
             LOGGER.error("获取{}节点属性失败", path, e);
             return null;
         }
-        if (bytes == null || bytes.length == 0)
+        if (bytes == null || bytes.length == 0) {
             return null;
+        }
         T data = formatter.bytes2Data(bytes);
         node = new ZKMonitorNode<>(createMode, data, path, formatter);
         ZKMonitorNode<T> lastOne = null;
-        if ((lastOne = (ZKMonitorNode<T>) this.nodeMap.putIfAbsent(node.getPath(), node)) == null) {
+        if ((lastOne = (ZKMonitorNode<T>)this.nodeMap.putIfAbsent(node.getPath(), node)) == null) {
             return data;
         } else {
             return lastOne.getData();
@@ -118,8 +121,9 @@ public class ZKMonitor {
     private synchronized boolean putNodeData(ZKMonitorNode<?> node) {
         if (this.nodeMap.putIfAbsent(node.getPath(), node) == null) {
             Stat stat = this.createFullPath(node.getPath(), node.getDataBytes(), node.getCreateMode(), true);
-            if (stat == null)
+            if (stat == null) {
                 return this.putNodeData(node);
+            }
             node.setKeeperStat(stat);
             return true;
         }
@@ -128,9 +132,10 @@ public class ZKMonitor {
 
     @SuppressWarnings("unchecked")
     public synchronized boolean syncNode(String path, Object data) {
-        final ZKMonitorNode<Object> node = (ZKMonitorNode<Object>) this.nodeMap.get(path);
-        if (node == null)
+        final ZKMonitorNode<Object> node = (ZKMonitorNode<Object>)this.nodeMap.get(path);
+        if (node == null) {
             return false;
+        }
         node.change(data);
         if (node.sync()) {
             try {
@@ -171,7 +176,7 @@ public class ZKMonitor {
 
     @SuppressWarnings("unchecked")
     private MonitoredNode<Object> getNode(String path) {
-        return (MonitoredNode<Object>) this.monitoredNodeMap.get(path);
+        return (MonitoredNode<Object>)this.monitoredNodeMap.get(path);
     }
 
     public Stat createFullNode(String path, Object leafValue, CreateMode mode, boolean setIfExist) {
@@ -198,8 +203,9 @@ public class ZKMonitor {
             stat = this.keeper.exists(path, false);
             //若存在路径设置值
             if (stat != null) {
-                if (setIfExist)
+                if (setIfExist) {
                     return this.keeper.setData(path, leafValue, -1);
+                }
                 return stat;
             } else {
                 no_path = true;
@@ -216,15 +222,17 @@ public class ZKMonitor {
         }
         if (no_path) {
             String[] paths = path.split("/");
-            if (paths.length < 2)
+            if (paths.length < 2) {
                 return null;
+            }
             String currentPath = "";
             for (int index = 1; index < paths.length; index++) {
                 currentPath += ("/" + paths[index]);
                 boolean last = index == paths.length - 1;
                 stat = this.createPath(currentPath, last ? leafValue : NOTE_DATE, last ? mode : CreateMode.PERSISTENT, last && setIfExist);
-                if (stat == null)
+                if (stat == null) {
                     return null;
+                }
             }
         }
         return stat;
@@ -246,8 +254,9 @@ public class ZKMonitor {
                 this.keeper.create(path, value, Ids.OPEN_ACL_UNSAFE, mode);
                 LOGGER.debug("创建路径{}成功", path);
             } else {
-                if (setIfExist)
+                if (setIfExist) {
                     this.keeper.setData(path, value, -1);
+                }
             }
             return new Stat();
         } catch (KeeperException e) {
@@ -279,13 +288,15 @@ public class ZKMonitor {
 
     public void monitorChildren(String nodePath, final NodeDataFormatter formatter, NodeWatcher<?> watcher) {
         MonitoredNode<?> current = ZKMonitor.this.monitoredNodeMap.get(nodePath);
-        if (current != null)
+        if (current != null) {
             return;
+        }
         this.createFullPath(nodePath, NOTE_DATE, CreateMode.PERSISTENT, false);
         final ChildrenCallback callback = (rc, path, ctx, children) -> {
             Code code = Code.get(rc);
-            if (code == Code.OK)
+            if (code == Code.OK) {
                 monitorChildren(path, children, formatter, watcher);
+            }
         };
         ZKMonitor.this.monitor.monitorChildren(nodePath, null, callback, null).start();
     }
@@ -323,8 +334,9 @@ public class ZKMonitor {
     @SuppressWarnings("unchecked")
     private void removeMonitorNode(String nodePath) {
         MonitoredNode<?> node = ZKMonitor.this.monitoredNodeMap.remove(nodePath);
-        if (node != null)
+        if (node != null) {
             node.remove();
+        }
     }
 
     private void notifyNodeChange(String nodePath, byte[] data) {
@@ -338,19 +350,21 @@ public class ZKMonitor {
         }
     }
 
-
     public Map<String, MonitoredNode<?>> getMonitoredNodeMap() {
         return Collections.unmodifiableMap(this.monitoredNodeMap);
     }
 
     private byte[] object2Bytes(Object object, NodeDataFormatter formatter) {
-        if (object == null)
+        if (object == null) {
             return null;
-        if (formatter == null)
+        }
+        if (formatter == null) {
             formatter = this.defaultFormatter;
-        if (formatter != null)
+        }
+        if (formatter != null) {
             return formatter.data2Bytes(object);
-        return (byte[]) object;
+        }
+        return (byte[])object;
     }
 
     //	@SuppressWarnings("unchecked")
@@ -374,7 +388,8 @@ public class ZKMonitor {
     //		return this.getData(path, watcher, stat, null);
     //	}
     //
-    //	public <T> T getData(final String path, Watcher watcher, Stat stat, NodeDataFormatter formater) throws KeeperException, InterruptedException {
+    //	public <T> T getData(final String path, Watcher watcher, Stat stat, NodeDataFormatter formater) throws KeeperException,
+    //	InterruptedException {
     //		byte[] bytes = this.keeper.getData(path, watcher, stat);
     //		return this.bytes2Object(bytes, formater);
     //	}
@@ -392,7 +407,8 @@ public class ZKMonitor {
     //		this.getData(path, watcher, null, cb, ctx);
     //	}
     //
-    //	public <T> void getData(final String path, Watcher watcher, final NodeDataFormatter formater, final GameKeeperDataCallback<T> cb, Object ctx) {
+    //	public <T> void getData(final String path, Watcher watcher, final NodeDataFormatter formater, final GameKeeperDataCallback<T> cb, Object
+    //	ctx) {
     //		this.keeper.getData(path, watcher, new DataCallback() {
     //
     //			@Override
@@ -408,7 +424,8 @@ public class ZKMonitor {
     //		this.getData(path, watch, null, cb, clazz, ctx);
     //	}
     //
-    //	public <T> void getData(String path, boolean watch, final NodeDataFormatter formater, final GameKeeperDataCallback<T> cb, final Class<T> clazz, Object ctx) {
+    //	public <T> void getData(String path, boolean watch, final NodeDataFormatter formater, final GameKeeperDataCallback<T> cb, final Class<T>
+    //	clazz, Object ctx) {
     //		this.keeper.getData(path, watch, new DataCallback() {
     //
     //			@Override

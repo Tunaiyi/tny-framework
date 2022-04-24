@@ -8,8 +8,8 @@ package com.tny.game.data;
  */
 public interface EntityIdConverter<K extends Comparable<?>, O, ID> {
 
-	ID keyToId(K key);
+    ID keyToId(K key);
 
-	ID entityToId(O object);
+    ID entityToId(O object);
 
 }

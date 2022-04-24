@@ -35,4 +35,5 @@ public abstract class ProxyVisitorCapacitySupplierItem<IM extends CapacityItemMo
         super.effect();
         this.storer.saveSupplier(this.getSupplierType(), this.getId(), this.getItemId(), this.capacitySupply);
     }
+
 }

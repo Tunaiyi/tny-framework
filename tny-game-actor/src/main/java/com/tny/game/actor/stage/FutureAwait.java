@@ -1,6 +1,5 @@
 package com.tny.game.actor.stage;
 
-
 import com.tny.game.actor.*;
 import com.tny.game.actor.stage.exception.*;
 import com.tny.game.common.result.*;
@@ -18,7 +17,6 @@ public class FutureAwait<T> implements DoneSupplier<T> {
         this.future = future;
     }
 
-
     @Override
     public Done<T> getDone() {
         if (!this.future.isDone()) {
@@ -33,4 +31,5 @@ public class FutureAwait<T> implements DoneSupplier<T> {
             }
         }
     }
+
 }

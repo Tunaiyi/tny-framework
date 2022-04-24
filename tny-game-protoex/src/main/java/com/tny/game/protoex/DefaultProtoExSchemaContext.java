@@ -23,16 +23,18 @@ public class DefaultProtoExSchemaContext {
         @Override
         public <T> ProtoExSchema<T> getSchema(Class<?> type) {
             ProtoExSchema<T> schema = RuntimeProtoExSchema.getProtoSchema(type);
-            if (schema == null)
+            if (schema == null) {
                 throw ProtobufExException.noSchema(type);
+            }
             return schema;
         }
 
         @Override
         public <T> ProtoExSchema<T> getSchema(int protoExID, boolean raw) {
             ProtoExSchema<T> schema = RuntimeProtoExSchema.getProtoSchema(protoExID, raw);
-            if (schema == null)
+            if (schema == null) {
                 throw ProtobufExException.noSchema(protoExID, raw);
+            }
             return schema;
         }
 
@@ -51,8 +53,9 @@ public class DefaultProtoExSchemaContext {
             // return schema;
 
             ProtoExSchema<T> schema = RuntimeProtoExSchema.getProtoSchema(protoExID, raw, defaultClass);
-            if (schema == null)
+            if (schema == null) {
                 throw ProtobufExException.noSchema(protoExID, raw, defaultClass);
+            }
             return schema;
         }
 

@@ -9,6 +9,7 @@ public class ForkJoinEndpointCommandTaskProcessorSetting {
      * 间歇时间
      */
     private static final int DEFAULT_NEXT_INTERVAL = 8;
+
     /**
      * 间歇时间
      */

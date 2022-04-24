@@ -7,20 +7,20 @@ import java.util.concurrent.CompletableFuture;
  */
 public class CompleteStageFuture<T> extends CompletableFuture<T> implements StageFuture<T> {
 
-	public static <T> CompleteStageFuture<T> future(Throwable cause) {
-		CompleteStageFuture<T> future = new CompleteStageFuture<>();
-		future.completeExceptionally(cause);
-		return future;
-	}
+    public static <T> CompleteStageFuture<T> future(Throwable cause) {
+        CompleteStageFuture<T> future = new CompleteStageFuture<>();
+        future.completeExceptionally(cause);
+        return future;
+    }
 
-	public static <T> CompleteStageFuture<T> success(T value) {
-		CompleteStageFuture<T> future = new CompleteStageFuture<>();
-		future.complete(value);
-		return future;
-	}
+    public static <T> CompleteStageFuture<T> success(T value) {
+        CompleteStageFuture<T> future = new CompleteStageFuture<>();
+        future.complete(value);
+        return future;
+    }
 
-	public static <T> CompleteStageFuture<T> future() {
-		return new CompleteStageFuture<>();
-	}
+    public static <T> CompleteStageFuture<T> future() {
+        return new CompleteStageFuture<>();
+    }
 
 }

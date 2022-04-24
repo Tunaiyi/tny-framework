@@ -8,25 +8,25 @@ import java.util.*;
 
 public interface FeatureModel extends Model {
 
-	Feature getFeature();
+    Feature getFeature();
 
-	Optional<Feature> getParent();
+    Optional<Feature> getParent();
 
-	Optional<Version> getOpenVersion();
+    Optional<Version> getOpenVersion();
 
-	Collection<FeatureOpenPlan> getOpenPlan();
+    Collection<FeatureOpenPlan> getOpenPlan();
 
-	int getOpenLevel(FeatureOpenMode<?> mode);
+    int getOpenLevel(FeatureOpenMode<?> mode);
 
-	boolean isCanOpen(FeatureLauncher explorer, FeatureOpenMode<?> openMode);
+    boolean isCanOpen(FeatureLauncher explorer, FeatureOpenMode<?> openMode);
 
-	boolean isEffect();
+    boolean isEffect();
 
-	int getPriority();
+    int getPriority();
 
-	@Override
-	default Set<Object> tags() {
-		return ImmutableSet.of();
-	}
+    @Override
+    default Set<Object> tags() {
+        return ImmutableSet.of();
+    }
 
 }

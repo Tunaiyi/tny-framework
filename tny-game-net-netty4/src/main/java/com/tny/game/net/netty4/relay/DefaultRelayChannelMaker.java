@@ -7,16 +7,16 @@ import io.netty.channel.Channel;
 @UnitInterface
 public class DefaultRelayChannelMaker<C extends Channel> extends RelayPackChannelMaker<C> {
 
-	public DefaultRelayChannelMaker() {
-	}
+    public DefaultRelayChannelMaker() {
+    }
 
-	public DefaultRelayChannelMaker(RelayPackEncoder encoder, RelayPackDecoder decoder) {
-		super(encoder, decoder);
-	}
+    public DefaultRelayChannelMaker(RelayPackEncoder encoder, RelayPackDecoder decoder) {
+        super(encoder, decoder);
+    }
 
-	@Override
-	protected void postInitChannel(C channel) {
+    @Override
+    protected void postInitChannel(C channel) {
 
-	}
+    }
 
 }

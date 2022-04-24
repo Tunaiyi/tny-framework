@@ -11,21 +11,21 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
  */
 public class SpringNettyRelayServerBootstrapSetting extends NettyRelayServerBootstrapSetting {
 
-	@NestedConfigurationProperty
-	private SpringNettyRelayChannelSetting channel;
+    @NestedConfigurationProperty
+    private SpringNettyRelayChannelSetting channel;
 
-	public SpringNettyRelayServerBootstrapSetting() {
-		super(new SpringNettyRelayChannelSetting());
-	}
+    public SpringNettyRelayServerBootstrapSetting() {
+        super(new SpringNettyRelayChannelSetting());
+    }
 
-	@Override
-	public SpringNettyRelayChannelSetting getChannel() {
-		return (SpringNettyRelayChannelSetting)super.getChannel();
-	}
+    @Override
+    public SpringNettyRelayChannelSetting getChannel() {
+        return (SpringNettyRelayChannelSetting)super.getChannel();
+    }
 
-	public NettyRelayServerBootstrapSetting setChannel(SpringNettyRelayChannelSetting channel) {
-		return super.setChannel(channel);
-	}
+    public NettyRelayServerBootstrapSetting setChannel(SpringNettyRelayChannelSetting channel) {
+        return super.setChannel(channel);
+    }
 
 }
 

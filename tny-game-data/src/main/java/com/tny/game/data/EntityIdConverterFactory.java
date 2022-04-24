@@ -10,6 +10,6 @@ import com.tny.game.data.cache.*;
  */
 public interface EntityIdConverterFactory {
 
-	EntityIdConverter<?, ?, ?> createConverter(EntityScheme scheme, EntityKeyMaker<?, ?> keyMaker);
+    EntityIdConverter<?, ?, ?> createConverter(EntityScheme scheme, EntityKeyMaker<?, ?> keyMaker);
 
 }

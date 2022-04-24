@@ -8,15 +8,15 @@ package com.tny.game.data.configuration.cache;
  */
 public class ScheduledCacheRecyclerSetting {
 
-	private int recycleIntervalTime = 15000;
+    private int recycleIntervalTime = 15000;
 
-	public int getRecycleIntervalTime() {
-		return recycleIntervalTime;
-	}
+    public int getRecycleIntervalTime() {
+        return recycleIntervalTime;
+    }
 
-	public ScheduledCacheRecyclerSetting setRecycleIntervalTime(int recycleIntervalTime) {
-		this.recycleIntervalTime = recycleIntervalTime;
-		return this;
-	}
+    public ScheduledCacheRecyclerSetting setRecycleIntervalTime(int recycleIntervalTime) {
+        this.recycleIntervalTime = recycleIntervalTime;
+        return this;
+    }
 
 }

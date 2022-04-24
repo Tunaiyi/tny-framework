@@ -19,60 +19,60 @@ import java.util.*;
 @ConditionalOnMissingBean(SpringBootRelayBootstrapProperties.class)
 public class SpringBootRelayBootstrapProperties {
 
-	@NestedConfigurationProperty
-	private SpringNettyRelayServerBootstrapSetting server;
+    @NestedConfigurationProperty
+    private SpringNettyRelayServerBootstrapSetting server;
 
-	@NestedConfigurationProperty
-	private SpringNettyRelayClientBootstrapSetting client;
+    @NestedConfigurationProperty
+    private SpringNettyRelayClientBootstrapSetting client;
 
-	//    @NestedConfigurationProperty
-	private Map<String, SpringNettyRelayServerBootstrapSetting> servers = ImmutableMap.of();
+    //    @NestedConfigurationProperty
+    private Map<String, SpringNettyRelayServerBootstrapSetting> servers = ImmutableMap.of();
 
-	//    @NestedConfigurationProperty
-	private Map<String, SpringNettyRelayClientBootstrapSetting> clients = ImmutableMap.of();
+    //    @NestedConfigurationProperty
+    private Map<String, SpringNettyRelayClientBootstrapSetting> clients = ImmutableMap.of();
 
-	public SpringNettyRelayServerBootstrapSetting getServer() {
-		return this.server;
-	}
+    public SpringNettyRelayServerBootstrapSetting getServer() {
+        return this.server;
+    }
 
-	public SpringBootRelayBootstrapProperties setServer(SpringNettyRelayServerBootstrapSetting server) {
-		this.server = server;
-		this.server.setName("default");
-		return this;
-	}
+    public SpringBootRelayBootstrapProperties setServer(SpringNettyRelayServerBootstrapSetting server) {
+        this.server = server;
+        this.server.setName("default");
+        return this;
+    }
 
-	public SpringNettyRelayClientBootstrapSetting getClient() {
-		return this.client;
-	}
+    public SpringNettyRelayClientBootstrapSetting getClient() {
+        return this.client;
+    }
 
-	public SpringBootRelayBootstrapProperties setClient(SpringNettyRelayClientBootstrapSetting client) {
-		this.client = client;
-		this.client.setName("default");
-		return this;
-	}
+    public SpringBootRelayBootstrapProperties setClient(SpringNettyRelayClientBootstrapSetting client) {
+        this.client = client;
+        this.client.setName("default");
+        return this;
+    }
 
-	public Map<String, SpringNettyRelayServerBootstrapSetting> getServers() {
-		return Collections.unmodifiableMap(this.servers);
-	}
+    public Map<String, SpringNettyRelayServerBootstrapSetting> getServers() {
+        return Collections.unmodifiableMap(this.servers);
+    }
 
-	public SpringBootRelayBootstrapProperties setServers(Map<String, SpringNettyRelayServerBootstrapSetting> servers) {
-		if (servers != null) {
-			servers.forEach((name, setting) -> setting.setName(name));
-			this.servers = servers;
-		}
-		return this;
-	}
+    public SpringBootRelayBootstrapProperties setServers(Map<String, SpringNettyRelayServerBootstrapSetting> servers) {
+        if (servers != null) {
+            servers.forEach((name, setting) -> setting.setName(name));
+            this.servers = servers;
+        }
+        return this;
+    }
 
-	public Map<String, SpringNettyRelayClientBootstrapSetting> getClients() {
-		return Collections.unmodifiableMap(this.clients);
-	}
+    public Map<String, SpringNettyRelayClientBootstrapSetting> getClients() {
+        return Collections.unmodifiableMap(this.clients);
+    }
 
-	public SpringBootRelayBootstrapProperties setClients(Map<String, SpringNettyRelayClientBootstrapSetting> clients) {
-		if (clients != null) {
-			clients.forEach((name, setting) -> setting.setName(name));
-			this.clients = clients;
-		}
-		return this;
-	}
+    public SpringBootRelayBootstrapProperties setClients(Map<String, SpringNettyRelayClientBootstrapSetting> clients) {
+        if (clients != null) {
+            clients.forEach((name, setting) -> setting.setName(name));
+            this.clients = clients;
+        }
+        return this;
+    }
 
 }

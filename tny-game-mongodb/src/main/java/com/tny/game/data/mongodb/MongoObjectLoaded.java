@@ -8,8 +8,8 @@ package com.tny.game.data.mongodb;
  */
 public interface MongoObjectLoaded<T> {
 
-	Class<T> getLoadClass();
+    Class<T> getLoadClass();
 
-	T onLoad(T object);
+    T onLoad(T object);
 
 }

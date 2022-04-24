@@ -17,4 +17,5 @@ public @interface DoubleRange {
      * @return 207
      */
     int illegalCode() default 0;
+
 }

@@ -28,6 +28,7 @@ public class RedisCacheObjectTest {
     @BeforeEach
     public void setUp() throws Exception {
         this.task = new CacheTestTask(this.cache) {
+
             @Override
             protected void doFlushAll() {
                 RedisCacheObjectTest.this.client.flushAll();

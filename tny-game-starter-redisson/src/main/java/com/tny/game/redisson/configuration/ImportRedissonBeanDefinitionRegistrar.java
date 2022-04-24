@@ -15,26 +15,26 @@ import static com.tny.game.common.utils.ObjectAide.*;
  */
 public class ImportRedissonBeanDefinitionRegistrar extends ImportRedisBeanDefinitionRegistrar {
 
-	@Override
-	protected <T> void doRegister(BeanDefinitionRegistry registry, Class<T> entityClass, String mimeType, boolean primary) {
-		String codecName = entityClass.getSimpleName() + "ObjectCodecableCodec";
-		registry.registerBeanDefinition(codecName, BeanDefinitionBuilder
-				.genericBeanDefinition(ObjectCodecableCodec.class)
-				.addConstructorArgValue(entityClass)
-				.addConstructorArgValue(mimeType)
-				.setPrimary(primary)
-				.addConstructorArgReference("objectCodecService")
-				.getBeanDefinition());
-		TypedRedisson<?> typedRedisson = RedissonFactory.createTypedRedisson(entityClass);
-		Class<TypedRedisson<?>> clazz = as(typedRedisson.getClass());
-		BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(clazz, () -> typedRedisson);
-		RedisObject redisObject = entityClass.getAnnotation(RedisObject.class);
-		if (StringUtils.isNotBlank(redisObject.source())) {
-			builder.addPropertyReference("redissonClient", BeanNameUtils.nameOf(redisObject.source(), RedissonClient.class));
-		} else {
-			builder.addAutowiredProperty("redissonClient");
-		}
-		registry.registerBeanDefinition(clazz.getSimpleName(), builder.addPropertyReference("codec", codecName).getBeanDefinition());
-	}
+    @Override
+    protected <T> void doRegister(BeanDefinitionRegistry registry, Class<T> entityClass, String mimeType, boolean primary) {
+        String codecName = entityClass.getSimpleName() + "ObjectCodecableCodec";
+        registry.registerBeanDefinition(codecName, BeanDefinitionBuilder
+                .genericBeanDefinition(ObjectCodecableCodec.class)
+                .addConstructorArgValue(entityClass)
+                .addConstructorArgValue(mimeType)
+                .setPrimary(primary)
+                .addConstructorArgReference("objectCodecService")
+                .getBeanDefinition());
+        TypedRedisson<?> typedRedisson = RedissonFactory.createTypedRedisson(entityClass);
+        Class<TypedRedisson<?>> clazz = as(typedRedisson.getClass());
+        BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(clazz, () -> typedRedisson);
+        RedisObject redisObject = entityClass.getAnnotation(RedisObject.class);
+        if (StringUtils.isNotBlank(redisObject.source())) {
+            builder.addPropertyReference("redissonClient", BeanNameUtils.nameOf(redisObject.source(), RedissonClient.class));
+        } else {
+            builder.addAutowiredProperty("redissonClient");
+        }
+        registry.registerBeanDefinition(clazz.getSimpleName(), builder.addPropertyReference("codec", codecName).getBeanDefinition());
+    }
 
 }

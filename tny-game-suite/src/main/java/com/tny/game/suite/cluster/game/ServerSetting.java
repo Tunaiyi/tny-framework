@@ -29,9 +29,9 @@ public class ServerSetting {
 
     public ServerSetting(ServerOutline outline) {
         this.setName("s" + outline.getServerId() + " 服")
-            .setServerId(outline.getServerId())
-            .setClientVersion("")
-            .setServerState(ServerState.OFFLINE);
+                .setServerId(outline.getServerId())
+                .setClientVersion("")
+                .setServerState(ServerState.OFFLINE);
     }
 
     public String getName() {
@@ -89,25 +89,30 @@ public class ServerSetting {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (this.getClass() != obj.getClass())
+        }
+        if (this.getClass() != obj.getClass()) {
             return false;
-        ServerSetting other = (ServerSetting) obj;
-        if (this.serverId != other.serverId)
+        }
+        ServerSetting other = (ServerSetting)obj;
+        if (this.serverId != other.serverId) {
             return false;
+        }
         return true;
     }
 
     @Override
     public String toString() {
         return "ServerSetting{" + "serverId=" + serverId +
-               ", serverState=" + serverState +
-               ", featureVersion='" + featureVersion + '\'' +
-               ", clientVersion='" + clientVersion + '\'' +
-               ", name='" + name + '\'' +
-               '}';
+                ", serverState=" + serverState +
+                ", featureVersion='" + featureVersion + '\'' +
+                ", clientVersion='" + clientVersion + '\'' +
+                ", name='" + name + '\'' +
+                '}';
     }
+
 }

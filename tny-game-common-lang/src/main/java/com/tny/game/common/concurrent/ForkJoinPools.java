@@ -13,8 +13,8 @@ public class ForkJoinPools {
     public static final Logger LOGGER = LoggerFactory.getLogger(ForkJoinPools.class);
 
     private static final int DEFAULT_SIZE = Runtime.getRuntime().availableProcessors() * 2;
-    private static final Map<String, ForkJoinPool> poolMap = new ConcurrentHashMap<>();
 
+    private static final Map<String, ForkJoinPool> poolMap = new ConcurrentHashMap<>();
 
     public static ForkJoinPool pool(int threads, String name, boolean asyncMode) {
         return poolMap.computeIfAbsent(name, (k) -> new ForkJoinPool(threads, new CoreThreadFactory(name),

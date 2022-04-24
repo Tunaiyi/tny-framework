@@ -42,35 +42,43 @@ public class DirectCache implements Cache {
         ToCacheClassHolder holder = this.toCCHolderFactory.getCacheClassHolder(clazz);
         String key = holder.getKey(keyValues);
         final CasItem<?> mItem = this.client.gets(key);
-        if (mItem == null)
+        if (mItem == null) {
             return null;
+        }
         Object object = mItem.getData();
-        if (object == null)
+        if (object == null) {
             return null;
+        }
         Object loadObject = holder.triggerLoad(key, object);
-        if (loadObject == null)
+        if (loadObject == null) {
             return null;
-        if (!clazz.isInstance(loadObject))
+        }
+        if (!clazz.isInstance(loadObject)) {
             throw new ClassCastException("memcached get " + key + " - " + object + " is " + object.getClass() + ", not " + clazz);
-        return new SimpleCasItem<>(mItem, (T) loadObject);
+        }
+        return new SimpleCasItem<>(mItem, (T)loadObject);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <T> CasItem<T> getsObject(Class<T> clazz, String key) {
         final CasItem<?> mItem = this.client.gets(key);
-        if (mItem == null)
+        if (mItem == null) {
             return null;
+        }
         Object object = mItem.getData();
-        if (object == null)
+        if (object == null) {
             return null;
+        }
         TriggerHolder triggerHolder = this.toCCHolderFactory.getTriggerHolder(clazz);
         Object loadObject = triggerHolder.triggerLoad(key, object);
-        if (loadObject == null)
+        if (loadObject == null) {
             return null;
-        if (!clazz.isInstance(loadObject))
+        }
+        if (!clazz.isInstance(loadObject)) {
             throw new ClassCastException("memcached get " + key + " - " + object + " is " + object.getClass() + ", not " + clazz);
-        return new SimpleCasItem<>(mItem, (T) loadObject);
+        }
+        return new SimpleCasItem<>(mItem, (T)loadObject);
     }
 
     @Override
@@ -81,9 +89,10 @@ public class DirectCache implements Cache {
     @Override
     @SuppressWarnings("unchecked")
     public <T> boolean casObject(CasItem<T> item, long millisecond) {
-        T object = (T) this.getObjectByKey(item.getData().getClass(), item.getKey());
-        if (object == null)
+        T object = (T)this.getObjectByKey(item.getData().getClass(), item.getKey());
+        if (object == null) {
             return false;
+        }
         ToCacheClassHolder holder = this.toCCHolderFactory.getCacheClassHolder(item.getData().getClass());
         String key = holder.getKey(item.getData());
         Object saveObject = holder.triggerSave(key, item.getData());
@@ -99,15 +108,18 @@ public class DirectCache implements Cache {
     @SuppressWarnings("unchecked")
     public <T> T getObjectByKey(Class<T> clazz, String key) {
         Object object = this.client.get(key);
-        if (object == null)
+        if (object == null) {
             return null;
+        }
         TriggerHolder triggerHolder = this.toCCHolderFactory.getTriggerHolder(clazz);
         Object loadObject = triggerHolder.triggerLoad(key, object);
-        if (loadObject == null)
+        if (loadObject == null) {
             return null;
-        if (!clazz.isInstance(loadObject))
+        }
+        if (!clazz.isInstance(loadObject)) {
             throw new ClassCastException("memcached get " + key + " - " + object + " is " + object.getClass() + ", not " + clazz);
-        return (T) loadObject;
+        }
+        return (T)loadObject;
     }
 
     @Override
@@ -115,20 +127,24 @@ public class DirectCache implements Cache {
     public <T> Collection<T> getObjectsByKeys(Class<T> clazz, Collection<String> keys) {
         Collection<T> returnCollection = new ArrayList<>(keys.size());
         Map<String, Object> collectionMap = this.client.getMultiMap(keys);
-        if (collectionMap == null)
+        if (collectionMap == null) {
             return Collections.emptyList();
+        }
         for (Entry<String, Object> entity : collectionMap.entrySet()) {
             String key = entity.getKey();
             Object object = entity.getValue();
-            if (object == null)
+            if (object == null) {
                 continue;
+            }
             ToCacheClassHolder holder = this.toCCHolderFactory.getCacheClassHolder(clazz);
             Object loadObject = holder.triggerLoad(key, object);
-            if (loadObject == null)
+            if (loadObject == null) {
                 continue;
-            if (!clazz.isInstance(loadObject))
+            }
+            if (!clazz.isInstance(loadObject)) {
                 throw new ClassCastException("memcached get " + entity.getKey() + " - " + object + " is " + object.getClass() + ", not " + clazz);
-            returnCollection.add((T) loadObject);
+            }
+            returnCollection.add((T)loadObject);
         }
         return returnCollection;
     }
@@ -138,20 +154,24 @@ public class DirectCache implements Cache {
     public <T> Map<String, T> getObjectMapByKeys(Class<T> clazz, Collection<String> keys) {
         Map<String, T> returnMap = new HashMap<>(keys.size());
         Map<String, Object> collectionMap = this.client.getMultiMap(keys);
-        if (collectionMap == null)
+        if (collectionMap == null) {
             return Collections.emptyMap();
+        }
         for (Entry<String, Object> entity : collectionMap.entrySet()) {
             String key = entity.getKey();
             Object object = entity.getValue();
-            if (object == null)
+            if (object == null) {
                 continue;
+            }
             ToCacheClassHolder holder = this.toCCHolderFactory.getCacheClassHolder(clazz);
             Object loadObject = holder.triggerLoad(key, object);
-            if (loadObject == null)
+            if (loadObject == null) {
                 continue;
-            if (!clazz.isInstance(loadObject))
+            }
+            if (!clazz.isInstance(loadObject)) {
                 throw new ClassCastException("memcached get " + entity.getKey() + " - " + object + " is " + object.getClass() + ", not " + clazz);
-            returnMap.put(key, (T) loadObject);
+            }
+            returnMap.put(key, (T)loadObject);
         }
         return returnMap;
     }
@@ -162,15 +182,18 @@ public class DirectCache implements Cache {
         ToCacheClassHolder holder = this.toCCHolderFactory.getCacheClassHolder(clazz);
         String key = holder.getKey(keyValues);
         Object object = this.client.get(key);
-        if (object == null)
+        if (object == null) {
             return null;
+        }
         TriggerHolder triggerHolder = this.toCCHolderFactory.getTriggerHolder(clazz);
         Object loadObject = triggerHolder.triggerLoad(key, object);
-        if (loadObject == null)
+        if (loadObject == null) {
             return null;
-        if (!clazz.isInstance(loadObject))
+        }
+        if (!clazz.isInstance(loadObject)) {
             throw new ClassCastException("memcached get " + key + " - " + object + " is " + object.getClass() + ", not " + clazz);
-        return (T) loadObject;
+        }
+        return (T)loadObject;
     }
 
     @Override
@@ -186,8 +209,9 @@ public class DirectCache implements Cache {
     public <T> List<T> deleteObject(T... objects) {
         List<T> list = new ArrayList<>();
         for (T object : objects) {
-            if (!this.deleteObject(object))
+            if (!this.deleteObject(object)) {
                 list.add(object);
+            }
         }
         return list;
     }
@@ -196,8 +220,9 @@ public class DirectCache implements Cache {
     public <T> List<T> deleteObject(Collection<T> objectCollection) {
         List<T> list = new ArrayList<>();
         for (T object : objectCollection) {
-            if (!this.deleteObject(object))
+            if (!this.deleteObject(object)) {
                 list.add(object);
+            }
         }
         return list;
     }
@@ -222,8 +247,9 @@ public class DirectCache implements Cache {
 
     @Override
     public <T> List<T> addObject(Collection<T> objectCollection, long millisecond) {
-        if (objectCollection.isEmpty())
+        if (objectCollection.isEmpty()) {
             return Collections.emptyList();
+        }
         List<RawCacheItem<T, ?>> items = CacheItemHelper.objects2CacheItems(
                 this.toCCHolderFactory, this.cacheItemFactory,
                 objectCollection, CacheItemHelper.OPERATION_ADD, millisecond);
@@ -251,8 +277,9 @@ public class DirectCache implements Cache {
 
     @Override
     public <T> List<T> setObject(Collection<T> objectCollection, long millisecond) {
-        if (objectCollection.isEmpty())
+        if (objectCollection.isEmpty()) {
             return Collections.emptyList();
+        }
         List<RawCacheItem<T, ?>> items = CacheItemHelper.objects2CacheItems(
                 this.toCCHolderFactory, this.cacheItemFactory,
                 objectCollection, CacheItemHelper.OPERATION_ADD, millisecond);
@@ -280,8 +307,9 @@ public class DirectCache implements Cache {
 
     @Override
     public <T> List<T> updateObject(Collection<T> objectCollection, long millisecond) {
-        if (objectCollection.isEmpty())
+        if (objectCollection.isEmpty()) {
             return Collections.emptyList();
+        }
         List<RawCacheItem<T, ?>> items = CacheItemHelper.objects2CacheItems(
                 this.toCCHolderFactory, this.cacheItemFactory,
                 objectCollection, CacheItemHelper.OPERATION_ADD, millisecond);

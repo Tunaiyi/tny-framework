@@ -11,4 +11,5 @@ import java.lang.annotation.*;
 @Inherited
 @Documented
 public @interface None {
+
 }

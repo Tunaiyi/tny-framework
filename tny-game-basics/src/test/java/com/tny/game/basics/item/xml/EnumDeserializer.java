@@ -18,34 +18,34 @@ import static com.tny.game.common.utils.StringAide.*;
  **/
 public class EnumDeserializer<T extends Enum<T>> extends JsonDeserializer<T> {
 
-	private final HashMap<String, T> enumMap = new HashMap<>();
+    private final HashMap<String, T> enumMap = new HashMap<>();
 
-	public EnumDeserializer(Class<T> enumClass) {
-		this(Collections.singletonList(enumClass));
-	}
+    public EnumDeserializer(Class<T> enumClass) {
+        this(Collections.singletonList(enumClass));
+    }
 
-	public EnumDeserializer(List<Class<T>> enumClasses) {
-		for (Class<T> clazz : enumClasses) {
-			List<T> enums = EnumUtils.getEnumList(clazz);
-			for (T e : enums) {
-				Enum<?> oldEnum = this.enumMap.put(e.name(), e);
-				if (oldEnum != null) {
-					throw new IllegalArgumentException(format("{}.{} 与 {}.{} name 相同!",
-							oldEnum.getClass(), oldEnum.name(),
-							e.getClass(), e.name()));
-				}
-			}
-		}
-	}
+    public EnumDeserializer(List<Class<T>> enumClasses) {
+        for (Class<T> clazz : enumClasses) {
+            List<T> enums = EnumUtils.getEnumList(clazz);
+            for (T e : enums) {
+                Enum<?> oldEnum = this.enumMap.put(e.name(), e);
+                if (oldEnum != null) {
+                    throw new IllegalArgumentException(format("{}.{} 与 {}.{} name 相同!",
+                            oldEnum.getClass(), oldEnum.name(),
+                            e.getClass(), e.name()));
+                }
+            }
+        }
+    }
 
-	@Override
-	public T deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
-		String value = p.getValueAsString();
-		T enumObject = this.enumMap.get(value);
-		if (enumObject == null) {
-			throw new NullPointerException(MessageFormat.format("无法找到{0}枚举类型", value));
-		}
-		return enumObject;
-	}
+    @Override
+    public T deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+        String value = p.getValueAsString();
+        T enumObject = this.enumMap.get(value);
+        if (enumObject == null) {
+            throw new NullPointerException(MessageFormat.format("无法找到{0}枚举类型", value));
+        }
+        return enumObject;
+    }
 
 }

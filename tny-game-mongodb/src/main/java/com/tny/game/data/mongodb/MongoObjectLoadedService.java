@@ -8,6 +8,6 @@ package com.tny.game.data.mongodb;
  */
 public interface MongoObjectLoadedService {
 
-	<T> T onLoad(T object);
+    <T> T onLoad(T object);
 
 }

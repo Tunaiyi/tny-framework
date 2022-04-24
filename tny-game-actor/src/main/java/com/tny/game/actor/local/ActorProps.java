@@ -9,6 +9,7 @@ public class ActorProps {
     private final static ActorCommandBoxFactory DEFAULT_BOX_FACTORY = new DefaultActorCommandBoxFactory();
 
     private static final ActorLifeCycle DEFAULT_LIFE_CYCLE = new ActorLifeCycle() {
+
     };
 
     private ActorLifeCycle lifeCycle;
@@ -38,8 +39,9 @@ public class ActorProps {
     }
 
     public ActorLifeCycle getLifeCycle() {
-        if (this.lifeCycle == null)
+        if (this.lifeCycle == null) {
             this.lifeCycle = DEFAULT_LIFE_CYCLE;
+        }
         return lifeCycle;
     }
 
@@ -52,8 +54,9 @@ public class ActorProps {
     }
 
     public ActorCommandBoxFactory getCommandBoxFactory() {
-        if (this.commandBoxFactory == null)
+        if (this.commandBoxFactory == null) {
             this.commandBoxFactory = DEFAULT_BOX_FACTORY;
+        }
         return commandBoxFactory;
     }
 
@@ -85,4 +88,5 @@ public class ActorProps {
     public int getStepSize() {
         return stepSize;
     }
+
 }

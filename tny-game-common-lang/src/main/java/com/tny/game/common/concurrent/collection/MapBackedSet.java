@@ -47,4 +47,5 @@ public class MapBackedSet<E> extends AbstractSet<E> implements Serializable {
     public void clear() {
         this.map.clear();
     }
+
 }

@@ -50,8 +50,9 @@ public final class LockedCache {
     public <T> T get(String key, Class<T> clazz) {
         Object entity = entityMap.get(key);
         if (entity != null) {
-            if (clazz.isInstance(entity))
-                return (T) entity;
+            if (clazz.isInstance(entity)) {
+                return (T)entity;
+            }
         }
         return null;
     }
@@ -71,8 +72,9 @@ public final class LockedCache {
         List<T> entityList = new ArrayList<T>(keyCollection.size());
         for (String key : keyCollection) {
             T object = this.get(key, clazz);
-            if (object != null)
+            if (object != null) {
                 entityList.add(object);
+            }
         }
         return entityList;
     }
@@ -92,8 +94,9 @@ public final class LockedCache {
         Map<String, T> entityMap = new HashMap<String, T>(keyCollection.size());
         for (String key : keyCollection) {
             T object = this.get(key, clazz);
-            if (object != null)
+            if (object != null) {
                 entityMap.put(key, object);
+            }
         }
         return entityMap;
     }

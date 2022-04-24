@@ -23,48 +23,48 @@ import static com.google.protobuf.CodedOutputStream.*;
  */
 public abstract class BaseProtobufPacketArgumentsCodecor<A extends RelayPacketArguments, P extends PacketArgumentsProto<A>> implements RelayPacketArgumentsCodecor<A> {
 
-	public static final Logger LOGGER = LoggerFactory.getLogger(BaseProtobufPacketArgumentsCodecor.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(BaseProtobufPacketArgumentsCodecor.class);
 
-	private final Class<A> argumentsClass;
+    private final Class<A> argumentsClass;
 
-	private final Function<A, P> protobufCreator;
+    private final Function<A, P> protobufCreator;
 
-	private final Codec<P> codec;
+    private final Codec<P> codec;
 
-	public BaseProtobufPacketArgumentsCodecor(Class<A> argumentsClass, Class<P> protobufClass, Function<A, P> protobufCreator) {
-		this.codec = ProtobufProxy.create(protobufClass);
-		this.argumentsClass = argumentsClass;
-		this.protobufCreator = protobufCreator;
-	}
+    public BaseProtobufPacketArgumentsCodecor(Class<A> argumentsClass, Class<P> protobufClass, Function<A, P> protobufCreator) {
+        this.codec = ProtobufProxy.create(protobufClass);
+        this.argumentsClass = argumentsClass;
+        this.protobufCreator = protobufCreator;
+    }
 
-	@Override
-	public Class<A> getArgumentsClass() {
-		return argumentsClass;
-	}
+    @Override
+    public Class<A> getArgumentsClass() {
+        return argumentsClass;
+    }
 
-	@Override
-	public void encode(ChannelHandlerContext ctx, A arguments, ByteBuf out) {
-		P proto = protobufCreator.apply(arguments);
-		CodedOutputStream stream = newInstance(new ByteBufOutputStream(out));
-		try {
-			codec.writeTo(proto, stream);
-			stream.flush();
-		} catch (IOException e) {
-			LOGGER.error("", e);
-			throw new NetGeneralException(NetResultCode.ENCODE_FAILED);
-		}
-	}
+    @Override
+    public void encode(ChannelHandlerContext ctx, A arguments, ByteBuf out) {
+        P proto = protobufCreator.apply(arguments);
+        CodedOutputStream stream = newInstance(new ByteBufOutputStream(out));
+        try {
+            codec.writeTo(proto, stream);
+            stream.flush();
+        } catch (IOException e) {
+            LOGGER.error("", e);
+            throw new NetGeneralException(NetResultCode.ENCODE_FAILED);
+        }
+    }
 
-	@Override
-	public A decode(ChannelHandlerContext ctx, ByteBuf out) {
-		CodedInputStream stream = CodedInputStream.newInstance(new ByteBufInputStream(out));
-		try {
-			P proto = codec.readFrom(stream);
-			return proto.toArguments();
-		} catch (IOException e) {
-			LOGGER.error("", e);
-			throw new NetGeneralException(NetResultCode.ENCODE_FAILED);
-		}
-	}
+    @Override
+    public A decode(ChannelHandlerContext ctx, ByteBuf out) {
+        CodedInputStream stream = CodedInputStream.newInstance(new ByteBufInputStream(out));
+        try {
+            P proto = codec.readFrom(stream);
+            return proto.toArguments();
+        } catch (IOException e) {
+            LOGGER.error("", e);
+            throw new NetGeneralException(NetResultCode.ENCODE_FAILED);
+        }
+    }
 
 }

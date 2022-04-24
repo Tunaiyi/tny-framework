@@ -28,42 +28,52 @@ public class MemcachedClient implements CacheClient {
      * 服务器IP
      */
     private static final String CONFIG_SERVERS = "memcached.conifg.servers";
+
     /**
      * 权重
      */
     private static final String CONFIG_WEIGHTS = "memcached.conifg.weights";
+
     /**
      * 初始化连接数
      */
     private static final Object CONFIG_INITCONN = "memcached.conifg.initconn";
+
     /**
      * 最小连接数
      */
     private static final Object CONFIG_MINCONN = "memcached.conifg.minconn";
+
     /**
      * 最大连接数
      */
     private static final Object CONFIG_MAXCONN = "memcached.conifg.maxconn";
+
     /**
      * 空闲时间
      */
     private static final Object CONFIG_MAXIDLE = "memcached.conifg.maxidle";
+
     /**
      * 主线程的睡眠时间
      */
     private static final Object CONFIG_MAINTSLEEP = "memcached.conifg.maintsleep";
+
     /**
      * 包缓存
      */
     private static final Object CONFIG_NAGLE = "memcached.conifg.nagle";
+
     /**
      * 读取超时
      */
     private static final Object CONFIG_SOCKETTO = "memcached.conifg.socketto";
+
     /**
      * 链接超时时间
      */
     private static final Object CONFIG_CONNECTTO = "memcached.conifg.connectto";
+
     /**
      * 心跳反映
      */
@@ -98,14 +108,16 @@ public class MemcachedClient implements CacheClient {
     }
 
     private String[] getServers(Object serversStr) {
-        if (serversStr == null)
+        if (serversStr == null) {
             throw new NullPointerException("Memcached init error cause by serversStr is null");
+        }
         return serversStr.toString().split(";");
     }
 
     private Integer[] getWeights(Object weightsStr) {
-        if (weightsStr == null)
+        if (weightsStr == null) {
             return new Integer[]{1};
+        }
         String[] weightStrs = weightsStr.toString().split(";");
         Integer[] returnArray = new Integer[weightStrs.length];
         for (int index = 0; index < weightStrs.length; index++)
@@ -126,8 +138,9 @@ public class MemcachedClient implements CacheClient {
     }
 
     public MemcachedClient(String name, String path) throws IOException {
-        if (name == null)
+        if (name == null) {
             this.name = "default";
+        }
         this.name = name;
         Properties properties = new Properties();
         InputStream inputStream = null;
@@ -151,8 +164,9 @@ public class MemcachedClient implements CacheClient {
         // initialize the connection pool
         this.pool.initialize();
         this.heartbeat = this.getInteger(properties.get(MemcachedClient.CONFIG_HEARTBEAT), 0);
-        if (this.heartbeat > 0)
+        if (this.heartbeat > 0) {
             this.service.schedule(this.heartBeatTask, this.heartbeat, TimeUnit.SECONDS);
+        }
     }
 
     public Runnable heartBeatTask = new Runnable() {
@@ -185,13 +199,15 @@ public class MemcachedClient implements CacheClient {
 
     @Override
     public Collection<Object> getMultis(Collection<String> keyCollection) {
-        if (keyCollection == null || keyCollection.isEmpty())
+        if (keyCollection == null || keyCollection.isEmpty()) {
             return Collections.emptyList();
+        }
         Object[] objects = this.client.getMultiArray(keyCollection.toArray(new String[0]));
         List<Object> result = null;
         for (Object object : objects) {
-            if (object == null)
+            if (object == null) {
                 continue;
+            }
             result = CacheItemHelper.getAndCreate(result);
             result.add(object);
         }
@@ -200,11 +216,13 @@ public class MemcachedClient implements CacheClient {
 
     @Override
     public Map<String, Object> getMultiMap(Collection<String> keyCollection) {
-        if (keyCollection == null || keyCollection.isEmpty())
+        if (keyCollection == null || keyCollection.isEmpty()) {
             return Collections.emptyMap();
+        }
         Map<String, Object> map = this.client.getMulti(keyCollection.toArray(new String[0]));
-        if (map == null)
+        if (map == null) {
             return Collections.emptyMap();
+        }
         return map;
     }
 
@@ -315,8 +333,9 @@ public class MemcachedClient implements CacheClient {
     @Override
     public CasItem<?> gets(String key) {
         MemcachedItem item = this.client.gets(key);
-        if (item != null)
+        if (item != null) {
             return new SimpleCasItem<>(key, item.getValue(), item.getCasUnique());
+        }
         return null;
     }
 

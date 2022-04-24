@@ -14,20 +14,20 @@ import static com.tny.game.common.utils.ObjectAide.*;
  */
 public class MongoClientStorageAccessorFactory extends BaseMongoStorageAccessorFactory {
 
-	public static final String ACCESSOR_NAME = "mongoClientStorageAccessorFactory";
+    public static final String ACCESSOR_NAME = "mongoClientStorageAccessorFactory";
 
-	public MongoClientStorageAccessorFactory(String dataSource) {
-		super(dataSource);
-	}
+    public MongoClientStorageAccessorFactory(String dataSource) {
+        super(dataSource);
+    }
 
-	public MongoClientStorageAccessorFactory(EntityIdConverterFactory entityIdConverterFactory,
-			MongoEntityConverter entityObjectConverter, MongoTemplate mongoTemplate, String dataSource) {
-		super(entityIdConverterFactory, entityObjectConverter, mongoTemplate, dataSource);
-	}
+    public MongoClientStorageAccessorFactory(EntityIdConverterFactory entityIdConverterFactory,
+            MongoEntityConverter entityObjectConverter, MongoTemplate mongoTemplate, String dataSource) {
+        super(entityIdConverterFactory, entityObjectConverter, mongoTemplate, dataSource);
+    }
 
-	@Override
-	protected StorageAccessor<?, ?> newMongoStorageAccessor(Class<?> entityClass, EntityIdConverter<?, ?, ?> idConverter) {
-		return new MongoClientStorageAccessor<>(entityClass, as(idConverter), entityObjectConverter, mongoTemplate, dataSource);
-	}
+    @Override
+    protected StorageAccessor<?, ?> newMongoStorageAccessor(Class<?> entityClass, EntityIdConverter<?, ?, ?> idConverter) {
+        return new MongoClientStorageAccessor<>(entityClass, as(idConverter), entityObjectConverter, mongoTemplate, dataSource);
+    }
 
 }

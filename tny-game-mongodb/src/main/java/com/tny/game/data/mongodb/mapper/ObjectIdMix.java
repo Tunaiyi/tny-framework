@@ -22,32 +22,32 @@ import static com.tny.game.common.utils.ObjectAide.*;
 @JsonDeserialize(using = ObjectIdDeserializer.class)
 public interface ObjectIdMix {
 
-	class ObjectIdDeserializer extends JsonDeserializer<ObjectId> {
+    class ObjectIdDeserializer extends JsonDeserializer<ObjectId> {
 
-		@Override
-		public ObjectId deserialize(JsonParser p, DeserializationContext context) throws IOException {
-			Object object = p.getEmbeddedObject();
-			if (object == null) {
-				return null;
-			} else if (object instanceof String) {
-				return new ObjectId(as(object, String.class));
-			}
-			throw new IllegalArgumentException();
-		}
+        @Override
+        public ObjectId deserialize(JsonParser p, DeserializationContext context) throws IOException {
+            Object object = p.getEmbeddedObject();
+            if (object == null) {
+                return null;
+            } else if (object instanceof String) {
+                return new ObjectId(as(object, String.class));
+            }
+            throw new IllegalArgumentException();
+        }
 
-	}
+    }
 
-	class ObjectIdSerializer extends JsonSerializer<ObjectId> {
+    class ObjectIdSerializer extends JsonSerializer<ObjectId> {
 
-		@Override
-		public void serialize(ObjectId value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-			if (value == null) {
-				gen.writeObject(null);
-			} else {
-				gen.writeObject(value.toHexString());
-			}
-		}
+        @Override
+        public void serialize(ObjectId value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+            if (value == null) {
+                gen.writeObject(null);
+            } else {
+                gen.writeObject(value.toHexString());
+            }
+        }
 
-	}
+    }
 
 }

@@ -17,54 +17,54 @@ import static com.tny.game.net.base.configuration.NetUnitNames.*;
  */
 public class SpringNettyRelayChannelSetting extends NettyRelayChannelSetting {
 
-	@NestedConfigurationProperty
-	private NettyChannelMakerSetting maker;
+    @NestedConfigurationProperty
+    private NettyChannelMakerSetting maker;
 
-	@NestedConfigurationProperty
-	private RelayPacketCodecSetting encoder;
+    @NestedConfigurationProperty
+    private RelayPacketCodecSetting encoder;
 
-	@NestedConfigurationProperty
-	private RelayPacketCodecSetting decoder;
+    @NestedConfigurationProperty
+    private RelayPacketCodecSetting decoder;
 
-	public SpringNettyRelayChannelSetting() {
-		this.setMaker(new NettyChannelMakerSetting(DefaultRelayChannelMaker.class))
-				.setEncoder(new RelayPacketCodecSetting()
-						.setMessageBodyCodec(lowerCamelName(ProtoExMessageBodyCodec.class))
-						.setCloseOnError(false))
-				.setDecoder(new RelayPacketCodecSetting()
-						.setMessageBodyCodec(lowerCamelName(ProtoExMessageBodyCodec.class))
-						.setCloseOnError(true));
-	}
+    public SpringNettyRelayChannelSetting() {
+        this.setMaker(new NettyChannelMakerSetting(DefaultRelayChannelMaker.class))
+                .setEncoder(new RelayPacketCodecSetting()
+                        .setMessageBodyCodec(lowerCamelName(ProtoExMessageBodyCodec.class))
+                        .setCloseOnError(false))
+                .setDecoder(new RelayPacketCodecSetting()
+                        .setMessageBodyCodec(lowerCamelName(ProtoExMessageBodyCodec.class))
+                        .setCloseOnError(true));
+    }
 
-	@Override
-	public NettyChannelMakerSetting getMaker() {
-		return as(super.getMaker());
-	}
+    @Override
+    public NettyChannelMakerSetting getMaker() {
+        return as(super.getMaker());
+    }
 
-	@Override
-	public NettyRelayChannelSetting setMaker(NettyChannelMakerSetting maker) {
-		super.setMaker(maker);
-		return this;
-	}
+    @Override
+    public NettyRelayChannelSetting setMaker(NettyChannelMakerSetting maker) {
+        super.setMaker(maker);
+        return this;
+    }
 
-	@Override
-	public RelayPacketCodecSetting getEncoder() {
-		return super.getEncoder();
-	}
+    @Override
+    public RelayPacketCodecSetting getEncoder() {
+        return super.getEncoder();
+    }
 
-	@Override
-	public NettyRelayChannelSetting setEncoder(RelayPacketCodecSetting encoder) {
-		return super.setEncoder(encoder);
-	}
+    @Override
+    public NettyRelayChannelSetting setEncoder(RelayPacketCodecSetting encoder) {
+        return super.setEncoder(encoder);
+    }
 
-	@Override
-	public RelayPacketCodecSetting getDecoder() {
-		return super.getDecoder();
-	}
+    @Override
+    public RelayPacketCodecSetting getDecoder() {
+        return super.getDecoder();
+    }
 
-	@Override
-	public NettyRelayChannelSetting setDecoder(RelayPacketCodecSetting decoder) {
-		return super.setDecoder(decoder);
-	}
+    @Override
+    public NettyRelayChannelSetting setDecoder(RelayPacketCodecSetting decoder) {
+        return super.setDecoder(decoder);
+    }
 
 }

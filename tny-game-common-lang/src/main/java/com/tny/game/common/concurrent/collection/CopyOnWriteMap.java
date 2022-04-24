@@ -32,6 +32,7 @@ import java.util.function.*;
  * @author <a href="http://mina.apache.org">Apache MINA Project</a>
  */
 public class CopyOnWriteMap<K, V> implements Map<K, V>, Cloneable {
+
     private volatile Map<K, V> internalMap;
 
     /***
@@ -107,8 +108,9 @@ public class CopyOnWriteMap<K, V> implements Map<K, V>, Cloneable {
             Map<K, V> newMap = new HashMap<>(this.internalMap);
             for (Object k : keys) {
                 V value = newMap.remove(k);
-                if (value != null)
+                if (value != null) {
                     valuse.add(value);
+                }
             }
             this.internalMap = newMap;
             return valuse;
@@ -163,13 +165,13 @@ public class CopyOnWriteMap<K, V> implements Map<K, V>, Cloneable {
     public boolean replace(K key, V oldValue, V newValue) {
         Object curValue = get(key);
         if (!Objects.equals(curValue, oldValue) ||
-            (curValue == null && !containsKey(key))) {
+                (curValue == null && !containsKey(key))) {
             return false;
         }
         synchronized (this) {
             curValue = get(key);
             if (!Objects.equals(curValue, oldValue) ||
-                (curValue == null && !containsKey(key))) {
+                    (curValue == null && !containsKey(key))) {
                 return false;
             }
             put(key, newValue);
@@ -181,12 +183,14 @@ public class CopyOnWriteMap<K, V> implements Map<K, V>, Cloneable {
     public V computeIfAbsent(K key, Function<? super K, ? extends V> mappingFunction) {
         Objects.requireNonNull(mappingFunction);
         V v = get(key);
-        if (v != null)
+        if (v != null) {
             return v;
+        }
         synchronized (this) {
             v = get(key);
-            if (v != null)
+            if (v != null) {
                 return v;
+            }
             V newValue;
             if ((newValue = mappingFunction.apply(key)) != null) {
                 put(key, newValue);
@@ -202,8 +206,9 @@ public class CopyOnWriteMap<K, V> implements Map<K, V>, Cloneable {
         if (get(key) != null) {
             synchronized (this) {
                 V oldValue;
-                if ((oldValue = get(key)) == null)
+                if ((oldValue = get(key)) == null) {
                     return null;
+                }
                 V newValue = remappingFunction.apply(key, oldValue);
                 if (newValue != null) {
                     put(key, newValue);
@@ -249,7 +254,7 @@ public class CopyOnWriteMap<K, V> implements Map<K, V>, Cloneable {
         synchronized (this) {
             V oldValue = get(key);
             V newValue = (oldValue == null) ? value :
-                         remappingFunction.apply(oldValue, value);
+                    remappingFunction.apply(oldValue, value);
             if (newValue == null) {
                 remove(key);
             } else {
@@ -365,4 +370,5 @@ public class CopyOnWriteMap<K, V> implements Map<K, V>, Cloneable {
     public String toString() {
         return this.internalMap.toString();
     }
+
 }

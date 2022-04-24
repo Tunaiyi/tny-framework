@@ -2,7 +2,6 @@ package com.tny.game.actor.local;
 
 import com.tny.game.actor.*;
 
-
 /**
  * 本地Actor对象
  * Created by Kun Yang on 16/4/25.
@@ -32,7 +31,6 @@ class DefaultLocalActor<ID, M> extends LocalActor<ID, M> {
     public boolean takeOver(LocalActor<?, ?> actor) {
         return actorCell.getCommandBox().register((actor).cell().getCommandBox());
     }
-
 
     @Override
     public ActorCell cell() {
@@ -74,12 +72,10 @@ class DefaultLocalActor<ID, M> extends LocalActor<ID, M> {
         actorCell.tell(message, null);
     }
 
-
     @Override
     public void tell(M message, Actor sender) {
         actorCell.tell(message, sender);
     }
-
 
     @Override
     public <V> Answer<V> ask(M message) {
@@ -160,7 +156,8 @@ class DefaultLocalActor<ID, M> extends LocalActor<ID, M> {
     // }
     //
     // @Override
-    // public <A1, A2, A3, A4, A5, A6, A7> A7Teller<A1, A2, A3, A4, A5, A6, A7> asTeller(A7Acceptor<Actor<ID, M>, A1, A2, A3, A4, A5, A6, A7> acceptor) {
+    // public <A1, A2, A3, A4, A5, A6, A7> A7Teller<A1, A2, A3, A4, A5, A6, A7> asTeller(A7Acceptor<Actor<ID, M>, A1, A2, A3, A4, A5, A6, A7>
+    // acceptor) {
     //     return new LocalA7Teller<>(actorCell, acceptor);
     // }
     //
@@ -235,12 +232,14 @@ class DefaultLocalActor<ID, M> extends LocalActor<ID, M> {
     // }
     //
     // @Override
-    // public <R, A1, A2, A3, A4, A5, A6> A6Asker<R, Stage<R>, A1, A2, A3, A4, A5, A6> asAsker(A6Answerer<Actor<ID, M>, R, A1, A2, A3, A4, A5, A6> answerer) {
+    // public <R, A1, A2, A3, A4, A5, A6> A6Asker<R, Stage<R>, A1, A2, A3, A4, A5, A6> asAsker(A6Answerer<Actor<ID, M>, R, A1, A2, A3, A4, A5, A6>
+    // answerer) {
     //     return new LocalA6Asker<>(actorCell, answerer);
     // }
     //
     // @Override
-    // public <R, A1, A2, A3, A4, A5, A6, A7> A7Asker<R, Stage<R>, A1, A2, A3, A4, A5, A6, A7> asAsker(A7Answerer<Actor<ID, M>, R, A1, A2, A3, A4, A5, A6, A7> answerer) {
+    // public <R, A1, A2, A3, A4, A5, A6, A7> A7Asker<R, Stage<R>, A1, A2, A3, A4, A5, A6, A7> asAsker(A7Answerer<Actor<ID, M>, R, A1, A2, A3, A4,
+    // A5, A6, A7> answerer) {
     //     return new LocalA7Asker<>(actorCell, answerer);
     // }
     //
@@ -280,7 +279,8 @@ class DefaultLocalActor<ID, M> extends LocalActor<ID, M> {
     // }
     //
     // @Override
-    // public <R, A1, A2, A3, A4, A5, A6, A7> A7Asker<R, Stage<R>, A1, A2, A3, A4, A5, A6, A7> asAsker(A7Caller<R, A1, A2, A3, A4, A5, A6, A7> caller) {
+    // public <R, A1, A2, A3, A4, A5, A6, A7> A7Asker<R, Stage<R>, A1, A2, A3, A4, A5, A6, A7> asAsker(A7Caller<R, A1, A2, A3, A4, A5, A6, A7>
+    // caller) {
     //     return new LocalA7Asker<>(actorCell, caller);
     // }
 

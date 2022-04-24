@@ -7,6 +7,6 @@ import com.tny.game.basics.item.behavior.*;
  */
 public interface OnReset<I> {
 
-	void reset(I item, Action action, int oldLevel);
+    void reset(I item, Action action, int oldLevel);
 
 }

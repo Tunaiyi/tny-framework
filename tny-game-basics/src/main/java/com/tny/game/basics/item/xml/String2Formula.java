@@ -27,8 +27,9 @@ public class String2Formula extends AbstractSingleValueConverter {
 
     @Override
     public Object fromString(String formula) {
-        if (formula == null || formula.equals(""))
+        if (formula == null || formula.equals("")) {
             return null;
+        }
         try {
             return exprHolderFactory.create(formula);
         } catch (RuntimeException e) {
@@ -36,4 +37,5 @@ public class String2Formula extends AbstractSingleValueConverter {
             throw e;
         }
     }
+
 }

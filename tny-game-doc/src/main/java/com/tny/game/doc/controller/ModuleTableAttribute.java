@@ -11,46 +11,46 @@ import java.util.*;
 
 public class ModuleTableAttribute implements TableAttribute {
 
-	private ModuleConfiger module;
+    private ModuleConfiger module;
 
-	@JsonIgnore
-	private ExportHolder exportHolder;
+    @JsonIgnore
+    private ExportHolder exportHolder;
 
-	public ModuleTableAttribute() {
-		super();
-	}
+    public ModuleTableAttribute() {
+        super();
+    }
 
-	public ModuleTableAttribute(Class<?> clazz, TypeFormatter typeFormatter) {
-		super();
-		this.module = ModuleConfiger.create(Objects.requireNonNull(ClassDocHolder.create(clazz)), typeFormatter);
-		this.exportHolder = ExportHolder.create(clazz);
-	}
+    public ModuleTableAttribute(Class<?> clazz, TypeFormatter typeFormatter) {
+        super();
+        this.module = ModuleConfiger.create(Objects.requireNonNull(ClassDocHolder.create(clazz)), typeFormatter);
+        this.exportHolder = ExportHolder.create(clazz);
+    }
 
-	@Override
-	public void putAttribute(Class<?> clazz, TypeFormatter typeFormatter, Attributes attributes) {
-		this.module = ModuleConfiger.create(Objects.requireNonNull(ClassDocHolder.create(clazz)), typeFormatter);
-		this.exportHolder = ExportHolder.create(clazz);
-	}
+    @Override
+    public void putAttribute(Class<?> clazz, TypeFormatter typeFormatter, Attributes attributes) {
+        this.module = ModuleConfiger.create(Objects.requireNonNull(ClassDocHolder.create(clazz)), typeFormatter);
+        this.exportHolder = ExportHolder.create(clazz);
+    }
 
-	public ModuleConfiger getModule() {
-		return module;
-	}
+    public ModuleConfiger getModule() {
+        return module;
+    }
 
-	@Override
-	public String getOutput() {
-		return this.exportHolder.getOutput();
-	}
+    @Override
+    public String getOutput() {
+        return this.exportHolder.getOutput();
+    }
 
-	@Override
-	public Map<String, Object> getContext() {
-		return MapBuilder.<String, Object>newBuilder()
-				.put("module", module)
-				.build();
-	}
+    @Override
+    public Map<String, Object> getContext() {
+        return MapBuilder.<String, Object>newBuilder()
+                .put("module", module)
+                .build();
+    }
 
-	@Override
-	public String getTemplate() {
-		return this.exportHolder.getTemplate();
-	}
+    @Override
+    public String getTemplate() {
+        return this.exportHolder.getTemplate();
+    }
 
 }

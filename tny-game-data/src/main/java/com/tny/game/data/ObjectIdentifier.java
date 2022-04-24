@@ -5,6 +5,6 @@ package com.tny.game.data;
  */
 public interface ObjectIdentifier<K extends Comparable<K>> {
 
-	K getObjectId();
+    K getObjectId();
 
 }

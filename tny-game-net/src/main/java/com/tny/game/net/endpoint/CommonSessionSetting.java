@@ -8,16 +8,16 @@ package com.tny.game.net.endpoint;
  */
 public class CommonSessionSetting implements SessionSetting {
 
-	private int sendMessageCachedSize = 0;
+    private int sendMessageCachedSize = 0;
 
-	@Override
-	public int getSendMessageCachedSize() {
-		return this.sendMessageCachedSize;
-	}
+    @Override
+    public int getSendMessageCachedSize() {
+        return this.sendMessageCachedSize;
+    }
 
-	public CommonSessionSetting setSendMessageCachedSize(int sendMessageCachedSize) {
-		this.sendMessageCachedSize = sendMessageCachedSize;
-		return this;
-	}
+    public CommonSessionSetting setSendMessageCachedSize(int sendMessageCachedSize) {
+        this.sendMessageCachedSize = sendMessageCachedSize;
+        return this;
+    }
 
 }

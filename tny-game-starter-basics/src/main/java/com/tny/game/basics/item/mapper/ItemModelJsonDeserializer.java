@@ -15,23 +15,23 @@ import java.io.IOException;
 
 public class ItemModelJsonDeserializer extends JsonDeserializer<ItemModel> {
 
-	private final GameExplorer gameExplorer;
+    private final GameExplorer gameExplorer;
 
-	public ItemModelJsonDeserializer(GameExplorer gameExplorer) {
-		this.gameExplorer = gameExplorer;
-	}
+    public ItemModelJsonDeserializer(GameExplorer gameExplorer) {
+        this.gameExplorer = gameExplorer;
+    }
 
-	@Override
-	public ItemModel deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
-		switch (p.getCurrentToken()) {
-			case VALUE_STRING:
-			case VALUE_NUMBER_INT:
-			case VALUE_NUMBER_FLOAT:
-				return gameExplorer.getModel(p.getValueAsInt());
-			case VALUE_NULL:
-				return null;
-		}
-		return null;
-	}
+    @Override
+    public ItemModel deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+        switch (p.getCurrentToken()) {
+            case VALUE_STRING:
+            case VALUE_NUMBER_INT:
+            case VALUE_NUMBER_FLOAT:
+                return gameExplorer.getModel(p.getValueAsInt());
+            case VALUE_NULL:
+                return null;
+        }
+        return null;
+    }
 
 }

@@ -8,6 +8,6 @@ package com.tny.game.net.rpc.auth;
  */
 public interface RpcUserPasswordManager {
 
-	boolean auth(String service, long serverId, long instance, String password);
+    boolean auth(String service, long serverId, long instance, String password);
 
 }

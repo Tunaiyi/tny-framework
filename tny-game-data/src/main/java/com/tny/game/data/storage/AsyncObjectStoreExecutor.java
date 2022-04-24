@@ -7,16 +7,16 @@ package com.tny.game.data.storage;
  */
 public interface AsyncObjectStoreExecutor {
 
-	/**
-	 * 注册持久化器
-	 *
-	 * @param storage 持久化器
-	 */
-	void register(AsyncObjectStorage<?, ?> storage);
+    /**
+     * 注册持久化器
+     *
+     * @param storage 持久化器
+     */
+    void register(AsyncObjectStorage<?, ?> storage);
 
-	/**
-	 * 关闭
-	 */
-	boolean shutdown() throws InterruptedException;
+    /**
+     * 关闭
+     */
+    boolean shutdown() throws InterruptedException;
 
 }

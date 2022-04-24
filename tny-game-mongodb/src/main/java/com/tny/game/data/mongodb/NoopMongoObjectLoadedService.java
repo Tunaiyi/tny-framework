@@ -8,9 +8,9 @@ package com.tny.game.data.mongodb;
  */
 public class NoopMongoObjectLoadedService implements MongoObjectLoadedService {
 
-	@Override
-	public <T> T onLoad(T object) {
-		return object;
-	}
+    @Override
+    public <T> T onLoad(T object) {
+        return object;
+    }
 
 }

@@ -17,78 +17,78 @@ import java.util.*;
  */
 public class ApplicationLauncherLifecycle implements SmartLifecycle, ApplicationContextAware {
 
-	public static final Logger LOGGER = LoggerFactory.getLogger(ApplicationLauncherLifecycle.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(ApplicationLauncherLifecycle.class);
 
-	private ApplicationContext context;
+    private ApplicationContext context;
 
-	private volatile boolean running;
+    private volatile boolean running;
 
-	@Override
-	public void setApplicationContext(@Nonnull ApplicationContext context) throws BeansException {
-		this.context = context;
-	}
+    @Override
+    public void setApplicationContext(@Nonnull ApplicationContext context) throws BeansException {
+        this.context = context;
+    }
 
-	@Override
-	public void start() {
-		TransactionManager.open();
-		try {
-			LOGGER.info("ApplicationLifecycleProcessor.prepareStart...");
-			ApplicationLauncherContext.prepareStart(this.context);
-			LOGGER.info("ApplicationLifecycleProcessor.prepareStart finish");
-			List<ApplicationLauncher> applications = new ArrayList<>(this.context.getBeansOfType(
-					ApplicationLauncher.class).values());
-			for (ApplicationLauncher application : applications) {
-				try {
-					application.start();
-				} catch (Exception exception) {
-					throw new BootApplicationException(exception);
-				}
-			}
-			LOGGER.info("ApplicationLifecycleProcessor.postStart...");
-			ApplicationLauncherContext.postStart(this.context);
-			LOGGER.info("ApplicationLifecycleProcessor.postStart finish");
-			this.running = true;
-		} catch (Throwable e) {
-			TransactionManager.rollback(e);
-			throw e;
-		} finally {
-			TransactionManager.close();
-		}
-	}
+    @Override
+    public void start() {
+        TransactionManager.open();
+        try {
+            LOGGER.info("ApplicationLifecycleProcessor.prepareStart...");
+            ApplicationLauncherContext.prepareStart(this.context);
+            LOGGER.info("ApplicationLifecycleProcessor.prepareStart finish");
+            List<ApplicationLauncher> applications = new ArrayList<>(this.context.getBeansOfType(
+                    ApplicationLauncher.class).values());
+            for (ApplicationLauncher application : applications) {
+                try {
+                    application.start();
+                } catch (Exception exception) {
+                    throw new BootApplicationException(exception);
+                }
+            }
+            LOGGER.info("ApplicationLifecycleProcessor.postStart...");
+            ApplicationLauncherContext.postStart(this.context);
+            LOGGER.info("ApplicationLifecycleProcessor.postStart finish");
+            this.running = true;
+        } catch (Throwable e) {
+            TransactionManager.rollback(e);
+            throw e;
+        } finally {
+            TransactionManager.close();
+        }
+    }
 
-	@Override
-	public void stop() {
-		TransactionManager.open();
-		try {
-			LOGGER.info("ApplicationLifecycleProcessor.close...");
-			List<ApplicationLauncher> applications = new ArrayList<>(this.context.getBeansOfType(
-					ApplicationLauncher.class).values());
-			for (ApplicationLauncher application : applications) {
-				try {
-					application.stop();
-				} catch (Exception exception) {
-					throw new BootApplicationException(exception);
-				}
-			}
-			ApplicationLauncherContext.close();
-			LOGGER.info("ApplicationLifecycleProcessor.close finish");
-			this.running = false;
-		} catch (Throwable e) {
-			TransactionManager.rollback(e);
-			throw e;
-		} finally {
-			TransactionManager.close();
-		}
-	}
+    @Override
+    public void stop() {
+        TransactionManager.open();
+        try {
+            LOGGER.info("ApplicationLifecycleProcessor.close...");
+            List<ApplicationLauncher> applications = new ArrayList<>(this.context.getBeansOfType(
+                    ApplicationLauncher.class).values());
+            for (ApplicationLauncher application : applications) {
+                try {
+                    application.stop();
+                } catch (Exception exception) {
+                    throw new BootApplicationException(exception);
+                }
+            }
+            ApplicationLauncherContext.close();
+            LOGGER.info("ApplicationLifecycleProcessor.close finish");
+            this.running = false;
+        } catch (Throwable e) {
+            TransactionManager.rollback(e);
+            throw e;
+        } finally {
+            TransactionManager.close();
+        }
+    }
 
-	@Override
-	public boolean isRunning() {
-		return this.running;
-	}
+    @Override
+    public boolean isRunning() {
+        return this.running;
+    }
 
-	@Override
-	public int getPhase() {
-		return Integer.MAX_VALUE - 1;
-	}
+    @Override
+    public int getPhase() {
+        return Integer.MAX_VALUE - 1;
+    }
 
 }

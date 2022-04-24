@@ -13,15 +13,15 @@ import com.tny.game.expr.*;
  **/
 public class XStreamModelLoaderFactory implements ModelLoaderFactory {
 
-	private final ExprHolderFactory exprHolderFactory;
+    private final ExprHolderFactory exprHolderFactory;
 
-	public XStreamModelLoaderFactory(ExprHolderFactory exprHolderFactory) {
-		this.exprHolderFactory = exprHolderFactory;
-	}
+    public XStreamModelLoaderFactory(ExprHolderFactory exprHolderFactory) {
+        this.exprHolderFactory = exprHolderFactory;
+    }
 
-	@Override
-	public <M extends Model> ModelLoader<M> createLoader(Class<? extends M> modelClass, ModelLoadHandler<M> loadHandler) {
-		return new XStreamModelLoader<>(modelClass, loadHandler, exprHolderFactory);
-	}
+    @Override
+    public <M extends Model> ModelLoader<M> createLoader(Class<? extends M> modelClass, ModelLoadHandler<M> loadHandler) {
+        return new XStreamModelLoader<>(modelClass, loadHandler, exprHolderFactory);
+    }
 
 }

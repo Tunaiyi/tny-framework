@@ -9,7 +9,6 @@ import java.util.concurrent.Executor;
  */
 public abstract class LocalActor<ID, M> implements Actor<ID, M>, ActorTheatre, Executor {
 
-
     /**
      * 脱管当前worker
      */

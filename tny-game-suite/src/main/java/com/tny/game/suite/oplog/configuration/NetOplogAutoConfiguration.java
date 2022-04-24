@@ -1,6 +1,5 @@
 package com.tny.game.suite.oplog.configuration;
 
-
 import com.tny.game.suite.initiator.*;
 import org.springframework.context.annotation.*;
 

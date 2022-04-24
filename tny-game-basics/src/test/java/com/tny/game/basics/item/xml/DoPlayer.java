@@ -43,7 +43,7 @@ public class DoPlayer implements Do {
         DoPlayer tom = new DoPlayer("Tom");
         DoPlayer kelly = new DoPlayer("Kelly");
         PlayerHandler handler = new PlayerHandler(tom);
-        Do proxy = (Do) Proxy.newProxyInstance(DoPlayer.class.getClassLoader(), DoPlayer.class.getInterfaces(), handler);
+        Do proxy = (Do)Proxy.newProxyInstance(DoPlayer.class.getClassLoader(), DoPlayer.class.getInterfaces(), handler);
         proxy.say();
         proxy.tryToDo();
         handler.set(kelly);

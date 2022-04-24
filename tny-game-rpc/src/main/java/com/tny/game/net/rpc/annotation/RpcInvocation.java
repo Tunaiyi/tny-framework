@@ -8,19 +8,19 @@ package com.tny.game.net.rpc.annotation;
  */
 public enum RpcInvocation {
 
-	/**
-	 * 默认, 根据返回值
-	 */
-	DEFAULT,
+    /**
+     * 默认, 根据返回值
+     */
+    DEFAULT,
 
-	/**
-	 * 同步
-	 */
-	SYNC,
+    /**
+     * 同步
+     */
+    SYNC,
 
-	/**
-	 * 异步
-	 */
-	ASYNC,
+    /**
+     * 异步
+     */
+    ASYNC,
 
 }

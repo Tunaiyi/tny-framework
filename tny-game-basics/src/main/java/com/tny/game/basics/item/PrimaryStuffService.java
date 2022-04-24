@@ -10,9 +10,9 @@ import java.util.*;
  */
 public interface PrimaryStuffService<SM extends StuffModel> extends StuffService<SM> {
 
-	@Override
-	default Set<ItemType> getDealStuffTypes() {
-		return Collections.emptySet();
-	}
+    @Override
+    default Set<ItemType> getDealStuffTypes() {
+        return Collections.emptySet();
+    }
 
 }

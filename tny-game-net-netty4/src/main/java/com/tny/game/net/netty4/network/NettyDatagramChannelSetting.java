@@ -13,69 +13,69 @@ import static com.tny.game.net.base.configuration.NetUnitNames.*;
  */
 public class NettyDatagramChannelSetting {
 
-	private NettyChannelMakerSetting maker;
+    private NettyChannelMakerSetting maker;
 
-	private DatagramPackCodecSetting encoder;
+    private DatagramPackCodecSetting encoder;
 
-	private DatagramPackCodecSetting decoder;
+    private DatagramPackCodecSetting decoder;
 
-	private String messageHandler = defaultName(NettyMessageHandler.class);
+    private String messageHandler = defaultName(NettyMessageHandler.class);
 
-	private String tunnelFactory = defaultName(NettyTunnelFactory.class);
+    private String tunnelFactory = defaultName(NettyTunnelFactory.class);
 
-	public NettyDatagramChannelSetting(String encodeBodyCodec, String decodeBodyCodec) {
-		this.maker = new NettyChannelMakerSetting(DefaultDatagramChannelMaker.class);
-		this.encoder = new DatagramPackCodecSetting()
-				.setMessageBodyCodec(encodeBodyCodec)
-				.setCloseOnError(false);
-		this.decoder = new DatagramPackCodecSetting()
-				.setMessageBodyCodec(decodeBodyCodec)
-				.setCloseOnError(true);
-	}
+    public NettyDatagramChannelSetting(String encodeBodyCodec, String decodeBodyCodec) {
+        this.maker = new NettyChannelMakerSetting(DefaultDatagramChannelMaker.class);
+        this.encoder = new DatagramPackCodecSetting()
+                .setMessageBodyCodec(encodeBodyCodec)
+                .setCloseOnError(false);
+        this.decoder = new DatagramPackCodecSetting()
+                .setMessageBodyCodec(decodeBodyCodec)
+                .setCloseOnError(true);
+    }
 
-	public NettyChannelMakerSetting getMaker() {
-		return this.maker;
-	}
+    public NettyChannelMakerSetting getMaker() {
+        return this.maker;
+    }
 
-	public DatagramPackCodecSetting getEncoder() {
-		return encoder;
-	}
+    public DatagramPackCodecSetting getEncoder() {
+        return encoder;
+    }
 
-	public DatagramPackCodecSetting getDecoder() {
-		return decoder;
-	}
+    public DatagramPackCodecSetting getDecoder() {
+        return decoder;
+    }
 
-	public String getMessageHandler() {
-		return messageHandler;
-	}
+    public String getMessageHandler() {
+        return messageHandler;
+    }
 
-	public String getTunnelFactory() {
-		return tunnelFactory;
-	}
+    public String getTunnelFactory() {
+        return tunnelFactory;
+    }
 
-	public NettyDatagramChannelSetting setMaker(NettyChannelMakerSetting maker) {
-		this.maker = maker;
-		return this;
-	}
+    public NettyDatagramChannelSetting setMaker(NettyChannelMakerSetting maker) {
+        this.maker = maker;
+        return this;
+    }
 
-	public NettyDatagramChannelSetting setEncoder(DatagramPackCodecSetting encoder) {
-		this.encoder = encoder;
-		return this;
-	}
+    public NettyDatagramChannelSetting setEncoder(DatagramPackCodecSetting encoder) {
+        this.encoder = encoder;
+        return this;
+    }
 
-	public NettyDatagramChannelSetting setDecoder(DatagramPackCodecSetting decoder) {
-		this.decoder = decoder;
-		return this;
-	}
+    public NettyDatagramChannelSetting setDecoder(DatagramPackCodecSetting decoder) {
+        this.decoder = decoder;
+        return this;
+    }
 
-	public NettyDatagramChannelSetting setMessageHandler(String messageHandler) {
-		this.messageHandler = messageHandler;
-		return this;
-	}
+    public NettyDatagramChannelSetting setMessageHandler(String messageHandler) {
+        this.messageHandler = messageHandler;
+        return this;
+    }
 
-	public NettyDatagramChannelSetting setTunnelFactory(String tunnelFactory) {
-		this.tunnelFactory = tunnelFactory;
-		return this;
-	}
+    public NettyDatagramChannelSetting setTunnelFactory(String tunnelFactory) {
+        this.tunnelFactory = tunnelFactory;
+        return this;
+    }
 
 }

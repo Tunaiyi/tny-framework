@@ -13,41 +13,41 @@ import static com.tny.game.common.utils.ObjectAide.*;
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class ClientEventBuses extends BaseEventBuses<ClientListener> {
 
-	private final BindP1EventBus<ClientActivateListener, Client, Tunnel> ON_ACTIVATE =
-			EventBuses.of(ClientActivateListener.class, ClientActivateListener::onActivate);
+    private final BindP1EventBus<ClientActivateListener, Client, Tunnel> ON_ACTIVATE =
+            EventBuses.of(ClientActivateListener.class, ClientActivateListener::onActivate);
 
-	private final BindP1EventBus<ClientUnactivatedListener, Client, Tunnel> ON_UNACTIVATED =
-			EventBuses.of(ClientUnactivatedListener.class, ClientUnactivatedListener::onUnactivated);
+    private final BindP1EventBus<ClientUnactivatedListener, Client, Tunnel> ON_UNACTIVATED =
+            EventBuses.of(ClientUnactivatedListener.class, ClientUnactivatedListener::onUnactivated);
 
-	private final BindVoidEventBus<ClientOpenListener, Client> ON_OPEN =
-			EventBuses.of(ClientOpenListener.class, ClientOpenListener::onOpen);
+    private final BindVoidEventBus<ClientOpenListener, Client> ON_OPEN =
+            EventBuses.of(ClientOpenListener.class, ClientOpenListener::onOpen);
 
-	private final BindVoidEventBus<ClientCloseListener, Client> ON_CLOSE =
-			EventBuses.of(ClientCloseListener.class, ClientCloseListener::onClose);
+    private final BindVoidEventBus<ClientCloseListener, Client> ON_CLOSE =
+            EventBuses.of(ClientCloseListener.class, ClientCloseListener::onClose);
 
-	private ClientEventBuses() {
-	}
+    private ClientEventBuses() {
+    }
 
-	private final static ClientEventBuses eventBuses = new ClientEventBuses();
+    private final static ClientEventBuses eventBuses = new ClientEventBuses();
 
-	public static ClientEventBuses buses() {
-		return eventBuses;
-	}
+    public static ClientEventBuses buses() {
+        return eventBuses;
+    }
 
-	public <T> BindP1EventBus<ClientActivateListener<T>, Client<T>, Tunnel<T>> activateEvent() {
-		return as(this.ON_ACTIVATE);
-	}
+    public <T> BindP1EventBus<ClientActivateListener<T>, Client<T>, Tunnel<T>> activateEvent() {
+        return as(this.ON_ACTIVATE);
+    }
 
-	public <T> BindP1EventBus<ClientUnactivatedListener<T>, Client<T>, Tunnel<T>> unactivatedEvent() {
-		return as(this.ON_UNACTIVATED);
-	}
+    public <T> BindP1EventBus<ClientUnactivatedListener<T>, Client<T>, Tunnel<T>> unactivatedEvent() {
+        return as(this.ON_UNACTIVATED);
+    }
 
-	public <T> BindVoidEventBus<ClientOpenListener<T>, Client<T>> openEvent() {
-		return as(this.ON_OPEN);
-	}
+    public <T> BindVoidEventBus<ClientOpenListener<T>, Client<T>> openEvent() {
+        return as(this.ON_OPEN);
+    }
 
-	public <T> BindVoidEventBus<ClientCloseListener<T>, Client<T>> closeEvent() {
-		return as(this.ON_CLOSE);
-	}
+    public <T> BindVoidEventBus<ClientCloseListener<T>, Client<T>> closeEvent() {
+        return as(this.ON_CLOSE);
+    }
 
 }

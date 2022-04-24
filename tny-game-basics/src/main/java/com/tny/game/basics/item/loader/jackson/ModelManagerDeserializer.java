@@ -17,33 +17,33 @@ import static com.tny.game.common.utils.StringAide.*;
  **/
 public class ModelManagerDeserializer<IM extends Model> extends JsonDeserializer<IM> {
 
-	private final ModelManager<IM> modelManager;
+    private final ModelManager<IM> modelManager;
 
-	public static <IM extends Model> ModelManagerDeserializer<IM> of(ModelManager<IM> modelManager) {
-		return new ModelManagerDeserializer<>(modelManager);
-	}
+    public static <IM extends Model> ModelManagerDeserializer<IM> of(ModelManager<IM> modelManager) {
+        return new ModelManagerDeserializer<>(modelManager);
+    }
 
-	private ModelManagerDeserializer(ModelManager<IM> modelManager) {
-		this.modelManager = modelManager;
-	}
+    private ModelManagerDeserializer(ModelManager<IM> modelManager) {
+        this.modelManager = modelManager;
+    }
 
-	public void bind(SimpleModule module) {
-		module.addDeserializer(modelManager.getModelClass(), this);
-	}
+    public void bind(SimpleModule module) {
+        module.addDeserializer(modelManager.getModelClass(), this);
+    }
 
-	@Override
-	public IM deserialize(JsonParser p, DeserializationContext context) throws IOException {
-		JsonToken token = p.getCurrentToken();
-		if (token == JsonToken.VALUE_NULL) {
-			return null;
-		}
-		if (token == JsonToken.VALUE_STRING) {
-			return modelManager.getModelByAlias(p.getValueAsString(""));
-		}
-		if (token == JsonToken.VALUE_NUMBER_INT) {
-			return modelManager.getModel(p.getValueAsInt(0));
-		}
-		throw new IllegalArgumentException(format("{} 无法解析值 {}", modelManager, p.getCurrentValue()));
-	}
+    @Override
+    public IM deserialize(JsonParser p, DeserializationContext context) throws IOException {
+        JsonToken token = p.getCurrentToken();
+        if (token == JsonToken.VALUE_NULL) {
+            return null;
+        }
+        if (token == JsonToken.VALUE_STRING) {
+            return modelManager.getModelByAlias(p.getValueAsString(""));
+        }
+        if (token == JsonToken.VALUE_NUMBER_INT) {
+            return modelManager.getModel(p.getValueAsInt(0));
+        }
+        throw new IllegalArgumentException(format("{} 无法解析值 {}", modelManager, p.getCurrentValue()));
+    }
 
 }

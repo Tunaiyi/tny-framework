@@ -18,12 +18,12 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Import({
-		NetAutoConfiguration.class,
-		ImportNetBootstrapDefinitionRegistrar.class,
-		ImportCommandTaskProcessorBeanDefinitionRegistrar.class,
+        NetAutoConfiguration.class,
+        ImportNetBootstrapDefinitionRegistrar.class,
+        ImportCommandTaskProcessorBeanDefinitionRegistrar.class,
 })
 @EnableConfigurationProperties({
-		SpringBootNetBootstrapProperties.class
+        SpringBootNetBootstrapProperties.class
 })
 public @interface EnableNetApplication {
 

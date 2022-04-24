@@ -11,14 +11,13 @@ abstract class DefaultStage<R> extends BaseStage<R> {
     @SuppressWarnings("unchecked")
     public DefaultStage(Object name, Fragment<?, R> fragment) {
         super(name);
-        this.fragment = (Fragment<Object, R>) fragment;
+        this.fragment = (Fragment<Object, R>)fragment;
     }
 
     @Override
     public Fragment<?, ?> getFragment() {
         return fragment;
     }
-
 
     //    public static void main(String[] args) throws ExecutionException, InterruptedException {
     //        VoidTaskStage stage = Stages.supply(() -> {

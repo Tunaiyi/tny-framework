@@ -41,8 +41,9 @@ public class GameRuningException extends RuntimeException {
 
     protected static String format(Object data, ResultCode code, Object... messages) {
         String exMessage = "\n###CODE : " + code.getCode() + "\n###MESSAGE : " + code.getMessage() + "\n###NFO : ";
-        if (data != null)
+        if (data != null) {
             exMessage += "\n   ---  " + data;
+        }
         for (Object message : messages)
             exMessage += "\n   ---  " + message;
         return exMessage;

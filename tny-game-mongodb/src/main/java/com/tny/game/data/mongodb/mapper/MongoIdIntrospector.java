@@ -14,38 +14,38 @@ import java.lang.annotation.Annotation;
  */
 public class MongoIdIntrospector extends JacksonAnnotationIntrospector {
 
-	@Override
-	public boolean isAnnotationBundle(Annotation ann) {
-		if (ann.annotationType() == Id.class) {
-			return true;
-		}
-		return super.isAnnotationBundle(ann);
-	}
+    @Override
+    public boolean isAnnotationBundle(Annotation ann) {
+        if (ann.annotationType() == Id.class) {
+            return true;
+        }
+        return super.isAnnotationBundle(ann);
+    }
 
-	@Override
-	public PropertyName findNameForSerialization(Annotated a) {
-		PropertyName value = getPropertyName(a);
-		if (value != null) {
-			return value;
-		}
-		return super.findNameForSerialization(a);
-	}
+    @Override
+    public PropertyName findNameForSerialization(Annotated a) {
+        PropertyName value = getPropertyName(a);
+        if (value != null) {
+            return value;
+        }
+        return super.findNameForSerialization(a);
+    }
 
-	@Override
-	public PropertyName findNameForDeserialization(Annotated a) {
-		PropertyName value = getPropertyName(a);
-		if (value != null) {
-			return value;
-		}
-		return super.findNameForDeserialization(a);
-	}
+    @Override
+    public PropertyName findNameForDeserialization(Annotated a) {
+        PropertyName value = getPropertyName(a);
+        if (value != null) {
+            return value;
+        }
+        return super.findNameForDeserialization(a);
+    }
 
-	private PropertyName getPropertyName(Annotated af) {
-		Id id = af.getAnnotation(Id.class);
-		if (id != null) {
-			return PropertyName.construct("_id");
-		}
-		return null;
-	}
+    private PropertyName getPropertyName(Annotated af) {
+        Id id = af.getAnnotation(Id.class);
+        if (id != null) {
+            return PropertyName.construct("_id");
+        }
+        return null;
+    }
 
 }

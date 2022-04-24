@@ -11,11 +11,11 @@ import java.lang.annotation.*;
 @Documented
 public @interface AsLifecycle {
 
-	/**
-	 * order 越大越先执行
-	 *
-	 * @return
-	 */
-	int order() default 0;
+    /**
+     * order 越大越先执行
+     *
+     * @return
+     */
+    int order() default 0;
 
 }

@@ -27,35 +27,35 @@ import static com.tny.game.common.utils.ObjectAide.*;
 @Unit("relayMessageHandler")
 public class RelayNettyMessageHandler extends NettyMessageHandler {
 
-	protected static final Logger LOG = LoggerFactory.getLogger(NettyMessageHandler.class);
+    protected static final Logger LOG = LoggerFactory.getLogger(NettyMessageHandler.class);
 
-	@Override
-	public void channelRead(ChannelHandlerContext context, Object object) {
-		if (object instanceof NetMessage) {
-			NetMessage message = (NetMessage)object;
-			if (message.isRelay()) {
-				relayMessage(context, new RelayMessage(message));
-				return;
-			}
-		}
-		super.channelRead(context, object);
-	}
+    @Override
+    public void channelRead(ChannelHandlerContext context, Object object) {
+        if (object instanceof NetMessage) {
+            NetMessage message = (NetMessage)object;
+            if (message.isRelay()) {
+                relayMessage(context, new RelayMessage(message));
+                return;
+            }
+        }
+        super.channelRead(context, object);
+    }
 
-	private void relayMessage(ChannelHandlerContext context, RelayMessage message) {
-		Channel channel = context.channel();
-		NetTunnel<?> tunnel = channel.attr(NettyNetAttrKeys.TUNNEL).get();
-		if (tunnel instanceof NetRelayTunnel) {
-			RelayTunnel<?> relayTunnel = as(tunnel);
-			relayTunnel.relay(message, false);
-		} else {
-			message.release();
-			throw new NetGeneralException(NetResultCode.SERVER_ERROR, "tunnel cannot relay");
-		}
-	}
+    private void relayMessage(ChannelHandlerContext context, RelayMessage message) {
+        Channel channel = context.channel();
+        NetTunnel<?> tunnel = channel.attr(NettyNetAttrKeys.TUNNEL).get();
+        if (tunnel instanceof NetRelayTunnel) {
+            RelayTunnel<?> relayTunnel = as(tunnel);
+            relayTunnel.relay(message, false);
+        } else {
+            message.release();
+            throw new NetGeneralException(NetResultCode.SERVER_ERROR, "tunnel cannot relay");
+        }
+    }
 
-	@Override
-	public void write(ChannelHandlerContext context, Object object, ChannelPromise promise) {
-		super.write(context, object, promise);
-	}
+    @Override
+    public void write(ChannelHandlerContext context, Object object, ChannelPromise promise) {
+        super.write(context, object, promise);
+    }
 
 }

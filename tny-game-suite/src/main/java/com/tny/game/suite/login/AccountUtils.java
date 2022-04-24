@@ -10,7 +10,9 @@ public class AccountUtils {
     private static final String SEPARATOR = ".";
 
     public static final int PF_INDEX = 0;
+
     public static final int SERVER_ID_INDEX = 1;
+
     public static final int OPEN_ID_INDEX = 2;
 
     public static String openID2Account(String accountTag, int serverID, String openid) {
@@ -19,8 +21,9 @@ public class AccountUtils {
 
     public static Object[] breakAccount(String account) {
         String keys[] = StringUtils.split(account, SEPARATOR);
-        if (keys == null || keys.length != 3 || !NumberUtils.isDigits(keys[SERVER_ID_INDEX]))
+        if (keys == null || keys.length != 3 || !NumberUtils.isDigits(keys[SERVER_ID_INDEX])) {
             return null;
+        }
         Object[] data = new Object[3];
         data[PF_INDEX] = keys[PF_INDEX];
         data[SERVER_ID_INDEX] = NumberUtils.toInt(keys[SERVER_ID_INDEX]);
@@ -34,13 +37,13 @@ public class AccountUtils {
 
     public static String account2OpenId(String account) {
         String[] accWords = StringUtils.split(account, SEPARATOR);
-        if (accWords.length == 3)
+        if (accWords.length == 3) {
             return accWords[OPEN_ID_INDEX];
-        else {
+        } else {
             StringBuilder builder = new StringBuilder();
             Stream.of(accWords)
-                  .skip(2) // 跳过 PF & SERVER_ID
-                  .forEach(builder::append);
+                    .skip(2) // 跳过 PF & SERVER_ID
+                    .forEach(builder::append);
             return builder.toString();
         }
     }

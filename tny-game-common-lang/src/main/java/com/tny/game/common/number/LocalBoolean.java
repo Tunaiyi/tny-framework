@@ -27,21 +27,23 @@ public class LocalBoolean {
     }
 
     public LocalBoolean ifTrue(Consumer<LocalBoolean> consumer) {
-        if (this.value)
+        if (this.value) {
             consumer.accept(this);
+        }
         return this;
     }
 
     public LocalBoolean ifFalse(Consumer<LocalBoolean> consumer) {
-        if (!this.value)
+        if (!this.value) {
             consumer.accept(this);
+        }
         return this;
     }
 
-
     public LocalBoolean trueIf(boolean condition) {
-        if (condition)
+        if (condition) {
             this.value = true;
+        }
         return this;
     }
 
@@ -50,14 +52,14 @@ public class LocalBoolean {
     }
 
     public LocalBoolean falseIf(boolean condition) {
-        if (condition)
+        if (condition) {
             this.value = false;
+        }
         return this;
     }
 
     public LocalBoolean falseIf(BooleanSupplier condition) {
         return falseIf(condition.getAsBoolean());
     }
-
 
 }

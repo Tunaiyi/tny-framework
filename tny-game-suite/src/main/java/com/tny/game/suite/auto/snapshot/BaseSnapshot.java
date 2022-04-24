@@ -32,20 +32,26 @@ public abstract class BaseSnapshot implements Snapshot {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (this.getClass() != obj.getClass())
+        }
+        if (this.getClass() != obj.getClass()) {
             return false;
-        Snapshot other = (Snapshot) obj;
-        if (this.getId() != other.getId())
+        }
+        Snapshot other = (Snapshot)obj;
+        if (this.getId() != other.getId()) {
             return false;
+        }
         if (this.type == null) {
-            if (other.getType() != null)
+            if (other.getType() != null) {
                 return false;
-        } else if (!this.type.equals(other.getType()))
+            }
+        } else if (!this.type.equals(other.getType())) {
             return false;
+        }
         return true;
     }
 
@@ -53,7 +59,7 @@ public abstract class BaseSnapshot implements Snapshot {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + (int) (this.id ^ (this.id >>> 32));
+        result = prime * result + (int)(this.id ^ (this.id >>> 32));
         result = prime * result + ((this.type == null) ? 0 : this.type.hashCode());
         return result;
     }

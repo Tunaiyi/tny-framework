@@ -9,30 +9,30 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties("tny.net.filter.text-filter")
 public class TextFilterProperties {
 
-	private static final String DEFAULT_FILE = "words.txt";
+    private static final String DEFAULT_FILE = "words.txt";
 
-	private static final String DEFAULT_HIDE_SYMBOL = "*";
+    private static final String DEFAULT_HIDE_SYMBOL = "*";
 
-	private String file = DEFAULT_FILE;
+    private String file = DEFAULT_FILE;
 
-	private String hideSymbol = DEFAULT_HIDE_SYMBOL;
+    private String hideSymbol = DEFAULT_HIDE_SYMBOL;
 
-	public String getFile() {
-		return this.file;
-	}
+    public String getFile() {
+        return this.file;
+    }
 
-	public TextFilterProperties setFile(String file) {
-		this.file = file;
-		return this;
-	}
+    public TextFilterProperties setFile(String file) {
+        this.file = file;
+        return this;
+    }
 
-	public String getHideSymbol() {
-		return this.hideSymbol;
-	}
+    public String getHideSymbol() {
+        return this.hideSymbol;
+    }
 
-	public TextFilterProperties setHideSymbol(String hideSymbol) {
-		this.hideSymbol = hideSymbol;
-		return this;
-	}
+    public TextFilterProperties setHideSymbol(String hideSymbol) {
+        this.hideSymbol = hideSymbol;
+        return this;
+    }
 
 }

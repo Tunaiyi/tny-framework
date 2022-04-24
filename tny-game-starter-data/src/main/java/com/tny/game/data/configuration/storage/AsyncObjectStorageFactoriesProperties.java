@@ -13,39 +13,39 @@ import java.util.*;
 @ConfigurationProperties(prefix = "tny.data.object-storage.async-storage")
 public class AsyncObjectStorageFactoriesProperties {
 
-	private boolean enable = true;
+    private boolean enable = true;
 
-	@NestedConfigurationProperty
-	private QueueObjectStorageFactorySetting storage = new QueueObjectStorageFactorySetting();
+    @NestedConfigurationProperty
+    private QueueObjectStorageFactorySetting storage = new QueueObjectStorageFactorySetting();
 
-	private Map<String, QueueObjectStorageFactorySetting> storages = new HashMap<>();
+    private Map<String, QueueObjectStorageFactorySetting> storages = new HashMap<>();
 
-	public boolean isEnable() {
-		return enable;
-	}
+    public boolean isEnable() {
+        return enable;
+    }
 
-	public AsyncObjectStorageFactoriesProperties setEnable(boolean enable) {
-		this.enable = enable;
-		return this;
-	}
+    public AsyncObjectStorageFactoriesProperties setEnable(boolean enable) {
+        this.enable = enable;
+        return this;
+    }
 
-	public QueueObjectStorageFactorySetting getStorage() {
-		return storage;
-	}
+    public QueueObjectStorageFactorySetting getStorage() {
+        return storage;
+    }
 
-	public AsyncObjectStorageFactoriesProperties setStorage(QueueObjectStorageFactorySetting storage) {
-		this.storage = storage;
-		return this;
-	}
+    public AsyncObjectStorageFactoriesProperties setStorage(QueueObjectStorageFactorySetting storage) {
+        this.storage = storage;
+        return this;
+    }
 
-	public Map<String, QueueObjectStorageFactorySetting> getStorages() {
-		return storages;
-	}
+    public Map<String, QueueObjectStorageFactorySetting> getStorages() {
+        return storages;
+    }
 
-	public AsyncObjectStorageFactoriesProperties setStorages(
-			Map<String, QueueObjectStorageFactorySetting> storages) {
-		this.storages = storages;
-		return this;
-	}
+    public AsyncObjectStorageFactoriesProperties setStorages(
+            Map<String, QueueObjectStorageFactorySetting> storages) {
+        this.storages = storages;
+        return this;
+    }
 
 }

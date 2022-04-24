@@ -14,9 +14,9 @@ import com.tny.game.net.transport.*;
  */
 public class VoidAuthenticateValidator<T> implements AuthenticateValidator<T> {
 
-	@Override
-	public Certificate<T> validate(Tunnel<T> tunnel, Message message, CertificateFactory<T> factory) throws CommandException, ValidationException {
-		throw new UnsupportedOperationException();
-	}
+    @Override
+    public Certificate<T> validate(Tunnel<T> tunnel, Message message, CertificateFactory<T> factory) throws CommandException, ValidationException {
+        throw new UnsupportedOperationException();
+    }
 
 }

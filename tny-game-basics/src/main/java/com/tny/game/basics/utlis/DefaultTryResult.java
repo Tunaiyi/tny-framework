@@ -23,14 +23,16 @@ class DefaultTryResult<M> extends BaseDoneResult<M, DefaultTryResult<M>> impleme
 
     @Override
     public void ifFailedToTry(Consumer<DefaultTryResult<M>> consumer) {
-        if (!this.isSuccess())
+        if (!this.isSuccess()) {
             consumer.accept(this);
+        }
     }
 
     @Override
     public void ifSucceedToTry(Consumer<DefaultTryResult<M>> consumer) {
-        if (this.isSuccess())
+        if (this.isSuccess()) {
             consumer.accept(this);
+        }
     }
 
     @Override

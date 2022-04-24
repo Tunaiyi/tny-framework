@@ -11,31 +11,31 @@ import java.util.Set;
  */
 public interface RemoteRelayTunnel<UID> extends NetRelayTunnel<UID> {
 
-	/**
-	 * 绑定转发连接
-	 *
-	 * @param link 转发连接
-	 */
-	void bindLink(RemoteRelayLink link);
+    /**
+     * 绑定转发连接
+     *
+     * @param link 转发连接
+     */
+    void bindLink(RemoteRelayLink link);
 
-	/**
-	 * 解绑转发连接
-	 *
-	 * @param link 转发连接
-	 */
-	void unbindLink(RemoteRelayLink link);
+    /**
+     * 解绑转发连接
+     *
+     * @param link 转发连接
+     */
+    void unbindLink(RemoteRelayLink link);
 
-	/**
-	 * 更具 集群id 获取转发连接
-	 *
-	 * @param service 服务名
-	 * @return 返回获取的转发连接
-	 */
-	RemoteRelayLink getLink(String service);
+    /**
+     * 更具 集群id 获取转发连接
+     *
+     * @param service 服务名
+     * @return 返回获取的转发连接
+     */
+    RemoteRelayLink getLink(String service);
 
-	/**
-	 * @return 获取所有转发连接的 key
-	 */
-	Set<String> getLinkKeys();
+    /**
+     * @return 获取所有转发连接的 key
+     */
+    Set<String> getLinkKeys();
 
 }

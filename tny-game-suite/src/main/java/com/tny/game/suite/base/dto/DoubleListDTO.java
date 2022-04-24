@@ -6,7 +6,6 @@ import com.tny.game.suite.*;
 
 import java.util.*;
 
-
 @ProtoEx(SuiteProtoIDs.DOUBLE_LIST_DTO)
 @DTODoc("通用Double List DTO")
 public class DoubleListDTO {
@@ -41,4 +40,5 @@ public class DoubleListDTO {
             text += value;
         return text;
     }
+
 }

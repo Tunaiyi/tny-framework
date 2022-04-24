@@ -4,10 +4,10 @@ import io.netty.channel.ChannelPipeline;
 
 public interface ChannelPipelineChain {
 
-	default void beforeMake(ChannelPipeline channelPipeline) throws Exception {
-	}
+    default void beforeMake(ChannelPipeline channelPipeline) throws Exception {
+    }
 
-	default void afterMake(ChannelPipeline channelPipeline) throws Exception {
-	}
+    default void afterMake(ChannelPipeline channelPipeline) throws Exception {
+    }
 
 }

@@ -12,19 +12,19 @@ import com.tny.game.net.message.*;
  */
 public interface Transport {
 
-	/**
-	 * 写出消息
-	 *
-	 * @param message 发送消息
-	 * @param promise 发送promise
-	 */
-	MessageWriteAwaiter write(Message message, MessageWriteAwaiter promise) throws NetException;
+    /**
+     * 写出消息
+     *
+     * @param message 发送消息
+     * @param promise 发送promise
+     */
+    MessageWriteAwaiter write(Message message, MessageWriteAwaiter promise) throws NetException;
 
-	/**
-	 * 写出消息
-	 *
-	 * @param context 发送消息
-	 */
-	MessageWriteAwaiter write(MessageAllocator allocator, MessageContext context) throws NetException;
+    /**
+     * 写出消息
+     *
+     * @param context 发送消息
+     */
+    MessageWriteAwaiter write(MessageAllocator allocator, MessageContext context) throws NetException;
 
 }

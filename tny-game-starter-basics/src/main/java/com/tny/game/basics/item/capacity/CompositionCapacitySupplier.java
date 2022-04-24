@@ -8,16 +8,16 @@ import java.util.Collection;
  */
 public interface CompositionCapacitySupplier extends CompositeCapacitySupplier {
 
-	CapacitySupplierComposition composition();
+    CapacitySupplierComposition composition();
 
-	@Override
-	default Collection<? extends CapacitySupplier> suppliers() {
-		return composition().suppliers();
-	}
+    @Override
+    default Collection<? extends CapacitySupplier> suppliers() {
+        return composition().suppliers();
+    }
 
-	@Override
-	default Number getCapacity(Capacity capacity) {
-		return getCapacity(capacity, null);
-	}
+    @Override
+    default Number getCapacity(Capacity capacity) {
+        return getCapacity(capacity, null);
+    }
 
 }

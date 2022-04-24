@@ -4,11 +4,11 @@ import static com.tny.game.common.utils.ObjectAide.*;
 
 public abstract class GameManager<O> extends QueryManager<O> {
 
-	protected final Class<O> entityClass;
+    protected final Class<O> entityClass;
 
-	protected GameManager(Class<? extends O> entityClass) {
-		super();
-		this.entityClass = as(entityClass);
-	}
+    protected GameManager(Class<? extends O> entityClass) {
+        super();
+        this.entityClass = as(entityClass);
+    }
 
 }

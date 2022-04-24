@@ -8,23 +8,23 @@ package com.tny.game.net.message;
  */
 public enum MessageType {
 
-	MESSAGE(CodecConstants.DATA_PACK_OPTION_MESSAGE_TYPE_VALUE_MESSAGE),
+    MESSAGE(CodecConstants.DATA_PACK_OPTION_MESSAGE_TYPE_VALUE_MESSAGE),
 
-	PING(CodecConstants.DATA_PACK_OPTION_MESSAGE_TYPE_VALUE_PING),
+    PING(CodecConstants.DATA_PACK_OPTION_MESSAGE_TYPE_VALUE_PING),
 
-	PONE(CodecConstants.DATA_PACK_OPTION_MESSAGE_TYPE_VALUE_PONG),
+    PONE(CodecConstants.DATA_PACK_OPTION_MESSAGE_TYPE_VALUE_PONG),
 
-	//
-	;
+    //
+    ;
 
-	byte option;
+    byte option;
 
-	MessageType(byte packageOptionMark) {
-		this.option = packageOptionMark;
-	}
+    MessageType(byte packageOptionMark) {
+        this.option = packageOptionMark;
+    }
 
-	public byte getOption() {
-		return this.option;
-	}
+    public byte getOption() {
+        return this.option;
+    }
 
 }

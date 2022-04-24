@@ -15,24 +15,24 @@ import java.util.function.Function;
 
 public class IdObjectSerializer<T> extends JsonSerializer<T> {
 
-	private final Function<T, Integer> supplier;
+    private final Function<T, Integer> supplier;
 
-	public IdObjectSerializer(Function<T, Integer> supplier) {
-		this.supplier = (v) -> {
-			if (v == null) {
-				return null;
-			}
-			return supplier.apply(v);
-		};
-	}
+    public IdObjectSerializer(Function<T, Integer> supplier) {
+        this.supplier = (v) -> {
+            if (v == null) {
+                return null;
+            }
+            return supplier.apply(v);
+        };
+    }
 
-	@Override
-	public void serialize(T value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-		if (value == null) {
-			gen.writeNull();
-		} else {
-			gen.writeNumber(supplier.apply(value));
-		}
-	}
+    @Override
+    public void serialize(T value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+        if (value == null) {
+            gen.writeNull();
+        } else {
+            gen.writeNumber(supplier.apply(value));
+        }
+    }
 
 }

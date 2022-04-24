@@ -10,12 +10,12 @@ import java.util.concurrent.Executor;
  */
 public interface Flow extends Runnable, Wait<Object> {
 
-	void cancel();
+    void cancel();
 
-	<T> Stage<T> find(Object name);
+    <T> Stage<T> find(Object name);
 
-	Flow start();
+    Flow start();
 
-	Flow start(Executor executor);
+    Flow start(Executor executor);
 
 }

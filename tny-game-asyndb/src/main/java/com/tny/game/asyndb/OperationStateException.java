@@ -11,7 +11,9 @@ public class OperationStateException extends Exception {
      *
      */
     private static final long serialVersionUID = -1;
+
     private AsyncDBState state;
+
     private Operation operation;
 
     public OperationStateException(String msg, AsyncDBState state, Operation operation) {

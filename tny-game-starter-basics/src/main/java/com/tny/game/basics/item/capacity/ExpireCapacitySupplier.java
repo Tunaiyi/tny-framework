@@ -6,9 +6,9 @@ package com.tny.game.basics.item.capacity;
  */
 public interface ExpireCapacitySupplier extends CapacitySupplier, ExpireCapable {
 
-	@Override
-	default boolean isWorking() {
-		return !isExpire();
-	}
+    @Override
+    default boolean isWorking() {
+        return !isExpire();
+    }
 
 }
