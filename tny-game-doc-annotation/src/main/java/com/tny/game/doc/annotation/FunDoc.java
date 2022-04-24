@@ -1,8 +1,8 @@
 package com.tny.game.doc.annotation;
 
-
 import java.lang.annotation.*;
 
+@Inherited
 @Target({ElementType.CONSTRUCTOR, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
