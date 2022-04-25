@@ -46,7 +46,7 @@ public class OpLogSnapshotLoader {
                 }
             }
             OpLogSnapshotLoader.selector = null;
-            LOGGER.info("开始初始化 OpLogSnapshot 完成! 耗时 {} ms", RunChecker.end(OpLogSnapshotLoader.class).costTime());
+            LOGGER.info("开始初始化 OpLogSnapshot 完成! 耗时 {} ms", RunChecker.end(OpLogSnapshotLoader.class).costMillisTime());
         });
     }
 

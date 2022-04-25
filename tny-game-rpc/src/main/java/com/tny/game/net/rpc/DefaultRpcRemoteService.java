@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @date : 2021/11/3 6:11 下午
  */
 @EventBusListener
-public class DefaultRpcRemoteService implements RpcRemoteService, EndpointKeeperCreateListener<RpcLinkerId> {
+public class DefaultRpcRemoteService implements RpcRemoteService, EndpointKeeperCreateListener<RpcAccessId> {
 
     private final Map<String, RpcRemoteServicer> servicerMap = new ConcurrentHashMap<>();
 

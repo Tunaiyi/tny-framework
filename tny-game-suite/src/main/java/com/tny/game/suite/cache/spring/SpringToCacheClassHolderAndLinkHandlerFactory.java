@@ -180,7 +180,7 @@ public class SpringToCacheClassHolderAndLinkHandlerFactory
                 clazz = cl;
                 SpringToCacheClassHolderAndLinkHandlerFactory.this.register(cl);
             }
-            LOGGER.info("开始初始化 ToCacheClassHolder 完成! 耗时 {} ms", RunChecker.end(this.getClass()).costTime());
+            LOGGER.info("开始初始化 ToCacheClassHolder 完成! 耗时 {} ms", RunChecker.end(this.getClass()).costMillisTime());
         } catch (Throwable e) {
             throw new RuntimeException(format("获取 {} 类 GameToCacheClassHolderAndLinkHandlerFactory 错误", clazz), e);
         }

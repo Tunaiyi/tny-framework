@@ -27,15 +27,15 @@ public class DefaultRpcAuthService implements RpcAuthService {
     }
 
     @Override
-    public DoneResult<RpcLinkerId> authenticate(String service, long serverId, long instance, String password) {
+    public DoneResult<RpcAccessId> authenticate(String service, long serverId, long instance, String password) {
         if (rpcUserPasswordManager.auth(service, serverId, instance, password)) {
-            return DoneResults.success(new RpcLinkerId(service, serverId, instance));
+            return DoneResults.success(new RpcAccessId(service, serverId, instance));
         }
         return DoneResults.failure(NetResultCode.VALIDATOR_FAIL_ERROR);
     }
 
     @Override
-    public String createToken(String serviceName, RpcLinkerId id) {
+    public String createToken(String serviceName, RpcAccessId id) {
         RpcToken token = new RpcToken(serviceName, netAppContext.getServerId(), id.getId(), id);
         try {
             return objectMapper.writeValueAsString(token);

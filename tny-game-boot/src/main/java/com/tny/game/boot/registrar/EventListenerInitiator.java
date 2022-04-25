@@ -15,11 +15,11 @@ public class EventListenerInitiator implements AppPrepareStart {
 
     @Override
     public void prepareStart() {
-        Map<String, Object> listenerMap = this.context.getBeansWithAnnotation(EventListener.class);
+        Map<String, Object> listenerMap = this.context.getBeansWithAnnotation(EventBusListener.class);
         List<Object> listenerList = new ArrayList<>(listenerMap.values());
         listenerList.sort((o1, o2) -> {
-            EventListener l1 = o1.getClass().getAnnotation(EventListener.class);
-            EventListener l2 = o2.getClass().getAnnotation(EventListener.class);
+            EventBusListener l1 = o1.getClass().getAnnotation(EventBusListener.class);
+            EventBusListener l2 = o2.getClass().getAnnotation(EventBusListener.class);
             return l1.level() - l2.level();
         });
         listenerList.forEach(GlobalListenerHolder.getInstance()::addListener);

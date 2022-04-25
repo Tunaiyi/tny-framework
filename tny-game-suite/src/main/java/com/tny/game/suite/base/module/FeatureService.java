@@ -102,7 +102,7 @@ public abstract class FeatureService<DTO> implements AppPrepareStart, Applicatio
                         explorer.open(model);
                     }
                     if (this.LOGGER.isInfoEnabled()) {
-                        long time = RunChecker.end(model.getFeature()).costTime();
+                        long time = RunChecker.end(model.getFeature()).costMillisTime();
                         this.LOGGER.debug("{} 玩家开启 {} 功能成功! 耗时 {} ms", explorer.getPlayerId(), feature, time);
                     }
                 }

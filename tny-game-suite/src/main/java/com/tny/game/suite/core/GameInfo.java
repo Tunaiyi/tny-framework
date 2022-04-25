@@ -78,7 +78,7 @@ public class GameInfo {
             throw new RuntimeException(e);
         }
         GameInfo.GAMES_INFO_MAP = Collections.unmodifiableMap(map);
-        LOGGER.info("#itemModelManager# 装载 <{}> model 完成 | 耗时 {} ms", GameInfo.class.getName(), RunChecker.end(GameInfo.class).costTime());
+        LOGGER.info("#itemModelManager# 装载 <{}> model 完成 | 耗时 {} ms", GameInfo.class.getName(), RunChecker.end(GameInfo.class).costMillisTime());
     }
 
     public static GameInfo info() {
