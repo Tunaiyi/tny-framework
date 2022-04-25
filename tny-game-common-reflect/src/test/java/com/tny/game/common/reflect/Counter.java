@@ -2,7 +2,7 @@ package com.tny.game.common.reflect;
 
 import com.tny.game.common.event.bus.annotation.*;
 
-@EventListener
+@EventBusListener
 public class Counter {
 
     private double number;

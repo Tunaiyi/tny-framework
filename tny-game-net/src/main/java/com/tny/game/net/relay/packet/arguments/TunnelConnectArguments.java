@@ -27,7 +27,7 @@ public class TunnelConnectArguments extends BaseTunnelPacketArguments {
         for (int i = 0; i < ipValue.length; i++) {
             ipValue[i] = ip[i] & 0xff;
         }
-        this.ip = StringUtils.join(ipValue, ',');
+        this.ip = StringUtils.join(ipValue, '.');
         this.port = port;
     }
 

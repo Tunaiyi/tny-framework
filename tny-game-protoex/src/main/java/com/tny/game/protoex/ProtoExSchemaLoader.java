@@ -46,7 +46,7 @@ public final class ProtoExSchemaLoader {
                 throw new IllegalArgumentException(format("{} protoID 与 {} protoID 都为 {}", clazz, old, schema.getProtoExId()));
             }
         }
-        LOGGER.info("开始初始化 ProtoSchema 完成! 耗时 {} ms", RunChecker.end(ProtoExSchemaLoader.class).costTime());
+        LOGGER.info("开始初始化 ProtoSchema 完成! 耗时 {} ms", RunChecker.end(ProtoExSchemaLoader.class).costMicroTime());
         selector.clear();
     }
 

@@ -155,7 +155,7 @@ public abstract class LoadableModelManager<M extends Model> extends BaseModelMan
             }
         }
         LOGGER.info("#itemModelManager# 装载 <{}> model [{}] 完成 | 耗时 {} ms", path, this.modelClass.getName(),
-                RunChecker.end(this.getClass()).costTime());
+                RunChecker.end(this.getClass()).costMicroTime());
     }
 
     protected void parseComplete(List<M> models) {

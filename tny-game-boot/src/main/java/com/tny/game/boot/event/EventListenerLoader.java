@@ -1,7 +1,7 @@
 package com.tny.game.boot.event;
 
 import com.tny.game.common.concurrent.collection.*;
-import com.tny.game.common.event.bus.annotation.EventListener;
+import com.tny.game.common.event.bus.annotation.*;
 import com.tny.game.scanner.*;
 import com.tny.game.scanner.annotation.*;
 import com.tny.game.scanner.filter.*;
@@ -24,7 +24,7 @@ public final class EventListenerLoader {
     @ClassSelectorProvider
     public static ClassSelector controllerSelector() {
         return ClassSelector.create()
-                .addFilter(AnnotationClassFilter.ofInclude(EventListener.class))
+                .addFilter(AnnotationClassFilter.ofInclude(EventBusListener.class))
                 .setHandler((classes) -> classes.stream()
                         .filter((c) -> !c.isInterface() && !Modifier.isAbstract(c.getModifiers()))
                         .forEach(CLASSES::add)

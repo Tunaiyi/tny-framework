@@ -7,7 +7,7 @@ import com.tny.game.boot.transaction.*;
 import com.tny.game.boot.transaction.listener.*;
 import com.tny.game.common.concurrent.collection.*;
 import com.tny.game.common.context.*;
-import com.tny.game.common.event.bus.annotation.EventListener;
+import com.tny.game.common.event.bus.annotation.*;
 import com.tny.game.common.reflect.aop.*;
 import com.tny.game.net.command.dispatcher.*;
 import org.slf4j.*;
@@ -18,7 +18,7 @@ import java.util.Map.Entry;
 
 import static com.tny.game.common.utils.StringAide.*;
 
-@EventListener
+@EventBusListener
 public final class AutoManageAdvice implements TransactionListener, AfterReturningAdvice, ThrowsAdvice {
 
     private final GameExplorer explorer;

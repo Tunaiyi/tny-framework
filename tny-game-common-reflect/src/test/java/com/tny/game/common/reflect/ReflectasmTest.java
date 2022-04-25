@@ -24,7 +24,7 @@ public class ReflectasmTest {
             this.map.put(annotation.getClass(), annotation);
         long time = System.currentTimeMillis();
         for (int index = 0; index < this.times; index++) {
-            this.map.get(EventListener.class);
+            this.map.get(EventBusListener.class);
         }
         System.out.println("map ann " + (System.currentTimeMillis() - time));
     }
@@ -32,10 +32,10 @@ public class ReflectasmTest {
     @Test
     public void testGetAnn2() {
         Class<?> clazz = Counter.class;
-        clazz.getAnnotation(EventListener.class);
+        clazz.getAnnotation(EventBusListener.class);
         long time = System.currentTimeMillis();
         for (int index = 0; index < this.times; index++) {
-            clazz.getAnnotation(EventListener.class);
+            clazz.getAnnotation(EventBusListener.class);
         }
         System.out.println("class get " + (System.currentTimeMillis() - time));
     }

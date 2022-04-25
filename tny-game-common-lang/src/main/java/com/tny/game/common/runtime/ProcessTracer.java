@@ -85,8 +85,12 @@ public class ProcessTracer implements AutoCloseable {
         }
     }
 
-    public long costTime() {
+    public long costMicroTime() {
         return this.endAt - this.startAt;
+    }
+
+    public long costMillisTime() {
+        return TimeUnit.MICROSECONDS.toMillis(this.endAt - this.startAt);
     }
 
     public ProcessTracer done() {
@@ -96,7 +100,7 @@ public class ProcessTracer implements AutoCloseable {
     public ProcessTracer done(String message, Object... params) {
         this.end(message, params);
         if (this.printOption.isOnSettle()) {
-            this.log("执行监控 [ {} ] 跟踪执行 < {} > | 执行耗时 [##] : {} us", this.watcher, this.getId(), this.costTime());
+            this.log("执行监控 [ {} ] 跟踪执行 < {} > | 执行耗时 [##] : {} us", this.watcher, this.getId(), this.costMicroTime());
         }
         return this;
     }

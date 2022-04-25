@@ -179,7 +179,7 @@ public class ProcessWatcher {
     private void onDone(ProcessTracer motion) {
         this.cycleDoneTimes.add(1);
         this.totalDoneTimes.add(1);
-        long cost = motion.costTime();
+        long cost = motion.costMicroTime();
         this.cycleCostTime.add(cost);
         this.totalCostTime.add(cost);
     }
