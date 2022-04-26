@@ -8,6 +8,8 @@ import org.graalvm.polyglot.Context;
 
 import javax.script.*;
 import java.time.Instant;
+import java.util.*;
+import java.util.concurrent.*;
 
 /**
  * Created by Kun Yang on 2018/5/24.
@@ -72,14 +74,19 @@ public class GraalJsExprHolderFactory extends ScriptExprHolderFactory {
                         + "let a = 100;"
                         + "MathAide.rand(a);"
                         + "};");
-        System.out.println(holder3.createExpr().execute(Integer.class));
-
         ExprHolder holder4 = factory
                 .create("{" +
                         "let a = 10;" +
                         "a;" +
                         "}");
-        System.out.println(holder4.createExpr().execute(Integer.class));
+        List<ForkJoinTask<?>> tasks = new ArrayList<>();
+        for (int n = 0; n < 100; n++) {
+            tasks.add(ForkJoinPool.commonPool().submit(() -> System.out.println(holder3.createExpr().execute(Integer.class))));
+        }
+        for (int n = 0; n < 100; n++) {
+            tasks.add(ForkJoinPool.commonPool().submit(() -> System.out.println(holder4.createExpr().execute(Integer.class))));
+        }
+        tasks.forEach(ForkJoinTask::join);
     }
 
 }

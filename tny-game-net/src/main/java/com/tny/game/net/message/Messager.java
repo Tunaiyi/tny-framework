@@ -9,8 +9,8 @@ package com.tny.game.net.message;
  **/
 public interface Messager {
 
-    long getIdentity();
+    long getMessagerId();
 
-    MessagerType getType();
+    MessagerType getMessagerType();
 
 }
