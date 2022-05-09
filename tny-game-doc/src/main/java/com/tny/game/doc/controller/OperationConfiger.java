@@ -4,7 +4,7 @@ import com.thoughtworks.xstream.annotations.*;
 import com.tny.game.common.result.*;
 import com.tny.game.doc.*;
 import com.tny.game.doc.holder.*;
-import com.tny.game.net.command.*;
+import com.tny.game.net.base.*;
 import com.tny.game.net.rpc.*;
 import org.apache.commons.lang3.StringUtils;
 

@@ -46,7 +46,7 @@ public class LocalTunnelRelayer {
                 promise.completeExceptionally(new NetGeneralException(code));
             }
             LOGGER.warn("# Tunnel ({}) 服务器主动关闭连接, {} 集群无可以用 link", tunnel, this.service);
-            TunnelAide.responseMessage(tunnel, MessageContexts.push(Protocols.PUSH, code));
+            TunnelAide.responseMessage(tunnel, code, MessageContexts.push(Protocols.PUSH, code));
         }
         return promise;
     }

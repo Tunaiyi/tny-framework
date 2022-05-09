@@ -13,19 +13,4 @@ public abstract class AbstractCommunicator<UID> extends AttributesHolder impleme
     protected AbstractCommunicator() {
     }
 
-    @Override
-    public UID getUserId() {
-        return getCertificate().getUserId();
-    }
-
-    @Override
-    public String getUserType() {
-        return getCertificate().getUserType();
-    }
-
-    @Override
-    public boolean isAuthenticated() {
-        return this.getCertificate().isAuthenticated();
-    }
-
 }

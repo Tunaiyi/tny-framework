@@ -4,7 +4,7 @@ public abstract class BaseCommand implements Command {
 
     protected final String name;
 
-    protected boolean executed = false;
+    private boolean done = false;
 
     public BaseCommand() {
         this(null);
@@ -21,7 +21,7 @@ public abstract class BaseCommand implements Command {
         } catch (Exception exception) {
             throw new RuntimeException(exception);
         } finally {
-            executed = true;
+            done = true;
         }
     }
 
@@ -37,7 +37,7 @@ public abstract class BaseCommand implements Command {
 
     @Override
     public boolean isDone() {
-        return this.executed;
+        return this.done;
     }
 
 }

@@ -1,9 +1,13 @@
 package com.tny.game.net.transport;
 
+import com.tny.game.common.result.*;
+
 /**
  * Created by Kun Yang on 2017/2/16.
  */
 public abstract class RequestContext extends MessageContext {
+
+    public abstract MessageContext withCode(ResultCode code);
 
     /**
      * @param body 设置 Message Body

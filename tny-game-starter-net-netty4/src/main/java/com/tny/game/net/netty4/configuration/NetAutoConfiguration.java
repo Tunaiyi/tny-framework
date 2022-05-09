@@ -36,14 +36,23 @@ import org.springframework.context.annotation.*;
  * Created by Kun Yang on 16/1/27.
  */
 @Configuration(proxyBeanMethods = false)
-@EnableConfigurationProperties({SpringNetAppProperties.class, SpringNetEndpointProperties.class, ReadIdlePipelineChainProperties.class,
-        DisruptorEndpointCommandTaskProcessorProperties.class, ForkJoinEndpointCommandTaskProcessorProperties.class,})
+@EnableConfigurationProperties({
+        SpringNetAppProperties.class,
+        SpringNetEndpointProperties.class,
+        ReadIdlePipelineChainProperties.class,
+        DisruptorEndpointCommandTaskProcessorProperties.class,
+        ForkJoinEndpointCommandTaskProcessorProperties.class,})
 @Import({TextFilterAutoConfiguration.class, ImportControllerBeanDefinitionRegistrar.class,})
 public class NetAutoConfiguration {
 
     @Bean
     public CertificateFactory<?> defaultCertificateFactory() {
         return new DefaultCertificateFactory<>();
+    }
+
+    @Bean
+    public CertificateFactory<?> defaultMessagerCertificateFactory() {
+        return new DefaultMessagerCertificateFactory<>();
     }
 
     @Bean
@@ -56,8 +65,8 @@ public class NetAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean(EndpointService.class)
     @ConditionalOnBean(EndpointKeeperManager.class)
-    public EndpointService endpointService() {
-        return new EndpointService();
+    public EndpointService endpointService(EndpointKeeperManager endpointKeeperManager) {
+        return new EndpointService(endpointKeeperManager);
     }
 
     @Bean
@@ -163,6 +172,11 @@ public class NetAutoConfiguration {
     @Bean
     public ServerTunnelFactory defaultNettyTunnelFactory() {
         return new ServerTunnelFactory();
+    }
+
+    @Bean
+    public MessageHeaderCodec defaultMessageHeaderCodec() {
+        return new DefaultMessageHeaderCodec();
     }
 
     @Bean

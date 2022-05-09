@@ -30,6 +30,8 @@ public class NettyMessageHandler extends ChannelDuplexHandler {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(NettyMessageHandler.class);
 
+    private RpcForwarder messageForwarder;
+
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         if (LOGGER.isInfoEnabled()) {
@@ -74,7 +76,7 @@ public class NettyMessageHandler extends ChannelDuplexHandler {
                     channel.remoteAddress(), channel.localAddress(), code, code.getCode(), code.getMessage(), cause.getMessage(), cause);
             NetTunnel<?> tunnel = channel.attr(NettyNetAttrKeys.TUNNEL).getAndSet(null);
             if (tunnel != null) {
-                TunnelAide.responseMessage(tunnel, MessageContexts.push(PUSH, code));
+                TunnelAide.responseMessage(tunnel, code, MessageContexts.push(PUSH, code));
             }
         } else {
             LOGGER.error("[Tunnel]  ## 通道 {} ==> {} 异常 # cause {}({})[{}], message:{}",

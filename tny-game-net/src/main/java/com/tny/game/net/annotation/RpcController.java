@@ -20,10 +20,6 @@ public @interface RpcController {
     /**
      * @return 默认处理所有
      */
-    MessageMode[] modes() default {
-            MessageMode.REQUEST,
-            MessageMode.RESPONSE,
-            MessageMode.PUSH
-    };
+    MessageMode[] modes() default {};
 
 }

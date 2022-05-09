@@ -27,7 +27,7 @@ import static java.nio.charset.StandardCharsets.*;
 public class CoderTest {
 
     public static void main(String[] args) throws Exception {
-        DatagramPackCodecSetting config = new DatagramPackCodecSetting();
+        NetPacketCodecSetting config = new NetPacketCodecSetting();
         NettyMessageCodec codec = new DefaultNettyMessageCodec(new MessageBodyCodec<String>() {
 
             @Override
@@ -42,8 +42,8 @@ public class CoderTest {
                 code.writeBytes(bytes);
             }
 
-        });
-        DatagramPackV1Encoder packetV1Encoder = new DatagramPackV1Encoder(config);
+        }, new DefaultMessageHeaderCodec());
+        NetPacketV1Encoder packetV1Encoder = new NetPacketV1Encoder(config);
         packetV1Encoder.setMessageCodec(codec);
         CommonMessageFactory messageFactory = new CommonMessageFactory();
         ChannelHandlerContext ctx = mockAs(ChannelHandlerContext.class);
@@ -88,7 +88,7 @@ public class CoderTest {
         } catch (Throwable e) {
             e.printStackTrace();
         }
-        DatagramPackV1Decoder packetV1Decoder = new DatagramPackV1Decoder(config);
+        NetPacketV1Decoder packetV1Decoder = new NetPacketV1Decoder(config);
         packetV1Decoder.setMessageCodec(codec);
         DatagramPackDecodeHandler decoder = new DatagramPackDecodeHandler(packetV1Decoder, true);
         byteBuf = allocator.buffer();

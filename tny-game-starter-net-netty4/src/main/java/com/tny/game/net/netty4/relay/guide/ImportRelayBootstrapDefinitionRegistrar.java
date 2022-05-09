@@ -66,7 +66,8 @@ public class ImportRelayBootstrapDefinitionRegistrar extends ImportConfiguration
         String messageCodecName = name + codeType + NettyMessageCodec.class;
         BeanDefinitionBuilder messageCodecBuilder = BeanDefinitionBuilder
                 .genericBeanDefinition(DefaultNettyMessageCodec.class)
-                .addConstructorArgReference(setting.getMessageBodyCodec());
+                .addConstructorArgReference(setting.getMessageBodyCodec())
+                .addConstructorArgReference(setting.getMessageHeaderCodec());
         if (setting.isHasRelayStrategy()) {
             messageCodecBuilder.addConstructorArgReference(setting.getMessageRelayStrategy());
         }
@@ -91,8 +92,8 @@ public class ImportRelayBootstrapDefinitionRegistrar extends ImportConfiguration
         RelayPacketArgumentsCodecService decoderArgumentsCodecService =
                 registerRelayPacketArgumentsCodecService(setting.getName(), "Decoder", registry, decoderConfig);
 
-        RelayPackEncoder encoder = new RelayPackV1Encoder(encoderArgumentsCodecService);
-        RelayPackDecoder decoder = new RelayPackV1Decoder(decoderArgumentsCodecService);
+        RelayPacketEncoder encoder = new RelayPacketV1Encoder(encoderArgumentsCodecService);
+        RelayPacketDecoder decoder = new RelayPacketV1Decoder(decoderArgumentsCodecService);
         NettyChannelMakerSetting channelMaker = channelSetting.getMaker();
         Class<RelayPackChannelMaker<?>> channelMakerClass = as(channelMaker.getMakerClass());
         RelayPackChannelMaker<?> maker;

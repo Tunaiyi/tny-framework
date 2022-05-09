@@ -1,5 +1,7 @@
 package com.tny.game.net.rpc.auth;
 
+import com.tny.game.net.base.*;
+
 /**
  * <p>
  *
@@ -8,6 +10,6 @@ package com.tny.game.net.rpc.auth;
  */
 public interface RpcUserPasswordManager {
 
-    boolean auth(String service, long serverId, long instance, String password);
+    boolean auth(RpcAccessIdentify identify, String password);
 
 }

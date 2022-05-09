@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 @RedisObject
 @ProtobufClass
-@Codecable(ProtobufMimeType.PROTOBUF)
+@Codable(ProtobufMimeType.PROTOBUF)
 @EntityObject
 @Document
 public class DemoPlayer {

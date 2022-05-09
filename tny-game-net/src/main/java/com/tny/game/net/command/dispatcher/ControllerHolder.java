@@ -1,12 +1,12 @@
 package com.tny.game.net.command.dispatcher;
 
-import com.google.common.collect.*;
+import com.google.common.collect.ImmutableList;
 import com.tny.game.common.utils.*;
 import com.tny.game.expr.*;
 import com.tny.game.net.annotation.*;
+import com.tny.game.net.base.*;
 import com.tny.game.net.command.auth.*;
 import com.tny.game.net.command.plugins.*;
-import com.tny.game.net.message.*;
 
 import java.lang.annotation.Annotation;
 import java.util.*;
@@ -25,11 +25,6 @@ public abstract class ControllerHolder {
      * 是否需要验证授权
      */
     protected final AuthenticationRequired auth;
-
-    /**
-     * 消息处理
-     */
-    protected Set<MessageMode> messageModes;
 
     /**
      * 执行前插件
@@ -89,16 +84,6 @@ public abstract class ControllerHolder {
         }
     }
 
-    protected ControllerHolder setMessageModes(Set<MessageMode> messageModes) {
-        this.messageModes = ImmutableSet.copyOf(messageModes);
-        return this;
-    }
-
-    protected ControllerHolder setMessageModes(MessageMode... messageModes) {
-        this.messageModes = ImmutableSet.copyOf(messageModes);
-        return this;
-    }
-
     @SuppressWarnings({"rawtypes"})
     private <A extends Annotation> ImmutableList<CommandPluginHolder> initPlugins(MessageDispatcherContext context,
             final Collection<? extends A> pluginAnnotations,
@@ -126,7 +111,7 @@ public abstract class ControllerHolder {
         return this.auth != null && this.auth.enable();
     }
 
-    public Class<? extends AuthenticateValidator<?>> getAuthValidator() {
+    public Class<? extends AuthenticateValidator<?, ?>> getAuthValidator() {
         if (this.auth != null && this.auth.enable() && this.auth.validator() != AuthenticateValidator.class) {
             return as(this.auth.validator());
         }
@@ -137,8 +122,8 @@ public abstract class ControllerHolder {
         return this.controllerClass;
     }
 
-    public boolean isUserGroup(String group) {
-        return this.userGroups == null || this.userGroups.isEmpty() || this.userGroups.contains(group);
+    public boolean isUserGroup(MessagerType messagerType) {
+        return this.userGroups == null || this.userGroups.isEmpty() || this.userGroups.contains(messagerType.getGroup());
     }
 
     public boolean isActiveByAppType(String appType) {
@@ -158,9 +143,5 @@ public abstract class ControllerHolder {
     public abstract <A extends Annotation> A getAnnotation(Class<A> annotationClass);
 
     public abstract <A extends Annotation> List<A> getAnnotations(Class<A> annotationClass);
-
-    public Set<MessageMode> getMessageModes() {
-        return this.messageModes;
-    }
 
 }

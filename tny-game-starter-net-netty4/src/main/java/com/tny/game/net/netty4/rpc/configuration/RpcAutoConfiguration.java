@@ -1,16 +1,19 @@
 package com.tny.game.net.netty4.rpc.configuration;
 
 import com.tny.game.net.base.*;
+import com.tny.game.net.message.*;
 import com.tny.game.net.netty4.rpc.service.*;
 import com.tny.game.net.relay.cluster.*;
 import com.tny.game.net.rpc.*;
 import com.tny.game.net.rpc.auth.*;
+import com.tny.game.net.transport.*;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.*;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.*;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -31,9 +34,8 @@ public class RpcAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnMissingBean(RpcRemoteService.class)
-    public RpcRemoteService rpcRemoteService(RpcProperties properties) {
-        return new DefaultRpcRemoteService(properties.getClient());
+    public RpcRemoteServiceManager defaultRpcRemoteServiceManager(RpcProperties properties) {
+        return new DefaultRpcRemoteServiceManager(properties.getClient());
     }
 
     @Bean
@@ -42,7 +44,7 @@ public class RpcAutoConfiguration {
     }
 
     @Bean
-    public RpcInstanceFactory rpcInstanceFactory(RpcSetting setting, RpcRemoteService service, RpcRouteManager manager) {
+    public RpcInstanceFactory rpcInstanceFactory(RpcSetting setting, RpcRemoteServiceManager service, RpcRouteManager manager) {
         return new RpcInstanceFactory(setting, service, manager);
     }
 
@@ -66,6 +68,12 @@ public class RpcAutoConfiguration {
     }
 
     @Bean
+    public RpcForwarder defaultRpcForwarder(RpcRemoteServiceManager rpcRemoteServiceManager, List<RpcServiceForwarderStrategy> strategies) {
+        return new DefaultRpcForwarder(rpcRemoteServiceManager, new FirstRpcForwarderStrategy(), strategies);
+    }
+
+    @Bean
+    @ConditionalOnBean(NetAppContext.class)
     @ConditionalOnMissingBean(RpcAuthService.class)
     public RpcAuthService rpcAuthService(NetAppContext netAppContext, RpcUserPasswordManager rpcUserPasswordManager) {
         return new DefaultRpcAuthService(netAppContext, rpcUserPasswordManager);

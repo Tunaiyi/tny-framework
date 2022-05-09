@@ -33,11 +33,11 @@ public abstract class ImportRedisBeanDefinitionRegistrar implements ImportBeanDe
     }
 
     private void register(BeanDefinitionRegistry registry, Class<?> entityClass, RedisObject source, boolean primary) {
-        Codecable codecable = source.codec();
+        Codable codecable = source.codec();
         String mimeType = MimeTypeAide.getMimeType(codecable);
         if (Objects.equals(mimeType, MimeTypeAide.NONE)) {
-            codecable = entityClass.getAnnotation(Codecable.class);
-            Asserts.checkNotNull(codecable, "{} is not {} annotation", entityClass, Codecable.class);
+            codecable = entityClass.getAnnotation(Codable.class);
+            Asserts.checkNotNull(codecable, "{} is not {} annotation", entityClass, Codable.class);
             mimeType = MimeTypeAide.getMimeType(codecable);
         }
         Asserts.checkArgument(StringUtils.isNotBlank(mimeType), "{} mimeType must not blank {} ", entityClass, mimeType);

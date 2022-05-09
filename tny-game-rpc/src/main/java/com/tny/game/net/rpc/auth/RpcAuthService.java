@@ -1,7 +1,7 @@
 package com.tny.game.net.rpc.auth;
 
 import com.tny.game.common.result.*;
-import com.tny.game.net.rpc.*;
+import com.tny.game.net.base.*;
 
 /**
  * <p>
@@ -11,10 +11,10 @@ import com.tny.game.net.rpc.*;
  */
 public interface RpcAuthService {
 
-    DoneResult<RpcAccessId> authenticate(String service, long serverId, long instance, String password);
+    DoneResult<RpcAccessIdentify> authenticate(long id, String password);
 
-    String createToken(String serviceName, RpcAccessId id);
+    String createToken(RpcServiceType serviceType, RpcAccessIdentify removeIdentify);
 
-    DoneResult<RpcToken> verifyToken(String token);
+    DoneResult<RpcAccessToken> verifyToken(String token);
 
 }

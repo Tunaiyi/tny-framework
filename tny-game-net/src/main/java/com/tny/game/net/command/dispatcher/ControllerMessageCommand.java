@@ -72,8 +72,8 @@ public class ControllerMessageCommand extends MessageCommand {
             return;
         }
         DISPATCHER_LOG.debug("Controller [{}] 检测用户组调用权限", this.getName());
-        if (!controller.isUserGroup(this.tunnel.getUserType())) {
-            DISPATCHER_LOG.error("Controller [{}] , 用户组 [{}] 无法调用此协议", this.getName(), this.tunnel.getUserType());
+        if (!controller.isUserGroup(this.tunnel.getMessagerType())) {
+            DISPATCHER_LOG.error("Controller [{}] , 用户组 [{}] 无法调用此协议", this.getName(), this.tunnel.getUserGroup());
             this.commandContext.doneAndIntercept(NetResultCode.NO_PERMISSIONS);
             return;
         }
@@ -104,7 +104,7 @@ public class ControllerMessageCommand extends MessageCommand {
      */
     private void checkAuthenticate(MethodControllerHolder controller) throws CommandException, ValidationException {
         if (!this.tunnel.isAuthenticated()) {
-            AuthenticateValidator<Object> validator = findValidator(controller);
+            AuthenticateValidator<Object, CertificateFactory<Object>> validator = findValidator(controller);
             if (validator == null) {
                 return;
             }
@@ -114,8 +114,8 @@ public class ControllerMessageCommand extends MessageCommand {
         }
     }
 
-    private AuthenticateValidator<Object> findValidator(MethodControllerHolder controller) {
-        AuthenticateValidator<Object> validator = as(this.dispatcherContext.getValidator(controller.getAuthValidator()));
+    private AuthenticateValidator<Object, CertificateFactory<Object>> findValidator(MethodControllerHolder controller) {
+        AuthenticateValidator<Object, CertificateFactory<Object>> validator = as(this.dispatcherContext.getValidator(controller.getAuthValidator()));
         if (validator != null) {
             return validator;
         }
@@ -125,7 +125,7 @@ public class ControllerMessageCommand extends MessageCommand {
     /**
      * 身份认证
      */
-    private void authenticate(AuthenticateValidator<Object> validator, CertificateFactory<Object> certificateFactory)
+    private void authenticate(AuthenticateValidator<Object, CertificateFactory<Object>> validator, CertificateFactory<Object> certificateFactory)
             throws CommandException, ValidationException {
         if (this.tunnel.isAuthenticated()) {
             return;
@@ -138,7 +138,7 @@ public class ControllerMessageCommand extends MessageCommand {
         // 是否需要做登录校验,判断是否已经登录
         if (certificate != null && certificate.isAuthenticated()) {
             EndpointKeeper<Object, Endpoint<Object>> endpointKeeper = this.endpointKeeperManager
-                    .loadEndpoint(certificate.getUserType(), this.tunnel.getMode());
+                    .loadEndpoint(certificate.getMessagerType(), this.tunnel.getMode());
             endpointKeeper.online(certificate, this.tunnel);
         }
     }

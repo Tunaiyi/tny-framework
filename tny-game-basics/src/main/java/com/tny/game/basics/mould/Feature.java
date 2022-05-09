@@ -6,6 +6,7 @@ import java.util.Collection;
 
 public interface Feature extends IntEnumerable {
 
+    @Override
     String name();
 
     Collection<Mould> dependMoulds();

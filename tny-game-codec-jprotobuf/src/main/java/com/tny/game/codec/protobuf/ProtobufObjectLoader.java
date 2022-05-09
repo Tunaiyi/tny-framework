@@ -25,11 +25,11 @@ public class ProtobufObjectLoader {
     @ClassSelectorProvider
     static ClassSelector autoMixClassesSelector() {
         return ClassSelector.create()
-                .addFilter(AnnotationClassFilter.ofInclude(Codecable.class))
+                .addFilter(AnnotationClassFilter.ofInclude(Codable.class))
                 .setHandler((classes) -> {
                     MimeType findType = MimeType.valueOf(ProtobufMimeType.PROTOBUF_WILDCARD);
                     classes.forEach(cl -> {
-                        Codecable codecable = cl.getAnnotation(Codecable.class);
+                        Codable codecable = cl.getAnnotation(Codable.class);
                         String mime = MimeTypeAide.getMimeType(codecable);
                         Asserts.checkArgument(StringUtils.isNoneBlank(mime), "{} mime {} is blank", cl, mime);
                         MimeType mimeType = MimeType.valueOf(mime);

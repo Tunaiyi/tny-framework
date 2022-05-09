@@ -1,15 +1,22 @@
 package com.tny.game.net.command;
 
+import com.tny.game.net.message.*;
+
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.*;
 
-public interface Certificate<UID> extends Serializable {
+public interface Certificate<UID> extends Messager, Serializable {
 
     /**
      * @return 获取凭证号
      */
     long getId();
+
+    /**
+     * @return 用户 ID
+     */
+    UID getUserId();
 
     /**
      * @return 是否已认证
@@ -19,14 +26,11 @@ public interface Certificate<UID> extends Serializable {
     }
 
     /**
-     * @return 用户 ID
+     * @return 用户组
      */
-    UID getUserId();
-
-    /**
-     * @return 用户类型
-     */
-    String getUserType();
+    default String getUserGroup() {
+        return this.getMessagerType().getGroup();
+    }
 
     /**
      * @return 鉴定时间
@@ -96,7 +100,7 @@ public interface Certificate<UID> extends Serializable {
             return true;
         }
         return Objects.equals(getUserId(), other.getUserId()) &&
-                Objects.equals(getUserType(), other.getUserType());
+                Objects.equals(getMessagerType(), other.getMessagerType());
     }
 
     /**
@@ -111,7 +115,7 @@ public interface Certificate<UID> extends Serializable {
         }
         return getId() == other.getId() &&
                 Objects.equals(getUserId(), other.getUserId()) &&
-                Objects.equals(getUserType(), other.getUserType());
+                Objects.equals(getMessagerType(), other.getMessagerType());
     }
 
 }

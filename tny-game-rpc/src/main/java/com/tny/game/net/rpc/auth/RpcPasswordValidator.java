@@ -2,12 +2,12 @@ package com.tny.game.net.rpc.auth;
 
 import com.tny.game.common.result.*;
 import com.tny.game.common.utils.*;
+import com.tny.game.net.base.*;
 import com.tny.game.net.command.*;
 import com.tny.game.net.command.auth.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
-import com.tny.game.net.rpc.*;
 import com.tny.game.net.transport.*;
 
 import java.time.Instant;
@@ -19,7 +19,7 @@ import static com.tny.game.net.rpc.auth.RpcAuthMessageContexts.*;
 /**
  * <p>
  */
-public class RpcPasswordValidator implements AuthenticateValidator<RpcAccessId> {
+public class RpcPasswordValidator implements AuthenticateValidator<RpcAccessIdentify, MessagerCertificateFactory<RpcAccessIdentify>> {
 
     private final RpcAuthService rpcAuthService;
 
@@ -31,20 +31,20 @@ public class RpcPasswordValidator implements AuthenticateValidator<RpcAccessId> 
     }
 
     @Override
-    public Certificate<RpcAccessId> validate(Tunnel<RpcAccessId> tunnel, Message message, CertificateFactory<RpcAccessId> factory)
+    public Certificate<RpcAccessIdentify> validate(Tunnel<RpcAccessIdentify> tunnel, Message message,
+            MessagerCertificateFactory<RpcAccessIdentify> factory)
             throws CommandException, ValidationException {
         Optional<MessageParamList> paramListOptional = MessageParamList.of(message.bodyAs(List.class));
         if (!paramListOptional.isPresent()) {
             throw new ValidationException("Rpc登录参数错误");
         }
         MessageParamList paramList = paramListOptional.get();
-        String service = getServiceParam(paramList);
-        long serverId = getServerIdParam(paramList);
-        long instanceId = getInstanceIdParam(paramList);
+        long value = getIdParam(paramList);
         String password = getPasswordParam(paramList);
-        DoneResult<RpcAccessId> result = rpcAuthService.authenticate(service, serverId, instanceId, password);
+        DoneResult<RpcAccessIdentify> result = rpcAuthService.authenticate(value, password);
         if (result.isSuccess()) {
-            return factory.certificate(idCreator.createId(), result.get(), service, Instant.now());
+            RpcAccessIdentify identify = result.get();
+            return factory.certificate(idCreator.createId(), identify, value, identify.getServiceType(), Instant.now());
         }
         throw new ValidationException(format("Rpc登录认证失败, Code : {} ; Message : {}", result.getCode(), result.getMessage()));
     }

@@ -10,7 +10,7 @@ import java.util.Map;
  * @author : kgtny
  * @date : 2021/9/10 4:00 下午
  */
-public class BaseServeNode extends BaseNetAccessPoint implements ServeNode {
+public class BaseServeNode extends BaseNetAccessNode implements ServeNode {
 
     private String appType;
 
@@ -19,18 +19,18 @@ public class BaseServeNode extends BaseNetAccessPoint implements ServeNode {
     private String serveName;
 
     private String service;
-
+    
     public BaseServeNode() {
         super();
     }
 
-    public BaseServeNode(String serveName, String service, NetAccessPoint point) {
+    public BaseServeNode(String serveName, String service, NetAccessNode point) {
         super(point);
         this.serveName = serveName;
         this.service = service;
     }
 
-    public BaseServeNode(String appType, String scopeType, String serveName, String service, NetAccessPoint point) {
+    public BaseServeNode(String appType, String scopeType, String serveName, String service, NetAccessNode point) {
         super(point);
         this.appType = appType;
         this.scopeType = scopeType;

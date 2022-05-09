@@ -12,6 +12,7 @@ import java.time.ZonedDateTime;
 import java.util.concurrent.*;
 
 import static com.tny.game.common.utils.StringAide.*;
+import static com.tny.game.net.base.MessagerType.*;
 
 /**
  * <p>
@@ -20,7 +21,7 @@ import static com.tny.game.common.utils.StringAide.*;
  * @date: 2018-10-31 16:46
  */
 @RpcController
-@AuthenticationRequired(Certificates.DEFAULT_USER_TYPE)
+@AuthenticationRequired(DEFAULT_USER_TYPE)
 @BeforePlugin(SpringBootParamFilterPlugin.class)
 public class ServerLoginController {
 
@@ -28,8 +29,8 @@ public class ServerLoginController {
 
     @Rpc(CtrlerIds.LOGIN$LOGIN)
     @BeforePlugin(SpringBootParamFilterPlugin.class)
-    @AuthenticationRequired(value = Certificates.DEFAULT_USER_TYPE, validator = DemoAuthenticateValidator.class)
-    public LoginDTO login(Tunnel<Long> tunnel, Endpoint<Long> endpoint, @MsgParam long sessionId, @MsgParam long userId) {
+    @AuthenticationRequired(value = DEFAULT_USER_TYPE, validator = DemoAuthenticateValidator.class)
+    public LoginDTO login(Tunnel<Long> tunnel, Endpoint<Long> endpoint, @RpcParam long sessionId, @RpcParam long userId) {
         Certificate<Long> certificate = endpoint.getCertificate();
         //        EXECUTOR_SERVICE.scheduleAtFixedRate(() -> endpoint.send(MessageContexts
         //                .push(ProtocolAide.protocol(CtrlerIDs.LOGIN$PING), "ping tunnel id " + tunnel.getId())), 0, 3, TimeUnit.SECONDS);

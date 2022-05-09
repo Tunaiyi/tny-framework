@@ -3,7 +3,6 @@ package com.tny.game.net.rpc;
 import com.tny.game.common.concurrent.*;
 import com.tny.game.common.result.*;
 import com.tny.game.net.base.*;
-import com.tny.game.net.command.*;
 import com.tny.game.net.rpc.exception.*;
 
 import static com.tny.game.common.utils.ObjectAide.*;

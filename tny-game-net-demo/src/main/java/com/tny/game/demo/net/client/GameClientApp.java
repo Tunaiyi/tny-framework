@@ -7,7 +7,6 @@ import com.tny.game.demo.core.client.service.*;
 import com.tny.game.demo.core.common.*;
 import com.tny.game.demo.core.common.dto.*;
 import com.tny.game.net.base.*;
-import com.tny.game.net.command.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.netty4.configuration.application.*;

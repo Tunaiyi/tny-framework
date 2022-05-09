@@ -160,11 +160,6 @@ public class MockNetTunnel extends AttributesHolder implements NetTunnel<Long> {
     }
 
     @Override
-    public String getUserType() {
-        return this.endpoint.getUserType();
-    }
-
-    @Override
     public Certificate<Long> getCertificate() {
         return this.endpoint.getCertificate();
     }

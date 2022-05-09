@@ -1,7 +1,6 @@
 package com.tny.game.net.command.dispatcher;
 
 import com.google.common.collect.*;
-import com.tny.game.common.number.*;
 import com.tny.game.common.reflect.*;
 import com.tny.game.expr.*;
 import com.tny.game.net.annotation.*;
@@ -10,7 +9,6 @@ import com.tny.game.net.command.auth.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
-import org.apache.commons.collections4.CollectionUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
@@ -48,7 +46,7 @@ public final class MethodControllerHolder extends ControllerHolder {
     /**
      * 参数类型
      */
-    private final List<ParamDescription> paramDescriptions;
+    private final List<ControllerParamDescription> paramDescriptions;
 
     /**
      * 参数注解列表
@@ -78,7 +76,7 @@ public final class MethodControllerHolder extends ControllerHolder {
     /**
      * 控制器操作配置
      */
-    private final RpcProfile profile;
+    private final RpcProfile rpcProfile;
 
     /**
      * 构造方法
@@ -95,7 +93,7 @@ public final class MethodControllerHolder extends ControllerHolder {
                 method.getJavaMethod().getAnnotation(AppProfile.class),
                 method.getJavaMethod().getAnnotation(ScopeProfile.class), exprHolderFactory);
         try {
-            this.profile = RpcProfile.of(method.getJavaMethod());
+            this.rpcProfile = rpcProfile;
             this.classController = classController;
             this.method = method;
             this.executor = executor;
@@ -103,14 +101,14 @@ public final class MethodControllerHolder extends ControllerHolder {
             nameBuilder.append(executor.getClass().getSimpleName()).append("#").append(method.getName());
             // 解析参数
             Class<?>[] parameterClasses = method.getJavaMethod().getParameterTypes();
-            List<ParamDescription> paramDescriptions = new ArrayList<>();
+            List<ControllerParamDescription> paramDescriptions = new ArrayList<>();
             Annotation[][] parameterAnnotations = method.getJavaMethod().getParameterAnnotations();
-            LocalNum<Integer> counter = new LocalNum<>(0);
+            ParamIndexCreator indexCreator = new ParamIndexCreator(method.getJavaMethod());
             if (parameterClasses.length > 0) {
                 for (int index = 0; index < parameterClasses.length; index++) {
                     Class<?> paramClass = parameterClasses[index];
                     List<Annotation> annotations = ImmutableList.copyOf(parameterAnnotations[index]);
-                    ParamDescription paramDesc = new ParamDescription(this, paramClass, annotations, counter, exprHolderFactory);
+                    ControllerParamDescription paramDesc = new ControllerParamDescription(this, paramClass, annotations, indexCreator);
                     paramDescriptions.add(paramDesc);
                     if (index > 0) {
                         nameBuilder.append(", ");
@@ -153,21 +151,16 @@ public final class MethodControllerHolder extends ControllerHolder {
             for (CommandPluginHolder plugin : this.getControllerAfterPlugins())
                 this.afterContext = this.putPlugin(this.afterContext, plugin);
             this.returnType = method.getReturnType();
-            this.setMessageModes(rpcProfile.getModeSet());
         } catch (Exception e) {
             throw new IllegalArgumentException(format("{}.{} 方法解析失败", method.getDeclaringClass(), method.getName()), e);
         }
     }
 
-    @Override
-    public Set<MessageMode> getMessageModes() {
-        if (CollectionUtils.isNotEmpty(this.messageModes)) {
-            return this.messageModes;
-        }
-        return this.classController.getMessageModes();
+    public MessageMode getMessageMode() {
+        return this.rpcProfile.getMode();
     }
 
-    public List<ParamDescription> getParamDescriptions() {
+    public List<ControllerParamDescription> getParamDescriptions() {
         return this.paramDescriptions;
     }
 
@@ -193,7 +186,7 @@ public final class MethodControllerHolder extends ControllerHolder {
             throw new CommandException(NetResultCode.SERVER_EXECUTE_EXCEPTION,
                     format("{} 获取 index 为 {} 的ParamDesc越界, index < {}", this, index, this.paramDescriptions.size()));
         }
-        ParamDescription desc = this.paramDescriptions.get(index);
+        ControllerParamDescription desc = this.paramDescriptions.get(index);
         if (desc == null) {
             throw new CommandException(NetResultCode.SERVER_EXECUTE_EXCEPTION, format("{} 获取 index 为 {} 的ParamDesc为null", this, index));
         }
@@ -211,7 +204,7 @@ public final class MethodControllerHolder extends ControllerHolder {
     }
 
     public int getProtocol() {
-        return this.profile != null ? this.profile.getProtocol() : -1;
+        return this.rpcProfile != null ? this.rpcProfile.getProtocol() : -1;
     }
 
     /**
@@ -227,8 +220,8 @@ public final class MethodControllerHolder extends ControllerHolder {
     }
 
     @Override
-    public boolean isUserGroup(String group) {
-        return this.userGroups != null ? super.isUserGroup(group) : this.classController.isUserGroup(group);
+    public boolean isUserGroup(MessagerType messagerType) {
+        return this.userGroups != null ? super.isUserGroup(messagerType) : this.classController.isUserGroup(messagerType);
     }
 
     @Override
@@ -247,7 +240,7 @@ public final class MethodControllerHolder extends ControllerHolder {
     }
 
     @Override
-    public Class<? extends AuthenticateValidator<?>> getAuthValidator() {
+    public Class<? extends AuthenticateValidator<?, ?>> getAuthValidator() {
         return this.auth != null ? super.getAuthValidator() : this.classController.getAuthValidator();
     }
 

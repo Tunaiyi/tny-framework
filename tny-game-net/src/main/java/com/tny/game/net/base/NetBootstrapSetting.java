@@ -22,4 +22,6 @@ public interface NetBootstrapSetting {
 
     String getCommandTaskProcessor();
 
+    String getRpcForwarder();
+
 }

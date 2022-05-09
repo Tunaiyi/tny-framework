@@ -1,7 +1,7 @@
 package com.tny.game.net.rpc;
 
 import com.tny.game.common.result.*;
-import com.tny.game.net.command.*;
+import com.tny.game.net.base.*;
 
 import java.util.concurrent.*;
 

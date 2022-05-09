@@ -15,7 +15,7 @@ import java.util.List;
 public class ObjectCodecAutoConfiguration {
 
     @Bean
-    public ObjectCodecService objectCodecService(List<ObjectCodecorFactory> codecorFactories) {
+    public ObjectCodecService objectCodecService(List<ObjectCodecFactory> codecorFactories) {
         return new ObjectCodecService(codecorFactories);
     }
 

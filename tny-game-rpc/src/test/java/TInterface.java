@@ -1,4 +1,4 @@
-import com.tny.game.net.command.*;
+import com.tny.game.net.base.*;
 
 import java.util.concurrent.Future;
 

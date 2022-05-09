@@ -17,7 +17,7 @@ import java.util.*;
 //@Order(HIGHEST_PRECEDENCE)
 @ConfigurationProperties(prefix = "tny.net.bootstrap.network")
 @ConditionalOnMissingBean(SpringBootNetBootstrapProperties.class)
-public class SpringBootNetBootstrapProperties {
+public class SpringBootNetBootstrapProperties implements SpringBootNetBootstrapSettings {
 
     @NestedConfigurationProperty
     private SpringNettyNetServerBootstrapSetting server;
@@ -31,6 +31,7 @@ public class SpringBootNetBootstrapProperties {
     //    @NestedConfigurationProperty
     private Map<String, SpringNettyNetClientBootstrapSetting> clients = ImmutableMap.of();
 
+    @Override
     public SpringNettyNetServerBootstrapSetting getServer() {
         return this.server;
     }
@@ -41,6 +42,7 @@ public class SpringBootNetBootstrapProperties {
         return this;
     }
 
+    @Override
     public SpringNettyNetClientBootstrapSetting getClient() {
         return this.client;
     }
@@ -51,6 +53,7 @@ public class SpringBootNetBootstrapProperties {
         return this;
     }
 
+    @Override
     public Map<String, SpringNettyNetServerBootstrapSetting> getServers() {
         return Collections.unmodifiableMap(this.servers);
     }
@@ -63,6 +66,7 @@ public class SpringBootNetBootstrapProperties {
         return this;
     }
 
+    @Override
     public Map<String, SpringNettyNetClientBootstrapSetting> getClients() {
         return Collections.unmodifiableMap(this.clients);
     }

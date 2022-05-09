@@ -2,10 +2,11 @@ package com.tny.game.net.rpc.auth;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.tny.game.codec.jackson.mapper.*;
 import com.tny.game.common.exception.*;
 import com.tny.game.common.result.*;
 import com.tny.game.net.base.*;
-import com.tny.game.net.rpc.*;
 
 /**
  * <p>
@@ -19,24 +20,31 @@ public class DefaultRpcAuthService implements RpcAuthService {
 
     private final NetAppContext netAppContext;
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectMapper objectMapper = ObjectMapperFactory.createMapper();
 
+    static {
+        SimpleModule module = new SimpleModule();
+        module.addSerializer(RpcServiceType.class, new RpcServiceTypeJsonSerializer());
+        module.addDeserializer(RpcServiceType.class, new RpcServiceTypeJsonDeserializer());
+        objectMapper.registerModule(module);
+    }
     public DefaultRpcAuthService(NetAppContext netAppContext, RpcUserPasswordManager rpcUserPasswordManager) {
         this.rpcUserPasswordManager = rpcUserPasswordManager;
         this.netAppContext = netAppContext;
     }
 
     @Override
-    public DoneResult<RpcAccessId> authenticate(String service, long serverId, long instance, String password) {
-        if (rpcUserPasswordManager.auth(service, serverId, instance, password)) {
-            return DoneResults.success(new RpcAccessId(service, serverId, instance));
+    public DoneResult<RpcAccessIdentify> authenticate(long id, String password) {
+        RpcAccessIdentify identify = RpcAccessIdentify.parse(id);
+        if (rpcUserPasswordManager.auth(identify, password)) {
+            return DoneResults.success(identify);
         }
         return DoneResults.failure(NetResultCode.VALIDATOR_FAIL_ERROR);
     }
 
     @Override
-    public String createToken(String serviceName, RpcAccessId id) {
-        RpcToken token = new RpcToken(serviceName, netAppContext.getServerId(), id.getId(), id);
+    public String createToken(RpcServiceType serviceType, RpcAccessIdentify user) {
+        RpcAccessToken token = new RpcAccessToken(serviceType, netAppContext.getServerId(), user);
         try {
             return objectMapper.writeValueAsString(token);
         } catch (JsonProcessingException e) {
@@ -45,12 +53,41 @@ public class DefaultRpcAuthService implements RpcAuthService {
     }
 
     @Override
-    public DoneResult<RpcToken> verifyToken(String token) {
+    public DoneResult<RpcAccessToken> verifyToken(String token) {
         try {
-            RpcToken rpcToken = objectMapper.readValue(token, RpcToken.class);
+            RpcAccessToken rpcToken = objectMapper.readValue(token, RpcAccessToken.class);
             return DoneResults.success(rpcToken);
         } catch (JsonProcessingException e) {
             throw new CommonRuntimeException(e);
+        }
+    }
+
+    public enum TestRpcServiceType implements RpcServiceType {
+
+        TEST_SERVICE(100, "test_rpc_service"),
+        TEST_2_SERVICE(200, "test_2_rpc_service"),
+
+        //
+        ;
+
+        private final int id;
+
+        private final String service;
+
+        TestRpcServiceType(int id, String service) {
+            this.id = id;
+            this.service = service;
+            this.register();
+        }
+
+        @Override
+        public int id() {
+            return id;
+        }
+
+        @Override
+        public String getService() {
+            return service;
         }
     }
 

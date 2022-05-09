@@ -14,6 +14,7 @@ public interface ProtoExEnum extends IntEnumerable {
      *
      * @return
      */
+    @Override
     String name();
 
 }

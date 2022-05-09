@@ -63,21 +63,6 @@ public abstract class AbstractNetTunnel<UID, E extends NetEndpoint<UID>> extends
     }
 
     @Override
-    public UID getUserId() {
-        return this.getCertificate().getUserId();
-    }
-
-    @Override
-    public String getUserType() {
-        return this.getCertificate().getUserType();
-    }
-
-    @Override
-    public boolean isAuthenticated() {
-        return getCertificate().isAuthenticated();
-    }
-
-    @Override
     public boolean isClosed() {
         return this.status == TunnelStatus.CLOSED;
     }

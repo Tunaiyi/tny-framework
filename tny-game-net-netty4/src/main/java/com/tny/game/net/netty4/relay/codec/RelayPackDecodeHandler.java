@@ -13,11 +13,11 @@ public class RelayPackDecodeHandler extends ByteToMessageDecoder implements Rela
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NetLogger.CODER);
 
-    private final RelayPackDecoder decoder;
+    private final RelayPacketDecoder decoder;
 
     private final boolean closeOnError;
 
-    public RelayPackDecodeHandler(RelayPackDecoder decoder, boolean closeOnError) {
+    public RelayPackDecodeHandler(RelayPacketDecoder decoder, boolean closeOnError) {
         this.decoder = decoder;
         this.closeOnError = closeOnError;
     }

@@ -8,6 +8,8 @@ dependencies {
     api libs.disruptor
     api libs.jprotobuf
     api project(":tny-game-net")
+    api project(":tny-game-protoex")
+    api project(":tny-game-codec-jprotobuf")
 
 
     testImplementation libs.spring_context_support

@@ -52,11 +52,14 @@ public class RpcClientFactory implements Serve {
         return setting.isDiscovery();
     }
 
-    private <ID> PostConnect<ID> postConnect(long id) {
+    private <ID> PostConnect<ID> postConnect(int index) {
         return (c) -> {
             String user = StringAide.ifBlank(setting.getUsername(), appContext.getAppType());
+            RpcServiceType serviceType = RpcServiceTypes.checkService(user);
+            int serverId = appContext.getServerId();
+            long id = RpcAccessIdentify.formatId(serviceType, serverId, index);
             RequestContext context = RpcAuthMessageContexts
-                    .authRequest(user, appContext.getServerId(), id, setting.getPassword())
+                    .authRequest(id, setting.getPassword())
                     .willRespondAwaiter(3000L);
             c.send(context);
             context.respond().get(12000, TimeUnit.MILLISECONDS);
@@ -64,8 +67,8 @@ public class RpcClientFactory implements Serve {
         };
     }
 
-    public <UID> Client<UID> create(long id, URL url) {
-        return clientGuide.client(url, postConnect(id));
+    public <UID> Client<UID> create(int index, URL url) {
+        return clientGuide.client(url, postConnect(index));
     }
 
     public RpcClientFactory setClientGuide(ClientGuide clientGuide) {

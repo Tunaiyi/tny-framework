@@ -2,11 +2,9 @@ package com.tny.game.net.base;
 
 import com.tny.game.scanner.*;
 import com.tny.game.scanner.annotation.*;
-import com.tny.game.scanner.filter.*;
-import org.apache.commons.lang3.EnumUtils;
 import org.slf4j.*;
 
-import java.util.List;
+import static com.tny.game.scanner.selector.EnumClassSelector.*;
 
 /**
  * <p>
@@ -19,31 +17,23 @@ public class NetClassLoader {
     public static final Logger LOGGER = LoggerFactory.getLogger(NetClassLoader.class);
 
     @ClassSelectorProvider
-    @SuppressWarnings("unchecked")
-    static <A extends Enum<A> & AppType> ClassSelector appTypeSelector() {
-        return ClassSelector.create()
-                .addFilter(SubOfClassFilter.ofInclude(AppTypes.class))
-                .setHandler((classes) -> classes.forEach(codeClass -> {
-                    if (codeClass.isEnum()) {
-                        List<A> enumList = EnumUtils.getEnumList((Class<A>)codeClass);
-                        enumList.forEach(AppTypes::register);
-                    }
-                    LOGGER.info("NetClassLoader.appTypeSelector : {}", codeClass);
-                }));
+    static ClassSelector appTypeSelector() {
+        return createSelector(AppType.class, AppTypes::register);
     }
 
     @ClassSelectorProvider
-    @SuppressWarnings("unchecked")
-    static <S extends Enum<S> & ScopeType> ClassSelector scopeTypeSelector() {
-        return ClassSelector.create()
-                .addFilter(SubOfClassFilter.ofInclude(AppTypes.class))
-                .setHandler((classes) -> classes.forEach(codeClass -> {
-                    if (codeClass.isEnum()) {
-                        List<S> enumList = EnumUtils.getEnumList((Class<S>)codeClass);
-                        enumList.forEach(ScopeTypes::register);
-                    }
-                    LOGGER.info("NetClassLoader.appTypeSelector : {}", codeClass);
-                }));
+    static ClassSelector scopeTypeSelector() {
+        return createSelector(AppScope.class, AppScopes::register);
+    }
+
+    @ClassSelectorProvider
+    static ClassSelector messagerTypesSelector() {
+        return createSelector(MessagerType.class, MessagerTypes::register);
+    }
+
+    @ClassSelectorProvider
+    static ClassSelector serviceTypesSelector() {
+        return createSelector(RpcServiceType.class, RpcServiceTypes::register);
     }
 
 }

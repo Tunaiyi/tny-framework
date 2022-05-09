@@ -75,7 +75,7 @@ public class GeneralRemoteRelayTunnel<UID> extends ServerTunnel<UID, NetSession<
         } else {
             ResultCode code = NetResultCode.CLUSTER_NETWORK_UNCONNECTED_ERROR;
             LOGGER.warn("# Tunnel ({}) 服务器主动关闭连接, 不支持 {} 集群", this, service);
-            TunnelAide.responseMessage(this, MessageContexts.push(Protocols.PUSH, code));
+            TunnelAide.responseMessage(this, code, MessageContexts.push(Protocols.PUSH, code));
             if (promise != null) {
                 promise.completeExceptionally(new NetGeneralException(code));
             }

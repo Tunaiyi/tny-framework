@@ -80,6 +80,14 @@ public class EnumerConfiger {
             return value;
         }
 
+        public String getClassName() {
+            return className;
+        }
+
+        public String getRawClassName() {
+            return rawClassName;
+        }
+
     }
 
     public String getDes() {
@@ -92,6 +100,10 @@ public class EnumerConfiger {
 
     public String getId() {
         return ID;
+    }
+
+    public Map<String, FieldConfiger> getAttributes() {
+        return attributes;
     }
 
 }

@@ -18,7 +18,7 @@ import static com.tny.game.codec.typeprotobuf.TypeProtobufTypeId.*;
  */
 @ProtobufClass
 @TypeProtobuf(PB_SHORT_LIST)
-@Codecable(ProtobufMimeType.PROTOBUF)
+@Codable(ProtobufMimeType.PROTOBUF)
 public class PBShortList implements PBList<Short, short[]> {
 
     @Packed

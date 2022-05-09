@@ -16,7 +16,7 @@ public class RelayServeInstanceSetting extends BaseServeNode {
     }
 
     public RelayServeInstanceSetting(String appType, String scopeType, String serveName, String service,
-            NetAccessPoint point) {
+            NetAccessNode point) {
         super(appType, scopeType, serveName, service, point);
     }
 

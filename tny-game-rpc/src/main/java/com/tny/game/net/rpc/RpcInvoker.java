@@ -2,16 +2,14 @@ package com.tny.game.net.rpc;
 
 import com.tny.game.common.exception.*;
 import com.tny.game.common.result.*;
+import com.tny.game.common.utils.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.rpc.exception.*;
 import com.tny.game.net.transport.*;
 import org.slf4j.*;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import static com.tny.game.common.utils.ObjectAide.*;
 
 /**
  * <p>
@@ -36,7 +34,7 @@ public class RpcInvoker {
     /**
      * 远程服务
      */
-    private final RpcRemoteServicer servicer;
+    private final RpcRemoteServiceSet servicer;
 
     /**
      * 路由
@@ -47,15 +45,6 @@ public class RpcInvoker {
         this.method = method;
         this.instance = instance;
         this.servicer = instance.getServicer();
-    }
-
-    private Object getRouteParam(Object... params) {
-        Object routeValue = null;
-        int routableIndex = method.getRouteValueIndex();
-        if (routableIndex >= 0) {
-            routeValue = as(params[routableIndex]);
-        }
-        return routeValue;
     }
 
     private RpcRouter<Object> router() {
@@ -78,58 +67,24 @@ public class RpcInvoker {
     }
 
     public <T> Object invoke(Object... params) {
-        Object routeValue = getRouteParam(params);
-        List<RpcRemoteNode> nodes = servicer.getOrderRemoteNodes();
-        RpcAccessPoint accessPoint = router().route(nodes, method, routeValue, params);
+        RpcInvokeParams invokeParams = method.getParams(params);
+        RpcRemoteAccessPoint accessPoint = router().route(servicer, method, invokeParams.getRouteValue(), params);
         if (accessPoint == null) {
             throw new RpcInvokeException(NetResultCode.REMOTE_EXCEPTION, "调用 {} 异常, 未找到有效的远程服务节点", this.method);
         }
         long timeout = timeout();
         switch (method.getMode()) {
             case PUSH:
-                push(accessPoint, timeout, params);
+                push(accessPoint, timeout, invokeParams);
                 return null;
             case REQUEST:
-                return request(accessPoint, timeout, params);
+                return request(accessPoint, timeout, invokeParams);
         }
         throw new RpcInvokeException(NetResultCode.REMOTE_EXCEPTION, "调用 {} 异常, 非法 rpc 模式", this.method);
     }
 
     private Protocol protocol() {
         return Protocols.protocol(this.method.getProtocol(), this.method.getLine());
-    }
-
-    private Object request(RpcAccessPoint accessPoint, long timeout, Object... params) {
-        RequestContext requestContext = createRequest(protocol(), params).willRespondAwaiter(timeout);
-        accessPoint.send(requestContext);
-        MessageRespondAwaiter awaiter = requestContext.getResponseAwaiter();
-        if (this.method.isAsync()) {
-            switch (this.method.getReturnMode()) {
-                case FUTURE:
-                    return getReturnFuture(awaiter);
-                case VOID:
-                case RESULT:
-                case OBJECT:
-                    return null;
-            }
-        } else {
-            Message message;
-            try {
-                message = awaiter.get(timeout, TimeUnit.MILLISECONDS);
-                switch (this.method.getReturnMode()) {
-                    case RESULT:
-                        return RpcResults.result(ResultCodes.of(message.getCode()), message.getBody());
-                    case OBJECT:
-                        return getReturnObject(message);
-                    case VOID:
-                        return null;
-
-                }
-            } catch (Throwable e) {
-                handleException(e);
-            }
-        }
-        throw new RpcInvokeException(NetResultCode.REMOTE_EXCEPTION, "返回类型错误");
     }
 
     private Object getReturnFuture(MessageRespondAwaiter future) {
@@ -164,10 +119,45 @@ public class RpcInvoker {
         throw new RpcInvokeException(NetResultCode.REMOTE_EXCEPTION, "返回类型错误");
     }
 
-    private void push(RpcAccessPoint accessPoint, long timeout, Object... params) {
-        List<Integer> parameterIndexes = method.getParameterIndexes();
-        MessageContext messageContext = MessageContexts.push(protocol())
-                .withBody(parameterIndexes.size() == 0 ? null : params[parameterIndexes.get(0)]);
+    private Object request(RpcRemoteAccessPoint accessPoint, long timeout, RpcInvokeParams invokeParams) {
+        RequestContext requestContext = MessageContexts.request(protocol(), invokeParams.getParams());
+        requestContext.willRespondAwaiter(timeout)
+                .withHeaders(invokeParams.getAllHeaders());
+        accessPoint.send(requestContext);
+        MessageRespondAwaiter awaiter = requestContext.getResponseAwaiter();
+        if (this.method.isAsync()) {
+            switch (this.method.getReturnMode()) {
+                case FUTURE:
+                    return getReturnFuture(awaiter);
+                case VOID:
+                case RESULT:
+                case OBJECT:
+                    return null;
+            }
+        } else {
+            Message message;
+            try {
+                message = awaiter.get(timeout, TimeUnit.MILLISECONDS);
+                switch (this.method.getReturnMode()) {
+                    case RESULT:
+                        return RpcResults.result(ResultCodes.of(message.getCode()), message.getBody());
+                    case OBJECT:
+                        return getReturnObject(message);
+                    case VOID:
+                        return null;
+                }
+            } catch (Throwable e) {
+                handleException(e);
+            }
+        }
+        throw new RpcInvokeException(NetResultCode.REMOTE_EXCEPTION, "返回类型错误");
+    }
+
+    private void push(RpcRemoteAccessPoint accessPoint, long timeout, RpcInvokeParams invokeParams) {
+        ResultCode code = ObjectAide.ifNull(invokeParams.getCode(), NetResultCode.SUCCESS);
+        MessageContext messageContext = MessageContexts.push(protocol(), code)
+                .withBody(invokeParams.getBody())
+                .withHeaders(invokeParams.getAllHeaders());
         accessPoint.send(messageContext);
         if (this.method.isAsync()) {
             return;
@@ -186,45 +176,6 @@ public class RpcInvoker {
         } else {
             ResultCode code = ResultCodeExceptionAide.codeOf(e, NetResultCode.REMOTE_EXCEPTION);
             throw new RpcInvokeException(code, e, "调用 {} 异常", this.method);
-        }
-    }
-
-    private RequestContext createRequest(Protocol protocol, Object... params) {
-        List<Integer> parameterIndexes = method.getParameterIndexes();
-        switch (parameterIndexes.size()) {
-            case 0:
-                return MessageContexts.request(protocol);
-            case 1:
-                return MessageContexts.request(protocol, params[parameterIndexes.get(0)]);
-            case 2:
-                return MessageContexts.request(protocol, params[parameterIndexes.get(0)], params[parameterIndexes.get(1)]);
-            case 3:
-                return MessageContexts.request(protocol, params[parameterIndexes.get(0)], params[parameterIndexes.get(1)],
-                        params[parameterIndexes.get(2)]);
-            case 4:
-                return MessageContexts.request(protocol, params[parameterIndexes.get(0)], params[parameterIndexes.get(1)],
-                        params[parameterIndexes.get(2)], params[parameterIndexes.get(3)]);
-            case 5:
-                return MessageContexts.request(protocol, params[parameterIndexes.get(0)], params[parameterIndexes.get(1)],
-                        params[parameterIndexes.get(2)], params[parameterIndexes.get(3)], params[parameterIndexes.get(4)]);
-            case 6:
-                return MessageContexts.request(protocol, params[parameterIndexes.get(0)], params[parameterIndexes.get(1)],
-                        params[parameterIndexes.get(2)], params[parameterIndexes.get(3)], params[parameterIndexes.get(4)],
-                        params[parameterIndexes.get(5)]);
-            case 7:
-                return MessageContexts.request(protocol, params[parameterIndexes.get(0)], params[parameterIndexes.get(1)],
-                        params[parameterIndexes.get(2)], params[parameterIndexes.get(3)], params[parameterIndexes.get(4)],
-                        params[parameterIndexes.get(5)], params[parameterIndexes.get(6)]);
-            case 8:
-                return MessageContexts.request(protocol, params[parameterIndexes.get(0)], params[parameterIndexes.get(1)],
-                        params[parameterIndexes.get(2)], params[parameterIndexes.get(3)], params[parameterIndexes.get(4)],
-                        params[parameterIndexes.get(5)], params[parameterIndexes.get(6)], params[parameterIndexes.get(7)]);
-            default:
-                Object[] paramArray = new Object[parameterIndexes.size()];
-                for (int i = 0; i < paramArray.length; i++) {
-                    paramArray[i] = params[parameterIndexes.get(i)];
-                }
-                return MessageContexts.request(protocol, paramArray);
         }
     }
 

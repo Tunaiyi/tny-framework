@@ -4,10 +4,11 @@ import com.tny.game.common.result.*;
 import com.tny.game.demo.core.common.*;
 import com.tny.game.demo.core.common.dto.*;
 import com.tny.game.net.annotation.*;
-import com.tny.game.net.command.*;
 import com.tny.game.net.netty4.configuration.command.*;
 import com.tny.game.net.transport.*;
 import org.slf4j.*;
+
+import static com.tny.game.net.base.MessagerType.*;
 
 /**
  * <p>
@@ -16,7 +17,7 @@ import org.slf4j.*;
  * @date: 2018-10-31 16:46
  */
 @RpcController
-@AuthenticationRequired(Certificates.DEFAULT_USER_TYPE)
+@AuthenticationRequired(DEFAULT_USER_TYPE)
 @BeforePlugin(SpringBootParamFilterPlugin.class)
 //@MessageFilter(modes = {RESPONSE, PUSH})
 public class ClientLoginController {
@@ -29,8 +30,8 @@ public class ClientLoginController {
 
     @RpcResponse(CtrlerIds.LOGIN$LOGIN)
     @BeforePlugin(SpringBootParamFilterPlugin.class)
-    @AuthenticationRequired(value = Certificates.DEFAULT_USER_TYPE, validator = DemoAuthenticateValidator.class)
-    public void login(@MsgCode int code, @MsgBody LoginDTO dto) {
+    @AuthenticationRequired(value = DEFAULT_USER_TYPE, validator = DemoAuthenticateValidator.class)
+    public void login(@RpcCode int code, @RpcBody LoginDTO dto) {
         if (!ResultCodes.isSuccess(code)) {
             LOGGER.info("Login failed : {}", code);
         } else {
@@ -40,13 +41,13 @@ public class ClientLoginController {
 
     @RpcPush(CtrlerIds.SPEAK$PUSH)
     @BeforePlugin(SpringBootParamFilterPlugin.class)
-    public void pushMessage(Tunnel<Long> tunnel, @MsgBody String message) {
+    public void pushMessage(Tunnel<Long> tunnel, @RpcBody String message) {
         LOGGER.info("User {} [accessId {}]receive push message {}", tunnel.getUserId(), tunnel.getAccessId(), message);
     }
 
     @Rpc(CtrlerIds.SPEAK$PING)
     @BeforePlugin(SpringBootParamFilterPlugin.class)
-    public void pingMessage(Tunnel<Long> tunnel, @MsgBody String message) {
+    public void pingMessage(Tunnel<Long> tunnel, @RpcBody String message) {
         LOGGER.info("User {} [accessId {}] receive : {}", tunnel.getUserId(), tunnel.getAccessId(), message);
     }
 

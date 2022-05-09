@@ -2,12 +2,13 @@ package com.tny.game.demo.core.gateway.controller;
 
 import com.tny.game.demo.core.common.*;
 import com.tny.game.net.annotation.*;
-import com.tny.game.net.command.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.netty4.configuration.command.*;
 import org.slf4j.*;
 
 import java.time.ZonedDateTime;
+
+import static com.tny.game.net.base.MessagerType.*;
 
 /**
  * <p>
@@ -16,7 +17,7 @@ import java.time.ZonedDateTime;
  * @date: 2018-10-31 16:46
  */
 @RpcController
-@AuthenticationRequired(Certificates.DEFAULT_USER_TYPE)
+@AuthenticationRequired(DEFAULT_USER_TYPE)
 @BeforePlugin(SpringBootParamFilterPlugin.class)
 public class GatewayLoginController {
 
@@ -25,8 +26,8 @@ public class GatewayLoginController {
     @RelayTo
     @Rpc(CtrlerIds.LOGIN$LOGIN)
     @BeforePlugin(SpringBootParamFilterPlugin.class)
-    @AuthenticationRequired(value = Certificates.DEFAULT_USER_TYPE, validator = DemoAuthenticateValidator.class)
-    public void login(Endpoint<Long> endpoint, @MsgParam long sessionId, @MsgParam long userId) {
+    @AuthenticationRequired(value = DEFAULT_USER_TYPE, validator = DemoAuthenticateValidator.class)
+    public void login(Endpoint<Long> endpoint, @RpcParam long sessionId, @RpcParam long userId) {
         LOGGER.info("{} - {} 登录成功 at {}", userId, sessionId, ZonedDateTime.now());
     }
 

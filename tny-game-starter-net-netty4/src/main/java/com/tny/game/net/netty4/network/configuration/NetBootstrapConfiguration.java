@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties({
+        SpringBootRpcBootstrapProperties.class,
         SpringBootNetBootstrapProperties.class,
 })
 public class NetBootstrapConfiguration {

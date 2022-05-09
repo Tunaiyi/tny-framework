@@ -88,7 +88,7 @@ public class NettyRemoteRelayExplorer extends BaseRemoteRelayExplorer<NettyRemot
     public void prepareStart() {
         for (NettyRemoteServeCluster cluster : this.clusters()) {
             RemoteServeClusterContext clusterContext = cluster.getContext();
-            List<NetAccessPoint> instances = clusterContext.getInstances();
+            List<NetAccessNode> instances = clusterContext.getInstances();
             if (CollectionUtils.isNotEmpty(instances)) {
                 instances.forEach(point -> {
                     RemoteServeNode node = new RemoteServeNode(null, null, cluster.getServeName(), cluster.getService(), point);

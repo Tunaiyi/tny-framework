@@ -3,6 +3,7 @@ package com.tny.game.codec;
 import com.google.common.collect.ImmutableMap;
 import com.tny.game.codec.annotation.*;
 import com.tny.game.codec.exception.*;
+import com.tny.game.common.concurrent.collection.*;
 import com.tny.game.common.utils.*;
 import org.springframework.util.MimeType;
 
@@ -22,16 +23,16 @@ import static com.tny.game.common.utils.StringAide.*;
  */
 public class ObjectCodecService {
 
-    private volatile Map<MimeType, ObjectCodecorFactory> codecorFactoryMap = ImmutableMap.of();
+    private volatile Map<MimeType, ObjectCodecFactory> codecFactoryMap = ImmutableMap.of();
 
-    private final Map<Type, ObjectCodecorHolder<?>> DEFAULT_OBJECT_HOLDER_MAP = new ConcurrentHashMap<>();
+    private final Map<Type, ObjectCodecHolder<?>> objectCodecHolderMap = new ConcurrentHashMap<>();
 
-    public ObjectCodecService(Collection<ObjectCodecorFactory> codecorFactories) {
-        this.setObjectCodecorFactories(codecorFactories);
+    public ObjectCodecService(Collection<ObjectCodecFactory> codecorFactories) {
+        this.setObjectCodecFactories(codecorFactories);
     }
 
     public boolean isSupported(MimeType type) {
-        for (MimeType mimeType : this.codecorFactoryMap.keySet()) {
+        for (MimeType mimeType : this.codecFactoryMap.keySet()) {
             if (mimeType.isCompatibleWith(type)) {
                 return true;
             }
@@ -40,38 +41,38 @@ public class ObjectCodecService {
     }
 
     public <T> ObjectCodec<T> codec(Type type) {
-        ObjectCodecorHolder<T> holder = as(this.DEFAULT_OBJECT_HOLDER_MAP.get(type));
+        ObjectCodecHolder<T> holder = as(this.objectCodecHolderMap.get(type));
         if (holder != null) {
-            return holder.getDefaultCodecor();
+            return holder.getDefaultCodec();
         }
-        return as(this.DEFAULT_OBJECT_HOLDER_MAP.computeIfAbsent(type, ObjectCodecorHolder::new).getDefaultCodecor());
+        return as(this.objectCodecHolderMap.computeIfAbsent(type, ObjectCodecHolder::new).getDefaultCodec());
     }
 
     public <T> ObjectCodec<T> codec(Type type, String mineType) {
-        ObjectCodecorHolder<T> holder = as(this.DEFAULT_OBJECT_HOLDER_MAP.get(type));
+        ObjectCodecHolder<T> holder = as(this.objectCodecHolderMap.get(type));
         if (holder != null) {
             return holder.loadOrCreateObjectCodec(mineType);
         }
-        return as(this.DEFAULT_OBJECT_HOLDER_MAP.computeIfAbsent(type, ObjectCodecorHolder::new).loadOrCreateObjectCodec(mineType));
+        return as(this.objectCodecHolderMap.computeIfAbsent(type, ObjectCodecHolder::new).loadOrCreateObjectCodec(mineType));
     }
 
-    private <T> ObjectCodecorHolder<T> holder(Type type) {
-        return as(this.DEFAULT_OBJECT_HOLDER_MAP.computeIfAbsent(type, ObjectCodecorHolder::new));
+    private <T> ObjectCodecHolder<T> holder(Type type) {
+        return as(this.objectCodecHolderMap.computeIfAbsent(type, ObjectCodecHolder::new));
     }
 
     public <T> byte[] encodeToBytes(T value) {
-        ObjectCodecorHolder<T> holder = holder(value.getClass());
+        ObjectCodecHolder<T> holder = holder(value.getClass());
         try {
-            return holder.getDefaultCodecor().encode(value);
+            return holder.getDefaultCodec().encode(value);
         } catch (IOException e) {
             throw new ObjectCodecException(e, "encode {} to default format {} exception", value.getClass(), holder.getDefaultFormat());
         }
     }
 
     public <T> T decodeByBytes(Class<T> type, byte[] data) {
-        ObjectCodecorHolder<T> holder = holder(type);
+        ObjectCodecHolder<T> holder = holder(type);
         try {
-            return holder.getDefaultCodecor().decode(data);
+            return holder.getDefaultCodec().decode(data);
         } catch (IOException e) {
             throw new ObjectCodecException(e, "decode {} from default format {} exception", type, holder.getDefaultFormat());
         }
@@ -95,26 +96,37 @@ public class ObjectCodecService {
         }
     }
 
-    public class ObjectCodecorHolder<T> {
+    private void setObjectCodecFactories(Collection<ObjectCodecFactory> factories) {
+        Map<MimeType, ObjectCodecFactory> factoryHashMap = new HashMap<>();
+        factories.forEach(f -> {
+            f.getMediaTypes().forEach(m -> {
+                ObjectCodecFactory old = factoryHashMap.putIfAbsent(m, f);
+                Asserts.checkArgument(old == null, "{} and {} MimeType {} is same", f, old, m);
+            });
+        });
+        this.codecFactoryMap = ImmutableMap.copyOf(factoryHashMap);
+    }
+
+    private class ObjectCodecHolder<T> {
 
         private final Type type;
 
         private final String defaultFormat;
 
-        private final ObjectCodec<T> defaultCodecor;
+        private final ObjectCodec<T> defaultCodec;
 
-        private final Map<String, ObjectCodec<T>> DEFAULT_OBJECT_CODEC_MAP = new ConcurrentHashMap<>();
+        private final Map<String, ObjectCodec<T>> objectCodecs = new CopyOnWriteMap<>();
 
-        public ObjectCodecorHolder(Type type) {
+        public ObjectCodecHolder(Type type) {
             this.type = type;
             this.defaultFormat = loadTypeFormat(type);
-            ObjectCodec<T> codecor = createObjectCodec(this.defaultFormat);
-            this.defaultCodecor = codecor;
-            this.DEFAULT_OBJECT_CODEC_MAP.put(this.defaultFormat, codecor);
+            ObjectCodec<T> codec = createObjectCodec(this.defaultFormat);
+            this.defaultCodec = codec;
+            this.objectCodecs.put(this.defaultFormat, codec);
         }
 
-        public ObjectCodec<T> getDefaultCodecor() {
-            return this.defaultCodecor;
+        public ObjectCodec<T> getDefaultCodec() {
+            return this.defaultCodec;
         }
 
         public String getDefaultFormat() {
@@ -122,53 +134,42 @@ public class ObjectCodecService {
         }
 
         public ObjectCodec<T> loadOrCreateObjectCodec(String format) {
-            return this.DEFAULT_OBJECT_CODEC_MAP.computeIfAbsent(format, t -> createObjectCodec(format));
+            return this.objectCodecs.computeIfAbsent(format, t -> createObjectCodec(format));
         }
 
         public ObjectCodec<T> createObjectCodec(String format) {
             MimeType mimeType = MimeType.valueOf(format);
-            ObjectCodecorFactory codecorFactory = ObjectCodecService.this.codecorFactoryMap.get(mimeType);
-            if (codecorFactory != null) {
-                return codecorFactory.createCodec(this.type);
+            ObjectCodecFactory codecFactory = ObjectCodecService.this.codecFactoryMap.get(mimeType);
+            if (codecFactory != null) {
+                return codecFactory.createCodec(this.type);
             }
-            Optional<ObjectCodec<Object>> objectCodecorOpt = ObjectCodecService.this.codecorFactoryMap.entrySet()
+            Optional<ObjectCodec<Object>> objectCodecOpt = ObjectCodecService.this.codecFactoryMap.entrySet()
                     .stream().filter(e -> e.getKey().includes(mimeType))
                     .map(e -> e.getValue().createCodec(this.type))
                     .filter(Objects::nonNull)
                     .findFirst();
-            return as(objectCodecorOpt.orElseThrow(() -> new NullPointerException(format("{} ObjectCodecorFactory is null", mimeType))));
+            return as(objectCodecOpt.orElseThrow(() -> new NullPointerException(format("{} ObjectCodecFactory is null", mimeType))));
         }
 
         private String loadTypeFormat(Type type) {
             Class<?> clazz = null;
             if (type instanceof Class) {
                 clazz = as(type);
-                Codecable codecableObject = clazz.getAnnotation(Codecable.class);
-                if (codecableObject != null) {
-                    return MimeTypeAide.getMimeType(codecableObject);
+                Codable codableObject = clazz.getAnnotation(Codable.class);
+                if (codableObject != null) {
+                    return MimeTypeAide.getMimeType(codableObject);
                 }
             } else if (type instanceof ParameterizedType) {
                 clazz = as(((ParameterizedType)type).getRawType());
-                Codecable codecableObject = clazz.getAnnotation(
-                        Codecable.class);
+                Codable codecableObject = clazz.getAnnotation(
+                        Codable.class);
                 if (codecableObject != null) {
                     return MimeTypeAide.getMimeType(codecableObject);
                 }
             }
-            throw new NullPointerException(format("{} no exist {} annotation", clazz, Codecable.class));
+            throw new NullPointerException(format("{} no exist {} annotation", clazz, Codable.class));
         }
 
-    }
-
-    protected void setObjectCodecorFactories(Collection<ObjectCodecorFactory> factories) {
-        Map<MimeType, ObjectCodecorFactory> factoryHashMap = new HashMap<>();
-        factories.forEach(f -> {
-            f.getMediaTypes().forEach(m -> {
-                ObjectCodecorFactory old = factoryHashMap.putIfAbsent(m, f);
-                Asserts.checkArgument(old == null, "{} and {} MimeType {} is same", f, old, m);
-            });
-        });
-        this.codecorFactoryMap = ImmutableMap.copyOf(factoryHashMap);
     }
 
 }

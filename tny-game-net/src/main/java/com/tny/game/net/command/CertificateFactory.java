@@ -1,6 +1,7 @@
 package com.tny.game.net.command;
 
 import com.tny.game.common.lifecycle.unit.annotation.*;
+import com.tny.game.net.base.*;
 
 import java.time.Instant;
 
@@ -15,8 +16,8 @@ public interface CertificateFactory<UID> {
 
     Certificate<UID> anonymous();
 
-    Certificate<UID> certificate(long id, UID userId, String userType, Instant authenticateAt);
+    Certificate<UID> certificate(long id, UID userId, long messagerId, MessagerType messagerType, Instant authenticateAt);
 
-    Certificate<UID> renewCertificate(long id, UID userId, String userType, Instant authenticateAt);
+    Certificate<UID> renewCertificate(long id, UID userId, long messagerId, MessagerType messagerType, Instant authenticateAt);
 
 }

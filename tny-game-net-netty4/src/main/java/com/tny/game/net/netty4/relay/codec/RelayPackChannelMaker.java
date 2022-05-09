@@ -5,18 +5,18 @@ import io.netty.channel.*;
 
 public abstract class RelayPackChannelMaker<C extends Channel> extends BaseChannelMaker<C> {
 
-    private RelayPackEncoder encoder;
+    private RelayPacketEncoder encoder;
 
     private boolean closeOnEncodeError;
 
-    private RelayPackDecoder decoder;
+    private RelayPacketDecoder decoder;
 
     private boolean closeOnDecodeError;
 
     protected RelayPackChannelMaker() {
     }
 
-    public RelayPackChannelMaker(RelayPackEncoder encoder, RelayPackDecoder decoder) {
+    public RelayPackChannelMaker(RelayPacketEncoder encoder, RelayPacketDecoder decoder) {
         super();
         this.encoder = encoder;
         this.decoder = decoder;
@@ -29,12 +29,12 @@ public abstract class RelayPackChannelMaker<C extends Channel> extends BaseChann
         channelPipeline.addLast("encoder", new RelayPackEncodeHandler(this.encoder, closeOnEncodeError));
     }
 
-    public RelayPackChannelMaker<C> setEncoder(RelayPackEncoder encoder) {
+    public RelayPackChannelMaker<C> setEncoder(RelayPacketEncoder encoder) {
         this.encoder = encoder;
         return this;
     }
 
-    public RelayPackChannelMaker<C> setDecoder(RelayPackDecoder decoder) {
+    public RelayPackChannelMaker<C> setDecoder(RelayPacketDecoder decoder) {
         this.decoder = decoder;
         return this;
     }

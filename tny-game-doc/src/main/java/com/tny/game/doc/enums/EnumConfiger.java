@@ -77,6 +77,10 @@ public class EnumConfiger {
         return this.packageName;
     }
 
+    public String getText() {
+        return text;
+    }
+
     public List<EnumerConfiger> getEnumerList() {
         return Collections.unmodifiableList(this.enumerList.enumerList);
     }

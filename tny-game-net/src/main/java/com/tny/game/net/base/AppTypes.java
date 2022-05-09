@@ -10,11 +10,14 @@ import java.util.Collection;
  */
 public final class AppTypes extends ClassImporter {
 
-    protected static EnumeratorHolder<AppType> holder = new EnumeratorHolder<AppType>() {
+    private static final EnumerableSymbol<AppType, String> APP_NAME_SYMBOL = EnumerableSymbol.symbolOf(
+            AppType.class, "appName", AppType::getAppName);
+
+    private static EnumeratorHolder<AppType> holder = new EnumeratorHolder<AppType>() {
 
         @Override
         protected void postRegister(AppType object) {
-            putAndCheck(object.getName(), object);
+            putAndCheckSymbol(APP_NAME_SYMBOL, object);
         }
 
     };
@@ -27,11 +30,15 @@ public final class AppTypes extends ClassImporter {
     }
 
     public static <T extends AppType> T of(String name) {
-        return holder.check(name, "获取 {} ServerType不存在", name);
+        return holder.check(name, "获取 {} AppType 不存在", name);
+    }
+
+    public static <T extends AppType> T ofAppName(String name) {
+        return holder.checkBySymbol(APP_NAME_SYMBOL, "获取 {} AppType 不存在", name);
     }
 
     public static <T extends AppType> T valueOfEnum(String enumName) {
-        return holder.check(enumName, "获取 {} 的ServerType不存在", enumName);
+        return holder.check(enumName, "获取 {} AppType 不存在", enumName);
     }
 
     public static Collection<AppType> getAll() {

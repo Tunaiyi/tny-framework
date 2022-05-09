@@ -15,7 +15,7 @@ import static com.tny.game.codec.typeprotobuf.TypeProtobufTypeId.*;
  */
 @ProtobufClass
 @TypeProtobuf(PB_STRING)
-@Codecable(ProtobufMimeType.PROTOBUF)
+@Codable(ProtobufMimeType.PROTOBUF)
 public class PBString {
 
     @Protobuf

@@ -10,7 +10,7 @@ public class DefaultRelayChannelMaker<C extends Channel> extends RelayPackChanne
     public DefaultRelayChannelMaker() {
     }
 
-    public DefaultRelayChannelMaker(RelayPackEncoder encoder, RelayPackDecoder decoder) {
+    public DefaultRelayChannelMaker(RelayPacketEncoder encoder, RelayPacketDecoder decoder) {
         super(encoder, decoder);
     }
 

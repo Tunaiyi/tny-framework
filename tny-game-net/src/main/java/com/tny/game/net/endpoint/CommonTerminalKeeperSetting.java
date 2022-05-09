@@ -16,7 +16,7 @@ public class CommonTerminalKeeperSetting implements TerminalKeeperSetting {
     }
 
     @Override
-    public String getUserType() {
+    public String getMessagerType() {
         return this.name;
     }
 

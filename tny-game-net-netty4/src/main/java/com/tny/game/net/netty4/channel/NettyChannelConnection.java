@@ -51,8 +51,9 @@ public abstract class NettyChannelConnection extends AttributesHolder implements
         if (close.get()) {
             return false;
         }
-        if (close.compareAndSet(true, false)) {
+        if (close.compareAndSet(false, true)) {
             this.doClose();
+            this.channel.disconnect();
             return true;
         }
         return false;

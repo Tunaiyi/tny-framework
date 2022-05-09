@@ -20,9 +20,9 @@ public abstract class AbstractSessionKeeper<UID> extends AbstractEndpointKeeper<
 
     protected SessionFactory<UID, NetSession<UID>, SessionSetting> factory;
 
-    public AbstractSessionKeeper(String userType, SessionFactory<UID, ? extends NetSession<UID>, ? extends SessionSetting> factory,
+    public AbstractSessionKeeper(MessagerType messagerType, SessionFactory<UID, ? extends NetSession<UID>, ? extends SessionSetting> factory,
             SessionKeeperSetting setting) {
-        super(userType);
+        super(messagerType);
         this.setting = setting;
         this.factory = as(factory);
         ScheduledExecutorService sessionScanExecutor = Executors.newSingleThreadScheduledExecutor(new CoreThreadFactory("SessionScanWorker", true));
@@ -100,7 +100,7 @@ public abstract class AbstractSessionKeeper<UID> extends AbstractEndpointKeeper<
     @Override
     protected void monitorEndpoint() {
         super.monitorEndpoint();
-        LOG.info("会话管理器#{} Group -> 离线会话数量为 {} / {}", this.getUserType(), this.offlineSessionQueue.size(), this.setting.getOfflineMaxSize());
+        LOG.info("会话管理器#{} Group -> 离线会话数量为 {} / {}", this.getMessagerType(), this.offlineSessionQueue.size(), this.setting.getOfflineMaxSize());
     }
 
 }

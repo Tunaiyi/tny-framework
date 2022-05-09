@@ -18,7 +18,7 @@ import static com.tny.game.codec.typeprotobuf.TypeProtobufTypeId.*;
  */
 @ProtobufClass
 @TypeProtobuf(PB_BYTE_LIST)
-@Codecable(ProtobufMimeType.PROTOBUF)
+@Codable(ProtobufMimeType.PROTOBUF)
 public class PBByteList implements PBList<Byte, byte[]> {
 
     @Packed

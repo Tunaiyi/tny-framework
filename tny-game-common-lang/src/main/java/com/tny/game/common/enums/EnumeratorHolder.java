@@ -11,9 +11,11 @@ import java.util.stream.Collectors;
  * Created by Kun Yang on 16/1/29.
  */
 @SuppressWarnings("unchecked")
-public class EnumeratorHolder<O> implements Enumerator<O> {
+public class EnumeratorHolder<O extends Enumerable<?>> implements Enumerator<O> {
 
     private final Map<Object, O> enumeratorMap;
+
+    private final Map<EnumerableSymbol<O, ?>, Map<Object, O>> symbolEnumeratorMap = new CopyOnWriteMap<>();
 
     private final Set<O> enumerators;
 
@@ -43,16 +45,29 @@ public class EnumeratorHolder<O> implements Enumerator<O> {
         if (object.getClass().isEnum()) {
             putAndCheck(((Enum<?>)object).name(), object);
         }
-        if (object instanceof Enumerable) {
-            putAndCheck(((Enumerable<?>)object).getId(), object);
-        }
+        putAndCheck(((Enumerable<?>)object).getId(), object);
         postRegister(object);
     }
 
     protected void postRegister(O object) {
     }
 
-    protected EnumeratorHolder<O> putAndCheck(Object key, O value) {
+    private Map<Object, O> symbolMap(EnumerableSymbol<O, ?> symbol) {
+        return symbolEnumeratorMap.computeIfAbsent(symbol, (s) -> new CopyOnWriteMap<>());
+    }
+
+    protected <T> EnumeratorHolder<O> putAndCheckSymbol(EnumerableSymbol<O, T> symbol, O value) {
+        T symbolValue = symbol.getSymbolValue(value);
+        Map<Object, O> symbolMap = symbolMap(symbol);
+        O old = symbolMap.putIfAbsent(symbolValue, value);
+        if (old != null && old != value) {
+            throw new IllegalStateException(StringAide.format(
+                    "注册 {} [symbol[{}]:{}, object:{}] 发现已存在对象 {}", value.getClass(), symbol, symbolValue, value, old));
+        }
+        return this;
+    }
+
+    private EnumeratorHolder<O> putAndCheck(Object key, O value) {
         O old = this.enumeratorMap.putIfAbsent(key, value);
         if (old != null) {
             if (old != value) {
@@ -75,14 +90,30 @@ public class EnumeratorHolder<O> implements Enumerator<O> {
         return value;
     }
 
+    public <T extends O, S> T checkBySymbol(EnumerableSymbol<O, S> symbol, S key, String message, Object... args) {
+        T value = (T)this.symbolMap(symbol).get(key);
+        if (value == null) {
+            throw new NullPointerException(StringAide.format(message, args));
+        }
+        return value;
+    }
+
     @Override
     public <T extends O> T of(Object key) {
         return (T)this.enumeratorMap.get(key);
     }
 
+    public <T extends O, S> T ofBySymbol(EnumerableSymbol<O, S> symbol, S key) {
+        return (T)this.symbolMap(symbol).get(key);
+    }
+
     @Override
     public <T extends O> Optional<T> option(Object key) {
         return Optional.ofNullable((T)this.enumeratorMap.get(key));
+    }
+
+    public <T extends O, S> Optional<T> optionBySymbol(EnumerableSymbol<O, S> symbol, S key) {
+        return Optional.ofNullable((T)this.symbolMap(symbol).get(key));
     }
 
     @Override

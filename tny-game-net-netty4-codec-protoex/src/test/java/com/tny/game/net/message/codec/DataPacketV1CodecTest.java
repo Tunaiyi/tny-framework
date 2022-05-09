@@ -33,9 +33,9 @@ public class DataPacketV1CodecTest {
 
     private CommonMessageFactory factory = new CommonMessageFactory();
 
-    private DatagramPackV1Decoder decoder;
+    private NetPacketV1Decoder decoder;
 
-    private DatagramPackV1Encoder encoder;
+    private NetPacketV1Encoder encoder;
 
     @BeforeAll
     public static void initUnit() {
@@ -54,14 +54,14 @@ public class DataPacketV1CodecTest {
         this.ctx = mockAs(ChannelHandlerContext.class);
         EmbeddedChannel channel = new EmbeddedChannel();
         when(this.ctx.channel()).thenReturn(channel);
-        NetTunnel tunnel = mockAs(NetTunnel.class);
+        NetTunnel<?> tunnel = mockAs(NetTunnel.class);
         when(tunnel.getAccessId()).thenReturn(2018L);
         when(tunnel.getMessageFactory()).thenReturn(this.factory);
         channel.attr(NettyNetAttrKeys.TUNNEL).set(tunnel);
-        DatagramPackCodecSetting config = new DatagramPackCodecSetting();
+        NetPacketCodecSetting config = new NetPacketCodecSetting();
         config.setSecurityKeys(new String[]{"1s1394d3kssvonxasanfkwhzfk0jy0zm"});
-        this.decoder = new DatagramPackV1Decoder(config);
-        this.encoder = new DatagramPackV1Encoder(config);
+        this.decoder = new NetPacketV1Decoder(config);
+        this.encoder = new NetPacketV1Encoder(config);
         this.decoder.prepareStart();
         this.encoder.prepareStart();
     }

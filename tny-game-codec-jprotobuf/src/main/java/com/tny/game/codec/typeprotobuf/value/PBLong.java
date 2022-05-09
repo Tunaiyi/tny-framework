@@ -16,7 +16,7 @@ import static com.tny.game.codec.typeprotobuf.TypeProtobufTypeId.*;
  */
 @ProtobufClass
 @TypeProtobuf(PB_LONG)
-@Codecable(ProtobufMimeType.PROTOBUF)
+@Codable(ProtobufMimeType.PROTOBUF)
 public class PBLong {
 
     @Protobuf(fieldType = FieldType.INT64)

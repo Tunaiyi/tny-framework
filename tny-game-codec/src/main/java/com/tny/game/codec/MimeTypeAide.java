@@ -33,7 +33,7 @@ public interface MimeTypeAide {
     }
 
     static String getMimeType(Class<?> entityClass, String defaultType) {
-        Codecable codecable = entityClass.getAnnotation(Codecable.class);
+        Codable codecable = entityClass.getAnnotation(Codable.class);
         String mimeType = null;
         if (codecable != null) {
             mimeType = codecable.value();
@@ -41,7 +41,7 @@ public interface MimeTypeAide {
         return StringUtils.isBlank(mimeType) ? defaultType : mimeType;
     }
 
-    static String getMimeType(Codecable codecable) {
+    static String getMimeType(Codable codecable) {
         if (StringUtils.isNotBlank(codecable.mimeType())) {
             return codecable.mimeType();
         }

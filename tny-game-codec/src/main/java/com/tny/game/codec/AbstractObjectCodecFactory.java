@@ -15,7 +15,7 @@ import static com.tny.game.common.utils.StringAide.*;
  * @author : kgtny
  * @date : 2020/8/19 6:27 下午
  */
-public abstract class AbstractObjectCodecFactory implements ObjectCodecorFactory {
+public abstract class AbstractObjectCodecFactory implements ObjectCodecFactory {
 
     private final Set<MimeType> supportMimeTypes;
 

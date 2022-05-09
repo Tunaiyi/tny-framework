@@ -128,9 +128,8 @@ public class RedissonLuaScripRunner implements LuaScriptRunner {
                 } else if (ClassUtils.isPrimitiveOrWrapper(value.getClass())) {
                     arguments[index++] = String.valueOf(value);
                 } else {
-                    ObjectCodec<Object> codecor = this.objectCodecService.codec(value.getClass());
-                    byte[] data = codecor.encode(value);
-                    arguments[index++] = codecor.formatBytes(data);
+                    ObjectCodec<Object> codec = this.objectCodecService.codec(value.getClass());
+                    arguments[index++] = codec.format(value);
                 }
             }
         }

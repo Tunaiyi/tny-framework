@@ -23,6 +23,11 @@ class BaseDemandTest {
     private DemandType demandType = new DemandType() {
 
         @Override
+        public String name() {
+            return "demandType";
+        }
+
+        @Override
         public ResultCode getResultCode() {
             return null;
         }
@@ -53,6 +58,11 @@ class BaseDemandTest {
         @Override
         public ItemType getItemType() {
             return new ItemType() {
+
+                @Override
+                public String name() {
+                    return "item";
+                }
 
                 @Override
                 public int id() {

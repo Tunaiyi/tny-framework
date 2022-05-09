@@ -10,7 +10,7 @@ import com.tny.game.net.message.*;
  * @author : kgtny
  * @date : 2021/8/26 2:22 下午
  */
-public interface NetworkContext extends EndpointContext {
+public interface NetworkContext extends EndpointContext, RpcContext {
 
     NetBootstrapSetting getSetting();
 

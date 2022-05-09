@@ -41,7 +41,7 @@ public class DefaultNetAppContext implements NetAppContext {
     }
 
     @Override
-    public long getServerId() {
+    public int getServerId() {
         return this.serverId;
     }
 

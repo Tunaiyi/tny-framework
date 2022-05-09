@@ -17,13 +17,13 @@ public class RpcInstance {
 
     private final RpcSetting setting;
 
-    private final RpcRemoteServicer servicer;
+    private final RpcRemoteServiceSet servicer;
 
     private final RpcRouteManager rpcRouteManager;
 
     private Map<Method, RpcInvoker> invokerMap = ImmutableMap.of();
 
-    public RpcInstance(Class<?> rpcClass, RpcSetting setting, RpcRemoteServicer servicer, RpcRouteManager rpcRouteManager) {
+    public RpcInstance(Class<?> rpcClass, RpcSetting setting, RpcRemoteServiceSet servicer, RpcRouteManager rpcRouteManager) {
         this.rpcClass = rpcClass;
         this.setting = setting;
         this.servicer = servicer;
@@ -38,7 +38,7 @@ public class RpcInstance {
         return setting;
     }
 
-    public RpcRemoteServicer getServicer() {
+    public RpcRemoteServiceSet getServicer() {
         return servicer;
     }
 

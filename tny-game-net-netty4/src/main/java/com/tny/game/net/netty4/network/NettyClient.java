@@ -159,9 +159,12 @@ public class NettyClient<UID> extends BaseNetEndpoint<UID> implements NettyTermi
             }
             try {
                 if (!this.postConnect.onConnected(tunnel)) {
+                    tunnel.disconnect();
                     throw new TunnelException("{} tunnel post connect failed", tunnel);
                 }
                 buses().<UID>activateEvent().notify(this, this.tunnel);
+            } catch (TunnelException e) {
+                throw e;
             } catch (Exception e) {
                 throw new TunnelException(e, "{} tunnel post connect failed", tunnel);
             }

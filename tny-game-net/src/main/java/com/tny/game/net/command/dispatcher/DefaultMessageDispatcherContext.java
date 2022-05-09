@@ -30,7 +30,7 @@ public class DefaultMessageDispatcherContext implements NetMessageDispatcherCont
     /**
      * 所有协议身法验证器
      */
-    private AuthenticateValidator<?> defaultValidator;
+    private AuthenticateValidator<?, ?> defaultValidator;
 
     /**
      * 插件管理器
@@ -40,7 +40,7 @@ public class DefaultMessageDispatcherContext implements NetMessageDispatcherCont
     /**
      * 认证器列表
      */
-    private final Map<Object, AuthenticateValidator<?>> authValidators = new CopyOnWriteMap<>();
+    private final Map<Object, AuthenticateValidator<?, ?>> authValidators = new CopyOnWriteMap<>();
 
     /**
      * 派发错误监听器
@@ -62,8 +62,8 @@ public class DefaultMessageDispatcherContext implements NetMessageDispatcherCont
     }
 
     @Override
-    public AuthenticateValidator<?> getValidator(Class<? extends AuthenticateValidator<?>> validatorClass) {
-        AuthenticateValidator<Object> validator = null;
+    public AuthenticateValidator<?, ?> getValidator(Class<? extends AuthenticateValidator<?, ?>> validatorClass) {
+        AuthenticateValidator<Object, ?> validator = null;
         if (validatorClass != null) {
             validator = as(this.authValidators.get(validatorClass));
             Asserts.checkNotNull(validator, "{} 认证器不存在", validatorClass);
@@ -72,8 +72,8 @@ public class DefaultMessageDispatcherContext implements NetMessageDispatcherCont
     }
 
     @Override
-    public AuthenticateValidator<?> getValidator(Object protocol) {
-        return ObjectAide.<AuthenticateValidator<Object>>as(this.authValidators.getOrDefault(protocol, this.defaultValidator));
+    public AuthenticateValidator<?, ?> getValidator(Object protocol) {
+        return ObjectAide.<AuthenticateValidator<Object, ?>>as(this.authValidators.getOrDefault(protocol, this.defaultValidator));
     }
 
     @Override
@@ -108,7 +108,7 @@ public class DefaultMessageDispatcherContext implements NetMessageDispatcherCont
      * @param provider 身份校验器
      */
     @Override
-    public void addAuthProvider(AuthenticateValidator<?> provider) {
+    public void addAuthProvider(AuthenticateValidator<?, ?> provider) {
         Class<?> providerClass = provider.getClass();
         AuthProtocol protocol = providerClass.getAnnotation(AuthProtocol.class);
         if (protocol != null) {
@@ -130,7 +130,7 @@ public class DefaultMessageDispatcherContext implements NetMessageDispatcherCont
      * @param providers 身份校验器列表
      */
     @Override
-    public void addAuthProvider(Collection<? extends AuthenticateValidator<?>> providers) {
+    public void addAuthProvider(Collection<? extends AuthenticateValidator<?, ?>> providers) {
         providers.forEach(this::addAuthProvider);
     }
 

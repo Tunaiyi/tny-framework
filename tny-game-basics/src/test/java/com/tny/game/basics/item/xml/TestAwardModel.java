@@ -14,6 +14,11 @@ public class TestAwardModel extends AbstractItemModel {
         return new ItemType() {
 
             @Override
+            public String name() {
+                return "def";
+            }
+
+            @Override
             public int id() {
                 return 0;
             }

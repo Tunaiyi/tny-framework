@@ -178,6 +178,10 @@ public enum NetResultCode implements ResultCode {
      */
     REQUEST_FAILED(306, "客户端请求失败", ResultLevel.WARN),
 
+    /**
+     * 服务不可用
+     */
+    RPC_SERVICE_NOT_AVAILABLE(400, "服务不可用", ResultLevel.ERROR);
     //
     ;
 

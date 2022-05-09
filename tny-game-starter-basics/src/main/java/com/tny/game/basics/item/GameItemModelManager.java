@@ -32,7 +32,8 @@ public abstract class GameItemModelManager<IM extends ItemModel> extends GameMod
 
     protected GameItemModelManager(Class<? extends IM> modelClass,
             Class<? extends Enum<? extends Ability>> abilityClass,
-            Class<? extends Enum<? extends Option>> optionClass, String... paths) {
+            Class<? extends Enum<? extends Option>> optionClass,
+            String... paths) {
         this(modelClass, paths);
         this.addEnumClass(abilityClass);
         this.addEnumClass(optionClass);

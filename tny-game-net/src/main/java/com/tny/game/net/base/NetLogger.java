@@ -280,7 +280,7 @@ public class NetLogger {
     }
 
     private static void logSend(Tunnel<?> tunnel, Message message) {
-        Logger logger = getSendLogger(tunnel.getUserType(), message);
+        Logger logger = getSendLogger(tunnel.getUserGroup(), message);
         if (logger != null && logger.isDebugEnabled()) {
             doLogSend(logger, tunnel, message);
         }
@@ -297,7 +297,7 @@ public class NetLogger {
     }
 
     public static void logReceive(Tunnel<?> tunnel, Message message) {
-        Logger logger = getReceiveLogger(tunnel.getUserType(), message);
+        Logger logger = getReceiveLogger(tunnel.getUserGroup(), message);
         if (logger != null && logger.isDebugEnabled()) {
             doLogReceive(logger, tunnel, message);
         }

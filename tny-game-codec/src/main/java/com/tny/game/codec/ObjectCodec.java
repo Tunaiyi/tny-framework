@@ -21,6 +21,14 @@ public interface ObjectCodec<T> {
 
     T decode(InputStream input) throws IOException;
 
+    default String format(T value) throws IOException {
+        return formatBytes(encode(value));
+    }
+
+    default T parse(String data) throws IOException {
+        return decode(parseBytes(data));
+    }
+
     default String formatBytes(byte[] data) {
         if (data == null) {
             return null;

@@ -17,7 +17,7 @@ import java.util.*;
  */
 @ProtobufClass
 @TypeProtobuf(TypeProtobufTypeId.PB_FLOAT_LIST)
-@Codecable(ProtobufMimeType.PROTOBUF)
+@Codable(ProtobufMimeType.PROTOBUF)
 public class PBFloatList implements PBList<Float, float[]> {
 
     @Packed

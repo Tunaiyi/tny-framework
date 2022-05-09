@@ -2,6 +2,8 @@ package com.tny.game.net.message;
 
 import com.tny.game.common.result.*;
 
+import java.util.*;
+
 /**
  * Created by Kun Yang on 2018/8/20.
  */
@@ -57,6 +59,51 @@ public class TickMessageHead extends AbstractNetMessageHead {
     @Override
     public long getTime() {
         return this.time;
+    }
+
+    @Override
+    public <T extends MessageHeader<?>> T getHeader(String key, Class<T> headerClass) {
+        return null;
+    }
+
+    @Override
+    public <T extends MessageHeader<?>> List<T> getHeaders(Class<T> headerClass) {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public <T extends MessageHeader<?>> T getHeader(MessageHeaderKey<T> key) {
+        return null;
+    }
+
+    @Override
+    public boolean isHasHeaders() {
+        return false;
+    }
+
+    @Override
+    public Map<String, MessageHeader<?>> getAllHeadersMap() {
+        return Collections.emptyMap();
+    }
+
+    @Override
+    public List<MessageHeader<?>> getAllHeaders() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public boolean existHeader(String key) {
+        return false;
+    }
+
+    @Override
+    public boolean existHeader(String key, Class<? extends MessageHeader<?>> headerClass) {
+        return false;
+    }
+
+    @Override
+    public boolean existHeader(MessageHeaderKey<?> key) {
+        return false;
     }
 
 }

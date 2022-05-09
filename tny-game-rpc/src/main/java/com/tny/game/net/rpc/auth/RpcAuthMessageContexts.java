@@ -12,30 +12,17 @@ import com.tny.game.net.transport.*;
  */
 public class RpcAuthMessageContexts {
 
-    private static final int RPC_AUTH_SERVICE_INDEX = 0;
+    private static final int RPC_AUTH_ID_INDEX = 0;
 
-    private static final int RPC_AUTH_SERVER_ID_INDEX = 1;
+    private static final int RPC_AUTH_PASSWORD_INDEX = 1;
 
-    private static final int RPC_AUTH_INSTANCE_INDEX = 2;
-
-    private static final int RPC_AUTH_PASSWORD_INDEX = 3;
-
-    public static RequestContext authRequest(String service, long serverId, long instance, String password) {
+    public static RequestContext authRequest(long id, String password) {
         return MessageContexts.request(
-                Protocols.protocol(RpcProtocol.RPC_AUTH_$_AUTHENTICATE),
-                service, serverId, instance, password);
+                Protocols.protocol(RpcProtocol.RPC_AUTH_$_AUTHENTICATE), id, password);
     }
 
-    public static String getServiceParam(MessageParamList paramList) {
-        return paramList.getString(RPC_AUTH_SERVICE_INDEX);
-    }
-
-    public static long getServerIdParam(MessageParamList paramList) {
-        return paramList.getLong(RPC_AUTH_SERVER_ID_INDEX);
-    }
-
-    public static long getInstanceIdParam(MessageParamList paramList) {
-        return paramList.getLong(RPC_AUTH_INSTANCE_INDEX);
+    public static long getIdParam(MessageParamList paramList) {
+        return paramList.getLong(RPC_AUTH_ID_INDEX);
     }
 
     public static String getPasswordParam(MessageParamList paramList) {

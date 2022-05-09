@@ -16,18 +16,18 @@ import static com.tny.game.common.utils.ObjectAide.*;
 public class SpringNettyNetServerBootstrapSetting extends NettyNetServerBootstrapSetting {
 
     @NestedConfigurationProperty
-    private SpringNettyDatagramChannelSetting channel;
+    private SpringNettyChannelSetting channel;
 
     public SpringNettyNetServerBootstrapSetting() {
-        super(new SpringNettyDatagramChannelSetting());
+        super(new SpringNettyChannelSetting());
     }
 
     @Override
-    public SpringNettyDatagramChannelSetting getChannel() {
+    public SpringNettyChannelSetting getChannel() {
         return as(super.getChannel());
     }
 
-    public SpringNettyNetServerBootstrapSetting setChannel(SpringNettyDatagramChannelSetting channel) {
+    public SpringNettyNetServerBootstrapSetting setChannel(SpringNettyChannelSetting channel) {
         super.setChannel(channel);
         return this;
     }

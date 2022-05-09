@@ -24,9 +24,15 @@ public class ImportNetBootstrapDefinitionRegistrar extends ImportConfigurationBe
 
     @Override
     public void registerBeanDefinitions(@Nonnull AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
-        SpringBootNetBootstrapProperties bootstrapConfigure = loadProperties(SpringBootNetBootstrapProperties.class);
+        registerBy(importingClassMetadata, registry, SpringBootNetBootstrapProperties.class);
+        registerBy(importingClassMetadata, registry, SpringBootRpcBootstrapProperties.class);
+    }
+
+    private <T extends SpringBootNetBootstrapSettings> void registerBy(@Nonnull AnnotationMetadata importingClassMetadata,
+            BeanDefinitionRegistry registry, Class<T> propertiesClasses) {
+        T bootstrapConfigure = loadProperties(propertiesClasses);
         registry.registerBeanDefinition(bootstrapConfigure.getClass().getSimpleName(), BeanDefinitionBuilder
-                .genericBeanDefinition(SpringBootNetBootstrapProperties.class, () -> bootstrapConfigure)
+                .genericBeanDefinition(propertiesClasses, () -> bootstrapConfigure)
                 .getBeanDefinition());
         if (bootstrapConfigure.getServer() != null) {
             registerNettyServerGuides(Collections.singleton(bootstrapConfigure.getServer()), registry);
@@ -63,19 +69,19 @@ public class ImportNetBootstrapDefinitionRegistrar extends ImportConfigurationBe
     }
 
     private String registerChannelMaker(NettyBootstrapSetting setting, BeanDefinitionRegistry registry) {
-        NettyDatagramChannelSetting channelSetting = setting.getChannel();
-        DatagramPackCodecSetting encoderConfig = channelSetting.getEncoder();
-        DatagramPackCodecSetting decoderConfig = channelSetting.getDecoder();
+        NettyChannelSetting channelSetting = setting.getChannel();
+        NetPacketCodecSetting encoderConfig = channelSetting.getEncoder();
+        NetPacketCodecSetting decoderConfig = channelSetting.getDecoder();
         NettyChannelMakerSetting channelMaker = channelSetting.getMaker();
 
-        DatagramPackV1Encoder encoder = new DatagramPackV1Encoder(encoderConfig);
-        DatagramPackV1Decoder decoder = new DatagramPackV1Decoder(decoderConfig);
+        NetPacketV1Encoder encoder = new NetPacketV1Encoder(encoderConfig);
+        NetPacketV1Decoder decoder = new NetPacketV1Decoder(decoderConfig);
         String encoderName = unitName(setting.getName(), DatagramPackEncoder.class);
         String decoderName = unitName(setting.getName(), DatagramPackDecoder.class);
         registry.registerBeanDefinition(encoderName,
-                BeanDefinitionBuilder.genericBeanDefinition(DatagramPackV1Encoder.class, () -> encoder).getBeanDefinition());
+                BeanDefinitionBuilder.genericBeanDefinition(NetPacketV1Encoder.class, () -> encoder).getBeanDefinition());
         registry.registerBeanDefinition(decoderName,
-                BeanDefinitionBuilder.genericBeanDefinition(DatagramPackV1Decoder.class, () -> decoder).getBeanDefinition());
+                BeanDefinitionBuilder.genericBeanDefinition(NetPacketV1Decoder.class, () -> decoder).getBeanDefinition());
 
         Class<DatagramChannelMaker<?>> channelMakerClass = as(channelMaker.getMakerClass());
         DatagramChannelMaker<?> maker;

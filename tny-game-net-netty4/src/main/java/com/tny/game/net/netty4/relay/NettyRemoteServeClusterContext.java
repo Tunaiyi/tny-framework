@@ -69,7 +69,7 @@ public class NettyRemoteServeClusterContext implements RemoteServeClusterContext
     }
 
     @Override
-    public List<NetAccessPoint> getInstances() {
+    public List<NetAccessNode> getInstances() {
         return as(setting.getInstanceList());
     }
 

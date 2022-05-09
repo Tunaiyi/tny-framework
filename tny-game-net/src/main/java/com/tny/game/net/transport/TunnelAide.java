@@ -24,7 +24,7 @@ public class TunnelAide {
      */
     public static <UID> void responseMessage(NetTunnel<UID> tunnel, Message request, ResultCode code, Object body) {
         MessageContext context = MessageContexts.respond(request, code, body, request.getId());
-        responseMessage(tunnel, context);
+        responseMessage(tunnel, code, context);
     }
 
     /**
@@ -33,8 +33,7 @@ public class TunnelAide {
      * @param tunnel  通道
      * @param context 消息信息上下文
      */
-    public static <UID> SendReceipt responseMessage(NetTunnel<UID> tunnel, MessageContext context) {
-        ResultCode code = context.getResultCode();
+    public static <UID> SendReceipt responseMessage(NetTunnel<UID> tunnel, ResultCode code, MessageContext context) {
         boolean close = code.getLevel() == ResultLevel.ERROR;
         if (close) {
             if (!context.isWriteAwaitable()) {

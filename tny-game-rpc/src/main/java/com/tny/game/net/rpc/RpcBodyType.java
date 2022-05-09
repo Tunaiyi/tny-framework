@@ -2,9 +2,9 @@ package com.tny.game.net.rpc;
 
 import com.google.common.collect.ImmutableList;
 import com.tny.game.common.result.*;
-import com.tny.game.net.command.*;
+import com.tny.game.net.annotation.*;
+import com.tny.game.net.base.*;
 import com.tny.game.net.message.*;
-import com.tny.game.net.rpc.annotation.*;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -26,7 +26,7 @@ public enum RpcBodyType {
 
     RESULT(null, RpcResult.class),
 
-    RESULT_CODE_ID(RpcResultCode.class, Integer.class, int.class),
+    RESULT_CODE_ID(RpcCode.class, Integer.class, int.class),
 
     RESULT_CODE(null, ResultCode.class),
 

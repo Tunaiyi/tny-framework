@@ -23,6 +23,6 @@ public @interface RedisObject {
      *
      * @return 序列化类型
      */
-    Codecable codec() default @Codecable("");
+    Codable codec() default @Codable("");
 
 }

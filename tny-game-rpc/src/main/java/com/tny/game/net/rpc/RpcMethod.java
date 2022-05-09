@@ -2,12 +2,18 @@ package com.tny.game.net.rpc;
 
 import com.google.common.collect.ImmutableList;
 import com.tny.game.common.utils.*;
-import com.tny.game.net.command.*;
+import com.tny.game.net.annotation.*;
+import com.tny.game.net.base.*;
+import com.tny.game.net.command.dispatcher.*;
+import com.tny.game.net.exception.*;
+import com.tny.game.net.message.*;
 import com.tny.game.net.rpc.annotation.*;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.slf4j.*;
 
-import java.lang.reflect.*;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.util.*;
 
 import static com.tny.game.common.utils.ObjectAide.*;
@@ -26,17 +32,14 @@ public class RpcMethod {
     /**
      * 服务名
      */
-    private final String service;
+    private final RpcServiceType serviceType;
+
+    private boolean proxy;
 
     /**
      * 服务名
      */
     private final String name;
-
-    /**
-     * 路由参数
-     */
-    private int routeValueIndex = -1;
 
     /**
      * java method;
@@ -46,7 +49,7 @@ public class RpcMethod {
     /**
      * 路由参数
      */
-    private final List<Integer> parameterIndexes;
+    private final List<RpcParamDescription> parameters;
 
     /**
      * 协议 id
@@ -61,7 +64,7 @@ public class RpcMethod {
     /**
      * 调用模式
      */
-    private final RpcMode mode;
+    private final MessageMode mode;
 
     /**
      * 返回值类
@@ -98,75 +101,101 @@ public class RpcMethod {
      */
     private final long timeout;
 
+    /**
+     * 消息参数大小
+     */
+    private int messageParamSize;
+
     public static List<RpcMethod> instanceOf(Class<?> rpcClass) {
         RpcService rpcService = rpcClass.getAnnotation(RpcService.class);
         Asserts.checkNotNull(rpcService, "{} 没有标识 {} 注解", rpcClass, RpcService.class);
         List<RpcMethod> methods = new ArrayList<>();
         for (Method method : rpcClass.getMethods()) {
-            RpcCaller rpc = method.getAnnotation(RpcCaller.class);
-            if (rpc == null) {
-                continue;
-            }
-            if (method.getReturnType() == RpcReturn.class) {
-                continue;
-            }
-            if (method.isBridge()) {
-                continue;
-            }
-            methods.add(new RpcMethod(method, rpc, rpcService));
+            instanceOf(method).ifPresent(methods::add);
         }
         return methods;
     }
 
-    private static RpcMethod instanceOf(Method method) {
+    private static Optional<RpcMethod> instanceOf(Method method) {
         Class<?> rpcClass = method.getDeclaringClass();
         RpcService rpcService = rpcClass.getAnnotation(RpcService.class);
-        RpcCaller rpc = method.getAnnotation(RpcCaller.class);
-        return new RpcMethod(method, rpc, rpcService);
+        RpcRemoteOptions options = rpcClass.getAnnotation(RpcRemoteOptions.class);
+        RpcProfile profile = RpcProfile.oneOf(method);
+        if (profile == null) {
+            return Optional.empty();
+        }
+        if (method.getReturnType() == RpcReturn.class) {
+            return Optional.empty();
+        }
+        if (method.isBridge()) {
+            return Optional.empty();
+        }
+        return Optional.of(new RpcMethod(method, profile, rpcService, options));
     }
 
-    private RpcMethod(Method method, RpcCaller rpc, RpcService rpcService) {
+    private RpcMethod(Method method, RpcProfile profile, RpcService rpcService, RpcRemoteOptions options) {
         this.method = method;
-        this.protocol = rpc.value();
-        this.line = rpc.line();
-        this.routerClass = as(rpc.router());
+        this.protocol = profile.getProtocol();
+        this.line = profile.getLine();
+        if (options == null) {
+            options = rpcService.options();
+        }
+        this.routerClass = as(options.router());
         if (Objects.equals(this.routerClass, RpcRouter.class)) {
             this.routerClass = as(rpcService.router());
         }
-        this.service = rpcService.value();
+        this.proxy = StringUtils.isNoneBlank(rpcService.proxyService());
+        this.mode = profile.getMode();
+        this.serviceType = RpcServiceTypes.checkService(rpcService.value());
         this.name = method.getDeclaringClass().getName() + "." + method.getName();
-        this.invocation = rpc.invocation();
-        this.mode = rpc.mode();
-        this.silently = rpc.silently();
-        this.timeout = rpc.timeout();
-        int index = 0;
-        List<Integer> parameterIndexes = new ArrayList<>();
-        for (Parameter parameter : method.getParameters()) {
-            if (routeValueIndex < 0) {
-                RpcRoutable routeParam = parameter.getAnnotation(RpcRoutable.class);
-                if (routeParam != null) {
-                    routeValueIndex = index;
-                }
-            }
-            RpcIgnore ignore = parameter.getAnnotation(RpcIgnore.class);
-            if (ignore == null) {
-                parameterIndexes.add(index);
-            }
-            index++;
-        }
+        this.invocation = options.invocation();
+        this.silently = options.silently();
+        this.timeout = options.timeout();
         this.returnClass = method.getReturnType();
         this.returnMode = RpcReturnMode.typeOf(returnClass);
         Asserts.checkArgument(returnMode != null, "{} 返回类型 {} 是非法返回类型", method, returnClass);
         Asserts.checkArgument(this.returnMode.isCanInvokeBy(mode), "{} 返回类型 {} 是使用 {} Rpc 模式", method, returnClass, mode);
-        this.parameterIndexes = ImmutableList.copyOf(parameterIndexes);
-
-        if (!this.mode.checkParamsSize(this.parameterIndexes.size())) {
-            throw new IllegalArgumentException(
-                    format("{} mode 为 {}, 请求参数数量必须在 {} 到 {} 个之间", method, mode, mode.getMinParamSizeLimit(), mode.getMaxParamSizeLimit()));
-        }
-
         Class<?> bodyClass = returnMode.findBodyClass(method);
         this.bodyType = RpcBodyType.typeOf(method, bodyClass);
+
+        List<RpcParamDescription> paramDescriptions = new ArrayList<>();
+        Class<?>[] parameterClasses = method.getParameterTypes();
+        Annotation[][] parameterAnnotations = method.getParameterAnnotations();
+        ParamIndexCreator indexCreator = new ParamIndexCreator(method);
+        int bodySize = 0;
+        int paramSize = 0;
+        int maxIndex = -1;
+        for (int index = 0; index < parameterClasses.length; index++) {
+            Class<?> paramClass = parameterClasses[index];
+            List<Annotation> annotations = ImmutableList.copyOf(parameterAnnotations[index]);
+            RpcParamDescription paramDesc = new RpcParamDescription(this, paramClass, annotations, indexCreator);
+            paramDescriptions.add(paramDesc);
+            if (paramDesc.getMode() == ParamMode.PARAM) {
+                paramSize++;
+                if (paramDesc.getIndex() > maxIndex) {
+                    maxIndex = paramDesc.getIndex();
+                }
+            }
+            if (paramDesc.getMode() == ParamMode.BODY) {
+                bodySize++;
+            }
+        }
+        if (bodySize > 0 && paramSize > 0) {
+            throw new IllegalArgumentException(format("{} 方法不可同时使用 {} 与 {}参数", method, RpcParam.class, RpcBody.class));
+        }
+        if (bodySize > 1) {
+            throw new IllegalArgumentException(format("{} 方法 {} 参数只能存在一个", method, RpcParam.class, RpcBody.class));
+        }
+        if (paramSize > 0) {
+            if (maxIndex >= paramSize) {
+                throw new IllegalArgumentException(format("{} 方法 参数最大index {} 需要 < 参数个数 {}", method, maxIndex, paramSize));
+            }
+            this.messageParamSize = paramSize;
+        }
+        if (bodySize == 1) {
+            this.messageParamSize = 1;
+        }
+        this.parameters = ImmutableList.copyOf(paramDescriptions);
     }
 
     public String getName() {
@@ -174,7 +203,7 @@ public class RpcMethod {
     }
 
     public String getService() {
-        return service;
+        return serviceType.getService();
     }
 
     public int getProtocol() {
@@ -185,7 +214,7 @@ public class RpcMethod {
         return line;
     }
 
-    public RpcMode getMode() {
+    public MessageMode getMode() {
         return mode;
     }
 
@@ -201,12 +230,8 @@ public class RpcMethod {
         return routerClass;
     }
 
-    public List<Integer> getParameterIndexes() {
-        return parameterIndexes;
-    }
-
-    public int getRouteValueIndex() {
-        return routeValueIndex;
+    public List<RpcParamDescription> getParameters() {
+        return parameters;
     }
 
     public Class<?> getReturnClass() {
@@ -231,7 +256,54 @@ public class RpcMethod {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this).append("service", service).append("name", name).toString();
+        return new ToStringBuilder(this).append("service", serviceType).append("name", name).toString();
+    }
+
+    public RpcInvokeParams getParams(Object[] paramValues) throws CommandException {
+        RpcInvokeParams params = new RpcInvokeParams(this.messageParamSize);
+        for (RpcParamDescription desc : this.parameters) {
+            Object value = paramValues[desc.getIndex()];
+            if (desc.isRequire() && value == null) {
+                throw new NullPointerException(format("{} 第 {} 参数为 null", this.method, desc.getIndex()));
+            }
+            if (this.proxy) {
+                params.setTo(serviceType);
+            }
+            if (desc.isRequire()) {
+                switch (desc.getMode()) {
+                    case PARAM:
+                        params.setParams(desc.getIndex(), value);
+                        break;
+                    case CODE:
+                    case CODE_NUM:
+                        params.setCode(value);
+                        break;
+                    case HEADER:
+                        params.putHeader(as(value));
+                        break;
+                    case FROM_SERVICE:
+                        params.setFrom(as(value, RpcServicer.class));
+                        break;
+                    // case TO_SERVICE:
+                    //     params.setTo(as(value, RpcServicer.class));
+                    //     break;
+                    case SENDER:
+                        params.setSender(as(value));
+                        break;
+                    case RECEIVER:
+                        params.setReceiver(as(value));
+                        break;
+                    case BODY:
+                        params.setBody(value);
+                        break;
+                    case IGNORE:
+                        break;
+                    default:
+                        throw new IllegalArgumentException(format("不支持 {} 参数", desc.getMode()));
+                }
+            }
+        }
+        return params;
     }
 
 }

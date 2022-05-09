@@ -17,11 +17,11 @@ public class RelayPackEncodeHandler extends MessageToByteEncoder<Object> impleme
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(NetLogger.CODER);
 
-    private final RelayPackEncoder encoder;
+    private final RelayPacketEncoder encoder;
 
     private final boolean closeOnError;
 
-    public RelayPackEncodeHandler(RelayPackEncoder encoder, boolean closeOnError) {
+    public RelayPackEncodeHandler(RelayPacketEncoder encoder, boolean closeOnError) {
         this.encoder = encoder;
         this.closeOnError = closeOnError;
     }

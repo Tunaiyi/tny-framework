@@ -1,6 +1,7 @@
 package com.tny.game.net.command.dispatcher;
 
 import com.google.common.collect.*;
+import org.checkerframework.checker.units.qual.A;
 
 import java.lang.annotation.Annotation;
 import java.util.*;
@@ -55,6 +56,14 @@ public class AnnotationHolder {
                         e -> ImmutableList.copyOf(e.getValue())
                 ));
         return ImmutableMap.copyOf(annotationMap);
+    }
+
+    public boolean existAnnotation(Class<A> annotationClass) {
+        List<Annotation> annotations = this.annotationMap.get(annotationClass);
+        if (annotations == null || annotations.isEmpty()) {
+            return false;
+        }
+        return true;
     }
 
     public <A extends Annotation> A getAnnotation(Class<A> annotationClass) {

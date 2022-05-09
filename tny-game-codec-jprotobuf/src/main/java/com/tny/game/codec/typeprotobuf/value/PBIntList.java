@@ -17,7 +17,7 @@ import java.util.*;
  */
 @ProtobufClass
 @TypeProtobuf(TypeProtobufTypeId.PB_INT_LIST)
-@Codecable(ProtobufMimeType.PROTOBUF)
+@Codable(ProtobufMimeType.PROTOBUF)
 public class PBIntList implements PBList<Integer, int[]> {
 
     @Packed

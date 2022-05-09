@@ -19,13 +19,13 @@ public class MessageCodecTest {
 
     private ProtoExMessageBodyCodec<Object> objectCodec = new ProtoExMessageBodyCodec<>();
 
+    private MessageHeaderCodec messageHeaderCodec = new DefaultMessageHeaderCodec();
+
     private NettyMessageCodec codec = new DefaultNettyMessageCodec(
-            this.objectCodec,
-            MessageRelayStrategy.NO_RELAY_STRATEGY);
+            this.objectCodec, messageHeaderCodec, MessageRelayStrategy.NO_RELAY_STRATEGY);
 
     private NettyMessageCodec codecNoDecode = new DefaultNettyMessageCodec(
-            this.objectCodec,
-            (head) -> false);
+            this.objectCodec, messageHeaderCodec, (head) -> false);
 
     private CommonMessageFactory messageFactory = new CommonMessageFactory();
 

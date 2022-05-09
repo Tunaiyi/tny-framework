@@ -2,6 +2,7 @@ package com.tny.game.net.endpoint;
 
 import com.tny.game.common.lifecycle.unit.*;
 import com.tny.game.common.lifecycle.unit.annotation.*;
+import com.tny.game.net.base.*;
 
 /**
  * <p>
@@ -13,10 +14,10 @@ public class CommonSessionKeeperFactory<UID> implements SessionKeeperFactory<UID
     }
 
     @Override
-    public NetEndpointKeeper<UID, Session<UID>> createKeeper(String userType, SessionKeeperSetting setting) {
+    public NetEndpointKeeper<UID, Session<UID>> createKeeper(MessagerType messagerType, SessionKeeperSetting setting) {
         SessionFactory<UID, NetSession<UID>, SessionSetting> sessionFactory = UnitLoader.getLoader(SessionFactory.class)
                 .checkUnit(setting.getSessionFactory());
-        return new CommonSessionKeeper<>(userType, sessionFactory, setting);
+        return new CommonSessionKeeper<>(messagerType, sessionFactory, setting);
     }
 
 }

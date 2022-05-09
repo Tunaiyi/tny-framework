@@ -4,13 +4,20 @@ import com.tny.game.common.utils.*;
 import org.apache.commons.lang3.EnumUtils;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ResultCodes {
 
     private static final Map<Integer, ResultCode> codeMap = new HashMap<>();
 
+    private static final Map<Integer, UnknownResultCode> unknownCodeMap = new ConcurrentHashMap<>();
+
     public static ResultCode of(int id) {
-        return codeMap.get(id);
+        ResultCode code = codeMap.get(id);
+        if (code != null) {
+            return code;
+        }
+        return unknownCodeMap.computeIfAbsent(id, UnknownResultCode::new);
     }
 
     public static <E extends Enum<E> & ResultCode> void registerClass(Class<E> codeClass) {
@@ -33,6 +40,34 @@ public class ResultCodes {
 
     public static boolean isSuccess(ResultCode code) {
         return code.getCode() == ResultCode.SUCCESS_CODE;
+    }
+
+    private static class UnknownResultCode implements ResultCode {
+
+        private final int code;
+
+        private final String message;
+
+        private UnknownResultCode(int code) {
+            this.code = code;
+            this.message = "unknown_code" + code;
+        }
+
+        @Override
+        public int getCode() {
+            return code;
+        }
+
+        @Override
+        public String getMessage() {
+            return message;
+        }
+
+        @Override
+        public ResultLevel getLevel() {
+            return ResultLevel.GENERAL;
+        }
+
     }
 
 }

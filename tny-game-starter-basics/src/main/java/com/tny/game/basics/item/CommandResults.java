@@ -7,7 +7,6 @@ import com.tny.game.basics.utlis.*;
 import com.tny.game.common.result.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.net.base.*;
-import com.tny.game.net.command.*;
 
 public class CommandResults extends RpcResults {
 

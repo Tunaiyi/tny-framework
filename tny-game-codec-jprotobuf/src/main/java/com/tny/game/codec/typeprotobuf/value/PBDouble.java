@@ -16,7 +16,7 @@ import static com.tny.game.codec.typeprotobuf.TypeProtobufTypeId.*;
  */
 @ProtobufClass
 @TypeProtobuf(PB_DOUBLE)
-@Codecable(ProtobufMimeType.PROTOBUF)
+@Codable(ProtobufMimeType.PROTOBUF)
 public class PBDouble extends Number {
 
     @Protobuf(fieldType = FieldType.DOUBLE)

@@ -5,7 +5,6 @@ import com.tny.game.common.result.*;
 import com.tny.game.common.runtime.*;
 import com.tny.game.common.worker.command.*;
 import com.tny.game.net.base.*;
-import com.tny.game.net.command.*;
 import com.tny.game.net.command.listener.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.exception.*;
@@ -35,7 +34,7 @@ public abstract class MessageCommand implements Command {
 
     protected NetTunnel<Object> tunnel;
 
-    protected RelayTunnel<Object> relayTunnel;
+    private RelayTunnel<Object> relayTunnel;
 
     private final boolean relay;
 
@@ -192,25 +191,44 @@ public abstract class MessageCommand implements Command {
             this.invokeDone(cause);
         }
         MessageContext context = null;
+        RpcForwardHeader messageForwardHeader = message.getHeader(MessageHeaderConstants.RPC_FORWARD_HEADER);
+        RpcOriginalMessageIdHeader messageIdHeader = message.getHeader(MessageHeaderConstants.RPC_ORIGINAL_MESSAGE_ID);
         switch (this.message.getMode()) {
             case PUSH:
                 if (body != null) {
-                    context = MessageContexts.push(head, code, body);
+                    context = MessageContexts.push(head, code, body)
+                            .withHeader(createBackForwardHeader(messageForwardHeader));
                 }
                 break;
             case REQUEST:
-                //if (!relay || !voidable) {
                 if (!relay || !voidable) { // 如果转发并且返回值为 void, 表名由relay进行返回
-                    context = MessageContexts.respond(this.message, code, body, this.message.getId());
+                    long toMessage = this.message.getId();
+                    if (messageIdHeader != null) {
+                        toMessage = messageIdHeader.getMessageId();
+                    }
+                    context = MessageContexts.respond(this.message, code, body, toMessage)
+                            .withHeader(createBackForwardHeader(messageForwardHeader));
                 }
                 break;
         }
         if (context != null) {
-            TunnelAide.responseMessage(this.tunnel, context);
+            TunnelAide.responseMessage(this.tunnel, code, context);
         }
         if (relay && code.isSuccess()) {
             this.relayTunnel.relay(message, false);
         }
+    }
+
+    private RpcForwardHeader createBackForwardHeader(RpcForwardHeader messageForwardHeader) {
+        if (messageForwardHeader != null) {
+            return RpcForwardHeaderBuilder.newBuilder()
+                    .setFrom(messageForwardHeader.getTo())
+                    .setSender(messageForwardHeader.getReceiver())
+                    .setTo(messageForwardHeader.getFrom())
+                    .setReceiver(messageForwardHeader.getSender())
+                    .build();
+        }
+        return null;
     }
 
     private void fireExecuteStart() {

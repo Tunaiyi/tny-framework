@@ -26,7 +26,7 @@ public class CommonSessionKeeperSetting implements SessionKeeperSetting {
     }
 
     @Override
-    public String getUserType() {
+    public String getMessagerType() {
         return this.name;
     }
 

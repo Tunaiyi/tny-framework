@@ -14,7 +14,7 @@ import java.util.List;
  */
 public interface RemoteServeClusterContext extends RemoteServeClusterSetting {
 
-    List<NetAccessPoint> getInstances();
+    List<NetAccessNode> getInstances();
 
     ServeInstanceAllotStrategy getServeInstanceAllotStrategy();
 

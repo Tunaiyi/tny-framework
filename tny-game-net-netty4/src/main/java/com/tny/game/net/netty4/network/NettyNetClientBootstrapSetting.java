@@ -5,13 +5,13 @@ import com.tny.game.net.netty4.*;
 
 public class NettyNetClientBootstrapSetting extends CommonClientBootstrapSetting implements NettyBootstrapSetting {
 
-    private NettyDatagramChannelSetting channel;
+    private NettyChannelSetting channel;
 
     public NettyNetClientBootstrapSetting() {
-        this.channel = new NettyDatagramChannelSetting(null, null);
+        this.channel = new NettyChannelSetting(null, null);
     }
 
-    public NettyNetClientBootstrapSetting(NettyDatagramChannelSetting channel) {
+    public NettyNetClientBootstrapSetting(NettyChannelSetting channel) {
         this.channel = channel;
     }
 
@@ -20,11 +20,11 @@ public class NettyNetClientBootstrapSetting extends CommonClientBootstrapSetting
     }
 
     @Override
-    public NettyDatagramChannelSetting getChannel() {
+    public NettyChannelSetting getChannel() {
         return channel;
     }
 
-    public NettyNetClientBootstrapSetting setChannel(NettyDatagramChannelSetting channel) {
+    public NettyNetClientBootstrapSetting setChannel(NettyChannelSetting channel) {
         this.channel = channel;
         return this;
     }

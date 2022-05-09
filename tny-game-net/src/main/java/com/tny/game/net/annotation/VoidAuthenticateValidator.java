@@ -12,7 +12,7 @@ import com.tny.game.net.transport.*;
  * @author : kgtny
  * @date : 2020/9/1 10:02 下午
  */
-public class VoidAuthenticateValidator<T> implements AuthenticateValidator<T> {
+public class VoidAuthenticateValidator<T> implements AuthenticateValidator<T, CertificateFactory<T>> {
 
     @Override
     public Certificate<T> validate(Tunnel<T> tunnel, Message message, CertificateFactory<T> factory) throws CommandException, ValidationException {

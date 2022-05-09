@@ -6,8 +6,7 @@ import com.tny.game.common.reflect.javassist.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.expr.*;
 import com.tny.game.net.annotation.*;
-import com.tny.game.net.command.*;
-import com.tny.game.net.message.*;
+import com.tny.game.net.base.*;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
@@ -35,25 +34,14 @@ public final class ClassControllerHolder extends ControllerHolder {
         RpcController controller = executor.getClass().getAnnotation(RpcController.class);
         Asserts.checkNotNull(controller, "{} controller is null", this.controllerClass);
         this.annotationHolder = new AnnotationHolder(this.controllerClass.getAnnotations());
-        this.methodControllers = this.initMethodHolder(executor, context, exprHolderFactory);
-        this.setMessageModes(controller.modes());
-    }
-
-    @Override
-    protected ControllerHolder setMessageModes(Set<MessageMode> messageModes) {
-        return super.setMessageModes(messageModes);
-    }
-
-    @Override
-    protected ControllerHolder setMessageModes(MessageMode... messageModes) {
-        return super.setMessageModes(messageModes);
+        this.methodControllers = this.initMethodHolder(executor, context, controller, exprHolderFactory);
     }
 
     private static final MethodFilter FILTER = method -> OBJECT_METHOD_LIST.contains(method) ||
             !(Modifier.isPublic(method.getModifiers()) && !Modifier.isStatic(method.getModifiers()));
 
     private List<MethodControllerHolder> initMethodHolder(final Object executor, final MessageDispatcherContext context,
-            ExprHolderFactory exprHolderFactory) {
+            RpcController controller, ExprHolderFactory exprHolderFactory) {
         List<MethodControllerHolder> methodControllers = new ArrayList<>();
         ClassAccessor access = JavassistAccessors.getGClass(executor.getClass(), FILTER);
         for (MethodAccessor method : access.getGMethodList()) {
@@ -64,13 +52,16 @@ public final class ClassControllerHolder extends ControllerHolder {
             if (javaMethod.isBridge()) {
                 continue;
             }
-            RpcProfile rpcProfile = RpcProfile.of(method.getJavaMethod());
-            if (rpcProfile == null) {
+            List<RpcProfile> rpcProfiles = RpcProfile.allOf(method.getJavaMethod(), controller.modes());
+            if (rpcProfiles.isEmpty()) {
                 continue;
             }
-            MethodControllerHolder holder = new MethodControllerHolder(executor, context, exprHolderFactory, this, method, rpcProfile);
-            if (holder.getProtocol() > 0) {
-                methodControllers.add(holder);
+
+            for (RpcProfile profile : rpcProfiles) {
+                MethodControllerHolder holder = new MethodControllerHolder(executor, context, exprHolderFactory, this, method, profile);
+                if (holder.getProtocol() > 0) {
+                    methodControllers.add(holder);
+                }
             }
         }
         return ImmutableList.copyOf(methodControllers);

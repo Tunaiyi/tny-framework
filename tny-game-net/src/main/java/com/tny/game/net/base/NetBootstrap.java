@@ -6,6 +6,7 @@ import com.tny.game.net.command.*;
 import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.command.processor.*;
 import com.tny.game.net.message.*;
+import com.tny.game.net.transport.*;
 
 import static com.tny.game.common.lifecycle.LifecycleLevel.*;
 import static com.tny.game.common.utils.ObjectAide.*;
@@ -41,7 +42,10 @@ public class NetBootstrap<S extends NetBootstrapSetting> implements AppPrepareSt
                 UnitLoader.getLoader(MessageDispatcher.class).checkUnit(this.setting.getMessageDispatcher()));
         CommandTaskBoxProcessor commandTaskProcessor = as(
                 UnitLoader.getLoader(CommandTaskBoxProcessor.class).checkUnit(this.setting.getCommandTaskProcessor()));
-        this.context = new NetBootstrapContext(this.setting, messageDispatcher, commandTaskProcessor, messageFactory, certificateFactory);
+        RpcForwarder rpcForwarder = as(
+                UnitLoader.getLoader(RpcForwarder.class).checkUnit(this.setting.getRpcForwarder()));
+        this.context = new NetBootstrapContext(this.setting,
+                messageDispatcher, commandTaskProcessor, messageFactory, certificateFactory, rpcForwarder);
         this.idGenerator = as(UnitLoader.getLoader(NetIdGenerator.class).checkUnit(this.setting.getTunnelIdGenerator()));
         this.onLoadUnit(this.setting);
     }

@@ -3,6 +3,7 @@ package com.tny.game.net.message;
 import com.tny.game.common.context.*;
 
 import java.io.Serializable;
+import java.util.*;
 
 /**
  * 消息接口
@@ -50,6 +51,56 @@ public interface Message extends Serializable, MessageContent, MessageHead {
     @Override
     default long getTime() {
         return getHead().getTime();
+    }
+
+    boolean isRelay();
+
+    @Override
+    default List<MessageHeader<?>> getAllHeaders() {
+        return getHead().getAllHeaders();
+    }
+
+    @Override
+    default Map<String, MessageHeader<?>> getAllHeadersMap() {
+        return getHead().getAllHeadersMap();
+    }
+
+    @Override
+    default <T extends MessageHeader<?>> T getHeader(String key, Class<T> headerClass) {
+        return getHead().getHeader(key, headerClass);
+    }
+
+    @Override
+    default <T extends MessageHeader<?>> T getHeader(MessageHeaderKey<T> key) {
+        return getHead().getHeader(key);
+    }
+
+    @Override
+    default <T extends MessageHeader<?>> List<T> getHeaders(Class<T> headerClass) {
+        return getHead().getHeaders(headerClass);
+    }
+
+    /**
+     * @return 获取全部 Header
+     */
+    @Override
+    default boolean isHasHeaders() {
+        return getHead().isHasHeaders();
+    }
+
+    @Override
+    default boolean existHeader(String key) {
+        return getHead().existHeader(key);
+    }
+
+    @Override
+    default boolean existHeader(String key, Class<? extends MessageHeader<?>> headerClass) {
+        return getHead().existHeader(key, headerClass);
+    }
+
+    @Override
+    default boolean existHeader(MessageHeaderKey<?> key) {
+        return getHead().existHeader(key);
     }
 
     /**

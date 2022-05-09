@@ -11,8 +11,6 @@ public enum ParamMode {
 
     TUNNEL,
 
-    RELAY_TUNNEL,
-
     SESSION,
 
     CLIENT,
@@ -21,17 +19,28 @@ public enum ParamMode {
 
     SETTING,
 
-    BODY,
+    USER_ID,
 
-    UserID,
-
-    INDEX_PARAM,
-
-    KEY_PARAM,
+    PARAM,
 
     CODE,
 
     CODE_NUM,
 
+    HEADER,
+
+    FROM_SERVICE,
+
+    TO_SERVICE,
+
+    SENDER,
+
+    RECEIVER,
+
+    BODY,
+
+    IGNORE,
+
     ;
+
 }

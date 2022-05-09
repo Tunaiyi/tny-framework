@@ -128,7 +128,7 @@ public abstract class BaseNetTunnel<UID, E extends NetEndpoint<UID>, T extends M
 
     @Override
     public String toString() {
-        return this.getMode() + "[" + this.getUserType() + "(" + this.getUserId() + ") " + this.transporter + "]";
+        return this.getMode() + "[" + this.getUserGroup() + "(" + this.getUserId() + ") " + this.transporter + "]";
     }
 
 }

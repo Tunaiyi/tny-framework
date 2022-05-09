@@ -2,7 +2,8 @@ package com.tny.game.demo.core.client.service;
 
 import com.tny.game.demo.core.common.*;
 import com.tny.game.demo.core.common.dto.*;
-import com.tny.game.net.command.*;
+import com.tny.game.net.annotation.*;
+import com.tny.game.net.base.*;
 import com.tny.game.net.rpc.*;
 import com.tny.game.net.rpc.annotation.*;
 
@@ -15,14 +16,14 @@ import com.tny.game.net.rpc.annotation.*;
 @RpcService("game-service")
 public interface SpeakRemoteService {
 
-    @RpcCaller(value = CtrlerIds.SPEAK$SAY_FOR_RPC)
+    @RpcProtocol(value = CtrlerIds.SPEAK$SAY_FOR_RPC)
     RpcResult<SayContentDTO> say(String message);
 
     @RpcBody
-    @RpcCaller(value = CtrlerIds.SPEAK$SAY_FOR_RPC)
+    @RpcProtocol(value = CtrlerIds.SPEAK$SAY_FOR_RPC)
     SayContentDTO sayForBody(String message);
 
-    @RpcCaller(value = CtrlerIds.SPEAK$SAY_FOR_RPC)
+    @RpcProtocol(value = CtrlerIds.SPEAK$SAY_FOR_RPC)
     RpcFuture<SayContentDTO> asyncSay(String message);
 
 }

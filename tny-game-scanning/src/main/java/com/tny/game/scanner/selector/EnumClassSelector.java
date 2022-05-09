@@ -27,7 +27,7 @@ public class EnumClassSelector {
                         List<A> enumList = EnumUtils.getEnumList((Class<A>)codeClass);
                         enumList.forEach(v -> handler.accept((E)v));
                     }
-                    LOGGER.info("GameClassLoader.selector for {} at {}", type, codeClass);
+                    LOGGER.info("EnumClassSelector.selector for {} at {}", type, codeClass);
                 }));
     }
 

@@ -15,6 +15,42 @@ import static com.tny.game.common.utils.StringAide.*;
  */
 public class ObjectAide {
 
+    public static boolean isAnyExist(Object... values) {
+        for (Object value : values) {
+            if (value != null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean isAnyNull(Object... values) {
+        for (Object value : values) {
+            if (value == null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean isAllExist(Object... values) {
+        for (Object value : values) {
+            if (value == null) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean isAllNull(Object... values) {
+        for (Object value : values) {
+            if (value != null) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public static void noOps() {
     }
 

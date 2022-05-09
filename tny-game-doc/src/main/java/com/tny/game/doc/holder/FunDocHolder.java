@@ -26,7 +26,7 @@ public class FunDocHolder {
         if (funDoc == null) {
             return null;
         }
-        RpcProfile controller = RpcProfile.of(method);
+        RpcProfile controller = RpcProfile.oneOf(method);
         if (controller == null) {
             LOGGER.warn("{}.{} is not controller", clazz, method.getName());
         } else {

@@ -57,20 +57,20 @@ public class RpcServeNodeWatchService implements AppPrepareStart, AppClosed {
 
     private static class RpcClient {
 
-        private final long id;
+        private final int index;
 
         private final RpcClientFactory clientCreator;
 
         private Client<?> client;
 
-        private RpcClient(long id, RpcClientFactory clientCreator) {
-            this.id = id;
+        private RpcClient(int index, RpcClientFactory clientCreator) {
+            this.index = index;
             this.clientCreator = clientCreator;
         }
 
         public void connect(URL url) {
             if (client == null) {
-                client = clientCreator.create(id, url);
+                client = clientCreator.create(index, url);
                 ClientConnectFuture<?> future = client.open();
                 future.handle((cl, cause) -> {
                     if (cause != null) {
@@ -109,7 +109,7 @@ public class RpcServeNodeWatchService implements AppPrepareStart, AppClosed {
             }
             List<RpcClient> clients = new ArrayList<>();
             for (int i = 0; i < size; i++) {
-                RpcClient client = new RpcClient(idCreator.createId(), connector);
+                RpcClient client = new RpcClient(i, connector);
                 clients.add(client);
                 client.connect(url);
             }

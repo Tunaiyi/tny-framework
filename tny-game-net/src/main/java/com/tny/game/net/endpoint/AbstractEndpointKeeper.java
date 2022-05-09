@@ -26,12 +26,12 @@ public abstract class AbstractEndpointKeeper<UID, E extends Endpoint<UID>, NE ex
             EventBuses.of(EndpointKeeperListener.class, EndpointKeeperListener::onRemoveEndpoint);
 
     /* 所有 endpoint */
-    private final String userType;
+    private final MessagerType messagerType;
 
     private final Map<UID, NE> endpointMap = new ConcurrentHashMap<>();
 
-    protected AbstractEndpointKeeper(String userType) {
-        this.userType = userType;
+    protected AbstractEndpointKeeper(MessagerType messagerType) {
+        this.messagerType = messagerType;
     }
 
     protected void onEndpointOnline(E endpoint) {
@@ -48,7 +48,7 @@ public abstract class AbstractEndpointKeeper<UID, E extends Endpoint<UID>, NE ex
 
     @Override
     public void notifyEndpointOnline(Endpoint<?> endpoint) {
-        if (!this.getUserType().equals(endpoint.getUserType())) {
+        if (!this.getMessagerType().equals(endpoint.getUserGroup())) {
             return;
         }
         this.onEndpointOnline((E)endpoint);
@@ -56,7 +56,7 @@ public abstract class AbstractEndpointKeeper<UID, E extends Endpoint<UID>, NE ex
 
     @Override
     public void notifyEndpointOffline(Endpoint<?> endpoint) {
-        if (!this.getUserType().equals(endpoint.getUserType())) {
+        if (!this.getMessagerType().equals(endpoint.getUserGroup())) {
             return;
         }
         this.onEndpointOffline((E)endpoint);
@@ -64,7 +64,7 @@ public abstract class AbstractEndpointKeeper<UID, E extends Endpoint<UID>, NE ex
 
     @Override
     public void notifyEndpointClose(Endpoint<?> endpoint) {
-        if (!this.getUserType().equals(endpoint.getUserType())) {
+        if (!this.getMessagerType().equals(endpoint.getUserGroup())) {
             return;
         }
         NE netSession = as(endpoint);
@@ -74,8 +74,8 @@ public abstract class AbstractEndpointKeeper<UID, E extends Endpoint<UID>, NE ex
     }
 
     @Override
-    public String getUserType() {
-        return this.userType;
+    public MessagerType getMessagerType() {
+        return this.messagerType;
     }
 
     @Override
@@ -222,7 +222,7 @@ public abstract class AbstractEndpointKeeper<UID, E extends Endpoint<UID>, NE ex
                 online++;
             }
         }
-        LOG.info("会话管理器#{} Group -> 会话数量为 {} | 在线数 {}", this.getUserType(), size, online);
+        LOG.info("会话管理器#{} Group -> 会话数量为 {} | 在线数 {}", this.getMessagerType(), size, online);
     }
 
 }

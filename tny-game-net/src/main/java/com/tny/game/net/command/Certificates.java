@@ -2,6 +2,7 @@ package com.tny.game.net.command;
 
 import com.google.common.base.MoreObjects;
 import com.tny.game.common.utils.*;
+import com.tny.game.net.base.*;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -11,38 +12,32 @@ import static com.tny.game.net.command.CertificateStatus.*;
 
 public final class Certificates {
 
-    public static final String DEFAULT_USER_TYPE = "user";
+    private static final long ANONYMITY_MESSAGER_ID = -1L;
 
-    public static final String ANONYMITY_USER_TYPE = "#anonymity";
-
-    public static <UID> CommonCertificate<UID> createAuthenticated(long id, UID userID) {
-        Asserts.checkArgument(id > 0, "loginId must > 0");
-        return createAuthenticated(id, userID, DEFAULT_USER_TYPE, Instant.now());
+    public static boolean isAnonymity(int messageId) {
+        return messageId < 0;
     }
 
-    public static <UID> CommonCertificate<UID> createAuthenticated(long id, UID userID, String userType) {
-        Asserts.checkArgument(id > 0, "loginId must > 0");
-        return createAuthenticated(id, userID, userType, Instant.now());
+    public static boolean isAuthenticated(int messageId) {
+        return messageId > 0;
     }
 
-    public static <UID> CommonCertificate<UID> createAuthenticated(long id, UID userID, Instant authenticateAt) {
+    public static <UID> CommonCertificate<UID> createAuthenticated(long id, UID userID, long messagerId, MessagerType messagerType) {
         Asserts.checkArgument(id > 0, "loginId must > 0");
-        return createAuthenticated(id, userID, DEFAULT_USER_TYPE, authenticateAt);
+        return createAuthenticated(id, userID, messagerId, messagerType, Instant.now());
     }
 
-    public static <UID> CommonCertificate<UID> createAuthenticated(long id, UID userID, String userType, Instant authenticateAt) {
+    public static <UID> CommonCertificate<UID> createAuthenticated(long id, UID userID, long messagerId, MessagerType messagerType,
+            Instant authenticateAt) {
         Asserts.checkArgument(id > 0, "loginId must > 0");
-        return new CommonCertificate<>(id, userID, userType, AUTHENTICATED, authenticateAt);
+        return new CommonCertificate<>(id, userID, messagerId, messagerType, AUTHENTICATED, authenticateAt);
     }
 
-    public static <UID> CommonCertificate<UID> createAuthenticated(long id, UID userID, Instant authenticateAt, boolean renew) {
+    public static <UID> CommonCertificate<UID> createAuthenticated(long id, UID userID, long messagerId, MessagerType messagerType,
+            Instant authenticateAt,
+            boolean renew) {
         Asserts.checkArgument(id > 0, "loginId must > 0");
-        return createAuthenticated(id, userID, DEFAULT_USER_TYPE, authenticateAt, renew);
-    }
-
-    public static <UID> CommonCertificate<UID> createAuthenticated(long id, UID userID, String userType, Instant authenticateAt, boolean renew) {
-        Asserts.checkArgument(id > 0, "loginId must > 0");
-        return new CommonCertificate<>(id, userID, userType, renew ? RENEW : AUTHENTICATED, authenticateAt);
+        return new CommonCertificate<>(id, userID, messagerId, messagerType, renew ? RENEW : AUTHENTICATED, authenticateAt);
     }
 
     public static <UID> CommonCertificate<UID> createUnauthenticated() {
@@ -50,7 +45,7 @@ public final class Certificates {
     }
 
     public static <UID> CommonCertificate<UID> createUnauthenticated(UID anonymityUserId) {
-        return new CommonCertificate<>(-1, anonymityUserId, ANONYMITY_USER_TYPE, UNAUTHENTICATED, null);
+        return new CommonCertificate<>(-1, anonymityUserId, ANONYMITY_MESSAGER_ID, NetMessagerType.ANONYMITY, UNAUTHENTICATED, null);
     }
 
     private static class CommonCertificate<UID> implements Certificate<UID>, Serializable {
@@ -62,22 +57,25 @@ public final class Certificates {
 
         private final long id;
 
+        private final long messagerId;
+
         private final CertificateStatus status;
 
         private final UID userId;
 
-        private final String userType;
+        private final MessagerType messagerType;
 
         private final Instant createAt;
 
         private final Instant authenticateAt;
 
-        private CommonCertificate(long id, UID userId, String userType, CertificateStatus status, Instant authenticateAt) {
+        private CommonCertificate(long id, UID userId, long messagerId, MessagerType messagerType, CertificateStatus status, Instant authenticateAt) {
             super();
             this.id = id;
+            this.messagerId = messagerId;
             this.status = status;
             this.userId = userId;
-            this.userType = userType;
+            this.messagerType = messagerType;
             this.createAt = Instant.now();
             if (authenticateAt == null) {
                 authenticateAt = this.createAt;
@@ -100,7 +98,7 @@ public final class Certificates {
                 return true;
             }
             return Objects.equals(getUserId(), other.getUserId()) &&
-                    Objects.equals(getUserType(), other.getUserType());
+                    Objects.equals(getMessagerId(), other.getMessagerId());
         }
 
         public boolean isSameCertificate(CommonCertificate<UID> other) {
@@ -108,8 +106,8 @@ public final class Certificates {
                 return true;
             }
             return getId() == other.getId() &&
-                    Objects.equals(getUserId(), other.getUserId()) &&
-                    Objects.equals(getUserType(), other.getUserType());
+                    Objects.equals(getMessagerId(), other.getMessagerId()) &&
+                    Objects.equals(getMessagerType(), other.getMessagerType());
         }
 
         @Override
@@ -118,8 +116,13 @@ public final class Certificates {
         }
 
         @Override
-        public String getUserType() {
-            return this.userType;
+        public long getMessagerId() {
+            return messagerId;
+        }
+
+        @Override
+        public MessagerType getMessagerType() {
+            return this.messagerType;
         }
 
         @Override
@@ -160,7 +163,7 @@ public final class Certificates {
         public String toString() {
             return MoreObjects.toStringHelper(this)
                     .add("userId", this.userId)
-                    .add("userType", this.userType)
+                    .add("messagerType", this.messagerType)
                     .add("id", this.id)
                     .toString();
         }

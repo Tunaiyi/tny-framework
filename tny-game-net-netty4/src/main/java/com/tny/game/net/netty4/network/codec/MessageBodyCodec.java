@@ -1,13 +1,8 @@
 package com.tny.game.net.netty4.network.codec;
 
 import com.tny.game.common.lifecycle.unit.annotation.*;
-import io.netty.buffer.ByteBuf;
 
 @UnitInterface
-public interface MessageBodyCodec<I> {
-
-    I decode(ByteBuf buffer) throws Exception;
-
-    void encode(I object, ByteBuf buffer) throws Exception;
+public interface MessageBodyCodec<I> extends NetContentCodec<I> {
 
 }

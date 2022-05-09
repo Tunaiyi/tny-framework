@@ -1,17 +1,30 @@
 package com.tny.game.net.transport;
 
-import com.tny.game.common.result.*;
 import com.tny.game.net.message.*;
+
+import java.util.Collection;
 
 /**
  * Created by Kun Yang on 2017/2/16.
  */
 public abstract class MessageContext implements SendReceipt, MessageContent {
 
+    //    /**
+    //     * @return 获取结果码
+    //     */
+    //    public abstract ResultCode getResultCode();
+
     /**
-     * @return 获取结果码
+     * @param header 头部信息
+     * @return 返回 context 自身
      */
-    public abstract ResultCode getResultCode();
+    public abstract MessageContext withHeader(MessageHeader<?> header);
+
+    /**
+     * @param headers 头部信息列表
+     * @return 返回 context 自身
+     */
+    public abstract MessageContext withHeaders(Collection<MessageHeader<?>> headers);
 
     /**
      * @param body 设置 Message Body

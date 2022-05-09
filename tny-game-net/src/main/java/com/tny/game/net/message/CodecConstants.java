@@ -49,6 +49,8 @@ public class CodecConstants {
 
     public static final byte MESSAGE_HEAD_OPTION_EXIST_BODY_VALUE_EXIST = (byte)(1 << MESSAGE_HEAD_OPTION_EXIST_BODY_SHIFT); // 是否请求数据
 
+    public static final byte MESSAGE_HEAD_OPTION_EXIST_HEADERS_VALUE_EXIST = (byte)(1 << 6); // 是否请求数据
+
     public static final byte MESSAGE_HEAD_OPTION_LINE_MASK = (byte)(Byte.MAX_VALUE >>> 4 << 2); // line 掩码 00011100
 
     public static final byte MESSAGE_HEAD_OPTION_LINE_BIT_SIZE = 3;
@@ -82,6 +84,10 @@ public class CodecConstants {
             }
         }
         return true;
+    }
+
+    public static boolean isOption(byte option, byte mark) {
+        return (option & mark) == mark;
     }
 
     public static boolean isOption(byte option, byte mark, byte value) {

@@ -5,6 +5,7 @@ import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.command.processor.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.message.common.*;
+import com.tny.game.net.transport.*;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 
@@ -26,12 +27,15 @@ public class NetBootstrapContext implements NetworkContext {
 
     private final CommandTaskBoxProcessor commandTaskProcessor;
 
+    private final RpcForwarder rpcForwarder;
+
     public NetBootstrapContext() {
         this.messageFactory = new CommonMessageFactory();
         this.certificateFactory = new DefaultCertificateFactory<>();
         this.setting = null;
         this.messageDispatcher = null;
         this.commandTaskProcessor = null;
+        this.rpcForwarder = null;
     }
 
     public NetBootstrapContext(
@@ -39,12 +43,14 @@ public class NetBootstrapContext implements NetworkContext {
             MessageDispatcher messageDispatcher,
             CommandTaskBoxProcessor commandTaskProcessor,
             MessageFactory messageFactory,
-            CertificateFactory<?> certificateFactory) {
+            CertificateFactory<?> certificateFactory,
+            RpcForwarder rpcForwarder) {
         this.setting = setting;
         this.messageDispatcher = messageDispatcher;
         this.commandTaskProcessor = commandTaskProcessor;
         this.messageFactory = messageFactory;
         this.certificateFactory = certificateFactory;
+        this.rpcForwarder = rpcForwarder;
     }
 
     @Override
@@ -70,6 +76,11 @@ public class NetBootstrapContext implements NetworkContext {
     @Override
     public CommandTaskBoxProcessor getCommandTaskProcessor() {
         return this.commandTaskProcessor;
+    }
+
+    @Override
+    public RpcForwarder getRpcForwarder() {
+        return rpcForwarder;
     }
 
 }

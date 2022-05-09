@@ -16,8 +16,18 @@ public @interface RpcService {
     String value();
 
     /**
+     * @return 代理服务
+     */
+    String proxyService() default "";
+
+    /**
      * @return 路由器类
      */
     Class<? extends RpcRouter> router() default FirstRpcRouter.class;
+
+    /**
+     * @return 选项
+     */
+    RpcRemoteOptions options() default @RpcRemoteOptions;
 
 }

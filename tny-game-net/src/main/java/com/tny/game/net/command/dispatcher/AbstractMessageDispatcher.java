@@ -95,11 +95,9 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
         final ClassControllerHolder holder = new ClassControllerHolder(object, this.context, this.exprHolderFactory);
         for (MethodControllerHolder controller : holder.getMethodControllers()) {
             Map<MessageMode, MethodControllerHolder> holderMap = methodHolder.computeIfAbsent(controller.getProtocol(), k -> new CopyOnWriteMap<>());
-            for (MessageMode mode : controller.getMessageModes()) {
-                MethodControllerHolder old = holderMap.putIfAbsent(mode, controller);
-                if (old != null) {
-                    throw new IllegalArgumentException(format("{} 与 {} 对MessageMode {} 处理发生冲突", old, controller, mode));
-                }
+            MethodControllerHolder old = holderMap.putIfAbsent(controller.getMessageMode(), controller);
+            if (old != null) {
+                throw new IllegalArgumentException(format("{} 与 {} 对MessageMode {} 处理发生冲突", old, controller, controller.getMessageMode()));
             }
         }
     }

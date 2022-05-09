@@ -18,9 +18,9 @@ public class CommonSessionKeeper<UID> extends AbstractSessionKeeper<UID> impleme
 
     private static final MapObjectLocker<Object> locker = new MapObjectLocker<>();
 
-    public CommonSessionKeeper(String userType, SessionFactory<UID, ? extends NetSession<UID>, ? extends SessionSetting> factory,
+    public CommonSessionKeeper(MessagerType messagerType, SessionFactory<UID, ? extends NetSession<UID>, ? extends SessionSetting> factory,
             SessionKeeperSetting setting) {
-        super(userType, factory, setting);
+        super(messagerType, factory, setting);
     }
 
     @Override
@@ -28,9 +28,9 @@ public class CommonSessionKeeper<UID> extends AbstractSessionKeeper<UID> impleme
         if (!certificate.isAuthenticated()) {
             throw new ValidatorFailException(NetResultCode.VALIDATOR_FAIL_ERROR, format("cert {} is unauthentic", certificate));
         }
-        if (!this.getUserType().equals(certificate.getUserType())) {
+        if (!this.getMessagerType().equals(certificate.getMessagerType())) {
             throw new ValidatorFailException(NetResultCode.VALIDATOR_FAIL_ERROR,
-                    format("cert {} userType is {}, not {}", certificate, certificate.getUserType(), this.getUserType()));
+                    format("cert {} userType is {}, not {}", certificate, certificate.getMessagerType(), this.getMessagerType()));
         }
         UID uid = certificate.getUserId();
         Lock lock = locker.lock(uid);

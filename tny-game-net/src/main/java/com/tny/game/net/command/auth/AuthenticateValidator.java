@@ -12,7 +12,7 @@ import com.tny.game.net.transport.*;
  * @author KGTny
  */
 @UnitInterface
-public interface AuthenticateValidator<UID> {
+public interface AuthenticateValidator<UID, F extends CertificateFactory<UID>> {
 
     /**
      * 验证Session登录, 返回带有验证结果的Session对象
@@ -21,6 +21,6 @@ public interface AuthenticateValidator<UID> {
      * @return 带有验证结果的Session对象
      * @throws CommandException
      */
-    Certificate<UID> validate(Tunnel<UID> tunnel, Message message, CertificateFactory<UID> factory) throws CommandException, ValidationException;
+    Certificate<UID> validate(Tunnel<UID> tunnel, Message message, F factory) throws CommandException, ValidationException;
 
 }

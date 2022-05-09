@@ -22,7 +22,7 @@ public interface NetAppContext {
      * @return 应用类型
      */
     default AppType appType() {
-        return AppTypes.of(this.getAppType());
+        return AppTypes.ofAppName(this.getAppType());
     }
 
     /**
@@ -33,8 +33,8 @@ public interface NetAppContext {
     /**
      * @return 作用域类型
      */
-    default ScopeType scopeType() {
-        return ScopeTypes.of(this.getScopeType());
+    default AppScope scopeType() {
+        return AppScopes.ofScopeName(this.getScopeType());
     }
 
     /**
@@ -48,7 +48,7 @@ public interface NetAppContext {
      *
      * @return 唯一 id
      */
-    long getServerId();
+    int getServerId();
 
     /**
      * @return 获取加载包路径

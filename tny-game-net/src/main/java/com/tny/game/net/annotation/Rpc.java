@@ -54,7 +54,7 @@ public @interface Rpc {
     /**
      * @return 线路id
      */
-    int[] line() default {};
+    int line() default 0;
 
     /**
      * @return 默认处理所有

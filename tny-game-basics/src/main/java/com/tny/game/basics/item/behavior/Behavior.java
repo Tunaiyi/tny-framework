@@ -22,6 +22,7 @@ public interface Behavior extends IntEnumerable {
      *
      * @return
      */
+    @Override
     String name();
 
     /**

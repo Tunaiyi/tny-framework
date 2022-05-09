@@ -161,7 +161,7 @@ public abstract class BaseNetEndpoint<UID> extends AbstractCommunicator<UID> imp
         if (awaiter != null) {
             this.commandTaskBox.addTask(new RespondCommandTask(message, awaiter));
         }
-        return this.commandTaskBox.addTask(new MessageCommandTask(tunnel, message, this.context.getMessageDispatcher()));
+        return this.commandTaskBox.addTask(new MessageCommandTask(tunnel, message, this.context));
     }
 
     @Override

@@ -8,7 +8,7 @@ package com.tny.game.net.endpoint;
  */
 public interface EndpointKeeperSetting {
 
-    String getUserType();
+    String getMessagerType();
 
     String getKeeperFactory();
 

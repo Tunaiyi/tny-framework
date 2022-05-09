@@ -1,12 +1,15 @@
 package com.tny.game.net.transport;
 
 import com.google.common.base.MoreObjects;
+import com.tny.game.common.collection.empty.*;
 import com.tny.game.common.concurrent.*;
 import com.tny.game.common.result.*;
 import com.tny.game.common.type.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
+
+import java.util.*;
 
 import static com.tny.game.net.message.MessageAide.*;
 
@@ -151,9 +154,16 @@ public class MessageContexts {
         return context;
     }
 
+    public static MessageContext copy(Message message) {
+        DefaultMessageContext context = new DefaultMessageContext();
+        return context.init(message.getMode(), message.getHead(), message.getCode(), message.getToMessage())
+                .withBody(message.getBody())
+                .withHeaders(message.getAllHeaders());
+    }
+
     private static class DefaultMessageContext extends RequestContext {
 
-        private ResultCode code = ResultCode.SUCCESS;
+        private int code;
 
         private int protocol;
 
@@ -175,6 +185,8 @@ public class MessageContexts {
          */
         private volatile MessageWriteAwaiter writeAwaiter;
 
+        private final Map<String, MessageHeader<?>> headers = new EmptyImmutableMap<>();
+
         private DefaultMessageContext() {
         }
 
@@ -183,6 +195,10 @@ public class MessageContexts {
         }
 
         private DefaultMessageContext init(MessageMode mode, Protocol protocol, ResultCode code, Long toMessage) {
+            return this.init(mode, protocol, code.getCode(), toMessage);
+        }
+
+        private DefaultMessageContext init(MessageMode mode, Protocol protocol, int code, Long toMessage) {
             Asserts.checkNotNull(protocol, "protocol is null");
             Asserts.checkNotNull(code, "code is null");
             this.protocol = protocol.getProtocolId();
@@ -205,12 +221,29 @@ public class MessageContexts {
 
         @Override
         public int getCode() {
-            return this.code.getCode();
+            return this.code;
         }
 
         @Override
-        public ResultCode getResultCode() {
-            return this.code;
+        public MessageContext withHeader(MessageHeader<?> header) {
+            if (header != null) {
+                this.headers.put(header.getKey(), header);
+            }
+            return this;
+        }
+
+        @Override
+        public MessageContext withHeaders(Collection<MessageHeader<?>> headers) {
+            if (headers != null) {
+                headers.forEach(header -> this.headers.put(header.getKey(), header));
+            }
+            return this;
+        }
+
+        @Override
+        public MessageContext withCode(ResultCode code) {
+            this.code = code.getCode();
+            return this;
         }
 
         @Override
@@ -231,6 +264,11 @@ public class MessageContexts {
         @Override
         public Object getBody() {
             return this.body;
+        }
+
+        @Override
+        public Map<String, MessageHeader<?>> getAllHeadersMap() {
+            return new HashMap<>(this.headers);
         }
 
         @Override
@@ -324,7 +362,6 @@ public class MessageContexts {
                     .add("toMessage", this.toMessage)
                     .add("code", this.code)
                     .add("body", this.body)
-                    // .add("sendFuture", sendFuture != null)
                     .add("respondFuture", this.respondAwaiter != null)
                     .add("writeFuture", this.writeAwaiter != null)
                     .toString();

@@ -29,6 +29,6 @@ public @interface RpcResponse {
     /**
      * @return 线路id
      */
-    int[] line() default {};
+    int line() default 0;
 
 }

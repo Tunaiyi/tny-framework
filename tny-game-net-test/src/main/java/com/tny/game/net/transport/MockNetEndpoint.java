@@ -175,23 +175,8 @@ public class MockNetEndpoint extends AttributesHolder implements NetEndpoint<Lon
     }
 
     @Override
-    public Long getUserId() {
-        return this.certificate.getUserId();
-    }
-
-    @Override
-    public String getUserType() {
-        return this.certificate.getUserType();
-    }
-
-    @Override
     public Certificate<Long> getCertificate() {
         return this.certificate;
-    }
-
-    @Override
-    public boolean isAuthenticated() {
-        return this.certificate.isAuthenticated();
     }
 
     @Override

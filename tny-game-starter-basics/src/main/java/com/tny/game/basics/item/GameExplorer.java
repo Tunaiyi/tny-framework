@@ -58,7 +58,7 @@ public class GameExplorer implements ItemExplorer, StuffOwnerExplorer, ModelExpl
 
     @Override
     public <I extends Subject<?>> I getItem(AnyId anyId) {
-        ItemType itemType = ItemTypes.ofItemlId(anyId.getId());
+        ItemType itemType = ItemTypes.ofItemId(anyId.getId());
         GameManager<Object> manager = this.typeManagerMap.get(itemType);
         return (I)manager.get(anyId);
     }
@@ -279,7 +279,7 @@ public class GameExplorer implements ItemExplorer, StuffOwnerExplorer, ModelExpl
     }
 
     private GameManager<Object> getItemManager(long id) {
-        ItemType itemType = ItemTypes.ofItemlId(id);
+        ItemType itemType = ItemTypes.ofItemId(id);
         GameManager<Object> manager = this.typeManagerMap.get(itemType);
         if (manager == null) {
             throw new NullPointerException(MessageFormat.format("获取 {0} 事物的item manager 为null", itemType));

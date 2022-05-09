@@ -1,5 +1,7 @@
 package com.tny.game.net.base.configuration;
 
+import com.tny.game.common.lifecycle.unit.annotation.*;
+
 /**
  * <p>
  *
@@ -28,6 +30,15 @@ public final class NetUnitNames {
 
     public static String unitName(String key, Class<?> clazz) {
         return key + clazz.getSimpleName();
+    }
+
+    public static String getUnitName(Object value) {
+        Class<?> clazz = value.getClass();
+        Unit unit = clazz.getAnnotation(Unit.class);
+        if (unit != null) {
+            return unit.value();
+        }
+        return clazz.getSimpleName();
     }
 
 }

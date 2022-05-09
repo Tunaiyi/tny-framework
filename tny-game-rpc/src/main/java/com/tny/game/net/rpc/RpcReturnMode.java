@@ -1,7 +1,8 @@
 package com.tny.game.net.rpc;
 
 import com.google.common.collect.ImmutableSet;
-import com.tny.game.net.command.*;
+import com.tny.game.net.base.*;
+import com.tny.game.net.message.*;
 import com.tny.game.net.rpc.annotation.*;
 import com.tny.game.net.transport.*;
 
@@ -10,7 +11,7 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.Function;
 
-import static com.tny.game.net.rpc.RpcMode.*;
+import static com.tny.game.net.message.MessageMode.*;
 import static com.tny.game.net.rpc.annotation.RpcInvocation.*;
 
 /**
@@ -64,7 +65,7 @@ public enum RpcReturnMode {
 
     private final Set<RpcInvocation> invocations;
 
-    private final Set<RpcMode> modes;
+    private final Set<MessageMode> modes;
 
     private final Set<Class<?>> returnClasses;
 
@@ -76,7 +77,7 @@ public enum RpcReturnMode {
      * @param defaultInvocation 默认调用方式
      * @param invocations       额外调用方式
      */
-    RpcReturnMode(Set<RpcMode> modes, Set<Class<?>> returnClasses, Function<Method, Class<?>> bodyTypeGetter, RpcInvocation defaultInvocation,
+    RpcReturnMode(Set<MessageMode> modes, Set<Class<?>> returnClasses, Function<Method, Class<?>> bodyTypeGetter, RpcInvocation defaultInvocation,
             RpcInvocation... invocations) {
         this.defaultInvocation = defaultInvocation;
         this.bodyTypeFinder = bodyTypeGetter;
@@ -112,7 +113,7 @@ public enum RpcReturnMode {
         return invocations.contains(ASYNC);
     }
 
-    public boolean isCanInvokeBy(RpcMode mode) {
+    public boolean isCanInvokeBy(MessageMode mode) {
         return modes.contains(mode);
     }
 

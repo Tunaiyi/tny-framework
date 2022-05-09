@@ -36,7 +36,7 @@ public interface MessageDispatcherContext {
      * @param protocol 协议
      * @return 返回身份校验器
      */
-    AuthenticateValidator<?> getValidator(Object protocol);
+    AuthenticateValidator<?, ?> getValidator(Object protocol);
 
     /**
      * 获取身份校验器
@@ -44,7 +44,7 @@ public interface MessageDispatcherContext {
      * @param validatorClass 类
      * @return 返回身份校验器
      */
-    AuthenticateValidator<?> getValidator(Class<? extends AuthenticateValidator<?>> validatorClass);
+    AuthenticateValidator<?, ?> getValidator(Class<? extends AuthenticateValidator<?, ?>> validatorClass);
 
     Collection<MessageCommandListener> getCommandListener();
 

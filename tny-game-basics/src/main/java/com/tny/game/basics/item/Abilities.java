@@ -10,7 +10,7 @@ import java.util.*;
  */
 public final class Abilities extends ClassImporter {
 
-    protected static EnumeratorHolder<Ability> holder = new EnumeratorHolder<>();
+    private static EnumeratorHolder<Ability> holder = new EnumeratorHolder<>();
 
     //    static {
     //        loadClass(Configs.SUITE_CONFIG, Configs.SUITE_BASE_ABILITY_CLASS);

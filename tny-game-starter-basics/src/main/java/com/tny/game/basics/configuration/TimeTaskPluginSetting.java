@@ -4,7 +4,7 @@ import com.tny.game.common.scheduler.*;
 
 import java.util.*;
 
-import static com.tny.game.net.command.Certificates.*;
+import static com.tny.game.net.base.MessagerType.*;
 
 /**
  * <p>

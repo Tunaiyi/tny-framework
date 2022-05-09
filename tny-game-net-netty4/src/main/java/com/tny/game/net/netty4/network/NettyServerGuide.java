@@ -148,7 +148,7 @@ public class NettyServerGuide extends NettyBootstrap<NettyNetServerBootstrapSett
                 return this.bootstrap;
             }
             this.bootstrap = new ServerBootstrap();
-            NettyDatagramChannelSetting channelSetting = setting.getChannel();
+            NettyChannelSetting channelSetting = setting.getChannel();
             NettyMessageHandler nettyMessageHandler = UnitLoader.getLoader(NettyMessageHandler.class).checkUnit(channelSetting.getMessageHandler());
             NettyTunnelFactory tunnelFactory = UnitLoader.getLoader(NettyTunnelFactory.class).checkUnit(channelSetting.getTunnelFactory());
             this.bootstrap.group(parentGroup, childGroup);

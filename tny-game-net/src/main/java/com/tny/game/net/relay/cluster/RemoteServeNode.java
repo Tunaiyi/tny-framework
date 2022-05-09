@@ -11,7 +11,7 @@ public class RemoteServeNode extends BaseServeNode {
     public RemoteServeNode() {
     }
 
-    public RemoteServeNode(String appType, String scopeType, String serveName, String service, NetAccessPoint point) {
+    public RemoteServeNode(String appType, String scopeType, String serveName, String service, NetAccessNode point) {
         super(appType, scopeType, serveName, service, point);
     }
 
