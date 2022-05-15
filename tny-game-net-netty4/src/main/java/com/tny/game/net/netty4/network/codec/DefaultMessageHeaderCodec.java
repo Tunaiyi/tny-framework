@@ -23,6 +23,12 @@ public class DefaultMessageHeaderCodec implements MessageHeaderCodec {
 
     private final FastThreadLocal<MemoryAllotCounter> counterThreadLocal = new FastThreadLocal<>();
 
+    static {
+        TypeProtobufSchemeManager manager = TypeProtobufSchemeManager.getInstance();
+        manager.loadScheme(RpcForwardHeader.class);
+        manager.loadScheme(RpcOriginalMessageIdHeader.class);
+    }
+
     public DefaultMessageHeaderCodec() {
         this.codecFactory = new TypeProtobufObjectCodecFactory();
     }
@@ -42,9 +48,16 @@ public class DefaultMessageHeaderCodec implements MessageHeaderCodec {
     @Override
     public MessageHeader<?> decode(ByteBuf buffer) throws Exception {
         ObjectCodec<MessageHeader<?>> codec = this.codecFactory.createCodec(null);
-        ByteBuffer byteBuffer = buffer.nioBuffer();
-        try (ByteArrayInputStream buffInput = new ByteArrayInputStream(byteBuffer.array(), byteBuffer.position(), byteBuffer.remaining())) {
-            return codec.decode(buffInput);
+        int length = NettyVarIntCoder.readVarInt32(buffer);
+        ByteBuf headersBuf = buffer.alloc().heapBuffer(length);
+        try {
+            buffer.readBytes(headersBuf, length);
+            ByteBuffer byteBuffer = headersBuf.nioBuffer();
+            try (ByteArrayInputStream buffInput = new ByteArrayInputStream(byteBuffer.array(), byteBuffer.arrayOffset(), byteBuffer.remaining())) {
+                return codec.decode(buffInput);
+            }
+        } finally {
+            headersBuf.release();
         }
     }
 
@@ -57,6 +70,7 @@ public class DefaultMessageHeaderCodec implements MessageHeaderCodec {
             codec.encode(object, objectOutput);
             int size = objectBuf.readableBytes();
             counter.recode(size);
+            NettyVarIntCoder.writeVarInt32(size, buffer);
             ByteBuffer objectBuffer = objectBuf.nioBuffer();
             buffer.writeBytes(objectBuffer.array(), objectBuffer.arrayOffset(), size);
         } finally {

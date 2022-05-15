@@ -1,5 +1,6 @@
 package com.tny.game.net.message;
 
+import com.tny.game.common.exception.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.rpc.*;
@@ -41,6 +42,9 @@ public class DefaultRpcForwarder implements RpcForwarder {
             }
         }
         RpcRemoteServiceSet serviceSet = rpcRemoteServiceManager.find(serviceType);
+        if (serviceSet == null) {
+            throw new ResultCodeRuntimeException(NetResultCode.RPC_SERVICE_NOT_AVAILABLE, "未找到可用{}服务", serviceType);
+        }
         return strategy.forward(serviceSet, message, from, sender, to, receiver);
     }
 

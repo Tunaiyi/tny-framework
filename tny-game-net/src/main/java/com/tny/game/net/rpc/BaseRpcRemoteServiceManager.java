@@ -36,23 +36,21 @@ public class BaseRpcRemoteServiceManager implements RpcRemoteServiceManager, End
         MessagerType messagerType = keeper.getMessagerType();
         if (messagerType instanceof RpcServiceType) {
             RpcServiceType serviceType = as(messagerType, RpcServiceType.class);
-            RpcRemoteServiceSet servicer = find(serviceType);
-            if (servicer != null) {
-                keeper.addListener(new EndpointKeeperListener<RpcAccessIdentify>() {
+            RpcRemoteServiceSet servicer = loadOrCreate(serviceType);
+            keeper.addListener(new EndpointKeeperListener<RpcAccessIdentify>() {
 
-                    @Override
-                    public void onAddEndpoint(EndpointKeeper<RpcAccessIdentify, Endpoint<RpcAccessIdentify>> keeper,
-                            Endpoint<RpcAccessIdentify> endpoint) {
-                        servicer.addEndpoint(endpoint);
-                    }
+                @Override
+                public void onAddEndpoint(EndpointKeeper<RpcAccessIdentify, Endpoint<RpcAccessIdentify>> keeper,
+                        Endpoint<RpcAccessIdentify> endpoint) {
+                    servicer.addEndpoint(endpoint);
+                }
 
-                    @Override
-                    public void onRemoveEndpoint(EndpointKeeper<RpcAccessIdentify, Endpoint<RpcAccessIdentify>> keeper,
-                            Endpoint<RpcAccessIdentify> endpoint) {
-                        servicer.removeEndpoint(endpoint);
-                    }
-                });
-            }
+                @Override
+                public void onRemoveEndpoint(EndpointKeeper<RpcAccessIdentify, Endpoint<RpcAccessIdentify>> keeper,
+                        Endpoint<RpcAccessIdentify> endpoint) {
+                    servicer.removeEndpoint(endpoint);
+                }
+            });
         }
     }
 

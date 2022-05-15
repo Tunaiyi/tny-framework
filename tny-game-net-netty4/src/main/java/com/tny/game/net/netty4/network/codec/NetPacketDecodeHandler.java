@@ -12,21 +12,21 @@ import java.util.List;
 
 import static com.tny.game.net.base.NetLogger.*;
 
-public class DatagramPackDecodeHandler extends ByteToMessageDecoder implements DatagramPackCodecErrorHandler {
+public class NetPacketDecodeHandler extends ByteToMessageDecoder implements NetPacketCodecErrorHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NetLogger.CODER);
 
-    private final DatagramPackDecoder decoder;
+    private final NetPacketDecoder decoder;
 
     private final boolean closeOnError;
 
-    private final DatagramPackDecodeMarker marker = new DatagramPackDecodeMarker();
+    private final NetPacketDecodeMarker marker = new NetPacketDecodeMarker();
 
-    public DatagramPackDecodeHandler(DatagramPackDecoder decoder) {
+    public NetPacketDecodeHandler(NetPacketDecoder decoder) {
         this(decoder, false);
     }
 
-    public DatagramPackDecodeHandler(DatagramPackDecoder decoder, boolean closeOnError) {
+    public NetPacketDecodeHandler(NetPacketDecoder decoder, boolean closeOnError) {
         this.decoder = decoder;
         this.closeOnError = closeOnError;
     }

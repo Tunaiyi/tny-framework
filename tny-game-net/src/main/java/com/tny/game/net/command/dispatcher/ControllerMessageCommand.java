@@ -72,7 +72,7 @@ public class ControllerMessageCommand extends MessageCommand {
             return;
         }
         DISPATCHER_LOG.debug("Controller [{}] 检测用户组调用权限", this.getName());
-        if (!controller.isUserGroup(this.tunnel.getMessagerType())) {
+        if (!controller.isUserGroup(this.getMessagerType())) {
             DISPATCHER_LOG.error("Controller [{}] , 用户组 [{}] 无法调用此协议", this.getName(), this.tunnel.getUserGroup());
             this.commandContext.doneAndIntercept(NetResultCode.NO_PERMISSIONS);
             return;
@@ -97,6 +97,16 @@ public class ControllerMessageCommand extends MessageCommand {
             this.commandContext.setResult(returnResult);
         }
         tracer.done();
+    }
+
+    public MessagerType getMessagerType() {
+        if (this.forward != null) {
+            ForwardRpcServicer servicer = this.forward.getFrom();
+            if (servicer != null) {
+                return servicer.getServiceType();
+            }
+        }
+        return this.tunnel.getMessagerType();
     }
 
     /**

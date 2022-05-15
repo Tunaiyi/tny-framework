@@ -12,7 +12,7 @@ import java.util.concurrent.*;
 import java.util.function.Function;
 
 import static com.tny.game.net.message.MessageMode.*;
-import static com.tny.game.net.rpc.annotation.RpcInvocation.*;
+import static com.tny.game.net.rpc.annotation.RpcInvokeMode.*;
 
 /**
  * <p>
@@ -61,9 +61,9 @@ public enum RpcReturnMode {
     //
     ;
 
-    private final RpcInvocation defaultInvocation;
+    private final RpcInvokeMode defaultInvocation;
 
-    private final Set<RpcInvocation> invocations;
+    private final Set<RpcInvokeMode> invocations;
 
     private final Set<MessageMode> modes;
 
@@ -77,11 +77,11 @@ public enum RpcReturnMode {
      * @param defaultInvocation 默认调用方式
      * @param invocations       额外调用方式
      */
-    RpcReturnMode(Set<MessageMode> modes, Set<Class<?>> returnClasses, Function<Method, Class<?>> bodyTypeGetter, RpcInvocation defaultInvocation,
-            RpcInvocation... invocations) {
+    RpcReturnMode(Set<MessageMode> modes, Set<Class<?>> returnClasses, Function<Method, Class<?>> bodyTypeGetter, RpcInvokeMode defaultInvocation,
+            RpcInvokeMode... invocations) {
         this.defaultInvocation = defaultInvocation;
         this.bodyTypeFinder = bodyTypeGetter;
-        this.invocations = ImmutableSet.<RpcInvocation>builder()
+        this.invocations = ImmutableSet.<RpcInvokeMode>builder()
                 .add(defaultInvocation)
                 .addAll(Arrays.asList(invocations))
                 .build();
@@ -98,14 +98,14 @@ public enum RpcReturnMode {
         return OBJECT;
     }
 
-    public RpcInvocation checkInvocation(RpcInvocation invocation) {
+    public RpcInvokeMode checkInvocation(RpcInvokeMode invocation) {
         if (invocation == DEFAULT) {
             return defaultInvocation;
         }
         return invocation;
     }
 
-    public RpcInvocation getDefaultInvocation() {
+    public RpcInvokeMode getDefaultInvocation() {
         return defaultInvocation;
     }
 
@@ -117,7 +117,7 @@ public enum RpcReturnMode {
         return modes.contains(mode);
     }
 
-    public boolean isCanReturn(Class<?> value) {
+    private boolean isCanReturn(Class<?> value) {
         return returnClasses.contains(value);
     }
 

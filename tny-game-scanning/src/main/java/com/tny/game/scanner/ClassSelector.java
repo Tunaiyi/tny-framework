@@ -62,25 +62,25 @@ public class ClassSelector {
         return this;
     }
 
-    Class<?> selector(MetadataReader reader, ClassLoader loader, Class<?> clazz) {
+    Class<?> select(MetadataReader reader, ClassLoader loader, Class<?> loadClass) {
         if (filter(reader)) {
             String fullClassName = reader.getClassMetadata().getClassName();
             try {
                 Thread current = Thread.currentThread();
-                if (clazz == null) {
+                if (loadClass == null) {
                     if (loader == null) {
                         loader = current.getContextClassLoader();
                     }
-                    clazz = loader.loadClass(fullClassName);
+                    loadClass = loader.loadClass(fullClassName);
                 }
                 this.mapClass.computeIfAbsent(current, (k) -> new HashSet<>())
-                        .add(clazz);
-                return clazz;
+                        .add(loadClass);
+                return loadClass;
             } catch (Throwable e) {
                 LOG.error("添加用户自定义视图类错误 找不到此类的{}文件", fullClassName, e);
             }
         }
-        return null;
+        return loadClass;
     }
 
     private boolean filter(MetadataReader reader) {

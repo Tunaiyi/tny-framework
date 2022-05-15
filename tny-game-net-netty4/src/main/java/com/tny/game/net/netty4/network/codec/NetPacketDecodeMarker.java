@@ -6,7 +6,7 @@ package com.tny.game.net.netty4.network.codec;
  * @author : kgtny
  * @date : 2021/5/19 8:22 下午
  */
-public class DatagramPackDecodeMarker {
+public class NetPacketDecodeMarker {
 
     private byte option = 0;
 
@@ -14,7 +14,7 @@ public class DatagramPackDecodeMarker {
 
     private boolean mark = false;
 
-    public DatagramPackDecodeMarker() {
+    public NetPacketDecodeMarker() {
     }
 
     public boolean isMark() {

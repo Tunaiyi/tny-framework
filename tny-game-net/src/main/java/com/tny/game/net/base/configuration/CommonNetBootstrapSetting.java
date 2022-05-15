@@ -19,6 +19,11 @@ public abstract class CommonNetBootstrapSetting implements NetBootstrapSetting {
     private String name;
 
     /**
+     * 是否是转发
+     */
+    private boolean forwardable = false;
+
+    /**
      * 服务发现: 服务名
      */
     private String serveName;
@@ -72,6 +77,11 @@ public abstract class CommonNetBootstrapSetting implements NetBootstrapSetting {
     }
 
     @Override
+    public boolean isForwardable() {
+        return forwardable;
+    }
+
+    @Override
     public String getServeName() {
         return serveName;
     }
@@ -81,6 +91,7 @@ public abstract class CommonNetBootstrapSetting implements NetBootstrapSetting {
         return rpcForwarder;
     }
 
+    @Override
     public String serviceName() {
         return ifBlank(this.name, serveName);
     }
@@ -124,6 +135,11 @@ public abstract class CommonNetBootstrapSetting implements NetBootstrapSetting {
 
     public CommonNetBootstrapSetting setRpcForwarder(String rpcForwarder) {
         this.rpcForwarder = rpcForwarder;
+        return this;
+    }
+
+    public CommonNetBootstrapSetting setForwardable(boolean forwardable) {
+        this.forwardable = forwardable;
         return this;
     }
 

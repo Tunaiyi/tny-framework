@@ -14,7 +14,7 @@ public class DefaultDatagramChannelMaker<C extends Channel> extends DatagramChan
     public DefaultDatagramChannelMaker() {
     }
 
-    public DefaultDatagramChannelMaker(DatagramPackEncoder encoder, DatagramPackDecoder decoder) {
+    public DefaultDatagramChannelMaker(NetPacketEncoder encoder, NetPacketDecoder decoder) {
         super(encoder, decoder);
     }
 

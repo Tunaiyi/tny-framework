@@ -19,6 +19,7 @@ public class ForwardMessager implements Messager {
     @Protobuf(order = 2)
     private int messagerTypeId;
 
+    @Ignore
     private MessagerType messagerType;
 
     public ForwardMessager() {

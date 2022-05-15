@@ -17,7 +17,7 @@ public class FirstRpcForwarderStrategy implements RpcForwarderStrategy {
             RpcServicer from, Messager sender, RpcServicer to, Messager receiver) {
         return serviceSet.getOrderRemoteNodes().stream()
                 .findFirst()
-                .flatMap(node -> node.getOrderEndpoints().stream().findFirst())
+                .flatMap(node -> node.getOrderAccessPoints().stream().findFirst())
                 .orElse(null);
     }
 

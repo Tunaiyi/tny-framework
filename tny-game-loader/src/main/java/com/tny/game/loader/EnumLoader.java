@@ -19,7 +19,7 @@ public final class EnumLoader {
     @ClassSelectorProvider
     public static <E extends Enum<E>> ClassSelector selector() {
         return ClassSelector.create()
-                .addFilter(SubOfClassFilter.ofInclude(AutoClassScanConfigure.getClasses(EnumLoader.class)))
+                .addFilter(SubOfClassFilter.ofInclude(AutoLoadClasses.getClasses(EnumLoader.class)))
                 .setHandler((classes) -> classes.stream()
                         .filter(Class::isEnum)
                         .map(c -> (Class<E>)c)

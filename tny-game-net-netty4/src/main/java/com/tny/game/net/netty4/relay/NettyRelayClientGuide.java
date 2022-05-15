@@ -46,13 +46,13 @@ public class NettyRelayClientGuide extends NettyBootstrap<NettyRelayClientBootst
     private final ClientCloseListener<Object> closeListener = (client) -> this.clients.remove(clientKey(client.getUrl()),
             as(client, NettyClient.class));
 
-    public NettyRelayClientGuide(NettyRelayClientBootstrapSetting clientSetting) {
-        super(clientSetting);
+    public NettyRelayClientGuide(NetAppContext appContext, NettyRelayClientBootstrapSetting clientSetting) {
+        super(appContext, clientSetting);
         buses().<Object>closeEvent().addListener(this.closeListener);
     }
 
-    public NettyRelayClientGuide(NettyRelayClientBootstrapSetting clientSetting, ChannelMaker<Channel> channelMaker) {
-        super(clientSetting, channelMaker);
+    public NettyRelayClientGuide(NetAppContext appContext, NettyRelayClientBootstrapSetting clientSetting, ChannelMaker<Channel> channelMaker) {
+        super(appContext, clientSetting, channelMaker);
         buses().<Object>closeEvent().addListener(this.closeListener);
     }
 

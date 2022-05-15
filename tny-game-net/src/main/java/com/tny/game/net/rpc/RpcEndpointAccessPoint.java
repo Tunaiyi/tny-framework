@@ -33,6 +33,10 @@ public class RpcEndpointAccessPoint implements RpcRemoteAccessPoint {
         return endpoint.getUserId();
     }
 
+    public Endpoint<RpcAccessIdentify> getEndpoint() {
+        return endpoint;
+    }
+
     @Override
     public ForwardRpcServicer getForwardRpcServicer() {
         return forwardRpcServicer;

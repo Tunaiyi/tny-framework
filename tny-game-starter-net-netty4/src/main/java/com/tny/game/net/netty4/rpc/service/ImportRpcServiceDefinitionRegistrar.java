@@ -19,13 +19,13 @@ public class ImportRpcServiceDefinitionRegistrar extends ImportConfigurationBean
 
     @Override
     public void registerBeanDefinitions(@Nonnull AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
-        RpcInstanceFactory factory = beanFactory.getBean(RpcInstanceFactory.class);
+        RpcRemoteInstanceFactory factory = beanFactory.getBean(RpcRemoteInstanceFactory.class);
         for (Class<?> serviceClass : RpcServiceLoader.getServiceClasses()) {
             registerRpcInstance(registry, factory, serviceClass);
         }
     }
 
-    private <T> void registerRpcInstance(BeanDefinitionRegistry registry, RpcInstanceFactory factory, Class<T> serviceClass) {
+    private <T> void registerRpcInstance(BeanDefinitionRegistry registry, RpcRemoteInstanceFactory factory, Class<T> serviceClass) {
         T rpcInstance = factory.create(serviceClass);
         LOGGER.debug("Register RpcService instance : {}", serviceClass);
         String beanName = BeanNameUtils.lowerCamelName(serviceClass);

@@ -13,17 +13,17 @@ import com.tny.game.net.rpc.annotation.*;
  * @author : kgtny
  * @date : 2021/11/11 12:44 上午
  */
-@RpcService("game-service")
+@RpcRemoteService("game-service")
 public interface SpeakRemoteService {
 
-    @RpcProtocol(value = CtrlerIds.SPEAK$SAY_FOR_RPC)
+    @RpcRequest(value = CtrlerIds.SPEAK$SAY_FOR_RPC)
     RpcResult<SayContentDTO> say(String message);
 
     @RpcBody
-    @RpcProtocol(value = CtrlerIds.SPEAK$SAY_FOR_RPC)
+    @RpcRequest(value = CtrlerIds.SPEAK$SAY_FOR_RPC)
     SayContentDTO sayForBody(String message);
 
-    @RpcProtocol(value = CtrlerIds.SPEAK$SAY_FOR_RPC)
+    @RpcRequest(value = CtrlerIds.SPEAK$SAY_FOR_RPC)
     RpcFuture<SayContentDTO> asyncSay(String message);
 
 }

@@ -6,7 +6,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
 @UnitInterface
-public interface DatagramPackEncoder {
+public interface NetPacketEncoder {
 
     void encodeObject(ChannelHandlerContext ctx, Message message, ByteBuf out) throws Exception;
 

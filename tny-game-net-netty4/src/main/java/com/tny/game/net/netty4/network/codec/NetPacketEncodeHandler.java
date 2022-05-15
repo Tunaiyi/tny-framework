@@ -13,18 +13,18 @@ import java.nio.ByteBuffer;
 
 import static com.tny.game.net.base.NetLogger.*;
 
-public class DatagramPackEncodeHandler extends MessageToByteEncoder<Object> implements DatagramPackCodecErrorHandler {
+public class NetPacketEncodeHandler extends MessageToByteEncoder<Object> implements NetPacketCodecErrorHandler {
 
     /**
      * 日志
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(NetLogger.CODER);
 
-    private final DatagramPackEncoder encoder;
+    private final NetPacketEncoder encoder;
 
     private final boolean closeOnError;
 
-    public DatagramPackEncodeHandler(DatagramPackEncoder encoder, boolean closeOnError) {
+    public NetPacketEncodeHandler(NetPacketEncoder encoder, boolean closeOnError) {
         this.encoder = encoder;
         this.closeOnError = closeOnError;
     }

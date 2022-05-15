@@ -41,8 +41,8 @@ public class NettyServerGuide extends NettyBootstrap<NettyNetServerBootstrapSett
     private final BindVoidEventBus<ServerClosedListener, ServerGuide> onClose = EventBuses.of(
             ServerClosedListener.class, ServerClosedListener::onClosed);
 
-    public NettyServerGuide(NettyNetServerBootstrapSetting setting) {
-        super(setting);
+    public NettyServerGuide(NetAppContext appContext, NettyNetServerBootstrapSetting setting) {
+        super(appContext, setting);
         this.bindAddress = this.setting.bindAddress();
         this.serveAddress = this.setting.serveAddress();
     }
@@ -57,8 +57,8 @@ public class NettyServerGuide extends NettyBootstrap<NettyNetServerBootstrapSett
         return serveAddress;
     }
 
-    public NettyServerGuide(NettyNetServerBootstrapSetting setting, ChannelMaker<Channel> channelMaker) {
-        super(setting, channelMaker);
+    public NettyServerGuide(NetAppContext appContext, NettyNetServerBootstrapSetting setting, ChannelMaker<Channel> channelMaker) {
+        super(appContext, setting, channelMaker);
         this.bindAddress = this.setting.bindAddress();
         this.serveAddress = this.setting.serveAddress();
     }

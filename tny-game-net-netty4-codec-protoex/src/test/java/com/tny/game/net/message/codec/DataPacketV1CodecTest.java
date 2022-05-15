@@ -69,7 +69,7 @@ public class DataPacketV1CodecTest {
     @Test
     public void codec() throws Exception {
         Message message = craeteMessage("1222", 300);
-        DatagramPackDecodeMarker marker = new DatagramPackDecodeMarker();
+        NetPacketDecodeMarker marker = new NetPacketDecodeMarker();
         ByteBuf buffer = ByteBufAllocator.DEFAULT.buffer(400);
         this.encoder.encodeObject(this.ctx, message, buffer);
         Message readMessage = this.decoder.decodeObject(this.ctx, buffer, marker);

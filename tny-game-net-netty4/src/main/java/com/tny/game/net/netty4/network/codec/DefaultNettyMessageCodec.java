@@ -104,10 +104,7 @@ public class DefaultNettyMessageCodec implements NettyMessageCodec {
         int size = NettyVarIntCoder.readVarInt32(buffer);
         for (int index = 0; index < size; index++) {
             try {
-                int length = NettyVarIntCoder.readVarInt32(buffer);
-                ByteBuf headersBuf = buffer.alloc().heapBuffer(length);
-                buffer.readBytes(headersBuf, length);
-                MessageHeader<?> header = this.messageHeaderCodec.decode(headersBuf);
+                MessageHeader<?> header = this.messageHeaderCodec.decode(buffer);
                 if (header != null) {
                     headerMap.put(header.getKey(), header);
                 }
@@ -139,13 +136,10 @@ public class DefaultNettyMessageCodec implements NettyMessageCodec {
     private <T> void writeHeaders(ByteBuf buffer, List<MessageHeader<?>> headers) throws Exception {
         NettyVarIntCoder.writeVarInt32(headers.size(), buffer);
         for (MessageHeader<?> header : headers) {
-            ByteBuf headerBuffer = buffer.alloc().heapBuffer();
             try {
-                messageHeaderCodec.encode(header, headerBuffer);
-                NettyVarIntCoder.writeVarInt32(headerBuffer.readableBytes(), buffer);
-                buffer.writeBytes(headerBuffer);
-            } finally {
-                headerBuffer.release();
+                messageHeaderCodec.encode(header, buffer);
+            } catch (Throwable e) {
+                LOGGER.warn("encode header {} exception", header, e);
             }
         }
     }

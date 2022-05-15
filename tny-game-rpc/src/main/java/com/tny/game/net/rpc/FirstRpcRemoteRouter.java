@@ -10,16 +10,16 @@ import java.util.List;
  * @author : kgtny
  * @date : 2021/11/11 3:15 上午
  */
-public class FirstRpcRouter implements RpcRouter<Object> {
+public class FirstRpcRemoteRouter implements RpcRemoteRouter<Object> {
 
     @Override
-    public RpcRemoteAccessPoint route(RpcRemoteServiceSet servicer, RpcMethod invoker, Object routeValue, Object... params) {
+    public RpcRemoteAccessPoint route(RpcRemoteServiceSet servicer, RpcRemoteMethod invoker, Object routeValue, Object... params) {
         List<RpcRemoteNode> nodes = servicer.getOrderRemoteNodes();
         if (nodes.isEmpty()) {
             return null;
         }
         RpcRemoteNode node = nodes.get(0);
-        List<RpcRemoteAccessPoint> accessPoints = node.getOrderEndpoints();
+        List<RpcRemoteAccessPoint> accessPoints = node.getOrderAccessPoints();
         if (accessPoints.isEmpty()) {
             return null;
         }

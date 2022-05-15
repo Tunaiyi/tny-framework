@@ -41,7 +41,7 @@ public class ClassScanner {
 
     private ClassScanner(boolean autoLoadSelector) {
         if (autoLoadSelector) {
-            Set<Class<?>> classes = AutoClassScanConfigure.getClasses(ClassSelectorProvider.class);
+            Set<Class<?>> classes = AutoLoadClasses.getClasses(ClassSelectorProvider.class);
             for (Class<?> clazz : classes) {
                 List<ClassSelectorProviderInvoker> invokers = ClassSelectorProviderInvoker.instance(clazz);
                 for (ClassSelectorProviderInvoker invoker : invokers) {
@@ -208,11 +208,11 @@ public class ClassScanner {
     }
 
     private void select(ClassLoader loader, MetadataReader reader) {
-        Class<?> clazz = null;
+        Class<?> loadClass = null;
         for (ClassSelector selector : this.selectors) {
-            Class<?> selClass = selector.selector(reader, loader, null);
-            if (clazz == null && selClass != null) {
-                clazz = selClass;
+            Class<?> selClass = selector.select(reader, loader, loadClass);
+            if (loadClass == null && selClass != null) {
+                loadClass = selClass;
             }
         }
     }
@@ -227,7 +227,7 @@ public class ClassScanner {
 
     private static class ClassSelectorProviderInvoker {
 
-        private Method method;
+        private final Method method;
 
         private ClassSelectorProviderInvoker(Method method) {
             this.method = method;

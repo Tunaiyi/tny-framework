@@ -20,7 +20,7 @@ public class ImportRpcConnectorDefinitionRegistrar extends ImportConfigurationBe
 
     @Override
     public void registerBeanDefinitions(@Nonnull AnnotationMetadata importingClassMetadata, @Nonnull BeanDefinitionRegistry registry) {
-        RpcProperties rpcProperties = loadProperties(RpcProperties.class);
+        RpcRemoteProperties rpcProperties = loadProperties(RpcRemoteProperties.class);
         RpcClientSetting setting = rpcProperties.getClient();
         if (setting == null) {
             return;

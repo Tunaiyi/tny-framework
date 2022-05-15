@@ -18,6 +18,6 @@ import java.lang.annotation.*;
 @Documented
 public @interface RpcHeader {
 
-    String value() default "";
+    String value();
 
 }

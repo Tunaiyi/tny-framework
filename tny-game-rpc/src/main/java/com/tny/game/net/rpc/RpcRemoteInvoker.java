@@ -11,25 +11,27 @@ import org.slf4j.*;
 
 import java.util.concurrent.TimeUnit;
 
+import static com.tny.game.common.utils.ObjectAide.*;
+
 /**
  * <p>
  *
  * @author : kgtny
  * @date : 2021/11/4 1:58 下午
  */
-public class RpcInvoker {
+public class RpcRemoteInvoker {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(RpcInvoker.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RpcRemoteInvoker.class);
 
     /**
      * 协议描述
      */
-    private final RpcMethod method;
+    private final RpcRemoteMethod method;
 
     /**
      * rpc实例
      */
-    private final RpcInstance instance;
+    private final RpcRemoteInstance instance;
 
     /**
      * 远程服务
@@ -39,36 +41,23 @@ public class RpcInvoker {
     /**
      * 路由
      */
-    private volatile RpcRouter<Object> router;
+    private final RpcRemoteRouter<Object> router;
 
-    public RpcInvoker(RpcInstance instance, RpcMethod method) {
+    public RpcRemoteInvoker(RpcRemoteInstance instance, RpcRemoteMethod method, RpcRemoteRouter<?> router) {
         this.method = method;
         this.instance = instance;
-        this.servicer = instance.getServicer();
-    }
-
-    private RpcRouter<Object> router() {
-        RpcRouter<Object> router = this.router;
-        if (router != null) {
-            return router;
-        }
-        router = instance.getRouter(this.method.getRouterClass());
-        if (router != null) {
-            this.router = router;
-        } else {
-            throw new RpcInvokeException(NetResultCode.REMOTE_EXCEPTION, "调用 {} 异常, 未找到 {} RpcRouter", this.method, this.method.getRouterClass());
-        }
-        return router;
+        this.servicer = instance.getServiceSet();
+        this.router = as(router);
     }
 
     private long timeout() {
-        RpcSetting setting = instance.getSetting();
+        RpcRemoteSetting setting = instance.getSetting();
         return this.method.getTimeout(setting.getInvokeTimeout());
     }
 
     public <T> Object invoke(Object... params) {
-        RpcInvokeParams invokeParams = method.getParams(params);
-        RpcRemoteAccessPoint accessPoint = router().route(servicer, method, invokeParams.getRouteValue(), params);
+        RpcRemoteInvokeParams invokeParams = method.getParams(params);
+        RpcRemoteAccessPoint accessPoint = router.route(servicer, method, invokeParams.getRouteValue(), params);
         if (accessPoint == null) {
             throw new RpcInvokeException(NetResultCode.REMOTE_EXCEPTION, "调用 {} 异常, 未找到有效的远程服务节点", this.method);
         }
@@ -88,7 +77,7 @@ public class RpcInvoker {
     }
 
     private Object getReturnFuture(MessageRespondAwaiter future) {
-        if (MessageRespondAwaiter.class == this.method.getReturnClass()) {
+        if (this.method.getReturnClass().isAssignableFrom(MessageRespondAwaiter.class)) {
             return future;
         }
         DefaultRpcFuture<Object> rpcFuture = new DefaultRpcFuture<>();
@@ -103,7 +92,7 @@ public class RpcInvoker {
     }
 
     private Object getReturnObject(Message message) {
-        switch (this.method.getBodyType()) {
+        switch (this.method.getBodyMode()) {
             case MESSAGE:
             case MESSAGE_HEAD:
                 return message;
@@ -119,7 +108,7 @@ public class RpcInvoker {
         throw new RpcInvokeException(NetResultCode.REMOTE_EXCEPTION, "返回类型错误");
     }
 
-    private Object request(RpcRemoteAccessPoint accessPoint, long timeout, RpcInvokeParams invokeParams) {
+    private Object request(RpcRemoteAccessPoint accessPoint, long timeout, RpcRemoteInvokeParams invokeParams) {
         RequestContext requestContext = MessageContexts.request(protocol(), invokeParams.getParams());
         requestContext.willRespondAwaiter(timeout)
                 .withHeaders(invokeParams.getAllHeaders());
@@ -153,7 +142,7 @@ public class RpcInvoker {
         throw new RpcInvokeException(NetResultCode.REMOTE_EXCEPTION, "返回类型错误");
     }
 
-    private void push(RpcRemoteAccessPoint accessPoint, long timeout, RpcInvokeParams invokeParams) {
+    private void push(RpcRemoteAccessPoint accessPoint, long timeout, RpcRemoteInvokeParams invokeParams) {
         ResultCode code = ObjectAide.ifNull(invokeParams.getCode(), NetResultCode.SUCCESS);
         MessageContext messageContext = MessageContexts.push(protocol(), code)
                 .withBody(invokeParams.getBody())

@@ -19,7 +19,7 @@ import static com.tny.game.net.command.dispatcher.ParamMode.*;
  * @author Kun Yang
  * @date 2022/5/1 16:58
  **/
-class RpcParamDescription {
+class RpcRemoteParamDescription {
 
     private int index = -1;
 
@@ -33,7 +33,7 @@ class RpcParamDescription {
 
     private boolean route = false;
 
-    RpcParamDescription(RpcMethod method, Class<?> paramClass, List<Annotation> paramAnnotations, ParamIndexCreator indexCreator) {
+    RpcRemoteParamDescription(RpcRemoteMethod method, Class<?> paramClass, List<Annotation> paramAnnotations, ParamIndexCreator indexCreator) {
         this.paramClass = paramClass;
         this.annotationHolder = new AnnotationHolder(paramAnnotations);
         RpcOptional optional = this.annotationHolder.getAnnotation(RpcOptional.class);
@@ -47,8 +47,7 @@ class RpcParamDescription {
         } else {
             for (Class<?> annotationClass : this.annotationHolder.getAnnotationClasses()) {
                 if (annotationClass == RpcBody.class) {
-                    RpcBody body = this.annotationHolder.getAnnotation(RpcBody.class);
-                    this.mode = PARAM;
+                    this.mode = BODY;
                 } else if (annotationClass == RpcParam.class) {
                     RpcParam param = this.annotationHolder.getAnnotation(RpcParam.class);
                     if (param.value() < 0) {
@@ -62,7 +61,7 @@ class RpcParamDescription {
                     this.mode = CODE_NUM;
                 } else if (annotationClass == RpcIgnore.class) {
                     this.mode = IGNORE;
-                } else if (annotationClass == RpcRoutable.class) {
+                } else if (annotationClass == RpcRouteParam.class) {
                     this.route = true;
                 } else if (annotationClass == RpcFrom.class) {
                     if (Messager.class.isAssignableFrom(paramClass)) {
@@ -81,7 +80,7 @@ class RpcParamDescription {
                 }
             }
         }
-        if (this.mode == NONE) {
+        if (this.mode == NONE && require) {
             if (method.getMode() == MessageMode.REQUEST) {
                 this.index = indexCreator.peek();
                 this.mode = PARAM;

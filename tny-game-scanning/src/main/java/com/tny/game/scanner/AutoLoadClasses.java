@@ -11,7 +11,7 @@ import java.util.concurrent.*;
 /**
  * <p>
  */
-public final class AutoClassScanConfigure {
+public final class AutoLoadClasses {
 
     private final static String FACTORY_FILE_PATH = "META-INF/tny-factory.properties";
 
@@ -19,7 +19,7 @@ public final class AutoClassScanConfigure {
 
     private static volatile boolean init = false;
 
-    private AutoClassScanConfigure() {
+    private AutoLoadClasses() {
     }
 
     private static void init() {
@@ -66,9 +66,9 @@ public final class AutoClassScanConfigure {
         if (init) {
             return CLASSES_MAP.getOrDefault(clazz, Collections.emptySet());
         }
-        synchronized (AutoClassScanConfigure.class) {
+        synchronized (AutoLoadClasses.class) {
             if (!init) {
-                AutoClassScanConfigure.init();
+                AutoLoadClasses.init();
                 init = true;
             }
         }

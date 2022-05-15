@@ -6,7 +6,6 @@ import com.tny.game.net.endpoint.*;
 import com.tny.game.net.transport.*;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * <p>
@@ -18,9 +17,9 @@ public class RpcRemoteNode {
 
     private final int serverId;
 
-    private final Map<Long, RpcEndpointAccessPoint> realEndpointMap = new ConcurrentHashMap<>();
+    private final Map<Long, RpcEndpointAccessPoint> realEndpointMap = new HashMap<>();
 
-    private volatile List<RpcRemoteAccessPoint> orderEndpoints = ImmutableList.of();
+    private volatile List<RpcRemoteAccessPoint> orderAccessPoints = ImmutableList.of();
 
     ;
 
@@ -35,12 +34,12 @@ public class RpcRemoteNode {
         return serverId;
     }
 
-    public List<RpcRemoteAccessPoint> getOrderEndpoints() {
-        return orderEndpoints;
+    public List<RpcRemoteAccessPoint> getOrderAccessPoints() {
+        return orderAccessPoints;
     }
 
     public boolean isActive() {
-        return !orderEndpoints.isEmpty();
+        return !orderAccessPoints.isEmpty();
     }
 
     protected void addEndpoint(Endpoint<RpcAccessIdentify> endpoint) {
@@ -48,7 +47,7 @@ public class RpcRemoteNode {
             boolean activate = this.realEndpointMap.isEmpty();
             RpcAccessIdentify nodeId = endpoint.getUserId();
             this.realEndpointMap.put(nodeId.getId(), new RpcEndpointAccessPoint(endpoint));
-            this.orderEndpoints = ImmutableList.sortedCopyOf(
+            this.orderAccessPoints = ImmutableList.sortedCopyOf(
                     Comparator.comparing(RpcRemoteAccessPoint::getAccessId),
                     realEndpointMap.values());
             if (!activate && !this.realEndpointMap.isEmpty()) {
@@ -61,8 +60,15 @@ public class RpcRemoteNode {
         synchronized (this) {
             RpcAccessIdentify nodeId = endpoint.getUserId();
             boolean activate = this.realEndpointMap.isEmpty();
-            if (this.realEndpointMap.remove(nodeId.getId(), endpoint)) {
-                this.orderEndpoints = ImmutableList.sortedCopyOf(
+            RpcEndpointAccessPoint accessPoint = this.realEndpointMap.get(nodeId.getId());
+            if (accessPoint == null) {
+                return;
+            }
+            if (accessPoint.getEndpoint() != endpoint) {
+                return;
+            }
+            if (this.realEndpointMap.remove(nodeId.getId(), accessPoint)) {
+                this.orderAccessPoints = ImmutableList.sortedCopyOf(
                         Comparator.comparing(RpcRemoteAccessPoint::getAccessId),
                         realEndpointMap.values());
                 if (activate && this.realEndpointMap.isEmpty()) {

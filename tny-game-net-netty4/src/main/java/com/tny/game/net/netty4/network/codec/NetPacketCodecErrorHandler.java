@@ -13,7 +13,7 @@ import org.slf4j.Logger;
  * @author : kgtny
  * @date : 2021/8/31 5:31 下午
  */
-public interface DatagramPackCodecErrorHandler {
+public interface NetPacketCodecErrorHandler {
 
     default void handleOnDecodeError(Logger logger, ChannelHandlerContext ctx, Throwable exception, boolean close) {
         handleOnError("Message解码", logger, ctx, exception, close);

@@ -45,7 +45,7 @@ public class DefaultActorCommandBoxFactory implements ActorCommandBoxFactory {
                     break;
                 }
             }
-            for (CommandBox commandBox : boxes()) {
+            for (CommandBox<?> commandBox : boxes()) {
                 commandBox.process();
             }
         }

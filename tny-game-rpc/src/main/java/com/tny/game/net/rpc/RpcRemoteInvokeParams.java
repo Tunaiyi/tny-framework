@@ -18,7 +18,7 @@ import static com.tny.game.common.utils.StringAide.*;
  * @author Kun Yang
  * @date 2022/5/2 04:29
  **/
-public class RpcInvokeParams {
+public class RpcRemoteInvokeParams {
 
     private Object[] params;
 
@@ -36,7 +36,7 @@ public class RpcInvokeParams {
 
     private final Map<String, MessageHeader<?>> headerMap = new EmptyImmutableMap<>();
 
-    public RpcInvokeParams(int size) {
+    public RpcRemoteInvokeParams(int size) {
         this.params = new Object[size];
     }
 
@@ -98,47 +98,47 @@ public class RpcInvokeParams {
         return code;
     }
 
-    RpcInvokeParams setParams(Object[] params) {
+    RpcRemoteInvokeParams setParams(Object[] params) {
         this.params = params;
         return this;
     }
 
-    RpcInvokeParams setFrom(RpcServicer from) {
+    RpcRemoteInvokeParams setFrom(RpcServicer from) {
         this.from = from;
         return this;
     }
 
-    RpcInvokeParams setSender(Messager sender) {
+    RpcRemoteInvokeParams setSender(Messager sender) {
         this.sender = sender;
         return this;
     }
 
-    RpcInvokeParams setTo(RpcServicer to) {
+    RpcRemoteInvokeParams setTo(RpcServicer to) {
         this.to = to;
         return this;
     }
 
-    RpcInvokeParams setTo(RpcServiceType toService) {
+    RpcRemoteInvokeParams setTo(RpcServiceType toService) {
         this.to = new ForwardRpcServicer(toService);
         return this;
     }
 
-    RpcInvokeParams setReceiver(Messager receiver) {
+    RpcRemoteInvokeParams setReceiver(Messager receiver) {
         this.receiver = receiver;
         return this;
     }
 
-    RpcInvokeParams setRouteValue(Object routeValue) {
+    RpcRemoteInvokeParams setRouteValue(Object routeValue) {
         this.routeValue = routeValue;
         return this;
     }
 
-    RpcInvokeParams putHeader(MessageHeader<?> messageHeader) {
+    RpcRemoteInvokeParams putHeader(MessageHeader<?> messageHeader) {
         this.headerMap.put(messageHeader.getKey(), messageHeader);
         return this;
     }
 
-    RpcInvokeParams setCode(Object code) {
+    RpcRemoteInvokeParams setCode(Object code) {
         if (code instanceof Number) {
             this.code = ResultCodes.of(((Number)code).intValue());
         } else if (code instanceof ResultCode) {
@@ -149,7 +149,7 @@ public class RpcInvokeParams {
         return this;
     }
 
-    RpcInvokeParams setBody(Object body) {
+    RpcRemoteInvokeParams setBody(Object body) {
         this.setParams(0, body);
         return this;
     }

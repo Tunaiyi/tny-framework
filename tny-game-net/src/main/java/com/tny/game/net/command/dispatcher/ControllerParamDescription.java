@@ -2,8 +2,6 @@ package com.tny.game.net.command.dispatcher;
 
 import com.tny.game.common.result.*;
 import com.tny.game.common.utils.*;
-import com.tny.game.expr.*;
-import com.tny.game.net.annotation.UserId;
 import com.tny.game.net.annotation.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.endpoint.*;
@@ -31,14 +29,9 @@ class ControllerParamDescription {
     /* body 为List时 索引 */
     private int index;
 
-    /* body 为Map时 key */
-    private String key;
-
-    private ExprHolder formula;
-
     private ParamMode mode;
 
-    private RpcHeader msgHeader;
+    private String headerKey;
 
     /* 参数类型 */
     private final Class<?> paramClass;
@@ -76,7 +69,10 @@ class ControllerParamDescription {
             this.mode = CODE;
         } else if (MessageHeader.class.isAssignableFrom(this.paramClass)) {
             this.mode = HEADER;
-            this.msgHeader = this.annotationHolder.getAnnotation(RpcHeader.class);
+            RpcHeader header = this.annotationHolder.getAnnotation(RpcHeader.class);
+            if (header != null) {
+                this.headerKey = header.value();
+            }
         } else {
             for (Class<?> annotationClass : this.annotationHolder.getAnnotationClasses()) {
                 if (annotationClass == RpcBody.class) {
@@ -117,7 +113,7 @@ class ControllerParamDescription {
                     }
                 }
             }
-            if (this.mode == NONE) {
+            if (this.mode == NONE && require) {
                 if (method.getMessageMode() == MessageMode.REQUEST) {
                     this.index = indexCreator.peek();
                     this.mode = PARAM;
@@ -185,9 +181,8 @@ class ControllerParamDescription {
                 value = tunnel.getUserId();
                 break;
             case HEADER:
-                boolean hasMsgHeader = this.msgHeader != null;
-                if (hasMsgHeader && StringUtils.isNoneBlank(this.msgHeader.value())) {
-                    value = message.getHeader(this.msgHeader.value(), as(this.paramClass));
+                if (StringUtils.isNoneBlank(headerKey)) {
+                    value = message.getHeader(headerKey, as(this.paramClass));
                 } else {
                     List<MessageHeader<?>> headers = message.getHeaders(as(this.paramClass));
                     if (headers.size() == 1) {

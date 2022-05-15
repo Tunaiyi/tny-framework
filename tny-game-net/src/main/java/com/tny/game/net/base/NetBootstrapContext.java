@@ -17,6 +17,8 @@ import static com.tny.game.common.utils.ObjectAide.*;
  */
 public class NetBootstrapContext implements NetworkContext {
 
+    private final NetAppContext appContext;
+
     private final NetBootstrapSetting setting;
 
     private final MessageFactory messageFactory;
@@ -32,6 +34,7 @@ public class NetBootstrapContext implements NetworkContext {
     public NetBootstrapContext() {
         this.messageFactory = new CommonMessageFactory();
         this.certificateFactory = new DefaultCertificateFactory<>();
+        this.appContext = null;
         this.setting = null;
         this.messageDispatcher = null;
         this.commandTaskProcessor = null;
@@ -39,12 +42,14 @@ public class NetBootstrapContext implements NetworkContext {
     }
 
     public NetBootstrapContext(
+            NetAppContext appContext,
             NetBootstrapSetting setting,
             MessageDispatcher messageDispatcher,
             CommandTaskBoxProcessor commandTaskProcessor,
             MessageFactory messageFactory,
             CertificateFactory<?> certificateFactory,
             RpcForwarder rpcForwarder) {
+        this.appContext = appContext;
         this.setting = setting;
         this.messageDispatcher = messageDispatcher;
         this.commandTaskProcessor = commandTaskProcessor;
@@ -81,6 +86,11 @@ public class NetBootstrapContext implements NetworkContext {
     @Override
     public RpcForwarder getRpcForwarder() {
         return rpcForwarder;
+    }
+
+    @Override
+    public NetAppContext getAppContext() {
+        return appContext;
     }
 
 }

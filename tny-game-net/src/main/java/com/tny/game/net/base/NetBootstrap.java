@@ -25,7 +25,10 @@ public class NetBootstrap<S extends NetBootstrapSetting> implements AppPrepareSt
 
     private NetworkContext context;
 
-    public NetBootstrap(S setting) {
+    private final NetAppContext appContext;
+
+    public NetBootstrap(NetAppContext appContext, S setting) {
+        this.appContext = appContext;
         this.setting = setting;
     }
 
@@ -44,7 +47,7 @@ public class NetBootstrap<S extends NetBootstrapSetting> implements AppPrepareSt
                 UnitLoader.getLoader(CommandTaskBoxProcessor.class).checkUnit(this.setting.getCommandTaskProcessor()));
         RpcForwarder rpcForwarder = as(
                 UnitLoader.getLoader(RpcForwarder.class).checkUnit(this.setting.getRpcForwarder()));
-        this.context = new NetBootstrapContext(this.setting,
+        this.context = new NetBootstrapContext(appContext, this.setting,
                 messageDispatcher, commandTaskProcessor, messageFactory, certificateFactory, rpcForwarder);
         this.idGenerator = as(UnitLoader.getLoader(NetIdGenerator.class).checkUnit(this.setting.getTunnelIdGenerator()));
         this.onLoadUnit(this.setting);

@@ -6,6 +6,7 @@ import com.tny.game.net.base.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
+import org.slf4j.*;
 
 /**
  * <p>
@@ -14,6 +15,8 @@ import com.tny.game.net.transport.*;
  * @date 2022/5/3 03:42
  **/
 public class MessageForwardCommand extends BaseCommand {
+
+    public static final Logger LOGGER = LoggerFactory.getLogger(MessageForwardCommand.class);
 
     private final Message message;
 
@@ -28,7 +31,21 @@ public class MessageForwardCommand extends BaseCommand {
     }
 
     @Override
-    protected void action() {
+    protected void action() throws Throwable {
+        Throwable exception = null;
+        for (int time = 0; time < 5; time++) {
+            try {
+                forward();
+                return;
+            } catch (Throwable e) {
+                LOGGER.error("forward exception", e);
+                exception = e;
+            }
+        }
+        throw exception;
+    }
+
+    private void forward() {
         RpcForwardHeader forwardHeader = message.getHeader(MessageHeaderConstants.RPC_FORWARD_HEADER);
         RpcRemoteAccessPoint toPoint = rpcContext.getRpcForwarder()
                 .forward(message, forwardHeader.getFrom(), forwardHeader.getSender(), forwardHeader.getTo(), forwardHeader.getReceiver());

@@ -25,27 +25,28 @@ import java.util.stream.Collectors;
         ImportRpcServiceDefinitionRegistrar.class,
         ImportRpcConnectorDefinitionRegistrar.class
 })
-@EnableConfigurationProperties(RpcProperties.class)
+@EnableConfigurationProperties(RpcRemoteProperties.class)
 public class RpcAutoConfiguration {
 
     @Bean
-    public RpcRouter<?> rpcRouter() {
-        return new FirstRpcRouter();
+
+    public RpcRemoteRouter<?> firstRpcRemoteRouter() {
+        return new FirstRpcRemoteRouter();
     }
 
     @Bean
-    public RpcRemoteServiceManager defaultRpcRemoteServiceManager(RpcProperties properties) {
+    public RpcRemoteServiceManager defaultRpcRemoteServiceManager(RpcRemoteProperties properties) {
         return new DefaultRpcRemoteServiceManager(properties.getClient());
     }
 
     @Bean
-    public RpcRouteManager rpcRouteManager(ObjectProvider<RpcRouter<?>> rpcRoutersProvider) {
-        return new DefaultRpcRouteManager(rpcRoutersProvider.stream().collect(Collectors.toList()));
+    public RpcRemoteRouteManager rpcRouteManager(RpcRemoteSetting setting, ObjectProvider<RpcRemoteRouter<?>> rpcRoutersProvider) {
+        return new DefaultRpcRemoteRouteManager(setting.getDefaultRpcRemoteRouter(), rpcRoutersProvider.stream().collect(Collectors.toList()));
     }
 
     @Bean
-    public RpcInstanceFactory rpcInstanceFactory(RpcSetting setting, RpcRemoteServiceManager service, RpcRouteManager manager) {
-        return new RpcInstanceFactory(setting, service, manager);
+    public RpcRemoteInstanceFactory rpcInstanceFactory(RpcRemoteSetting setting, RpcRemoteServiceManager service, RpcRemoteRouteManager manager) {
+        return new RpcRemoteInstanceFactory(setting, service, manager);
     }
 
     @Bean

@@ -40,6 +40,8 @@ public abstract class MessageCommand implements Command {
 
     protected NetMessage message;
 
+    protected RpcForwardHeader forward;
+
     protected MessageDispatcherContext dispatcherContext;
 
     protected EndpointKeeperManager endpointKeeperManager;
@@ -59,6 +61,7 @@ public abstract class MessageCommand implements Command {
         this.dispatcherContext = dispatcherContext;
         this.endpointKeeperManager = endpointKeeperManager;
         this.commandContext = commandContext;
+        this.forward = message.getHeader(MessageHeaderConstants.RPC_FORWARD_HEADER);
         this.relay = relay;
         if (relay) {
             if (tunnel instanceof RelayTunnel) {

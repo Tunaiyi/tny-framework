@@ -45,14 +45,14 @@ public class NettyRelayServerGuide extends NettyBootstrap<NettyRelayServerBootst
     private final BindVoidEventBus<ServerClosedListener, ServerGuide> onClose = EventBuses.of(
             ServerClosedListener.class, ServerClosedListener::onClosed);
 
-    public NettyRelayServerGuide(NettyRelayServerBootstrapSetting unitSetting) {
-        super(unitSetting);
+    public NettyRelayServerGuide(NetAppContext appContext, NettyRelayServerBootstrapSetting unitSetting) {
+        super(appContext, unitSetting);
         this.bindAddress = this.setting.bindAddress();
         this.serveAddress = this.setting.serveAddress();
     }
 
-    public NettyRelayServerGuide(NettyRelayServerBootstrapSetting unitSetting, ChannelMaker<Channel> channelMaker) {
-        super(unitSetting, channelMaker);
+    public NettyRelayServerGuide(NetAppContext appContext, NettyRelayServerBootstrapSetting unitSetting, ChannelMaker<Channel> channelMaker) {
+        super(appContext, unitSetting, channelMaker);
         this.bindAddress = this.setting.bindAddress();
         this.serveAddress = this.setting.serveAddress();
     }

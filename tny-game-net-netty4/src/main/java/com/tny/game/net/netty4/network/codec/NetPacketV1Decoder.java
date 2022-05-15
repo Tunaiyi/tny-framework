@@ -14,7 +14,7 @@ import io.netty.util.concurrent.FastThreadLocal;
 import static com.tny.game.common.utils.ObjectAide.*;
 import static com.tny.game.net.message.CodecConstants.*;
 
-public class NetPacketV1Decoder extends NetPacketV1Codec implements DatagramPackDecoder {
+public class NetPacketV1Decoder extends NetPacketV1Codec implements NetPacketDecoder {
 
     public NetPacketV1Decoder(NetPacketCodecSetting config) {
         super(config);
@@ -32,7 +32,7 @@ public class NetPacketV1Decoder extends NetPacketV1Codec implements DatagramPack
     };
 
     @Override
-    public Message decodeObject(ChannelHandlerContext ctx, ByteBuf in, DatagramPackDecodeMarker marker) throws Exception {
+    public Message decodeObject(ChannelHandlerContext ctx, ByteBuf in, NetPacketDecodeMarker marker) throws Exception {
         Channel channel = ctx.channel();
         byte option;
         int payloadLength;

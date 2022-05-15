@@ -55,7 +55,7 @@ public abstract class BaseNetEndpoint<UID> extends AbstractCommunicator<UID> imp
     private volatile RespondFutureMonitor respondFutureMonitor;
 
     /* 离线时间 */
-    protected volatile long offlineTime;
+    private volatile long offlineTime;
 
     /* 接收消息过滤器 */
     private volatile MessageHandleFilter<UID> receiveFilter = MessageHandleFilter.allHandleFilter();
@@ -161,7 +161,7 @@ public abstract class BaseNetEndpoint<UID> extends AbstractCommunicator<UID> imp
         if (awaiter != null) {
             this.commandTaskBox.addTask(new RespondCommandTask(message, awaiter));
         }
-        return this.commandTaskBox.addTask(new MessageCommandTask(tunnel, message, this.context));
+        return this.commandTaskBox.addTask(new MessageCommandTask(tunnel, message));
     }
 
     @Override

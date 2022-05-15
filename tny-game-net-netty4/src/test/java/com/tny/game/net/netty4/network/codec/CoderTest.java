@@ -90,7 +90,7 @@ public class CoderTest {
         }
         NetPacketV1Decoder packetV1Decoder = new NetPacketV1Decoder(config);
         packetV1Decoder.setMessageCodec(codec);
-        DatagramPackDecodeHandler decoder = new DatagramPackDecodeHandler(packetV1Decoder, true);
+        NetPacketDecodeHandler decoder = new NetPacketDecodeHandler(packetV1Decoder, true);
         byteBuf = allocator.buffer();
         try (
                 RandomAccessFile file = new RandomAccessFile("/Users/kgtny/Desktop/cshap.bin", "rw");

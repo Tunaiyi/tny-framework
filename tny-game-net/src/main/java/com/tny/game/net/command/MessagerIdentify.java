@@ -10,5 +10,5 @@ package com.tny.game.net.command;
 public interface MessagerIdentify {
 
     long getMessagerId();
-    
+
 }

@@ -12,6 +12,8 @@ import com.tny.game.net.message.*;
  */
 public interface NetworkContext extends EndpointContext, RpcContext {
 
+    NetAppContext getAppContext();
+
     NetBootstrapSetting getSetting();
 
     MessageFactory getMessageFactory();

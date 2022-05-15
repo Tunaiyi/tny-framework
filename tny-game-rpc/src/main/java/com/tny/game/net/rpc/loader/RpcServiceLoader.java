@@ -23,7 +23,7 @@ public final class RpcServiceLoader {
     @ClassSelectorProvider
     public static ClassSelector serviceSelector() {
         return ClassSelector.create()
-                .addFilter(AnnotationClassFilter.ofInclude(RpcService.class))
+                .addFilter(AnnotationClassFilter.ofInclude(RpcRemoteService.class))
                 .setHandler((classes) -> classes.stream()
                         .filter(Class::isInterface)
                         .forEach(CLASSES::add)

@@ -21,7 +21,7 @@ public class ResultCodeLoadInitializer {
         ReferenceType<Class<E>> type = new ReferenceType<Class<E>>() {
 
         };
-        AutoClassScanConfigure.getClasses(ResultCode.class)
+        AutoLoadClasses.getClasses(ResultCode.class)
                 .stream()
                 .map(c -> as(c, type))
                 .forEach(ResultCodes::registerClass);

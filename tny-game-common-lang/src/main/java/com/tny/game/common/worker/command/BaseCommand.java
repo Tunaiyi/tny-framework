@@ -18,14 +18,16 @@ public abstract class BaseCommand implements Command {
     public void execute() {
         try {
             this.action();
-        } catch (Exception exception) {
-            throw new RuntimeException(exception);
+        } catch (RuntimeException exception) {
+            throw exception;
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
         } finally {
             done = true;
         }
     }
 
-    protected abstract void action();
+    protected abstract void action() throws Throwable;
 
     @Override
     public String getName() {

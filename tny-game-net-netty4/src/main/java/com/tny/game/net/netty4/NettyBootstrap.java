@@ -14,12 +14,12 @@ public abstract class NettyBootstrap<S extends NetBootstrapSetting> extends NetB
 
     protected ChannelMaker<Channel> channelMaker;
 
-    public NettyBootstrap(S unitSetting) {
-        super(unitSetting);
+    public NettyBootstrap(NetAppContext appContext, S unitSetting) {
+        super(appContext, unitSetting);
     }
 
-    public NettyBootstrap(S unitSetting, ChannelMaker<Channel> channelMaker) {
-        super(unitSetting);
+    public NettyBootstrap(NetAppContext appContext, S unitSetting, ChannelMaker<Channel> channelMaker) {
+        super(appContext, unitSetting);
         this.channelMaker = channelMaker;
     }
 

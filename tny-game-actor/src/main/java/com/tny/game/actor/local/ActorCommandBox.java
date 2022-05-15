@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 public abstract class ActorCommandBox extends AbstractWorkerCommandBox<ActorCommand<?>, ActorCommandBox> {
 
-    private ActorCell actorCell;
+    private final ActorCell actorCell;
 
     private volatile boolean terminated;
 

@@ -43,6 +43,7 @@ public class ImportRelayBootstrapDefinitionRegistrar extends ImportConfiguration
             String beanName = setting.getName() + RelayServerGuide.class.getSimpleName();
             registry.registerBeanDefinition(beanName, BeanDefinitionBuilder
                     .genericBeanDefinition(NettyRelayServerGuide.class)
+                    .addConstructorArgReference("appContext")
                     .addConstructorArgValue(setting)
                     .addConstructorArgReference(channelMaker)
                     .getBeanDefinition());
@@ -55,6 +56,7 @@ public class ImportRelayBootstrapDefinitionRegistrar extends ImportConfiguration
             String beanName = setting.getName() + RelayClientGuide.class.getSimpleName();
             registry.registerBeanDefinition(beanName, BeanDefinitionBuilder
                     .genericBeanDefinition(NettyRelayClientGuide.class)
+                    .addConstructorArgReference("appContext")
                     .addConstructorArgValue(setting)
                     .addConstructorArgReference(channelMaker)
                     .getBeanDefinition());

@@ -11,7 +11,7 @@ import org.springframework.boot.context.properties.*;
  * @date : 2021/11/5 4:20 下午
  */
 @ConfigurationProperties("tny.net.rpc")
-public class RpcProperties extends RpcSetting {
+public class RpcRemoteProperties extends RpcRemoteSetting {
 
     @NestedConfigurationProperty
     private RpcClientSetting client = new RpcClientSetting();
@@ -20,7 +20,7 @@ public class RpcProperties extends RpcSetting {
         return client;
     }
 
-    public RpcProperties setClient(RpcClientSetting client) {
+    public RpcRemoteProperties setClient(RpcClientSetting client) {
         this.client = client;
         return this;
     }

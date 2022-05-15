@@ -16,7 +16,7 @@ import java.util.List;
  * @author : kgtny
  * @date : 2021/11/2 4:39 下午
  */
-public enum RpcBodyType {
+public enum RpcBodyMode {
 
     VOID(null, Void.class, void.class),
 
@@ -39,13 +39,13 @@ public enum RpcBodyType {
 
     private final List<Class<?>> bodyClasses;
 
-    RpcBodyType(Class<? extends Annotation> bodyAnnotation, Class<?>... bodyTypes) {
+    RpcBodyMode(Class<? extends Annotation> bodyAnnotation, Class<?>... bodyTypes) {
         this.bodyAnnotation = bodyAnnotation;
         this.bodyClasses = ImmutableList.copyOf(bodyTypes);
     }
 
-    public static RpcBodyType typeOf(Method method, Class<?> returnClass) {
-        for (RpcBodyType type : RpcBodyType.values()) {
+    public static RpcBodyMode typeOf(Method method, Class<?> returnClass) {
+        for (RpcBodyMode type : RpcBodyMode.values()) {
             if (type.isNeedAnnotation()) {
                 Annotation annotation = method.getAnnotation(type.getBodyAnnotation());
                 if (annotation == null) {
@@ -56,7 +56,7 @@ public enum RpcBodyType {
                 return type;
             }
         }
-        return RpcBodyType.BODY;
+        return RpcBodyMode.BODY;
     }
 
     boolean isNeedAnnotation() {

@@ -1,12 +1,13 @@
 package com.tny.game.net.rpc.annotation;
 
 /**
+ * 远程调用模式
  * <p>
  *
  * @author : kgtny
  * @date : 2021/11/11 3:46 下午
  */
-public enum RpcInvocation {
+public enum RpcInvokeMode {
 
     /**
      * 默认, 根据返回值

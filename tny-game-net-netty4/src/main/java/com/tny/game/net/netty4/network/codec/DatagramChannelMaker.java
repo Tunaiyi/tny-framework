@@ -5,18 +5,18 @@ import io.netty.channel.*;
 
 public abstract class DatagramChannelMaker<C extends Channel> extends BaseChannelMaker<C> {
 
-    private DatagramPackEncoder encoder;
+    private NetPacketEncoder encoder;
 
     private boolean closeOnEncodeError;
 
-    private DatagramPackDecoder decoder;
+    private NetPacketDecoder decoder;
 
     private boolean closeOnDecodeError;
 
     protected DatagramChannelMaker() {
     }
 
-    public DatagramChannelMaker(DatagramPackEncoder encoder, DatagramPackDecoder decoder) {
+    public DatagramChannelMaker(NetPacketEncoder encoder, NetPacketDecoder decoder) {
         super();
         this.encoder = encoder;
         this.decoder = decoder;
@@ -25,20 +25,20 @@ public abstract class DatagramChannelMaker<C extends Channel> extends BaseChanne
     @Override
     protected void makeChannel(C channel) {
         ChannelPipeline channelPipeline = channel.pipeline();
-        channelPipeline.addLast("frameDecoder", new DatagramPackDecodeHandler(this.decoder, closeOnDecodeError));
-        channelPipeline.addLast("encoder", new DatagramPackEncodeHandler(this.encoder, closeOnEncodeError));
+        channelPipeline.addLast("frameDecoder", new NetPacketDecodeHandler(this.decoder, closeOnDecodeError));
+        channelPipeline.addLast("encoder", new NetPacketEncodeHandler(this.encoder, closeOnEncodeError));
     }
 
     @Override
     protected void postInitChannel(C channel) {
     }
 
-    public DatagramChannelMaker<C> setEncoder(DatagramPackEncoder encoder) {
+    public DatagramChannelMaker<C> setEncoder(NetPacketEncoder encoder) {
         this.encoder = encoder;
         return this;
     }
 
-    public DatagramChannelMaker<C> setDecoder(DatagramPackDecoder decoder) {
+    public DatagramChannelMaker<C> setDecoder(NetPacketDecoder decoder) {
         this.decoder = decoder;
         return this;
     }

@@ -13,7 +13,7 @@ import io.netty.util.concurrent.FastThreadLocal;
 import static com.tny.game.common.utils.ObjectAide.*;
 import static com.tny.game.net.message.CodecConstants.*;
 
-public class NetPacketV1Encoder extends NetPacketV1Codec implements DatagramPackEncoder {
+public class NetPacketV1Encoder extends NetPacketV1Codec implements NetPacketEncoder {
 
     private final FastThreadLocal<MemoryAllotCounter> counterThreadLocal = new FastThreadLocal<>();
 

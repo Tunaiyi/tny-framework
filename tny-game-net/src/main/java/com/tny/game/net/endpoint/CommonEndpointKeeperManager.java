@@ -121,13 +121,13 @@ public class CommonEndpointKeeperManager implements EndpointKeeperManager, AppPr
     }
 
     @Override
-    public <UID, K extends EndpointKeeper<UID, ? extends Endpoint<UID>>> K loadEndpoint(MessagerType userType, TunnelMode tunnelMode) {
-        EndpointKeeper<?, ?> keeper = this.endpointKeeperMap.get(userType.getGroup());
+    public <UID, K extends EndpointKeeper<UID, ? extends Endpoint<UID>>> K loadEndpoint(MessagerType messagerType, TunnelMode tunnelMode) {
+        EndpointKeeper<?, ?> keeper = this.endpointKeeperMap.get(messagerType);
         if (keeper != null) {
             return as(keeper);
         }
-        NetEndpointKeeper<?, ?> newOne = create(userType, tunnelMode);
-        keeper = as(this.endpointKeeperMap.computeIfAbsent(userType, (k) -> newOne));
+        NetEndpointKeeper<?, ?> newOne = create(messagerType, tunnelMode);
+        keeper = as(this.endpointKeeperMap.computeIfAbsent(messagerType, (k) -> newOne));
         if (keeper == newOne) {
             ON_CREATE.notify(keeper);
         }
@@ -167,19 +167,17 @@ public class CommonEndpointKeeperManager implements EndpointKeeperManager, AppPr
 
     @Override
     public void prepareStart() {
-        this.sessionKeeperSettingMap.forEach((name, setting) -> {
-            this.sessionFactoryMap.computeIfAbsent(setting.getKeeperFactory(), f -> UnitLoader.getLoader(SessionKeeperFactory.class).checkUnit(f));
-        });
-        this.terminalKeeperSettingMap.forEach((name, setting) -> {
-            this.terminalFactoryMap.computeIfAbsent(setting.getKeeperFactory(), f -> UnitLoader.getLoader(TerminalKeeperFactory.class).checkUnit(f));
-        });
+        this.sessionKeeperSettingMap.forEach((name, setting) -> this.sessionFactoryMap.computeIfAbsent(setting.getKeeperFactory(),
+                f -> UnitLoader.getLoader(SessionKeeperFactory.class).checkUnit(f)));
+        this.terminalKeeperSettingMap.forEach((name, setting) -> this.terminalFactoryMap.computeIfAbsent(setting.getKeeperFactory(),
+                f -> UnitLoader.getLoader(TerminalKeeperFactory.class).checkUnit(f)));
     }
 
     private void notifyEndpointOnline(Endpoint<?> endpoint) {
         if (!endpoint.isAuthenticated()) {
             return;
         }
-        NetEndpointKeeper<?, ?> keeper = endpointKeeperMap.get(endpoint.getUserGroup());
+        NetEndpointKeeper<?, ?> keeper = endpointKeeperMap.get(endpoint.getMessagerType());
         if (keeper != null) {
             keeper.notifyEndpointOnline(endpoint);
         }
@@ -189,7 +187,7 @@ public class CommonEndpointKeeperManager implements EndpointKeeperManager, AppPr
         if (!endpoint.isAuthenticated()) {
             return;
         }
-        NetEndpointKeeper<?, ?> keeper = endpointKeeperMap.get(endpoint.getUserGroup());
+        NetEndpointKeeper<?, ?> keeper = endpointKeeperMap.get(endpoint.getMessagerType());
         if (keeper != null) {
             keeper.notifyEndpointOffline(endpoint);
         }
@@ -199,7 +197,7 @@ public class CommonEndpointKeeperManager implements EndpointKeeperManager, AppPr
         if (!endpoint.isAuthenticated()) {
             return;
         }
-        NetEndpointKeeper<?, ?> keeper = endpointKeeperMap.get(endpoint.getUserGroup());
+        NetEndpointKeeper<?, ?> keeper = endpointKeeperMap.get(endpoint.getMessagerType());
         if (keeper != null) {
             keeper.notifyEndpointClose(endpoint);
         }

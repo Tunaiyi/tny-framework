@@ -50,6 +50,7 @@ public class ImportNetBootstrapDefinitionRegistrar extends ImportConfigurationBe
             String beanName = setting.getName() + ServerGuide.class.getSimpleName();
             registry.registerBeanDefinition(beanName, BeanDefinitionBuilder
                     .genericBeanDefinition(NettyServerGuide.class)
+                    .addConstructorArgReference("appContext")
                     .addConstructorArgValue(setting)
                     .addConstructorArgReference(channelMaker)
                     .getBeanDefinition());
@@ -62,6 +63,7 @@ public class ImportNetBootstrapDefinitionRegistrar extends ImportConfigurationBe
             String beanName = setting.getName() + ClientGuide.class.getSimpleName();
             registry.registerBeanDefinition(beanName, BeanDefinitionBuilder
                     .genericBeanDefinition(NettyClientGuide.class)
+                    .addConstructorArgReference("appContext")
                     .addConstructorArgValue(setting)
                     .addConstructorArgReference(channelMaker)
                     .getBeanDefinition());
@@ -76,8 +78,8 @@ public class ImportNetBootstrapDefinitionRegistrar extends ImportConfigurationBe
 
         NetPacketV1Encoder encoder = new NetPacketV1Encoder(encoderConfig);
         NetPacketV1Decoder decoder = new NetPacketV1Decoder(decoderConfig);
-        String encoderName = unitName(setting.getName(), DatagramPackEncoder.class);
-        String decoderName = unitName(setting.getName(), DatagramPackDecoder.class);
+        String encoderName = unitName(setting.getName(), NetPacketEncoder.class);
+        String decoderName = unitName(setting.getName(), NetPacketDecoder.class);
         registry.registerBeanDefinition(encoderName,
                 BeanDefinitionBuilder.genericBeanDefinition(NetPacketV1Encoder.class, () -> encoder).getBeanDefinition());
         registry.registerBeanDefinition(decoderName,

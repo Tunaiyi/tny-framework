@@ -42,14 +42,14 @@ public class NettyClientGuide extends NettyBootstrap<NettyNetClientBootstrapSett
 
     private final ClientOpenListener<Object> openListener = this.clients::add;
 
-    public NettyClientGuide(NettyNetClientBootstrapSetting clientSetting) {
-        super(clientSetting);
+    public NettyClientGuide(NetAppContext appContext, NettyNetClientBootstrapSetting clientSetting) {
+        super(appContext, clientSetting);
         buses().<Object>closeEvent().addListener(this.closeListener);
         buses().<Object>openEvent().addListener(this.openListener);
     }
 
-    public NettyClientGuide(NettyNetClientBootstrapSetting clientSetting, ChannelMaker<Channel> channelMaker) {
-        super(clientSetting, channelMaker);
+    public NettyClientGuide(NetAppContext appContext, NettyNetClientBootstrapSetting clientSetting, ChannelMaker<Channel> channelMaker) {
+        super(appContext, clientSetting, channelMaker);
         buses().closeEvent().addListener(this.closeListener);
         buses().openEvent().addListener(this.openListener);
     }

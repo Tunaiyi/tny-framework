@@ -17,7 +17,7 @@ import static org.slf4j.LoggerFactory.*;
  * @author : kgtny
  * @date : 2021/8/6 8:46 下午
  */
-public class RelayPacketV1Encoder implements RelayPacketEncoder, RelayPackCodec {
+public class RelayPacketV1Encoder implements RelayPacketEncoder, RelayPacketCodec {
 
     public static final Logger LOGGER = getLogger(RelayPacketV1Encoder.class);
 

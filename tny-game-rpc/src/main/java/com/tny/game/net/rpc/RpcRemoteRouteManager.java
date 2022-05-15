@@ -6,8 +6,8 @@ package com.tny.game.net.rpc;
  * @author : kgtny
  * @date : 2021/11/4 3:33 下午
  */
-public interface RpcRouteManager {
+public interface RpcRemoteRouteManager {
 
-    <T> RpcRouter<T> getRouter(Class<?> routerClass);
+    <T> RpcRemoteRouter<T> getRouter(Class<?> routerClass);
 
 }
