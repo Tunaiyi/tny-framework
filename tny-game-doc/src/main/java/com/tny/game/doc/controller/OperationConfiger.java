@@ -58,7 +58,7 @@ public class OperationConfiger {
             this.text = this.des;
         }
         List<VarConfiger> paramList = new ArrayList<VarConfiger>();
-        for (VarDocHolder varDocHolder : holder.getParamList()) {
+        for (ParamDocHolder varDocHolder : holder.getParamList()) {
             paramList.add(new VarConfiger(varDocHolder, typeFormatter));
         }
         this.paramList.paramList = Collections.unmodifiableList(paramList);

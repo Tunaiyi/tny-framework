@@ -36,10 +36,11 @@ public class InvokerFactory {
             return invoker;
         }
         StringBuilder proxyClassNameBuilder = new StringBuilder();
-        if (method.getDeclaringClass().getCanonicalName().startsWith("java.util")) {
-            proxyClassNameBuilder.append(method.getDeclaringClass().getCanonicalName().replace("java.util", "javaproxy.util"));
+        Class<?> declaringClass = method.getDeclaringClass();
+        if (method.getDeclaringClass().getName().startsWith("java.util")) {
+            proxyClassNameBuilder.append(declaringClass.getName().replace("java.util", "javaproxy.util"));
         } else {
-            proxyClassNameBuilder.append(method.getDeclaringClass().getCanonicalName());
+            proxyClassNameBuilder.append(declaringClass.getName());
         }
         Class<?> sourceClass = method.getDeclaringClass();
         int hash = sourceClass.getName().hashCode() ^ method.getName().hashCode();

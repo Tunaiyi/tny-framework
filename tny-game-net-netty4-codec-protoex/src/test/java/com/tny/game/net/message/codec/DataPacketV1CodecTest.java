@@ -1,6 +1,7 @@
 package com.tny.game.net.message.codec;
 
 import com.tny.game.common.lifecycle.unit.*;
+import com.tny.game.net.base.*;
 import com.tny.game.net.codec.cryptoloy.*;
 import com.tny.game.net.codec.verifier.*;
 import com.tny.game.net.message.*;
@@ -12,8 +13,6 @@ import io.netty.buffer.*;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.embedded.EmbeddedChannel;
 import org.apache.commons.collections4.CollectionUtils;
-import org.junit.*;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.*;
 
 import java.util.Collection;
@@ -41,6 +40,7 @@ public class DataPacketV1CodecTest {
     public static void initUnit() {
         UnitLoader.register(new XOrCodecCrypto());
         UnitLoader.register(new ProtoExMessageBodyCodec<>());
+        UnitLoader.register(new DefaultMessageHeaderCodec());
         UnitLoader.register(new CRC64CodecVerifier());
     }
 
@@ -49,19 +49,25 @@ public class DataPacketV1CodecTest {
                 Protocols.protocol(100_199), params));
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         this.ctx = mockAs(ChannelHandlerContext.class);
         EmbeddedChannel channel = new EmbeddedChannel();
         when(this.ctx.channel()).thenReturn(channel);
         NetTunnel<?> tunnel = mockAs(NetTunnel.class);
+        when(tunnel.getUserGroup()).thenReturn(MessagerType.DEFAULT_USER_TYPE);
         when(tunnel.getAccessId()).thenReturn(2018L);
         when(tunnel.getMessageFactory()).thenReturn(this.factory);
         channel.attr(NettyNetAttrKeys.TUNNEL).set(tunnel);
         NetPacketCodecSetting config = new NetPacketCodecSetting();
+        config.setMessageBodyCodec(ProtoExMessageBodyCodec.class.getSimpleName());
+        config.setMessageHeaderCodec(DefaultMessageHeaderCodec.class.getSimpleName());
+        config.setCrypto(XOrCodecCrypto.class.getSimpleName());
+        config.setVerifier(CRC64CodecVerifier.class.getSimpleName());
         config.setSecurityKeys(new String[]{"1s1394d3kssvonxasanfkwhzfk0jy0zm"});
         this.decoder = new NetPacketV1Decoder(config);
         this.encoder = new NetPacketV1Encoder(config);
+
         this.decoder.prepareStart();
         this.encoder.prepareStart();
     }

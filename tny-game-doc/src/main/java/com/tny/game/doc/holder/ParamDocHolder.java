@@ -2,7 +2,9 @@ package com.tny.game.doc.holder;
 
 import com.tny.game.doc.annotation.*;
 
-public class VarDocHolder {
+import java.lang.reflect.Parameter;
+
+public class ParamDocHolder {
 
     private VarDoc varDoc;
 
@@ -10,15 +12,18 @@ public class VarDocHolder {
 
     private Class<?> varClass;
 
-    private VarDocHolder() {
+    private Parameter parameter;
+
+    private ParamDocHolder() {
         super();
     }
 
-    public static VarDocHolder create(VarDoc varDoc, String name, Class<?> varClass) {
-        VarDocHolder holder = new VarDocHolder();
+    public static ParamDocHolder create(VarDoc varDoc, String name, Class<?> varClass, Parameter parameter) {
+        ParamDocHolder holder = new ParamDocHolder();
         holder.varDoc = varDoc;
         holder.name = name;
         holder.varClass = varClass;
+        holder.parameter = parameter;
         return holder;
     }
 
@@ -32,6 +37,10 @@ public class VarDocHolder {
 
     public Class<?> getVarClass() {
         return varClass;
+    }
+
+    public Parameter getRawParameter() {
+        return parameter;
     }
 
 }

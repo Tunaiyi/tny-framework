@@ -1,6 +1,7 @@
 package com.tny.game.net.transport;
 
 import com.tny.game.common.context.*;
+import com.tny.game.common.url.*;
 import com.tny.game.net.command.*;
 import com.tny.game.net.command.task.*;
 import com.tny.game.net.endpoint.*;
@@ -14,7 +15,7 @@ import java.util.function.Predicate;
 /**
  * <p>
  */
-public class MockNetEndpoint extends AttributesHolder implements NetEndpoint<Long> {
+public class MockNetEndpoint extends AttributesHolder implements NetEndpoint<Long>, NetSession<Long>, NetTerminal<Long> {
 
     private Certificate<Long> certificate;
 
@@ -57,7 +58,7 @@ public class MockNetEndpoint extends AttributesHolder implements NetEndpoint<Lon
     //	}
 
     @Override
-    public NetMessage buildMessage(MessageFactory messageFactory, MessageContext context) {
+    public NetMessage createMessage(MessageFactory messageFactory, MessageContext context) {
         this.writeQueue.add(context);
         return null;
     }
@@ -225,6 +226,46 @@ public class MockNetEndpoint extends AttributesHolder implements NetEndpoint<Lon
 
     public List<Message> getReceiveQueue() {
         return this.receiveQueue;
+    }
+
+    @Override
+    public URL getUrl() {
+        return null;
+    }
+
+    @Override
+    public long getConnectTimeout() {
+        return 0;
+    }
+
+    @Override
+    public int getConnectRetryTimes() {
+        return 0;
+    }
+
+    @Override
+    public List<Long> getConnectRetryIntervals() {
+        return null;
+    }
+
+    @Override
+    public boolean isAsyncConnect() {
+        return false;
+    }
+
+    @Override
+    public MessageTransporter connect() {
+        return null;
+    }
+
+    @Override
+    public void reconnect() {
+
+    }
+
+    @Override
+    public void onConnected(NetTunnel<Long> tunnel) {
+
     }
 
 }

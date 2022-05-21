@@ -48,12 +48,12 @@ public class TempExplorer implements ItemExplorer, ModelExplorer {
 
     @Override
     public <I extends Subject<?>> I getItem(long playerId, int modelId) {
-        return null;
+        return (I)item;
     }
 
     @Override
     public <I extends Subject<?>> I getItem(AnyId anyId) {
-        return null;
+        return (I)item;
     }
 
     @Override

@@ -247,7 +247,7 @@ public class AoperBuilder<T> {
                 .append("];")
                 .append("try {")
                 .append("if (_aoper$beforeAdvice != null)")
-                .append("_aoper$beforeAdvice.before(method, $args, this);")
+                .append("_aoper$beforeAdvice.doBefore(method, $args, this);")
                 .append("} catch (Throwable e) {_aoper$LOGGER.error(\"beforeAdvice.before exception\", e);}")
                 .append("Object returnValue = null;")
                 .append("try {");
@@ -266,12 +266,12 @@ public class AoperBuilder<T> {
             bodyCode.append("returnValue = ")
                     .append(InvokerFactory.generateCast(invorkeCode.toString(), returnClazz, Object.class));
         } else {
-            bodyCode.append(invorkeCode.toString());
+            bodyCode.append(invorkeCode);
         }
         bodyCode.append(";")
                 .append("try {")
                 .append("if (_aoper$afterReturningAdvice != null)")
-                .append("_aoper$afterReturningAdvice.afterReturning(returnValue, method, $args, this);")
+                .append("_aoper$afterReturningAdvice.doAfterReturning(returnValue, method, $args, this);")
                 .append("} catch (Throwable e) {_aoper$LOGGER.error(\"afterReturningAdvice.afterReturning exception\", e);}");
         if (returnClazz != void.class) {
             bodyCode.append("return ")
@@ -281,7 +281,7 @@ public class AoperBuilder<T> {
         bodyCode.append("} catch (Throwable invorkException) {")
                 .append("try {")
                 .append("if (_aoper$throwsAdvice != null)")
-                .append("_aoper$throwsAdvice.afterThrowing(method, $args, this, invorkException);")
+                .append("_aoper$throwsAdvice.doAfterThrowing(method, $args, this, invorkException);")
                 .append("} catch (Throwable e) {_aoper$LOGGER.error(\"throwsAdvice.afterThrowing exception\", e);}")
                 .append("throw invorkException;}");
         bodyCode.append("}");

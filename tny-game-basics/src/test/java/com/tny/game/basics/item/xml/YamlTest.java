@@ -53,6 +53,7 @@ public class YamlTest {
                 .addAbstractTypeMapping(BaseAwardPlan.class, DefaultAwardPlan.class)
                 .addAbstractTypeMapping(AwardGroup.class, SimpleAwardGroup.class)
                 .addAbstractTypeMapping(Award.class, SimpleAward.class)
+                .addAbstractTypeMapping(BaseAward.class, SimpleAward.class)
                 .addAbstractTypeMapping(BaseCostPlan.class, DefaultCostPlan.class)
         ;
         module.addKeyDeserializer(Ability.class, new EnumKeyDeserializer<>(TestAbility.class));

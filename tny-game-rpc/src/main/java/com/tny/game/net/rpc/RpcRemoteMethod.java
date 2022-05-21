@@ -267,6 +267,9 @@ public class RpcRemoteMethod {
             if (this.forward) {
                 params.setTo(serviceType);
             }
+            if (desc.getAnnotationHolder().getAnnotation(RpcRouteParam.class) != null) {
+                params.setRouteValue(value);
+            }
             if (desc.isRequire()) {
                 switch (desc.getMode()) {
                     case PARAM:

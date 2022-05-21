@@ -44,7 +44,7 @@ public class MessageCommandTask implements CommandTask {
         RpcServiceType currentType = setting.getRpcServiceType();
         NetAppContext appContext = context.getAppContext();
         if (rpcServicer.getServiceType() == currentType &&
-                (!rpcServicer.isHasAccessId() || appContext != null && rpcServicer.getServerId() == appContext.getServerId())) {
+                (!rpcServicer.isAccurately() || appContext != null && rpcServicer.getServerId() == appContext.getServerId())) {
             return null;
         }
         return new MessageForwardCommand(as(this.tunnel), this.message);

@@ -25,7 +25,7 @@ public class CGlibClassAccessor implements ClassAccessor {
         List<Method> methods = ReflectAide.getDeepMethod(this.javaClass);
         Map<String, CGlibPropertyAccessor> accessorMap = new HashMap<>();
         for (Method method : methods) {
-            if (!Modifier.isPublic(method.getModifiers()) || Modifier.isStatic(method.getModifiers()) || filter != null && filter.filter(method)) {
+            if (!Modifier.isPublic(method.getModifiers()) || Modifier.isStatic(method.getModifiers()) || filter != null && !filter.filter(method)) {
                 continue;
             }
             // 添加监听器处理器到监听器持有器

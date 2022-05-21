@@ -36,8 +36,8 @@ public class JSsistClassAccessor implements ClassAccessor {
         }
         this.constructInvoker = constructInvoker;
         for (Method method : methods) {
-            if (method.isBridge() || !Modifier.isPublic(method.getModifiers()) ||
-                    Modifier.isStatic(method.getModifiers()) || filter != null && filter.filter(method)) {
+            if (method.isBridge() || Modifier.isPrivate(method.getModifiers()) ||
+                    Modifier.isStatic(method.getModifiers()) || filter != null && !filter.filter(method)) {
                 continue;
             }
             // 添加监听器处理器到监听器持有器

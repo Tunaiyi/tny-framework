@@ -17,7 +17,7 @@ public abstract class CommunicatorTest<C extends Communicator<Long>> {
 
     private static final Long UNAUTHENTICATED_UID = null;
 
-    private static MessagerType userGroup = NetMessagerType.DEFAULT_USER;
+    private static MessagerType messagerType = NetMessagerType.DEFAULT_USER;
 
     protected static Long certificateId = System.currentTimeMillis();
 
@@ -26,11 +26,11 @@ public abstract class CommunicatorTest<C extends Communicator<Long>> {
     }
 
     protected Certificate<Long> createLoginCert() {
-        return Certificates.createAuthenticated(certificateId, uid, uid, userGroup, Instant.now());
+        return Certificates.createAuthenticated(certificateId, uid, uid, messagerType, Instant.now());
     }
 
     protected Certificate<Long> createLoginCert(long certificateId, Long uid) {
-        return Certificates.createAuthenticated(certificateId, uid, uid, userGroup, Instant.now());
+        return Certificates.createAuthenticated(certificateId, uid, uid, messagerType, Instant.now());
     }
 
     protected CommunicatorTest() {
@@ -47,7 +47,7 @@ public abstract class CommunicatorTest<C extends Communicator<Long>> {
     @Test
     public void getUserType() {
         C loginCommunicator = createNetter(createLoginCert());
-        assertEquals(userGroup, loginCommunicator.getUserGroup());
+        assertEquals(messagerType.getGroup(), loginCommunicator.getUserGroup());
     }
 
     //	@Test

@@ -12,18 +12,19 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class JavassistAccessorsTest {
 
-    private static final int LEVEL = 1;
+    static final int LEVEL = 1;
 
-    private static final String NAME = "name";
+    static final String NAME = "name";
 
-    private static final int AGE = 23;
+    static final int AGE = 23;
 
     @Test
     public void testProperty() throws InvocationTargetException {
         ClassAccessor accessor = JavassistAccessors.getGClass(Player.class);
-        assertEquals(accessor.getProperty("age").getPropertyValue(accessor), LEVEL);
-        assertEquals(accessor.getProperty("name").getPropertyValue(accessor), NAME);
-        assertEquals(accessor.getProperty("age").getPropertyValue(accessor), AGE);
+        Player player = new Player();
+        assertEquals(accessor.getProperty("level").getPropertyValue(player), LEVEL);
+        assertEquals(accessor.getProperty("name").getPropertyValue(player), NAME);
+        assertEquals(accessor.getProperty("age").getPropertyValue(player), AGE);
     }
 
     public static class Player {

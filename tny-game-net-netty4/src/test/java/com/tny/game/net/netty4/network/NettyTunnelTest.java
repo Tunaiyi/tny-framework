@@ -1,7 +1,6 @@
 package com.tny.game.net.netty4.network;
 
 import com.tny.game.net.endpoint.*;
-import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
 import io.netty.channel.embedded.EmbeddedChannel;
@@ -115,7 +114,7 @@ public abstract class NettyTunnelTest<E extends NetEndpoint<Long>, T extends Bas
         tunnel.disconnect();
         if (tunnel.getMode() == TunnelMode.SERVER) {
             assertFalse(tunnel.open());
-            assertFalse(tunnel.isClosed());
+            assertTrue(tunnel.isClosed());
             assertFalse(tunnel.isActive());
             assertFalse(tunnel.isOpen());
         } else {
@@ -249,10 +248,7 @@ public abstract class NettyTunnelTest<E extends NetEndpoint<Long>, T extends Bas
         tunnel = createBindTunnel();
         channel = embeddedChannel(tunnel);
         messages = TestMessages.createMessages(tunnel);
-        messages.write(tunnel, f -> {
-            assertTrue(f.isDone());
-            assertFalse(f.isCompletedExceptionally());
-        });
+        messages.write(tunnel, null);
         assertTrue(CollectionUtils.containsAll(messages.getMessages(), channel.outboundMessages()));
 
         // 写出 message 成功
@@ -260,10 +256,7 @@ public abstract class NettyTunnelTest<E extends NetEndpoint<Long>, T extends Bas
         channel = embeddedChannel(tunnel);
         messages = TestMessages.createMessages(tunnel);
         channel.close();
-        messages.write(tunnel, f -> {
-            assertTrue(f.isDone());
-            assertFalse(f.isCompletedExceptionally());
-        });
+        messages.write(tunnel, null);
         assertTrue(channel.outboundMessages().isEmpty());
 
         // 写出 message 非 NettyWriteMessagePromise 异常
@@ -274,11 +267,9 @@ public abstract class NettyTunnelTest<E extends NetEndpoint<Long>, T extends Bas
         messages.messagesForEach(m -> {
             try {
                 t1.write(m, new MessageWriteAwaiter());
-                fail("write success");
-            } catch (TunnelException e) {
                 assertTrue(true);
             } catch (Throwable e) {
-                fail("write success " + e);
+                fail("write failed");
             }
         });
         assertTrue(CollectionUtils.containsAll(messages.getMessages(), channel.outboundMessages()));

@@ -1,7 +1,6 @@
 package com.tny.game.net.transport;
 
 import com.tny.game.common.lifecycle.unit.annotation.*;
-import com.tny.game.net.base.*;
 import com.tny.game.net.message.*;
 
 /**
@@ -13,6 +12,6 @@ import com.tny.game.net.message.*;
 @UnitInterface
 public interface RpcForwarder {
 
-    RpcRemoteAccessPoint forward(Message message, RpcServicer from, Messager sender, RpcServicer to, Messager receiver);
+    RpcRemoteAccessPoint forward(Message message, RpcForwardHeader forwardHeader);
 
 }

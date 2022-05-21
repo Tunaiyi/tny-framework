@@ -55,7 +55,7 @@ tny:
             threads: 4
     endpoint:
       session-keeper:
-        name: user
+        name: _user
         offline-close-delay: 1000
         offline-max-size: 1000
 

@@ -48,7 +48,7 @@ class BaseDemandTest {
 
     private int number = 10;
 
-    class TestDemandItemModel extends AbstractItemModel {
+    class TestDemandItemModel extends AbstractItemModel implements StuffModel {
 
         {
             this.alias = BaseDemandTest.this.itemAlias;
@@ -84,6 +84,11 @@ class BaseDemandTest {
 
         @Override
         protected void onItemInit(ItemModelContext context) {
+        }
+
+        @Override
+        public ItemType getOwnerType() {
+            return null;
         }
 
     }

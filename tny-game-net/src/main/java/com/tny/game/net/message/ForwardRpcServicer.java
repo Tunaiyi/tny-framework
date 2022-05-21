@@ -62,7 +62,7 @@ public class ForwardRpcServicer implements RpcServicer {
         return accessId;
     }
 
-    public boolean isHasAccessId() {
+    public boolean isAccurately() {
         return this.accessId != null;
     }
 

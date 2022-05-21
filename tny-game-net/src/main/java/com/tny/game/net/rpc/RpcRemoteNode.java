@@ -6,6 +6,7 @@ import com.tny.game.net.endpoint.*;
 import com.tny.game.net.transport.*;
 
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * <p>
@@ -36,6 +37,18 @@ public class RpcRemoteNode {
 
     public List<RpcRemoteAccessPoint> getOrderAccessPoints() {
         return orderAccessPoints;
+    }
+
+    public RpcRemoteAccessPoint anyGet() {
+        List<RpcRemoteAccessPoint> orderAccessPoints = this.orderAccessPoints;
+        if (orderAccessPoints.isEmpty()) {
+            return null;
+        }
+        return orderAccessPoints.get(ThreadLocalRandom.current().nextInt(orderAccessPoints.size()));
+    }
+
+    public RpcRemoteAccessPoint get(long id) {
+        return realEndpointMap.get(id);
     }
 
     public boolean isActive() {

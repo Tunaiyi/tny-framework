@@ -3,6 +3,8 @@ package com.tny.game.net.rpc;
 import com.google.common.collect.ImmutableList;
 import com.tny.game.net.base.*;
 import com.tny.game.net.endpoint.*;
+import com.tny.game.net.message.*;
+import com.tny.game.net.transport.*;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -43,6 +45,18 @@ public class RpcRemoteServiceSet {
 
     private void updateVersion() {
         version.incrementAndGet();
+    }
+
+    public RpcRemoteAccessPoint find(ForwardRpcServicer servicer) {
+        RpcRemoteNode remoteNode = remoteNodeMap.get(servicer.getServerId());
+        if (remoteNode == null) {
+            return null;
+        }
+        RpcRemoteAccessPoint point = remoteNode.get(servicer.getId());
+        if (point != null) {
+            return point;
+        }
+        return remoteNode.anyGet();
     }
 
     protected void addEndpoint(Endpoint<RpcAccessIdentify> endpoint) {

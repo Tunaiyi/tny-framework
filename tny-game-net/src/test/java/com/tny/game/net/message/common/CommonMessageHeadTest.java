@@ -9,7 +9,7 @@ public class CommonMessageHeadTest extends MessageHeadTest {
 
     @Override
     public MessageHead create(long id, MessageMode mode, int protocol, int code, long time, long toMessage) {
-        return new CommonMessageHead(id, mode, protocol, 0, code, toMessage, time, null);
+        return new CommonMessageHead(id, mode, 0, protocol, code, toMessage, time, null);
     }
 
 }

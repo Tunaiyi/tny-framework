@@ -151,6 +151,7 @@ public class MockNetTunnel extends AttributesHolder implements NetTunnel<Long> {
 
     @Override
     public MessageWriteAwaiter write(MessageAllocator allocator, MessageContext context) throws NetException {
+        this.writeTimes++;
         return null;
     }
 

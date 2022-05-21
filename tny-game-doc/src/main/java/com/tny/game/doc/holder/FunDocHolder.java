@@ -18,7 +18,7 @@ public class FunDocHolder {
 
     private Method method;
 
-    private List<VarDocHolder> paramList;
+    private List<ParamDocHolder> paramList;
 
     public static FunDocHolder create(Class<?> clazz, Method method) {
         FunDocHolder holder = new FunDocHolder();
@@ -37,7 +37,7 @@ public class FunDocHolder {
         }
         holder.funDoc = funDoc;
         holder.method = method;
-        List<VarDocHolder> paramList = new ArrayList<VarDocHolder>();
+        List<ParamDocHolder> paramList = new ArrayList<ParamDocHolder>();
         holder.paramList = Collections.unmodifiableList(paramList);
         Parameter[] params = method.getParameters();
         for (Parameter param : params) {
@@ -46,7 +46,7 @@ public class FunDocHolder {
                 continue;
             }
             String name = param.getName();
-            paramList.add(VarDocHolder.create(paramDoc, name, param.getType()));
+            paramList.add(ParamDocHolder.create(paramDoc, name, param.getType(), param));
         }
         return holder;
     }
@@ -73,7 +73,7 @@ public class FunDocHolder {
         return method;
     }
 
-    public List<VarDocHolder> getParamList() {
+    public List<ParamDocHolder> getParamList() {
         return paramList;
     }
 

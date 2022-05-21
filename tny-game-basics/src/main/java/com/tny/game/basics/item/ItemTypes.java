@@ -14,7 +14,7 @@ import static com.tny.game.basics.item.ItemType.*;
  */
 public class ItemTypes extends ClassImporter {
 
-    public static final EnumerableSymbol<ItemType, String> ALIAS_HEAD_SYMBOL = EnumerableSymbol.symbolOf(
+    private static final EnumerableSymbol<ItemType, String> ALIAS_HEAD_SYMBOL = EnumerableSymbol.symbolOf(
             ItemType.class, "aliasHead", ItemType::getAliasHead);
 
     protected static EnumeratorHolder<ItemType> holder = new EnumeratorHolder<ItemType>() {
@@ -34,7 +34,7 @@ public class ItemTypes extends ClassImporter {
 
     public static <T extends ItemType> T ofAlias(String alias) {
         String[] heads = StringUtils.split(alias, '$');
-        return holder.checkBySymbol(ALIAS_HEAD_SYMBOL, "$" + heads[0], "获取 别名前缀 {} 的 ItemType 不存在", heads[0]);
+        return holder.checkBySymbol(ALIAS_HEAD_SYMBOL, heads[0], "获取 别名前缀 {} 的 ItemType 不存在", heads[0]);
     }
 
     public static <T extends ItemType> T check(String key) {

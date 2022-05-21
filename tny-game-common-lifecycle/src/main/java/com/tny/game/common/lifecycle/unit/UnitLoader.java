@@ -67,8 +67,8 @@ public class UnitLoader<T> {
         if (StringUtils.isNoneBlank(unitAnnotation.value())) {
             names.add(unitAnnotation.value());
         }
-        //		names.add(unitClass.getSimpleName());
-        //		names.add(unitClass.getName());
+        names.add(unitClass.getSimpleName());
+        names.add(unitClass.getName());
         for (String name : names)
             register(name, unit);
         return names;

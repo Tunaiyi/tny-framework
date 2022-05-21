@@ -31,8 +31,7 @@ public class NettyClientTunnelTest extends NettyTunnelTest<MockNettyClient, Test
     @Override
     protected TunnelTestInstance<TestGeneralClientTunnel, MockNettyClient> create(Certificate<Long> certificate, boolean open) {
         MockNettyClient client = this.createEndpoint(certificate);
-        TestGeneralClientTunnel tunnel = this.newTunnel(open);
-        tunnel.setEndpoint(client);
+        TestGeneralClientTunnel tunnel = this.newTunnel(open, client);
         if (certificate.isAuthenticated()) {
             tunnel.bind(client);
         }
@@ -44,9 +43,10 @@ public class NettyClientTunnelTest extends NettyTunnelTest<MockNettyClient, Test
         return new MockNettyClient(this.url, certificate);
     }
 
-    private TestGeneralClientTunnel newTunnel(boolean open) {
+    private TestGeneralClientTunnel newTunnel(boolean open, MockNettyClient client) {
         TestGeneralClientTunnel tunnel = new TestGeneralClientTunnel(ID_GENERATOR.generate(),
                 new NetBootstrapContext(null, null, null, null, new CommonMessageFactory(), null, null));
+        tunnel.setEndpoint(client);
         if (open) {
             tunnel.open();
         }

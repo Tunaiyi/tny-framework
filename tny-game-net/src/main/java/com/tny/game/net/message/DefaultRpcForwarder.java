@@ -31,8 +31,22 @@ public class DefaultRpcForwarder implements RpcForwarder {
     }
 
     @Override
-    public RpcRemoteAccessPoint forward(Message message, RpcServicer from, Messager sender, RpcServicer to, Messager receiver) {
+    public RpcRemoteAccessPoint forward(Message message, RpcForwardHeader forwardHeader) {
+        RpcServicer from = forwardHeader.getFrom();
+        Messager sender = forwardHeader.getSender();
+        ForwardRpcServicer to = forwardHeader.getTo();
+        Messager receiver = forwardHeader.getReceiver();
         RpcServiceType serviceType = to.getServiceType();
+        if (to.isAccurately()) {
+            RpcRemoteServiceSet serviceSet = rpcRemoteServiceManager.find(serviceType);
+            if (serviceSet == null) {
+                throw new ResultCodeRuntimeException(NetResultCode.RPC_SERVICE_NOT_AVAILABLE, "未找到可用{}服务", serviceType);
+            }
+            RpcRemoteAccessPoint point = serviceSet.find(to);
+            if (point != null) {
+                return point;
+            }
+        }
         RpcForwarderStrategy strategy = strategyMap.get(serviceType);
         if (strategy == null) {
             if (defaultStrategy != null) {

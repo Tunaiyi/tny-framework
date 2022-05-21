@@ -6,8 +6,6 @@ import com.tny.game.codec.typeprotobuf.*;
 import com.tny.game.codec.typeprotobuf.annotation.*;
 import com.tny.game.net.base.*;
 
-import java.util.*;
-
 import static com.tny.game.common.utils.ObjectAide.*;
 
 /**
@@ -23,21 +21,43 @@ import static com.tny.game.common.utils.ObjectAide.*;
 @ProtobufClass
 public class RpcForwardHeader extends MessageHeader<RpcForwardHeader> {
 
+    /**
+     * 请求服务
+     */
     @Protobuf(order = 2)
     private ForwardRpcServicer from;
 
+    /**
+     * 发送者
+     */
     @Protobuf(order = 3)
     private ForwardMessager sender;
 
+    /**
+     * 目标服务
+     */
     @Protobuf(order = 4)
     private ForwardRpcServicer to;
 
+    /**
+     * 目标接受者
+     */
     @Protobuf(order = 5)
     private ForwardMessager receiver;
 
+    /**
+     * 请求转发者
+     */
     @Packed
     @Protobuf(order = 6)
-    private List<ForwardRpcServicer> forwarders = new ArrayList<>();
+    private ForwardRpcServicer fromForwarder;
+
+    /**
+     * 目标转发者
+     */
+    @Packed
+    @Protobuf(order = 7)
+    private ForwardRpcServicer toForwarder;
 
     public RpcForwardHeader() {
     }
@@ -50,16 +70,20 @@ public class RpcForwardHeader extends MessageHeader<RpcForwardHeader> {
         return sender;
     }
 
-    public List<RpcServicer> getForwarders() {
-        return Collections.unmodifiableList(forwarders);
-    }
-
     public ForwardRpcServicer getTo() {
         return to;
     }
 
     public ForwardMessager getReceiver() {
         return receiver;
+    }
+
+    public ForwardRpcServicer getFromForwarder() {
+        return fromForwarder;
+    }
+
+    public ForwardRpcServicer getToForwarder() {
+        return toForwarder;
     }
 
     @Override
@@ -87,8 +111,13 @@ public class RpcForwardHeader extends MessageHeader<RpcForwardHeader> {
         return this;
     }
 
-    protected RpcForwardHeader setForwarders(List<ForwardRpcServicer> forwarders) {
-        this.forwarders = forwarders;
+    protected RpcForwardHeader setFromForwarder(RpcServicer fromService) {
+        this.fromForwarder = toForwardRpcServicer(fromForwarder);
+        return this;
+    }
+
+    protected RpcForwardHeader setToForwarder(RpcServicer fromService) {
+        this.toForwarder = toForwardRpcServicer(toForwarder);
         return this;
     }
 

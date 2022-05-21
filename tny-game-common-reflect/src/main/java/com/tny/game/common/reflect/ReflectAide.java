@@ -137,7 +137,16 @@ public class ReflectAide {
         return methodList;
     }
 
-    public static Method getDeepMethod(Class<?> clazz, String name, Class<?>... paramType) {
+    public static Method getDeepMethod(Class<?> clazz, String name, Class<?>... paramTypes) {
+        Method method = findDeepMethod(clazz, name, paramTypes);
+        if (method != null) {
+            return method;
+        }
+        throw new MethodNotFoundException("ReflectUtils.getPropertyMethod [clazz: " + clazz + ", name: " + name
+                + ", paramType: " + Arrays.toString(paramTypes) + "] exception");
+    }
+
+    private static Method findDeepMethod(Class<?> clazz, String name, Class<?>... paramType) {
         try {
             Method method = clazz.getDeclaredMethod(name, paramType);
             method.setAccessible(true);
@@ -145,39 +154,22 @@ public class ReflectAide {
         } catch (NoSuchMethodException e) {
             Class<?> superClass = clazz.getSuperclass();
             if (superClass != null && superClass != Object.class) {
-                return getDeepMethod(superClass, name, paramType);
+                return findDeepMethod(superClass, name, paramType);
             }
-            throw new MethodNotFoundException("ReflectUtils.getPropertyMethod [clazz: " + clazz + ", name: " + name
-                    + ", paramType: " + Arrays.toString(paramType) + "] exception", e);
+            return null;
         }
     }
 
-    public static Method getPropertyMethod(Class<?> clazz, MethodType methodType, String name, Class<?>... paramType) {
+    public static Method getPropertyMethod(Class<?> clazz, MethodType methodType, String name, Class<?>... paramTypes) {
         Method method;
         for (String value : methodType.values) {
-            try {
-                method = clazz.getDeclaredMethod(parseMethodName(value, name), paramType);
-                method.setAccessible(true);
-                Class<?> returnClazz = method.getReturnType();
-                if (value.equals("is") && (returnClazz == boolean.class || returnClazz == Boolean.class)) {
-                    return method;
-                }
-            } catch (Exception e) {
-                throw new ReflectException(e);
+            method = findDeepMethod(clazz, parseMethodName(value, name), paramTypes);
+            if (method != null) {
+                return method;
             }
         }
-        Class<?> superClass = clazz.getSuperclass();
-        if (superClass != null && superClass != Object.class) {
-            try {
-                return getPropertyMethod(superClass, methodType, name, paramType);
-            } catch (Exception e) {
-                throw new MethodNotFoundException("ReflectUtils.getPropertyMethod [clazz: " + clazz + ", MethodType: "
-                        + methodType + ", name: " + name + ", paramType: " + Arrays.toString(paramType) + "] exception", e);
-            }
-        } else {
-            throw new MethodNotFoundException("ReflectUtils.getPropertyMethod [clazz: " + clazz + ", MethodType: "
-                    + methodType + ", name: " + name + ", paramType: " + Arrays.toString(paramType) + "] exception");
-        }
+        throw new MethodNotFoundException("ReflectUtils.getPropertyMethod [clazz: " + clazz + ", name: " + name
+                + ", paramType: " + Arrays.toString(paramTypes) + "] exception");
     }
 
     public static List<Method> getPropertyMethod(Class<?> clazz, MethodType methodType, String[] names,

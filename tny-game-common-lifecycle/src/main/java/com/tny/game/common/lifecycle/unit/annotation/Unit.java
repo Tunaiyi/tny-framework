@@ -17,9 +17,7 @@ public @interface Unit {
     String value() default "";
 
     /**
-     * 注册 Unit 接口, 这些Class必须是 Class 继承或实现的
-     *
-     * @return
+     * @return 注册 Unit 接口, 这些Class必须是 Class 继承或实现的
      */
     Class<?>[] unitInterfaces() default {};
 

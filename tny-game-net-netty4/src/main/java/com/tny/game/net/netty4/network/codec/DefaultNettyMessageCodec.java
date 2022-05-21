@@ -1,6 +1,5 @@
 package com.tny.game.net.netty4.network.codec;
 
-import com.tny.game.common.lifecycle.unit.annotation.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.net.codec.*;
 import com.tny.game.net.exception.*;
@@ -16,7 +15,6 @@ import static com.tny.game.common.utils.ObjectAide.*;
 import static com.tny.game.net.message.CodecConstants.*;
 import static com.tny.game.net.message.MessageType.*;
 
-@Unit
 public class DefaultNettyMessageCodec implements NettyMessageCodec {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(DefaultNettyMessageCodec.class);
@@ -39,6 +37,9 @@ public class DefaultNettyMessageCodec implements NettyMessageCodec {
 
     @Override
     public NetMessage decode(ByteBuf buffer, MessageFactory messageFactory) throws Exception {
+        if (!buffer.isReadable()) {
+            return null;
+        }
         long id = NettyVarIntCoder.readVarInt64(buffer);
         byte option = buffer.readByte();
         MessageMode mode = MessageMode.valueOf(MESSAGE, (byte)(option & MESSAGE_HEAD_OPTION_MODE_MASK));

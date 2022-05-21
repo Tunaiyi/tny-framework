@@ -35,7 +35,7 @@ public interface NetEndpoint<UID> extends Endpoint<UID>, SentMessageHistory, Rec
      * @param context        发送内容
      * @return 返回创建消息
      */
-    NetMessage buildMessage(MessageFactory messageFactory, MessageContext context);
+    NetMessage createMessage(MessageFactory messageFactory, MessageContext context);
 
     /**
      * 使用指定认证登陆

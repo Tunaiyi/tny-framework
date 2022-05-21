@@ -198,7 +198,7 @@ public class XStreamModelLoader<M extends Model> implements ModelLoader<M> {
 
         xStream.alias("awardPlan", BaseAwardPlan.class, DefaultAwardPlan.class);
         xStream.alias("awardGroup", SimpleAwardGroup.class);
-        xStream.alias("award", BaseAward.class);
+        xStream.alias("award", SimpleAward.class);
 
         xStream.alias("paramEntry", Entry.class);
         xStream.alias("tradeParam", Entry.class);

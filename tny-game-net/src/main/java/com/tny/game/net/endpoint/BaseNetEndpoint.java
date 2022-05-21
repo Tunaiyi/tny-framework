@@ -192,7 +192,7 @@ public abstract class BaseNetEndpoint<UID> extends AbstractCommunicator<UID> imp
                         break;
                 }
             }
-            tunnel.write(this::buildMessage, context);
+            tunnel.write(this::createMessage, context);
             return context;
         } catch (Exception e) {
             LOGGER.error("", e);
@@ -295,7 +295,7 @@ public abstract class BaseNetEndpoint<UID> extends AbstractCommunicator<UID> imp
     //	}
 
     @Override
-    public NetMessage buildMessage(MessageFactory messageFactory, MessageContext context) {
+    public NetMessage createMessage(MessageFactory messageFactory, MessageContext context) {
         NetMessage message = messageFactory.create(allocateMessageId(), context);
         if (context instanceof RequestContext) {
             this.putFuture(message.getId(), ((RequestContext)context).getResponseAwaiter());

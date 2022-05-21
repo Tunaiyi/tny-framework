@@ -67,7 +67,7 @@ public abstract class NetEndpointTest<E extends NetEndpoint<Long>> extends Endpo
     }
 
     @Test
-    public void offline() {
+    void offline() {
         NetEndpoint<Long> loginEndpoint = create().getEndpoint();
         assertFalse(loginEndpoint.isOffline());
         loginEndpoint.offline();
@@ -75,7 +75,7 @@ public abstract class NetEndpointTest<E extends NetEndpoint<Long>> extends Endpo
     }
 
     @Test
-    public void onUnactivated() {
+    void onUnactivated() {
         Certificate<Long> certificate = createLoginCert();
         EndpointTestInstance<E> object = create(certificate);
         E loginEndpoint = object.getEndpoint();
@@ -102,7 +102,7 @@ public abstract class NetEndpointTest<E extends NetEndpoint<Long>> extends Endpo
     }
 
     @Test
-    public void getSendMessages() {
+    void getSendMessages() {
         EndpointTestInstance<E> object;
         List<Message> sentMessages;
         TestMessages messages;
@@ -112,7 +112,7 @@ public abstract class NetEndpointTest<E extends NetEndpoint<Long>> extends Endpo
         NetTunnel<Long> t0 = object.getTunnel();
         messages = createMessages(e0);
         messages.messagesForEach(m -> assertEquals(0, e0.getSentMessages(sm -> sm.getId() == m.getId()).size()));
-        messages.contextsForEach(c -> e0.buildMessage(t0.getMessageFactory(), c));
+        messages.contextsForEach(c -> e0.createMessage(t0.getMessageFactory(), c));
         messages.messagesForEach(m -> assertEquals(1, e0.getSentMessages(sm -> sm.getId() == m.getId()).size()));
 
         object = create();
@@ -123,7 +123,7 @@ public abstract class NetEndpointTest<E extends NetEndpoint<Long>> extends Endpo
 
         sentMessages = e1.getSentMessages(all);
         assertTrue(sentMessages.isEmpty());
-        messages.contextsForEach(c -> e1.buildMessage(t1.getMessageFactory(), c));
+        messages.contextsForEach(c -> e1.createMessage(t1.getMessageFactory(), c));
         sentMessages = e1.getSentMessages(gte1);
         assertEquals(messages.getMessageSize(), sentMessages.size());
         sentMessages = e1.getSentMessages(all);
@@ -144,7 +144,7 @@ public abstract class NetEndpointTest<E extends NetEndpoint<Long>> extends Endpo
         sentMessages = e2.getSentMessages(all);
         assertTrue(sentMessages.isEmpty());
 
-        messages.contextsForEach(c -> e2.buildMessage(t2.getMessageFactory(), c));
+        messages.contextsForEach(c -> e2.createMessage(t2.getMessageFactory(), c));
 
         sentMessages = e2.getSentMessages(lte3);
         assertTrue(sentMessages.isEmpty());
@@ -154,35 +154,6 @@ public abstract class NetEndpointTest<E extends NetEndpoint<Long>> extends Endpo
 
         sentMessages = e2.getSentMessages(m -> 4 <= m.getId() && m.getId() <= 13);
         assertEquals(CACHE_MESSAGE_SIZE, sentMessages.size());
-    }
-
-    @Test
-    public void allocateMessage() {
-        EndpointTestInstance<E> object;
-        TestMessages messages;
-        RespondFutureMonitor futureHolder;
-
-        // 正常 write
-        object = create();
-        NetEndpoint<Long> e0 = object.getEndpoint();
-        MockNetTunnel t0 = object.getTunnel();
-        messages = createMessages(e0);
-        messages.contextsForEach(c -> e0.buildMessage(t0.getMessageFactory(), c));
-        assertEquals(messages.getMessageSize(), t0.getWriteTimes());
-
-        // 正常 write willResponseFuture
-        object = create();
-        NetEndpoint<Long> e1 = object.getEndpoint();
-        MockNetTunnel t1 = object.getTunnel();
-        messages = createMessages(e0);
-        messages.requestContextsForEach(c -> {
-            c.willRespondAwaiter().willWriteAwaiter();
-            e1.buildMessage(t1.getMessageFactory(), c);
-        });
-        assertEquals(messages.getMessageSize(), t0.getWriteTimes());
-        //		futureHolder = e1.getRespondFutureHolder();
-        //		assertEquals(messages.getRequestSize(), futureHolder.size());
-
     }
 
     //    @Override
@@ -331,7 +302,7 @@ public abstract class NetEndpointTest<E extends NetEndpoint<Long>> extends Endpo
     //    }
 
     @Test
-    public void online() {
+    void online() {
         MockNetTunnel loginTunnel;
         MockNetTunnel otherTunnel;
         Certificate<Long> newCertificate;

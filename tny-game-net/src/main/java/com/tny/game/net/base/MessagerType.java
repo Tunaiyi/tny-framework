@@ -11,10 +11,10 @@ import com.tny.game.common.enums.*;
  **/
 public interface MessagerType extends IntEnumerable {
 
-    String DEFAULT_USER_TYPE = "#user";
+    String DEFAULT_USER_TYPE = "_user";
 
-    String ANONYMITY_USER_TYPE = "#anonymity";
-    
+    String ANONYMITY_USER_TYPE = "_anonymity";
+
     String getGroup();
 
 }

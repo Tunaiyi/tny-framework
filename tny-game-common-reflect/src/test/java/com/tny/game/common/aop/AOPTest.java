@@ -6,10 +6,10 @@ import org.junit.jupiter.api.*;
 
 import java.lang.reflect.Method;
 
-public class AOPTest {
+class AOPTest {
 
     @Test
-    public void testPlayerProxy() throws InstantiationException, IllegalAccessException {
+    void testPlayerProxy() throws InstantiationException, IllegalAccessException {
         Player player = new PlayerProxy();
         Player playerProxy = AoperBuilder.newBuilder(Player.class)
                 .setAfterReturningAdvice(new AfterReturningAdvice() {
@@ -55,7 +55,7 @@ public class AOPTest {
     }
 
     @Test
-    public void testPlayer() throws InstantiationException, IllegalAccessException {
+    void testPlayer() throws InstantiationException, IllegalAccessException {
         Player player = new Player();
         Player playerProxy = AoperBuilder.newBuilder(Player.class)
                 .setAfterReturningAdvice((returnValue, method, args, target) -> System.out
@@ -86,7 +86,7 @@ public class AOPTest {
 
     }
 
-    public static void main(String[] args) throws InstantiationException, IllegalAccessException {
+    static void main(String[] args) throws InstantiationException, IllegalAccessException {
 
         //		int time = 1000000000;
         //		long now = System.currentTimeMillis();

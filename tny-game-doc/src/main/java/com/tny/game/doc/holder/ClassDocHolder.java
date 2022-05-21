@@ -48,6 +48,9 @@ public class ClassDocHolder {
     private static List<FunDocHolder> createFunctionList(Class<?> clazz) {
         List<FunDocHolder> list = new ArrayList<FunDocHolder>();
         for (Method method : clazz.getDeclaredMethods()) {
+            if (method.isBridge()) {
+                continue;
+            }
             FunDocHolder holder = FunDocHolder.create(clazz, method);
             if (holder != null) {
                 list.add(holder);
