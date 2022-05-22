@@ -78,6 +78,9 @@ class RpcRemoteParamDescription {
                         this.mode = TO_SERVICE;
                     }
                 }
+                if (this.mode == NONE) {
+                    break;
+                }
             }
         }
         if (this.mode == NONE && require) {

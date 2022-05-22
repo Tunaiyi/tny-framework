@@ -75,7 +75,7 @@ public class NetBootstrapContext implements NetworkContext {
 
     @Override
     public MessagerFactory getMessagerFactory() {
-        return null;
+        return this.messagerFactory;
     }
 
     @Override
