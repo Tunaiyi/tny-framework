@@ -1,8 +1,7 @@
 package com.tny.game.net.message;
 
+import com.tny.game.common.lifecycle.unit.annotation.*;
 import com.tny.game.net.base.*;
-
-import java.util.Set;
 
 /**
  * 消息者工厂
@@ -11,12 +10,8 @@ import java.util.Set;
  * @author Kun Yang
  * @date 2022/5/21 04:19
  **/
-public interface MessagerFactory<M extends Messager> {
-
-    /**
-     * @return 创建的Messager类型
-     */
-    Set<MessagerType> getMessagerTypes();
+@UnitInterface
+public interface MessagerFactory {
 
     /**
      * 创建 Messager
@@ -25,6 +20,14 @@ public interface MessagerFactory<M extends Messager> {
      * @param messagerId 消息者id
      * @return 返回创建的 messager
      */
-    M createMessager(MessagerType type, long messagerId);
+    <M extends Messager> M createMessager(MessagerType type, long messagerId);
+
+    /**
+     * 创建 Messager
+     *
+     * @param messager 转发消息者
+     * @return 返回创建的 messager
+     */
+    <M extends Messager> M createMessager(ForwardMessager messager);
 
 }

@@ -46,7 +46,7 @@ public class BasicsAutoConfiguration {
 
     @Bean
     public ItemModelContext itemModelContext(GameExplorer gameExplorer, Optional<ExprHolderFactoryInitiator> initiatorOpt) {
-        ExprHolderFactory exprHolderFactory = new MvelExpressionHolderFactory();
+        ExprHolderFactory exprHolderFactory = new MvelExpressionHolderFactory(true);
         initiatorOpt.ifPresent(initiator -> initiator.init(exprHolderFactory));
         return new GameItemModelContext(gameExplorer, exprHolderFactory);
     }

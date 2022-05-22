@@ -44,7 +44,7 @@ public abstract class ScriptExprHolderFactory extends AbstractExprHolderFactory 
     }
 
     @Override
-    protected String preproccess(String expr) {
+    protected String preProcess(String expr) {
         return this.context.getImportCode() + expr;
     }
 

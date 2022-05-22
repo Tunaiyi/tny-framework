@@ -10,6 +10,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import static org.apache.commons.io.FileUtils.*;
 
@@ -133,12 +134,10 @@ public class ExportTask {
             LOGGER.error("ExportTask {} : 通过 {} 导出到文件 {} exception", desc, scheme.getTemplate(), scheme.getOutput(), e);
             return false;
         }
-        StringJoiner joiner = new StringJoiner("\n");
+
         List<Class<?>> classes = scheme.getClasses();
-        for (Class<?> aClass : classes) {
-            joiner.add(aClass.getName());
-        }
-        LOGGER.info("ExportTask {} \n[导出清单]:\n{}\n[统计]:总共 {} 个类通过 {} 模板导出到 {} 文件成功", desc, joiner,
+        String classesList = classes.stream().map(Class::getCanonicalName).collect(Collectors.joining("\n"));
+        LOGGER.info("ExportTask {} \n[导出清单]:\n{}\n[统计]:总共 {} 个类通过 {} 模板导出到 {} 文件成功", desc, classesList,
                 classes.size(), scheme.getTemplate().getAbsolutePath(), outputFile.getAbsoluteFile());
         return true;
     }

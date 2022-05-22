@@ -11,13 +11,21 @@ public class MvelTemplateHolderFactory extends MvelExprHolderFactory {
     public MvelTemplateHolderFactory() {
     }
 
-    public MvelTemplateHolderFactory(boolean lazy) {
-        super(lazy);
+    public MvelTemplateHolderFactory(boolean oneLine) {
+        super(oneLine);
+    }
+
+    public MvelTemplateHolderFactory(boolean lazy, boolean oneLine) {
+        super(lazy, oneLine);
     }
 
     @Override
-    protected String preproccess(String expression) {
-        return StringUtils.replace(StringUtils.trim(expression), "\n", "");
+    protected String preProcess(String expression) {
+        if (oneLine) {
+            return StringUtils.replace(StringUtils.trim(expression), "\n", "");
+        } else {
+            return expression;
+        }
     }
 
     @Override

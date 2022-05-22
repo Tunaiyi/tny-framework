@@ -11,6 +11,9 @@ import com.tny.game.net.transport.*;
  **/
 public interface RpcContext {
 
+    /**
+     * @return Rpc转发器
+     */
     RpcForwarder getRpcForwarder();
 
 }

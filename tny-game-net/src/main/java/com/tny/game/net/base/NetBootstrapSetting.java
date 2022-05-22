@@ -28,6 +28,8 @@ public interface NetBootstrapSetting {
 
     String getMessageFactory();
 
+    String getMessagerFactory();
+
     String getCertificateFactory();
 
     String getMessageDispatcher();

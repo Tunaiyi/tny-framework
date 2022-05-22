@@ -37,6 +37,8 @@ public abstract class CommonNetBootstrapSetting implements NetBootstrapSetting {
 
     private String messageFactory = defaultName(MessageFactory.class);
 
+    private String messagerFactory = defaultName(MessagerFactory.class);
+
     private String certificateFactory = defaultName(CertificateFactory.class);
 
     private String tunnelIdGenerator = defaultName(NetIdGenerator.class);
@@ -49,6 +51,11 @@ public abstract class CommonNetBootstrapSetting implements NetBootstrapSetting {
     @Override
     public String getMessageFactory() {
         return this.messageFactory;
+    }
+
+    @Override
+    public String getMessagerFactory() {
+        return messagerFactory;
     }
 
     @Override
@@ -110,6 +117,11 @@ public abstract class CommonNetBootstrapSetting implements NetBootstrapSetting {
 
     public CommonNetBootstrapSetting setMessageFactory(String messageFactory) {
         this.messageFactory = messageFactory;
+        return this;
+    }
+
+    public CommonNetBootstrapSetting setMessagerFactory(String messagerFactory) {
+        this.messagerFactory = messagerFactory;
         return this;
     }
 

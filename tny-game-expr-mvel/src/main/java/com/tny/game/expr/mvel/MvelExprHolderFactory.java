@@ -23,15 +23,23 @@ public abstract class MvelExprHolderFactory extends AbstractExprHolderFactory {
 
     protected boolean lazy;
 
+    protected boolean oneLine;
+
     public MvelExprHolderFactory() {
         super(1);
         this.lazy = LAZY;
+        this.oneLine = false;
         this.context = new MvelExprContext();
     }
 
-    public MvelExprHolderFactory(boolean lazy) {
+    public MvelExprHolderFactory(boolean oneLine) {
+        this(LAZY, oneLine);
+    }
+
+    public MvelExprHolderFactory(boolean lazy, boolean oneLine) {
         super(1);
         this.lazy = lazy;
+        this.oneLine = oneLine;
         this.context = new MvelExprContext();
     }
 

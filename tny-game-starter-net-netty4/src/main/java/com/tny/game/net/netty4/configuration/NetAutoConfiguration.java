@@ -81,6 +81,12 @@ public class NetAutoConfiguration {
     }
 
     @Bean
+    @ConditionalOnMissingBean(MessagerFactory.class)
+    public MessagerFactory defaultMessagerFactory() {
+        return new DefaultMessagerFactory();
+    }
+
+    @Bean
     public SessionFactory<?, ?, ?> defaultSessionFactory() {
         return new CommonSessionFactory<>();
     }

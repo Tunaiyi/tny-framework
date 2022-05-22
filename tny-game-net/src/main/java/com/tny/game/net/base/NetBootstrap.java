@@ -38,18 +38,17 @@ public class NetBootstrap<S extends NetBootstrapSetting> implements AppPrepareSt
 
     @Override
     public void prepareStart() throws Exception {
-        MessageFactory messageFactory = as(UnitLoader.getLoader(MessageFactory.class).checkUnit(this.setting.getMessageFactory()));
-        CertificateFactory<Object> certificateFactory = as(
-                UnitLoader.getLoader(CertificateFactory.class).checkUnit(this.setting.getCertificateFactory()));
-        MessageDispatcher messageDispatcher = as(
-                UnitLoader.getLoader(MessageDispatcher.class).checkUnit(this.setting.getMessageDispatcher()));
-        CommandTaskBoxProcessor commandTaskProcessor = as(
-                UnitLoader.getLoader(CommandTaskBoxProcessor.class).checkUnit(this.setting.getCommandTaskProcessor()));
-        RpcForwarder rpcForwarder = as(
-                UnitLoader.getLoader(RpcForwarder.class).checkUnit(this.setting.getRpcForwarder()));
+        MessageFactory messageFactory = UnitLoader.getLoader(MessageFactory.class).checkUnit(this.setting.getMessageFactory());
+        MessagerFactory messagerFactory = UnitLoader.getLoader(MessagerFactory.class).checkUnit(this.setting.getMessagerFactory());
+        CertificateFactory<Object> certificateFactory =
+                UnitLoader.getLoader(CertificateFactory.class).checkUnit(this.setting.getCertificateFactory());
+        MessageDispatcher messageDispatcher = UnitLoader.getLoader(MessageDispatcher.class).checkUnit(this.setting.getMessageDispatcher());
+        CommandTaskBoxProcessor commandTaskProcessor =
+                UnitLoader.getLoader(CommandTaskBoxProcessor.class).checkUnit(this.setting.getCommandTaskProcessor());
+        RpcForwarder rpcForwarder = UnitLoader.getLoader(RpcForwarder.class).checkUnit(this.setting.getRpcForwarder());
         this.context = new NetBootstrapContext(appContext, this.setting,
-                messageDispatcher, commandTaskProcessor, messageFactory, certificateFactory, rpcForwarder);
-        this.idGenerator = as(UnitLoader.getLoader(NetIdGenerator.class).checkUnit(this.setting.getTunnelIdGenerator()));
+                messageDispatcher, commandTaskProcessor, messageFactory, messagerFactory, certificateFactory, rpcForwarder);
+        this.idGenerator = UnitLoader.getLoader(NetIdGenerator.class).checkUnit(this.setting.getTunnelIdGenerator());
         this.onLoadUnit(this.setting);
     }
 

@@ -5,6 +5,7 @@ import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
 
 /**
+ * 网络上下文对象
  * <p>
  *
  * @author : kgtny
@@ -12,12 +13,30 @@ import com.tny.game.net.message.*;
  */
 public interface NetworkContext extends EndpointContext, RpcContext {
 
+    /**
+     * @return 应用上下文
+     */
     NetAppContext getAppContext();
 
+    /**
+     * @return 网络启动器配置
+     */
     NetBootstrapSetting getSetting();
 
+    /**
+     * @return 消息工厂
+     */
     MessageFactory getMessageFactory();
 
+    /**
+     * @return 消息者工厂
+     */
+    MessagerFactory getMessagerFactory();
+
+    /**
+     * @param <UID> id类型
+     * @return 选项工厂
+     */
     <UID> CertificateFactory<UID> getCertificateFactory();
 
 }

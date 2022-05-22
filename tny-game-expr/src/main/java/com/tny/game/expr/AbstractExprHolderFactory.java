@@ -50,7 +50,7 @@ public abstract class AbstractExprHolderFactory implements ExprHolderFactory {
         if (StringUtils.isNumeric(checkNumber)) {
             return new ConstNumberExpr(NumberUtils.createNumber(checkNumber));
         }
-        expression = preproccess(expression);
+        expression = preProcess(expression);
         int index = toHash(expression);
         if (this.cached) {
             ExprHolder exp;
@@ -83,7 +83,7 @@ public abstract class AbstractExprHolderFactory implements ExprHolderFactory {
         }
     }
 
-    protected abstract String preproccess(String expr);
+    protected abstract String preProcess(String expr);
 
     protected abstract ExprHolder createExprHolder(String expr) throws ExprException;
 

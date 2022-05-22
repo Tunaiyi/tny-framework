@@ -11,13 +11,21 @@ public class MvelExpressionHolderFactory extends MvelExprHolderFactory {
     public MvelExpressionHolderFactory() {
     }
 
-    public MvelExpressionHolderFactory(boolean lazy) {
-        super(lazy);
+    public MvelExpressionHolderFactory(boolean oneLine) {
+        super(oneLine);
+    }
+
+    public MvelExpressionHolderFactory(boolean lazy, boolean online) {
+        super(lazy, online);
     }
 
     @Override
-    protected String preproccess(String expression) {
-        return StringUtils.replace(StringUtils.trim(expression), "\n", "");
+    protected String preProcess(String expression) {
+        if (oneLine) {
+            return StringUtils.replace(StringUtils.trim(expression), "\n", "");
+        } else {
+            return expression;
+        }
     }
 
     @Override

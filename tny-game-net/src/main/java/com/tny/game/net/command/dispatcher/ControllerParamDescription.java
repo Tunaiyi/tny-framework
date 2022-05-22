@@ -137,6 +137,7 @@ class ControllerParamDescription {
         if (body == null) {
             body = message.bodyAs(Object.class);
         }
+        NetworkContext context = tunnel.getContext();
         MessageHead head = message.getHead();
         Object value = null;
         switch (this.mode) {
@@ -171,7 +172,6 @@ class ControllerParamDescription {
                 }
                 break;
             case SETTING:
-                NetworkContext context = tunnel.getContext();
                 value = context.getSetting();
                 break;
             case BODY:
@@ -235,14 +235,16 @@ class ControllerParamDescription {
             case SENDER: {
                 RpcForwardHeader forwardHeader = head.getHeader(MessageHeaderConstants.RPC_FORWARD_HEADER);
                 if (forwardHeader != null) {
-                    value = forwardHeader.getSender();
+                    ForwardMessager sender = forwardHeader.getSender();
+                    value = context.getMessagerFactory().createMessager(sender);
                 }
                 break;
             }
             case RECEIVER: {
                 RpcForwardHeader forwardHeader = head.getHeader(MessageHeaderConstants.RPC_FORWARD_HEADER);
                 if (forwardHeader != null) {
-                    value = forwardHeader.getReceiver();
+                    ForwardMessager receiver = forwardHeader.getReceiver();
+                    value = context.getMessagerFactory().createMessager(receiver);
                 }
                 break;
             }
