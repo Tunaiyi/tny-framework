@@ -59,7 +59,7 @@ public class RpcRemoteInvoker {
         RpcRemoteInvokeParams invokeParams = method.getParams(params);
         RpcRemoteAccessPoint accessPoint = router.route(servicer, method, invokeParams.getRouteValue(), params);
         if (accessPoint == null) {
-            throw new RpcInvokeException(NetResultCode.REMOTE_EXCEPTION, "调用 {} 异常, 未找到有效的远程服务节点", this.method);
+            throw new RpcInvokeException(NetResultCode.RPC_SERVICE_NOT_AVAILABLE, "调用 {} 异常, 未找到有效的远程服务节点", this.method);
         }
         long timeout = timeout();
         switch (method.getMode()) {
@@ -69,7 +69,7 @@ public class RpcRemoteInvoker {
             case REQUEST:
                 return request(accessPoint, timeout, invokeParams);
         }
-        throw new RpcInvokeException(NetResultCode.REMOTE_EXCEPTION, "调用 {} 异常, 非法 rpc 模式", this.method);
+        throw new RpcInvokeException(NetResultCode.RPC_INVOKE_FAILED, "调用 {} 异常, 非法 rpc 模式", this.method);
     }
 
     private Protocol protocol() {
@@ -85,7 +85,7 @@ public class RpcRemoteInvoker {
             if (e != null) {
                 rpcFuture.completeExceptionally(e);
             } else {
-                rpcFuture.complete(RpcResults.result(ResultCodes.of(message.getCode()), message.getBody()));
+                rpcFuture.complete(message, RpcResults.result(ResultCodes.of(message.getCode()), message.getBody()));
             }
         });
         return rpcFuture;
@@ -139,7 +139,7 @@ public class RpcRemoteInvoker {
                 handleException(e);
             }
         }
-        throw new RpcInvokeException(NetResultCode.REMOTE_EXCEPTION, "返回类型错误");
+        throw new RpcInvokeException(NetResultCode.RPC_INVOKE_FAILED, "返回类型错误");
     }
 
     private void push(RpcRemoteAccessPoint accessPoint, long timeout, RpcRemoteInvokeParams invokeParams) {

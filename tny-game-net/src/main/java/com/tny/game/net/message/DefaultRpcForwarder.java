@@ -40,7 +40,8 @@ public class DefaultRpcForwarder implements RpcForwarder {
         if (to.isAccurately()) {
             RpcRemoteServiceSet serviceSet = rpcRemoteServiceManager.find(serviceType);
             if (serviceSet == null) {
-                throw new ResultCodeRuntimeException(NetResultCode.RPC_SERVICE_NOT_AVAILABLE, "未找到可用{}服务", serviceType);
+                return null;
+                //                throw new ResultCodeRuntimeException(NetResultCode.RPC_SERVICE_NOT_AVAILABLE, "未找到可用{}服务", serviceType);
             }
             RpcRemoteAccessPoint point = serviceSet.find(to);
             if (point != null) {

@@ -16,4 +16,11 @@ public interface RpcRemoteAccessPoint extends Sender {
 
     ForwardRpcServicer getForwardRpcServicer();
 
+    /**
+     * 是否已上线
+     *
+     * @return 连接返回true 否则返回false
+     */
+    boolean isActive();
+
 }

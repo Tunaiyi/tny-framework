@@ -48,7 +48,7 @@ public class MessageForwardCommand extends BaseCommand {
     private void forward() {
         RpcForwardHeader forwardHeader = message.getHeader(MessageHeaderConstants.RPC_FORWARD_HEADER);
         RpcRemoteAccessPoint toPoint = rpcContext.getRpcForwarder().forward(message, forwardHeader);
-        if (toPoint != null) {
+        if (toPoint != null && toPoint.isActive()) {
             ForwardRpcServicer fromService = new ForwardRpcServicer(this.tunnel.getUserId());
             RpcServicer toService = toPoint.getForwardRpcServicer();
             toPoint.send(MessageContexts.copy(message)

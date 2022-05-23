@@ -3,6 +3,7 @@ package com.tny.game.net.rpc;
 import com.tny.game.common.concurrent.*;
 import com.tny.game.common.result.*;
 import com.tny.game.net.base.*;
+import com.tny.game.net.message.*;
 import com.tny.game.net.rpc.exception.*;
 
 import static com.tny.game.common.utils.ObjectAide.*;
@@ -14,6 +15,8 @@ import static com.tny.game.common.utils.ObjectAide.*;
  * @date : 2021/11/2 5:11 下午
  */
 public class DefaultRpcFuture<T> extends CompleteStageFuture<RpcResult<T>> implements RpcFuture<T> {
+
+    private Message message;
 
     public DefaultRpcFuture() {
     }
@@ -29,6 +32,11 @@ public class DefaultRpcFuture<T> extends CompleteStageFuture<RpcResult<T>> imple
     }
 
     @Override
+    public Message getMessage() {
+        return message;
+    }
+
+    @Override
     public boolean isSuccess() {
         return result().isSuccess();
     }
@@ -36,6 +44,11 @@ public class DefaultRpcFuture<T> extends CompleteStageFuture<RpcResult<T>> imple
     @Override
     public boolean isFailure() {
         return result().isFailure();
+    }
+
+    public boolean complete(Message message, RpcResult<T> value) {
+        this.message = message;
+        return super.complete(value);
     }
 
     private RpcResult<T> result() {

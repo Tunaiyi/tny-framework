@@ -87,6 +87,16 @@ public class TickMessageHead extends AbstractNetMessageHead {
     }
 
     @Override
+    public boolean isForward() {
+        return false;
+    }
+
+    @Override
+    public RpcForwardHeader getForwardHeader() {
+        return null;
+    }
+
+    @Override
     public List<MessageHeader<?>> getAllHeaders() {
         return Collections.emptyList();
     }

@@ -181,7 +181,13 @@ public enum NetResultCode implements ResultCode {
     /**
      * 服务不可用
      */
-    RPC_SERVICE_NOT_AVAILABLE(400, "服务不可用", ResultLevel.ERROR);
+    RPC_SERVICE_NOT_AVAILABLE(400, "服务不可用", ResultLevel.WARN),
+
+    /**
+     * RPC调用异常
+     */
+    RPC_INVOKE_FAILED(401, "RPC调用异常", ResultLevel.WARN),
+
     //
     ;
 

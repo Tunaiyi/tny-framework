@@ -42,4 +42,9 @@ public class RpcEndpointAccessPoint implements RpcRemoteAccessPoint {
         return forwardRpcServicer;
     }
 
+    @Override
+    public boolean isActive() {
+        return endpoint.isActive();
+    }
+
 }

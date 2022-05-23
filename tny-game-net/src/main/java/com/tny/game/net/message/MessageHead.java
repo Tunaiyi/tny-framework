@@ -55,6 +55,20 @@ public interface MessageHead extends MessageSchema {
     Map<String, MessageHeader<?>> getAllHeadersMap();
 
     /**
+     * @return 是否是转发
+     */
+    default boolean isForward() {
+        return existHeader(MessageHeaderConstants.RPC_FORWARD_HEADER);
+    }
+
+    /**
+     * @return 获取转发头
+     */
+    default RpcForwardHeader getForwardHeader() {
+        return getHeader(MessageHeaderConstants.RPC_FORWARD_HEADER);
+    }
+
+    /**
      * 是否存在指定 key 的 Header
      *
      * @param key 键值
