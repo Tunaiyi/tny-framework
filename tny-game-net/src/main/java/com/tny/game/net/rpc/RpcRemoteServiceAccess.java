@@ -12,13 +12,13 @@ import com.tny.game.net.transport.*;
  * @author Kun Yang
  * @date 2022/4/24 14:27
  **/
-public class RpcEndpointAccessPoint implements RpcRemoteAccessPoint {
+public class RpcRemoteServiceAccess implements RpcServiceAccess {
 
     private final Endpoint<RpcAccessIdentify> endpoint;
 
     private final ForwardRpcServicer forwardRpcServicer;
 
-    public RpcEndpointAccessPoint(Endpoint<RpcAccessIdentify> endpoint) {
+    public RpcRemoteServiceAccess(Endpoint<RpcAccessIdentify> endpoint) {
         this.endpoint = endpoint;
         this.forwardRpcServicer = new ForwardRpcServicer(endpoint.getUserId());
     }
@@ -29,12 +29,17 @@ public class RpcEndpointAccessPoint implements RpcRemoteAccessPoint {
     }
 
     @Override
-    public RpcAccessIdentify getAccessId() {
-        return endpoint.getUserId();
+    public long getAccessId() {
+        return endpoint.getMessagerId();
     }
 
     public Endpoint<RpcAccessIdentify> getEndpoint() {
         return endpoint;
+    }
+
+    @Override
+    public RpcAccessIdentify getIdentify() {
+        return endpoint.getUserId();
     }
 
     @Override

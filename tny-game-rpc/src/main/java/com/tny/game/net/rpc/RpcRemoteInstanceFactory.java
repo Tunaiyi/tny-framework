@@ -22,13 +22,13 @@ public class RpcRemoteInstanceFactory {
 
     private RpcRemoteSetting setting;
 
-    private RpcRemoteServiceManager rpcRemoteService;
+    private RpcRemoterManager rpcRemoterManager;
 
     private RpcRemoteRouteManager rpcRouteManager;
 
-    public RpcRemoteInstanceFactory(RpcRemoteSetting setting, RpcRemoteServiceManager rpcRemoteService, RpcRemoteRouteManager rpcRouteManager) {
+    public RpcRemoteInstanceFactory(RpcRemoteSetting setting, RpcRemoterManager rpcRemoterManager, RpcRemoteRouteManager rpcRouteManager) {
         this.setting = setting;
-        this.rpcRemoteService = rpcRemoteService;
+        this.rpcRemoterManager = rpcRemoterManager;
         this.rpcRouteManager = rpcRouteManager;
     }
 
@@ -59,12 +59,12 @@ public class RpcRemoteInstanceFactory {
         if (StringUtils.isNoneBlank(rpcService.forwardService())) {
             service = rpcService.forwardService();
         }
-        RpcServiceType serviceType = RpcServiceTypes.checkService(service);
-        RpcRemoteServiceSet remoteServicer = rpcRemoteService.loadOrCreate(serviceType);
-        RpcRemoteInstance instance = new RpcRemoteInstance(rpcClass, this.setting, remoteServicer);
+        MessagerType messagerType = MessagerTypes.checkGroup(service);
+        RpcRemoterSet remoterSet = rpcRemoterManager.loadRemoterSet(messagerType);
+        RpcRemoteInstance instance = new RpcRemoteInstance(rpcClass, this.setting, remoterSet);
         Map<Method, RpcRemoteInvoker> invokerMap = new HashMap<>();
         for (RpcRemoteMethod method : methods) {
-            RpcRemoteRouter<Object> router = rpcRouteManager.getRouter(method.getRouterClass());
+            RpcRemoteRouter router = rpcRouteManager.getRouter(method.getRouterClass());
             if (router == null) {
                 throw new RpcInvokeException(NetResultCode.REMOTE_EXCEPTION, "调用 {} 异常, 未找到 {} RpcRouter",
                         method.getMethod(), method.getRouterClass());
@@ -81,8 +81,8 @@ public class RpcRemoteInstanceFactory {
         return this;
     }
 
-    public RpcRemoteInstanceFactory setRpcRemoteService(RpcRemoteServiceManager rpcRemoteService) {
-        this.rpcRemoteService = rpcRemoteService;
+    public RpcRemoteInstanceFactory setRpcRemoterManager(RpcRemoterManager rpcRemoterManager) {
+        this.rpcRemoterManager = rpcRemoterManager;
         return this;
     }
 

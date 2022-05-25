@@ -78,7 +78,6 @@ public interface Attributes {
     /**
      * 设置key和属性
      * <p>
-     * <p>
      * 设置key和属性<br>
      *
      * @param key   设置的key

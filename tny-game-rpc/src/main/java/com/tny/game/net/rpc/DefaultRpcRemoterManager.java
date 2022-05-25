@@ -11,14 +11,14 @@ import com.tny.game.net.rpc.setting.*;
  * @date : 2021/11/3 6:11 下午
  */
 @EventBusListener
-public class DefaultRpcRemoteServiceManager extends BaseRpcRemoteServiceManager {
+public class DefaultRpcRemoterManager extends BaseRpcRemoterManager {
 
-    public DefaultRpcRemoteServiceManager(RpcClientSetting setting) {
+    public DefaultRpcRemoterManager(RpcClientSetting setting) {
         setting.getServices()
                 .stream()
                 .map(RpcServiceSetting::serviceName)
                 .map(s -> (RpcServiceType)RpcServiceTypes.ofService(s))
-                .forEach(this::loadOrCreate);
+                .forEach(this::loadRemoterSet);
     }
 
 }

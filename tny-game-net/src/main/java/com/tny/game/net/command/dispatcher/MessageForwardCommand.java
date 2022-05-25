@@ -5,6 +5,7 @@ import com.tny.game.common.worker.command.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
+import com.tny.game.net.rpc.*;
 import com.tny.game.net.transport.*;
 import org.slf4j.*;
 
@@ -47,11 +48,11 @@ public class MessageForwardCommand extends BaseCommand {
 
     private void forward() {
         RpcForwardHeader forwardHeader = message.getHeader(MessageHeaderConstants.RPC_FORWARD_HEADER);
-        RpcRemoteAccessPoint toPoint = rpcContext.getRpcForwarder().forward(message, forwardHeader);
-        if (toPoint != null && toPoint.isActive()) {
+        RpcForwardAccess toAccess = rpcContext.getRpcForwarder().forward(message, forwardHeader);
+        if (toAccess != null && toAccess.isActive()) {
             ForwardRpcServicer fromService = new ForwardRpcServicer(this.tunnel.getUserId());
-            RpcServicer toService = toPoint.getForwardRpcServicer();
-            toPoint.send(MessageContexts.copy(message)
+            RpcServicer toService = toAccess.getForwardRpcServicer();
+            toAccess.send(MessageContexts.copy(message)
                     .withHeader(RpcForwardHeaderBuilder.newBuilder()
                             .setFrom(fromService)
                             .setSender(forwardHeader.getSender())

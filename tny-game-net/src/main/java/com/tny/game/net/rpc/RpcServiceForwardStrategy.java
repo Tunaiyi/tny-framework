@@ -1,4 +1,4 @@
-package com.tny.game.net.transport;
+package com.tny.game.net.rpc;
 
 import com.tny.game.net.base.*;
 
@@ -8,7 +8,7 @@ import com.tny.game.net.base.*;
  * @author : kgtny
  * @date : 2021/7/29 3:45 上午
  */
-public interface RpcServiceForwarderStrategy extends RpcForwarderStrategy {
+public interface RpcServiceForwardStrategy extends RpcForwardStrategy {
 
     /**
      * 使用的服务

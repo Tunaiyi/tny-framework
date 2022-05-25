@@ -2,7 +2,9 @@ package com.tny.game.net.message;
 
 public class Protocols {
 
-    public static final DefaultProtocol PUSH = new DefaultProtocol(0, 0);
+    public static final int PUSH_ID = 0;
+
+    public static final DefaultProtocol PUSH = new DefaultProtocol(PUSH_ID, 0);
 
     protected static class DefaultProtocol implements Protocol {
 

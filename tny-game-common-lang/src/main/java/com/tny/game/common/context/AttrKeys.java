@@ -1,16 +1,17 @@
 package com.tny.game.common.context;
 
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 public class AttrKeys {
 
-    private static ConcurrentMap<Object, AttrKey<?>> KEY_MAP = new ConcurrentHashMap<>();
+    private static final ConcurrentMap<Object, AttrKey<?>> KEY_MAP = new ConcurrentHashMap<>();
 
     private static class DefaultAttributeKey<T> implements AttrKey<T> {
 
-        private String name;
+        private final String name;
 
         DefaultAttributeKey(String name) {
             this.name = name;
@@ -50,7 +51,7 @@ public class AttrKeys {
                 .stream()
                 .collect(Collectors.toMap(
                         e -> e.getKey().name(),
-                        e -> e.getValue()
+                        Entry::getValue
                 ));
     }
 

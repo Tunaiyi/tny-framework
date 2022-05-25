@@ -17,11 +17,11 @@ public class RpcRemoteInstance {
 
     private final RpcRemoteSetting setting;
 
-    private final RpcRemoteServiceSet serviceSet;
+    private final RpcRemoterSet serviceSet;
 
     private Map<Method, RpcRemoteInvoker> invokerMap = ImmutableMap.of();
 
-    public RpcRemoteInstance(Class<?> rpcClass, RpcRemoteSetting setting, RpcRemoteServiceSet serviceSet) {
+    public RpcRemoteInstance(Class<?> rpcClass, RpcRemoteSetting setting, RpcRemoterSet serviceSet) {
         this.rpcClass = rpcClass;
         this.setting = setting;
         this.serviceSet = serviceSet;
@@ -35,7 +35,7 @@ public class RpcRemoteInstance {
         return setting;
     }
 
-    public RpcRemoteServiceSet getServiceSet() {
+    public RpcRemoterSet getServiceSet() {
         return serviceSet;
     }
 

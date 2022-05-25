@@ -32,6 +32,8 @@ public class RpcRemoteInvokeParams {
 
     private Object routeValue;
 
+    private boolean forward;
+
     private ResultCode code = NetResultCode.SUCCESS;
 
     private final Map<String, MessageHeader<?>> headerMap = new EmptyImmutableMap<>();
@@ -40,20 +42,26 @@ public class RpcRemoteInvokeParams {
         this.params = new Object[size];
     }
 
+    public boolean isForward() {
+        return forward;
+    }
+
     public Object[] getParams() {
         return params;
     }
 
     public Collection<MessageHeader<?>> getAllHeaders() {
-        if (!headerMap.containsKey(MessageHeaderConstants.RPC_FORWARD_HEADER_KEY)) {
-            if (ObjectAide.isAnyExist(to, from, receiver, sender)) {
-                RpcForwardHeader forwardHeader = RpcForwardHeaderBuilder.newBuilder()
-                        .setFrom(from)
-                        .setTo(to)
-                        .setSender(sender)
-                        .setReceiver(receiver)
-                        .build();
-                headerMap.put(forwardHeader.getKey(), forwardHeader);
+        if (forward) {
+            if (!headerMap.containsKey(MessageHeaderConstants.RPC_FORWARD_HEADER_KEY)) {
+                if (ObjectAide.isAnyExist(to, from, receiver, sender)) {
+                    RpcForwardHeader forwardHeader = RpcForwardHeaderBuilder.newBuilder()
+                            .setFrom(from)
+                            .setTo(to)
+                            .setSender(sender)
+                            .setReceiver(receiver)
+                            .build();
+                    headerMap.put(forwardHeader.getKey(), forwardHeader);
+                }
             }
         }
         return headerMap.values();
@@ -151,6 +159,11 @@ public class RpcRemoteInvokeParams {
 
     RpcRemoteInvokeParams setBody(Object body) {
         this.setParams(0, body);
+        return this;
+    }
+
+    RpcRemoteInvokeParams setForward(boolean forward) {
+        this.forward = forward;
         return this;
     }
 

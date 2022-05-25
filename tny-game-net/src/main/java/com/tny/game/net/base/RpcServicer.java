@@ -11,9 +11,9 @@ import java.util.Comparator;
  **/
 public interface RpcServicer extends RpcServiceNode, Comparable<RpcServicer> {
 
-    Comparator<RpcServicer> COMPARATOR = Comparator.comparing(RpcServicer::getId);
-
     long getId();
+
+    Comparator<RpcServicer> COMPARATOR = Comparator.comparing(RpcServicer::getId);
 
     @Override
     default int compareTo(@Nonnull RpcServicer o) {

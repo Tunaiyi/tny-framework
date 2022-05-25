@@ -26,6 +26,7 @@ import com.tny.game.net.netty4.configuration.processor.forkjoin.*;
 import com.tny.game.net.netty4.network.*;
 import com.tny.game.net.netty4.network.codec.*;
 import com.tny.game.net.netty4.network.configuration.*;
+import com.tny.game.net.rpc.*;
 import com.tny.game.net.transport.*;
 import org.springframework.boot.autoconfigure.condition.*;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -192,7 +193,7 @@ public class NetAutoConfiguration {
     }
 
     @Bean
-    public RpcForwarderStrategy firstRpcForwarderStrategy() {
+    public RpcForwardStrategy firstRpcForwarderStrategy() {
         return new FirstRpcForwarderStrategy();
     }
 

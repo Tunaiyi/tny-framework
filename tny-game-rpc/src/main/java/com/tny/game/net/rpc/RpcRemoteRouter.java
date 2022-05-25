@@ -1,15 +1,13 @@
 package com.tny.game.net.rpc;
 
-import com.tny.game.net.transport.*;
-
 /**
  * <p>
  *
  * @author : kgtny
  * @date : 2021/7/29 3:45 上午
  */
-public interface RpcRemoteRouter<T> {
+public interface RpcRemoteRouter {
 
-    RpcRemoteAccessPoint route(RpcRemoteServiceSet servicer, RpcRemoteMethod invoker, T routeValue, Object... params);
+    RpcRemoterAccess route(RpcRemoterSet servicer, RpcRemoteMethod invoker, RpcRemoteInvokeParams invokeParams);
 
 }

@@ -84,7 +84,7 @@ public class RpcRemoteMethod {
     /**
      * 路由类型
      */
-    private final Class<? extends RpcRemoteRouter<?>> routerClass;
+    private final Class<? extends RpcRemoteRouter> routerClass;
 
     /**
      * 异步
@@ -143,7 +143,11 @@ public class RpcRemoteMethod {
         this.routerClass = as(options.router());
         this.forward = StringUtils.isNoneBlank(rpcService.forwardService());
         this.mode = profile.getMode();
-        this.serviceType = RpcServiceTypes.checkService(rpcService.value());
+        if (forward) {
+            this.serviceType = RpcServiceTypes.checkService(rpcService.value());
+        } else {
+            this.serviceType = null;
+        }
         this.name = method.getDeclaringClass().getName() + "." + method.getName();
         this.invocation = options.mode();
         this.silently = options.silently();
@@ -223,7 +227,7 @@ public class RpcRemoteMethod {
         return silently;
     }
 
-    public Class<? extends RpcRemoteRouter<?>> getRouterClass() {
+    public Class<? extends RpcRemoteRouter> getRouterClass() {
         return routerClass;
     }
 
@@ -258,13 +262,14 @@ public class RpcRemoteMethod {
 
     public RpcRemoteInvokeParams getParams(Object[] paramValues) throws CommandException {
         RpcRemoteInvokeParams params = new RpcRemoteInvokeParams(this.messageParamSize);
+        params.setForward(this.forward);
         for (int index = 0; index < paramValues.length; index++) {
             RpcRemoteParamDescription desc = this.parameters.get(index);
             Object value = paramValues[index];
             if (desc.isRequire() && value == null) {
                 throw new NullPointerException(format("{} 第 {} 参数为 null", this.method, desc.getIndex()));
             }
-            if (this.forward) {
+            if (this.forward && this.serviceType != null) {
                 params.setTo(serviceType);
             }
             if (desc.getAnnotationHolder().getAnnotation(RpcRouteParam.class) != null) {

@@ -4,7 +4,6 @@ import com.tny.game.common.exception.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.rpc.*;
-import com.tny.game.net.transport.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -17,38 +16,34 @@ import java.util.stream.Collectors;
  **/
 public class DefaultRpcForwarder implements RpcForwarder {
 
-    private final RpcRemoteServiceManager rpcRemoteServiceManager;
+    private final RpcForwardManager forwardManager;
 
-    private final RpcForwarderStrategy defaultStrategy;
+    private final RpcForwardStrategy defaultStrategy;
 
-    private final Map<RpcServiceType, RpcServiceForwarderStrategy> strategyMap;
+    private final Map<RpcServiceType, RpcServiceForwardStrategy> strategyMap;
 
-    public DefaultRpcForwarder(RpcRemoteServiceManager rpcRemoteServiceManager,
-            RpcForwarderStrategy defaultStrategy, List<RpcServiceForwarderStrategy> strategies) {
-        this.rpcRemoteServiceManager = rpcRemoteServiceManager;
+    public DefaultRpcForwarder(RpcForwardManager forwardManager,
+            RpcForwardStrategy defaultStrategy, List<RpcServiceForwardStrategy> strategies) {
+        this.forwardManager = forwardManager;
         this.defaultStrategy = defaultStrategy;
-        this.strategyMap = strategies.stream().collect(Collectors.toMap(RpcServiceForwarderStrategy::getServiceType, ObjectAide::self));
+        this.strategyMap = strategies.stream().collect(Collectors.toMap(RpcServiceForwardStrategy::getServiceType, ObjectAide::self));
     }
 
     @Override
-    public RpcRemoteAccessPoint forward(Message message, RpcForwardHeader forwardHeader) {
-        RpcServicer from = forwardHeader.getFrom();
-        Messager sender = forwardHeader.getSender();
+    public RpcForwardAccess forward(Message message, RpcForwardHeader forwardHeader) {
         ForwardRpcServicer to = forwardHeader.getTo();
-        Messager receiver = forwardHeader.getReceiver();
         RpcServiceType serviceType = to.getServiceType();
         if (to.isAccurately()) {
-            RpcRemoteServiceSet serviceSet = rpcRemoteServiceManager.find(serviceType);
-            if (serviceSet == null) {
+            RpcForwardSet forwarderSet = forwardManager.findForwardSet(serviceType);
+            if (forwarderSet == null) {
                 return null;
-                //                throw new ResultCodeRuntimeException(NetResultCode.RPC_SERVICE_NOT_AVAILABLE, "未找到可用{}服务", serviceType);
             }
-            RpcRemoteAccessPoint point = serviceSet.find(to);
-            if (point != null) {
-                return point;
+            RpcRemoterAccess access = forwarderSet.findForwardAccess(to);
+            if (access != null) {
+                return (RpcServiceAccess)access;
             }
         }
-        RpcForwarderStrategy strategy = strategyMap.get(serviceType);
+        RpcForwardStrategy strategy = strategyMap.get(serviceType);
         if (strategy == null) {
             if (defaultStrategy != null) {
                 strategy = defaultStrategy;
@@ -56,11 +51,11 @@ public class DefaultRpcForwarder implements RpcForwarder {
                 throw new NullPointerException("未知道 {} 转发策略");
             }
         }
-        RpcRemoteServiceSet serviceSet = rpcRemoteServiceManager.find(serviceType);
+        RpcForwardSet serviceSet = forwardManager.findForwardSet(serviceType);
         if (serviceSet == null) {
             throw new ResultCodeRuntimeException(NetResultCode.RPC_SERVICE_NOT_AVAILABLE, "未找到可用{}服务", serviceType);
         }
-        return strategy.forward(serviceSet, message, from, sender, to, receiver);
+        return strategy.forward(serviceSet, message, forwardHeader);
     }
 
 }

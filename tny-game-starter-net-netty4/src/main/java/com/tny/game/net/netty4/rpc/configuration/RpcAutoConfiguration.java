@@ -29,23 +29,27 @@ import java.util.stream.Collectors;
 public class RpcAutoConfiguration {
 
     @Bean
-
-    public RpcRemoteRouter<?> firstRpcRemoteRouter() {
+    public RpcRemoteRouter firstRpcRemoteRouter() {
         return new FirstRpcRemoteRouter();
     }
 
     @Bean
-    public RpcRemoteServiceManager defaultRpcRemoteServiceManager(RpcRemoteProperties properties) {
-        return new DefaultRpcRemoteServiceManager(properties.getClient());
+    public EndpointRemoteRouter endpointRemoteRouter() {
+        return new EndpointRemoteRouter();
     }
 
     @Bean
-    public RpcRemoteRouteManager rpcRouteManager(RpcRemoteSetting setting, ObjectProvider<RpcRemoteRouter<?>> rpcRoutersProvider) {
+    public RpcRemoterManager defaultRpcRemoteServiceManager(RpcRemoteProperties properties) {
+        return new DefaultRpcRemoterManager(properties.getClient());
+    }
+
+    @Bean
+    public RpcRemoteRouteManager rpcRouteManager(RpcRemoteSetting setting, ObjectProvider<RpcRemoteRouter> rpcRoutersProvider) {
         return new DefaultRpcRemoteRouteManager(setting.getDefaultRpcRemoteRouter(), rpcRoutersProvider.stream().collect(Collectors.toList()));
     }
 
     @Bean
-    public RpcRemoteInstanceFactory rpcInstanceFactory(RpcRemoteSetting setting, RpcRemoteServiceManager service, RpcRemoteRouteManager manager) {
+    public RpcRemoteInstanceFactory rpcInstanceFactory(RpcRemoteSetting setting, RpcRemoterManager service, RpcRemoteRouteManager manager) {
         return new RpcRemoteInstanceFactory(setting, service, manager);
     }
 
@@ -69,8 +73,8 @@ public class RpcAutoConfiguration {
     }
 
     @Bean
-    public RpcForwarder defaultRpcForwarder(RpcRemoteServiceManager rpcRemoteServiceManager, List<RpcServiceForwarderStrategy> strategies) {
-        return new DefaultRpcForwarder(rpcRemoteServiceManager, new FirstRpcForwarderStrategy(), strategies);
+    public RpcForwarder defaultRpcForwarder(RpcForwardManager forwardManager, List<RpcServiceForwardStrategy> strategies) {
+        return new DefaultRpcForwarder(forwardManager, new FirstRpcForwarderStrategy(), strategies);
     }
 
     @Bean

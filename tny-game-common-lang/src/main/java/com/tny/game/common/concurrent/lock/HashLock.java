@@ -12,7 +12,7 @@ import static com.tny.game.common.utils.ObjectAide.*;
  */
 public class HashLock<L extends Lock> {
 
-    private static final int DEFAULT_SIZE = 5000;
+    private static final int DEFAULT_SIZE = 32;
 
     private int size;
 

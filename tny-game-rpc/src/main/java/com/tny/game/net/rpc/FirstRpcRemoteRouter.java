@@ -1,7 +1,5 @@
 package com.tny.game.net.rpc;
 
-import com.tny.game.net.transport.*;
-
 import java.util.List;
 
 /**
@@ -10,16 +8,16 @@ import java.util.List;
  * @author : kgtny
  * @date : 2021/11/11 3:15 上午
  */
-public class FirstRpcRemoteRouter implements RpcRemoteRouter<Object> {
+public class FirstRpcRemoteRouter implements RpcRemoteRouter {
 
     @Override
-    public RpcRemoteAccessPoint route(RpcRemoteServiceSet servicer, RpcRemoteMethod invoker, Object routeValue, Object... params) {
-        List<RpcRemoteNode> nodes = servicer.getOrderRemoteNodes();
+    public RpcRemoterAccess route(RpcRemoterSet servicer, RpcRemoteMethod invoker, RpcRemoteInvokeParams invokeParams) {
+        List<? extends RpcRemoterNode> nodes = servicer.getOrderRemoterNodes();
         if (nodes.isEmpty()) {
             return null;
         }
-        RpcRemoteNode node = nodes.get(0);
-        List<RpcRemoteAccessPoint> accessPoints = node.getOrderAccessPoints();
+        RpcRemoterNode node = nodes.get(0);
+        List<? extends RpcRemoterAccess> accessPoints = node.getOrderRemoterAccesses();
         if (accessPoints.isEmpty()) {
             return null;
         }

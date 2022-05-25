@@ -11,7 +11,6 @@ import com.tny.game.doc.table.TableAttributeFactory
 import org.gradle.api.Action
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.Nested
 
 import javax.inject.Inject
 
@@ -82,7 +81,6 @@ class FileExportScheme {
         this.taskNames = taskNames
     }
 
-    @Nested
     FileResolver getTemplateFileResolver() {
         templateFileResolver
     }
@@ -111,7 +109,6 @@ class FileExportScheme {
         this.templateFileResolver = new Path2FileResolver(resolver)
     }
 
-    @Nested
     FileResolver getOutputFileResolver() {
         outputFileResolver
     }

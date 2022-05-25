@@ -5,7 +5,7 @@ import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.command.processor.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.message.common.*;
-import com.tny.game.net.transport.*;
+import com.tny.game.net.rpc.*;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 

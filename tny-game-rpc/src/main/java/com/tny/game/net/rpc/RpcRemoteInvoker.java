@@ -36,14 +36,14 @@ public class RpcRemoteInvoker {
     /**
      * 远程服务
      */
-    private final RpcRemoteServiceSet servicer;
+    private final RpcRemoterSet servicer;
 
     /**
      * 路由
      */
-    private final RpcRemoteRouter<Object> router;
+    private final RpcRemoteRouter router;
 
-    public RpcRemoteInvoker(RpcRemoteInstance instance, RpcRemoteMethod method, RpcRemoteRouter<?> router) {
+    public RpcRemoteInvoker(RpcRemoteInstance instance, RpcRemoteMethod method, RpcRemoteRouter router) {
         this.method = method;
         this.instance = instance;
         this.servicer = instance.getServiceSet();
@@ -57,7 +57,7 @@ public class RpcRemoteInvoker {
 
     public <T> Object invoke(Object... params) {
         RpcRemoteInvokeParams invokeParams = method.getParams(params);
-        RpcRemoteAccessPoint accessPoint = router.route(servicer, method, invokeParams.getRouteValue(), params);
+        RpcRemoterAccess accessPoint = router.route(servicer, method, invokeParams);
         if (accessPoint == null) {
             throw new RpcInvokeException(NetResultCode.RPC_SERVICE_NOT_AVAILABLE, "调用 {} 异常, 未找到有效的远程服务节点", this.method);
         }
@@ -108,11 +108,11 @@ public class RpcRemoteInvoker {
         throw new RpcInvokeException(NetResultCode.REMOTE_EXCEPTION, "返回类型错误");
     }
 
-    private Object request(RpcRemoteAccessPoint accessPoint, long timeout, RpcRemoteInvokeParams invokeParams) {
+    private Object request(RpcRemoterAccess access, long timeout, RpcRemoteInvokeParams invokeParams) {
         RequestContext requestContext = MessageContexts.request(protocol(), invokeParams.getParams());
         requestContext.willRespondAwaiter(timeout)
                 .withHeaders(invokeParams.getAllHeaders());
-        accessPoint.send(requestContext);
+        access.send(requestContext);
         MessageRespondAwaiter awaiter = requestContext.getResponseAwaiter();
         if (this.method.isAsync()) {
             switch (this.method.getReturnMode()) {
@@ -142,12 +142,12 @@ public class RpcRemoteInvoker {
         throw new RpcInvokeException(NetResultCode.RPC_INVOKE_FAILED, "返回类型错误");
     }
 
-    private void push(RpcRemoteAccessPoint accessPoint, long timeout, RpcRemoteInvokeParams invokeParams) {
+    private void push(Sender sender, long timeout, RpcRemoteInvokeParams invokeParams) {
         ResultCode code = ObjectAide.ifNull(invokeParams.getCode(), NetResultCode.SUCCESS);
         MessageContext messageContext = MessageContexts.push(protocol(), code)
                 .withBody(invokeParams.getBody())
                 .withHeaders(invokeParams.getAllHeaders());
-        accessPoint.send(messageContext);
+        sender.send(messageContext);
         if (this.method.isAsync()) {
             return;
         }

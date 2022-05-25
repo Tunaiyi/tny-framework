@@ -234,7 +234,7 @@ public class MessageContexts {
 
         @Override
         public MessageContext withHeaders(Collection<MessageHeader<?>> headers) {
-            if (headers != null) {
+            if (headers != null && !headers.isEmpty()) {
                 headers.forEach(header -> this.headers.put(header.getKey(), header));
             }
             return this;

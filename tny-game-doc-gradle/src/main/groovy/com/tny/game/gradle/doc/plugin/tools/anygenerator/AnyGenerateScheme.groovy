@@ -1,12 +1,10 @@
 package com.tny.game.gradle.doc.plugin.tools.anygenerator
 
-
 import com.tny.game.scanner.ClassSelector
 import org.gradle.api.Action
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Internal
-import org.gradle.api.tasks.Nested
 
 import javax.inject.Inject
 
@@ -67,7 +65,6 @@ class AnyGenerateScheme {
         action.execute(this.selectorScheme)
     }
 
-    @Nested
     ClassesSelectorScheme getClassesSelector() {
         return selectorScheme
     }
