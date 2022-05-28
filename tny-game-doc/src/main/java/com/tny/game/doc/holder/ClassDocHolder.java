@@ -1,7 +1,6 @@
 package com.tny.game.doc.holder;
 
 import com.tny.game.doc.annotation.*;
-import com.tny.game.net.annotation.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.*;
 
@@ -27,11 +26,6 @@ public class ClassDocHolder {
         ClassDocHolder holder = new ClassDocHolder();
         if (classDoc == null) {
             LOGGER.warn("{} is not classDoc", clazz);
-            return null;
-        }
-        RpcController controller = clazz.getAnnotation(RpcController.class);
-        if (controller == null) {
-            LOGGER.warn("{} is not controller", clazz);
             return null;
         }
         holder.classDoc = classDoc;

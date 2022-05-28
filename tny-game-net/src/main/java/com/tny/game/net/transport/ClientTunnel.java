@@ -21,13 +21,11 @@ public class ClientTunnel<UID, E extends NetTerminal<UID>, T extends MessageTran
     protected boolean onOpen() {
         if (!this.isActive()) {
             try {
-                this.status = TunnelStatus.INIT;
+                this.reset();
                 T transport = as(this.endpoint.connect());
                 if (transport != null) {
                     this.transporter = transport;
                     this.transporter.bind(this);
-                    this.status = TunnelStatus.OPEN;
-                    this.endpoint.onConnected(this);
                     return true;
                 }
             } catch (Exception e) {
@@ -39,6 +37,11 @@ public class ClientTunnel<UID, E extends NetTerminal<UID>, T extends MessageTran
         }
         LOGGER.warn("{} is available", this);
         return true;
+    }
+
+    @Override
+    protected void onOpened() {
+        this.endpoint.onConnected(this);
     }
 
     @Override

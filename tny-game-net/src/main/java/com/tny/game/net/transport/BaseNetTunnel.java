@@ -43,22 +43,6 @@ public abstract class BaseNetTunnel<UID, E extends NetEndpoint<UID>, T extends M
     }
 
     @Override
-    public void reset() {
-        if (this.status == TunnelStatus.INIT) {
-            return;
-        }
-        synchronized (this) {
-            if (this.status == TunnelStatus.INIT) {
-                return;
-            }
-            if (!this.isActive()) {
-                this.disconnect();
-            }
-            this.status = TunnelStatus.INIT;
-        }
-    }
-
-    @Override
     public MessageWriteAwaiter write(Message message, MessageWriteAwaiter awaiter) throws NetException {
         if (this.checkAvailable(awaiter)) {
             return this.transporter.write(message, awaiter);
@@ -73,10 +57,6 @@ public abstract class BaseNetTunnel<UID, E extends NetEndpoint<UID>, T extends M
             return this.transporter.write(allocator, this.getMessageFactory(), context);
         }
         return promise;
-    }
-
-    @Override
-    protected void onDisconnect() {
     }
 
     @Override

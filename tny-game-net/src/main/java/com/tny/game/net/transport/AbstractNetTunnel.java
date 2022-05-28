@@ -21,7 +21,7 @@ public abstract class AbstractNetTunnel<UID, E extends NetEndpoint<UID>> extends
 
     public static final Logger LOGGER = LoggerFactory.getLogger(AbstractNetTunnel.class);
 
-    protected volatile TunnelStatus status = TunnelStatus.INIT;
+    private volatile TunnelStatus status = TunnelStatus.INIT;
 
     /*管道 id*/
     private final long id;
@@ -185,9 +185,9 @@ public abstract class AbstractNetTunnel<UID, E extends NetEndpoint<UID>> extends
                 return false;
             }
             this.status = TunnelStatus.OPEN;
-            buses().activateEvent().notify(this);
             this.onOpened();
         }
+        buses().activateEvent().notify(this);
         return true;
     }
 
@@ -198,16 +198,15 @@ public abstract class AbstractNetTunnel<UID, E extends NetEndpoint<UID>> extends
             if (this.status == TunnelStatus.CLOSED || this.status == TunnelStatus.SUSPEND) {
                 return;
             }
-            this.onDisconnect();
             this.doDisconnect();
             this.status = TunnelStatus.SUSPEND;
             endpoint = this.endpoint;
-            buses().unactivatedEvent().notify(this);
-            if (endpoint != null) {
-                endpoint.onUnactivated(this);
-            }
             this.onDisconnected();
         }
+        if (endpoint != null) { // 避免死锁
+            endpoint.onUnactivated(this);
+        }
+        buses().unactivatedEvent().notify(this);
     }
 
     @Override
@@ -224,13 +223,29 @@ public abstract class AbstractNetTunnel<UID, E extends NetEndpoint<UID>> extends
             this.onClose();
             this.doDisconnect();
             endpoint = this.endpoint;
-            buses().closeEvent().notify(this);
-            if (endpoint != null) {
-                endpoint.onUnactivated(this);
-            }
             this.onClosed();
         }
+        if (endpoint != null) { // 避免死锁
+            endpoint.onUnactivated(this);
+        }
+        buses().closeEvent().notify(this);
         return true;
+    }
+
+    @Override
+    public void reset() {
+        if (this.status == TunnelStatus.INIT) {
+            return;
+        }
+        synchronized (this) {
+            if (this.status == TunnelStatus.INIT) {
+                return;
+            }
+            if (!this.isActive()) {
+                this.disconnect();
+            }
+            this.status = TunnelStatus.INIT;
+        }
     }
 
     protected abstract void doDisconnect();
@@ -242,8 +257,6 @@ public abstract class AbstractNetTunnel<UID, E extends NetEndpoint<UID>> extends
     protected abstract void onClose();
 
     protected abstract void onClosed();
-
-    protected abstract void onDisconnect();
 
     protected abstract void onDisconnected();
 
