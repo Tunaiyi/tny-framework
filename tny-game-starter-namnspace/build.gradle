@@ -1,0 +1,14 @@
+dependencies {
+
+    annotationProcessor libs.spring_boot_configuration_processor // IDEA 使用
+
+    api libs.spring_boot_autoconfigure
+
+    api project(":tny-game-boot")
+    api project(":tny-game-namnspace")
+    api project(":tny-game-starter-codec")
+
+    compileOnly project(":tny-game-namnspace-etcd")
+
+}
+

@@ -73,6 +73,7 @@ include 'tny-game-protobuf'
 
 include 'tny-game-namnspace'
 include 'tny-game-namnspace-etcd'
+include 'tny-game-starter-namnspace'
 //include 'tny-game-suite'
 
 include 'tny-game-data'
