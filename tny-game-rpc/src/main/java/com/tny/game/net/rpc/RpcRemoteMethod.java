@@ -84,7 +84,7 @@ public class RpcRemoteMethod {
     /**
      * 路由类型
      */
-    private final Class<? extends RpcRemoteRouter> routerClass;
+    private final Class<? extends RpcRouter> routerClass;
 
     /**
      * 异步
@@ -227,7 +227,7 @@ public class RpcRemoteMethod {
         return silently;
     }
 
-    public Class<? extends RpcRemoteRouter> getRouterClass() {
+    public Class<? extends RpcRouter> getRouterClass() {
         return routerClass;
     }
 

@@ -1,0 +1,7 @@
+dependencies {
+
+    api project(":tny-game-common-lang")
+    api project(":tny-game-codec")
+
+}
+

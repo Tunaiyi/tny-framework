@@ -15,6 +15,4 @@ import java.lang.annotation.*;
 @Documented
 public @interface RpcTo {
 
-    boolean broadcast() default false;
-
 }

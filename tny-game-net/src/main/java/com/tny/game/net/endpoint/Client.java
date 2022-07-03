@@ -9,4 +9,6 @@ public interface Client<UID> extends Terminal<UID> {
 
     ClientConnectFuture<UID> open();
 
+    void reconnect();
+    
 }

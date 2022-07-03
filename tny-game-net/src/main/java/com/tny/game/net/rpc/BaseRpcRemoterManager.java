@@ -19,8 +19,8 @@ import static com.tny.game.common.utils.ObjectAide.*;
  * @author : kgtny
  * @date : 2021/11/3 6:11 下午
  */
-@EventBusListener
-public class BaseRpcRemoterManager implements RpcRemoterManager, RpcForwardManager, EndpointKeeperCreateListener<Object> {
+@GlobalEventListener
+public class BaseRpcRemoterManager implements RpcServicerManager, EndpointKeeperCreateListener<Object> {
 
     private final Map<MessagerType, RpcRemoteServiceSet> serviceSetMap = new CopyOnWriteMap<>();
 

@@ -1,5 +1,6 @@
 package com.tny.game.net.rpc;
 
+import com.tny.game.net.endpoint.*;
 import com.tny.game.net.transport.*;
 
 /**
@@ -22,5 +23,10 @@ public interface RpcRemoterAccess extends Sender {
      * @return 连接返回true 否则返回false
      */
     boolean isActive();
+
+    /**
+     * @return endpoint
+     */
+    Endpoint<?> getEndpoint();
 
 }

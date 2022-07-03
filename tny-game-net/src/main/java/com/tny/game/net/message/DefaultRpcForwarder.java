@@ -58,4 +58,9 @@ public class DefaultRpcForwarder implements RpcForwarder {
         return strategy.forward(serviceSet, message, forwardHeader);
     }
 
+    @Override
+    public List<RpcForwardAccess> broadcast(Message message, RpcForwardHeader forwardHeader) {
+        return null;
+    }
+
 }

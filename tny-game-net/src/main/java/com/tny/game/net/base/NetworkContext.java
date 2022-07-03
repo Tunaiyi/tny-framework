@@ -3,6 +3,7 @@ package com.tny.game.net.base;
 import com.tny.game.net.command.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
+import com.tny.game.net.rpc.*;
 
 /**
  * 网络上下文对象
@@ -11,7 +12,7 @@ import com.tny.game.net.message.*;
  * @author : kgtny
  * @date : 2021/8/26 2:22 下午
  */
-public interface NetworkContext extends EndpointContext, RpcContext {
+public interface NetworkContext extends EndpointContext {
 
     /**
      * @return 应用上下文
@@ -38,5 +39,10 @@ public interface NetworkContext extends EndpointContext, RpcContext {
      * @return 选项工厂
      */
     <UID> CertificateFactory<UID> getCertificateFactory();
+
+    /**
+     * @return Rpc转发器
+     */
+    RpcForwarder getRpcForwarder();
 
 }

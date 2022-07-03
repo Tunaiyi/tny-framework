@@ -10,7 +10,7 @@ public class RpcRemoteSetting {
 
     private long invokeTimeout = 5000L;
 
-    private Class<? extends FirstRpcRemoteRouter> defaultRpcRemoteRouter = FirstRpcRemoteRouter.class;
+    private Class<? extends FirstRpcRouter> defaultRpcRemoteRouter = FirstRpcRouter.class;
 
     public long getInvokeTimeout() {
         return invokeTimeout;
@@ -21,11 +21,11 @@ public class RpcRemoteSetting {
         return this;
     }
 
-    public Class<? extends FirstRpcRemoteRouter> getDefaultRpcRemoteRouter() {
+    public Class<? extends FirstRpcRouter> getDefaultRpcRemoteRouter() {
         return defaultRpcRemoteRouter;
     }
 
-    public RpcRemoteSetting setDefaultRpcRemoteRouter(Class<? extends FirstRpcRemoteRouter> defaultRpcRemoteRouter) {
+    public RpcRemoteSetting setDefaultRpcRemoteRouter(Class<? extends FirstRpcRouter> defaultRpcRemoteRouter) {
         this.defaultRpcRemoteRouter = defaultRpcRemoteRouter;
         return this;
     }

@@ -12,15 +12,15 @@ import static com.tny.game.common.utils.ObjectAide.*;
  * @author : kgtny
  * @date : 2021/11/5 4:23 下午
  */
-public class DefaultRpcRemoteRouteManager implements RpcRemoteRouteManager {
+public class DefaultRpcRouteManager implements RpcRouteManager {
 
     private final Class<?> defaultRouterClass;
 
-    private final Map<Class<?>, RpcRemoteRouter> routerMap;
+    private final Map<Class<?>, RpcRouter> routerMap;
 
-    public DefaultRpcRemoteRouteManager(Class<?> defaultRouterClass, Collection<RpcRemoteRouter> routers) {
-        Map<Class<?>, RpcRemoteRouter> routerMap = new HashMap<>();
-        for (RpcRemoteRouter router : routers) {
+    public DefaultRpcRouteManager(Class<?> defaultRouterClass, Collection<RpcRouter> routers) {
+        Map<Class<?>, RpcRouter> routerMap = new HashMap<>();
+        for (RpcRouter router : routers) {
             routerMap.put(router.getClass(), router);
         }
         this.defaultRouterClass = defaultRouterClass;
@@ -28,8 +28,8 @@ public class DefaultRpcRemoteRouteManager implements RpcRemoteRouteManager {
     }
 
     @Override
-    public RpcRemoteRouter getRouter(Class<? extends RpcRemoteRouter> routerClass) {
-        if (routerClass == null || RpcRemoteRouter.class == routerClass) {
+    public RpcRouter getRouter(Class<? extends RpcRouter> routerClass) {
+        if (routerClass == null || RpcRouter.class == routerClass) {
             return as(this.routerMap.get(defaultRouterClass));
         }
         return as(this.routerMap.get(routerClass));

@@ -41,23 +41,27 @@ public final class TypeProtobufSchemeManager {
     }
 
     public <T> TypeProtobufScheme<T> loadScheme(Class<T> valueClass) {
+        TypeProtobufScheme<?> scheme = typeSchemeMap.get(valueClass);
+        if (scheme != null) {
+            return as(scheme);
+        }
         try {
             Asserts.checkNotNull(valueClass.getAnnotation(TypeProtobuf.class), "class {} is miss {} annotation", valueClass, TypeProtobuf.class);
             Asserts.checkNotNull(valueClass.getAnnotation(ProtobufClass.class), "class {} is miss {} annotation", valueClass, ProtobufClass.class);
-            TypeProtobufScheme<T> scheme = new TypeProtobufScheme<>(valueClass);
-            TypeProtobufScheme<?> old = typeSchemeMap.putIfAbsent(scheme.getType(), scheme);
+            TypeProtobufScheme<T> newScheme = new TypeProtobufScheme<>(valueClass);
+            TypeProtobufScheme<?> old = typeSchemeMap.putIfAbsent(newScheme.getType(), newScheme);
             if (old != null) {
                 return as(old);
             }
-            old = idSchemeMap.put(scheme.getId(), scheme);
-            if (old != null && old.getType() != scheme.getType()) {
+            old = idSchemeMap.put(newScheme.getId(), newScheme);
+            if (old != null && old.getType() != newScheme.getType()) {
                 throw new IllegalArgumentException(format("{} and {} are same ProtobufType id {}",
-                        scheme.getType(), old.getType(), old.getId()));
+                        newScheme.getType(), old.getType(), old.getId()));
             }
-            LOGGER.info("TypeProtobufScheme Load [({}) {}]  finish", scheme.getId(), valueClass);
-            return scheme;
+            LOGGER.info("TypeProtobufScheme Load [({}) {}]  finish", newScheme.getId(), valueClass);
+            return newScheme;
         } catch (Throwable e) {
-            throw new TypeProtobufSchemeException(format("Load {} class TypeProtobufScheme exception", valueClass));
+            throw new TypeProtobufSchemeException(format("Load {} class TypeProtobufScheme exception", valueClass), e);
         }
     }
 

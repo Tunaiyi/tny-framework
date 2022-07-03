@@ -8,7 +8,7 @@ import java.util.List;
  * @author : kgtny
  * @date : 2021/11/11 3:15 上午
  */
-public class FirstRpcRemoteRouter implements RpcRemoteRouter {
+public class FirstRpcRouter implements RpcRouter {
 
     @Override
     public RpcRemoterAccess route(RpcRemoterSet servicer, RpcRemoteMethod invoker, RpcRemoteInvokeParams invokeParams) {

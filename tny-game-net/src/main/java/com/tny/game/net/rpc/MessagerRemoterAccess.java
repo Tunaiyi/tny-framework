@@ -35,6 +35,11 @@ public class MessagerRemoterAccess implements RpcRemoterAccess {
     }
 
     @Override
+    public Endpoint<?> getEndpoint() {
+        return endpoint;
+    }
+
+    @Override
     public long getAccessId() {
         return endpoint.getMessagerId();
     }

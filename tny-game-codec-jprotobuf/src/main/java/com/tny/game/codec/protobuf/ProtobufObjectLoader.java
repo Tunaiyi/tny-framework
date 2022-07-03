@@ -1,14 +1,10 @@
 package com.tny.game.codec.protobuf;
 
-import com.tny.game.codec.*;
-import com.tny.game.codec.annotation.*;
-import com.tny.game.common.utils.*;
+import com.baidu.bjf.remoting.protobuf.annotation.ProtobufClass;
 import com.tny.game.scanner.*;
 import com.tny.game.scanner.annotation.*;
 import com.tny.game.scanner.filter.*;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.*;
-import org.springframework.util.MimeType;
 
 /**
  * <p>
@@ -20,26 +16,18 @@ public class ProtobufObjectLoader {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(ProtobufObjectLoader.class);
 
-    private static final ProtobufObjectCodecFactory FACTORY = new ProtobufObjectCodecFactory();
-
     @ClassSelectorProvider
-    static ClassSelector autoMixClassesSelector() {
+    static ClassSelector autoProtobufSelector() {
         return ClassSelector.create()
-                .addFilter(AnnotationClassFilter.ofInclude(Codable.class))
+                .addFilter(AnnotationClassFilter.ofInclude(ProtobufClass.class))
                 .setHandler((classes) -> {
-                    MimeType findType = MimeType.valueOf(ProtobufMimeType.PROTOBUF_WILDCARD);
+                    ProtobufObjectCodecFactory factory = ProtobufObjectCodecFactory.getInstance();
                     classes.forEach(cl -> {
-                        Codable codecable = cl.getAnnotation(Codable.class);
-                        String mime = MimeTypeAide.getMimeType(codecable);
-                        Asserts.checkArgument(StringUtils.isNoneBlank(mime), "{} mime {} is blank", cl, mime);
-                        MimeType mimeType = MimeType.valueOf(mime);
-                        if (findType.isCompatibleWith(mimeType)) {
-                            try {
-                                FACTORY.createCodec(cl);
-                            } catch (Throwable e) {
-                                LOGGER.error("{} create codecor exception", cl, e);
-                                throw e;
-                            }
+                        try {
+                            factory.createCodec(cl);
+                        } catch (Throwable e) {
+                            LOGGER.error("{} create codecor exception", cl, e);
+                            throw e;
                         }
                     });
                 });

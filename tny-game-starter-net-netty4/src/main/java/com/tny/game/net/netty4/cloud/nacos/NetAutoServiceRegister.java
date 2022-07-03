@@ -33,11 +33,11 @@ public class NetAutoServiceRegister implements ApplicationContextAware {
 
     private final ServiceRegistry<Registration> serviceRegistry;
 
-    private final ServerGuideRegistrationFactory registrationFactory;
+    private final List<ServerGuideRegistrationFactory> registrationFactories;
 
-    public NetAutoServiceRegister(ServiceRegistry<Registration> serviceRegistry, ServerGuideRegistrationFactory registrationFactory) {
+    public NetAutoServiceRegister(ServiceRegistry<Registration> serviceRegistry, List<ServerGuideRegistrationFactory> registrationFactories) {
         this.serviceRegistry = serviceRegistry;
-        this.registrationFactory = registrationFactory;
+        this.registrationFactories = registrationFactories;
     }
 
     @Override
@@ -51,8 +51,10 @@ public class NetAutoServiceRegister implements ApplicationContextAware {
         this.applicationContext.publishEvent(new NetApplicationPreRegisteredEvent(application));
         for (ServerGuide guide : guides) {
             this.applicationContext.publishEvent(new ServerGuidePreRegisteredEvent(application, guide));
-            Registration current = registrationFactory.create(guide, application.getAppContext());
-            serviceRegistry.register(current);
+            for (ServerGuideRegistrationFactory factory : registrationFactories) {
+                Registration current = factory.create(guide, application.getAppContext());
+                serviceRegistry.register(current);
+            }
             this.applicationContext.publishEvent(new ServerGuideRegisteredEvent(application, guide));
         }
         this.applicationContext.publishEvent(new NetApplicationRegisteredEvent(application));

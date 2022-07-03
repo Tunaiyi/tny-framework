@@ -68,6 +68,9 @@ public class CommandTaskBox {
         if (this.closed) {
             return false;
         }
+        if (box == this) {
+            return false;
+        }
         return StampedLockAide.supplyInWriteLock(this.queueLock,
                 () -> {
                     if (this.closed) {

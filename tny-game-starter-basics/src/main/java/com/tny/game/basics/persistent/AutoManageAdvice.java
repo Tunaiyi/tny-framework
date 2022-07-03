@@ -9,7 +9,6 @@ import com.tny.game.common.concurrent.collection.*;
 import com.tny.game.common.context.*;
 import com.tny.game.common.event.bus.annotation.*;
 import com.tny.game.common.reflect.aop.*;
-import com.tny.game.net.command.dispatcher.*;
 import org.slf4j.*;
 
 import java.lang.reflect.*;
@@ -18,7 +17,7 @@ import java.util.Map.Entry;
 
 import static com.tny.game.common.utils.StringAide.*;
 
-@EventBusListener
+@GlobalEventListener
 public final class AutoManageAdvice implements TransactionListener, AfterReturningAdvice, ThrowsAdvice {
 
     private final GameExplorer explorer;
@@ -201,8 +200,7 @@ public final class AutoManageAdvice implements TransactionListener, AfterReturni
         try {
             this.flush(source);
         } catch (Throwable e) {
-            ControllerContext cmd = ControllerContext.getCurrent();
-            LOGGER.error("{} 协议[{}] handleClose 异常", source, cmd.getProtocol(), e);
+            LOGGER.error("{} handleClose 异常", source, e);
         } finally {
             source.attributes().removeAttribute(MODIFY_MAP);
         }
@@ -213,8 +211,7 @@ public final class AutoManageAdvice implements TransactionListener, AfterReturni
         try {
             this.flush(source);
         } catch (Throwable e) {
-            ControllerContext cmd = ControllerContext.getCurrent();
-            LOGGER.error("{} 协议[{}] handleRollback 异常", source, cmd.getProtocol(), e);
+            LOGGER.error("{} handleRollback 异常", source, e);
         }
     }
 

@@ -23,6 +23,10 @@ public class NacosRemoteServeNode extends RemoteServeNode {
         String service = metadata.get(NacosMetaDataKey.NET_SERVICE);
         String serverId = metadata.getOrDefault(NacosMetaDataKey.NET_SERVER_ID, "0");
         String netMetadata = metadata.get(NacosMetaDataKey.NET_METADATA);
+        String launchTime = metadata.get(NacosMetaDataKey.NET_LAUNCH_TIME);
+        if (launchTime == null || launchTime.isEmpty()) {
+            launchTime = "0";
+        }
         this.setService(service)
                 .setServeName(serveName)
                 .setId(Long.parseLong(serverId))
@@ -31,7 +35,8 @@ public class NacosRemoteServeNode extends RemoteServeNode {
                 .setScheme(metadata.get(NacosMetaDataKey.NET_SCHEME))
                 .setHost(instance.getIp())
                 .setPort(instance.getPort())
-                .setHealthy(instance.isHealthy());
+                .setHealthy(instance.isHealthy())
+                .setLaunchTime(Long.parseLong(launchTime));
         if (StringUtils.isNoneBlank(netMetadata)) {
             this.setMetadata(mapper.readValue(netMetadata, ObjectMap.class));
         }

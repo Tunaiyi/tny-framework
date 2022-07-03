@@ -8,6 +8,7 @@ package com.tny.game.net.annotation;
  */
 
 import com.tny.game.net.message.*;
+import org.springframework.stereotype.Component;
 
 import java.lang.annotation.*;
 
@@ -15,6 +16,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
+@Component
 public @interface RpcController {
 
     /**

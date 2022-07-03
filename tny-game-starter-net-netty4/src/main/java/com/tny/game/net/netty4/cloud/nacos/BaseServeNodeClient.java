@@ -205,7 +205,7 @@ public abstract class BaseServeNodeClient implements ServeNodeClient, AppClosed 
             Map<Long, NacosRemoteServeNode> newNodeMap = new HashMap<>();
             Map<Long, NacosRemoteServeNode> oldNodeMap = new HashMap<>(allNodeMap);
             for (NacosRemoteServeNode node : nodes) {
-                ServeNode oldNode = oldNodeMap.remove(node.getId());
+                NacosRemoteServeNode oldNode = oldNodeMap.remove(node.getId());
                 if (oldNode == null) {
                     creates.add(node);
                 } else {

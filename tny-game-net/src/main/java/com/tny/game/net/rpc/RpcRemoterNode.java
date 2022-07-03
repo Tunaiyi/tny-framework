@@ -9,12 +9,7 @@ import java.util.List;
  * @author Kun Yang
  * @date 2022/5/25 19:16
  **/
-public interface RpcRemoterNode {
-
-    /**
-     * @return 服务器 id
-     */
-    int getNodeId();
+public interface RpcRemoterNode extends RpcNode {
 
     /**
      * @return 获取节点上所有 rpc 接入点(连接)的有序列表

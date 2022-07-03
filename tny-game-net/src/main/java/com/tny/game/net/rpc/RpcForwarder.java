@@ -3,6 +3,8 @@ package com.tny.game.net.rpc;
 import com.tny.game.common.lifecycle.unit.annotation.*;
 import com.tny.game.net.message.*;
 
+import java.util.List;
+
 /**
  * <p>
  *
@@ -12,6 +14,22 @@ import com.tny.game.net.message.*;
 @UnitInterface
 public interface RpcForwarder {
 
+    /**
+     * 转发
+     *
+     * @param message       消息
+     * @param forwardHeader 转发消息头
+     * @return 返回
+     */
     RpcForwardAccess forward(Message message, RpcForwardHeader forwardHeader);
+
+    /**
+     * 广播
+     *
+     * @param message       消息
+     * @param forwardHeader 转发消息头
+     * @return 返回
+     */
+    List<RpcForwardAccess> broadcast(Message message, RpcForwardHeader forwardHeader);
 
 }

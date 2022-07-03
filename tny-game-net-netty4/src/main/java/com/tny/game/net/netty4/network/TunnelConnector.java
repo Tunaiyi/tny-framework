@@ -27,7 +27,7 @@ class TunnelConnector {
 
     private int times;
 
-    private final AtomicBoolean shoutdown = new AtomicBoolean(false);
+    private final AtomicBoolean shutdown = new AtomicBoolean(false);
 
     private final NetTunnel<?> tunnel;
 
@@ -124,43 +124,49 @@ class TunnelConnector {
     }
 
     private boolean checkNotReconnect() {
-        return this.shoutdown.get() || this.tunnel.isClosed() || this.tunnel.isActive();
+        return this.shutdown.get() || this.tunnel.isClosed() || this.tunnel.isActive();
     }
 
     private void doReconnect() {
         boolean stop = false;
         try {
             if (checkNotReconnect()) {
+                stop = true;
                 return;
             }
             this.lock.lock();
             try {
                 if (checkNotReconnect()) {
+                    stop = true;
                     return;
                 }
+                int retryTimes = client.getConnectRetryTimes();// 失败
                 LOGGER.info("{} reconnect {} times", this.tunnel, this.times);
                 if (openTunnel()) { // 成功停止
                     LOGGER.info("{} reconnect {} times success", this.tunnel, this.times);
                     future = null;
                     stop = true;
                 } else {
-                    int retryTimes = client.getConnectRetryTimes();// 失败
-                    LOGGER.info("{} reconnect {} times failed", this.tunnel, this.times);
-                    this.times++;
-                    if (retryTimes < 0 || this.times < retryTimes) { // 继续重试
-                        this.scheduleReconnect();
-                    } else { // 尝试次数满停止
+                    if (retryTimes > 0 && this.times >= retryTimes) { // 继续重试
+                        // 尝试次数满停止
                         LOGGER.warn("reconnect {} failed times {} >= {}, stop reconnect", this.tunnel, this.times, retryTimes);
                         stop = true;
+                    } else {
+                        LOGGER.info("{} reconnect {} times failed", this.tunnel, this.times);
                     }
                 }
+            } catch (Throwable e) {
+                LOGGER.info("{} reconnect {} times exception", this.tunnel, this.times, e);
             } finally {
+                this.times++;
                 this.lock.unlock();
             }
         } finally {
             if (stop) {
                 this.times = 0;
                 autoRetrying.set(false);
+            } else {
+                this.scheduleReconnect();
             }
         }
     }
@@ -179,7 +185,7 @@ class TunnelConnector {
     }
 
     public void shutdown() {
-        if (this.shoutdown.compareAndSet(false, true)) {
+        if (this.shutdown.compareAndSet(false, true)) {
             ScheduledFuture<Void> future = this.future;
             if (future != null) {
                 future.cancel(false);

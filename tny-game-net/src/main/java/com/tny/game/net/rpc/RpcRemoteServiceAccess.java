@@ -33,6 +33,7 @@ public class RpcRemoteServiceAccess implements RpcServiceAccess {
         return endpoint.getMessagerId();
     }
 
+    @Override
     public Endpoint<RpcAccessIdentify> getEndpoint() {
         return endpoint;
     }

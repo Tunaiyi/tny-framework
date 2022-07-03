@@ -16,7 +16,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-public @interface EventBusListener {
+public @interface GlobalEventListener {
 
     int level() default 0;
 

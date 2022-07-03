@@ -52,6 +52,11 @@ public class MessagerRemoter implements RpcRemoterSet, RpcRemoterNode {
     }
 
     @Override
+    public RpcServiceType getServiceType() {
+        return null;
+    }
+
+    @Override
     public List<? extends RpcRemoterAccess> getOrderRemoterAccesses() {
         return Collections.emptyList();
     }

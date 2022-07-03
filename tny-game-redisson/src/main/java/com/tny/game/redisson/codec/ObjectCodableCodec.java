@@ -17,28 +17,28 @@ import java.lang.reflect.Type;
  * @author : kgtny
  * @date : 2020/10/12 8:19 下午
  */
-public class ObjectCodecableCodec extends TypedBaseCodec {
+public class ObjectCodableCodec extends TypedBaseCodec {
 
-    private final ObjectCodec<Object> codecor;
+    private final ObjectCodec<Object> codec;
 
-    public ObjectCodecableCodec(Type type, ObjectCodec<Object> codecor) {
+    public ObjectCodableCodec(Type type, ObjectCodec<Object> codec) {
         super(type, null, false);
-        this.codecor = codecor;
+        this.codec = codec;
     }
 
-    public ObjectCodecableCodec(Type type, String mimeType, ObjectCodecService objectCodecService) {
+    public ObjectCodableCodec(Type type, String mimeType, ObjectCodecService objectCodecService) {
         this(type, mimeType, objectCodecService, null);
     }
 
-    public ObjectCodecableCodec(Type type, String mimeType, ObjectCodecService objectCodecService, Codec keyCodec) {
+    public ObjectCodableCodec(Type type, String mimeType, ObjectCodecService objectCodecService, Codec keyCodec) {
         super(type, keyCodec, false);
-        this.codecor = objectCodecService.codec(type, mimeType);
+        this.codec = objectCodecService.codec(type, mimeType);
         this.initCodec();
     }
 
     @Override
     protected Decoder<Object> createDecoder(Type type) {
-        return (buf, state) -> this.codecor.decode(ByteBufUtil.getBytes(buf));
+        return (buf, state) -> this.codec.decode(ByteBufUtil.getBytes(buf));
     }
 
     @Override
@@ -51,7 +51,7 @@ public class ObjectCodecableCodec extends TypedBaseCodec {
                 } else if (ClassUtils.isPrimitiveOrWrapper(in.getClass()) || in instanceof CharSequence) {
                     os.write(in.toString().getBytes(CoderCharsets.DEFAULT));
                 } else {
-                    os.write(this.codecor.encode(in));
+                    os.write(this.codec.encode(in));
                 }
                 return os.buffer();
             } catch (IOException e) {

@@ -105,7 +105,7 @@ public class RedissonLuaScripRunner implements LuaScriptRunner {
             }
             return null;
         }
-        return CODEC_MAP.computeIfAbsent(elementType, (t) -> new ObjectCodecableCodec(elementType, this.objectCodecService.codec(elementType)));
+        return CODEC_MAP.computeIfAbsent(elementType, (t) -> new ObjectCodableCodec(elementType, this.objectCodecService.codec(elementType)));
     }
 
     //    private List<Object> encodeKeys(List<String> keys) throws IOException {

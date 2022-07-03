@@ -19,7 +19,7 @@ public class BaseServeNode extends BaseNetAccessNode implements ServeNode {
     private String serveName;
 
     private String service;
-    
+
     public BaseServeNode() {
         super();
     }

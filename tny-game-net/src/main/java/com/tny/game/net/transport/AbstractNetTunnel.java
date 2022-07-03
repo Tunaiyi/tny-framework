@@ -158,8 +158,7 @@ public abstract class AbstractNetTunnel<UID, E extends NetEndpoint<UID>> extends
                 if (!certificate.isAuthenticated()) {
                     return false;
                 }
-                return StampedLockAide.supplyInWriteLock(this.endpointLock,
-                        () -> replaceEndpoint(endpoint));
+                return StampedLockAide.supplyInWriteLock(this.endpointLock, () -> replaceEndpoint(endpoint));
             }
         }
     }

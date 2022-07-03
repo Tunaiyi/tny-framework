@@ -68,7 +68,7 @@ public class RpcServeNodeWatchService implements AppPrepareStart, AppClosed {
             this.clientCreator = clientCreator;
         }
 
-        public void connect(URL url) {
+        void connect(URL url) {
             if (client == null) {
                 client = clientCreator.create(index, url);
                 ClientConnectFuture<?> future = client.open();
@@ -80,6 +80,12 @@ public class RpcServeNodeWatchService implements AppPrepareStart, AppClosed {
                     }
                     return cl;
                 });
+            }
+        }
+
+        void tryReconnect() {
+            if (!client.isActive()) {
+                client.reconnect();
             }
         }
 
@@ -104,16 +110,19 @@ public class RpcServeNodeWatchService implements AppPrepareStart, AppClosed {
 
         private void connect(URL url) {
             int size = connector.getSetting().getConnectSize();
-            if (!clients.isEmpty()) {
-                return;
+            int newSize = size - clients.size();
+            if (newSize > 0) {
+                List<RpcClient> clients = new ArrayList<>(this.clients);
+                for (int i = 0; i < newSize; i++) {
+                    RpcClient client = new RpcClient(i, connector);
+                    clients.add(client);
+                    client.connect(url);
+                }
+                this.clients = ImmutableList.copyOf(clients);
             }
-            List<RpcClient> clients = new ArrayList<>();
-            for (int i = 0; i < size; i++) {
-                RpcClient client = new RpcClient(i, connector);
-                clients.add(client);
-                client.connect(url);
+            for (RpcClient client : this.clients) {
+                client.tryReconnect();
             }
-            this.clients = ImmutableList.copyOf(clients);
         }
 
         private void start() {
@@ -145,8 +154,8 @@ public class RpcServeNodeWatchService implements AppPrepareStart, AppClosed {
             LOGGER.info("RPC ServeNode {} change {}", node, statuses);
             if (statuses.contains(ServeNodeChangeStatus.URL_CHANGE)) {
                 this.close();
-                this.connect(node.url());
             }
+            this.connect(node.url());
         }
 
         @Override

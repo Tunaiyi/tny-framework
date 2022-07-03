@@ -38,6 +38,6 @@ public @interface RpcRemoteOptions {
     /**
      * @return 路由器类
      */
-    Class<? extends RpcRemoteRouter> router() default RpcRemoteRouter.class;
+    Class<? extends RpcRouter> router() default RpcRouter.class;
 
 }

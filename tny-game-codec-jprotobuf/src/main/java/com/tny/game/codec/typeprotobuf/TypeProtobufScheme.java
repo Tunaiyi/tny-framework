@@ -1,6 +1,7 @@
 package com.tny.game.codec.typeprotobuf;
 
-import com.baidu.bjf.remoting.protobuf.*;
+import com.baidu.bjf.remoting.protobuf.Codec;
+import com.tny.game.codec.protobuf.*;
 import com.tny.game.codec.typeprotobuf.annotation.*;
 import com.tny.game.common.utils.*;
 
@@ -21,10 +22,10 @@ public class TypeProtobufScheme<T> {
     TypeProtobufScheme(Class<T> type) {
         this.type = type;
         TypeProtobuf typeProtobuf = this.type.getAnnotation(TypeProtobuf.class);
-        this.id = typeProtobuf.value();
         Asserts.checkNotNull(typeProtobuf, "{} class annotation {} no exist",
                 type, TypeProtobuf.class);
-        this.codec = ProtobufProxy.create(type);
+        this.id = typeProtobuf.value();
+        this.codec = ProtobufCodecManager.getInstance().loadCodec(type);
     }
 
     public int getId() {

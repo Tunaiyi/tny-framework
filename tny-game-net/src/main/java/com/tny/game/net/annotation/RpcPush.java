@@ -31,4 +31,9 @@ public @interface RpcPush {
      */
     int line() default 0;
 
+    /**
+     * @return 是否广播
+     */
+    boolean broadcast() default false;
+
 }

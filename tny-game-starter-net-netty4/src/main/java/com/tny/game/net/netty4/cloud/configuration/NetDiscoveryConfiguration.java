@@ -6,6 +6,8 @@ import org.springframework.boot.autoconfigure.condition.*;
 import org.springframework.cloud.client.serviceregistry.*;
 import org.springframework.context.annotation.*;
 
+import java.util.List;
+
 /**
  * Game Suite 的默认配置
  * Created by Kun Yang on 16/1/27.
@@ -17,7 +19,7 @@ public class NetDiscoveryConfiguration {
     @Bean
     @ConditionalOnBean({ServiceRegistry.class, ServerGuideRegistrationFactory.class})
     public NetAutoServiceRegister netAutoServiceRegister(
-            ServiceRegistry<Registration> serviceRegistry, ServerGuideRegistrationFactory registrationFactory) {
+            ServiceRegistry<Registration> serviceRegistry, List<ServerGuideRegistrationFactory> registrationFactory) {
         return new NetAutoServiceRegister(serviceRegistry, registrationFactory);
     }
 

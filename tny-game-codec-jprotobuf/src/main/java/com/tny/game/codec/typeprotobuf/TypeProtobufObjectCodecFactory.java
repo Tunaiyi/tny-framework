@@ -1,7 +1,9 @@
 package com.tny.game.codec.typeprotobuf;
 
+import com.baidu.bjf.remoting.protobuf.annotation.ProtobufClass;
 import com.google.common.collect.ImmutableList;
 import com.tny.game.codec.*;
+import com.tny.game.codec.typeprotobuf.annotation.*;
 import com.tny.game.common.collection.*;
 import com.tny.game.common.concurrent.*;
 import org.springframework.util.MimeType;
@@ -49,6 +51,16 @@ public class TypeProtobufObjectCodecFactory extends AbstractObjectCodecFactory {
     @Override
     public <T> ObjectCodec<T> createCodec(Type type) {
         return as(this.codec);
+    }
+
+    @Override
+    public MimeType isCanCodec(Class<?> clazz) {
+        ProtobufClass protobufClass = clazz.getAnnotation(ProtobufClass.class);
+        TypeProtobuf typeProtobuf = clazz.getAnnotation(TypeProtobuf.class);
+        if (protobufClass != null && typeProtobuf != null) {
+            return TypeProtobufMimeType.TYPE_PROTOBUF_MIME_TYPE;
+        }
+        return null;
     }
 
 }

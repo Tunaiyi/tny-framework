@@ -2,6 +2,7 @@ package com.tny.game.net.rpc;
 
 import com.tny.game.common.result.*;
 import com.tny.game.net.base.*;
+import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
 
 import java.util.concurrent.*;
@@ -19,6 +20,8 @@ public interface RpcFuture<T> extends Future<RpcResult<T>>, CompletionStage<RpcR
     T getBody();
 
     Message getMessage();
+
+    Endpoint<?> endpoint();
 
     boolean isSuccess();
 

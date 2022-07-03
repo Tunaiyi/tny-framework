@@ -5,6 +5,7 @@ import com.tny.game.boot.utils.*;
 import com.tny.game.net.rpc.*;
 import com.tny.game.net.rpc.loader.*;
 import org.slf4j.*;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.*;
 import org.springframework.core.type.AnnotationMetadata;
 
@@ -26,12 +27,13 @@ public class ImportRpcServiceDefinitionRegistrar extends ImportConfigurationBean
     }
 
     private <T> void registerRpcInstance(BeanDefinitionRegistry registry, RpcRemoteInstanceFactory factory, Class<T> serviceClass) {
-        T rpcInstance = factory.create(serviceClass);
         LOGGER.debug("Register RpcService instance : {}", serviceClass);
         String beanName = BeanNameUtils.lowerCamelName(serviceClass);
-        registry.registerBeanDefinition(beanName, BeanDefinitionBuilder
-                .genericBeanDefinition(serviceClass, () -> rpcInstance)
-                .getBeanDefinition());
+        BeanDefinition definition = BeanDefinitionBuilder
+                .genericBeanDefinition(serviceClass, () -> factory.create(serviceClass))
+                .getBeanDefinition();
+        definition.setAttribute(CONFIGURATION_CLASS_ATTRIBUTE, CONFIGURATION_CLASS_LITE);
+        registry.registerBeanDefinition(beanName, definition);
     }
 
 }

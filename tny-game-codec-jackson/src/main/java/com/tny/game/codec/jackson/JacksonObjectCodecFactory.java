@@ -57,4 +57,9 @@ public class JacksonObjectCodecFactory extends AbstractObjectCodecFactory {
         return new JacksonObjectCodec<>(type, this.mapper);
     }
 
+    @Override
+    public MimeType isCanCodec(Class<?> clazz) {
+        return JsonMimeType.JSON_MIME_TYPE;
+    }
+
 }

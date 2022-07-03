@@ -4,6 +4,7 @@ import com.tny.game.common.exception.*;
 import com.tny.game.common.result.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.net.base.*;
+import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.rpc.exception.*;
 import com.tny.game.net.transport.*;
@@ -41,9 +42,9 @@ public class RpcRemoteInvoker {
     /**
      * 路由
      */
-    private final RpcRemoteRouter router;
+    private final RpcRouter router;
 
-    public RpcRemoteInvoker(RpcRemoteInstance instance, RpcRemoteMethod method, RpcRemoteRouter router) {
+    public RpcRemoteInvoker(RpcRemoteInstance instance, RpcRemoteMethod method, RpcRouter router) {
         this.method = method;
         this.instance = instance;
         this.servicer = instance.getServiceSet();
@@ -76,21 +77,6 @@ public class RpcRemoteInvoker {
         return Protocols.protocol(this.method.getProtocol(), this.method.getLine());
     }
 
-    private Object getReturnFuture(MessageRespondAwaiter future) {
-        if (this.method.getReturnClass().isAssignableFrom(MessageRespondAwaiter.class)) {
-            return future;
-        }
-        DefaultRpcFuture<Object> rpcFuture = new DefaultRpcFuture<>();
-        future.whenComplete((message, e) -> {
-            if (e != null) {
-                rpcFuture.completeExceptionally(e);
-            } else {
-                rpcFuture.complete(message, RpcResults.result(ResultCodes.of(message.getCode()), message.getBody()));
-            }
-        });
-        return rpcFuture;
-    }
-
     private Object getReturnObject(Message message) {
         switch (this.method.getBodyMode()) {
             case MESSAGE:
@@ -108,6 +94,21 @@ public class RpcRemoteInvoker {
         throw new RpcInvokeException(NetResultCode.REMOTE_EXCEPTION, "返回类型错误");
     }
 
+    private Object getReturnFuture(Endpoint<?> endpoint, MessageRespondAwaiter future) {
+        if (this.method.getReturnClass().isAssignableFrom(MessageRespondAwaiter.class)) {
+            return future;
+        }
+        DefaultRpcFuture<Object> rpcFuture = new DefaultRpcFuture<>();
+        future.whenComplete((message, e) -> {
+            if (e != null) {
+                rpcFuture.completeExceptionally(e);
+            } else {
+                rpcFuture.complete(endpoint, message, RpcResults.result(ResultCodes.of(message.getCode()), message.getBody()));
+            }
+        });
+        return rpcFuture;
+    }
+
     private Object request(RpcRemoterAccess access, long timeout, RpcRemoteInvokeParams invokeParams) {
         RequestContext requestContext = MessageContexts.request(protocol(), invokeParams.getParams());
         requestContext.willRespondAwaiter(timeout)
@@ -117,7 +118,7 @@ public class RpcRemoteInvoker {
         if (this.method.isAsync()) {
             switch (this.method.getReturnMode()) {
                 case FUTURE:
-                    return getReturnFuture(awaiter);
+                    return getReturnFuture(access.getEndpoint(), awaiter);
                 case VOID:
                 case RESULT:
                 case OBJECT:

@@ -17,4 +17,6 @@ public interface ObjectCodecFactory {
 
     <T> ObjectCodec<T> createCodec(Type clazz);
 
+    MimeType isCanCodec(Class<?> clazz);
+
 }

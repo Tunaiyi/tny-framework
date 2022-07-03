@@ -1,6 +1,7 @@
 package com.tny.game.codec.jackson;
 
 import com.tny.game.codec.*;
+import org.springframework.util.MimeType;
 
 /**
  * <p>
@@ -9,6 +10,8 @@ import com.tny.game.codec.*;
  * @date : 2021/7/23 7:41 下午
  */
 public interface JsonMimeType {
+
+    MimeType JSON_MIME_TYPE = MimeType.valueOf(JsonMimeType.JSON);
 
     String JSON = "application/json";
 

@@ -29,27 +29,22 @@ import java.util.stream.Collectors;
 public class RpcAutoConfiguration {
 
     @Bean
-    public RpcRemoteRouter firstRpcRemoteRouter() {
-        return new FirstRpcRemoteRouter();
+    public FirstRpcRouter firstRpcRouter() {
+        return new FirstRpcRouter();
     }
 
     @Bean
-    public EndpointRemoteRouter endpointRemoteRouter() {
-        return new EndpointRemoteRouter();
+    public EndpointRouter endpointRouter() {
+        return new EndpointRouter();
     }
 
     @Bean
-    public RpcRemoterManager defaultRpcRemoteServiceManager(RpcRemoteProperties properties) {
-        return new DefaultRpcRemoterManager(properties.getClient());
+    public RpcRouteManager rpcRouteManager(RpcRemoteSetting setting, ObjectProvider<RpcRouter> rpcRoutersProvider) {
+        return new DefaultRpcRouteManager(setting.getDefaultRpcRemoteRouter(), rpcRoutersProvider.stream().collect(Collectors.toList()));
     }
 
     @Bean
-    public RpcRemoteRouteManager rpcRouteManager(RpcRemoteSetting setting, ObjectProvider<RpcRemoteRouter> rpcRoutersProvider) {
-        return new DefaultRpcRemoteRouteManager(setting.getDefaultRpcRemoteRouter(), rpcRoutersProvider.stream().collect(Collectors.toList()));
-    }
-
-    @Bean
-    public RpcRemoteInstanceFactory rpcInstanceFactory(RpcRemoteSetting setting, RpcRemoterManager service, RpcRemoteRouteManager manager) {
+    public RpcRemoteInstanceFactory rpcInstanceFactory(RpcRemoteSetting setting, RpcRemoterManager service, RpcRouteManager manager) {
         return new RpcRemoteInstanceFactory(setting, service, manager);
     }
 
@@ -70,6 +65,11 @@ public class RpcAutoConfiguration {
     @ConditionalOnMissingBean(RpcUserPasswordManager.class)
     public RpcUserPasswordManager rpcUserPasswordManager() {
         return new NoopRpcUserPasswordManager();
+    }
+
+    @Bean
+    public RpcServicerManager rpcServicerManager(RpcRemoteProperties properties) {
+        return new DefaultRpcRemoterManager(properties.getClient());
     }
 
     @Bean

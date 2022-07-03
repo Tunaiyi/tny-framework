@@ -76,6 +76,14 @@ public abstract class MessageCommand implements Command {
         return this.message;
     }
 
+    Tunnel<?> getTunnel() {
+        return tunnel;
+    }
+
+    Endpoint<?> getEndpoint() {
+        return tunnel.getEndpoint();
+    }
+
     @Override
     public String getName() {
         return this.commandContext.getName();
@@ -93,8 +101,7 @@ public abstract class MessageCommand implements Command {
     public void execute() {
         try (ProcessTracer ignored = ProcessWatcher.of(this.getName(), CLOSE, (w) -> w.schedule(15, TimeUnit.SECONDS)).trace()) {
             Throwable cause = null;
-            MessageHead head = this.message.getHead();
-            ControllerContext.setCurrent(head.getProtocolId());
+            RpcHandleContext.setCurrent(this);
             MessageCommandPromise promise = this.commandContext.getPromise();
             try {
                 if (isDone()) {
@@ -123,6 +130,7 @@ public abstract class MessageCommand implements Command {
                     this.handleResult();
                 }
                 this.fireExecuteEnd(cause);
+                RpcHandleContext.clean();
             }
         }
     }

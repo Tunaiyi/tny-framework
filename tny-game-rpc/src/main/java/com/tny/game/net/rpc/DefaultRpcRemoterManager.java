@@ -10,7 +10,7 @@ import com.tny.game.net.rpc.setting.*;
  * @author : kgtny
  * @date : 2021/11/3 6:11 下午
  */
-@EventBusListener
+@GlobalEventListener
 public class DefaultRpcRemoterManager extends BaseRpcRemoterManager {
 
     public DefaultRpcRemoterManager(RpcClientSetting setting) {

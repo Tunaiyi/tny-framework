@@ -24,9 +24,9 @@ public class RpcRemoteInstanceFactory {
 
     private RpcRemoterManager rpcRemoterManager;
 
-    private RpcRemoteRouteManager rpcRouteManager;
+    private RpcRouteManager rpcRouteManager;
 
-    public RpcRemoteInstanceFactory(RpcRemoteSetting setting, RpcRemoterManager rpcRemoterManager, RpcRemoteRouteManager rpcRouteManager) {
+    public RpcRemoteInstanceFactory(RpcRemoteSetting setting, RpcRemoterManager rpcRemoterManager, RpcRouteManager rpcRouteManager) {
         this.setting = setting;
         this.rpcRemoterManager = rpcRemoterManager;
         this.rpcRouteManager = rpcRouteManager;
@@ -64,7 +64,7 @@ public class RpcRemoteInstanceFactory {
         RpcRemoteInstance instance = new RpcRemoteInstance(rpcClass, this.setting, remoterSet);
         Map<Method, RpcRemoteInvoker> invokerMap = new HashMap<>();
         for (RpcRemoteMethod method : methods) {
-            RpcRemoteRouter router = rpcRouteManager.getRouter(method.getRouterClass());
+            RpcRouter router = rpcRouteManager.getRouter(method.getRouterClass());
             if (router == null) {
                 throw new RpcInvokeException(NetResultCode.REMOTE_EXCEPTION, "调用 {} 异常, 未找到 {} RpcRouter",
                         method.getMethod(), method.getRouterClass());
@@ -86,7 +86,7 @@ public class RpcRemoteInstanceFactory {
         return this;
     }
 
-    public RpcRemoteInstanceFactory setRpcRouteManager(RpcRemoteRouteManager rpcRouteManager) {
+    public RpcRemoteInstanceFactory setRpcRouteManager(RpcRouteManager rpcRouteManager) {
         this.rpcRouteManager = rpcRouteManager;
         return this;
     }

@@ -10,7 +10,7 @@ import static com.tny.game.common.utils.StringAide.*;
  * @author : kgtny
  * @date : 2021/11/11 3:15 上午
  */
-public class EndpointRemoteRouter implements RpcRemoteRouter {
+public class EndpointRouter implements RpcRouter {
 
     @Override
     public RpcRemoterAccess route(RpcRemoterSet servicer, RpcRemoteMethod invoker, RpcRemoteInvokeParams invokeParams) {

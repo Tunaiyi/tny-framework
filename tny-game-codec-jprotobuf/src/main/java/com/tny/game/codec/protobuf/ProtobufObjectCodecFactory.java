@@ -29,6 +29,12 @@ public class ProtobufObjectCodecFactory extends AbstractObjectCodecFactory {
 
     private static final Map<Class<?>, ProtobufObjectCodec<?>> CODEC_MAP = new ConcurrentHashMap<>();
 
+    private static final ProtobufObjectCodecFactory FACTORY = new ProtobufObjectCodecFactory();
+
+    public static ProtobufObjectCodecFactory getInstance() {
+        return FACTORY;
+    }
+
     public ProtobufObjectCodecFactory() {
         this(null);
     }
@@ -46,6 +52,15 @@ public class ProtobufObjectCodecFactory extends AbstractObjectCodecFactory {
             return new ProtobufObjectCodec<>(clazz);
         });
         return as(codec);
+    }
+
+    @Override
+    public MimeType isCanCodec(Class<?> clazz) {
+        ProtobufClass protobufClass = clazz.getAnnotation(ProtobufClass.class);
+        if (protobufClass != null) {
+            return ProtobufMimeType.PROTOBUF_MIME_TYPE;
+        }
+        return null;
     }
 
 }

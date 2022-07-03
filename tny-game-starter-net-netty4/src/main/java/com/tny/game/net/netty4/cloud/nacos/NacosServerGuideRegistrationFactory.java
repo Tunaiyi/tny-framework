@@ -91,6 +91,7 @@ public class NacosServerGuideRegistrationFactory implements ServerGuideRegistrat
             metadata.put(NacosMetaDataKey.NET_APP_TYPE, node.getAppType());
             metadata.put(NacosMetaDataKey.NET_SCOPE_TYPE, node.getScopeType());
             metadata.put(NacosMetaDataKey.NET_SCHEME, node.getScheme());
+            metadata.put(NacosMetaDataKey.NET_LAUNCH_TIME, Long.toString(System.currentTimeMillis()));
 
             NacosDiscoveryProperties properties = new NacosDiscoveryProperties();
             copyProperties(defaultDiscoveryProperties, properties);

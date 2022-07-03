@@ -18,7 +18,6 @@ import com.tny.game.net.netty4.channel.*;
 import com.tny.game.net.netty4.configuration.application.*;
 import com.tny.game.net.netty4.configuration.channel.*;
 import com.tny.game.net.netty4.configuration.command.*;
-import com.tny.game.net.netty4.configuration.controller.*;
 import com.tny.game.net.netty4.configuration.endpoint.*;
 import com.tny.game.net.netty4.configuration.filter.*;
 import com.tny.game.net.netty4.configuration.processor.disruptor.*;
@@ -44,7 +43,7 @@ import org.springframework.context.annotation.*;
         ReadIdlePipelineChainProperties.class,
         DisruptorEndpointCommandTaskProcessorProperties.class,
         ForkJoinEndpointCommandTaskProcessorProperties.class,})
-@Import({TextFilterAutoConfiguration.class, ImportControllerBeanDefinitionRegistrar.class,})
+@Import({TextFilterAutoConfiguration.class})
 public class NetAutoConfiguration {
 
     @Bean

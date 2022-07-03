@@ -126,6 +126,7 @@ ext.libs = [
 
 
         zookeeper                                : "org.apache.zookeeper:zookeeper:3.4.14",
+        jetcd_core                               : 'io.etcd:jetcd-core:0.7.1',
 
 
         quartz_scheduler                         : "org.quartz-scheduler:quartz:2.3.2",

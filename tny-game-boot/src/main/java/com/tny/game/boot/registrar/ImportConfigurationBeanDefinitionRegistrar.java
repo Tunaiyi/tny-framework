@@ -8,7 +8,8 @@ import org.springframework.beans.factory.*;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.context.EnvironmentAware;
-import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
+import org.springframework.context.annotation.*;
+import org.springframework.core.Conventions;
 import org.springframework.core.env.Environment;
 
 import javax.annotation.Nonnull;
@@ -20,6 +21,11 @@ import javax.annotation.Nonnull;
  * @date : 2020/12/31 6:29 上午
  */
 public class ImportConfigurationBeanDefinitionRegistrar implements ImportBeanDefinitionRegistrar, EnvironmentAware, BeanFactoryAware {
+
+    protected static final String CONFIGURATION_CLASS_LITE = "lite";
+
+    protected static final String CONFIGURATION_CLASS_ATTRIBUTE =
+            Conventions.getQualifiedAttributeName(ConfigurationClassPostProcessor.class, "configurationClass");
 
     protected Environment environment;
 

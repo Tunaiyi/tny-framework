@@ -34,6 +34,11 @@ public class RpcRemoteServiceNode implements RpcRemoterNode, RpcForwardNode {
     }
 
     @Override
+    public RpcServiceType getServiceType() {
+        return service.getServiceType();
+    }
+
+    @Override
     public List<? extends RpcRemoterAccess> getOrderRemoterAccesses() {
         return orderAccessPoints;
     }

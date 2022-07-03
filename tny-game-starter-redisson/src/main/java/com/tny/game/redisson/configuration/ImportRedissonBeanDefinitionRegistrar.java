@@ -19,7 +19,7 @@ public class ImportRedissonBeanDefinitionRegistrar extends ImportRedisBeanDefini
     protected <T> void doRegister(BeanDefinitionRegistry registry, Class<T> entityClass, String mimeType, boolean primary) {
         String codecName = entityClass.getSimpleName() + "ObjectCodecableCodec";
         registry.registerBeanDefinition(codecName, BeanDefinitionBuilder
-                .genericBeanDefinition(ObjectCodecableCodec.class)
+                .genericBeanDefinition(ObjectCodableCodec.class)
                 .addConstructorArgValue(entityClass)
                 .addConstructorArgValue(mimeType)
                 .setPrimary(primary)

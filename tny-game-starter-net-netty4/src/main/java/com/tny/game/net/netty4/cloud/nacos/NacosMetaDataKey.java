@@ -20,6 +20,8 @@ public class NacosMetaDataKey {
 
     public static final String NET_SCOPE_TYPE = "net-scopeType";
 
+    public static final String NET_LAUNCH_TIME = "net-launchTime";
+
     public static final String NET_METADATA = "net-metadata";
 
 }

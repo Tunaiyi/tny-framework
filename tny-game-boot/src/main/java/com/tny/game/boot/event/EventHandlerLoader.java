@@ -1,7 +1,7 @@
 package com.tny.game.boot.event;
 
+import com.tny.game.boot.event.annotation.*;
 import com.tny.game.common.concurrent.collection.*;
-import com.tny.game.common.event.bus.annotation.*;
 import com.tny.game.scanner.*;
 import com.tny.game.scanner.annotation.*;
 import com.tny.game.scanner.filter.*;
@@ -14,17 +14,17 @@ import java.util.*;
  * com.tny.game.loader.EnumLoader 配置相关的枚举会提前读取
  * Created by Kun Yang on 16/9/9.
  */
-public final class EventListenerLoader {
+public final class EventHandlerLoader {
 
     private static final Set<Class<?>> CLASSES = new ConcurrentHashSet<>();
 
-    private EventListenerLoader() {
+    private EventHandlerLoader() {
     }
 
     @ClassSelectorProvider
     public static ClassSelector controllerSelector() {
         return ClassSelector.create()
-                .addFilter(AnnotationClassFilter.ofInclude(EventBusListener.class))
+                .addFilter(AnnotationClassFilter.ofInclude(EventHandler.class))
                 .setHandler((classes) -> classes.stream()
                         .filter((c) -> !c.isInterface() && !Modifier.isAbstract(c.getModifiers()))
                         .forEach(CLASSES::add)

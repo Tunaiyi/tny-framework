@@ -9,7 +9,7 @@ import java.util.List;
  * @author Kun Yang
  * @date 2022/5/25 19:50
  **/
-public interface RpcForwardNode {
+public interface RpcForwardNode extends RpcNode {
 
     /**
      * 通过接入 Id 获取接入点
