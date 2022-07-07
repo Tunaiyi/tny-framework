@@ -137,7 +137,7 @@ ext.libs = [
         mvel                                     : "org.mvel:mvel2:2.4.12.Final",
         xstream                                  : "com.thoughtworks.xstream:xstream:1.4.11.1",
 
-        guava                                    : "com.google.guava:guava:30.0-jre",
+        guava                                    : "com.google.guava:guava:31.1-jre",
         google_api_client                        : "com.google.api-client:google-api-client:1.31.1",
         google_api_oauth2                        : "com.google.auth:google-auth-library-oauth2-http:0.22.0",
 

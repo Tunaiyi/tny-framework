@@ -4,6 +4,6 @@ dependencies {
 
     api libs.jetcd_core
 
-    testImplementation project(":tny-game-codec-jackson")
+    api project(":tny-game-codec-jackson")
 }
 

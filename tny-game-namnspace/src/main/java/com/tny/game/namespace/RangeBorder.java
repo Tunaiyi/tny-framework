@@ -1,6 +1,7 @@
 package com.tny.game.namespace;
 
 /**
+ * 范围边界
  * <p>
  *
  * @author kgtny

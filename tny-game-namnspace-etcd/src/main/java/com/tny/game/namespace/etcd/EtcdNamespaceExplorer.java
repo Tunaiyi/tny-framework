@@ -1,12 +1,16 @@
 package com.tny.game.namespace.etcd;
 
 import com.tny.game.codec.*;
+import com.tny.game.common.concurrent.*;
 import com.tny.game.namespace.*;
-import com.tny.game.namespace.etcd.exception.*;
+import com.tny.game.namespace.consistenthash.*;
+import com.tny.game.namespace.exception.*;
+import com.tny.game.namespace.listener.*;
 import io.etcd.jetcd.*;
 import io.etcd.jetcd.kv.*;
 import io.etcd.jetcd.op.*;
 import io.etcd.jetcd.options.*;
+import org.apache.commons.lang3.StringUtils;
 
 import java.nio.charset.Charset;
 import java.util.*;
@@ -21,7 +25,9 @@ import static com.tny.game.common.utils.StringAide.*;
  * @author kgtny
  * @date 2022/6/29 16:11
  **/
-public class EtcdNamespaceExplorer extends EtcdAccess implements NamespaceExplorer {
+public class EtcdNamespaceExplorer extends EtcdObject implements NamespaceExplorer {
+
+    private static final ScheduledExecutorService SCHEDULED = Executors.newScheduledThreadPool(1, new CoreThreadFactory("EtcdNamespaceExplorer"));
 
     private final Client client;
 
@@ -37,7 +43,36 @@ public class EtcdNamespaceExplorer extends EtcdAccess implements NamespaceExplor
 
     private static final DeleteOption DEL_MATCH_OPTION = DeleteOption.newBuilder().isPrefix(true).withPrevKV(true).build();
 
-    private final Map<String, Lessee> leasers = new ConcurrentHashMap<>();
+    private final Map<String, EtcdLessee> leasers = new ConcurrentHashMap<>();
+
+    private final LesseeListener lesseeListener = new LesseeListener() {
+
+        @Override
+        public void onRenew(Lessee source) {
+
+        }
+
+        @Override
+        public void onError(Lessee source, Throwable cause) {
+            EtcdLessee lessee = leasers.get(source.getName());
+            if (lessee != null) {
+                handLessee(lessee.getName());
+            }
+        }
+
+        @Override
+        public void onCompleted(Lessee source) {
+            EtcdLessee lessee = leasers.get(source.getName());
+            if (lessee != null) {
+                handLessee(lessee.getName());
+            }
+        }
+
+        @Override
+        public void onResume(Lessee source) {
+
+        }
+    };
 
     public EtcdNamespaceExplorer(Client client, ObjectCodecAdapter objectCodecAdapter, Charset charset) {
         super(objectCodecAdapter, charset);
@@ -60,7 +95,22 @@ public class EtcdNamespaceExplorer extends EtcdAccess implements NamespaceExplor
 
     @Override
     public <T> CompletableFuture<List<NameNode<T>>> findAll(String path, ObjectMineType<T> type) {
-        return kv.get(toBytes(path), GET_MATCH_OPTION).thenApply(response -> decodeAllKeyValues(response.getKvs(), type));
+        return kv.get(toBytes(path), GET_MATCH_OPTION)
+                .thenApply(response -> decodeAllKeyValues(response.getKvs(), type));
+    }
+
+    @Override
+    public <T> CompletableFuture<List<NameNode<T>>> findAll(String from, String to, ObjectMineType<T> type) {
+        return kv.get(toBytes(from), GetOption.newBuilder().withRange(toBytes(to)).build())
+                .thenApply(response -> decodeAllKeyValues(response.getKvs(), type));
+    }
+
+    @Override
+    public <T extends ShardingNode> HashingRing<T> hashing(String rootPath, HashingOptions<T> options) {
+        if (StringUtils.isBlank(rootPath)) {
+            throw new HashRingException("rootPath {} is blank", rootPath);
+        }
+        return new EtcdHashingRing<>(rootPath, options, this, this.objectCodecAdapter, charset);
     }
 
     @Override
@@ -71,6 +121,11 @@ public class EtcdNamespaceExplorer extends EtcdAccess implements NamespaceExplor
     @Override
     public <T> NameNodesWatcher<T> allNodeWatcher(String path, ObjectMineType<T> type) {
         return new EtcdNameNodesWatcher<>(path, true, kv, watch, type, this.objectCodecAdapter, charset);
+    }
+
+    @Override
+    public <T> NameNodesWatcher<T> allNodeWatcher(String from, String to, ObjectMineType<T> type) {
+        return new EtcdNameNodesWatcher<>(from, to, true, kv, watch, type, this.objectCodecAdapter, charset);
     }
 
     @Override
@@ -246,16 +301,17 @@ public class EtcdNamespaceExplorer extends EtcdAccess implements NamespaceExplor
 
     @Override
     public CompletableFuture<Lessee> lease(String name, long ttl) {
-        Lessee lessee = leasers.get(name);
+        EtcdLessee lessee = leasers.get(name);
         if (lessee != null) {
             return CompletableFuture.completedFuture(lessee);
         }
         lessee = new EtcdLessee(name, lease, ttl);
-        Lessee old = leasers.putIfAbsent(lessee.getName(), lessee);
+        EtcdLessee old = leasers.putIfAbsent(lessee.getName(), lessee);
         if (old != null) {
             return CompletableFuture.completedFuture(old);
         }
-        return lessee.grant();
+        lessee.event().add(lesseeListener);
+        return lessee.lease();
     }
 
     private CompletableFuture<TxnResponse> inTxn(Consumer<Txn> consumer) {
@@ -369,6 +425,32 @@ public class EtcdNamespaceExplorer extends EtcdAccess implements NamespaceExplor
             }
         }
         return cmpList;
+    }
+
+    private void handLessee(String name) {
+        EtcdLessee lessee = leasers.get(name);
+        if (lessee == null) {
+            return;
+        }
+        if (lessee.isPause()) {
+            resume(lessee, 3000);
+            return;
+        }
+        if (lessee.isShutdown()) {
+            this.leasers.remove(name, lessee);
+        }
+    }
+
+    private void resume(EtcdLessee lessee, long delay) {
+        if (lessee.isPause()) {
+            SCHEDULED.schedule(() -> {
+                lessee.resume().whenComplete((l, cause) -> {
+                    if (cause != null) {
+                        resume(lessee, delay);
+                    }
+                });
+            }, delay, TimeUnit.MILLISECONDS);
+        }
     }
 
     private <T> NameNode<T> decodeOne(List<GetResponse> responses, ObjectMineType<T> type) {

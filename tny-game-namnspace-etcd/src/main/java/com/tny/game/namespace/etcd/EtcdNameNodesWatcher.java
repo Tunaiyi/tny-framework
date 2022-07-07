@@ -3,7 +3,7 @@ package com.tny.game.namespace.etcd;
 import com.tny.game.codec.*;
 import com.tny.game.common.event.firer.*;
 import com.tny.game.namespace.*;
-import com.tny.game.namespace.etcd.exception.*;
+import com.tny.game.namespace.exception.*;
 import com.tny.game.namespace.listener.*;
 import io.etcd.jetcd.*;
 import io.etcd.jetcd.Watch.Watcher;
@@ -26,7 +26,7 @@ import static com.tny.game.common.utils.StringAide.*;
  * @author kgtny
  * @date 2022/6/30 23:44
  **/
-public class EtcdNameNodesWatcher<T> extends EtcdAccess implements NameNodesWatcher<T> {
+public class EtcdNameNodesWatcher<T> extends EtcdObject implements NameNodesWatcher<T> {
 
     private static final int UNWATCH = 0;
 
@@ -38,7 +38,11 @@ public class EtcdNameNodesWatcher<T> extends EtcdAccess implements NameNodesWatc
 
     private final String watchPath;
 
+    private final String endPath;
+
     private final ByteSequence key;
+
+    private final ByteSequence endKey;
 
     private final boolean match;
 
@@ -64,13 +68,24 @@ public class EtcdNameNodesWatcher<T> extends EtcdAccess implements NameNodesWatc
 
     public EtcdNameNodesWatcher(String watchPath, boolean match, KV kv, Watch watch,
             ObjectMineType<T> valueType, ObjectCodecAdapter objectCodecAdapter, Charset charset) {
+        this(watchPath, null, match, kv, watch, valueType, objectCodecAdapter, charset);
+    }
+
+    public EtcdNameNodesWatcher(String watchPath, String endPath, boolean match, KV kv, Watch watch,
+            ObjectMineType<T> valueType, ObjectCodecAdapter objectCodecAdapter, Charset charset) {
         super(objectCodecAdapter, charset);
         this.watchPath = watchPath;
+        this.endPath = endPath;
         this.match = match;
         this.kv = kv;
         this.watch = watch;
         this.valueType = valueType;
         this.key = toBytes(watchPath);
+        if (endPath != null) {
+            endKey = toBytes(endPath);
+        } else {
+            endKey = null;
+        }
     }
 
     @Override
@@ -94,7 +109,13 @@ public class EtcdNameNodesWatcher<T> extends EtcdAccess implements NameNodesWatc
             }
             status = TRY_WATCH;
             try {
-                GetOption option = match ? GetOption.newBuilder().isPrefix(true).build() : GetOption.DEFAULT;
+                GetOption option = GetOption.DEFAULT;
+                if (match) {
+                    option = GetOption.newBuilder().isPrefix(true).build();
+                }
+                if (endPath != null) {
+                    option = GetOption.newBuilder().withRange(endKey).build();
+                }
                 return kv.get(key, option)
                         .whenComplete((response, cause) -> {
                             if (cause != null) {
@@ -117,12 +138,7 @@ public class EtcdNameNodesWatcher<T> extends EtcdAccess implements NameNodesWatc
         if (status == UNWATCH) {
             return;
         }
-        if (this.watcher != null) {
-            this.watcher.close();
-            watcherEvent.fire(WatcherListener::onCompleted, EtcdNameNodesWatcher.this);
-            this.watcher = null;
-        }
-        status = UNWATCH;
+        closeWatcher();
     }
 
     @Override
@@ -166,16 +182,6 @@ public class EtcdNameNodesWatcher<T> extends EtcdAccess implements NameNodesWatc
         deleteEvent.remove(listener);
     }
 
-    private synchronized void onWatchException(Throwable cause) {
-        LOGGER.error("watching {} exception", watchPath, cause);
-        if (this.watcher != null) {
-            this.watcher.close();
-            this.watcher = null;
-        }
-        status = UNWATCH;
-        watcherEvent.fire(WatcherListener::onError, EtcdNameNodesWatcher.this, cause);
-    }
-
     private synchronized void doLoadFailed(Throwable cause) {
         LOGGER.error("load {} exception", watchPath, cause);
         if (this.status == TRY_WATCH) {
@@ -192,12 +198,15 @@ public class EtcdNameNodesWatcher<T> extends EtcdAccess implements NameNodesWatc
             long watchRevision = response.getHeader().getRevision();
             List<NameNode<T>> nodes = as(decodeAllKeyValues(response.getKvs(), valueType));
             this.loadEvent.fire(WatchLoadListener::onLoad, this, nodes);
-            this.watcher = watch.watch(key, WatchOption.newBuilder()
+            WatchOption.Builder optionBuilder = WatchOption.newBuilder()
                     .withRevision(watchRevision + 1)
                     .withPrevKV(true)
                     .isPrefix(match)
-                    .withProgressNotify(true)
-                    .build(), etcdWatchListener);
+                    .withProgressNotify(true);
+            if (endKey != null) {
+                optionBuilder.withRange(endKey).isPrefix(false);
+            }
+            this.watcher = watch.watch(key, optionBuilder.build(), etcdWatchListener);
             status = WATCHING;
         } catch (Throwable e) {
             status = UNWATCH;
@@ -228,15 +237,33 @@ public class EtcdNameNodesWatcher<T> extends EtcdAccess implements NameNodesWatc
 
         @Override
         public void onError(Throwable throwable) {
-            EtcdNameNodesWatcher.this.onWatchException(throwable);
+            onWatchException(throwable);
         }
 
         @Override
         public void onCompleted() {
-            EtcdNameNodesWatcher.this.stop();
+            onWatchCompleted();
         }
 
     };
+
+    private synchronized void onWatchException(Throwable cause) {
+        LOGGER.error("watching {} exception", watchPath, cause);
+        watcherEvent.fire(WatcherListener::onError, EtcdNameNodesWatcher.this, cause);
+    }
+
+    private synchronized void onWatchCompleted() {
+        closeWatcher();
+        watcherEvent.fire(WatcherListener::onCompleted, EtcdNameNodesWatcher.this);
+    }
+
+    private void closeWatcher() {
+        if (this.watcher != null) {
+            this.watcher.close();
+            this.watcher = null;
+            status = UNWATCH;
+        }
+    }
 
     private <T> CompletableFuture<T> failedFuture(Throwable cause) {
         CompletableFuture<T> future = new CompletableFuture<>();

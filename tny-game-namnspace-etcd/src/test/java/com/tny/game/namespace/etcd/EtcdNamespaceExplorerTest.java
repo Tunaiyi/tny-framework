@@ -2,7 +2,10 @@ package com.tny.game.namespace.etcd;
 
 import com.tny.game.codec.*;
 import com.tny.game.codec.jackson.*;
+import com.tny.game.common.type.*;
 import com.tny.game.namespace.*;
+import com.tny.game.namespace.consistenthash.*;
+import com.tny.game.namespace.listener.*;
 import org.junit.jupiter.api.*;
 
 import java.util.*;
@@ -23,6 +26,10 @@ class EtcdNamespaceExplorerTest {
     private static final ObjectCodecFactory objectCodecFactory = new JacksonObjectCodecFactory();
 
     private static final ObjectCodecAdapter objectCodecAdapter = new ObjectCodecAdapter(Collections.singletonList(objectCodecFactory));
+
+    public static final ReferenceType<ShardingPartition<TestShadingNode>> TYPE = new ReferenceType<ShardingPartition<TestShadingNode>>() {
+
+    };
 
     private static final EtcdNamespaceExplorerFactory etcdNamespaceExplorerFactory = new EtcdNamespaceExplorerFactory(
             new EtcdConfig().setEndpoints("http://127.0.0.1:2379"), null, objectCodecAdapter);
@@ -45,6 +52,26 @@ class EtcdNamespaceExplorerTest {
     void setUp() throws ExecutionException, InterruptedException {
         explorer.removeAll(HEAD).get();
         explorer.removeAll(HEAD_OTHER).get();
+    }
+
+    @Test
+    void getTT() throws ExecutionException, InterruptedException {
+        TreeMap<Integer, String> map = new TreeMap<>();
+        map.put(5, "A");
+        map.put(10, "B");
+        map.put(20, "C");
+        map.put(30, "D");
+        map.tailMap(10).values().forEach(System.out::println);
+        System.out.println("========================");
+        map.headMap(10).values().forEach(System.out::println);
+        System.out.println("========================");
+        System.out.println(map.ceilingEntry(10));
+        System.out.println(map.ceilingEntry(9));
+        System.out.println("========================");
+        System.out.println(map.lowerEntry(10));
+        System.out.println(map.floorEntry(10));
+        System.out.println(map.floorEntry(3));
+        System.out.println(map.lastEntry());
     }
 
     @Test
@@ -72,6 +99,68 @@ class EtcdNamespaceExplorerTest {
         List<NameNode<Player>> findList = explorer.findAll(PLAYER_NODE, MINE_TYPE).get();
         assertEquals(players.size(), findList.size());
         findList.forEach(node -> assertTrue(players.contains(node.getValue())));
+    }
+
+    void hashingTest() throws ExecutionException, InterruptedException {
+        HashingRing<TestShadingNode> ring1 = explorer.hashing("Harding1", "/T2/Nodes", 3, TYPE);
+        HashingRing<TestShadingNode> ring2 = explorer.hashing("Harding2", "/T2/Nodes", 3, TYPE);
+
+        ring1.start().get();
+        ring2.start().get();
+
+        ring1.changeEvent().add((sharding -> {
+            System.out.println("ring1 ================================================ ");
+            System.out.println(sharding.getAllRanges().stream().map(Object::toString).collect(Collectors.joining(" | ")));
+        }));
+
+        ring1.changeEvent().add((sharding -> {
+            System.out.println("ring2 ================================================ ");
+            System.out.println(sharding.getAllRanges().stream().map(Object::toString).collect(Collectors.joining(" | ")));
+        }));
+
+        ring1.register(new TestShadingNode("Server1")).get();
+        ring2.register(new TestShadingNode("Server2")).get();
+
+        CountDownLatch countDownLatch = new CountDownLatch(1);
+        countDownLatch.await();
+    }
+
+    void lesseeTest() throws ExecutionException, InterruptedException {
+        ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
+        Lessee lessee = explorer.lease("nodeWatcherWhenEmpty", 3000).get();
+        CountDownLatch countDownLatch = new CountDownLatch(1);
+        NameNodesWatcher<Player> watcher = explorer.allNodeWatcher(PLAYER_NODE, MINE_TYPE);
+        watcher.createEvent().add((w, node) -> System.out.println("create " + node.getValue()));
+        watcher.loadEvent().add((w, nodes) -> System.out.println("create " + nodes.stream().map(NameNode::getValue).collect(Collectors.toList())));
+        watcher.updateEvent().add((w, node) -> System.out.println("update " + node.getValue()));
+        watcher.deleteEvent().add((w, node) -> System.out.println("delete " + node.getValue()));
+        watcher.watcherEvent().add(new WatcherListener() {
+
+            @Override
+            public void onCompleted(NameNodesWatcher<?> watcher) {
+                System.out.println("onCompleted");
+            }
+
+            @Override
+            public void onError(NameNodesWatcher<?> watcher, Throwable cause) {
+                System.out.println("onError ===========================");
+                cause.printStackTrace();
+            }
+        });
+        watcher.watch().get();
+
+        scheduledExecutorService.scheduleWithFixedDelay(() -> {
+            try {
+                if (lessee.isLive()) {
+                    Player player = new Player(PLAYER_NODE + "PLA_1", ThreadLocalRandom.current().nextInt(0, 100));
+                    explorer.save(player.getName(), MINE_TYPE, player, lessee).get();
+                }
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+        }, 10, 10, TimeUnit.SECONDS);
+
+        countDownLatch.await();
     }
 
     @Test
@@ -293,6 +382,102 @@ class EtcdNamespaceExplorerTest {
     }
 
     @Test
+    void allNodeWatcherWithRange() throws ExecutionException, InterruptedException {
+
+        List<Player> players = new ArrayList<>();
+
+        for (int i = 0; i < 10; i++) {
+            Player player = new Player(PLAYER_NODE + "PLA_" + i % 5 + "/" + i, 10 + i);
+            players.add(player);
+        }
+
+        Player loadPlayer = new Player(PLAYER_NODE + "PLA_1/" + 1000, 1000);
+        explorer.save(loadPlayer.getName(), MINE_TYPE, loadPlayer).get();
+        loadPlayer = new Player(PLAYER_NODE + "PLA_2/" + 1000, 1000);
+        explorer.save(loadPlayer.getName(), MINE_TYPE, loadPlayer).get();
+        loadPlayer = new Player(PLAYER_NODE + "PLA_3/" + 1000, 1000);
+        explorer.save(loadPlayer.getName(), MINE_TYPE, loadPlayer).get();
+
+        AtomicReference<CountDownLatch> latchReference = new AtomicReference<>();
+
+        NameNodesWatcher<Player> watcher = explorer.allNodeWatcher(PLAYER_NODE + "PLA_1", PLAYER_NODE + "PLA_3", MINE_TYPE);
+        List<Player> loadList = new ArrayList<>();
+        List<Player> createList = new ArrayList<>();
+        List<Player> updateList = new ArrayList<>();
+        List<Player> deleteList = new ArrayList<>();
+        List<List<Player>> checkList = Arrays.asList(loadList, createList, updateList, deleteList);
+
+        watcher.createEvent().add((w, node) -> {
+            createList.add(node.getValue());
+            latchReference.get().countDown();
+        });
+        watcher.loadEvent().add((w, nodes) -> {
+            loadList.addAll(nodes.stream().map(NameNode::getValue).collect(Collectors.toList()));
+            latchReference.get().countDown();
+        });
+        watcher.updateEvent().add((w, node) -> {
+            updateList.add(node.getValue());
+            latchReference.get().countDown();
+        });
+        watcher.deleteEvent().add((w, node) -> {
+            deleteList.add(node.getValue());
+            latchReference.get().countDown();
+        });
+
+        latchReference.set(new CountDownLatch(1));
+        watcher.watch().get();
+        latchReference.get().await();
+
+        int createSize = 0;
+        for (int i = 0; i < 10; i++) {
+            Player player = players.get(i);
+            int slot = i % 5;
+            if (1 <= slot && slot < 3) {
+                createSize++;
+                latchReference.set(new CountDownLatch(1));
+                explorer.save(player.getName(), MINE_TYPE, player).get();
+                latchReference.get().await();
+                check(checkList, 2, createSize, 0, 0);
+            } else {
+                explorer.save(player.getName(), MINE_TYPE, player).get();
+                check(checkList, 2, createSize, 0, 0);
+            }
+        }
+
+        int updateSize = 0;
+        for (int i = 0; i < 10; i++) {
+            Player player = players.get(i);
+            int slot = i % 5;
+            if (1 <= slot && slot < 3) {
+                updateSize++;
+                latchReference.set(new CountDownLatch(1));
+                explorer.save(player.getName(), MINE_TYPE, player).get();
+                latchReference.get().await();
+                check(checkList, 2, createSize, updateSize, 0);
+            } else {
+                explorer.save(player.getName(), MINE_TYPE, player).get();
+                check(checkList, 2, createSize, updateSize, 0);
+            }
+        }
+
+        int deleteSize = 0;
+        for (int i = 0; i < 10; i++) {
+            Player player = players.get(i);
+            int slot = i % 5;
+            if (1 <= slot && slot < 3) {
+                deleteSize++;
+                latchReference.set(new CountDownLatch(1));
+                explorer.remove(player.getName()).get();
+                latchReference.get().await();
+                check(checkList, 2, createSize, updateSize, deleteSize);
+            } else {
+                explorer.remove(player.getName()).get();
+                check(checkList, 2, createSize, updateSize, deleteSize);
+            }
+        }
+    }
+
+    @Test
     void testGetOrAdd() throws ExecutionException, InterruptedException {
         Player player = new Player(PLAYER_NODE_1_KEY, 100);
         NameNode<Player> nameNode = explorer.getOrAdd(player.getName(), MINE_TYPE, player).get();
@@ -305,7 +490,12 @@ class EtcdNamespaceExplorerTest {
     @Test
     void testAdd() throws ExecutionException, InterruptedException {
         Player player = new Player(PLAYER_NODE_1_KEY, 100);
-        NameNode<Player> nameNode = explorer.add(player.getName(), MINE_TYPE, player).get();
+        Lessee lessee = explorer.lease("updateIfValueWithLessee", 3000).get();
+        NameNode<Player> nameNode = explorer.add(player.getName(), MINE_TYPE, player, lessee)
+                .whenComplete((n, c) -> {
+                    System.out.println(n.getValue());
+                })
+                .get();
         assertEquals(player, nameNode.getValue());
         Player newPlayer = new Player(PLAYER_NODE_1_KEY, 200);
         nameNode = explorer.add(player.getName(), MINE_TYPE, newPlayer).get();

@@ -2,7 +2,7 @@ package com.tny.game.namespace.etcd;
 
 import com.tny.game.codec.*;
 import com.tny.game.namespace.*;
-import com.tny.game.namespace.etcd.exception.*;
+import com.tny.game.namespace.exception.*;
 import io.etcd.jetcd.*;
 
 import java.io.IOException;
@@ -13,18 +13,19 @@ import java.util.stream.Collectors;
 import static com.tny.game.common.utils.StringAide.*;
 
 /**
+ * Etcd对象
  * <p>
  *
  * @author kgtny
  * @date 2022/7/1 03:19
  **/
-public abstract class EtcdAccess {
+public abstract class EtcdObject {
 
     protected Charset charset;
 
     protected final ObjectCodecAdapter objectCodecAdapter;
 
-    public EtcdAccess(ObjectCodecAdapter objectCodecAdapter, Charset charset) {
+    public EtcdObject(ObjectCodecAdapter objectCodecAdapter, Charset charset) {
         this.objectCodecAdapter = objectCodecAdapter;
         this.charset = charset;
     }

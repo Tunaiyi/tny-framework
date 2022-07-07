@@ -11,18 +11,10 @@ import java.util.List;
  * @date 2022/6/30 19:06
  **/
 public interface WatchListener<T> extends
-        WatchDeleteListener<T>,
-        WatchCreateListener<T>,
         WatchLoadListener<T>,
-        WatchUpdateListener<T> {
-
-    @Override
-    default void onCreate(NameNodesWatcher<T> watcher, NameNode<T> node) {
-    }
-
-    @Override
-    default void onDelete(NameNodesWatcher<T> watcher, NameNode<T> node) {
-    }
+        WatchCreateListener<T>,
+        WatchUpdateListener<T>,
+        WatchDeleteListener<T> {
 
     @Override
     default void onLoad(NameNodesWatcher<T> watcher, List<NameNode<T>> nodes) {
@@ -30,7 +22,15 @@ public interface WatchListener<T> extends
     }
 
     @Override
+    default void onCreate(NameNodesWatcher<T> watcher, NameNode<T> node) {
+    }
+
+    @Override
     default void onUpdate(NameNodesWatcher<T> watcher, NameNode<T> node) {
+    }
+
+    @Override
+    default void onDelete(NameNodesWatcher<T> watcher, NameNode<T> node) {
     }
 
 }

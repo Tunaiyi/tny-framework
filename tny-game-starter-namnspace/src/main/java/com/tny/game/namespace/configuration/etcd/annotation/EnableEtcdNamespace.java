@@ -1,7 +1,7 @@
 package com.tny.game.namespace.configuration.etcd.annotation;
 
+import com.tny.game.namespace.configuration.*;
 import com.tny.game.namespace.configuration.etcd.*;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
@@ -18,9 +18,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Import({
         EtcdNamespaceAutoConfiguration.class,
-})
-@EnableConfigurationProperties({
-        EtcdNamespaceProperties.class
+        NamespaceAutoConfiguration.class
 })
 public @interface EnableEtcdNamespace {
 

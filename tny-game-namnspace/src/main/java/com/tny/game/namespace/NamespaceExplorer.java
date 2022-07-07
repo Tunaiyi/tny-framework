@@ -1,6 +1,8 @@
 package com.tny.game.namespace;
 
 import com.tny.game.codec.*;
+import com.tny.game.common.type.*;
+import com.tny.game.namespace.consistenthash.*;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -35,6 +37,61 @@ public interface NamespaceExplorer {
     <T> CompletableFuture<List<NameNode<T>>> findAll(String path, ObjectMineType<T> type);
 
     /**
+     * 匹配路径查找指定节点列表
+     *
+     * @param from 起始 (包括)
+     * @param to   结束 (不包括)
+     * @param type 值MineType
+     * @param <T>  值类型
+     * @return 返回获取的节点List的 Future, 如果没有会Future返回值为 空List
+     */
+    <T> CompletableFuture<List<NameNode<T>>> findAll(String from, String to, ObjectMineType<T> type);
+
+    /**
+     * 创建一致性 hash 环
+     *
+     * @param rootPath 路径
+     * @param options  选项
+     * @return 返回一致性 hash 环
+     */
+    <T extends ShardingNode> HashingRing<T> hashing(String rootPath, HashingOptions<T> options);
+
+    /**
+     * 创建一致性 hash 环
+     *
+     * @param name     名字
+     * @param rootPath 路径
+     * @param type     类型
+     * @return 返回一致性 hash 环
+     */
+    default <T extends ShardingNode> HashingRing<T> hashing(String name, String rootPath, ReferenceType<ShardingPartition<T>> type) {
+        return hashing(rootPath, HashingOptions.option(type).withName(name));
+    }
+
+    /**
+     * 创建一致性 hash 环
+     *
+     * @param name     名字
+     * @param rootPath 路径
+     * @param type     类型
+     * @return 返回一致性 hash 环
+     */
+    default <T extends ShardingNode> HashingRing<T> hashing(String name, String rootPath, int count, ReferenceType<ShardingPartition<T>> type) {
+        return hashing(rootPath, HashingOptions.option(type).withPartitionCount(count).withName(name));
+    }
+
+    /**
+     * 创建一致性 hash 环
+     *
+     * @param rootPath 路径
+     * @param type     类型
+     * @return 返回一致性 hash 环
+     */
+    default <T extends ShardingNode> HashingRing<T> hashing(String rootPath, ReferenceType<ShardingPartition<T>> type) {
+        return hashing(rootPath, HashingOptions.option(type));
+    }
+
+    /**
      * 创建节点监控器
      *
      * @param path 监听路径
@@ -53,6 +110,17 @@ public interface NamespaceExplorer {
      * @return 返回匹配节点监控器
      */
     <T> NameNodesWatcher<T> allNodeWatcher(String path, ObjectMineType<T> type);
+
+    /**
+     * 创建匹配节点监控器
+     *
+     * @param from 起始 (包括)
+     * @param to   结束 (不包括)
+     * @param type 值MineType
+     * @param <T>  值类型
+     * @return 返回匹配节点监控器
+     */
+    <T> NameNodesWatcher<T> allNodeWatcher(String from, String to, ObjectMineType<T> type);
 
     /**
      * 创建租约

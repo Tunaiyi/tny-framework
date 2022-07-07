@@ -1,6 +1,7 @@
 package com.tny.game.namespace;
 
 /**
+ * 命名空间节点
  * <p>
  *
  * @author kgtny

@@ -1,4 +1,4 @@
-package com.tny.game.namespace.etcd.exception;
+package com.tny.game.namespace.exception;
 
 /**
  * <p>

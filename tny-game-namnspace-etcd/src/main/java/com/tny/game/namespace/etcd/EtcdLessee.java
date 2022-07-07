@@ -2,7 +2,7 @@ package com.tny.game.namespace.etcd;
 
 import com.tny.game.common.event.firer.*;
 import com.tny.game.namespace.*;
-import com.tny.game.namespace.etcd.exception.*;
+import com.tny.game.namespace.exception.*;
 import com.tny.game.namespace.listener.*;
 import io.etcd.jetcd.Lease;
 import io.etcd.jetcd.lease.LeaseKeepAliveResponse;
@@ -29,7 +29,9 @@ public class EtcdLessee implements Lessee {
 
     private static final int LIVE = 2;
 
-    private static final int SHUTDOWN = 3;
+    private static final int PAUSE = 3;
+
+    private static final int SHUTDOWN = 4;
 
     private final String name;
 
@@ -43,7 +45,7 @@ public class EtcdLessee implements Lessee {
 
     private CloseableClient keepalive;
 
-    private long leaseId = -1;
+    private volatile long leaseId = -1;
 
     EtcdLessee(String name, Lease lease, long ttl) {
         this.name = name;
@@ -72,6 +74,11 @@ public class EtcdLessee implements Lessee {
     }
 
     @Override
+    public boolean isPause() {
+        return this.status.get() == PAUSE;
+    }
+
+    @Override
     public boolean isStop() {
         return this.status.get() == STOP;
     }
@@ -92,51 +99,73 @@ public class EtcdLessee implements Lessee {
     }
 
     @Override
-    public CompletableFuture<Lessee> grant() {
-        return grant(this.ttl);
+    public CompletableFuture<Lessee> lease() {
+        return lease(this.ttl);
     }
 
     @Override
-    public CompletableFuture<Lessee> grant(long ttl) {
+    public CompletableFuture<Lessee> lease(long ttl) {
+        return doGrant(ttl, STOP);
+    }
+
+    CompletableFuture<Lessee> resume() {
+        return doGrant(ttl, PAUSE);
+    }
+
+    private CompletableFuture<Lessee> doGrant(long ttl, int whenStatus) {
         if (isLive()) {
             return CompletableFuture.completedFuture(this);
         }
-        if (status.compareAndSet(STOP, GRANT)) {
+        if (status.compareAndSet(whenStatus, GRANT)) {
             return lease.grant(TimeUnit.MILLISECONDS.toSeconds(ttl))
                     .whenComplete((response, cause) -> {
                         if (cause != null) {
                             LOGGER.error("Lease grant id exception", cause);
-                            status.compareAndSet(GRANT, STOP);
+                            status.compareAndSet(GRANT, whenStatus);
+                        } else {
+                            this.ttl = ttl;
+                            this.leaseId = response.getID();
+                            this.keepalive = lease.keepAlive(this.leaseId, new StreamObserver<LeaseKeepAliveResponse>() {
+
+                                @Override
+                                public void onNext(LeaseKeepAliveResponse value) {
+                                    EventFirer<LesseeListener, Lessee> firer = EtcdLessee.this.firer;
+                                    if (firer != null) {
+                                        firer.fire(LesseeListener::onRenew, EtcdLessee.this);
+                                    }
+                                }
+
+                                @Override
+                                public void onError(Throwable cause) {
+                                    if (status.compareAndSet(LIVE, PAUSE)) {
+                                        doRevoke();
+                                    }
+                                    EventFirer<LesseeListener, Lessee> firer = EtcdLessee.this.firer;
+                                    if (firer != null) {
+                                        firer.fire(LesseeListener::onError, EtcdLessee.this, cause);
+                                    }
+                                }
+
+                                @Override
+                                public void onCompleted() {
+                                    if (status.compareAndSet(LIVE, PAUSE)) {
+                                        doRevoke();
+                                    }
+                                    EventFirer<LesseeListener, Lessee> firer = EtcdLessee.this.firer;
+                                    if (firer != null) {
+                                        firer.fire(LesseeListener::onCompleted, EtcdLessee.this);
+                                    }
+                                }
+                            });
+                            status.compareAndSet(GRANT, LIVE);
+                            if (firer != null) {
+                                if (whenStatus == PAUSE) {
+                                    firer.fire(LesseeListener::onResume, EtcdLessee.this);
+                                } else {
+                                    firer.fire(LesseeListener::onLease, EtcdLessee.this);
+                                }
+                            }
                         }
-                        this.ttl = ttl;
-                        this.leaseId = response.getID();
-                        this.keepalive = lease.keepAlive(this.leaseId, new StreamObserver<LeaseKeepAliveResponse>() {
-
-                            @Override
-                            public void onNext(LeaseKeepAliveResponse value) {
-                                EventFirer<LesseeListener, Lessee> firer = EtcdLessee.this.firer;
-                                if (firer != null) {
-                                    firer.fire(LesseeListener::onRenew, EtcdLessee.this);
-                                }
-                            }
-
-                            @Override
-                            public void onError(Throwable cause) {
-                                EventFirer<LesseeListener, Lessee> firer = EtcdLessee.this.firer;
-                                if (firer != null) {
-                                    firer.fire(LesseeListener::onError, EtcdLessee.this, cause);
-                                }
-                            }
-
-                            @Override
-                            public void onCompleted() {
-                                EventFirer<LesseeListener, Lessee> firer = EtcdLessee.this.firer;
-                                if (firer != null) {
-                                    firer.fire(LesseeListener::onCompleted, EtcdLessee.this);
-                                }
-                            }
-                        });
-                        status.compareAndSet(GRANT, LIVE);
                     }).thenApply(r -> this);
         }
         return failedFuture(new LesseeException("Leaser status can not grant"));
