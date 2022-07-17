@@ -8,10 +8,19 @@ import java.lang.annotation.*;
 @Documented
 public @interface ClassDoc {
 
+    /**
+     * @return 描述
+     */
     String value();
 
+    /**
+     * @return 类名
+     */
     String name() default "";
 
+    /**
+     * @return 细节描述
+     */
     String text() default "";
 
 }

@@ -25,6 +25,19 @@ public class ShardingRange<N extends ShardingNode> {
 
     private List<Range<Long>> ranges;
 
+    public ShardingRange(long fromSlot, long toSlot, long maxSlot) {
+        this.partition = null;
+        if (fromSlot > maxSlot) {
+            fromSlot = 0;
+        }
+        this.maxSlot = maxSlot;
+        this.fromSlot = fromSlot;
+        this.toSlot = toSlot;
+        if (fromSlot > toSlot) {
+            across = true;
+        }
+    }
+
     public ShardingRange(Partition<N> prevPartition, Partition<N> partition, long maxSlot) {
         this.partition = partition;
         long fromSlot = prevPartition.getSlot() + 1;

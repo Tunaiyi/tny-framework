@@ -17,11 +17,14 @@ public class NameNode<T> {
 
     private final long version;
 
-    public NameNode(String name, long id, T value, long version) {
+    private final long revision;
+
+    public NameNode(String name, long id, T value, long version, long revision) {
         this.name = name;
         this.id = id;
         this.value = value;
         this.version = version;
+        this.revision = revision;
     }
 
     public String getName() {
@@ -38,6 +41,10 @@ public class NameNode<T> {
 
     public long getVersion() {
         return version;
+    }
+
+    public long getRevision() {
+        return revision;
     }
 
 }

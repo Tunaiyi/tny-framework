@@ -24,7 +24,7 @@ public class VarConfiger {
     @XStreamAsAttribute
     private String text;
 
-    private final ParamDocHolder paramHolder;
+    private final DocParam paramHolder;
 
     //    public VarConfiger(FieldDocHolder holder, TypeFormatter typeFormatter) {
     //        this.name = holder.getField().getName();
@@ -37,7 +37,7 @@ public class VarConfiger {
     //        }
     //    }
 
-    public VarConfiger(ParamDocHolder holder, TypeFormatter typeFormatter) {
+    public VarConfiger(DocParam holder, TypeFormatter typeFormatter) {
         this.name = holder.getName();
         this.des = holder.getVarDoc().value();
         this.className = typeFormatter.format(holder.getVarClass());

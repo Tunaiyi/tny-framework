@@ -4,7 +4,7 @@ import com.tny.game.codec.*;
 import com.tny.game.codec.configuration.*;
 import com.tny.game.namespace.etcd.*;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.condition.*;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.*;
 
@@ -22,7 +22,6 @@ import org.springframework.context.annotation.*;
 public class EtcdNamespaceAutoConfiguration {
 
     @Bean
-    @ConditionalOnBean(ObjectCodecAdapter.class)
     @ConditionalOnClass(EtcdNamespaceExplorerFactory.class)
     EtcdNamespaceExplorerFactory etcdNamespaceExplorerFactory(EtcdNamespaceProperties properties, ObjectCodecAdapter objectCodecAdapter) {
         return new EtcdNamespaceExplorerFactory(properties, null, objectCodecAdapter);

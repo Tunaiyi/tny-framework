@@ -21,6 +21,7 @@ dependencies {
     api project(":tny-game-scanning")
     api project(":tny-game-expr-mvel")
     api libs.jackson_core
+    api libs.guava
     api libs.jackson_databind
     api libs.jackson_annotations
 

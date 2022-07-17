@@ -11,7 +11,7 @@ import java.util.*;
 
 public class ModuleTableAttribute implements TableAttribute {
 
-    private ModuleConfiger module;
+    private ModuleDescription module;
 
     @JsonIgnore
     private ExportHolder exportHolder;
@@ -22,17 +22,17 @@ public class ModuleTableAttribute implements TableAttribute {
 
     public ModuleTableAttribute(Class<?> clazz, TypeFormatter typeFormatter) {
         super();
-        this.module = ModuleConfiger.create(Objects.requireNonNull(ClassDocHolder.create(clazz)), typeFormatter);
+        this.module = ModuleDescription.create(Objects.requireNonNull(ClassDocHolder.create(clazz)), typeFormatter);
         this.exportHolder = ExportHolder.create(clazz);
     }
 
     @Override
     public void putAttribute(Class<?> clazz, TypeFormatter typeFormatter, Attributes attributes) {
-        this.module = ModuleConfiger.create(Objects.requireNonNull(ClassDocHolder.create(clazz)), typeFormatter);
+        this.module = ModuleDescription.create(Objects.requireNonNull(ClassDocHolder.create(clazz)), typeFormatter);
         this.exportHolder = ExportHolder.create(clazz);
     }
 
-    public ModuleConfiger getModule() {
+    public ModuleDescription getModule() {
         return module;
     }
 

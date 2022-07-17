@@ -13,4 +13,6 @@ public interface HashAlgorithm {
 
     long getMax();
 
+    String alignDigits(long hashCode);
+
 }

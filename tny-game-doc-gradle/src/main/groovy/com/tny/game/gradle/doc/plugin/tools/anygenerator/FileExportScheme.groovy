@@ -3,7 +3,9 @@ package com.tny.game.gradle.doc.plugin.tools.anygenerator
 import com.tny.game.doc.LangTypeFormatter
 import com.tny.game.doc.TypeFormatter
 import com.tny.game.doc.controller.ModuleTableAttribute
-import com.tny.game.doc.enums.EnumTableAttribute
+import com.tny.game.doc.enumeration.AllEnumsTableAttribute
+import com.tny.game.doc.enumeration.EnumTableAttribute
+import com.tny.game.doc.enumeration.JoinedEnumItemsTableAttribute
 import com.tny.game.doc.general.ClassesTableAttribute
 import com.tny.game.doc.output.ExportTask
 import com.tny.game.doc.output.OutputType
@@ -202,6 +204,14 @@ class FileExportScheme {
 
     void enumAttributeFactory() {
         this.attributeFactory = { new EnumTableAttribute() }
+    }
+
+    void allEnumsAttributeFactory() {
+        this.attributeFactory = { new AllEnumsTableAttribute() }
+    }
+
+    void joinedEnumItemsTableAttribute() {
+        this.attributeFactory = { new JoinedEnumItemsTableAttribute() }
     }
 
     void classesAttributeFactory() {

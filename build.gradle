@@ -2,7 +2,7 @@ plugins {
     id 'org.ajoberstar.grgit' version '4.0.2' apply false
     id 'org.springframework.boot' version "${springBootVersion}" apply false
     id 'io.spring.dependency-management' version '1.0.11.RELEASE' apply false
-    id 'com.baidu.jprotobuf' version "1.0.9" apply false
+    id 'com.baidu.jprotobuf' version "1.1.1" apply false
 }
 
 apply from: "${rootDir}/gradle/dependency.gradle"
@@ -122,10 +122,7 @@ configure(javaProjects) {
 
     sourceCompatibility = "${javaVersion}"
     targetCompatibility = "${javaVersion}"
-    compileJava {
-        sourceCompatibility = "${javaVersion}"
-        targetCompatibility = "${javaVersion}"
-    }
+
     task createProject {
         doLast {
             sourceSets*.java.srcDirs*.each { it.mkdirs() }
@@ -145,10 +142,9 @@ configure(javaProjects) {
     [compileJava, compileTestJava, javadoc]*.options*.encoding = "${encoding}"
 
     compileJava {
-        options.compilerArgs << '-XDignore.symbol.file'
-        options.fork = true // may not needed on 1.8
+        options.compilerArgs << '-parameters'
+        options.fork = true
         options.encoding = "UTF-8"
-        options.forkOptions.executable = 'javac' // may not needed on 1.8
     }
 
     jar {
@@ -174,8 +170,8 @@ configure(javaProjects) {
         implementation libs.slf4j_api
 
         testImplementation libs.mockito_junit_jupiter
-        testImplementation libs.junit_jupiter_api
-        testImplementation libs.junit_jupiter_engine
+        testImplementation libs.junit_jupiter
+//        testImplementation libs.junit_jupiter_engine
         testImplementation libs.jmock_junit5
         testImplementation libs.spring_test
         testImplementation libs.slf4j_simple

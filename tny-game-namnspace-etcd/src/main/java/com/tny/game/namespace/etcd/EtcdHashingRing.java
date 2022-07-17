@@ -64,7 +64,7 @@ public class EtcdHashingRing<N extends ShardingNode> extends EtcdObject implemen
     private final ShardingSet<N> ring;
 
     // 序列化类型
-    private final ObjectMineType<ShardingPartition<N>> partitionMineType;
+    private final ObjectMineType<RingPartition<N>> partitionMineType;
 
     // 本地节点
     private final Map<N, Map<Integer, PartitionTask>> nodePartitionTaskMap = new ConcurrentHashMap<>();
@@ -72,25 +72,25 @@ public class EtcdHashingRing<N extends ShardingNode> extends EtcdObject implemen
     // 分区恢复状态
     private final AtomicBoolean restoring = new AtomicBoolean();
 
-    private final WatchListener<ShardingPartition<N>> partitionListener = new WatchListener<ShardingPartition<N>>() {
+    private final WatchListener<RingPartition<N>> partitionListener = new WatchListener<RingPartition<N>>() {
 
         @Override
-        public void onLoad(NameNodesWatcher<ShardingPartition<N>> watcher, List<NameNode<ShardingPartition<N>>> nameNodes) {
+        public void onLoad(NameNodesWatcher<RingPartition<N>> watcher, List<NameNode<RingPartition<N>>> nameNodes) {
             load(nameNodes.stream().map(NameNode::getValue).collect(Collectors.toList()));
         }
 
         @Override
-        public void onCreate(NameNodesWatcher<ShardingPartition<N>> watcher, NameNode<ShardingPartition<N>> node) {
+        public void onCreate(NameNodesWatcher<RingPartition<N>> watcher, NameNode<RingPartition<N>> node) {
             save(node.getValue());
         }
 
         @Override
-        public void onUpdate(NameNodesWatcher<ShardingPartition<N>> watcher, NameNode<ShardingPartition<N>> node) {
+        public void onUpdate(NameNodesWatcher<RingPartition<N>> watcher, NameNode<RingPartition<N>> node) {
             save(node.getValue());
         }
 
         @Override
-        public void onDelete(NameNodesWatcher<ShardingPartition<N>> watcher, NameNode<ShardingPartition<N>> node) {
+        public void onDelete(NameNodesWatcher<RingPartition<N>> watcher, NameNode<RingPartition<N>> node) {
             remove(node.getValue());
         }
 
@@ -110,9 +110,9 @@ public class EtcdHashingRing<N extends ShardingNode> extends EtcdObject implemen
 
     };
 
-    private Lessee lessee;
+    private volatile Lessee lessee;
 
-    private NameNodesWatcher<ShardingPartition<N>> partitionWatcher;
+    private volatile NameNodesWatcher<RingPartition<N>> partitionWatcher;
 
     private volatile int status = INIT;
 
@@ -123,10 +123,15 @@ public class EtcdHashingRing<N extends ShardingNode> extends EtcdObject implemen
         this.explorer = explorer;
         this.ttl = option.getTtl();
         this.rootPath = NamespacePaths.dirPath(rootPath);
-        this.algorithm = ifNull(option.getAlgorithm(), HashAlgorithms.XX3_32_HASH);
+        this.algorithm = ifNull(option.getAlgorithm(), HashAlgorithms.getDefault());
         this.partitionCount = Math.max(1, option.getPartitionCount());
         this.partitionMineType = ObjectMineType.of(option.getType(), JsonMimeType.JSON);
         this.ring = new ConsistentHashRing<>(name, algorithm);
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
     @Override
@@ -136,20 +141,27 @@ public class EtcdHashingRing<N extends ShardingNode> extends EtcdObject implemen
             if (status == INIT) {
                 status = STARTING;
                 if (this.lessee == null) {
-                    explorer.lease(name, this.ttl).whenComplete((lessee, cause) -> {
-                        if (cause != null) {
-                            LOGGER.error("{} lease exception ", this.name, cause);
-                            future.completeExceptionally(cause);
-                        } else {
-                            this.setLessee(lessee);
-                        }
-                    });
+                    this.doLeaseAndWatch(future);
+                } else {
+                    this.doWatch(future);
                 }
-                this.doWatch(future);
+                future.whenComplete((r, cause) -> onStartFailed());
                 return future;
             }
             future.completeExceptionally(new HashRingException(format("{} start failed, status is {}", this.name, this.status)));
             return future;
+        }
+    }
+
+    private void onStartFailed() {
+        if (status != STARTING) {
+            return;
+        }
+        synchronized (this) {
+            if (status != STARTING) {
+                return;
+            }
+            status = INIT;
         }
     }
 
@@ -160,7 +172,7 @@ public class EtcdHashingRing<N extends ShardingNode> extends EtcdObject implemen
      * @return 返回注册的分区
      */
     @Override
-    public CompletableFuture<List<RingPartition<N>>> register(N node) {
+    public CompletableFuture<List<ShardingPartition<N>>> register(N node) {
         if (this.status != EXECUTE) {
             return CompleteFutureAide.failedFuture(new HashRingException("ring is not start, status is {}", this.status));
         }
@@ -189,7 +201,7 @@ public class EtcdHashingRing<N extends ShardingNode> extends EtcdObject implemen
                 return;
             }
             if (this.partitionWatcher != null) {
-                this.partitionWatcher.stop();
+                this.partitionWatcher.unwatch();
                 this.partitionWatcher = null;
             }
             nodePartitionTaskMap.forEach((id, taskMap) -> taskMap.forEach((index, task) -> task.close()));
@@ -275,13 +287,28 @@ public class EtcdHashingRing<N extends ShardingNode> extends EtcdObject implemen
         });
     }
 
-    private void execute(NameNodesWatcher<ShardingPartition<N>> watcher) {
+    private void doLeaseAndWatch(CompletableFuture<HashingRing<N>> future) {
+        if (lessee != null) {
+            return;
+        }
+        explorer.lease(name, this.ttl).whenComplete((lessee, cause) -> {
+            if (cause != null) {
+                LOGGER.error("{} lease exception ", this.name, cause);
+                future.completeExceptionally(cause);
+            } else {
+                this.setLessee(lessee);
+                this.doWatch(future);
+            }
+        });
+    }
+
+    private void execute(NameNodesWatcher<RingPartition<N>> watcher) {
         synchronized (this) {
             if (status == STARTING) {
                 this.partitionWatcher = watcher;
                 this.status = EXECUTE;
             } else {
-                watcher.stop();
+                watcher.unwatch();
             }
         }
     }
@@ -305,17 +332,17 @@ public class EtcdHashingRing<N extends ShardingNode> extends EtcdObject implemen
         }
     }
 
-    private CompletableFuture<List<RingPartition<N>>> registerPartitions(N node, Map<Integer, PartitionTask> taskMap) {
-        CompletableFuture<List<RingPartition<N>>> finalFuture = new CompletableFuture<>();
-        List<CompletableFuture<RingPartition<N>>> futures = Collections.synchronizedList(new ArrayList<>());
-        List<RingPartition<N>> successList = Collections.synchronizedList(new ArrayList<>());
+    private CompletableFuture<List<ShardingPartition<N>>> registerPartitions(N node, Map<Integer, PartitionTask> taskMap) {
+        CompletableFuture<List<ShardingPartition<N>>> finalFuture = new CompletableFuture<>();
+        List<CompletableFuture<ShardingPartition<N>>> futures = Collections.synchronizedList(new ArrayList<>());
+        List<ShardingPartition<N>> successList = Collections.synchronizedList(new ArrayList<>());
         for (int index = 0; taskMap.size() < this.partitionCount; index++) {
             if (taskMap.containsKey(index)) {
                 continue;
             }
             PartitionTask task = new PartitionTask(index, node);
             taskMap.put(task.getIndex(), task);
-            CompletableFuture<RingPartition<N>> future = task.register();
+            CompletableFuture<ShardingPartition<N>> future = task.register();
             future.whenComplete((partition, cause) -> {
                 if (partition != null) {
                     successList.add(partition);
@@ -348,11 +375,11 @@ public class EtcdHashingRing<N extends ShardingNode> extends EtcdObject implemen
         return Math.abs(algorithm.hash(key, seed));
     }
 
-    private void registerPartition(PartitionTask task, CompletableFuture<RingPartition<N>> future) {
-        ShardingPartition<N> partition = task.getPartition();
+    private void registerPartition(PartitionTask task, CompletableFuture<ShardingPartition<N>> future) {
+        RingPartition<N> partition = task.getPartition();
         partition.setSlot(hash(partition.getKey(), task.getSeed()));
         if (lessee.isLive()) {
-            explorer.add(rootPath + partition.getSlot(), partitionMineType, partition, lessee)
+            explorer.add(rootPath + algorithm.alignDigits(partition.getSlot()), partitionMineType, partition, lessee)
                     .whenComplete((nameNode, cause) -> {
                         if (nameNode != null) {
                             if (future != null) {
@@ -387,7 +414,7 @@ public class EtcdHashingRing<N extends ShardingNode> extends EtcdObject implemen
 
     private class PartitionTask {
 
-        private final ShardingPartition<N> partition;
+        private final RingPartition<N> partition;
 
         private int seed = 0;
 
@@ -396,10 +423,10 @@ public class EtcdHashingRing<N extends ShardingNode> extends EtcdObject implemen
         private volatile boolean close = false;
 
         private PartitionTask(int index, N node) {
-            this.partition = new ShardingPartition<>(index, node);
+            this.partition = new RingPartition<>(index, node);
         }
 
-        private ShardingPartition<N> getPartition() {
+        private RingPartition<N> getPartition() {
             return partition;
         }
 
@@ -415,7 +442,7 @@ public class EtcdHashingRing<N extends ShardingNode> extends EtcdObject implemen
             this.close = true;
         }
 
-        private void tryAgain(CompletableFuture<RingPartition<N>> future) {
+        private void tryAgain(CompletableFuture<ShardingPartition<N>> future) {
             if (close) {
                 future.cancel(true);
             } else {
@@ -423,7 +450,7 @@ public class EtcdHashingRing<N extends ShardingNode> extends EtcdObject implemen
             }
         }
 
-        private void tryNext(CompletableFuture<RingPartition<N>> future) {
+        private void tryNext(CompletableFuture<ShardingPartition<N>> future) {
             if (close) {
                 future.cancel(true);
             } else {
@@ -432,8 +459,8 @@ public class EtcdHashingRing<N extends ShardingNode> extends EtcdObject implemen
             }
         }
 
-        private CompletableFuture<RingPartition<N>> register() {
-            CompletableFuture<RingPartition<N>> future = new CompletableFuture<>();
+        private CompletableFuture<ShardingPartition<N>> register() {
+            CompletableFuture<ShardingPartition<N>> future = new CompletableFuture<>();
             synchronized (this) {
                 if (close) {
                     future.cancel(true);

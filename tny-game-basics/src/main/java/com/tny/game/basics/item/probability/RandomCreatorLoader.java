@@ -29,8 +29,11 @@ public final class RandomCreatorLoader {
                 continue;
             }
             try {
-                RandomCreatorFactory factory = (RandomCreatorFactory)clazz.newInstance();
-                factory.registerSelf();
+                var object = clazz.getDeclaredConstructor().newInstance();
+                if (object instanceof RandomCreatorFactory) {
+                    RandomCreatorFactory<?, ?> factory = (RandomCreatorFactory<?, ?>)object;
+                    factory.registerSelf();
+                }
             } catch (Exception e) {
                 Asserts.throwWith(IllegalArgumentException::new, e, "创建 {} 异常", clazz);
             }

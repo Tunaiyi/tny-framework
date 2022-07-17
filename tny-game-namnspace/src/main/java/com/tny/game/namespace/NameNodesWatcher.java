@@ -34,7 +34,17 @@ public interface NameNodesWatcher<T> {
     /**
      * 停止监控
      */
-    void stop();
+    void unwatch();
+
+    /**
+     * @return 是否是停止监控
+     */
+    boolean isUnwatch();
+
+    /**
+     * @return 是否是监控
+     */
+    boolean isWatch();
 
     /**
      * @return 监控者时间

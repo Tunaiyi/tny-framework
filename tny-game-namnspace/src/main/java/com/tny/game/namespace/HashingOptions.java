@@ -12,44 +12,36 @@ import com.tny.game.namespace.consistenthash.*;
  **/
 public class HashingOptions<N extends ShardingNode> {
 
-    private String name;
+    private final String name;
 
-    private long ttl = 3000;
+    private final long ttl;
 
-    private HashAlgorithm algorithm = HashAlgorithms.XX3_32_HASH;
+    private final HashAlgorithm algorithm;
 
-    private int partitionCount = 5;
+    private final int partitionCount;
 
-    private ReferenceType<ShardingPartition<N>> type;
+    private final ReferenceType<RingPartition<N>> type;
 
-    public static <N extends ShardingNode> HashingOptions<N> option(ReferenceType<ShardingPartition<N>> type) {
-        return new HashingOptions<N>()
-                .withType(type);
+    private HashingOptions(Builder<N> builder) {
+        name = builder.name;
+        ttl = builder.ttl;
+        algorithm = builder.algorithm;
+        partitionCount = builder.partitionCount;
+        type = builder.type;
     }
 
-    public HashingOptions<N> setTtl(long ttl) {
-        this.ttl = ttl <= 1000 ? 5000 : ttl;
-        return this;
+    public static <N extends ShardingNode> Builder<N> newBuilder(ReferenceType<RingPartition<N>> type) {
+        return new Builder<N>().setType(type);
     }
 
-    public HashingOptions<N> withName(String name) {
-        this.name = name;
-        return this;
-    }
-
-    public HashingOptions<N> withAlgorithm(HashAlgorithm algorithm) {
-        this.algorithm = algorithm;
-        return this;
-    }
-
-    public HashingOptions<N> withPartitionCount(int partitionCount) {
-        this.partitionCount = partitionCount;
-        return this;
-    }
-
-    public HashingOptions<N> withType(ReferenceType<ShardingPartition<N>> type) {
-        this.type = type;
-        return this;
+    public static <N extends ShardingNode> Builder<N> newBuilder(HashingOptions<N> copy) {
+        var builder = new Builder<N>();
+        builder.name = copy.getName();
+        builder.ttl = copy.getTtl();
+        builder.algorithm = copy.getAlgorithm();
+        builder.partitionCount = copy.getPartitionCount();
+        builder.type = copy.getType();
+        return builder;
     }
 
     public String getName() {
@@ -68,8 +60,54 @@ public class HashingOptions<N extends ShardingNode> {
         return partitionCount;
     }
 
-    public ReferenceType<ShardingPartition<N>> getType() {
+    public ReferenceType<RingPartition<N>> getType() {
         return type;
+    }
+
+    public static final class Builder<N extends ShardingNode> {
+
+        private String name;
+
+        private long ttl = 3000;
+
+        private HashAlgorithm algorithm = HashAlgorithms.getDefault();
+
+        private int partitionCount = 5;
+
+        private ReferenceType<RingPartition<N>> type;
+
+        private Builder() {
+        }
+
+        public Builder<N> setName(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder<N> setTtl(long ttl) {
+            this.ttl = ttl <= 1000 ? 5000 : ttl;
+            return this;
+        }
+
+        public Builder<N> setAlgorithm(HashAlgorithm algorithm) {
+            this.algorithm = algorithm;
+            return this;
+        }
+
+        public Builder<N> setPartitionCount(int partitionCount) {
+            this.partitionCount = partitionCount;
+            return this;
+        }
+
+        public Builder<N> setType(ReferenceType<RingPartition<N>> type) {
+            this.type = type;
+            return this;
+        }
+
+        public HashingOptions<N> build() {
+            return new HashingOptions<>(this);
+        }
+
     }
 
 }

@@ -132,4 +132,9 @@ public class MapObjectLocker<O> implements ObjectLocker<O> {
         return lockMap.size();
     }
 
+    @Override
+    public String toString() {
+        return "MapObjectLocker{" + "lockMap=" + lockMap + '}';
+    }
+
 }

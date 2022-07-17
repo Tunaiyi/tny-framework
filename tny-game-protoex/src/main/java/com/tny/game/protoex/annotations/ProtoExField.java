@@ -1,7 +1,5 @@
 package com.tny.game.protoex.annotations;
 
-import com.tny.game.doc.annotation.*;
-
 import java.lang.annotation.*;
 
 /**
@@ -16,7 +14,6 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
-@DocAnnotationClass
 public @interface ProtoExField {
 
     /**

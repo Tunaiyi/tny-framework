@@ -7,9 +7,18 @@ import java.lang.annotation.*;
  */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
+@Repeatable(DocTags.class)
 @Documented
 public @interface DocTag {
 
-    String[] value();
+    /**
+     * @return tag 值
+     */
+    String tag();
+
+    /**
+     * @return tag
+     */
+    String value() default "";
 
 }

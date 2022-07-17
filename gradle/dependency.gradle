@@ -1,11 +1,11 @@
 ext.vers = [
 
         jmock                               : "2.12.0",
-        junit                               : "5.7.2",
-        junit_platform                      : "1.7.0",
+        junit                               : "5.8.2",
+        junit_platform                      : "1.8.2",
         junirocketmqt5                      : "5.4.2",
         mockito                             : "3.9.0",
-        netty                               : "4.1.63.Final",
+        netty                               : "4.1.78.Final",
 
         spring                              : "5.3.5",
         slf4j                               : "1.7.30",
@@ -145,6 +145,7 @@ ext.libs = [
 
         joda_time                                : "joda-time:joda-time:2.10.2",
 
+        junit_jupiter                            : "org.junit.jupiter:junit-jupiter:$vers.junit",
         junit_jupiter_api                        : "org.junit.jupiter:junit-jupiter-api:$vers.junit",
         junit_jupiter_engine                     : "org.junit.jupiter:junit-jupiter-engine:$vers.junit",
         junit_vintage_engine                     : "org.junit.vintage:junit-vintage-engine:$vers.junit",
@@ -254,8 +255,8 @@ ext.libs = [
 //        tny_protoex                              : "com.tny.game:tny-game-protoex:$vers.tny_framework",
 
         protobuf_java                            : "com.google.protobuf:protobuf-java:3.8.0",
-        jprotobuf                                : "com.baidu:jprotobuf:2.4.14",
-        jprotobuf_precompile_plugin_gradle       : "gradle.plugin.com.baidu.jprotobuf:jprotobuf-precompile-plugin-gradle:1.1.0",
+        jprotobuf                                : "com.baidu:jprotobuf:2.4.15",
+        jprotobuf_precompile_plugin_gradle       : "gradle.plugin.com.baidu.jprotobuf:jprotobuf-precompile-plugin-gradle:1.1.1",
 
         swagger_models                           : "io.swagger.core.v3:swagger-models:$vers.swagger_v3",
         swagger_annotations                      : "io.swagger.core.v3:swagger-annotations:$vers.swagger_v3",
@@ -276,13 +277,8 @@ ext.libs = [
         nimbus_oauth2_oidc_sdk                   : "com.nimbusds:oauth2-oidc-sdk:8.21",
 
 
-        kaptcha                                  : "com.github.penggle:kaptcha:2.3.2",
-        mail                                     : "com.sun.mail:javax.mail:1.6.2",
-        mail_api                                 : "javax.mail:javax.mail-api:1.6.2",
-        libphonenumber                           : "com.googlecode.libphonenumber:libphonenumber:8.12.3",
-        carrier                                  : "com.googlecode.libphonenumber:carrier:1.129",
-        aliyun_java_sdk_core                     : "com.aliyun:aliyun-java-sdk-core:4.5.0",
-        javaee                                   : "javax:javaee-api:8.0.1",
+        javax_javaee                             : "javax:javaee-api:8.0.1",
+        javax_annotation_api                     : "javax.annotation:javax.annotation-api:1.3.2",
 
         caffeine                                 : "com.github.ben-manes.caffeine:caffeine:2.8.8",
 

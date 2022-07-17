@@ -4,6 +4,7 @@ apply plugin: "maven-publish"
 
 dependencies {
 
+    api libs.javax_annotation_api
     api project(":tny-game-net")
     api project(":tny-game-codec-jackson")
 

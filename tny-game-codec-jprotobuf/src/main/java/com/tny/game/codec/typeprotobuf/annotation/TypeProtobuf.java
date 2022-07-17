@@ -1,7 +1,5 @@
 package com.tny.game.codec.typeprotobuf.annotation;
 
-import com.tny.game.doc.annotation.*;
-
 import java.lang.annotation.*;
 
 /**
@@ -11,7 +9,6 @@ import java.lang.annotation.*;
 @Documented
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@DocAnnotationClass
 public @interface TypeProtobuf {
 
     /**

@@ -18,9 +18,9 @@ import static com.tny.game.common.utils.StringAide.*;
 
 public class DTOTableAttribute implements TableAttribute {
 
-    private DTOConfig dto;
+    private DTODescription dto;
 
-    private static final AttrKey<Map<Object, DTOConfig>> KEY = AttrKeys.key(DTOTableAttribute.class, "ConfigMap");
+    private static final AttrKey<Map<Object, DTODescription>> KEY = AttrKeys.key(DTOTableAttribute.class, "ConfigMap");
 
     @JsonIgnore
     @XStreamOmitField
@@ -69,7 +69,7 @@ public class DTOTableAttribute implements TableAttribute {
         this.fieldIdGetter = as(fieldIdGetter);
     }
 
-    public DTOConfig getDto() {
+    public DTODescription getDto() {
         return dto;
     }
 
@@ -80,23 +80,24 @@ public class DTOTableAttribute implements TableAttribute {
         this.exportHolder = ExportHolder.create(clazz);
     }
 
-    public DTOConfig create(DTODocHolder holder, TypeFormatter typeFormatter, Attributes attributes) {
-        Map<Object, DTOConfig> configMap = attributes.computeIfAbsent(KEY, ConcurrentHashMap::new);
+    public DTODescription create(DTODocHolder holder, TypeFormatter typeFormatter, Attributes attributes) {
+        Map<Object, DTODescription> configMap = attributes.computeIfAbsent(KEY, ConcurrentHashMap::new);
         Object id = holder.getId();
         if (id != null) {
-            DTOConfig configer = configMap.get(holder.getId());
-            DTOConfig old;
+            DTODescription configer = configMap.get(holder.getId());
+            DTODescription old;
             if (configer != null) {
-                if (configer.getClassName().equals(holder.getEntityClass().getSimpleName())) {
+                if (configer.getDocClassName().equals(holder.getEntityClass().getSimpleName())) {
                     return configer;
                 }
-                throw new IllegalArgumentException(format("{} 类 与 {} 类 ID 都为 {}", configer.getClassName(), holder.getEntityClass(), holder.getId()));
+                throw new IllegalArgumentException(
+                        format("{} 类 与 {} 类 ID 都为 {}", configer.getDocClassName(), holder.getEntityClass(), holder.getId()));
             } else {
-                configer = new DTOConfig(holder, typeFormatter);
+                configer = new DTODescription(holder, typeFormatter);
                 old = configMap.putIfAbsent(configer.getId(), configer);
                 if (old != null) {
                     throw new IllegalArgumentException(
-                            format("{} 类 与 {} 类 ID 都为 {}", configer.getClassName(), holder.getEntityClass(), holder.getId()));
+                            format("{} 类 与 {} 类 ID 都为 {}", configer.getDocClassName(), holder.getEntityClass(), holder.getId()));
                 } else {
                     return configer;
                 }

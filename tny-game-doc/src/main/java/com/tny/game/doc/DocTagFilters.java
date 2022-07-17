@@ -33,7 +33,7 @@ public interface DocTagFilters {
         AnnotationMetadata annotationMetadata = reader.getAnnotationMetadata();
         Set<String> names = annotationMetadata.getAnnotationTypes();
         if (names.contains(DocTag.class.getName())) {
-            Map<String, Object> group = annotationMetadata.getAnnotationAttributes(DocTag.class.getName());
+            Map<String, Object> group = annotationMetadata.getAnnotationAttributes(DocTags.class.getName());
             String[] annoGroups = (String[])group.get("value");
             for (String g : annoGroups) {
                 if (groups.contains(g)) {

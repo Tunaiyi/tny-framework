@@ -1,6 +1,5 @@
 package com.tny.game.doc.dto;
 
-import com.thoughtworks.xstream.annotations.*;
 import com.tny.game.common.collection.map.*;
 import com.tny.game.common.context.*;
 import com.tny.game.doc.*;
@@ -14,15 +13,15 @@ import static com.tny.game.common.utils.ObjectAide.*;
 
 public class PushDTOTableAttribute implements TableAttribute {
 
-    private PushDTOList pushDTOList = new PushDTOList();
+    private final SortedSet<PushDTODescription> pushDTOList = new TreeSet<>();
 
-    private Class<Annotation> classAnnotation;
+    private final Class<Annotation> classAnnotation;
 
-    private Function<Annotation, Object> classIdGetter;
+    private final Function<Annotation, Object> classIdGetter;
 
-    private Class<Annotation> fieldAnnotation;
+    private final Class<Annotation> fieldAnnotation;
 
-    private Function<Annotation, Object> fieldIdGetter;
+    private final Function<Annotation, Object> fieldIdGetter;
 
     public static <C extends Annotation, F extends Annotation> PushDTOTableAttribute create(
             Class<C> classAnnotation, Function<C, Object> classIdGetter,
@@ -39,27 +38,15 @@ public class PushDTOTableAttribute implements TableAttribute {
         this.fieldIdGetter = as(fieldIdGetter);
     }
 
-    @XStreamAlias("pushDTOList")
-    private static class PushDTOList {
-
-        @XStreamAsAttribute
-        @XStreamAlias("class")
-        private String type = "list";
-
-        @XStreamImplicit(itemFieldName = "pushDTO")
-        private SortedSet<PushDTOInfo> pushDTOList = new TreeSet<PushDTOInfo>();
-
-    }
-
-    public SortedSet<PushDTOInfo> getPushDTOSet() {
-        return Collections.unmodifiableSortedSet(pushDTOList.pushDTOList);
+    public SortedSet<PushDTODescription> getPushDTOSet() {
+        return Collections.unmodifiableSortedSet(pushDTOList);
     }
 
     @Override
     public void putAttribute(Class<?> clazz, TypeFormatter typeFormatter, Attributes attributes) {
-        PushDTOInfo info = PushDTOInfo.create(clazz, classAnnotation, classIdGetter, fieldAnnotation, fieldIdGetter);
+        PushDTODescription info = PushDTODescription.create(clazz, classAnnotation, classIdGetter, fieldAnnotation, fieldIdGetter);
         if (info != null) {
-            this.pushDTOList.pushDTOList.add(info);
+            this.pushDTOList.add(info);
         }
     }
 

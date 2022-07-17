@@ -2,64 +2,12 @@ group "com.tny.game"
 
 apply plugin: "maven-publish"
 
-apply plugin: 'com.google.protobuf'
 
 dependencies {
 
     api libs.protobuf_java3
 
-
-}
-
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.18'
-    }
-}
-
-sourceSets {
-    main {
-        proto {
-            srcDir "src/main/proto"
-            include "**/*.proto"
-        }
-    }
 }
 
 
-jar {
-//    include("**.proto")
-//    exclude("**.sql", "**.xml", "**.properties")
-}
-
-protobuf {
-    protobuf {
-        protoc {
-            // for apple m1, please add protoc_platform=osx-x86_64 in $HOME/.gradle/gradle.properties
-            if (project.hasProperty('protoc_platform')) {
-                artifact = "com.google.protobuf:protoc:3.13.0:${protoc_platform}"
-            } else {
-                artifact = "com.google.protobuf:protoc:3.13.0"
-            }
-        }
-    }
-
-
-    generateProtoTasks.generatedFilesBaseDir = file('src')
-
-    generateProtoTasks {
-        all().each { task ->
-        }
-        ofSourceSet('main')
-    }
-}
-
-idea {
-    module {
-        sourceDirs += file("src/main/proto");
-    }
-}
 

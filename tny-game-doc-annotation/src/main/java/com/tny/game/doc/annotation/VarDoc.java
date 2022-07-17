@@ -8,8 +8,9 @@ import java.lang.annotation.*;
 @Documented
 public @interface VarDoc {
 
+    /**
+     * @return 注释
+     */
     String value();
-
-    String text() default "";
 
 }

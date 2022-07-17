@@ -12,9 +12,9 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * <p>
  */
-public class ObjectLockerTest {
+class ObjectLockerTest {
 
-    private MapObjectLocker<Object> locker;
+    private volatile MapObjectLocker<Object> locker;
 
     private ExecutorService service = Executors.newCachedThreadPool();
 
@@ -23,13 +23,13 @@ public class ObjectLockerTest {
     private int number = 0;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         this.locker = new MapObjectLocker<>();
         this.number = this.initNumber;
     }
 
     @Test
-    public void lock() throws ExecutionException, InterruptedException {
+    void lock() throws ExecutionException, InterruptedException {
         int taskSize = 100;
         CountDownLatch latch = new CountDownLatch(taskSize);
         List<Future<Integer>> futures = new ArrayList<>();
@@ -64,7 +64,7 @@ public class ObjectLockerTest {
     }
 
     @Test
-    public void tryLock() throws ExecutionException, InterruptedException {
+    void tryLock() throws ExecutionException, InterruptedException {
         int taskSize = 30;
         CountDownLatch latch = new CountDownLatch(taskSize);
         List<Future<Boolean>> futures = new ArrayList<>();
@@ -104,7 +104,7 @@ public class ObjectLockerTest {
     }
 
     @Test
-    public void tryLock1() throws ExecutionException, InterruptedException {
+    void tryLock1() throws ExecutionException, InterruptedException {
         int taskSize = 30;
         CountDownLatch latch = new CountDownLatch(taskSize);
         List<Future<Boolean>> futures = new ArrayList<>();
@@ -145,7 +145,7 @@ public class ObjectLockerTest {
     }
 
     @Test
-    public void lockInterruptibly() throws InterruptedException {
+    void lockInterruptibly() throws InterruptedException {
         int taskSize = 30;
         int interruptedSize = 30 / 2;
         CountDownLatch latch = new CountDownLatch(taskSize);
@@ -186,13 +186,13 @@ public class ObjectLockerTest {
                 }
             }
         }
-        assertEquals(taskSize - interruptedSize, sortedSet.size());
-        assertEquals(interruptedSize, interruptedNum);
+        assertEquals(taskSize - interruptedSize, sortedSet.size(), "" + this.locker);
+        assertEquals(interruptedSize, interruptedNum, "" + this.locker);
         int expected = this.initNumber;
         for (int num : sortedSet) {
             assertEquals(++expected, num);
         }
-        assertEquals(0, this.locker.size());
+        assertEquals(0, this.locker.size(), "" + this.locker);
     }
 
 }

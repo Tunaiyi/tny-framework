@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Created by Kun Yang on 16/2/2.
  */
 @SuppressWarnings("unchecked")
-public class TypeStageTest extends FlowTestUnits {
+class TypeStageTest extends FlowTestUnits {
 
     // @Test
     // public void testJoinApply() throws Exception {

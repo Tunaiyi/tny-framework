@@ -15,7 +15,7 @@ public class NamespaceAutoConfiguration {
 
     @Bean
     @ConditionalOnBean(NamespaceExplorerFactory.class)
-    NamespaceExplorer etcdNamespaceExplorer(NamespaceExplorerFactory factory) {
+    NamespaceExplorer namespaceExplorer(NamespaceExplorerFactory factory) {
         return factory.create();
     }
 

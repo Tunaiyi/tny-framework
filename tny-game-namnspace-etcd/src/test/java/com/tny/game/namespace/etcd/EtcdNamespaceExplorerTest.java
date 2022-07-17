@@ -27,7 +27,7 @@ class EtcdNamespaceExplorerTest {
 
     private static final ObjectCodecAdapter objectCodecAdapter = new ObjectCodecAdapter(Collections.singletonList(objectCodecFactory));
 
-    public static final ReferenceType<ShardingPartition<TestShadingNode>> TYPE = new ReferenceType<ShardingPartition<TestShadingNode>>() {
+    public static final ReferenceType<RingPartition<TestShadingNode>> TYPE = new ReferenceType<RingPartition<TestShadingNode>>() {
 
     };
 
@@ -38,7 +38,9 @@ class EtcdNamespaceExplorerTest {
 
     private static final String HEAD = "/ON_Test/";
 
-    private static final String HEAD_OTHER = "/ON_Test_OTHER/";
+    private static final String HEAD_OTHER = "/ON_Test/ON_Test_OTHER/";
+
+    private static final String HASHING_PATH = "/ON_Test/ON_Hashing/";
 
     private static final String PLAYER_NODE_1_KEY = "/ON_Test/namespace/player/node1";
 
@@ -51,6 +53,7 @@ class EtcdNamespaceExplorerTest {
     @BeforeEach
     void setUp() throws ExecutionException, InterruptedException {
         explorer.removeAll(HEAD).get();
+        explorer.removeAll(HASHING_PATH).get();
         explorer.removeAll(HEAD_OTHER).get();
     }
 
@@ -478,6 +481,80 @@ class EtcdNamespaceExplorerTest {
     }
 
     @Test
+    void testPublishSubscribe() throws ExecutionException, InterruptedException {
+        Hasher<Player> hasher = Player::getName;
+        var subscriber = explorer.hashingSubscriber(HASHING_PATH, MINE_TYPE);
+        var publisher = explorer.hashingPublisher(HASHING_PATH, hasher, MINE_TYPE);
+        long maxSlot = -1L >>> 32;
+        long toSlot = maxSlot / 2;
+        List<Player> playerList = new ArrayList<>();
+        List<Player> watchedList = new ArrayList<>();
+
+        List<Player> loadList = new ArrayList<>();
+        List<Player> createList = new ArrayList<>();
+        List<Player> updateList = new ArrayList<>();
+        List<Player> deleteList = new ArrayList<>();
+        List<List<Player>> checkList = Arrays.asList(loadList, createList, updateList, deleteList);
+
+        AtomicReference<CountDownLatch> latchReference = new AtomicReference<>();
+        subscriber.addListener(new WatchListener<>() {
+
+            @Override
+            public void onLoad(NameNodesWatcher<Player> watcher, List<NameNode<Player>> nameNodes) {
+                loadList.addAll(nameNodes.stream().map(NameNode::getValue).collect(Collectors.toList()));
+            }
+
+            @Override
+            public void onCreate(NameNodesWatcher<Player> watcher, NameNode<Player> node) {
+                System.out.println("OnCrate + " + node.getName());
+                createList.add(node.getValue());
+                if (watchedList.size() == createList.size()) {
+                    latchReference.get().countDown();
+                }
+            }
+
+            @Override
+            public void onUpdate(NameNodesWatcher<Player> watcher, NameNode<Player> node) {
+                updateList.add(node.getValue());
+            }
+
+            @Override
+            public void onDelete(NameNodesWatcher<Player> watcher, NameNode<Player> node) {
+                deleteList.add(node.getValue());
+                if (watchedList.size() == deleteList.size()) {
+                    latchReference.get().countDown();
+                }
+            }
+        });
+
+        subscriber.subscribe(List.of(new ShardingRange<>(0, toSlot, maxSlot)));
+        var lessee = publisher.lease().get();
+
+        System.out.println("toSlot == " + toSlot);
+        latchReference.set(new CountDownLatch(1));
+        for (int i = 0; i < 100; i++) {
+            Player player = new Player("PLA_" + i, 10 + i);
+            long hash = hasher.hash(HashAlgorithms.getDefault(), player);
+            if (hash <= toSlot) {
+                watchedList.add(player);
+                System.out.println("watched = " + player.getName() + " = " + hash);
+            }
+            playerList.add(player);
+        }
+        for (Player player : playerList) {
+            publisher.publish(player).get();
+        }
+
+        latchReference.get().await();
+        check(checkList, 0, watchedList.size(), 0, 0);
+
+        latchReference.set(new CountDownLatch(1));
+        lessee.revoke().get();
+        latchReference.get().await();
+        check(checkList, 0, watchedList.size(), 0, watchedList.size());
+    }
+
+    @Test
     void testGetOrAdd() throws ExecutionException, InterruptedException {
         Player player = new Player(PLAYER_NODE_1_KEY, 100);
         NameNode<Player> nameNode = explorer.getOrAdd(player.getName(), MINE_TYPE, player).get();
@@ -490,8 +567,7 @@ class EtcdNamespaceExplorerTest {
     @Test
     void testAdd() throws ExecutionException, InterruptedException {
         Player player = new Player(PLAYER_NODE_1_KEY, 100);
-        Lessee lessee = explorer.lease("updateIfValueWithLessee", 3000).get();
-        NameNode<Player> nameNode = explorer.add(player.getName(), MINE_TYPE, player, lessee)
+        NameNode<Player> nameNode = explorer.add(player.getName(), MINE_TYPE, player)
                 .whenComplete((n, c) -> {
                     System.out.println(n.getValue());
                 })

@@ -14,7 +14,7 @@ public class OutputScheme {
 
     private TableAttribute attribute;
 
-    private List<Class<?>> classes = new LinkedList<>();
+    private final List<Class<?>> classes = new LinkedList<>();
 
     public OutputScheme() {
     }

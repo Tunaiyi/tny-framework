@@ -54,7 +54,7 @@ public class ImportConfigurationBeanDefinitionRegistrar implements ImportBeanDef
     protected <P> P loadProperties(String keyHead, Class<P> propertiesClass) {
         return Binder.get(this.environment)
                 .bind(keyHead, propertiesClass)
-                .orElseGet(() -> ExeAide.callUnchecked(propertiesClass::newInstance)
+                .orElseGet(() -> ExeAide.callUnchecked(() -> propertiesClass.getDeclaredConstructor().newInstance())
                         .orElse(null));
     }
 

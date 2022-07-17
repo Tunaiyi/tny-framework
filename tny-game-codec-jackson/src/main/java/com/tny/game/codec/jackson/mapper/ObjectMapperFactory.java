@@ -2,6 +2,7 @@ package com.tny.game.codec.jackson.mapper;
 
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;

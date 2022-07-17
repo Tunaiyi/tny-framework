@@ -7,6 +7,7 @@ dependencies {
     annotationProcessor libs.spring_boot_configuration_processor
 
     api libs.spring_boot_autoconfigure
+    api libs.javax_annotation_api
 
     api project(":tny-game-common-lifecycle")
     api project(":tny-game-loader")

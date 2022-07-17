@@ -114,6 +114,22 @@ public class EtcdNamespaceExplorer extends EtcdObject implements NamespaceExplor
     }
 
     @Override
+    public <T> HashingSubscriber<T> hashingSubscriber(String parentPath, HashAlgorithm algorithm, ObjectMineType<T> mineType) {
+        if (StringUtils.isBlank(parentPath)) {
+            throw new HashRingException("rootPath {} is blank", parentPath);
+        }
+        return new EtcdHashingSubscriber<>(parentPath, mineType, algorithm, this);
+    }
+
+    @Override
+    public <T> HashingPublisher<T> hashingPublisher(String parentPath, Hasher<T> hasher, HashAlgorithm algorithm, ObjectMineType<T> mineType) {
+        if (StringUtils.isBlank(parentPath)) {
+            throw new HashRingException("rootPath {} is blank", parentPath);
+        }
+        return new EtcdHashingPublisher<>(parentPath, hasher, algorithm, mineType, this);
+    }
+
+    @Override
     public <T> NameNodesWatcher<T> nodeWatcher(String path, ObjectMineType<T> type) {
         return new EtcdNameNodesWatcher<>(path, false, kv, watch, type, this.objectCodecAdapter, charset);
     }

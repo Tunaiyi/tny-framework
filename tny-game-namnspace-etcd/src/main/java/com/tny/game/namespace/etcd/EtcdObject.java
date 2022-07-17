@@ -56,7 +56,7 @@ public abstract class EtcdObject {
         ObjectCodec<T> codec = codecOf(type);
         try {
             T value = codec.decode(kv.getValue().getBytes());
-            return new NameNode<>(path, kv.getCreateRevision(), value, kv.getVersion());
+            return new NameNode<>(path, kv.getCreateRevision(), value, kv.getVersion(), kv.getModRevision());
         } catch (IOException e) {
             throw new NameNodeCodecException(format("decode value {} exception", path, e));
         }

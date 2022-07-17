@@ -32,7 +32,7 @@ public class EtcdNameNodesWatcher<T> extends EtcdObject implements NameNodesWatc
 
     private static final int TRY_WATCH = 1;
 
-    private static final int WATCHING = 2;
+    private static final int WATCH = 2;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EtcdNameNodesWatcher.class);
 
@@ -64,7 +64,7 @@ public class EtcdNameNodesWatcher<T> extends EtcdObject implements NameNodesWatc
 
     private Watcher watcher;
 
-    private int status = UNWATCH;
+    private volatile int status = UNWATCH;
 
     public EtcdNameNodesWatcher(String watchPath, boolean match, KV kv, Watch watch,
             ObjectMineType<T> valueType, ObjectCodecAdapter objectCodecAdapter, Charset charset) {
@@ -134,11 +134,21 @@ public class EtcdNameNodesWatcher<T> extends EtcdObject implements NameNodesWatc
     }
 
     @Override
-    public synchronized void stop() {
+    public synchronized void unwatch() {
         if (status == UNWATCH) {
             return;
         }
         closeWatcher();
+    }
+
+    @Override
+    public boolean isUnwatch() {
+        return status == UNWATCH;
+    }
+
+    @Override
+    public boolean isWatch() {
+        return status == WATCH;
     }
 
     @Override
@@ -207,7 +217,7 @@ public class EtcdNameNodesWatcher<T> extends EtcdObject implements NameNodesWatc
                 optionBuilder.withRange(endKey).isPrefix(false);
             }
             this.watcher = watch.watch(key, optionBuilder.build(), etcdWatchListener);
-            status = WATCHING;
+            status = WATCH;
         } catch (Throwable e) {
             status = UNWATCH;
             throw new NameNodeWatchException(format("watch {} exception", watchPath), e);

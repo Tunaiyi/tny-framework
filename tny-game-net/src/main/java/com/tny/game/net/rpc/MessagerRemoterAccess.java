@@ -22,6 +22,7 @@ public class MessagerRemoterAccess implements RpcRemoterAccess {
         if (access != null) {
             return access;
         }
+        endpoint.attributes().setAttribute(REMOTER_ACCESS, new MessagerRemoterAccess(endpoint));
         return endpoint.attributes().computeIfAbsent(REMOTER_ACCESS, () -> new MessagerRemoterAccess(endpoint));
     }
 

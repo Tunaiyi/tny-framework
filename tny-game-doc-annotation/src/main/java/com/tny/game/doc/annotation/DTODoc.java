@@ -8,10 +8,14 @@ import java.lang.annotation.*;
 @Documented
 public @interface DTODoc {
 
+    /**
+     * @return 注释
+     */
     String value();
 
-    String text() default "";
-
+    /**
+     * @return 是否是推送
+     */
     boolean push() default false;
 
 }
