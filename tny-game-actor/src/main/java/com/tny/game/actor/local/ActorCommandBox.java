@@ -71,7 +71,7 @@ public abstract class ActorCommandBox extends AbstractWorkerCommandBox<ActorComm
     }
 
     @Override
-    public boolean bindWorker(CommandWorker worker) {
+    public boolean bindWorker(CommandBoxWorker worker) {
         return !this.isTerminated() && super.bindWorker(worker);
     }
 

@@ -8,9 +8,9 @@ import com.tny.game.data.*;
  * @author : kgtny
  * @date : 2021/10/8 6:03 下午
  */
-public class DynamicEntityCacheMananger<K extends Comparable<?>, O> extends EntityCacheManager<K, O> {
+public class DynamicEntityCacheManager<K extends Comparable<?>, O> extends EntityCacheManager<K, O> {
 
-    public DynamicEntityCacheMananger() {
+    public DynamicEntityCacheManager() {
         super();
     }
 

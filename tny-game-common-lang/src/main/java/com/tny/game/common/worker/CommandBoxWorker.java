@@ -5,7 +5,7 @@ package com.tny.game.common.worker;
  *
  * @author KGTny
  */
-public interface CommandWorker extends CommandBoxProcessor {
+public interface CommandBoxWorker extends CommandBoxProcessor {
 
     boolean isOnCurrentThread();
 
@@ -20,8 +20,10 @@ public interface CommandWorker extends CommandBoxProcessor {
     }
 
     /**
+     * 通知执行器
+     *
      * @param commandBox 执行
      */
-    boolean execute(CommandBox<?> commandBox);
+    void wakeUp(CommandBox<?> commandBox);
 
 }

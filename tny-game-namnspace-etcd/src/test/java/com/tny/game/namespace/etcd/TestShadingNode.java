@@ -20,7 +20,7 @@ public class TestShadingNode implements ShardingNode {
     }
 
     @Override
-    public String getNodeId() {
+    public String getHashKey() {
         return id;
     }
 

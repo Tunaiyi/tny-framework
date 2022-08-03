@@ -1,6 +1,5 @@
 package com.tny.game.redisson.utils;
 
-import com.tny.game.common.utils.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
@@ -12,9 +11,9 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
  */
 public class RedisKey {
 
-    public static final String TAG_LEFT = "{";
+    private static final String TAG_LEFT = "{";
 
-    public static final String TAG_RIGHT = "}";
+    private static final String TAG_RIGHT = "}";
 
     private final String key;
 
@@ -54,21 +53,6 @@ public class RedisKey {
      */
     public RedisKey dotWithHashTag(Object keyWord) {
         return new RedisKey(this.key + RedisKeys.LINK + TAG_LEFT + keyWord + TAG_RIGHT);
-    }
-
-    // /**
-    //  * 连接, 不带连接符
-    //  *
-    //  * @param word 追加内容
-    //  * @return 返回 RedisKey
-    //  */
-    // public RedisKey concat(Object word) {
-    //     return new RedisKey(this.key + LINK + word);
-    // }
-
-    public ShardingRedisKey toSharding(int shardingNumber) {
-        Asserts.checkArgument(shardingNumber > 0, "{} shardingNumber < 0", this);
-        return new ShardingRedisKey(this.key, shardingNumber);
     }
 
     public String toKey() {

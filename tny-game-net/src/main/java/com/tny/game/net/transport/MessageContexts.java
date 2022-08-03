@@ -174,7 +174,7 @@ public class MessageContexts {
         private MessageMode mode;
 
         private Object body;
-        
+
         /**
          * 收到响应消息 Future, 只有 mode 为  request 才可以是使用
          */
@@ -345,12 +345,12 @@ public class MessageContexts {
         }
 
         @Override
-        public StageFuture<Message> respond() {
+        public CompletionStageFuture<Message> respond() {
             return this.respondAwaiter;
         }
 
         @Override
-        public StageFuture<Void> written() {
+        public CompletionStageFuture<Void> written() {
             return this.writeAwaiter;
         }
 

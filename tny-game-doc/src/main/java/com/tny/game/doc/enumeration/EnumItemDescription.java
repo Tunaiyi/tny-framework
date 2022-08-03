@@ -7,20 +7,15 @@ import com.tny.game.doc.holder.*;
 import java.lang.reflect.*;
 import java.util.*;
 
-public class EnumItemDescription {
-
-    private final String name;
-
-    private final String des;
+public class EnumItemDescription extends FieldDescription {
 
     private String id = "null";
 
     private final Map<String, EnumItemAttribute> attributes;
 
-    public EnumItemDescription(DocVar holder, TypeFormatter typeFormatter) {
-        this.des = holder.getVarDoc().value();
-        Field field = holder.getField();
-        this.name = holder.getName();
+    public EnumItemDescription(DocField docField, TypeFormatter typeFormatter) {
+        super(docField);
+        Field field = docField.getField();
         try {
             Enum<?> object = (Enum<?>)field.get(null);
             Map<String, EnumItemAttribute> attributes = new HashMap<>();
@@ -30,10 +25,11 @@ public class EnumItemDescription {
                         enumField.setAccessible(true);
                         this.id = enumField.get(object).toString();
                     } else if (enumField.getAnnotation(VarDoc.class) != null) {
+                        DocField docVar = DocField.create(field);
                         enumField.setAccessible(true);
                         VarDoc varDoc = enumField.getAnnotation(VarDoc.class);
                         attributes.put(enumField.getName(),
-                                new EnumItemAttribute(enumField.getGenericType(), enumField.get(object), varDoc.value(), typeFormatter));
+                                new EnumItemAttribute(docVar, enumField.getGenericType(), enumField.get(object), varDoc.value(), typeFormatter));
                     }
                 }
             }
@@ -44,21 +40,16 @@ public class EnumItemDescription {
 
     }
 
-    public static class EnumItemAttribute {
-
-        private final String className;
-
-        private final String rawClassName;
+    public static class EnumItemAttribute extends FieldDescription {
 
         private final Object value;
 
         private final String desc;
 
-        public EnumItemAttribute(Type type, Object value, String desc, TypeFormatter typeFormatter) {
+        public EnumItemAttribute(DocField docVar, Type type, Object value, String desc, TypeFormatter typeFormatter) {
+            super(docVar, typeFormatter);
             this.desc = desc;
             this.value = value;
-            this.className = typeFormatter.format(type);
-            this.rawClassName = LangTypeFormatter.RAW.format(type);
         }
 
         public String getDesc() {
@@ -69,28 +60,18 @@ public class EnumItemDescription {
             return value;
         }
 
-        public String getClassName() {
-            return className;
-        }
-
-        public String getRawClassName() {
-            return rawClassName;
-        }
-
     }
 
-    public String getDes() {
-        return des;
-    }
-
-    public String getName() {
-        return name;
-    }
-
+    /**
+     * @return 枚举 id
+     */
     public String getId() {
         return id;
     }
 
+    /**
+     * @return 枚举项的属性
+     */
     public Map<String, EnumItemAttribute> getAttributes() {
         return attributes;
     }

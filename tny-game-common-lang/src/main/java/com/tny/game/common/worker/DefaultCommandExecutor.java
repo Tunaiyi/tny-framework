@@ -11,7 +11,7 @@ import java.util.concurrent.*;
 /**
  * Created by Kun Yang on 2017/6/12.
  */
-public class DefaultCommandExecutor implements CommandExecutor, CommandWorker {
+public class DefaultCommandExecutor implements CommandExecutor, CommandBoxWorker {
 
     private ExecutorService executor;
 
@@ -146,8 +146,7 @@ public class DefaultCommandExecutor implements CommandExecutor, CommandWorker {
     }
 
     @Override
-    public boolean execute(CommandBox commandBox) {
-        return false;
+    public void wakeUp(CommandBox commandBox) {
     }
 
     @Override
@@ -163,7 +162,7 @@ public class DefaultCommandExecutor implements CommandExecutor, CommandWorker {
         this.working = false;
     }
 
-    static class BindCommandWorker implements CommandWorker {
+    static class BindCommandWorker implements CommandBoxWorker {
 
         private volatile Thread currentThread;
 
@@ -184,12 +183,11 @@ public class DefaultCommandExecutor implements CommandExecutor, CommandWorker {
         }
 
         @Override
-        public boolean execute(CommandBox commandBox) {
+        public void wakeUp(CommandBox<?> commandBox) {
             this.executor.executor.submit(() -> doProcess(commandBox));
-            return true;
         }
 
-        public void doProcess(CommandBox box) {
+        public void doProcess(CommandBox<?> box) {
             this.currentThread = Thread.currentThread();
             try {
                 box.process();

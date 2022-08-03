@@ -5,7 +5,7 @@ import com.tny.game.net.message.*;
 
 import java.util.concurrent.CompletableFuture;
 
-public class MessageRespondAwaiter extends CompletableFuture<Message> implements StageFuture<Message> {
+public class MessageRespondAwaiter extends CompletableFuture<Message> implements CompletionStageFuture<Message> {
 
     public static final long DEFAULT_FUTURE_TIMEOUT = 10000L;
 

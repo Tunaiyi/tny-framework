@@ -26,32 +26,52 @@ public class DocClass implements DocClassAccess {
 
     private final String docClassName;
 
+    private final String docDesc;
+
     private final String docText;
 
-    private final String className;
+    private final Class<?> rawClass;
+
+    private final String rawClassName;
 
     private final String superClassName;
 
     private final String packageName;
 
-    private final Class<?> rawClass;
-
     private final ListMultimap<String, DocTagValue> tagsMap = LinkedListMultimap.create();
 
-    private final List<DocVar> fieldList;
+    private final List<DocField> fieldList;
 
     private final List<DocMethod> methodList;
 
     private final Map<String, Annotation> annotationMap;
 
-    protected <F extends Annotation> DocClass(Class<?> clazz) {
+    public static DocClass create(Class<?> clazz) {
+        ClassDoc classDoc = clazz.getAnnotation(ClassDoc.class);
+        if (classDoc == null) {
+            LOGGER.warn("{} is not classDoc", clazz);
+            return null;
+        }
+        return new DocClass(clazz);
+    }
+
+    public static <F extends Annotation> DocClass create(Class<?> clazz, Class<F> fieldIdAnnotation, Function<F, Object> fieldIdGetter) {
+        ClassDoc classDoc = clazz.getAnnotation(ClassDoc.class);
+        if (classDoc == null) {
+            LOGGER.warn("{} is not classDoc", clazz);
+            return null;
+        }
+        return new DocClass(clazz, fieldIdAnnotation, fieldIdGetter);
+    }
+
+    protected DocClass(Class<?> clazz) {
         this(clazz, null, null);
     }
 
     protected <F extends Annotation> DocClass(Class<?> clazz, Class<F> fieldIdAnnotation, Function<F, Object> fieldIdGetter) {
         this.rawClass = clazz;
         this.classDoc = clazz.getAnnotation(ClassDoc.class);
-        this.className = clazz.getSimpleName();
+        this.rawClassName = clazz.getSimpleName();
         this.packageName = clazz.getPackage().getName();
         var superClass = clazz.getSuperclass();
         if (superClass != null) {
@@ -60,7 +80,7 @@ public class DocClass implements DocClassAccess {
             this.superClassName = null;
         }
         this.fieldList = Collections.unmodifiableList(createFieldList(clazz, fieldIdAnnotation, fieldIdGetter));
-        this.methodList = Collections.unmodifiableList(createFunctionList(clazz));
+        this.methodList = Collections.unmodifiableList(createMethodList(clazz));
         var tags = clazz.getAnnotation(DocTags.class);
         if (tags != null) {
             for (var tag : tags.value()) {
@@ -70,14 +90,17 @@ public class DocClass implements DocClassAccess {
         }
         var docClassName = clazz.getSimpleName();
         var docText = "";
+        var docDesc = "";
         if (classDoc != null) {
             if (StringUtils.isNotBlank(classDoc.name())) {
                 docClassName = classDoc.name();
             }
+            docDesc = classDoc.value();
             docText = classDoc.text();
         }
         this.docClassName = docClassName;
         this.docText = docText;
+        this.docDesc = docDesc;
         Map<String, Annotation> annotationMap = new HashMap<>();
         for (var anno : clazz.getAnnotations()) {
             annotationMap.put(anno.annotationType().getSimpleName(), anno);
@@ -85,11 +108,11 @@ public class DocClass implements DocClassAccess {
         this.annotationMap = Collections.unmodifiableMap(annotationMap);
     }
 
-    private static <F extends Annotation> List<DocVar> createFieldList(Class<?> clazz,
+    private static <F extends Annotation> List<DocField> createFieldList(Class<?> clazz,
             Class<F> annotation, Function<F, Object> fieldIdGetter) {
-        List<DocVar> list = new ArrayList<DocVar>();
+        List<DocField> list = new ArrayList<DocField>();
         for (Field field : ReflectAide.getDeepField(clazz)) {
-            DocVar fieldDocHolder = DocVar.create(field, annotation, fieldIdGetter);
+            DocField fieldDocHolder = DocField.create(field, annotation, fieldIdGetter);
             if (fieldDocHolder != null) {
                 list.add(fieldDocHolder);
             }
@@ -97,13 +120,13 @@ public class DocClass implements DocClassAccess {
         return list;
     }
 
-    private static List<DocMethod> createFunctionList(Class<?> clazz) {
-        List<DocMethod> list = new ArrayList<DocMethod>();
+    private static List<DocMethod> createMethodList(Class<?> clazz) {
+        List<DocMethod> list = new ArrayList<>();
         for (Method method : clazz.getDeclaredMethods()) {
             if (method.isBridge()) {
                 continue;
             }
-            DocMethod holder = DocMethod.create(clazz, method);
+            DocMethod holder = DocMethod.create(method);
             if (holder != null) {
                 list.add(holder);
             }
@@ -117,18 +140,23 @@ public class DocClass implements DocClassAccess {
     }
 
     @Override
+    public String getRawClassName() {
+        return rawClassName;
+    }
+
+    @Override
     public String getDocClassName() {
         return docClassName;
     }
 
     @Override
-    public String getDocText() {
-        return docText;
+    public String getDocDesc() {
+        return docDesc;
     }
 
     @Override
-    public String getClassName() {
-        return className;
+    public String getDocText() {
+        return docText;
     }
 
     @Override
@@ -147,7 +175,7 @@ public class DocClass implements DocClassAccess {
     }
 
     @Override
-    public List<DocVar> getFieldList() {
+    public List<DocField> getFieldList() {
         return fieldList;
     }
 

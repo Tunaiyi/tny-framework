@@ -1,7 +1,5 @@
 package com.tny.game.net.endpoint;
 
-import com.tny.game.net.message.*;
-
 /**
  * Session推送选项
  * Created by Kun Yang on 16/5/17.
@@ -34,17 +32,4 @@ public enum SessionPushOption {
         return this.throwable;
     }
 
-    /**
-     * <p>
-     */
-    public static interface Receiver<UID> {
-
-        /**
-         * 接收消息
-         *
-         * @param message 消息
-         */
-        boolean receive(Message message);
-
-    }
 }

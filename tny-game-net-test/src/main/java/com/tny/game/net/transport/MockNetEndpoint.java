@@ -268,4 +268,9 @@ public class MockNetEndpoint extends AttributesHolder implements NetEndpoint<Lon
 
     }
 
+    @Override
+    public void execute(Runnable command) {
+        
+    }
+
 }

@@ -98,7 +98,7 @@ public class RpcRemoteInvoker {
         if (this.method.getReturnClass().isAssignableFrom(MessageRespondAwaiter.class)) {
             return future;
         }
-        DefaultRpcFuture<Object> rpcFuture = new DefaultRpcFuture<>();
+        RpcPromise<Object> rpcFuture = new RpcPromise<>();
         future.whenComplete((message, e) -> {
             if (e != null) {
                 rpcFuture.completeExceptionally(e);

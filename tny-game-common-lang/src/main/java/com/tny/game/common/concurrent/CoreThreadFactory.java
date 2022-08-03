@@ -30,6 +30,22 @@ public class CoreThreadFactory implements ThreadFactory, ForkJoinWorkerThreadFac
 
     private final UncaughtExceptionHandler handler;
 
+    public static CoreThreadFactory withName(String namePrefix) {
+        return new CoreThreadFactory(namePrefix, null, false);
+    }
+
+    public static CoreThreadFactory daemonWithName(Class<?> clazz) {
+        return new CoreThreadFactory(clazz.getSimpleName(), null, true);
+    }
+
+    public static CoreThreadFactory daemonWithName(String namePrefix) {
+        return new CoreThreadFactory(namePrefix, null, true);
+    }
+
+    public static CoreThreadFactory with(String namePrefix, UncaughtExceptionHandler handler, boolean daemon) {
+        return new CoreThreadFactory(namePrefix, handler, daemon);
+    }
+
     public CoreThreadFactory(String namePrefix) {
         this(namePrefix, null, false);
     }

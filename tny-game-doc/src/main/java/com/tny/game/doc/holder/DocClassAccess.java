@@ -18,9 +18,11 @@ public interface DocClassAccess {
 
     String getDocClassName();
 
+    String getDocDesc();
+
     String getDocText();
 
-    String getClassName();
+    String getRawClassName();
 
     String getSuperClassName();
 
@@ -28,7 +30,7 @@ public interface DocClassAccess {
 
     ClassDoc getClassDoc();
 
-    List<DocVar> getFieldList();
+    List<DocField> getFieldList();
 
     List<DocMethod> getMethodList();
 

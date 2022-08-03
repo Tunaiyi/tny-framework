@@ -15,15 +15,22 @@ public enum LangTypeFormatter implements TypeFormatter {
     RAW {
         @Override
         public String format(Type type) {
-            return type.getTypeName();
+            if (type instanceof Class) {
+                return ((Class<?>)type).getSimpleName();
+            } else if (type instanceof ParameterizedType) {
+                ParameterizedType pType = (ParameterizedType)type;
+                Class<?> javaType = (Class<?>)pType.getRawType();
+                return javaType.getSimpleName();
+            }
+            throw new IllegalArgumentException(StringAide.format("{} 类型 无法进行map", type));
         }
     },
 
     AS3 {
-        Set<Class<?>> intClassSet = new HashSet<>(Arrays.asList(new Class<?>[]{
+        final Set<Class<?>> intClassSet = new HashSet<>(Arrays.asList(new Class<?>[]{
                 Integer.class, int.class, Short.class, short.class, Byte.class, byte.class
         }));
-        Set<Class<?>> numberClassSet = new HashSet<>(Arrays.asList(new Class<?>[]{
+        final Set<Class<?>> numberClassSet = new HashSet<>(Arrays.asList(new Class<?>[]{
                 Long.class, long.class, Float.class, float.class, Double.class, double.class
         }));
 
@@ -102,6 +109,10 @@ public enum LangTypeFormatter implements TypeFormatter {
             Class<?> javaType = (Class<?>)pType.getRawType();
             if (Collection.class.isAssignableFrom(javaType)) {
                 return "List<" + cshapFormat(pType.getActualTypeArguments()[0], formatEnum) + ">";
+            } else if (Map.class.isAssignableFrom(javaType)) {
+                return "Dictionary<" +
+                        cshapFormat(pType.getActualTypeArguments()[0], formatEnum) + ", " +
+                        cshapFormat(pType.getActualTypeArguments()[0], formatEnum) + ">";
             }
         }
         throw new IllegalArgumentException(StringAide.format("{} 类型 无法进行map", type));

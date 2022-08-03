@@ -51,15 +51,19 @@ public abstract class EtcdObject {
         }
     }
 
-    protected <T> NameNode<T> decode(KeyValue kv, ObjectMineType<T> type) {
+    protected <T> NameNode<T> decode(byte[] data, KeyValue kv, long createRevision, ObjectMineType<T> type) {
         String path = toString(kv.getKey());
         ObjectCodec<T> codec = codecOf(type);
         try {
-            T value = codec.decode(kv.getValue().getBytes());
-            return new NameNode<>(path, kv.getCreateRevision(), value, kv.getVersion(), kv.getModRevision());
+            T value = codec.decode(data);
+            return new NameNode<>(path, createRevision, value, kv.getVersion(), kv.getModRevision());
         } catch (IOException e) {
             throw new NameNodeCodecException(format("decode value {} exception", path, e));
         }
+    }
+
+    protected <T> NameNode<T> decode(KeyValue kv, ObjectMineType<T> type) {
+        return this.decode(kv.getValue().getBytes(), kv, kv.getCreateRevision(), type);
     }
 
     protected <T> NameNode<T> decodeKeyValue(List<KeyValue> pairs, ObjectMineType<T> type) {

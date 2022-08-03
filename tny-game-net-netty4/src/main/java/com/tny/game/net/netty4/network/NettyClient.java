@@ -88,7 +88,7 @@ public class NettyClient<UID> extends BaseNetEndpoint<UID> implements NettyTermi
 
     private ClientConnectFuture<UID> checkPreOpen() {
         if (this.isClosed()) {
-            return DefaultClientConnectFuture.closed(this.getUrl());
+            return ClientConnectPromise.closed(this.getUrl());
         }
         return null;
     }
@@ -115,7 +115,7 @@ public class NettyClient<UID> extends BaseNetEndpoint<UID> implements NettyTermi
             return future;
         }
         initTunnel();
-        DefaultClientConnectFuture<UID> connectFuture = new DefaultClientConnectFuture<>();
+        ClientConnectPromise<UID> connectFuture = new ClientConnectPromise<>();
         this.doConnect((status, tunnel, cause) -> {
             if (status.isSuccess()) {
                 buses().<UID>openEvent().notify(this);

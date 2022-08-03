@@ -51,8 +51,7 @@ public class FrequencySwitchQueueCommandBox<C extends Command, CB extends Comman
     }
 
     @Override
-    public boolean submit() {
-        return true;
+    public void submit() {
     }
 
     @Override
@@ -90,8 +89,7 @@ public class FrequencySwitchQueueCommandBox<C extends Command, CB extends Comman
     }
 
     @Override
-    public boolean execute(CommandBox<?> commandBox) {
-        return true;
+    public void wakeUp(CommandBox<?> commandBox) {
     }
 
 }

@@ -16,7 +16,9 @@ public interface HashingSubscriber<T> {
 
     String getPath();
 
-    void subscribe(List<ShardingRange<?>> ranges);
+    void subscribe(List<? extends ShardingRange<?>> ranges);
+
+    void subscribeAll();
 
     void unsubscribe();
 

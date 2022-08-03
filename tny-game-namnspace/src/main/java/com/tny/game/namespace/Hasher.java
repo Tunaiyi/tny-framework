@@ -1,24 +1,16 @@
 package com.tny.game.namespace;
 
-import com.tny.game.namespace.consistenthash.*;
-
 /**
+ * Hash计算器
  * <p>
  *
  * @author kgtny
  * @date 2022/7/9 04:31
  **/
-@FunctionalInterface
 public interface Hasher<T> {
 
-    String toNodeId(T value);
+    long hash(T value, int seed);
 
-    default String toHashKey(T value) {
-        return toNodeId(value);
-    }
-
-    default long hash(HashAlgorithm algorithm, T value) {
-        return algorithm.hash(toHashKey(value), 0);
-    }
+    long getMax();
 
 }

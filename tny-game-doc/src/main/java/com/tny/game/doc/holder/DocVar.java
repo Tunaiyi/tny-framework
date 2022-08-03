@@ -2,78 +2,100 @@ package com.tny.game.doc.holder;
 
 import com.tny.game.doc.annotation.*;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.util.function.Function;
+import java.lang.reflect.Type;
 
-public class DocVar {
-
-    private Object id;
-
-    private String name;
+/**
+ * <p>
+ *
+ * @author kgtny
+ * @date 2022/7/18 21:06
+ **/
+public class DocVar implements DocVarAccess {
 
     private VarDoc varDoc;
 
-    private Field field;
+    private String docText;
 
-    private Annotation idAnnotation;
+    private String docDesc;
 
-    private DocVar() {
-        super();
+    private Class<?> docType;
+
+    private String docTypeName;
+
+    private String docExample;
+
+    private Class<?> varClass;
+
+    private String varClassName;
+
+    public DocVar() {
     }
 
-    private DocVar(Field field) {
-        this(field, null, null);
+    public DocVar(VarDoc varDoc, Class<?> varClass, Type varType) {
+        this.setVarDoc(varDoc, varClass, varType);
     }
 
-    private <F extends Annotation> DocVar(Field field, Class<F> fieldIdAnnotation, Function<F, Object> fieldIdGetter) {
-        this.varDoc = field.getAnnotation(VarDoc.class);
-        this.field = field;
-        this.name = field.getName();
-        if (fieldIdAnnotation != null) {
-            F idAnnotation = field.getAnnotation(fieldIdAnnotation);
-            if (fieldIdGetter != null && idAnnotation != null) {
-                this.id = fieldIdGetter.apply(idAnnotation);
+    protected void setVarDoc(VarDoc varDoc, Class<?> varClass, Type varType) {
+        this.varDoc = varDoc;
+        this.varClass = varClass;
+        this.varClassName = varType.getTypeName();
+        if (this.varDoc != null) {
+            this.docDesc = this.varDoc.value();
+            this.docText = this.varDoc.text();
+            this.docType = this.varDoc.valueType();
+            if (docType != Object.class) {
+                this.docTypeName = this.docType.getSimpleName();
+            } else {
+                this.docTypeName = "";
             }
-            this.idAnnotation = idAnnotation;
+            this.docExample = this.varDoc.valueExample();
+        } else {
+            this.docDesc = "";
+            this.docText = "";
+            this.docType = Object.class;
+            this.docTypeName = "";
+            this.docExample = "";
         }
     }
 
-    public static DocVar create(Field field) {
-        VarDoc varDoc = field.getAnnotation(VarDoc.class);
-        if (varDoc == null) {
-            return null;
-        }
-        return new DocVar(field);
-    }
-
-    public static <F extends Annotation> DocVar create(Field field,
-            Class<F> fieldIdAnnotation, Function<F, Object> fieldIdGetter) {
-        VarDoc varDoc = field.getAnnotation(VarDoc.class);
-        if (varDoc == null) {
-            return null;
-        }
-        return new DocVar(field, fieldIdAnnotation, fieldIdGetter);
-    }
-
-    public Object getId() {
-        return id;
-    }
-
-    public Annotation getIdAnnotation() {
-        return idAnnotation;
-    }
-
+    @Override
     public VarDoc getVarDoc() {
         return varDoc;
     }
 
-    public Field getField() {
-        return field;
+    @Override
+    public String getDocText() {
+        return docText;
     }
 
-    public String getName() {
-        return name;
+    @Override
+    public String getDocDesc() {
+        return docDesc;
+    }
+
+    @Override
+    public Class<?> getDocType() {
+        return docType;
+    }
+
+    @Override
+    public String getDocTypeName() {
+        return docTypeName;
+    }
+
+    @Override
+    public String getDocExample() {
+        return docExample;
+    }
+
+    @Override
+    public Class<?> getVarClass() {
+        return varClass;
+    }
+
+    @Override
+    public String getVarClassName() {
+        return varClassName;
     }
 
 }

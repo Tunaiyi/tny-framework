@@ -2,45 +2,56 @@ package com.tny.game.doc.holder;
 
 import com.tny.game.doc.annotation.*;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Parameter;
 
-public class DocParam {
+import static com.tny.game.common.utils.ObjectAide.*;
 
-    private VarDoc varDoc;
+public class DocParam extends DocVar implements DocParamAccess {
 
-    private String name;
+    private final String name;
 
-    private Class<?> varClass;
+    private final Parameter parameter;
 
-    private Parameter parameter;
-
-    private DocParam() {
+    private DocParam(Parameter parameter) {
         super();
+        this.setVarDoc(parameter.getAnnotation(VarDoc.class), parameter.getType(), parameter.getParameterizedType());
+        this.name = parameter.getName();
+        this.parameter = parameter;
     }
 
-    public static DocParam create(VarDoc varDoc, String name, Class<?> varClass, Parameter parameter) {
-        DocParam holder = new DocParam();
-        holder.varDoc = varDoc;
-        holder.name = name;
-        holder.varClass = varClass;
-        holder.parameter = parameter;
-        return holder;
+    public static DocParam create(Parameter parameter) {
+        return new DocParam(parameter);
     }
 
-    public VarDoc getVarDoc() {
-        return varDoc;
-    }
-
+    @Override
     public String getName() {
         return name;
     }
 
-    public Class<?> getVarClass() {
-        return varClass;
+    @Override
+    public Parameter getParameter() {
+        return parameter;
     }
 
-    public Parameter getRawParameter() {
-        return parameter;
+    @Override
+    public boolean isHasAnnotation(String annClass) {
+        try {
+            Class<? extends Annotation> annotationClass = as(Thread.currentThread().getContextClassLoader().loadClass(annClass));
+            return this.getParameter().getAnnotation(annotationClass) != null;
+        } catch (ClassNotFoundException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    @Override
+    public Annotation getAnnotation(String annClass) {
+        try {
+            Class<? extends Annotation> annotationClass = as(Thread.currentThread().getContextClassLoader().loadClass(annClass));
+            return this.getParameter().getAnnotation(annotationClass);
+        } catch (ClassNotFoundException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 
 }

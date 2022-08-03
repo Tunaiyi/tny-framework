@@ -46,7 +46,7 @@ public class FrequencyCommandExecutor implements CommandExecutor {
 
     private int continueTime;
 
-    private final CommandWorker worker = new CommandWorker() {
+    private final CommandBoxWorker worker = new CommandBoxWorker() {
 
         @Override
         public boolean isOnCurrentThread() {
@@ -69,8 +69,7 @@ public class FrequencyCommandExecutor implements CommandExecutor {
         }
 
         @Override
-        public boolean execute(CommandBox<?> commandBox) {
-            return true;
+        public void wakeUp(CommandBox<?> commandBox) {
         }
 
     };
@@ -103,7 +102,7 @@ public class FrequencyCommandExecutor implements CommandExecutor {
                     int currentContinueTime = 0;
                     while (currentTime >= this.nextRunningTime) {
                         for (CommandBox<?> box : this.commandBoxQueue) {
-                            this.worker.execute(box);
+                            this.worker.wakeUp(box);
                             // box.getProcessUseTime();
                             // currentRunSize += box.getProcessSize();
                         }

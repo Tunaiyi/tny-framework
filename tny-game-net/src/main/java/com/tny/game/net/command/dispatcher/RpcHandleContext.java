@@ -4,6 +4,8 @@ import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
 
+import java.util.concurrent.Executor;
+
 import static com.tny.game.common.utils.ObjectAide.*;
 
 /**
@@ -104,6 +106,13 @@ public class RpcHandleContext {
      */
     public <U> Tunnel<U> getTunnel() {
         return as(this.command.getTunnel());
+    }
+
+    /**
+     * @return 当前用户执行器
+     */
+    public Executor getExecutor() {
+        return this.command.getEndpoint();
     }
 
     @Override

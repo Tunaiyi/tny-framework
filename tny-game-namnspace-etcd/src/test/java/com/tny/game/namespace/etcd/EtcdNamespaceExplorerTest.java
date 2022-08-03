@@ -27,7 +27,7 @@ class EtcdNamespaceExplorerTest {
 
     private static final ObjectCodecAdapter objectCodecAdapter = new ObjectCodecAdapter(Collections.singletonList(objectCodecFactory));
 
-    public static final ReferenceType<RingPartition<TestShadingNode>> TYPE = new ReferenceType<RingPartition<TestShadingNode>>() {
+    public static final ReferenceType<NodePartition<TestShadingNode>> TYPE = new ReferenceType<NodePartition<TestShadingNode>>() {
 
     };
 
@@ -104,22 +104,17 @@ class EtcdNamespaceExplorerTest {
         findList.forEach(node -> assertTrue(players.contains(node.getValue())));
     }
 
+    //    @Test
     void hashingTest() throws ExecutionException, InterruptedException {
-        HashingRing<TestShadingNode> ring1 = explorer.hashing("Harding1", "/T2/Nodes", 3, TYPE);
-        HashingRing<TestShadingNode> ring2 = explorer.hashing("Harding2", "/T2/Nodes", 3, TYPE);
+        var keyHash = HashAlgorithmHasher.<String>hasher();
+        var nodeHash = HashAlgorithmHasher.hasher(TestShadingNode::getHashKey);
+        NodeHashing<TestShadingNode> ring1 = explorer.nodeHashing("/T2/Nodes", keyHash, nodeHash, TYPE,
+                EtcdNodeHashingRingFactory.getDefault(), options -> options.setName("Harding1").setPartitionCount(3));
+        NodeHashing<TestShadingNode> ring2 = explorer.nodeHashing("/T2/Nodes", keyHash, nodeHash, TYPE,
+                EtcdNodeHashingRingFactory.getDefault(), options -> options.setName("Harding2").setPartitionCount(3));
 
         ring1.start().get();
         ring2.start().get();
-
-        ring1.changeEvent().add((sharding -> {
-            System.out.println("ring1 ================================================ ");
-            System.out.println(sharding.getAllRanges().stream().map(Object::toString).collect(Collectors.joining(" | ")));
-        }));
-
-        ring1.changeEvent().add((sharding -> {
-            System.out.println("ring2 ================================================ ");
-            System.out.println(sharding.getAllRanges().stream().map(Object::toString).collect(Collectors.joining(" | ")));
-        }));
 
         ring1.register(new TestShadingNode("Server1")).get();
         ring2.register(new TestShadingNode("Server2")).get();
@@ -411,6 +406,7 @@ class EtcdNamespaceExplorerTest {
         List<List<Player>> checkList = Arrays.asList(loadList, createList, updateList, deleteList);
 
         watcher.createEvent().add((w, node) -> {
+            System.out.println("Create " + node);
             createList.add(node.getValue());
             latchReference.get().countDown();
         });
@@ -419,10 +415,12 @@ class EtcdNamespaceExplorerTest {
             latchReference.get().countDown();
         });
         watcher.updateEvent().add((w, node) -> {
+            System.out.println("Update " + node);
             updateList.add(node.getValue());
             latchReference.get().countDown();
         });
         watcher.deleteEvent().add((w, node) -> {
+            System.out.println("Delete " + node);
             deleteList.add(node.getValue());
             latchReference.get().countDown();
         });
@@ -482,9 +480,9 @@ class EtcdNamespaceExplorerTest {
 
     @Test
     void testPublishSubscribe() throws ExecutionException, InterruptedException {
-        Hasher<Player> hasher = Player::getName;
-        var subscriber = explorer.hashingSubscriber(HASHING_PATH, MINE_TYPE);
-        var publisher = explorer.hashingPublisher(HASHING_PATH, hasher, MINE_TYPE);
+        Hasher<String> nameHasher = HashAlgorithmHasher.hasher();
+        var subscriber = explorer.hashingSubscriber(HASHING_PATH, nameHasher.getMax(), MINE_TYPE);
+        var publisher = explorer.hashingPublisher(HASHING_PATH, nameHasher, MINE_TYPE);
         long maxSlot = -1L >>> 32;
         long toSlot = maxSlot / 2;
         List<Player> playerList = new ArrayList<>();
@@ -506,8 +504,8 @@ class EtcdNamespaceExplorerTest {
 
             @Override
             public void onCreate(NameNodesWatcher<Player> watcher, NameNode<Player> node) {
-                System.out.println("OnCrate + " + node.getName());
                 createList.add(node.getValue());
+                System.out.println("OnCrate + " + node.getName() + " | size = " + createList.size() + " | total size = " + watchedList.size());
                 if (watchedList.size() == createList.size()) {
                     latchReference.get().countDown();
                 }
@@ -534,7 +532,7 @@ class EtcdNamespaceExplorerTest {
         latchReference.set(new CountDownLatch(1));
         for (int i = 0; i < 100; i++) {
             Player player = new Player("PLA_" + i, 10 + i);
-            long hash = hasher.hash(HashAlgorithms.getDefault(), player);
+            long hash = nameHasher.hash(player.getName(), 0);
             if (hash <= toSlot) {
                 watchedList.add(player);
                 System.out.println("watched = " + player.getName() + " = " + hash);
@@ -542,7 +540,7 @@ class EtcdNamespaceExplorerTest {
             playerList.add(player);
         }
         for (Player player : playerList) {
-            publisher.publish(player).get();
+            publisher.publish(player.getName(), player).get();
         }
 
         latchReference.get().await();

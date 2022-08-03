@@ -2,11 +2,8 @@ package com.tny.game.namespace.etcd;
 
 import com.tny.game.codec.*;
 import com.tny.game.namespace.*;
-import com.tny.game.namespace.consistenthash.*;
 
 import java.util.concurrent.CompletableFuture;
-
-import static com.tny.game.common.utils.ObjectAide.*;
 
 /**
  * 哈希节点发布器
@@ -15,28 +12,17 @@ import static com.tny.game.common.utils.ObjectAide.*;
  * @author kgtny
  * @date 2022/7/8 19:50
  **/
-public class EtcdHashingPublisher<T> implements HashingPublisher<T> {
-
-    private final NamespaceExplorer explorer;
-
-    private final String path;
-
-    private final ObjectMineType<T> mineType;
-
-    private final Hasher<T> hasher;
-
-    private final HashAlgorithm algorithm;
+public class EtcdHashingPublisher<K, T> extends EtcdHashing<T> implements HashingPublisher<K, T> {
 
     private volatile Lessee lessee;
 
     private volatile CompletableFuture<Lessee> lesseeFuture;
 
-    public EtcdHashingPublisher(String path, Hasher<T> hasher, HashAlgorithm algorithm, ObjectMineType<T> mineType, NamespaceExplorer explorer) {
-        this.explorer = explorer;
-        this.path = path;
-        this.mineType = mineType;
+    private final Hasher<K> hasher;
+
+    public EtcdHashingPublisher(String path, Hasher<K> hasher, ObjectMineType<T> mineType, NamespaceExplorer explorer) {
+        super(path, mineType, explorer);
         this.hasher = hasher;
-        this.algorithm = ifNull(algorithm, HashAlgorithms.getDefault());
     }
 
     @Override
@@ -78,10 +64,9 @@ public class EtcdHashingPublisher<T> implements HashingPublisher<T> {
     }
 
     @Override
-    public CompletableFuture<NameNode<T>> publish(T value) {
-        var id = hasher.toNodeId(value);
-        var hashValue = hasher.hash(algorithm, value);
-        var valuePath = NamespacePaths.nodePath(path, algorithm.alignDigits(hashValue), id);
+    public CompletableFuture<NameNode<T>> publish(K key, T value) {
+        var hashValue = hashCode(key);
+        var valuePath = NamespacePathNames.nodePath(path, slotName(hashValue), key);
         System.out.println("publish : " + valuePath);
         if (lessee != null) {
             return explorer.save(valuePath, mineType, value, lessee);
@@ -91,18 +76,16 @@ public class EtcdHashingPublisher<T> implements HashingPublisher<T> {
     }
 
     @Override
-    public CompletableFuture<NameNode<T>> handle(T value, Publishing<T> publishing) {
-        var id = hasher.toNodeId(value);
-        var hashValue = hasher.hash(algorithm, value);
-        var valuePath = NamespacePaths.nodePath(path, algorithm.alignDigits(hashValue), id);
-        return publishing.publish(explorer, valuePath, value, lessee);
+    public CompletableFuture<NameNode<T>> publish(K key, T value, Publishing<T> publishing) {
+        var hashValue = hashCode(key);
+        var valuePath = NamespacePathNames.nodePath(path, slotName(hashValue), key);
+        return publishing.doPublish(explorer, valuePath, value, mineType, lessee);
     }
 
     @Override
-    public CompletableFuture<NameNode<T>> publishIfAbsent(T value) {
-        var id = hasher.toNodeId(value);
-        var hashValue = hasher.hash(algorithm, value);
-        var valuePath = NamespacePaths.nodePath(path, algorithm.alignDigits(hashValue), id);
+    public CompletableFuture<NameNode<T>> publishIfAbsent(K key, T value) {
+        var hashValue = hashCode(key);
+        var valuePath = NamespacePathNames.nodePath(path, slotName(hashValue), key);
         if (lessee != null) {
             return explorer.add(valuePath, mineType, value, lessee);
         } else {
@@ -111,10 +94,9 @@ public class EtcdHashingPublisher<T> implements HashingPublisher<T> {
     }
 
     @Override
-    public CompletableFuture<NameNode<T>> publishIfExist(T value) {
-        var id = hasher.toNodeId(value);
-        var hashValue = hasher.hash(algorithm, value);
-        var valuePath = NamespacePaths.nodePath(path, algorithm.alignDigits(hashValue), id);
+    public CompletableFuture<NameNode<T>> publishIfExist(K key, T value) {
+        var hashValue = hashCode(key);
+        var valuePath = NamespacePathNames.nodePath(path, slotName(hashValue), key);
         if (lessee != null) {
             return explorer.update(valuePath, mineType, value, lessee);
         } else {
@@ -123,11 +105,19 @@ public class EtcdHashingPublisher<T> implements HashingPublisher<T> {
     }
 
     @Override
-    public CompletableFuture<NameNode<T>> revoke(T value) {
-        var id = hasher.toNodeId(value);
-        var hashValue = hasher.hash(algorithm, value);
-        var valuePath = NamespacePaths.nodePath(path, algorithm.alignDigits(hashValue), id);
+    public CompletableFuture<NameNode<T>> revoke(K key, T value) {
+        var hashValue = hashCode(key);
+        var valuePath = NamespacePathNames.nodePath(path, slotName(hashValue), key);
         return explorer.removeAndGet(valuePath, mineType);
+    }
+
+    private long hashCode(K key) {
+        return Math.abs(hasher.hash(key, 0));
+    }
+
+    @Override
+    protected long getMaxSlots() {
+        return hasher.getMax();
     }
 
 }

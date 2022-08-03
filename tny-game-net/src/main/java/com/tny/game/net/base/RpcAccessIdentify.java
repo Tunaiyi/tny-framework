@@ -11,7 +11,7 @@ import java.util.Objects;
  * @author Kun Yang
  * @date 2022/4/28 15:11
  **/
-public class RpcAccessIdentify implements RpcServicer, MessagerIdentify {
+public class RpcAccessIdentify implements RpcServicerPoint, MessagerIdentify {
 
     private static final long RPC_MAX_INDEX = 0xFF;
 

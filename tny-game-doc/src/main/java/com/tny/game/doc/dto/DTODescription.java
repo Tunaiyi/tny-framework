@@ -9,32 +9,29 @@ import static com.tny.game.common.utils.StringAide.*;
 
 public class DTODescription extends ClassDescription {
 
-    private final String des;
-
     private final Object id;
 
     private final boolean push;
 
-    private final List<FieldDescription> dtoFieldList;
+    private final List<DTOFieldDescription> dtoFieldList;
 
-    public DTODescription(DTODocHolder holder, TypeFormatter typeFormatter) {
-        super(holder);
-        this.id = holder.getId();
-        this.des = holder.getDTODoc().value();
-        this.push = holder.getDTODoc().push();
-        Map<Integer, FieldDescription> fieldMap = new HashMap<>();
-        List<FieldDescription> fieldList = new ArrayList<>();
-        for (DocVar fieldDocHolder : holder.getFieldList()) {
+    public DTODescription(DTODocClass docClass, TypeFormatter typeFormatter) {
+        super(docClass);
+        this.id = docClass.getId();
+        this.push = docClass.getDTODoc().push();
+        Map<Object, DTOFieldDescription> fieldMap = new HashMap<>();
+        List<DTOFieldDescription> fieldList = new ArrayList<>();
+        for (DocField fieldDocHolder : docClass.getFieldList()) {
             try {
-                FieldDescription fieldDescription = new FieldDescription(fieldDocHolder, typeFormatter);
+                DTOFieldDescription fieldDescription = new DTOFieldDescription(fieldDocHolder, typeFormatter);
                 fieldList.add(fieldDescription);
-                FieldDescription old = fieldMap.put(fieldDescription.getFieldId(), fieldDescription);
+                DTOFieldDescription old = fieldMap.put(fieldDescription.getFieldId(), fieldDescription);
                 if (old != null) {
                     throw new IllegalArgumentException(format("{} 类 {} 与 {} 字段 ID 都为 {}",
-                            holder.getEntityClass(), fieldDescription.getFieldName(), old.getFieldName(), fieldDescription.getFieldId()));
+                            docClass.getEntityClass(), fieldDescription.getName(), old.getName(), fieldDescription.getFieldId()));
                 }
             } catch (Throwable e) {
-                throw new IllegalArgumentException(format("{} 类 解析异常", holder.getEntityClass()), e);
+                throw new IllegalArgumentException(format("{} 类 解析异常", docClass.getEntityClass()), e);
             }
         }
         this.dtoFieldList = Collections.unmodifiableList(fieldList);
@@ -44,23 +41,19 @@ public class DTODescription extends ClassDescription {
         return push;
     }
 
-    public String getDes() {
-        return des;
-    }
-
     public Object getId() {
         return id;
     }
 
-    public List<FieldDescription> getDtoFieldList() {
+    public List<DTOFieldDescription> getDtoFieldList() {
         return dtoFieldList;
     }
 
     @Override
     public String toString() {
         return "DTODescription{" +
-                "className='" + getClassName() + '\'' +
-                ", des='" + des + '\'' +
+                "className='" + getRawClassName() + '\'' +
+                ", desc='" + getDocDesc() + '\'' +
                 '}';
     }
 

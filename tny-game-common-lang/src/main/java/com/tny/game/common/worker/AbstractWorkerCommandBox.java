@@ -24,7 +24,7 @@ public abstract class AbstractWorkerCommandBox<C extends Command, CB extends Com
 
     @Override
     protected boolean executeIfCurrent(C command) {
-        CommandWorker worker = this.worker;
+        CommandBoxWorker worker = this.worker;
         if (worker != null && worker.isOnCurrentThread()) {
             executeCommand(command);
         }
@@ -45,7 +45,7 @@ public abstract class AbstractWorkerCommandBox<C extends Command, CB extends Com
     }
 
     @Override
-    public boolean bindWorker(CommandWorker worker) {
+    public boolean bindWorker(CommandBoxWorker worker) {
         if (this.worker != null) {
             return false;
         }
@@ -62,7 +62,7 @@ public abstract class AbstractWorkerCommandBox<C extends Command, CB extends Com
 
     @Override
     public boolean unbindWorker() {
-        CommandWorker worker = this.worker;
+        CommandBoxWorker worker = this.worker;
         if (worker == null) {
             return false;
         }
@@ -115,33 +115,19 @@ public abstract class AbstractWorkerCommandBox<C extends Command, CB extends Com
     }
 
     @Override
-    public boolean submit() {
+    public void submit() {
         try {
-            if (!this.isEmpty()) {
-                return doExecute();
+            if (!this.isEmpty() && this.submit.compareAndSet(false, true)) {
+                this.worker.wakeUp(this);
             }
         } catch (Exception e) {
             this.submit.set(false);
         }
-        return false;
-    }
-
-    private boolean doExecute() {
-        try {
-            if (this.worker instanceof CommandBox) {
-                return this.worker.execute(this);
-            } else if (this.submit.compareAndSet(false, true)) {
-                return this.worker.execute(this);
-            }
-        } catch (Exception e) {
-            this.submit.set(false);
-        }
-        return false;
     }
 
     @Override
-    public boolean execute(CommandBox<?> commandBox) {
-        return this.doExecute();
+    public void wakeUp(CommandBox<?> commandBox) {
+        this.worker.wakeUp(this);
     }
 
     @Override

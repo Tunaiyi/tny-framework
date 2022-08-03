@@ -31,7 +31,7 @@ public class DisruptorEndpointCommandTaskBoxProcessor extends EndpointCommandTas
     private ExecutorService executorService;
 
     private static final HashedWheelTimer TIMER = new HashedWheelTimer(
-            new CoreThreadFactory("DisruptorEndpointCommandTaskTimer"), 1, TimeUnit.MILLISECONDS);
+            new CoreThreadFactory("DisruptorEndpointCommandTaskTimer"), 10, TimeUnit.MILLISECONDS);
 
     public DisruptorEndpointCommandTaskBoxProcessor() {
         this(new DisruptorEndpointCommandTaskBoxProcessorSetting());

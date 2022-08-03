@@ -21,8 +21,7 @@ public class FrequencyCommandBox<C extends Command, CB extends CommandBox<C>> ex
     }
 
     @Override
-    public boolean submit() {
-        return true;
+    public void submit() {
     }
 
     @Override
@@ -51,8 +50,7 @@ public class FrequencyCommandBox<C extends Command, CB extends CommandBox<C>> ex
     }
 
     @Override
-    public boolean execute(CommandBox<?> commandBox) {
-        return true;
+    public void wakeUp(CommandBox<?> commandBox) {
     }
 
 }

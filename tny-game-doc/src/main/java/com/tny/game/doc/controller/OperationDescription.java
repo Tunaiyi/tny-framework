@@ -1,74 +1,56 @@
 package com.tny.game.doc.controller;
 
-import com.thoughtworks.xstream.annotations.*;
 import com.tny.game.common.result.*;
 import com.tny.game.doc.*;
+import com.tny.game.doc.annotation.*;
 import com.tny.game.doc.holder.*;
 import com.tny.game.net.base.*;
+import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.rpc.*;
-import org.apache.commons.lang3.StringUtils;
+import org.slf4j.*;
 
 import java.lang.reflect.*;
 import java.util.*;
 import java.util.concurrent.Future;
 
-@XStreamAlias("operation")
-public class OperationDescription {
+public class OperationDescription extends MethodDescription {
 
-    @XStreamAsAttribute
-    private String methodName;
+    private static final Logger LOGGER = LoggerFactory.getLogger(OperationDescription.class);
 
-    @XStreamAsAttribute
-    private int opId;
+    private final int opId;
 
-    @XStreamAsAttribute
-    private String des;
+    private final Class<?> docReturnClass;
 
-    @XStreamAsAttribute
-    private String text;
+    private final String docReturnClassName;
 
-    @XStreamAsAttribute
-    private String returnType;
+    private final List<OperationParamDescription> operationParamList;
 
-    @XStreamAsAttribute
-    private String returnDes;
-
-    private ParamList paramList;
-
-    @XStreamAlias("paramList")
-    private static class ParamList {
-
-        @XStreamAsAttribute
-        @XStreamAlias("class")
-        private String type = "list";
-
-        @XStreamImplicit(itemFieldName = "param")
-        private List<VarConfiger> paramList;
-
-    }
-
-    public OperationDescription(DocMethod holder, TypeFormatter typeFormatter) {
-        this.opId = holder.getOpId();
-        this.returnDes = holder.getFunDoc().returnDes();
-        this.methodName = holder.getMethod().getName();
-        this.paramList = new ParamList();
-        this.des = holder.getFunDoc().des();
-        this.text = holder.getFunDoc().text();
-        if (StringUtils.isBlank(this.text)) {
-            this.text = this.des;
-        }
-        List<VarConfiger> paramList = new ArrayList<VarConfiger>();
-        for (DocParam varDocHolder : holder.getParamList()) {
-            paramList.add(new VarConfiger(varDocHolder, typeFormatter));
-        }
-        this.paramList.paramList = Collections.unmodifiableList(paramList);
-        Class<?> docReturn = holder.getFunDoc().returnType();
-        if (docReturn == null || docReturn == Object.class) {
-            Method method = holder.getMethod();
-            this.returnType = returnType(method.getGenericReturnType()).getSimpleName();
+    public OperationDescription(Class<?> clazz, DocMethod holder, TypeFormatter typeFormatter) {
+        super(holder);
+        var method = holder.getMethod();
+        int opId = 0;
+        RpcProfile controller = RpcProfile.oneOf(method);
+        if (controller == null) {
+            LOGGER.warn("{}.{} is not controller", clazz, method.getName());
         } else {
-            this.returnType = docReturn.getSimpleName();
+            if (controller.getProtocol() < 0) {
+                LOGGER.warn("{}.{} controller value {} < 0", clazz, method.getName(), controller.getProtocol());
+            }
+            opId = controller.getProtocol();
         }
+        List<OperationParamDescription> operationParamList = new ArrayList<>();
+        for (DocParam varDocHolder : holder.getParamList()) {
+            operationParamList.add(new OperationParamDescription(varDocHolder, typeFormatter));
+        }
+        this.operationParamList = Collections.unmodifiableList(operationParamList);
+        var funReturnType = holder.getMethod().getAnnotation(FunReturnType.class);
+        if (funReturnType == null || funReturnType.value() == Object.class) {
+            this.docReturnClass = returnType(method.getGenericReturnType());
+        } else {
+            this.docReturnClass = funReturnType.value();
+        }
+        this.docReturnClassName = typeFormatter.format(docReturnClass);
+        this.opId = opId;
     }
 
     private Class<?> returnType(Type type) {
@@ -113,28 +95,20 @@ public class OperationDescription {
         return resultType.getActualTypeArguments()[0];
     }
 
-    public String getDes() {
-        return des;
-    }
-
-    public String getReturnType() {
-        return returnType;
-    }
-
-    public String getReturnDes() {
-        return returnDes;
-    }
-
     public int getOpId() {
         return opId;
     }
 
-    public String getMethodName() {
-        return methodName;
+    public Class<?> getDocReturnClass() {
+        return docReturnClass;
     }
 
-    public List<VarConfiger> getParamList() {
-        return paramList.paramList;
+    public String getDocReturnClassName() {
+        return docReturnClassName;
+    }
+
+    public List<OperationParamDescription> getOperationParamList() {
+        return operationParamList;
     }
 
 }

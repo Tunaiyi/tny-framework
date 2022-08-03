@@ -91,6 +91,11 @@ public interface Sharding<N extends ShardingNode> {
     /**
      * @return 分区改变事件
      */
-    EventSource<ShardingListener<N>> changeEvent();
+    EventSource<ShardingListener<N>> event();
+
+    /**
+     * 最大槽数
+     */
+    long getMaxSlots();
 
 }

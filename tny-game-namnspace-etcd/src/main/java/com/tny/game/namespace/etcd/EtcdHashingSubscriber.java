@@ -5,15 +5,14 @@ import com.tny.game.codec.*;
 import com.tny.game.common.*;
 import com.tny.game.namespace.*;
 import com.tny.game.namespace.consistenthash.*;
+import com.tny.game.namespace.exception.*;
 import com.tny.game.namespace.listener.*;
 import org.slf4j.*;
 
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
-
-import static com.tny.game.common.utils.ObjectAide.*;
+import java.util.stream.*;
 
 /**
  * 哈希节点订阅器
@@ -22,23 +21,19 @@ import static com.tny.game.common.utils.ObjectAide.*;
  * @author kgtny
  * @date 2022/7/8 19:50
  **/
-public class EtcdHashingSubscriber<T> implements HashingSubscriber<T> {
+public class EtcdHashingSubscriber<T> extends EtcdHashing<T> implements HashingSubscriber<T> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EtcdHashingSubscriber.class);
 
-    private final NamespaceExplorer explorer;
-
-    private final String path;
-
-    private final HashAlgorithm algorithm;
-
-    private final ObjectMineType<T> mineType;
+    private static final long WATCH_ALL_SLOT = -1L;
 
     private volatile Map<Long, RangeWatcher<T>> watcherMap = ImmutableMap.of();
 
-    private boolean close = false;
+    private final long maxSlotSize;
 
     private final List<WatchListener<T>> watchListeners = new CopyOnWriteArrayList<>();
+
+    private boolean close = false;
 
     private final WatchListener<T> notifier = new WatchListener<>() {
 
@@ -64,11 +59,14 @@ public class EtcdHashingSubscriber<T> implements HashingSubscriber<T> {
 
     };
 
-    public EtcdHashingSubscriber(String path, ObjectMineType<T> mineType, HashAlgorithm algorithm, NamespaceExplorer explorer) {
-        this.path = path;
-        this.algorithm = ifNull(algorithm, HashAlgorithms.getDefault());
-        this.mineType = mineType;
-        this.explorer = explorer;
+    public EtcdHashingSubscriber(String rootPath, long maxSlotSize, ObjectMineType<T> mineType, NamespaceExplorer explorer) {
+        super(rootPath, mineType, explorer);
+        this.maxSlotSize = maxSlotSize;
+    }
+
+    @Override
+    protected long getMaxSlots() {
+        return this.maxSlotSize;
     }
 
     @Override
@@ -77,7 +75,29 @@ public class EtcdHashingSubscriber<T> implements HashingSubscriber<T> {
     }
 
     @Override
-    public void subscribe(List<ShardingRange<?>> ranges) {
+    public void subscribeAll() {
+        if (close) {
+            return;
+        }
+        synchronized (this) {
+            if (close) {
+                return;
+            }
+            var existMap = new HashMap<>(this.watcherMap);
+            Map<Long, RangeWatcher<T>> watchers;
+            var exist = existMap.remove(WATCH_ALL_SLOT);
+            if (exist == null) {
+                watchers = addAllSubscription();
+            } else {
+                watchers = Map.of(WATCH_ALL_SLOT, exist);
+            }
+            existMap.forEach((slot, sub) -> sub.close());
+            this.watcherMap = watchers;
+        }
+    }
+
+    @Override
+    public void subscribe(List<? extends ShardingRange<?>> ranges) {
         if (close) {
             return;
         }
@@ -148,10 +168,16 @@ public class EtcdHashingSubscriber<T> implements HashingSubscriber<T> {
     }
 
     private void addSubscription(ShardingRange<?> range, Map<Long, RangeWatcher<T>> map) {
-        var newSub = new RangeWatcher<>(this, this.algorithm, range);
+        var newSub = RangeWatcher.ofRange(this, range);
         if (map.putIfAbsent(range.getToSlot(), newSub) == null) {
             newSub.watch();
         }
+    }
+
+    private Map<Long, RangeWatcher<T>> addAllSubscription() {
+        var newSub = RangeWatcher.ofAll(this);
+        newSub.watch();
+        return Map.of(WATCH_ALL_SLOT, newSub);
     }
 
     private void fire(Consumer<WatchListener<T>> handle) {
@@ -165,7 +191,7 @@ public class EtcdHashingSubscriber<T> implements HashingSubscriber<T> {
     }
 
     private String subPath(long slot) {
-        return NamespacePaths.nodePath(path, this.algorithm.alignDigits(slot));
+        return NamespacePathNames.nodePath(path, slotName(slot));
     }
 
     private ObjectMineType<T> getMineType() {
@@ -178,15 +204,20 @@ public class EtcdHashingSubscriber<T> implements HashingSubscriber<T> {
 
         private final ShardingRange<?> range;
 
-        private final HashAlgorithm algorithm;
-
         private boolean start;
 
         private List<NameNodesWatcher<T>> watchers;
 
-        private RangeWatcher(EtcdHashingSubscriber<T> parent, HashAlgorithm algorithm, ShardingRange<?> range) {
+        public static <T> RangeWatcher<T> ofRange(EtcdHashingSubscriber<T> parent, ShardingRange<?> range) {
+            return new RangeWatcher<>(parent, range);
+        }
+
+        public static <T> RangeWatcher<T> ofAll(EtcdHashingSubscriber<T> parent) {
+            return new RangeWatcher<>(parent, null);
+        }
+
+        private RangeWatcher(EtcdHashingSubscriber<T> parent, ShardingRange<?> range) {
             this.parent = parent;
-            this.algorithm = algorithm;
             this.range = range;
         }
 
@@ -199,16 +230,39 @@ public class EtcdHashingSubscriber<T> implements HashingSubscriber<T> {
                     return;
                 }
                 start = true;
-                watchers = range.getRanges().stream()
-                        .map((range) -> {
-                            var from = parent.subPath(range.lowerEndpoint());
-                            var to = parent.subPath(range.upperEndpoint());
-                            System.out.println("watch : " + from + " => " + to);
-                            return parent.getExplorer().allNodeWatcher(
-                                    from,
-                                    to,
-                                    parent.getMineType());
-                        })
+                Stream<NameNodesWatcher<T>> watcherStream;
+                if (range == null) {
+                    watcherStream = Stream.generate(() -> parent.getExplorer().allNodeWatcher(parent.getPath(), parent.getMineType()));
+                } else {
+                    watcherStream = range.getRanges().stream()
+                            .map((range) -> {
+                                long lower = range.lowerEndpoint();
+                                long upper = range.upperEndpoint();
+                                if (!range.contains(lower) && lower < upper) {
+                                    lower++;
+                                }
+                                if (!range.contains(upper) && lower < upper) {
+                                    upper--;
+                                }
+                                if (!range.contains(lower) || !range.contains(upper)) {
+                                    throw new HashingException("It is illegal to {}({}) to {}() for the interval",
+                                            range.lowerEndpoint(), range.lowerBoundType(), range.upperEndpoint(), range.upperBoundType());
+                                }
+                                if (lower == upper) {
+                                    var path = parent.subPath(range.lowerEndpoint());
+                                    return parent.getExplorer().nodeWatcher(
+                                            path, parent.getMineType());
+                                } else {
+                                    var from = parent.subPath(lower);
+                                    var to = parent.subPath(upper);
+                                    return parent.getExplorer().allNodeWatcher(
+                                            from,
+                                            to,
+                                            parent.getMineType());
+                                }
+                            });
+                }
+                this.watchers = watcherStream
                         .peek(watcher -> watcher.addListener(parent.notifier))
                         .peek(this::doWatch)
                         .collect(Collectors.toList());

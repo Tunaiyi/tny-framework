@@ -43,13 +43,18 @@ public class ClassDescription implements DocClassAccess, Comparable<ClassDescrip
     }
 
     @Override
+    public String getDocDesc() {
+        return docClass.getDocDesc();
+    }
+
+    @Override
     public String getDocText() {
         return docClass.getDocText();
     }
 
     @Override
-    public String getClassName() {
-        return docClass.getClassName();
+    public String getRawClassName() {
+        return docClass.getRawClassName();
     }
 
     @Override
@@ -68,7 +73,7 @@ public class ClassDescription implements DocClassAccess, Comparable<ClassDescrip
     }
 
     @Override
-    public List<DocVar> getFieldList() {
+    public List<DocField> getFieldList() {
         return docClass.getFieldList();
     }
 

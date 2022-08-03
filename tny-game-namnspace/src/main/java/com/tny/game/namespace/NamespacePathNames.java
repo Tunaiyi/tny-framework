@@ -7,9 +7,9 @@ package com.tny.game.namespace;
  * @author kgtny
  * @date 2022/7/1 03:27
  **/
-public class NamespacePaths {
+public class NamespacePathNames {
 
-    private static final String NAMESPACE_DELIMITER = "/";
+    public static final String NAMESPACE_DELIMITER = "/";
 
     public static String nodePath(String parent, Object... nodes) {
         boolean endDelimiter = parent.endsWith(NAMESPACE_DELIMITER);

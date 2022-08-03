@@ -231,7 +231,8 @@ public class EtcdNameNodesWatcher<T> extends EtcdObject implements NameNodesWatc
             for (WatchEvent event : response.getEvents()) {
                 KeyValue kv = event.getKeyValue();
                 if (kv.getVersion() == 0) {
-                    NameNode<T> node = decode(event.getPrevKV(), valueType);
+                    var removeKv = event.getPrevKV();
+                    NameNode<T> node = decode(removeKv.getValue().getBytes(), kv, removeKv.getCreateRevision(), valueType);
                     deleteEvent.fire(WatchDeleteListener::onDelete, EtcdNameNodesWatcher.this, node);
                 } else {
                     KeyValue preKv = event.getPrevKV();

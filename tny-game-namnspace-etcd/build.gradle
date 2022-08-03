@@ -3,6 +3,7 @@ dependencies {
     api project(":tny-game-namnspace")
 
     api libs.jetcd_core
+    api libs.guava
 
     api project(":tny-game-codec-jackson")
 }

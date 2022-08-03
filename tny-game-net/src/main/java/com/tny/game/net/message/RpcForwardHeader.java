@@ -25,7 +25,7 @@ public class RpcForwardHeader extends MessageHeader<RpcForwardHeader> {
      * 请求服务
      */
     @Protobuf(order = 2)
-    private ForwardRpcServicer from;
+    private ForwardPoint from;
 
     /**
      * 发送者
@@ -37,7 +37,7 @@ public class RpcForwardHeader extends MessageHeader<RpcForwardHeader> {
      * 目标服务
      */
     @Protobuf(order = 4)
-    private ForwardRpcServicer to;
+    private ForwardPoint to;
 
     /**
      * 目标接受者
@@ -50,19 +50,19 @@ public class RpcForwardHeader extends MessageHeader<RpcForwardHeader> {
      */
     @Packed
     @Protobuf(order = 6)
-    private ForwardRpcServicer fromForwarder;
+    private ForwardPoint fromForwarder;
 
     /**
      * 目标转发者
      */
     @Packed
     @Protobuf(order = 7)
-    private ForwardRpcServicer toForwarder;
+    private ForwardPoint toForwarder;
 
     public RpcForwardHeader() {
     }
 
-    public ForwardRpcServicer getFrom() {
+    public ForwardPoint getFrom() {
         return from;
     }
 
@@ -70,7 +70,7 @@ public class RpcForwardHeader extends MessageHeader<RpcForwardHeader> {
         return sender;
     }
 
-    public ForwardRpcServicer getTo() {
+    public ForwardPoint getTo() {
         return to;
     }
 
@@ -78,11 +78,11 @@ public class RpcForwardHeader extends MessageHeader<RpcForwardHeader> {
         return receiver;
     }
 
-    public ForwardRpcServicer getFromForwarder() {
+    public ForwardPoint getFromForwarder() {
         return fromForwarder;
     }
 
-    public ForwardRpcServicer getToForwarder() {
+    public ForwardPoint getToForwarder() {
         return toForwarder;
     }
 
@@ -92,7 +92,7 @@ public class RpcForwardHeader extends MessageHeader<RpcForwardHeader> {
     }
 
     protected RpcForwardHeader setFrom(RpcServicer fromService) {
-        this.from = toForwardRpcServicer(fromService);
+        this.from = toForwardPoint(fromService);
         return this;
     }
 
@@ -102,7 +102,7 @@ public class RpcForwardHeader extends MessageHeader<RpcForwardHeader> {
     }
 
     protected RpcForwardHeader setTo(RpcServicer toServicer) {
-        this.to = toForwardRpcServicer(toServicer);
+        this.to = toForwardPoint(toServicer);
         return this;
     }
 
@@ -112,23 +112,23 @@ public class RpcForwardHeader extends MessageHeader<RpcForwardHeader> {
     }
 
     protected RpcForwardHeader setFromForwarder(RpcServicer fromService) {
-        this.fromForwarder = toForwardRpcServicer(fromForwarder);
+        this.fromForwarder = toForwardPoint(fromForwarder);
         return this;
     }
 
     protected RpcForwardHeader setToForwarder(RpcServicer fromService) {
-        this.toForwarder = toForwardRpcServicer(toForwarder);
+        this.toForwarder = toForwardPoint(toForwarder);
         return this;
     }
 
-    private ForwardRpcServicer toForwardRpcServicer(RpcServicer rpcServicer) {
+    private ForwardPoint toForwardPoint(RpcServicer rpcServicer) {
         if (rpcServicer == null) {
             return null;
         }
-        if (rpcServicer instanceof ForwardRpcServicer) {
+        if (rpcServicer instanceof ForwardPoint) {
             return as(rpcServicer);
         } else {
-            return new ForwardRpcServicer(rpcServicer);
+            return new ForwardPoint(rpcServicer);
         }
     }
 

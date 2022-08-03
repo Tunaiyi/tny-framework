@@ -43,12 +43,12 @@ public class RpcForwardHeaderBuilder extends MessageHeaderBuilder<RpcForwardHead
         return this;
     }
 
-    public RpcForwardHeaderBuilder setFromForwarder(RpcServicer fromService) {
+    public RpcForwardHeaderBuilder setFromForwarder(RpcServicerPoint fromService) {
         header().setFrom(fromService);
         return this;
     }
 
-    public RpcForwardHeaderBuilder setToForwarder(RpcServicer toServicer) {
+    public RpcForwardHeaderBuilder setToForwarder(RpcServicerPoint toServicer) {
         header().setTo(toServicer);
         return this;
     }

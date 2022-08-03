@@ -16,11 +16,11 @@ public class RpcRemoteServiceAccess implements RpcServiceAccess {
 
     private final Endpoint<RpcAccessIdentify> endpoint;
 
-    private final ForwardRpcServicer forwardRpcServicer;
+    private final ForwardPoint forwardPoint;
 
     public RpcRemoteServiceAccess(Endpoint<RpcAccessIdentify> endpoint) {
         this.endpoint = endpoint;
-        this.forwardRpcServicer = new ForwardRpcServicer(endpoint.getUserId());
+        this.forwardPoint = new ForwardPoint(endpoint.getUserId());
     }
 
     @Override
@@ -44,8 +44,8 @@ public class RpcRemoteServiceAccess implements RpcServiceAccess {
     }
 
     @Override
-    public ForwardRpcServicer getForwardRpcServicer() {
-        return forwardRpcServicer;
+    public ForwardPoint getForwardPoint() {
+        return forwardPoint;
     }
 
     @Override

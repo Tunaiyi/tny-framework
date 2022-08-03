@@ -9,6 +9,6 @@ import com.tny.game.net.endpoint.*;
  * @author : kgtny
  * @date : 2021/11/8 2:43 下午
  */
-public interface ClientConnectFuture<UID> extends StageFuture<Client<UID>> {
+public interface ClientConnectFuture<UID> extends CompletionStageFuture<Client<UID>> {
 
 }

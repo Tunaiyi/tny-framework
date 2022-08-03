@@ -5,7 +5,7 @@ import java.util.concurrent.CompletableFuture;
 /**
  * Created by Kun Yang on 2018/8/21.
  */
-public class CompleteStageFuture<T> extends CompletableFuture<T> implements StageFuture<T> {
+public class CompleteStageFuture<T> extends CompletableFuture<T> implements CompletionStageFuture<T> {
 
     public static <T> CompleteStageFuture<T> future(Throwable cause) {
         CompleteStageFuture<T> future = new CompleteStageFuture<>();

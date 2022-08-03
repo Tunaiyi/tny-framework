@@ -106,27 +106,30 @@ public class EtcdNamespaceExplorer extends EtcdObject implements NamespaceExplor
     }
 
     @Override
-    public <T extends ShardingNode> HashingRing<T> hashing(String rootPath, HashingOptions<T> options) {
+    public <T extends ShardingNode> NodeHashing<T> nodeHashing(String rootPath, NodeHashingFactory factory, HashingOptions<T> options) {
         if (StringUtils.isBlank(rootPath)) {
             throw new HashRingException("rootPath {} is blank", rootPath);
         }
-        return new EtcdHashingRing<>(rootPath, options, this, this.objectCodecAdapter, charset);
+        if (factory == null) {
+            factory = EtcdNodeHashingMultimapFactory.getDefault();
+        }
+        return factory.create(rootPath, options, this, this.objectCodecAdapter);
     }
 
     @Override
-    public <T> HashingSubscriber<T> hashingSubscriber(String parentPath, HashAlgorithm algorithm, ObjectMineType<T> mineType) {
+    public <T> HashingSubscriber<T> hashingSubscriber(String parentPath, long maxSlotSize, ObjectMineType<T> mineType) {
         if (StringUtils.isBlank(parentPath)) {
             throw new HashRingException("rootPath {} is blank", parentPath);
         }
-        return new EtcdHashingSubscriber<>(parentPath, mineType, algorithm, this);
+        return new EtcdHashingSubscriber<>(parentPath, maxSlotSize, mineType, this);
     }
 
     @Override
-    public <T> HashingPublisher<T> hashingPublisher(String parentPath, Hasher<T> hasher, HashAlgorithm algorithm, ObjectMineType<T> mineType) {
+    public <K, T> HashingPublisher<K, T> hashingPublisher(String parentPath, Hasher<K> hasher, ObjectMineType<T> mineType) {
         if (StringUtils.isBlank(parentPath)) {
             throw new HashRingException("rootPath {} is blank", parentPath);
         }
-        return new EtcdHashingPublisher<>(parentPath, hasher, algorithm, mineType, this);
+        return new EtcdHashingPublisher<>(parentPath, hasher, mineType, this);
     }
 
     @Override

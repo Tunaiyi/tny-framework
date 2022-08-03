@@ -8,7 +8,7 @@ import com.tny.game.common.worker.command.*;
  * @param <C>
  */
 
-public interface CommandBox<C extends Command> extends CommandWorker {
+public interface CommandBox<C extends Command> {
 
     /**
      * @return box命令列表是否为空
@@ -39,7 +39,7 @@ public interface CommandBox<C extends Command> extends CommandWorker {
      * @param worker worker
      * @return 返回是否绑定成功
      */
-    boolean bindWorker(CommandWorker worker);
+    boolean bindWorker(CommandBoxWorker worker);
 
     /**
      * @return 是否解绑worker成功
@@ -47,9 +47,9 @@ public interface CommandBox<C extends Command> extends CommandWorker {
     boolean unbindWorker();
 
     /**
-     * @return 提交给worker
+     * 提交给worker
      */
-    boolean submit();
+    void submit();
 
     /**
      * 处理Command

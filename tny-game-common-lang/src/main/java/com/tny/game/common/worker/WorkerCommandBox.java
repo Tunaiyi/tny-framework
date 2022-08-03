@@ -8,11 +8,11 @@ import org.slf4j.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public abstract class WorkerCommandBox<C extends Command, CB extends CommandBox<C>> implements CommandBox<C> {
+public abstract class WorkerCommandBox<C extends Command, CB extends CommandBox<C>> implements CommandBox<C>, CommandBoxWorker {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(LogAide.WORKER);
 
-    protected volatile CommandWorker worker;
+    protected volatile CommandBoxWorker worker;
 
     protected long runUseTime;
 
@@ -39,7 +39,7 @@ public abstract class WorkerCommandBox<C extends Command, CB extends CommandBox<
 
     @Override
     public boolean isOnCurrentThread() {
-        CommandWorker worker = this.worker;
+        CommandBoxWorker worker = this.worker;
         if (worker != null) {
             worker.isOnCurrentThread();
         }

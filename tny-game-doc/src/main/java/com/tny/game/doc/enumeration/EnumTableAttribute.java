@@ -9,7 +9,7 @@ import com.tny.game.doc.table.*;
 
 import java.util.Map;
 
-import static com.tny.game.doc.holder.EnumDocHolder.*;
+import static com.tny.game.doc.holder.EnumDocClass.*;
 
 public class EnumTableAttribute implements TableAttribute {
 
@@ -23,14 +23,14 @@ public class EnumTableAttribute implements TableAttribute {
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     public EnumTableAttribute(Class<Enum> clazz, TypeFormatter typeFormatter) {
-        this.enumeration = new EnumDescription(create(clazz), typeFormatter);
+        this.enumeration = new EnumDescription(createEnumClass(clazz), typeFormatter);
         this.exportHolder = ExportHolder.create(clazz);
     }
 
     @Override
     @SuppressWarnings({"rawtypes", "unchecked"})
     public void putAttribute(Class<?> clazz, TypeFormatter typeFormatter, Attributes attributes) {
-        this.enumeration = new EnumDescription(create((Class<Enum>)clazz), typeFormatter);
+        this.enumeration = new EnumDescription(createEnumClass((Class<Enum>)clazz), typeFormatter);
         this.exportHolder = ExportHolder.create(clazz);
     }
 

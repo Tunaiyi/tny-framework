@@ -11,7 +11,7 @@ import com.tny.game.net.base.*;
  * @date 2022/4/28 05:10
  **/
 @ProtobufClass
-public class ForwardRpcServicer implements RpcServicer {
+public class ForwardPoint implements RpcServicerPoint {
 
     @Protobuf(order = 1)
     private int serviceTypeId;
@@ -22,21 +22,23 @@ public class ForwardRpcServicer implements RpcServicer {
     @Protobuf(order = 2)
     private RpcAccessId accessId;
 
-    public ForwardRpcServicer() {
+    public ForwardPoint() {
     }
 
-    public ForwardRpcServicer(RpcServicer servicer) {
+    public ForwardPoint(RpcServicer servicer) {
         this.serviceType = servicer.getServiceType();
         this.serviceTypeId = this.serviceType.id();
-        this.accessId = new RpcAccessId(servicer.getId());
+        if (servicer instanceof RpcServicerPoint) {
+            this.accessId = new RpcAccessId(((RpcServicerPoint)servicer).getId());
+        }
     }
 
-    public ForwardRpcServicer(RpcServiceType serviceType) {
+    public ForwardPoint(RpcServiceType serviceType) {
         this.serviceType = serviceType;
         this.serviceTypeId = serviceType.id();
     }
 
-    public ForwardRpcServicer(RpcServiceType serviceType, long accessId) {
+    public ForwardPoint(RpcServiceType serviceType, long accessId) {
         this.serviceType = serviceType;
         this.serviceTypeId = serviceType.id();
         this.accessId = new RpcAccessId(accessId);
@@ -71,7 +73,7 @@ public class ForwardRpcServicer implements RpcServicer {
         return accessId == null ? -1 : accessId.getServiceId();
     }
 
-    public ForwardRpcServicer setAccessId(RpcAccessId accessId) {
+    public ForwardPoint setAccessId(RpcAccessId accessId) {
         this.accessId = accessId;
         return this;
     }

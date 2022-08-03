@@ -101,7 +101,7 @@ public class ControllerMessageCommand extends MessageCommand {
 
     public MessagerType getMessagerType() {
         if (this.forward != null) {
-            ForwardRpcServicer servicer = this.forward.getFrom();
+            ForwardPoint servicer = this.forward.getFrom();
             if (servicer != null) {
                 return servicer.getServiceType();
             }

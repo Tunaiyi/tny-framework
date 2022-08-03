@@ -32,7 +32,7 @@ public interface Partition<N extends ShardingNode> {
     default String getNodeId() {
         N node = this.getNode();
         if (node != null) {
-            return node.getNodeId();
+            return node.getHashKey();
         }
         return null;
     }

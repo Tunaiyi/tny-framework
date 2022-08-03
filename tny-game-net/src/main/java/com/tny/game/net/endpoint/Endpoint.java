@@ -4,13 +4,14 @@ import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
 
 import java.util.List;
+import java.util.concurrent.Executor;
 import java.util.function.Predicate;
 
 /**
  * 终端, 代表通选两端
  * <p>
  */
-public interface Endpoint<UID> extends Connection, Communicator<UID>, Sender {
+public interface Endpoint<UID> extends Connection, Communicator<UID>, Sender, Executor {
 
     /*
      * @return 终端ID

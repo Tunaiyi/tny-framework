@@ -9,6 +9,7 @@ import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
 import org.slf4j.*;
 
+import javax.annotation.Nonnull;
 import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
@@ -162,6 +163,11 @@ public abstract class BaseNetEndpoint<UID> extends AbstractCommunicator<UID> imp
             this.commandTaskBox.addTask(new RespondCommandTask(message, awaiter));
         }
         return this.commandTaskBox.addTask(new MessageCommandTask(tunnel, message));
+    }
+
+    @Override
+    public void execute(@Nonnull Runnable command) {
+        this.commandTaskBox.execute(command);
     }
 
     @Override

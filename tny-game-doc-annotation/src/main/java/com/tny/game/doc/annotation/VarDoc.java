@@ -13,4 +13,19 @@ public @interface VarDoc {
      */
     String value();
 
+    /**
+     * @return 细节描述
+     */
+    String text() default "";
+
+    /**
+     * @return 值类型
+     */
+    Class<?> valueType() default Object.class;
+
+    /**
+     * @return 值例子
+     */
+    String valueExample() default "";
+
 }

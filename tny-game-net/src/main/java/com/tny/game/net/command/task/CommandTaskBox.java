@@ -4,8 +4,9 @@ import com.tny.game.common.concurrent.utils.*;
 import com.tny.game.net.command.processor.*;
 import org.slf4j.Logger;
 
+import javax.annotation.Nonnull;
 import java.util.*;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.*;
 import java.util.concurrent.locks.StampedLock;
 import java.util.function.Supplier;
 
@@ -18,7 +19,7 @@ import static org.slf4j.LoggerFactory.*;
  * @author : kgtny
  * @date : 2021/5/14 2:57 下午
  */
-public class CommandTaskBox {
+public class CommandTaskBox implements Executor {
 
     public static final Logger LOGGER = getLogger(CommandTaskBox.class);
 
@@ -48,20 +49,25 @@ public class CommandTaskBox {
         this.executor = executor;
     }
 
+    @Override
+    public void execute(@Nonnull Runnable command) {
+        this.addTask(command);
+    }
+
     public boolean addTask(CommandTask task) {
         if (this.closed) {
             return false;
         }
         return StampedLockAide.supplyInOptimisticReadLock(this.queueLock,
-                () -> this.addAndSubmit(task));
+                () -> this.doAddTask(task));
     }
 
-    public boolean addTask(Runnable runnable) {
+    private void addTask(Runnable runnable) {
         if (this.closed) {
-            return false;
+            return;
         }
-        return StampedLockAide.supplyInOptimisticReadLock(this.queueLock,
-                () -> this.addAndSubmit(new RunnableCommandTask(runnable)));
+        StampedLockAide.supplyInOptimisticReadLock(this.queueLock,
+                () -> this.doAddTask(new RunnableCommandTask(runnable)));
     }
 
     public boolean takeOver(CommandTaskBox box) {
@@ -77,7 +83,7 @@ public class CommandTaskBox {
                         return false;
                     }
                     Optional<Queue<CommandTask>> optional = box.close();
-                    if (!optional.isPresent()) {
+                    if (optional.isEmpty()) {
                         return false;
                     }
                     Queue<CommandTask> queue = optional.get();
@@ -176,20 +182,7 @@ public class CommandTaskBox {
         return null;
     }
 
-    private boolean addAndSubmit(CommandTask... tasks) {
-        if (this.closed) {
-            return false;
-        }
-        for (CommandTask task : tasks) {
-            if (task != null) {
-                this.taskQueue.add(task);
-            }
-        }
-        this.executor.submit(this);
-        return true;
-    }
-
-    private boolean addAndSubmit(CommandTask task) {
+    private boolean doAddTask(CommandTask task) {
         if (this.closed) {
             return false;
         }

@@ -37,7 +37,7 @@ public class MessageCommandTask implements CommandTask {
         if (forwardHeader == null) {
             return null;
         }
-        ForwardRpcServicer rpcServicer = forwardHeader.getTo();
+        ForwardPoint rpcServicer = forwardHeader.getTo();
         if (rpcServicer == null) {
             return null;
         }

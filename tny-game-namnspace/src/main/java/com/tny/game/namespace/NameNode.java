@@ -47,4 +47,17 @@ public class NameNode<T> {
         return revision;
     }
 
+    public boolean isDelete() {
+        return this.version == 0;
+    }
+
+    @Override
+    public String toString() {
+        return "NameNode{" + "name=" + name +
+                ", id=" + id +
+                ", version=" + version +
+                ", revision=" + revision +
+                '}';
+    }
+
 }

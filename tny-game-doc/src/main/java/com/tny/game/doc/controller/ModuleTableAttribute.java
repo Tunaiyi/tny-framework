@@ -22,13 +22,13 @@ public class ModuleTableAttribute implements TableAttribute {
 
     public ModuleTableAttribute(Class<?> clazz, TypeFormatter typeFormatter) {
         super();
-        this.module = ModuleDescription.create(Objects.requireNonNull(ClassDocHolder.create(clazz)), typeFormatter);
+        this.module = ModuleDescription.create(Objects.requireNonNull(DocClass.create(clazz)), typeFormatter);
         this.exportHolder = ExportHolder.create(clazz);
     }
 
     @Override
     public void putAttribute(Class<?> clazz, TypeFormatter typeFormatter, Attributes attributes) {
-        this.module = ModuleDescription.create(Objects.requireNonNull(ClassDocHolder.create(clazz)), typeFormatter);
+        this.module = ModuleDescription.create(Objects.requireNonNull(DocClass.create(clazz)), typeFormatter);
         this.exportHolder = ExportHolder.create(clazz);
     }
 

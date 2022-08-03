@@ -127,7 +127,7 @@ public class RpcRemoteInvokeParams {
     }
 
     RpcRemoteInvokeParams setTo(RpcServiceType toService) {
-        this.to = new ForwardRpcServicer(toService);
+        this.to = new ForwardPoint(toService);
         return this;
     }
 

@@ -6,7 +6,7 @@ import java.util.function.*;
 /**
  * Created by Kun Yang on 2018/8/21.
  */
-public class WrapperStageFuture<T> implements StageFuture<T> {
+public class WrapperStageFuture<T> implements CompletionStageFuture<T> {
 
     protected CompletableFuture<T> future;
 

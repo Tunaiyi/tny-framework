@@ -1,23 +1,16 @@
 package com.tny.game.net.base;
 
-import javax.annotation.Nonnull;
-import java.util.Comparator;
-
 /**
+ * Rpc 服务
  * <p>
  *
  * @author Kun Yang
  * @date 2022/4/28 15:11
  **/
-public interface RpcServicer extends RpcServiceNode, Comparable<RpcServicer> {
+public interface RpcServicer {
 
-    long getId();
+    RpcServiceType getServiceType();
 
-    Comparator<RpcServicer> COMPARATOR = Comparator.comparing(RpcServicer::getId);
-
-    @Override
-    default int compareTo(@Nonnull RpcServicer o) {
-        return COMPARATOR.compare(this, o);
-    }
+    int getServerId();
 
 }

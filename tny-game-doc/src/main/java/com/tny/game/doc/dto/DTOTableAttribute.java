@@ -75,12 +75,12 @@ public class DTOTableAttribute implements TableAttribute {
 
     @Override
     public void putAttribute(Class<?> clazz, TypeFormatter typeFormatter, Attributes attributes) {
-        this.dto = create(Objects.requireNonNull(DTODocHolder.create(clazz,
+        this.dto = create(Objects.requireNonNull(DTODocClass.create(clazz,
                 classAnnotation, classIdGetter, fieldAnnotation, fieldIdGetter)), typeFormatter, attributes);
         this.exportHolder = ExportHolder.create(clazz);
     }
 
-    public DTODescription create(DTODocHolder holder, TypeFormatter typeFormatter, Attributes attributes) {
+    public DTODescription create(DTODocClass holder, TypeFormatter typeFormatter, Attributes attributes) {
         Map<Object, DTODescription> configMap = attributes.computeIfAbsent(KEY, ConcurrentHashMap::new);
         Object id = holder.getId();
         if (id != null) {

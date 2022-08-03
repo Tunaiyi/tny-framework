@@ -114,9 +114,9 @@ public class CommandTaskBoxDriver implements Runnable {
                 if (this.taskBox.isClosed()) {
                     return;
                 }
-                CommandTask event = this.taskBox.poll();
-                if (event != null) {
-                    this.currentCommand = event.createCommand();
+                CommandTask task = this.taskBox.poll();
+                if (task != null) {
+                    this.currentCommand = task.createCommand();
                     if (this.currentCommand != null) {
                         this.commandTickTimes = 0;
                         this.commandStartTime = System.currentTimeMillis();

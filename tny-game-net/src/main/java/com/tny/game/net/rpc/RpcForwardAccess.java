@@ -20,6 +20,6 @@ public interface RpcForwardAccess extends RpcRemoterAccess {
     /**
      * @return 获取转发服务者
      */
-    ForwardRpcServicer getForwardRpcServicer();
+    ForwardPoint getForwardPoint();
 
 }

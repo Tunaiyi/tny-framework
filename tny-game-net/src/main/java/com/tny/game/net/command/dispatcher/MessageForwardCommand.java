@@ -49,13 +49,13 @@ public class MessageForwardCommand extends BaseCommand {
         RpcForwardHeader forwardHeader = message.getHeader(MessageHeaderConstants.RPC_FORWARD_HEADER);
         RpcForwardAccess toAccess = context.getRpcForwarder().forward(message, forwardHeader);
         if (toAccess != null && toAccess.isActive()) {
-            ForwardRpcServicer fromService = new ForwardRpcServicer(this.tunnel.getUserId());
-            RpcServicer toService = toAccess.getForwardRpcServicer();
+            ForwardPoint fromPoint = new ForwardPoint(this.tunnel.getUserId());
+            RpcServicerPoint toPoint = toAccess.getForwardPoint();
             toAccess.send(MessageContexts.copy(message)
                     .withHeader(RpcForwardHeaderBuilder.newBuilder()
-                            .setFrom(fromService)
+                            .setFrom(fromPoint)
                             .setSender(forwardHeader.getSender())
-                            .setTo(toService)
+                            .setTo(toPoint)
                             .setReceiver(forwardHeader.getReceiver())
                             .build())
                     .withHeader(RpcOriginalMessageIdHeaderBuilder.newBuilder()

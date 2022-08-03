@@ -9,7 +9,7 @@ import java.util.Objects;
  * @author kgtny
  * @date 2022/7/6 15:00
  **/
-public class RingPartition<N extends ShardingNode> extends ShardingPartition<N> {
+public class NodePartition<N extends ShardingNode> extends ShardingPartition<N> {
 
     private String key;
 
@@ -19,11 +19,11 @@ public class RingPartition<N extends ShardingNode> extends ShardingPartition<N> 
 
     private N node;
 
-    public RingPartition() {
+    public NodePartition() {
     }
 
-    public RingPartition(int index, N node) {
-        this.key = node.getNodeId() + "$" + index;
+    public NodePartition(int index, N node) {
+        this.key = node.getHashKey() + "$" + index;
         this.index = index;
         this.node = node;
     }
@@ -63,10 +63,10 @@ public class RingPartition<N extends ShardingNode> extends ShardingPartition<N> 
         if (this == o) {
             return true;
         }
-        if (!(o instanceof RingPartition)) {
+        if (!(o instanceof NodePartition)) {
             return false;
         }
-        RingPartition<?> that = (RingPartition<?>)o;
+        NodePartition<?> that = (NodePartition<?>)o;
         return getIndex() == that.getIndex() && getSlot() == that.getSlot() && Objects.equals(getKey(), that.getKey());
     }
 

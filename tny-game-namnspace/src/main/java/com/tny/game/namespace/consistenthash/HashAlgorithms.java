@@ -2,9 +2,9 @@ package com.tny.game.namespace.consistenthash;
 
 import net.openhft.hashing.LongHashFunction;
 
-import java.nio.charset.*;
-import java.util.*;
 import java.util.function.Function;
+
+import static com.tny.game.namespace.NamespaceConstants.*;
 
 /**
  * 哈希算法
@@ -14,8 +14,6 @@ import java.util.function.Function;
  * @date 2022/7/6 13:29
  **/
 public class HashAlgorithms {
-
-    private static final Charset CHARSET = StandardCharsets.UTF_8;
 
     public static final HashAlgorithm MURMUR3_32 = algorithm32(LongHashFunction::murmur_3);
 
@@ -59,38 +57,6 @@ public class HashAlgorithms {
         return new Hash32FunctionHashAlgorithm(hashBuilder);
     }
 
-    private static final int LONG_MAX_DIGITS = String.valueOf(Long.MAX_VALUE).length();
-
-    private static final String[] ZERO_FILL = new String[LONG_MAX_DIGITS];
-
-    public static String alignDigits(long hashCode, long maxCode) {
-        int maxDigits = digitsMap.higherEntry(maxCode).getValue();
-        int digits = digitsMap.higherEntry(hashCode).getValue();
-        int lack = maxDigits - digits;
-        if (lack == 0) {
-            return String.valueOf(hashCode);
-        }
-        return ZERO_FILL[lack] + hashCode;
-    }
-
-    private static final NavigableMap<Long, Integer> digitsMap = new TreeMap<>();
-    static {
-        StringBuilder builder = new StringBuilder();
-        for (int index = 0; index < LONG_MAX_DIGITS; index++) {
-            if (index > 0) {
-                builder.append(0);
-            }
-            ZERO_FILL[index] = builder.toString();
-        }
-
-        long step = 1L;
-        for (int i = 1; i <= LONG_MAX_DIGITS; i++) {
-            step *= 10;
-            digitsMap.put(step, i);
-        }
-        digitsMap.put(Long.MAX_VALUE, LONG_MAX_DIGITS);
-    }
-
     private static class Hash64FunctionHashAlgorithm implements HashAlgorithm {
 
         private final Function<Integer, LongHashFunction> hashBuilder;
@@ -109,23 +75,11 @@ public class HashAlgorithms {
             return Long.MAX_VALUE;
         }
 
-        @Override
-        public String alignDigits(long hashCode) {
-            int digits = digitsMap.higherEntry(hashCode).getValue();
-            int lack = LONG_MAX_DIGITS - digits;
-            if (lack == 0) {
-                return String.valueOf(hashCode);
-            }
-            return ZERO_FILL[lack] + hashCode;
-        }
-
     }
 
     private static class Hash32FunctionHashAlgorithm implements HashAlgorithm {
 
         public static final long MAX = -1L >>> 32;
-
-        private static final int MAX_DIGITS = String.valueOf(MAX).length();
 
         private final Function<Integer, LongHashFunction> hashBuilder;
 
@@ -142,16 +96,6 @@ public class HashAlgorithms {
         @Override
         public long getMax() {
             return MAX;
-        }
-
-        @Override
-        public String alignDigits(long hashCode) {
-            int digits = digitsMap.higherEntry(hashCode).getValue();
-            int lack = MAX_DIGITS - digits;
-            if (lack == 0) {
-                return String.valueOf(hashCode);
-            }
-            return ZERO_FILL[lack] + hashCode;
         }
 
     }

@@ -6,6 +6,7 @@ import com.tny.game.namespace.consistenthash.*;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 /**
  * Namespace 管理器
@@ -48,92 +49,122 @@ public interface NamespaceExplorer {
     <T> CompletableFuture<List<NameNode<T>>> findAll(String from, String to, ObjectMineType<T> type);
 
     /**
-     * 创建一致性 hash 环
+     * 创建 hash 节点存储器
      *
      * @param rootPath 路径
      * @param options  选项
      * @return 返回一致性 hash 环
      */
-    <T extends ShardingNode> HashingRing<T> hashing(String rootPath, HashingOptions<T> options);
-
-    /**
-     * 创建一致性 hash 环
-     *
-     * @param name     名字
-     * @param rootPath 路径
-     * @param type     类型
-     * @return 返回一致性 hash 环
-     */
-    default <T extends ShardingNode> HashingRing<T> hashing(String name, String rootPath, ReferenceType<RingPartition<T>> type) {
-        return hashing(rootPath, HashingOptions.newBuilder(type).setName(name).build());
+    default <T extends ShardingNode> NodeHashing<T> nodeHashing(String rootPath, HashingOptions<T> options) {
+        return nodeHashing(rootPath, null, options);
     }
 
     /**
-     * 创建一致性 hash 环
+     * 创建 hash 节点存储器
      *
-     * @param name     名字
      * @param rootPath 路径
-     * @param type     类型
+     * @param factory  节点存储器工厂
+     * @param options  选项
      * @return 返回一致性 hash 环
      */
-    default <T extends ShardingNode> HashingRing<T> hashing(String name, String rootPath, int count, ReferenceType<RingPartition<T>> type) {
-        return hashing(rootPath, HashingOptions.newBuilder(type).setName(name).setPartitionCount(count).build());
+    <T extends ShardingNode> NodeHashing<T> nodeHashing(String rootPath, NodeHashingFactory factory, HashingOptions<T> options);
+
+    /**
+     * 创建 hash 节点存储器
+     *
+     * @param rootPath   路径
+     * @param keyHasher  key哈希计算器
+     * @param nodeHasher 节点哈希计算器
+     * @param type       分区类型
+     * @return 返回 hash 节点存储器
+     */
+    default <T extends ShardingNode> NodeHashing<T> nodeHashing(String rootPath, Hasher<String> keyHasher, Hasher<T> nodeHasher,
+            ReferenceType<NodePartition<T>> type) {
+        return nodeHashing(rootPath, keyHasher, nodeHasher, type, null, null);
     }
 
     /**
-     * 创建一致性 hash 环
+     * 创建 hash 节点存储器
      *
-     * @param rootPath 路径
-     * @param type     类型
-     * @return 返回一致性 hash 环
+     * @param rootPath   路径
+     * @param keyHasher  key哈希计算器
+     * @param nodeHasher 节点哈希计算器
+     * @param type       分区类型
+     * @param factory    节点存储器工厂
+     * @return 返回 hash 节点存储器
      */
-    default <T extends ShardingNode> HashingRing<T> hashing(String rootPath, ReferenceType<RingPartition<T>> type) {
-        return hashing(rootPath, HashingOptions.newBuilder(type).build());
+    default <T extends ShardingNode> NodeHashing<T> nodeHashing(String rootPath, Hasher<String> keyHasher, Hasher<T> nodeHasher,
+            ReferenceType<NodePartition<T>> type, NodeHashingFactory factory) {
+        return nodeHashing(rootPath, keyHasher, nodeHasher, type, factory, null);
+    }
+
+    /**
+     * 创建 hash 节点存储器
+     *
+     * @param rootPath   路径
+     * @param keyHasher  key哈希计算器
+     * @param nodeHasher 节点哈希计算器
+     * @param type       分区类型
+     * @param custom     选项自定义
+     * @return 返回 hash 节点存储器
+     */
+    default <T extends ShardingNode> NodeHashing<T> nodeHashing(String rootPath, Hasher<String> keyHasher, Hasher<T> nodeHasher,
+            ReferenceType<NodePartition<T>> type, Consumer<HashingOptions.Builder<T>> custom) {
+        return nodeHashing(rootPath, keyHasher, nodeHasher, type, null, custom);
+    }
+
+    /**
+     * 创建 hash 节点存储器
+     *
+     * @param rootPath   路径
+     * @param keyHasher  key哈希计算器
+     * @param nodeHasher 节点哈希计算器
+     * @param type       分区类型
+     * @param factory    节点存储器工厂
+     * @param custom     选项自定义
+     * @return 返回 hash 节点存储器
+     */
+    default <T extends ShardingNode> NodeHashing<T> nodeHashing(String rootPath, Hasher<String> keyHasher, Hasher<T> nodeHasher,
+            ReferenceType<NodePartition<T>> type, NodeHashingFactory factory, Consumer<HashingOptions.Builder<T>> custom) {
+        var optionBuilder = hashingOptions(type, keyHasher, nodeHasher);
+        if (custom != null) {
+            custom.accept(optionBuilder);
+        }
+        return nodeHashing(rootPath, factory, optionBuilder.build());
+    }
+
+    /**
+     * Hashing 选项 Builder
+     *
+     * @param type       类型
+     * @param keyHasher  key哈希计算器
+     * @param nodeHasher 节点哈希计算器
+     * @return 选项 Build
+     */
+    default <T extends ShardingNode> HashingOptions.Builder<T> hashingOptions(
+            ReferenceType<NodePartition<T>> type, Hasher<String> keyHasher, Hasher<T> nodeHasher) {
+        return HashingOptions.newBuilder(type, keyHasher, nodeHasher);
     }
 
     /**
      * 创建 Hashing 节点订阅器
      *
-     * @param parentPath 父路径
-     * @param mineType   媒体类型
+     * @param parentPath  父路径
+     * @param maxSlotSize 最大槽位
+     * @param mineType    媒体类型
      * @return 返回订阅器
      */
-    default <T> HashingSubscriber<T> hashingSubscriber(String parentPath, ObjectMineType<T> mineType) {
-        return hashingSubscriber(parentPath, null, mineType);
-    }
-
-    /**
-     * 创建 Hashing 节点订阅器
-     *
-     * @param parentPath 父路径
-     * @param algorithm  哈希算法
-     * @param mineType   媒体类型
-     * @return 返回订阅器
-     */
-    <T> HashingSubscriber<T> hashingSubscriber(String parentPath, HashAlgorithm algorithm, ObjectMineType<T> mineType);
+    <T> HashingSubscriber<T> hashingSubscriber(String parentPath, long maxSlotSize, ObjectMineType<T> mineType);
 
     /**
      * 创建 Hashing 节点发布器
      *
      * @param parentPath 父路径
-     * @param hasher     节点 hash 转换器
+     * @param keyHasher  key hash 计算器
      * @param mineType   媒体类型
      * @return 返回发布器
      */
-    default <T> HashingPublisher<T> hashingPublisher(String parentPath, Hasher<T> hasher, ObjectMineType<T> mineType) {
-        return hashingPublisher(parentPath, hasher, null, mineType);
-    }
-
-    /**
-     * 创建 Hashing 节点发布器
-     *
-     * @param parentPath 父路径
-     * @param hasher     节点 hash 转换器
-     * @param algorithm  hash 算法
-     * @param mineType   媒体类型
-     * @return 返回发布器
-     */
-    <T> HashingPublisher<T> hashingPublisher(String parentPath, Hasher<T> hasher, HashAlgorithm algorithm, ObjectMineType<T> mineType);
+    <K, T> HashingPublisher<K, T> hashingPublisher(String parentPath, Hasher<K> keyHasher, ObjectMineType<T> mineType);
 
     /**
      * 创建节点监控器

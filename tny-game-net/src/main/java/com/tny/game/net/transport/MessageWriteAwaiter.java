@@ -11,6 +11,6 @@ import java.util.concurrent.CompletableFuture;
  * @date: 2019-03-15 21:13
  */
 
-public class MessageWriteAwaiter extends CompletableFuture<Void> implements StageFuture<Void> {
+public class MessageWriteAwaiter extends CompletableFuture<Void> implements CompletionStageFuture<Void> {
 
 }

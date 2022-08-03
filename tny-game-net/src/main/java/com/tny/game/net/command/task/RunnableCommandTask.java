@@ -9,17 +9,15 @@ import com.tny.game.net.command.dispatcher.*;
  * @author : kgtny
  * @date : 2021/5/14 2:33 下午
  */
-public class RunnableCommandTask implements CommandTask {
-
-    private final Runnable runnable;
+public class RunnableCommandTask extends RunnableCommand implements CommandTask {
 
     public RunnableCommandTask(Runnable runnable) {
-        this.runnable = runnable;
+        super(runnable);
     }
 
     @Override
     public Command createCommand() {
-        return new RunnableCommand(this.runnable);
+        return this;
     }
 
 }

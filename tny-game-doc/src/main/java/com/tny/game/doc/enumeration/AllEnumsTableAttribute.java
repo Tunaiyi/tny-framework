@@ -20,7 +20,7 @@ public class AllEnumsTableAttribute implements TableAttribute {
     @SuppressWarnings({"unchecked", "rawtypes"})
     public void putAttribute(Class<?> clazz, TypeFormatter typeFormatter, Attributes attributes) {
         EnumDescription description = new EnumDescription();
-        description.initEnumDescription(EnumDocHolder.create((Class<Enum>)clazz), typeFormatter);
+        description.initEnumDescription(EnumDocClass.createEnumClass((Class<Enum>)clazz), typeFormatter);
         this.enumerationList.add(description);
     }
 

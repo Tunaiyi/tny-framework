@@ -6,21 +6,27 @@ import org.slf4j.*;
 import java.lang.annotation.Annotation;
 import java.util.function.Function;
 
-public class DTODocHolder extends DocClass {
+public class DTODocClass extends DocClass {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DTODocHolder.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DTODocClass.class);
 
     private final DTODoc dtoDoc;
 
     private final Object id;
 
+    private final String docDesc;
+
+    private final String docText;
+
     private final Class<?> entityClass;
 
-    private <C extends Annotation, F extends Annotation> DTODocHolder(Class<?> clazz,
+    private <C extends Annotation, F extends Annotation> DTODocClass(Class<?> clazz,
             Class<C> classAnnotation, Function<C, Object> classIdGetter,
             Class<F> fieldAnnotation, Function<F, Object> fieldIdGetter) {
         super(clazz, fieldAnnotation, fieldIdGetter);
         this.dtoDoc = clazz.getAnnotation(DTODoc.class);
+        this.docDesc = dtoDoc.value();
+        this.docText = dtoDoc.text();
         this.entityClass = clazz;
         C classAnn = clazz.getAnnotation(classAnnotation);
         Object id = classIdGetter.apply(classAnn);
@@ -30,7 +36,7 @@ public class DTODocHolder extends DocClass {
         }
     }
 
-    public static <C extends Annotation, F extends Annotation> DTODocHolder create(Class<?> clazz,
+    public static <C extends Annotation, F extends Annotation> DTODocClass create(Class<?> clazz,
             Class<C> classAnnotation, Function<C, Object> classIdGetter,
             Class<F> fieldAnnotation, Function<F, Object> fieldIdGetter) {
         DTODoc dtoDoc = clazz.getAnnotation(DTODoc.class);
@@ -43,7 +49,7 @@ public class DTODocHolder extends DocClass {
             LOGGER.error("{} 未添加 {} 注解", clazz, classAnnotation);
             return null;
         }
-        return new DTODocHolder(clazz, classAnnotation, classIdGetter, fieldAnnotation, fieldIdGetter);
+        return new DTODocClass(clazz, classAnnotation, classIdGetter, fieldAnnotation, fieldIdGetter);
     }
 
     public DTODoc getDTODoc() {
@@ -52,6 +58,16 @@ public class DTODocHolder extends DocClass {
 
     public Class<?> getEntityClass() {
         return this.entityClass;
+    }
+
+    @Override
+    public String getDocDesc() {
+        return docDesc;
+    }
+
+    @Override
+    public String getDocText() {
+        return docText;
     }
 
     public Object getId() {

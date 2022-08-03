@@ -14,6 +14,11 @@ public @interface DTODoc {
     String value();
 
     /**
+     * @return 详细描述
+     */
+    String text() default "";
+
+    /**
      * @return 是否是推送
      */
     boolean push() default false;

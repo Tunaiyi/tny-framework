@@ -8,12 +8,19 @@ import java.lang.annotation.*;
 @Documented
 public @interface FunDoc {
 
-    String des();
+    /**
+     * @return 描述
+     */
+    String value();
 
+    /**
+     * @return 详细描述
+     */
     String text() default "";
 
-    Class<?> returnType() default Void.class;
-
-    String returnDes() default "";
+    /**
+     * @return 返回描述
+     */
+    String returnDesc() default "";
 
 }

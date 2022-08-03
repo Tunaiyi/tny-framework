@@ -2,6 +2,7 @@ package com.tny.game.namespace.consistenthash;
 
 import com.google.common.collect.ImmutableList;
 import com.tny.game.common.event.firer.*;
+import com.tny.game.namespace.*;
 import com.tny.game.namespace.consistenthash.listener.*;
 import org.slf4j.*;
 
@@ -27,20 +28,20 @@ public class ConsistentHashRing<N extends ShardingNode> implements ShardingSet<N
 
     private final NavigableMap<Long, Partition<N>> ring = new TreeMap<>();
 
-    private final EventFirer<ShardingListener<N>, Sharding<N>> changeEvent = EventFirers.firer(ShardingListener.class);
+    private final EventFirer<ShardingListener<N>, Sharding<N>> event = EventFirers.firer(ShardingListener.class);
 
     private List<ShardingRange<N>> ranges = ImmutableList.of();
 
-    private final HashAlgorithm algorithm;
+    private final Hasher<String> hasher;
 
     /**
      * 构造方法
      *
-     * @param algorithm hash算法
+     * @param hasher hash算法
      */
-    public ConsistentHashRing(String name, HashAlgorithm algorithm) {
+    public ConsistentHashRing(String name, Hasher<String> hasher) {
         this.name = name;
-        this.algorithm = algorithm;
+        this.hasher = hasher;
     }
 
     @Override
@@ -66,6 +67,7 @@ public class ConsistentHashRing<N extends ShardingNode> implements ShardingSet<N
                     .collect(Collectors.toList());
             if (!addList.isEmpty()) {
                 this.resetRanges();
+                event.fire(ShardingListener::onChange, this, addList);
             }
             return addList;
         } finally {
@@ -80,6 +82,7 @@ public class ConsistentHashRing<N extends ShardingNode> implements ShardingSet<N
             if (ring.containsKey(partition.getSlot())) {
                 ring.put(partition.getSlot(), partition);
                 resetRanges();
+                event.fire(ShardingListener::onChange, this, Collections.singletonList(partition));
                 return true;
             }
         } finally {
@@ -94,6 +97,7 @@ public class ConsistentHashRing<N extends ShardingNode> implements ShardingSet<N
         try {
             ring.put(partition.getSlot(), partition);
             resetRanges();
+            event.fire(ShardingListener::onChange, this, Collections.singletonList(partition));
         } finally {
             mutex.writeLock().unlock();
         }
@@ -106,6 +110,7 @@ public class ConsistentHashRing<N extends ShardingNode> implements ShardingSet<N
             Partition<N> partition = ring.remove(slot);
             if (partition != null) {
                 this.resetRanges();
+                event.fire(ShardingListener::onRemove, this, Collections.singletonList(partition));
             }
             return partition;
         } finally {
@@ -119,6 +124,7 @@ public class ConsistentHashRing<N extends ShardingNode> implements ShardingSet<N
         try {
             if (ring.remove(partition.getSlot(), partition)) {
                 this.resetRanges();
+                event.fire(ShardingListener::onRemove, this, Collections.singletonList(partition));
                 return true;
             }
         } finally {
@@ -132,8 +138,10 @@ public class ConsistentHashRing<N extends ShardingNode> implements ShardingSet<N
         mutex.writeLock().lock();
         try {
             if (!ring.isEmpty()) {
+                List<Partition<N>> clearList = new ArrayList<>(ring.values());
                 ring.clear();
                 this.resetRanges();
+                event.fire(ShardingListener::onRemove, this, clearList);
             }
         } finally {
             mutex.writeLock().unlock();
@@ -178,13 +186,17 @@ public class ConsistentHashRing<N extends ShardingNode> implements ShardingSet<N
     }
 
     @Override
-    public EventSource<ShardingListener<N>> changeEvent() {
-        return changeEvent;
+    public EventSource<ShardingListener<N>> event() {
+        return event;
+    }
+
+    @Override
+    public long getMaxSlots() {
+        return hasher.getMax();
     }
 
     private void resetRanges() {
         this.ranges = null;
-        changeEvent.fire(ShardingListener::onChange, this);
     }
 
     private List<ShardingRange<N>> refreshRanges() {
@@ -195,7 +207,7 @@ public class ConsistentHashRing<N extends ShardingNode> implements ShardingSet<N
         List<ShardingRange<N>> ranges = new ArrayList<>();
         Partition<N> prev = lastEntry.getValue();
         for (Partition<N> partition : ring.values()) {
-            ranges.add(new ShardingRange<>(prev, partition, algorithm.getMax()));
+            ranges.add(new ShardingRange<>(prev, partition, hasher.getMax()));
             prev = partition;
         }
         return ranges;
@@ -288,8 +300,8 @@ public class ConsistentHashRing<N extends ShardingNode> implements ShardingSet<N
         }
     }
 
-    public HashAlgorithm getAlgorithm() {
-        return algorithm;
+    public Hasher<String> getHasher() {
+        return hasher;
     }
 
     private long hash(String key) {
@@ -297,7 +309,7 @@ public class ConsistentHashRing<N extends ShardingNode> implements ShardingSet<N
     }
 
     private long hash(String key, int seed) {
-        return Math.abs(algorithm.hash(key, seed));
+        return Math.abs(hasher.hash(key, seed));
     }
 
     private Optional<Partition<N>> findPartition(String key) {
@@ -325,7 +337,7 @@ public class ConsistentHashRing<N extends ShardingNode> implements ShardingSet<N
     public String toString() {
         return new StringJoiner(", ", ConsistentHashRing.class.getSimpleName() + "[", "]")
                 .add("name= '" + name + "'")
-                .add("algorithm= " + algorithm)
+                .add("algorithm= " + hasher)
                 .add("partitionSize= " + partitionSize())
                 .toString();
     }
