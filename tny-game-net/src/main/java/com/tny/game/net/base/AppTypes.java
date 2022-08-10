@@ -34,7 +34,7 @@ public final class AppTypes extends ClassImporter {
     }
 
     public static <T extends AppType> T ofAppName(String name) {
-        return holder.checkBySymbol(APP_NAME_SYMBOL, "获取 {} AppType 不存在", name);
+        return holder.checkBySymbol(APP_NAME_SYMBOL, name, "获取 {} AppType 不存在", name);
     }
 
     public static <T extends AppType> T valueOfEnum(String enumName) {

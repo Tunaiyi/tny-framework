@@ -15,7 +15,7 @@ public class UnitLoadInitiator implements AppPrepareStart {
 
     @Override
     public PrepareStarter getPrepareStarter() {
-        return PrepareStarter.value(this.getClass(), LifecycleLevel.SYSTEM_LEVEL_MAX);
+        return PrepareStarter.value(this.getClass(), LifecyclePriorities.lower(LifecycleLevel.SYSTEM_LEVEL_MAX));
     }
 
     @Override

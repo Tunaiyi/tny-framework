@@ -2,7 +2,8 @@ package com.tny.game.common.concurrent;
 
 import org.slf4j.*;
 
-import java.util.Queue;
+import javax.annotation.Nonnull;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.*;
@@ -28,12 +29,25 @@ public class SingleWorkerExecutor implements WorkerExecutor {
 
     private final Executor masterExecutor;
 
+    private final boolean immediatelyInExecutor;
+
+    private final static ThreadLocal<WorkerExecutor> EXECUTOR_THREAD_LOCAL = new ThreadLocal<>();
+
     public SingleWorkerExecutor(Executor masterExecutor) {
-        this(masterExecutor, new ConcurrentLinkedQueue<>(), false);
+        this(masterExecutor, new ConcurrentLinkedQueue<>(), true, false);
+    }
+
+    public SingleWorkerExecutor(Executor masterExecutor, boolean immediatelyInExecutor) {
+        this(masterExecutor, new ConcurrentLinkedQueue<>(), immediatelyInExecutor, false);
     }
 
     public SingleWorkerExecutor(Executor masterExecutor, Queue<Runnable> taskQueue, boolean unsafeQueue) {
+        this(masterExecutor, taskQueue, true, unsafeQueue);
+    }
+
+    public SingleWorkerExecutor(Executor masterExecutor, Queue<Runnable> taskQueue, boolean immediatelyInExecutor, boolean unsafeQueue) {
         this.masterExecutor = masterExecutor;
+        this.immediatelyInExecutor = immediatelyInExecutor;
         this.taskQueue = taskQueue;
         if (unsafeQueue) {
             this.lock = new ReentrantReadWriteLock();
@@ -53,17 +67,24 @@ public class SingleWorkerExecutor implements WorkerExecutor {
     }
 
     @Override
-    public void execute(Runnable runnable) {
-        if (runnable != null) {
-            this.writeLock();
-            try {
-                this.taskQueue.add(runnable);
-            } finally {
-                this.writeUnlock();
+    public void execute(@Nonnull Runnable runnable) {
+        if (immediatelyInExecutor) {
+            var current = EXECUTOR_THREAD_LOCAL.get();
+            if (Objects.equals(this, current)) {
+                try {
+                    runnable.run();
+                } catch (Throwable e) {
+                    LOGGER.error("", e);
+                }
+                return;
             }
+        }
+        this.writeLock();
+        try {
+            this.taskQueue.add(runnable);
+        } finally {
+            this.writeUnlock();
             this.tryLoop();
-        } else {
-            throw new NullPointerException("runnable is null");
         }
     }
 
@@ -78,6 +99,7 @@ public class SingleWorkerExecutor implements WorkerExecutor {
 
     private void loop() {
         try {
+            EXECUTOR_THREAD_LOCAL.set(this);
             while (true) {
                 try {
                     Runnable runnable;
@@ -99,6 +121,7 @@ public class SingleWorkerExecutor implements WorkerExecutor {
                 }
             }
         } finally {
+            EXECUTOR_THREAD_LOCAL.remove();
             inLoop.set(false);
             tryLoop();
         }

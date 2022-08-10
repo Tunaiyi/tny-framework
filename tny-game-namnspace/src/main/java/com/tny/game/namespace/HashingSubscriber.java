@@ -1,9 +1,11 @@
 package com.tny.game.namespace;
 
+import com.tny.game.codec.*;
 import com.tny.game.namespace.consistenthash.*;
 import com.tny.game.namespace.listener.*;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * 哈希节点订阅器
@@ -16,9 +18,11 @@ public interface HashingSubscriber<T> {
 
     String getPath();
 
-    void subscribe(List<? extends ShardingRange<?>> ranges);
+    ObjectMineType<T> getMineType();
 
-    void subscribeAll();
+    CompletableFuture<Void> subscribe(List<? extends ShardingRange<?>> ranges);
+
+    CompletableFuture<Void> subscribeAll();
 
     void unsubscribe();
 

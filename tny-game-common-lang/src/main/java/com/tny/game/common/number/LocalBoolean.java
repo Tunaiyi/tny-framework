@@ -26,6 +26,14 @@ public class LocalBoolean {
         return this.value;
     }
 
+    public void beTrue() {
+        this.value = true;
+    }
+
+    public void beFalse() {
+        this.value = false;
+    }
+
     public LocalBoolean ifTrue(Consumer<LocalBoolean> consumer) {
         if (this.value) {
             consumer.accept(this);

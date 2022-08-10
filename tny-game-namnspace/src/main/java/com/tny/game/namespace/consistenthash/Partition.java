@@ -27,12 +27,12 @@ public interface Partition<N extends ShardingNode> {
     /**
      * @return 槽位id
      */
-    long getSlot();
+    long getSlotIndex();
 
-    default String getNodeId() {
+    default String getNodeKey() {
         N node = this.getNode();
         if (node != null) {
-            return node.getHashKey();
+            return node.getKey();
         }
         return null;
     }

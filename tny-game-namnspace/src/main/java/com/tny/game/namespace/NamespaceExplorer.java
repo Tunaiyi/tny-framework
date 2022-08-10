@@ -78,9 +78,9 @@ public interface NamespaceExplorer {
      * @param type       分区类型
      * @return 返回 hash 节点存储器
      */
-    default <T extends ShardingNode> NodeHashing<T> nodeHashing(String rootPath, Hasher<String> keyHasher, Hasher<T> nodeHasher,
-            ReferenceType<NodePartition<T>> type) {
-        return nodeHashing(rootPath, keyHasher, nodeHasher, type, null, null);
+    default <T extends ShardingNode> NodeHashing<T> nodeHashing(String rootPath, long maxSlotSize,
+            Hasher<String> keyHasher, Hasher<PartitionedNode<T>> nodeHasher, ReferenceType<PartitionedNode<T>> type) {
+        return nodeHashing(rootPath, maxSlotSize, keyHasher, nodeHasher, type, null, null);
     }
 
     /**
@@ -93,9 +93,9 @@ public interface NamespaceExplorer {
      * @param factory    节点存储器工厂
      * @return 返回 hash 节点存储器
      */
-    default <T extends ShardingNode> NodeHashing<T> nodeHashing(String rootPath, Hasher<String> keyHasher, Hasher<T> nodeHasher,
-            ReferenceType<NodePartition<T>> type, NodeHashingFactory factory) {
-        return nodeHashing(rootPath, keyHasher, nodeHasher, type, factory, null);
+    default <T extends ShardingNode> NodeHashing<T> nodeHashing(String rootPath, long maxSlotSize,
+            Hasher<String> keyHasher, Hasher<PartitionedNode<T>> nodeHasher, ReferenceType<PartitionedNode<T>> type, NodeHashingFactory factory) {
+        return nodeHashing(rootPath, maxSlotSize, keyHasher, nodeHasher, type, factory, null);
     }
 
     /**
@@ -108,9 +108,10 @@ public interface NamespaceExplorer {
      * @param custom     选项自定义
      * @return 返回 hash 节点存储器
      */
-    default <T extends ShardingNode> NodeHashing<T> nodeHashing(String rootPath, Hasher<String> keyHasher, Hasher<T> nodeHasher,
-            ReferenceType<NodePartition<T>> type, Consumer<HashingOptions.Builder<T>> custom) {
-        return nodeHashing(rootPath, keyHasher, nodeHasher, type, null, custom);
+    default <T extends ShardingNode> NodeHashing<T> nodeHashing(String rootPath, long maxSlotSize,
+            Hasher<String> keyHasher, Hasher<PartitionedNode<T>> nodeHasher, ReferenceType<PartitionedNode<T>> type,
+            Consumer<HashingOptions.Builder<T>> custom) {
+        return nodeHashing(rootPath, maxSlotSize, keyHasher, nodeHasher, type, null, custom);
     }
 
     /**
@@ -124,9 +125,10 @@ public interface NamespaceExplorer {
      * @param custom     选项自定义
      * @return 返回 hash 节点存储器
      */
-    default <T extends ShardingNode> NodeHashing<T> nodeHashing(String rootPath, Hasher<String> keyHasher, Hasher<T> nodeHasher,
-            ReferenceType<NodePartition<T>> type, NodeHashingFactory factory, Consumer<HashingOptions.Builder<T>> custom) {
-        var optionBuilder = hashingOptions(type, keyHasher, nodeHasher);
+    default <T extends ShardingNode> NodeHashing<T> nodeHashing(String rootPath, long maxSlotSize,
+            Hasher<String> keyHasher, Hasher<PartitionedNode<T>> nodeHasher, ReferenceType<PartitionedNode<T>> type,
+            NodeHashingFactory factory, Consumer<HashingOptions.Builder<T>> custom) {
+        var optionBuilder = hashingOptions(type, maxSlotSize, keyHasher, nodeHasher);
         if (custom != null) {
             custom.accept(optionBuilder);
         }
@@ -142,8 +144,8 @@ public interface NamespaceExplorer {
      * @return 选项 Build
      */
     default <T extends ShardingNode> HashingOptions.Builder<T> hashingOptions(
-            ReferenceType<NodePartition<T>> type, Hasher<String> keyHasher, Hasher<T> nodeHasher) {
-        return HashingOptions.newBuilder(type, keyHasher, nodeHasher);
+            ReferenceType<PartitionedNode<T>> type, long maxSlotSize, Hasher<String> keyHasher, Hasher<PartitionedNode<T>> nodeHasher) {
+        return HashingOptions.newBuilder(type, maxSlotSize, keyHasher, nodeHasher);
     }
 
     /**
@@ -164,7 +166,7 @@ public interface NamespaceExplorer {
      * @param mineType   媒体类型
      * @return 返回发布器
      */
-    <K, T> HashingPublisher<K, T> hashingPublisher(String parentPath, Hasher<K> keyHasher, ObjectMineType<T> mineType);
+    <K, T> HashingPublisher<K, T> hashingPublisher(String parentPath, long maxSlotSize, Hasher<T> keyHasher, ObjectMineType<T> mineType);
 
     /**
      * 创建节点监控器

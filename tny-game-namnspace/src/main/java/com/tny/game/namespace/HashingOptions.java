@@ -20,11 +20,13 @@ public class HashingOptions<N extends ShardingNode> {
 
     private final Hasher<String> keyHasher;
 
-    private final Hasher<N> nodeHasher;
+    private final Hasher<PartitionedNode<N>> nodeHasher;
 
     private final int partitionCount;
 
-    private final ReferenceType<NodePartition<N>> type;
+    private final long maxSlots;
+
+    private final ReferenceType<PartitionedNode<N>> type;
 
     private final Charset charset;
 
@@ -35,12 +37,13 @@ public class HashingOptions<N extends ShardingNode> {
         nodeHasher = builder.nodeHasher;
         charset = builder.charset;
         partitionCount = builder.partitionCount;
+        maxSlots = builder.maxSlots;
         type = builder.type;
     }
 
     public static <N extends ShardingNode> Builder<N> newBuilder(
-            ReferenceType<NodePartition<N>> type, Hasher<String> keyHasher, Hasher<N> nodeHasher) {
-        return new Builder<N>().setType(type).setKeyHasher(keyHasher).setNodeHasher(nodeHasher);
+            ReferenceType<PartitionedNode<N>> type, long maxSlotSize, Hasher<String> keyHasher, Hasher<PartitionedNode<N>> nodeHasher) {
+        return new Builder<N>().setMaxSlots(maxSlotSize).setType(type).setKeyHasher(keyHasher).setNodeHasher(nodeHasher);
     }
 
     public static <N extends ShardingNode> Builder<N> newBuilder(HashingOptions<N> copy) {
@@ -50,6 +53,7 @@ public class HashingOptions<N extends ShardingNode> {
         builder.charset = copy.getCharset();
         builder.keyHasher = copy.getKeyHasher();
         builder.nodeHasher = copy.getNodeHasher();
+        builder.maxSlots = copy.getMaxSlots();
         builder.partitionCount = copy.getPartitionCount();
         builder.type = copy.getType();
         return builder;
@@ -63,11 +67,15 @@ public class HashingOptions<N extends ShardingNode> {
         return ttl;
     }
 
+    public long getMaxSlots() {
+        return maxSlots;
+    }
+
     public Hasher<String> getKeyHasher() {
         return keyHasher;
     }
 
-    public Hasher<N> getNodeHasher() {
+    public Hasher<PartitionedNode<N>> getNodeHasher() {
         return nodeHasher;
     }
 
@@ -79,7 +87,7 @@ public class HashingOptions<N extends ShardingNode> {
         return partitionCount;
     }
 
-    public ReferenceType<NodePartition<N>> getType() {
+    public ReferenceType<PartitionedNode<N>> getType() {
         return type;
     }
 
@@ -91,13 +99,15 @@ public class HashingOptions<N extends ShardingNode> {
 
         private Hasher<String> keyHasher;
 
-        private Hasher<N> nodeHasher;
+        private Hasher<PartitionedNode<N>> nodeHasher;
 
         private Charset charset = NamespaceConstants.CHARSET;
 
         private int partitionCount = 5;
 
-        private ReferenceType<NodePartition<N>> type;
+        private long maxSlots = 1024;
+
+        private ReferenceType<PartitionedNode<N>> type;
 
         private Builder() {
         }
@@ -117,7 +127,7 @@ public class HashingOptions<N extends ShardingNode> {
             return this;
         }
 
-        public Builder<N> setNodeHasher(Hasher<N> nodeHasher) {
+        public Builder<N> setNodeHasher(Hasher<PartitionedNode<N>> nodeHasher) {
             this.nodeHasher = nodeHasher;
             return this;
         }
@@ -127,12 +137,17 @@ public class HashingOptions<N extends ShardingNode> {
             return this;
         }
 
+        public Builder<N> setMaxSlots(long maxSlots) {
+            this.maxSlots = maxSlots;
+            return this;
+        }
+
         public Builder<N> setPartitionCount(int partitionCount) {
             this.partitionCount = partitionCount;
             return this;
         }
 
-        public Builder<N> setType(ReferenceType<NodePartition<N>> type) {
+        public Builder<N> setType(ReferenceType<PartitionedNode<N>> type) {
             this.type = type;
             return this;
         }

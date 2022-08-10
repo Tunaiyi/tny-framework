@@ -27,7 +27,7 @@ class EtcdNamespaceExplorerTest {
 
     private static final ObjectCodecAdapter objectCodecAdapter = new ObjectCodecAdapter(Collections.singletonList(objectCodecFactory));
 
-    public static final ReferenceType<NodePartition<TestShadingNode>> TYPE = new ReferenceType<NodePartition<TestShadingNode>>() {
+    public static final ReferenceType<PartitionedNode<TestShadingNode>> TYPE = new ReferenceType<PartitionedNode<TestShadingNode>>() {
 
     };
 
@@ -107,10 +107,10 @@ class EtcdNamespaceExplorerTest {
     //    @Test
     void hashingTest() throws ExecutionException, InterruptedException {
         var keyHash = HashAlgorithmHasher.<String>hasher();
-        var nodeHash = HashAlgorithmHasher.hasher(TestShadingNode::getHashKey);
-        NodeHashing<TestShadingNode> ring1 = explorer.nodeHashing("/T2/Nodes", keyHash, nodeHash, TYPE,
+        var nodeHash = HashAlgorithmHasher.<PartitionedNode<TestShadingNode>>hasher(p -> p.getNode().getKey());
+        NodeHashing<TestShadingNode> ring1 = explorer.nodeHashing("/T2/Nodes", keyHash.getMax(), keyHash, nodeHash, TYPE,
                 EtcdNodeHashingRingFactory.getDefault(), options -> options.setName("Harding1").setPartitionCount(3));
-        NodeHashing<TestShadingNode> ring2 = explorer.nodeHashing("/T2/Nodes", keyHash, nodeHash, TYPE,
+        NodeHashing<TestShadingNode> ring2 = explorer.nodeHashing("/T2/Nodes", keyHash.getMax(), keyHash, nodeHash, TYPE,
                 EtcdNodeHashingRingFactory.getDefault(), options -> options.setName("Harding2").setPartitionCount(3));
 
         ring1.start().get();
@@ -480,9 +480,9 @@ class EtcdNamespaceExplorerTest {
 
     @Test
     void testPublishSubscribe() throws ExecutionException, InterruptedException {
-        Hasher<String> nameHasher = HashAlgorithmHasher.hasher();
+        var nameHasher = HashAlgorithmHasher.hasher(Player::getName);
         var subscriber = explorer.hashingSubscriber(HASHING_PATH, nameHasher.getMax(), MINE_TYPE);
-        var publisher = explorer.hashingPublisher(HASHING_PATH, nameHasher, MINE_TYPE);
+        var publisher = explorer.hashingPublisher(HASHING_PATH, nameHasher.getMax(), nameHasher, MINE_TYPE);
         long maxSlot = -1L >>> 32;
         long toSlot = maxSlot / 2;
         List<Player> playerList = new ArrayList<>();
@@ -532,7 +532,7 @@ class EtcdNamespaceExplorerTest {
         latchReference.set(new CountDownLatch(1));
         for (int i = 0; i < 100; i++) {
             Player player = new Player("PLA_" + i, 10 + i);
-            long hash = nameHasher.hash(player.getName(), 0);
+            long hash = nameHasher.hash(player, 0, maxSlot);
             if (hash <= toSlot) {
                 watchedList.add(player);
                 System.out.println("watched = " + player.getName() + " = " + hash);
@@ -1368,11 +1368,9 @@ class EtcdNamespaceExplorerTest {
 
         @Override
         public String toString() {
-            final StringBuilder sb = new StringBuilder("Player{");
-            sb.append("name='").append(name).append('\'');
-            sb.append(", age=").append(age);
-            sb.append('}');
-            return sb.toString();
+            return "Player{" + "name='" + name + '\'' +
+                    ", age=" + age +
+                    '}';
         }
 
     }

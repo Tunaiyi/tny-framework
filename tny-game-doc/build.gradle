@@ -9,10 +9,6 @@ apply plugin: "maven-publish"
 //}
 
 dependencies {
-//    groovy localGroovy()
-
-//            gradleApi(),
-//            libs.'groovy-all',
     api project(":tny-game-net")
     api libs.xstream
     api project(":tny-game-doc-annotation")

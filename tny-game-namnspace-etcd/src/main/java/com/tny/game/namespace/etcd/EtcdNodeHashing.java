@@ -58,13 +58,13 @@ public abstract class EtcdNodeHashing<N extends ShardingNode> extends EtcdObject
     private final long ttl;
 
     // hash 算法
-    private final Hasher<String> keyHash;
+    private final Hasher<String> keyHasher;
 
     // hash 算法
-    private final Hasher<N> nodeHash;
+    private final Hasher<PartitionedNode<N>> nodeHasher;
 
     // 序列化类型
-    private final ObjectMineType<NodePartition<N>> partitionMineType;
+    private final ObjectMineType<PartitionedNode<N>> partitionMineType;
 
     // 分区恢复状态
     private final AtomicBoolean restoring = new AtomicBoolean();
@@ -73,10 +73,10 @@ public abstract class EtcdNodeHashing<N extends ShardingNode> extends EtcdObject
     private volatile Lessee lessee;
 
     // 分区监控器
-    private volatile NameNodesWatcher<NodePartition<N>> partitionWatcher;
+    private volatile NameNodesWatcher<PartitionedNode<N>> partitionWatcher;
 
     // 本地节点
-    private final Map<N, List<PartitionTask>> nodePartitionTaskMap = new ConcurrentHashMap<>();
+    private final Map<String, List<PartitionTask>> nodePartitionTaskMap = new ConcurrentHashMap<>();
 
     // 状态
     private volatile int status = INIT;
@@ -88,25 +88,34 @@ public abstract class EtcdNodeHashing<N extends ShardingNode> extends EtcdObject
 
     private final long maxSlots;
 
-    private final WatchListener<NodePartition<N>> partitionListener = new WatchListener<>() {
+    private final WatchListener<PartitionedNode<N>> partitionListener = new WatchListener<>() {
 
         @Override
-        public void onLoad(NameNodesWatcher<NodePartition<N>> watcher, List<NameNode<NodePartition<N>>> nameNodes) {
+        public void onLoad(NameNodesWatcher<PartitionedNode<N>> watcher, List<NameNode<PartitionedNode<N>>> nameNodes) {
             loadPartitions(nameNodes.stream().map(NameNode::getValue).collect(Collectors.toList()));
         }
 
         @Override
-        public void onCreate(NameNodesWatcher<NodePartition<N>> watcher, NameNode<NodePartition<N>> node) {
+        public void onCreate(NameNodesWatcher<PartitionedNode<N>> watcher, NameNode<PartitionedNode<N>> node) {
             putPartition(node.getValue());
         }
 
         @Override
-        public void onUpdate(NameNodesWatcher<NodePartition<N>> watcher, NameNode<NodePartition<N>> node) {
+        public void onUpdate(NameNodesWatcher<PartitionedNode<N>> watcher, NameNode<PartitionedNode<N>> node) {
             putPartition(node.getValue());
         }
 
         @Override
-        public void onDelete(NameNodesWatcher<NodePartition<N>> watcher, NameNode<NodePartition<N>> node) {
+        public void onDelete(NameNodesWatcher<PartitionedNode<N>> watcher, NameNode<PartitionedNode<N>> node) {
+            var removeNode = node.getValue();
+            var tasks = nodePartitionTaskMap.get(removeNode.getNode().getKey());
+            if (tasks != null) {
+                for (var task : tasks) {
+                    if (task.partition.getSlotIndex() == removeNode.getSlotIndex()) {
+                        task.register();
+                    }
+                }
+            }
             removePartition(node.getValue());
         }
 
@@ -134,13 +143,12 @@ public abstract class EtcdNodeHashing<N extends ShardingNode> extends EtcdObject
         this.ttl = option.getTtl();
         this.partitionCount = Math.max(1, option.getPartitionCount());
         this.path = NamespacePathNames.dirPath(path);
-        this.keyHash = Objects.requireNonNull(option.getKeyHasher(), "key hasher is null");
-        this.nodeHash = Objects.requireNonNull(option.getNodeHasher(), "node hasher is null");
+        this.keyHasher = Objects.requireNonNull(option.getKeyHasher(), "key hasher is null");
+        this.nodeHasher = Objects.requireNonNull(option.getNodeHasher(), "node hasher is null");
         this.enableRehash = enableRehash;
-        Asserts.checkArgument(keyHash.getMax() == nodeHash.getMax(),
-                "keyHash max slots {} are not equals than nodeHash max slots {}.",
-                this.keyHash.getMax(), this.nodeHash.getMax());
-        this.maxSlots = this.keyHash.getMax();
+        this.maxSlots = option.getMaxSlots();
+        Asserts.checkArgument(this.partitionCount <= this.maxSlots,
+                "partitionCount {} must less or equals than maxSlots {}.", this.partitionCount, this.maxSlots);
         this.partitionMineType = ObjectMineType.of(option.getType(), JsonMimeType.JSON);
     }
 
@@ -198,8 +206,8 @@ public abstract class EtcdNodeHashing<N extends ShardingNode> extends EtcdObject
         }
     }
 
-    protected Hasher<String> getKeyHash() {
-        return keyHash;
+    protected Hasher<String> getKeyHasher() {
+        return keyHasher;
     }
 
     /**
@@ -210,12 +218,12 @@ public abstract class EtcdNodeHashing<N extends ShardingNode> extends EtcdObject
      */
     @Override
     public CompletableFuture<List<Partition<N>>> register(N node) {
-        return registerNode(node, (n) -> createPartitionTasks(n, createSlotSet(node), true));
+        return registerNode(node, (n) -> createPartitionTasks(createPartitionedNodes(n), true));
     }
 
     @Override
     public CompletableFuture<List<Partition<N>>> register(N node, Set<Long> slotIndexes) {
-        return registerNode(node, (n) -> createPartitionTasks(n, slotIndexes, false));
+        return registerNode(node, (n) -> createPartitionTasks(createPartitionedNodes(n, slotIndexes), false));
     }
 
     private CompletableFuture<List<Partition<N>>> registerNode(N node, Function<N, List<PartitionTask>> tasksFactory) {
@@ -226,11 +234,11 @@ public abstract class EtcdNodeHashing<N extends ShardingNode> extends EtcdObject
             if (this.status != EXECUTE) {
                 return CompleteFutureAide.failedFuture(new HashRingException("ring is not start, status is {}", this.status));
             }
-            if (nodePartitionTaskMap.containsKey(node)) {
+            if (nodePartitionTaskMap.containsKey(node.getKey())) {
                 return CompleteFutureAide.failedFuture(new HashPartitionRegisteredException("register failed"));
             }
             var partitionTasks = tasksFactory.apply(node);
-            if (nodePartitionTaskMap.putIfAbsent(node, partitionTasks) != null) {
+            if (nodePartitionTaskMap.putIfAbsent(node.getKey(), partitionTasks) != null) {
                 return CompleteFutureAide.failedFuture(new HashPartitionRegisteredException("register failed"));
             }
             return registerPartitionTasks(partitionTasks);
@@ -257,10 +265,24 @@ public abstract class EtcdNodeHashing<N extends ShardingNode> extends EtcdObject
         return finalFuture;
     }
 
-    private Set<Long> createSlotSet(N node) {
-        var slotSet = new TreeSet<Long>();
-        for (int index = 0; slotSet.size() < this.partitionCount; index++) {
-            slotSet.add(this.nodeHash(node, index));
+    private List<PartitionedNode<N>> createPartitionedNodes(N node) {
+        var slotSet = new ArrayList<PartitionedNode<N>>();
+        long maxSlots = this.getMaxSlots();
+        long count = Math.min(maxSlots, this.partitionCount);
+        for (int index = 0; slotSet.size() < count; index++) {
+            var partNode = new PartitionedNode<>(index, node);
+            partNode.hash(nodeHasher, maxSlots);
+            slotSet.add(partNode);
+        }
+        return slotSet;
+    }
+
+    private List<PartitionedNode<N>> createPartitionedNodes(N node, Set<Long> slotIndexes) {
+        var slotSet = new ArrayList<PartitionedNode<N>>();
+        int index = 0;
+        for (Long slot : slotIndexes) {
+            var partNode = new PartitionedNode<>(index++, node, slot);
+            slotSet.add(partNode);
         }
         return slotSet;
     }
@@ -270,11 +292,10 @@ public abstract class EtcdNodeHashing<N extends ShardingNode> extends EtcdObject
         return event;
     }
 
-    private List<PartitionTask> createPartitionTasks(N node, Set<Long> slotIndexes, boolean rehash) {
-        var index = 0;
+    private List<PartitionTask> createPartitionTasks(List<PartitionedNode<N>> partitionedNodes, boolean rehash) {
         List<PartitionTask> tasks = new ArrayList<>();
-        for (var slotIndex : slotIndexes) {
-            tasks.add(new PartitionTask(index++, node, slotIndex, enableRehash && rehash));
+        for (var partitionedNode : partitionedNodes) {
+            tasks.add(new PartitionTask(partitionedNode, enableRehash && rehash));
         }
         return tasks;
     }
@@ -339,7 +360,7 @@ public abstract class EtcdNodeHashing<N extends ShardingNode> extends EtcdObject
         });
     }
 
-    private void execute(NameNodesWatcher<NodePartition<N>> watcher) {
+    private void execute(NameNodesWatcher<PartitionedNode<N>> watcher) {
         synchronized (this) {
             if (status == STARTING) {
                 this.partitionWatcher = watcher;
@@ -380,7 +401,7 @@ public abstract class EtcdNodeHashing<N extends ShardingNode> extends EtcdObject
      * @return 返回键值 hash 值
      */
     protected long keyHash(String key) {
-        return Math.abs(keyHash.hash(key, 0));
+        return Math.abs(keyHasher.hash(key, 0, maxSlots));
     }
 
     /**
@@ -390,14 +411,19 @@ public abstract class EtcdNodeHashing<N extends ShardingNode> extends EtcdObject
      * @param index 第几分区
      * @return 返回 hash 值
      */
-    private long nodeHash(N node, int index) {
-        return Math.abs(nodeHash.hash(node, index));
+    private long nodeHash(PartitionedNode<N> node, int index) {
+        return Math.abs(nodeHasher.hash(node, index, this.maxSlots));
+    }
+
+    protected String partitionedNodePath(String slotPath, PartitionedNode<N> partition) {
+        return slotPath;
     }
 
     private void registerPartition(PartitionTask task, CompletableFuture<ShardingPartition<N>> future) {
-        NodePartition<N> partition = task.getPartition();
+        PartitionedNode<N> partition = task.getPartition();
         if (lessee.isLive()) {
-            explorer.add(path + NumberFormatAide.alignDigits(partition.getSlot(), keyHash.getMax()), partitionMineType, partition, lessee)
+            var slotPath = NamespacePathNames.nodePath(path, NumberFormatAide.alignDigits(partition.getSlotIndex(), this.maxSlots));
+            explorer.add(partitionedNodePath(slotPath, partition), partitionMineType, partition, lessee)
                     .whenComplete((nameNode, cause) -> {
                         if (nameNode != null) {
                             task.onSuccess(future);
@@ -424,6 +450,7 @@ public abstract class EtcdNodeHashing<N extends ShardingNode> extends EtcdObject
             synchronized (this) {
                 allPartitionTaskStream().forEach(PartitionTask::register);
             }
+
             restoring.set(false);
         }
     }
@@ -434,9 +461,7 @@ public abstract class EtcdNodeHashing<N extends ShardingNode> extends EtcdObject
 
     protected class PartitionTask {
 
-        private final NodePartition<N> partition;
-
-        private int seed;
+        private final PartitionedNode<N> partition;
 
         private volatile boolean sync = false;
 
@@ -444,14 +469,12 @@ public abstract class EtcdNodeHashing<N extends ShardingNode> extends EtcdObject
 
         private final boolean rehash;
 
-        protected PartitionTask(int index, N node, long slotIndex, boolean rehash) {
-            this.partition = new NodePartition<>(index, node);
-            partition.setSlot(slotIndex);
+        protected PartitionTask(PartitionedNode<N> partition, boolean rehash) {
+            this.partition = partition;
             this.rehash = rehash;
-            this.seed = 0;
         }
 
-        private NodePartition<N> getPartition() {
+        private PartitionedNode<N> getPartition() {
             return partition;
         }
 
@@ -491,8 +514,7 @@ public abstract class EtcdNodeHashing<N extends ShardingNode> extends EtcdObject
                 future.cancel(true);
             } else {
                 if (rehash) {
-                    this.seed++;
-                    partition.setSlot(nodeHash(partition.getNode(), this.seed));
+                    this.partition.hash(nodeHasher, maxSlots);
                     registerPartition(this, future);
                 }
             }

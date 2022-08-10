@@ -18,10 +18,13 @@ public class EtcdHashingPublisher<K, T> extends EtcdHashing<T> implements Hashin
 
     private volatile CompletableFuture<Lessee> lesseeFuture;
 
-    private final Hasher<K> hasher;
+    private final long maxSlots;
 
-    public EtcdHashingPublisher(String path, Hasher<K> hasher, ObjectMineType<T> mineType, NamespaceExplorer explorer) {
+    private final Hasher<T> hasher;
+
+    public EtcdHashingPublisher(String path, long maxSlots, Hasher<T> hasher, ObjectMineType<T> mineType, NamespaceExplorer explorer) {
         super(path, mineType, explorer);
+        this.maxSlots = maxSlots;
         this.hasher = hasher;
     }
 
@@ -64,10 +67,14 @@ public class EtcdHashingPublisher<K, T> extends EtcdHashing<T> implements Hashin
     }
 
     @Override
+    public String pathOf(K key, T value) {
+        var hashValue = valueHash(value);
+        return NamespacePathNames.nodePath(path, slotName(hashValue), key);
+    }
+
+    @Override
     public CompletableFuture<NameNode<T>> publish(K key, T value) {
-        var hashValue = hashCode(key);
-        var valuePath = NamespacePathNames.nodePath(path, slotName(hashValue), key);
-        System.out.println("publish : " + valuePath);
+        var valuePath = pathOf(key, value);
         if (lessee != null) {
             return explorer.save(valuePath, mineType, value, lessee);
         } else {
@@ -77,15 +84,13 @@ public class EtcdHashingPublisher<K, T> extends EtcdHashing<T> implements Hashin
 
     @Override
     public CompletableFuture<NameNode<T>> publish(K key, T value, Publishing<T> publishing) {
-        var hashValue = hashCode(key);
-        var valuePath = NamespacePathNames.nodePath(path, slotName(hashValue), key);
+        var valuePath = pathOf(key, value);
         return publishing.doPublish(explorer, valuePath, value, mineType, lessee);
     }
 
     @Override
     public CompletableFuture<NameNode<T>> publishIfAbsent(K key, T value) {
-        var hashValue = hashCode(key);
-        var valuePath = NamespacePathNames.nodePath(path, slotName(hashValue), key);
+        var valuePath = pathOf(key, value);
         if (lessee != null) {
             return explorer.add(valuePath, mineType, value, lessee);
         } else {
@@ -95,8 +100,7 @@ public class EtcdHashingPublisher<K, T> extends EtcdHashing<T> implements Hashin
 
     @Override
     public CompletableFuture<NameNode<T>> publishIfExist(K key, T value) {
-        var hashValue = hashCode(key);
-        var valuePath = NamespacePathNames.nodePath(path, slotName(hashValue), key);
+        var valuePath = pathOf(key, value);
         if (lessee != null) {
             return explorer.update(valuePath, mineType, value, lessee);
         } else {
@@ -106,18 +110,17 @@ public class EtcdHashingPublisher<K, T> extends EtcdHashing<T> implements Hashin
 
     @Override
     public CompletableFuture<NameNode<T>> revoke(K key, T value) {
-        var hashValue = hashCode(key);
-        var valuePath = NamespacePathNames.nodePath(path, slotName(hashValue), key);
+        var valuePath = pathOf(key, value);
         return explorer.removeAndGet(valuePath, mineType);
     }
 
-    private long hashCode(K key) {
-        return Math.abs(hasher.hash(key, 0));
+    private long valueHash(T value) {
+        return Math.abs(hasher.hash(value, 0, maxSlots));
     }
 
     @Override
     protected long getMaxSlots() {
-        return hasher.getMax();
+        return maxSlots;
     }
 
 }

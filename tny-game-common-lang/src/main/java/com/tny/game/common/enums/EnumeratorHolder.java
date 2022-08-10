@@ -67,7 +67,7 @@ public class EnumeratorHolder<O extends Enumerable<?>> implements Enumerator<O> 
         return this;
     }
 
-    private EnumeratorHolder<O> putAndCheck(Object key, O value) {
+    private void putAndCheck(Object key, O value) {
         O old = this.enumeratorMap.putIfAbsent(key, value);
         if (old != null) {
             if (old != value) {
@@ -78,7 +78,6 @@ public class EnumeratorHolder<O extends Enumerable<?>> implements Enumerator<O> 
             this.enumerators.add(value);
             this.classes.add((Class<? extends O>)value.getClass());
         }
-        return this;
     }
 
     @Override

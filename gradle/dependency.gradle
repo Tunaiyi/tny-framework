@@ -132,7 +132,7 @@ ext.libs = [
         quartz_scheduler                         : "org.quartz-scheduler:quartz:2.3.2",
 
 
-        groovy_all                               : "org.codehaus.groovy:groovy-all:3.0.8",
+        groovy_all                               : "org.codehaus.groovy:groovy-all:3.0.12",
         luaj                                     : "org.luaj:luaj-jse:3.0.1",
         mvel                                     : "org.mvel:mvel2:2.4.12.Final",
         xstream                                  : "com.thoughtworks.xstream:xstream:1.4.11.1",

@@ -22,7 +22,7 @@ public class EtcdNodeHashingRing<N extends ShardingNode> extends EtcdNodeHashing
     protected EtcdNodeHashingRing(String rootPath, HashingOptions<N> option, NamespaceExplorer explorer,
             ObjectCodecAdapter objectCodecAdapter) {
         super(rootPath, option, explorer, objectCodecAdapter, true);
-        this.ring = new ConsistentHashRing<>(getName(), getKeyHash());
+        this.ring = new ConsistentHashRing<>(getName(), option.getMaxSlots(), getKeyHasher());
         this.ring.event().add(new ShardingListener<>() {
 
             @Override
@@ -114,7 +114,7 @@ public class EtcdNodeHashingRing<N extends ShardingNode> extends EtcdNodeHashing
     @Override
     protected void removePartition(Partition<N> partition) {
         synchronized (this) {
-            this.ring.remove(partition.getSlot());
+            this.ring.remove(partition.getSlotIndex());
         }
     }
 

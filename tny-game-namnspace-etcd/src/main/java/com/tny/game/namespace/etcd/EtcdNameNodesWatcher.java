@@ -101,11 +101,11 @@ public class EtcdNameNodesWatcher<T> extends EtcdObject implements NameNodesWatc
     @Override
     public CompletableFuture<NameNodesWatcher<T>> watch() {
         if (status != UNWATCH) {
-            return failedFuture(new NameNodeWatchException("watch failed when status is " + this.status));
+            return CompletableFuture.failedFuture(new NameNodeWatchException("watch failed when status is " + this.status));
         }
         synchronized (this) {
             if (status != UNWATCH) {
-                return failedFuture(new NameNodeWatchException("watch failed when status is " + this.status));
+                return CompletableFuture.failedFuture(new NameNodeWatchException("watch failed when status is " + this.status));
             }
             status = TRY_WATCH;
             try {
@@ -116,15 +116,17 @@ public class EtcdNameNodesWatcher<T> extends EtcdObject implements NameNodesWatc
                 if (endPath != null) {
                     option = GetOption.newBuilder().withRange(endKey).build();
                 }
-                return kv.get(key, option)
+                CompletableFuture<NameNodesWatcher<T>> future = new CompletableFuture<>();
+                kv.get(key, option)
                         .whenComplete((response, cause) -> {
                             if (cause != null) {
                                 doLoadFailed(cause);
+                                future.completeExceptionally(cause);
                             } else {
-                                doWatch(key, response);
+                                doWatch(key, response, future);
                             }
-                        })
-                        .thenApply(r -> this);
+                        });
+                return future;
             } catch (Throwable e) {
                 LOGGER.error("watch {} exception", watchPath, e);
                 status = UNWATCH;
@@ -200,7 +202,7 @@ public class EtcdNameNodesWatcher<T> extends EtcdObject implements NameNodesWatc
         throw new NameNodeWatchException(format("load {} exception", watchPath, status), cause);
     }
 
-    private synchronized void doWatch(ByteSequence key, GetResponse response) {
+    private synchronized void doWatch(ByteSequence key, GetResponse response, CompletableFuture<NameNodesWatcher<T>> future) {
         try {
             if (status != TRY_WATCH) {
                 throw new NameNodeWatchException(format("watch {} failed when status is {}", watchPath, status));
@@ -218,9 +220,12 @@ public class EtcdNameNodesWatcher<T> extends EtcdObject implements NameNodesWatc
             }
             this.watcher = watch.watch(key, optionBuilder.build(), etcdWatchListener);
             status = WATCH;
+            future.complete(this);
         } catch (Throwable e) {
             status = UNWATCH;
-            throw new NameNodeWatchException(format("watch {} exception", watchPath), e);
+            var cause = new NameNodeWatchException(format("watch {} exception", watchPath), e);
+            future.completeExceptionally(cause);
+            throw cause;
         }
     }
 
@@ -232,7 +237,7 @@ public class EtcdNameNodesWatcher<T> extends EtcdObject implements NameNodesWatc
                 KeyValue kv = event.getKeyValue();
                 if (kv.getVersion() == 0) {
                     var removeKv = event.getPrevKV();
-                    NameNode<T> node = decode(removeKv.getValue().getBytes(), kv, removeKv.getCreateRevision(), valueType);
+                    NameNode<T> node = decode(removeKv.getValue().getBytes(), kv, removeKv.getCreateRevision(), removeKv.getVersion(), valueType);
                     deleteEvent.fire(WatchDeleteListener::onDelete, EtcdNameNodesWatcher.this, node);
                 } else {
                     KeyValue preKv = event.getPrevKV();
@@ -274,12 +279,6 @@ public class EtcdNameNodesWatcher<T> extends EtcdObject implements NameNodesWatc
             this.watcher = null;
             status = UNWATCH;
         }
-    }
-
-    private <T> CompletableFuture<T> failedFuture(Throwable cause) {
-        CompletableFuture<T> future = new CompletableFuture<>();
-        future.completeExceptionally(cause);
-        return future;
     }
 
 }

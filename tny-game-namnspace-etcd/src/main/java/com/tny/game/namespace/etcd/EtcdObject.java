@@ -30,15 +30,15 @@ public abstract class EtcdObject {
         this.charset = charset;
     }
 
-    protected ByteSequence toBytes(String value) {
+    public ByteSequence toBytes(String value) {
         return ByteSequence.from(value, charset);
     }
 
-    protected String toString(ByteSequence value) {
+    public String toString(ByteSequence value) {
         return value.toString(charset);
     }
 
-    protected <T> ByteSequence encode(T value, ObjectMineType<T> type) {
+    public <T> ByteSequence encode(T value, ObjectMineType<T> type) {
         if (value == null) {
             return ByteSequence.EMPTY;
         }
@@ -51,22 +51,23 @@ public abstract class EtcdObject {
         }
     }
 
-    protected <T> NameNode<T> decode(byte[] data, KeyValue kv, long createRevision, ObjectMineType<T> type) {
+    public <T> NameNode<T> decode(byte[] data, KeyValue kv, long createRevision, long version, ObjectMineType<T> type) {
         String path = toString(kv.getKey());
         ObjectCodec<T> codec = codecOf(type);
         try {
             T value = codec.decode(data);
-            return new NameNode<>(path, createRevision, value, kv.getVersion(), kv.getModRevision());
+            boolean delete = kv.getVersion() == 0;
+            return new NameNode<>(path, createRevision, value, version, kv.getModRevision(), delete);
         } catch (IOException e) {
             throw new NameNodeCodecException(format("decode value {} exception", path, e));
         }
     }
 
-    protected <T> NameNode<T> decode(KeyValue kv, ObjectMineType<T> type) {
-        return this.decode(kv.getValue().getBytes(), kv, kv.getCreateRevision(), type);
+    public <T> NameNode<T> decode(KeyValue kv, ObjectMineType<T> type) {
+        return this.decode(kv.getValue().getBytes(), kv, kv.getCreateRevision(), kv.getVersion(), type);
     }
 
-    protected <T> NameNode<T> decodeKeyValue(List<KeyValue> pairs, ObjectMineType<T> type) {
+    public <T> NameNode<T> decodeKeyValue(List<KeyValue> pairs, ObjectMineType<T> type) {
         if (pairs == null || pairs.size() == 0) {
             return null;
         }
@@ -74,7 +75,7 @@ public abstract class EtcdObject {
         return decode(pair, type);
     }
 
-    protected <T> List<NameNode<T>> decodeAllKeyValues(List<KeyValue> pairs, ObjectMineType<T> type) {
+    public <T> List<NameNode<T>> decodeAllKeyValues(List<KeyValue> pairs, ObjectMineType<T> type) {
         return pairs.stream().map(pair -> decode(pair, type)).collect(Collectors.toList());
     }
 

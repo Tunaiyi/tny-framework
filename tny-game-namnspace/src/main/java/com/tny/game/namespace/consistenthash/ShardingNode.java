@@ -12,6 +12,6 @@ public interface ShardingNode {
     /**
      * @return 分区节点 id
      */
-    String getHashKey();
+    String getKey();
 
 }

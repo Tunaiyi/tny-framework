@@ -35,4 +35,8 @@ public abstract class EtcdHashing<T> {
 
     protected abstract long getMaxSlots();
 
+    public ObjectMineType<T> getMineType() {
+        return mineType;
+    }
+
 }

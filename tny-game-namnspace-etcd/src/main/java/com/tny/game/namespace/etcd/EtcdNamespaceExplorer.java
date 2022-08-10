@@ -125,11 +125,11 @@ public class EtcdNamespaceExplorer extends EtcdObject implements NamespaceExplor
     }
 
     @Override
-    public <K, T> HashingPublisher<K, T> hashingPublisher(String parentPath, Hasher<K> hasher, ObjectMineType<T> mineType) {
+    public <K, T> HashingPublisher<K, T> hashingPublisher(String parentPath, long maxSlotSize, Hasher<T> hasher, ObjectMineType<T> mineType) {
         if (StringUtils.isBlank(parentPath)) {
             throw new HashRingException("rootPath {} is blank", parentPath);
         }
-        return new EtcdHashingPublisher<>(parentPath, hasher, mineType, this);
+        return new EtcdHashingPublisher<>(parentPath, maxSlotSize, hasher, mineType, this);
     }
 
     @Override
@@ -316,6 +316,10 @@ public class EtcdNamespaceExplorer extends EtcdObject implements NamespaceExplor
     public <T> CompletableFuture<NameNode<T>> removeByIdAndIf(String path, long id, long minVersion, RangeBorder minBorder, long maxVersion,
             RangeBorder maxBorder, ObjectMineType<T> type) {
         return doDelete(path, type, id, null, minVersion, minBorder, maxVersion, maxBorder);
+    }
+
+    public CompletableFuture<TxnResponse> transact(Consumer<Txn> consumer) {
+        return inTxn(consumer);
     }
 
     @Override

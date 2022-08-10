@@ -1,5 +1,7 @@
 package com.tny.game.namespace.consistenthash;
 
+import com.tny.game.namespace.*;
+
 /**
  * 分区节点(虚拟节点)
  * <p>
@@ -10,10 +12,11 @@ package com.tny.game.namespace.consistenthash;
 public abstract class ShardingPartition<N extends ShardingNode> implements Partition<N> {
 
     /**
-     * 设置槽位
+     * 重hash
      *
-     * @param slot 槽位索引
+     * @param hasher   hash 器
+     * @param maxSlots 最大槽数
      */
-    public abstract void setSlot(long slot);
+    public abstract void hash(Hasher<PartitionedNode<N>> hasher, long maxSlots);
 
 }

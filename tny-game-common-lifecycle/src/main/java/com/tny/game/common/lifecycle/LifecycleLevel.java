@@ -71,7 +71,7 @@ public enum LifecycleLevel implements LifecyclePriority {
     POST_SYSTEM_LEVEL_10(110),
     ;
 
-    public final int priority;
+    private final int priority;
 
     LifecycleLevel(int priority) {
         this.priority = priority;

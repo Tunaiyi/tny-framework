@@ -34,7 +34,7 @@ public final class AppScopes extends ClassImporter {
     }
 
     public static <T extends AppScope> T ofScopeName(String name) {
-        return holder.checkBySymbol(SCOPE_NAME_SYMBOL, "获取 {} ServerType不存在", name);
+        return holder.checkBySymbol(SCOPE_NAME_SYMBOL, name, "获取 {} ServerType不存在", name);
     }
 
     public static <T extends AppScope> T valueOfEnum(String enumName) {

@@ -20,9 +20,9 @@ gradlePlugin {
 
 dependencies {
     api gradleApi()
-    api localGroovy()
+//    api localGroovy()
     api 'com.funs.game:tools-template:0.0.1-SNAPSHOT'
-//            libs.'groovy-all',
+    libs.'groovy-all'
 //    api project(":tny-game-net")
     api(project(":tny-game-doc")) {
         exclude group: 'org.codehaus.groovy', module: 'groovy-all'

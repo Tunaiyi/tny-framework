@@ -9,8 +9,14 @@ package com.tny.game.namespace;
  **/
 public interface Hasher<T> {
 
-    long hash(T value, int seed);
+    default long hash(T value, int seed, long max) {
+        var code = Math.abs(hash(value, seed));
+        if (max > 0L) {
+            return code % max;
+        }
+        return code;
+    }
 
-    long getMax();
+    long hash(T value, int seed);
 
 }

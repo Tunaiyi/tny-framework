@@ -23,27 +23,27 @@ public class HashAlgorithmHasher<T> implements Hasher<T> {
 
     private final Function<T, String> toKey;
 
-    public static <T> Hasher<T> hasher() {
+    public static <T> HashAlgorithmHasher<T> hasher() {
         return HashAlgorithmHasher.hasher(Object::toString);
     }
 
-    public static <T> Hasher<T> hasher(long maxSlots) {
+    public static <T> HashAlgorithmHasher<T> hasher(long maxSlots) {
         return HashAlgorithmHasher.hasher(Object::toString, maxSlots);
     }
 
-    public static <T> Hasher<T> hasher(Function<T, String> toKey) {
+    public static <T> HashAlgorithmHasher<T> hasher(Function<T, String> toKey) {
         return hasher(toKey, null);
     }
 
-    public static <T> Hasher<T> hasher(Function<T, String> toKey, long maxSlots) {
+    public static <T> HashAlgorithmHasher<T> hasher(Function<T, String> toKey, long maxSlots) {
         return hasher(toKey, null, maxSlots);
     }
 
-    public static <T> Hasher<T> hasher(Function<T, String> toKey, HashAlgorithm algorithm) {
+    public static <T> HashAlgorithmHasher<T> hasher(Function<T, String> toKey, HashAlgorithm algorithm) {
         return hasher(toKey, algorithm, UNLIMITED_SLOT_SIZE);
     }
 
-    public static <T> Hasher<T> hasher(Function<T, String> toKey, HashAlgorithm algorithm, long maxSlots) {
+    public static <T> HashAlgorithmHasher<T> hasher(Function<T, String> toKey, HashAlgorithm algorithm, long maxSlots) {
         return new HashAlgorithmHasher<>(toKey, algorithm, maxSlots);
     }
 
@@ -62,12 +62,8 @@ public class HashAlgorithmHasher<T> implements Hasher<T> {
         return hashCode % maxSlots;
     }
 
-    @Override
     public long getMax() {
-        if (maxSlots < 0) {
-            return algorithm.getMax();
-        }
-        return maxSlots;
+        return maxSlots > 0 ? maxSlots : algorithm.getMax();
     }
 
 }

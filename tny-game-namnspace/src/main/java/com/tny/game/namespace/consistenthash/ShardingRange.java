@@ -44,13 +44,13 @@ public class ShardingRange<N extends ShardingNode> {
 
     public ShardingRange(Partition<N> prevPartition, Partition<N> partition, long maxSlot) {
         this.partition = partition;
-        long fromSlot = prevPartition.getSlot() + 1;
+        long fromSlot = prevPartition.getSlotIndex() + 1;
         if (fromSlot > maxSlot) {
             fromSlot = 0;
         }
         this.maxSlot = maxSlot;
         this.fromSlot = fromSlot;
-        this.toSlot = partition.getSlot();
+        this.toSlot = partition.getSlotIndex();
         if (fromSlot > toSlot) {
             across = true;
         }

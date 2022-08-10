@@ -10,22 +10,22 @@ import com.tny.game.namespace.consistenthash.*;
  **/
 public class TestShadingNode implements ShardingNode {
 
-    private String id;
+    private String key;
 
     public TestShadingNode() {
     }
 
-    public TestShadingNode(String id) {
-        this.id = id;
+    public TestShadingNode(String key) {
+        this.key = key;
     }
 
     @Override
-    public String getHashKey() {
-        return id;
+    public String getKey() {
+        return key;
     }
 
-    TestShadingNode setId(String id) {
-        this.id = id;
+    TestShadingNode setKey(String key) {
+        this.key = key;
         return this;
     }
 
