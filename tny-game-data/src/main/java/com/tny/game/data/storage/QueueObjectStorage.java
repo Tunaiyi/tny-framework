@@ -34,7 +34,7 @@ public class QueueObjectStorage<K extends Comparable<?>, O> implements AsyncObje
     /**
      * 提交的任务
      */
-    private final Queue<StorageEntry<K, O>> entriesQueue = new ConcurrentLinkedQueue<>();
+    private final Queue<StorageEntry<K, O>> operationQueue = new ConcurrentLinkedQueue<>();
 
     /**
      * 监视器
@@ -95,8 +95,10 @@ public class QueueObjectStorage<K extends Comparable<?>, O> implements AsyncObje
                 locker.unlock(key, lock);
             }
         }
-        List<O> newList = this.accessor.get(keys);
-        returnList.addAll(newList);
+        if (!missing.isEmpty()) {
+            List<O> newList = this.accessor.get(missing);
+            returnList.addAll(newList);
+        }
         return returnList;
     }
 
@@ -147,7 +149,7 @@ public class QueueObjectStorage<K extends Comparable<?>, O> implements AsyncObje
     @Override
     public void operateAll() {
         if (!entriesMap.isEmpty()) {
-            this.entriesQueue.addAll(entriesMap.values());
+            this.operationQueue.addAll(entriesMap.values());
         }
     }
 
@@ -162,7 +164,7 @@ public class QueueObjectStorage<K extends Comparable<?>, O> implements AsyncObje
         // 连续获取, 最多获取 Step 个记录进行同步
         try {
             while (operateSize < 10000) {
-                StorageEntry<K, O> entry = this.entriesQueue.poll();
+                StorageEntry<K, O> entry = this.operationQueue.poll();
                 if (entry != null) {
                     if (!handleStorageEntry(entry)) {
                         retryQueue.add(entry);
@@ -183,19 +185,19 @@ public class QueueObjectStorage<K extends Comparable<?>, O> implements AsyncObje
             }
         } catch (Throwable e) {
             LOGGER.error("{} store exception", entityClass, e);
-            this.entriesQueue.addAll(unconfirmedQueue);
+            this.operationQueue.addAll(unconfirmedQueue);
             unconfirmedQueue.clear();
         }
 
         if (!retryQueue.isEmpty()) {
-            this.entriesQueue.addAll(retryQueue);
+            this.operationQueue.addAll(retryQueue);
             retryQueue.clear();
         }
         costTime = System.currentTimeMillis() - startAt;
         // 如果同步够 Step 个记录进行一次休眠, 如果少于 step 个则有 take 进行阻塞等待.
         if (LOGGER.isInfoEnabled() && operateSize > 0) {
             LOGGER.info("同步器 {} [{}] 消耗 {} ms, 同步 {} 对象! 提交队列对象数: {}",
-                    QueueObjectStorage.class.getSimpleName(), this.entityClass, costTime, operateSize, this.entriesQueue.size());
+                    QueueObjectStorage.class.getSimpleName(), this.entityClass, costTime, operateSize, this.operationQueue.size());
         }
         return action;
     }
@@ -207,7 +209,7 @@ public class QueueObjectStorage<K extends Comparable<?>, O> implements AsyncObje
 
     @Override
     public int queueSize() {
-        return this.entriesQueue.size();
+        return this.operationQueue.size();
     }
 
     //	private void clearDeletedEntries() {
@@ -238,7 +240,7 @@ public class QueueObjectStorage<K extends Comparable<?>, O> implements AsyncObje
             if (entry == null) {
                 entry = new StorageEntry<>(key, object, action);
                 if (this.entriesMap.putIfAbsent(key, entry) == null) {
-                    this.entriesQueue.add(entry);
+                    this.operationQueue.add(entry);
                 }
             } else {
                 if (!entry.updateOperator(object, action)) {

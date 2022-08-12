@@ -25,7 +25,7 @@ public interface HashingPublisher<K, T> {
 
     CompletableFuture<NameNode<T>> publish(K key, T value);
 
-    CompletableFuture<NameNode<T>> publish(K key, T value, Publishing<T> publishing);
+    CompletableFuture<NameNode<T>> operate(K key, T value, Publishing<T> publishing);
 
     CompletableFuture<NameNode<T>> publishIfAbsent(K key, T value);
 

@@ -83,9 +83,9 @@ public class EtcdHashingPublisher<K, T> extends EtcdHashing<T> implements Hashin
     }
 
     @Override
-    public CompletableFuture<NameNode<T>> publish(K key, T value, Publishing<T> publishing) {
+    public CompletableFuture<NameNode<T>> operate(K key, T value, Publishing<T> operate) {
         var valuePath = pathOf(key, value);
-        return publishing.doPublish(explorer, valuePath, value, mineType, lessee);
+        return operate.doPublish(explorer, valuePath, value, mineType, lessee);
     }
 
     @Override

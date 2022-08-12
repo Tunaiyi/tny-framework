@@ -138,6 +138,8 @@ ext.libs = [
         xstream                                  : "com.thoughtworks.xstream:xstream:1.4.11.1",
 
         guava                                    : "com.google.guava:guava:31.1-jre",
+        caffeine                                 : "com.github.ben-manes.caffeine:caffeine:3.1.1",
+
         google_api_client                        : "com.google.api-client:google-api-client:1.31.1",
         google_api_oauth2                        : "com.google.auth:google-auth-library-oauth2-http:0.22.0",
 
