@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.data.configuration.redisson;
 
 import com.tny.game.boot.utils.*;
@@ -25,7 +25,7 @@ public class RedissonStorageAccessorFactorySetting {
 
     private String tableHead;
 
-    private String idConverterFactory = BeanNameUtils.lowerCamelName(EntityKeyMakerIdConverterFactory.class);
+    private String idConverterFactory = BeanNameUtils.lowerCamelName(CacheKeyMakerIdConverterFactory.class);
 
     public String getDataSource() {
         return dataSource;

@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.namespace.etcd;
 
 import com.tny.game.common.event.firer.*;
@@ -135,7 +135,7 @@ public class EtcdLessee implements Lessee {
                         } else {
                             this.ttl = ttl;
                             this.leaseId = response.getID();
-                            this.keepalive = lease.keepAlive(this.leaseId, new StreamObserver<LeaseKeepAliveResponse>() {
+                            this.keepalive = lease.keepAlive(this.leaseId, new StreamObserver<>() {
 
                                 @Override
                                 public void onNext(LeaseKeepAliveResponse value) {
@@ -178,7 +178,7 @@ public class EtcdLessee implements Lessee {
                         }
                     }).thenApply(r -> this);
         }
-        return failedFuture(new LesseeException("Leaser status can not grant"));
+        return failedFuture(new NamespaceLesseeException("Leaser status can not grant"));
     }
 
     @Override
@@ -189,7 +189,7 @@ public class EtcdLessee implements Lessee {
         if (status.compareAndSet(LIVE, STOP)) {
             return doRevoke();
         }
-        return failedFuture(new LesseeException("Leaser status can not revoke"));
+        return failedFuture(new NamespaceLesseeException("Leaser status can not revoke"));
     }
 
     @Override

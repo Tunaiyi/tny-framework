@@ -4,19 +4,19 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.namespace.etcd;
 
 import com.google.common.collect.ImmutableMap;
 import com.tny.game.codec.*;
 import com.tny.game.common.*;
 import com.tny.game.namespace.*;
-import com.tny.game.namespace.consistenthash.*;
 import com.tny.game.namespace.exception.*;
 import com.tny.game.namespace.listener.*;
+import com.tny.game.namespace.sharding.*;
 import org.slf4j.*;
 
 import java.util.*;
@@ -39,9 +39,7 @@ public class EtcdHashingSubscriber<T> extends EtcdHashing<T> implements HashingS
 
     private volatile Map<Long, RangeWatcher<T>> watcherMap = ImmutableMap.of();
 
-    private final long maxSlotSize;
-
-    private boolean close = false;
+    private boolean closed = false;
 
     private final List<WatchListener<T>> watchListeners = new CopyOnWriteArrayList<>();
 
@@ -69,18 +67,12 @@ public class EtcdHashingSubscriber<T> extends EtcdHashing<T> implements HashingS
 
     };
 
-    public EtcdHashingSubscriber(String rootPath, long maxSlotSize, ObjectMineType<T> mineType, NamespaceExplorer explorer) {
-        super(rootPath, mineType, explorer);
-        this.maxSlotSize = maxSlotSize;
+    public EtcdHashingSubscriber(String rootPath, long maxSlot, ObjectMimeType<T> mineType, NamespaceExplorer explorer) {
+        super(rootPath, maxSlot, mineType, explorer);
     }
 
     @Override
-    protected long getMaxSlots() {
-        return this.maxSlotSize;
-    }
-
-    @Override
-    public ObjectMineType<T> getMineType() {
+    public ObjectMimeType<T> getMineType() {
         return mineType;
     }
 
@@ -108,12 +100,7 @@ public class EtcdHashingSubscriber<T> extends EtcdHashing<T> implements HashingS
             } else {
                 watchers = Map.of(WATCH_ALL_SLOT, exist);
             }
-            existMap.forEach((slot, sub) -> sub.close());
-            this.watcherMap = watchers;
-            return CompletableFuture.allOf(watchers.values()
-                    .stream()
-                    .map(RangeWatcher::getFuture)
-                    .toArray(CompletableFuture[]::new));
+            return handleWatchers(existMap, watchers);
         }
     }
 
@@ -143,23 +130,28 @@ public class EtcdHashingSubscriber<T> extends EtcdHashing<T> implements HashingS
                     }
                 }
             }
-            existMap.forEach((slot, sub) -> sub.close());
-            this.watcherMap = ImmutableMap.copyOf(watchers);
-            if (watchers.isEmpty()) {
-                return CompletableFuture.completedFuture(null);
-            }
-            return CompletableFuture.allOf(watchers.values()
-                    .stream()
-                    .map(RangeWatcher::getFuture)
-                    .toArray(CompletableFuture[]::new));
+            return handleWatchers(existMap, watchers);
         }
     }
 
+    private CompletableFuture<Void> handleWatchers(Map<Long, RangeWatcher<T>> existMap, Map<Long, RangeWatcher<T>> watchers) {
+        existMap.forEach((slot, sub) -> sub.close());
+        this.watcherMap = ImmutableMap.copyOf(watchers);
+        if (watchers.isEmpty()) {
+            return CompletableFuture.completedFuture(null);
+        }
+        return CompletableFuture.allOf(watchers.values()
+                .stream()
+                .map(RangeWatcher::getFuture)
+                .toArray(CompletableFuture[]::new));
+    }
+
     private Optional<CompletableFuture<Void>> checkClose() {
-        if (!close) {
+        if (!closed) {
             return Optional.empty();
         }
-        return Optional.of(CompletableFuture.failedFuture(new HashingSubscriberClosedException("EtcdHashingSubscriber {} close", this.getPath())));
+        return Optional.of(
+                CompletableFuture.failedFuture(new NamespaceHashingSubscriberClosedException("EtcdHashingSubscriber {} close", this.getPath())));
     }
 
     @Override
@@ -187,15 +179,15 @@ public class EtcdHashingSubscriber<T> extends EtcdHashing<T> implements HashingS
 
     @Override
     public void close() {
-        if (close) {
+        if (closed) {
             return;
         }
         synchronized (this) {
-            if (close) {
+            if (closed) {
                 return;
             }
             unsubscribe();
-            this.close = true;
+            this.closed = true;
             this.watchListeners.clear();
         }
     }
@@ -286,33 +278,43 @@ public class EtcdHashingSubscriber<T> extends EtcdHashing<T> implements HashingS
                                     upper--;
                                 }
                                 if (!range.contains(lower) || !range.contains(upper)) {
-                                    throw new HashingException("It is illegal to {}({}) to {}() for the interval",
+                                    throw new NamespaceHashingException("It is illegal to {}({}) to {}() for the interval",
                                             range.lowerEndpoint(), range.lowerBoundType(), range.upperEndpoint(), range.upperBoundType());
                                 }
                                 if (lower == upper) {
                                     var path = parent.subPath(range.lowerEndpoint());
                                     return parent.getExplorer().allNodeWatcher(
                                             path, parent.getMineType());
-                                } else {
-                                    var from = parent.subPath(lower);
-                                    var to = parent.subPath(upper);
-                                    return parent.getExplorer().allNodeWatcher(
-                                            from,
-                                            to,
-                                            parent.getMineType());
                                 }
+                                var from = parent.subPath(lower);
+                                var to = parent.subPath(upper + 1);
+                                return parent.getExplorer().allNodeWatcher(
+                                        from,
+                                        to,
+                                        parent.getMineType());
                             });
                 }
+                var tasks = new ArrayList<CompletableFuture<?>>();
                 this.watchers = watcherStream
                         .peek(watcher -> watcher.addListener(parent.notifier))
-                        .peek(this::doWatch)
+                        .peek((w) -> tasks.add(this.doWatch(w, new CompletableFuture<>())))
                         .collect(Collectors.toList());
+                CompletableFuture.allOf(tasks.toArray(CompletableFuture[]::new)).whenComplete((v, cause) -> {
+                    if (cause == null) {
+                        this.future.complete(null);
+                    } else {
+                        this.future.completeExceptionally(cause);
+                    }
+                });
             }
         }
 
-        private void doWatch(NameNodesWatcher<T> watcher) {
+        private CompletableFuture<Void> doWatch(NameNodesWatcher<T> watcher, CompletableFuture<Void> future) {
             if (watcher.isWatch()) {
-                return;
+                if (!future.isDone()) {
+                    future.complete(null);
+                }
+                return future;
             }
             watcher.watch().whenComplete((w, cause) -> {
                 if (cause == null && w.isWatch()) {
@@ -320,9 +322,10 @@ public class EtcdHashingSubscriber<T> extends EtcdHashing<T> implements HashingS
                     retryTimes = 0;
                 } else {
                     retryTimes++;
-                    CompletableFutureAide.delay(() -> doWatch(watcher), Math.min(1000L * retryTimes, 30000));
+                    CompletableFutureAide.delay(() -> doWatch(watcher, future), Math.min(1000L * retryTimes, 30000));
                 }
             });
+            return future;
         }
 
         private void close() {

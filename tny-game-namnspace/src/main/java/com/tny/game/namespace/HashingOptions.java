@@ -4,14 +4,14 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.namespace;
 
 import com.tny.game.common.type.*;
-import com.tny.game.namespace.consistenthash.*;
+import com.tny.game.namespace.sharding.*;
 
 import java.nio.charset.Charset;
 
@@ -30,13 +30,13 @@ public class HashingOptions<N extends ShardingNode> {
 
     private final Hasher<String> keyHasher;
 
-    private final Hasher<PartitionedNode<N>> nodeHasher;
+    private final Hasher<PartitionSlot<N>> nodeHasher;
 
     private final int partitionCount;
 
     private final long maxSlots;
 
-    private final ReferenceType<PartitionedNode<N>> type;
+    private final ReferenceType<PartitionSlot<N>> type;
 
     private final Charset charset;
 
@@ -52,7 +52,7 @@ public class HashingOptions<N extends ShardingNode> {
     }
 
     public static <N extends ShardingNode> Builder<N> newBuilder(
-            ReferenceType<PartitionedNode<N>> type, long maxSlotSize, Hasher<String> keyHasher, Hasher<PartitionedNode<N>> nodeHasher) {
+            ReferenceType<PartitionSlot<N>> type, long maxSlotSize, Hasher<String> keyHasher, Hasher<PartitionSlot<N>> nodeHasher) {
         return new Builder<N>().setMaxSlots(maxSlotSize).setType(type).setKeyHasher(keyHasher).setNodeHasher(nodeHasher);
     }
 
@@ -85,7 +85,7 @@ public class HashingOptions<N extends ShardingNode> {
         return keyHasher;
     }
 
-    public Hasher<PartitionedNode<N>> getNodeHasher() {
+    public Hasher<PartitionSlot<N>> getNodeHasher() {
         return nodeHasher;
     }
 
@@ -97,7 +97,7 @@ public class HashingOptions<N extends ShardingNode> {
         return partitionCount;
     }
 
-    public ReferenceType<PartitionedNode<N>> getType() {
+    public ReferenceType<PartitionSlot<N>> getType() {
         return type;
     }
 
@@ -109,7 +109,7 @@ public class HashingOptions<N extends ShardingNode> {
 
         private Hasher<String> keyHasher;
 
-        private Hasher<PartitionedNode<N>> nodeHasher;
+        private Hasher<PartitionSlot<N>> nodeHasher;
 
         private Charset charset = NamespaceConstants.CHARSET;
 
@@ -117,7 +117,7 @@ public class HashingOptions<N extends ShardingNode> {
 
         private long maxSlots = 1024;
 
-        private ReferenceType<PartitionedNode<N>> type;
+        private ReferenceType<PartitionSlot<N>> type;
 
         private Builder() {
         }
@@ -137,7 +137,7 @@ public class HashingOptions<N extends ShardingNode> {
             return this;
         }
 
-        public Builder<N> setNodeHasher(Hasher<PartitionedNode<N>> nodeHasher) {
+        public Builder<N> setNodeHasher(Hasher<PartitionSlot<N>> nodeHasher) {
             this.nodeHasher = nodeHasher;
             return this;
         }
@@ -157,7 +157,7 @@ public class HashingOptions<N extends ShardingNode> {
             return this;
         }
 
-        public Builder<N> setType(ReferenceType<PartitionedNode<N>> type) {
+        public Builder<N> setType(ReferenceType<PartitionSlot<N>> type) {
             this.type = type;
             return this;
         }

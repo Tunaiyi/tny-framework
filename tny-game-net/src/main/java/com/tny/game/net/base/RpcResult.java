@@ -4,13 +4,15 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.base;
 
 import com.tny.game.common.result.*;
+
+import java.util.function.Function;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 import static com.tny.game.common.utils.StringAide.*;
@@ -23,23 +25,23 @@ public interface RpcResult<T> extends RpcReturn<T> {
     /**
      * 获取结果状态码
      * <p>
+     * 获取结果状态码<br>
+     *
+     * @return 返回结果状态码
+     */
+    ResultCode resultCode();
+
+    /**
+     * 获取结果状态码
+     * <p>
      * <p>
      * 获取结果状态码<br>
      *
      * @return 返回结果状态码
      */
     default int getCode() {
-        return this.getResultCode().getCode();
+        return this.resultCode().getCode();
     }
-
-    /**
-     * 获取结果状态码
-     * <p>
-     * 获取结果状态码<br>
-     *
-     * @return 返回结果状态码
-     */
-    ResultCode getResultCode();
 
     /**
      * @return 是否成功
@@ -59,6 +61,23 @@ public interface RpcResult<T> extends RpcReturn<T> {
      * @return 消息描述(开发用, 请勿作为提示)
      */
     String getDescription();
+
+    /**
+     * 转 DoneResult
+     *
+     * @return
+     */
+    default DoneResult<T> toDoneResult() {
+        return DoneResults.done(resultCode(), get());
+    }
+
+    default <U> DoneResult<U> toDoneResult(Function<T, U> format) {
+        if (resultCode().isSuccess()) {
+            return DoneResults.success(format.apply(get()));
+        } else {
+            return DoneResults.failure(resultCode());
+        }
+    }
 
     /**
      * @return 成功时返回数据, 如果失败返回 null

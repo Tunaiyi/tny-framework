@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.data;
 
 import com.tny.game.common.concurrent.lock.locker.*;
@@ -34,7 +34,7 @@ public class EntityCacheManager<K extends Comparable<?>, O> implements EntityMan
     /**
      * id 构建器
      */
-    private EntityKeyMaker<K, O> keyMaker;
+    private CacheKeyMaker<K, O> keyMaker;
 
     /**
      * 持久化
@@ -49,11 +49,11 @@ public class EntityCacheManager<K extends Comparable<?>, O> implements EntityMan
     public EntityCacheManager() {
     }
 
-    public EntityCacheManager(EntityKeyMaker<K, O> keyMaker, ObjectCache<K, O> cache, ObjectStorage<K, O> storage, int currentLevel) {
+    public EntityCacheManager(CacheKeyMaker<K, O> keyMaker, ObjectCache<K, O> cache, ObjectStorage<K, O> storage, int currentLevel) {
         this(keyMaker, cache, storage, new HashObjectLocker<>(currentLevel));
     }
 
-    public EntityCacheManager(EntityKeyMaker<K, O> keyMaker, ObjectCache<K, O> cache, ObjectStorage<K, O> storage, ObjectLocker<K> locker) {
+    public EntityCacheManager(CacheKeyMaker<K, O> keyMaker, ObjectCache<K, O> cache, ObjectStorage<K, O> storage, ObjectLocker<K> locker) {
         this.keyMaker = keyMaker;
         this.cache = cache;
         this.storage = storage;
@@ -301,7 +301,7 @@ public class EntityCacheManager<K extends Comparable<?>, O> implements EntityMan
         return this;
     }
 
-    public EntityCacheManager<K, O> setKeyMaker(EntityKeyMaker<K, O> keyMaker) {
+    public EntityCacheManager<K, O> setKeyMaker(CacheKeyMaker<K, O> keyMaker) {
         this.keyMaker = keyMaker;
         return this;
     }

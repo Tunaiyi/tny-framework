@@ -4,14 +4,15 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.namespace.etcd;
 
 import com.tny.game.codec.*;
 import com.tny.game.namespace.*;
+import com.tny.game.namespace.sharding.*;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -28,19 +29,11 @@ public class EtcdHashingPublisher<K, T> extends EtcdHashing<T> implements Hashin
 
     private volatile CompletableFuture<Lessee> lesseeFuture;
 
-    private final long maxSlots;
+    private final Hasher<T> valueHasher;
 
-    private final Hasher<T> hasher;
-
-    public EtcdHashingPublisher(String path, long maxSlots, Hasher<T> hasher, ObjectMineType<T> mineType, NamespaceExplorer explorer) {
-        super(path, mineType, explorer);
-        this.maxSlots = maxSlots;
-        this.hasher = hasher;
-    }
-
-    @Override
-    public String getPath() {
-        return path;
+    public EtcdHashingPublisher(String path, long maxSlots, Hasher<T> valueHasher, ObjectMimeType<T> mineType, NamespaceExplorer explorer) {
+        super(path, maxSlots, mineType, explorer);
+        this.valueHasher = valueHasher;
     }
 
     @Override
@@ -125,7 +118,7 @@ public class EtcdHashingPublisher<K, T> extends EtcdHashing<T> implements Hashin
     }
 
     private long valueHash(T value) {
-        return Math.abs(hasher.hash(value, 0, maxSlots));
+        return Math.abs(valueHasher.hash(value, 0, maxSlots));
     }
 
     @Override

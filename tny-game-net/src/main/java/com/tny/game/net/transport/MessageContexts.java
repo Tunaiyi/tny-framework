@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.transport;
 
 import com.google.common.base.MoreObjects;
@@ -166,14 +166,14 @@ public class MessageContexts {
 
     public static MessageContext copy(Message message) {
         DefaultMessageContext context = new DefaultMessageContext();
-        return context.init(message.getMode(), message.getHead(), message.getCode(), message.getToMessage())
+        return context.init(message.getMode(), message.getHead(), ResultCodes.of(message.getCode()), message.getToMessage())
                 .withBody(message.getBody())
                 .withHeaders(message.getAllHeaders());
     }
 
     private static class DefaultMessageContext extends RequestContext {
 
-        private int code;
+        private ResultCode code;
 
         private int protocol;
 
@@ -205,10 +205,6 @@ public class MessageContexts {
         }
 
         private DefaultMessageContext init(MessageMode mode, Protocol protocol, ResultCode code, Long toMessage) {
-            return this.init(mode, protocol, code.getCode(), toMessage);
-        }
-
-        private DefaultMessageContext init(MessageMode mode, Protocol protocol, int code, Long toMessage) {
             Asserts.checkNotNull(protocol, "protocol is null");
             Asserts.checkNotNull(code, "code is null");
             this.protocol = protocol.getProtocolId();
@@ -231,6 +227,11 @@ public class MessageContexts {
 
         @Override
         public int getCode() {
+            return this.code.getCode();
+        }
+
+        @Override
+        public ResultCode getResultCode() {
             return this.code;
         }
 
@@ -252,7 +253,7 @@ public class MessageContexts {
 
         @Override
         public MessageContext withCode(ResultCode code) {
-            this.code = code.getCode();
+            this.code = code;
             return this;
         }
 

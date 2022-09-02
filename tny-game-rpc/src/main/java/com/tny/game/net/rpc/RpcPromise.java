@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.rpc;
 
 import com.tny.game.common.concurrent.*;
@@ -16,6 +16,8 @@ import com.tny.game.net.base.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.rpc.exception.*;
+
+import java.util.Optional;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 
@@ -36,7 +38,7 @@ public class RpcPromise<T> extends CompleteStageFuture<RpcResult<T>> implements 
 
     @Override
     public ResultCode getResultCode() {
-        return result().getResultCode();
+        return result().resultCode();
     }
 
     @Override
@@ -68,6 +70,15 @@ public class RpcPromise<T> extends CompleteStageFuture<RpcResult<T>> implements 
         this.message = message;
         this.endpoint = endpoint;
         return super.complete(value);
+    }
+
+    @Override
+    public Optional<RpcResult<T>> getNow() {
+        if (this.isDone()) {
+            return Optional.of(result());
+        } else {
+            return Optional.empty();
+        }
     }
 
     private RpcResult<T> result() {

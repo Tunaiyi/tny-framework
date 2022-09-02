@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.demo.net.client;
 
 import com.tny.game.boot.launcher.*;
@@ -145,7 +145,7 @@ public class GameClientApp {
                         switch (op) {
                             case "s": {
                                 RpcResult<SayContentDTO> result = speakService.say(message);
-                                LOGGER.info("Sync Call : RpcResult [ {}, {} ]", result.getResultCode(), result.get());
+                                LOGGER.info("Sync Call : RpcResult [ {}, {} ]", result.resultCode(), result.get());
                                 break;
                             }
                             case "sb": {
@@ -156,7 +156,7 @@ public class GameClientApp {
                             case "a": {
                                 RpcFuture<SayContentDTO> future = speakService.asyncSay(message);
                                 RpcResult<SayContentDTO> result = future.get();
-                                LOGGER.info("Async Call : RpcResult [ {}, {} ]", result.getResultCode(), result.get());
+                                LOGGER.info("Async Call : RpcResult [ {}, {} ]", result.resultCode(), result.get());
                                 break;
                             }
                             case "ab": {

@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.rpc;
 
 import com.google.common.collect.ImmutableList;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
  * @author : kgtny
  * @date : 2021/11/3 3:31 下午
  */
-public class RpcRemoteServiceSet implements RpcRemoterSet, RpcForwardSet {
+public class RpcRemoteServiceSet implements RpcRemoteSet, RpcForwardSet {
 
     private final RpcServiceType serviceType;
 
@@ -50,22 +50,22 @@ public class RpcRemoteServiceSet implements RpcRemoterSet, RpcForwardSet {
     }
 
     @Override
-    public List<? extends RpcRemoterNode> getOrderRemoterNodes() {
+    public List<? extends RpcRemoteNode> getOrderRemoteNodes() {
         return orderRemoteNodes;
     }
 
     @Override
-    public RpcRemoterNode findRemoterNode(int nodeId) {
+    public RpcRemoteNode findRemoteNode(int nodeId) {
         return remoteNodeMap.get(nodeId);
     }
 
     @Override
-    public RpcRemoterAccess findRemoterAccess(int nodeId, long accessId) {
-        RpcRemoterNode node = remoteNodeMap.get(nodeId);
+    public RpcRemoteAccess findRemoteAccess(int nodeId, long accessId) {
+        RpcRemoteNode node = remoteNodeMap.get(nodeId);
         if (node == null) {
             return null;
         }
-        return node.getRemoterAccess(accessId);
+        return node.getRemoteAccess(accessId);
     }
 
     public int getVersion() {
@@ -77,7 +77,7 @@ public class RpcRemoteServiceSet implements RpcRemoterSet, RpcForwardSet {
     }
 
     @Override
-    public RpcRemoterAccess findForwardAccess(RpcServicerPoint servicer) {
+    public RpcRemoteAccess findForwardAccess(RpcServicerPoint servicer) {
         RpcRemoteServiceNode remoteNode = remoteNodeMap.get(servicer.getServerId());
         if (remoteNode == null) {
             return null;
@@ -117,8 +117,8 @@ public class RpcRemoteServiceSet implements RpcRemoterSet, RpcForwardSet {
     private void refreshNodes(RpcRemoteServiceNode rpcNode) {
         RpcRemoteServiceNode currentNode = remoteNodeMap.get(rpcNode.getNodeId());
         if (currentNode == rpcNode) {
-            orderRemoteNodes = ImmutableList.sortedCopyOf(Comparator.comparing(RpcRemoterNode::getNodeId),
-                    remoteNodeMap.values().stream().filter(RpcRemoterNode::isActive).collect(Collectors.toList()));
+            orderRemoteNodes = ImmutableList.sortedCopyOf(Comparator.comparing(RpcRemoteNode::getNodeId),
+                    remoteNodeMap.values().stream().filter(RpcRemoteNode::isActive).collect(Collectors.toList()));
             this.updateVersion();
         }
     }

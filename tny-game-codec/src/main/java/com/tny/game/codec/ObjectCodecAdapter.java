@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.codec;
 
 import com.google.common.collect.ImmutableMap;
@@ -50,16 +50,16 @@ public class ObjectCodecAdapter {
         return false;
     }
 
-    public <T> ObjectCodec<T> codec(ObjectMineType<T> mineType) {
+    public <T> ObjectCodec<T> codec(ObjectMimeType<T> mineType) {
         ObjectCodecHolder<T> holder = holder(mineType);
         return mineType.hasMineType() ?
-                holder.loadOrCreateObjectCodec(mineType.getMineType()) :
+                holder.loadObjectCodec(mineType.getMineType()) :
                 holder.getDefaultCodec();
     }
 
     public <T> ObjectCodec<T> codec(Class<?> codecForClass, String mineType) {
         ObjectCodecHolder<T> holder = holder(codecForClass);
-        return holder.loadOrCreateObjectCodec(mineType);
+        return holder.loadObjectCodec(mineType);
     }
 
     public <T> ObjectCodec<T> codec(Class<?> codecForClass) {
@@ -74,7 +74,7 @@ public class ObjectCodecAdapter {
 
     public <T> ObjectCodec<T> codec(Type codecForType, String mineType) {
         ObjectCodecHolder<T> holder = holder(codecForType);
-        return holder.loadOrCreateObjectCodec(mineType);
+        return holder.loadObjectCodec(mineType);
     }
 
     public <T> byte[] encodeToBytes(T value) {
@@ -86,7 +86,7 @@ public class ObjectCodecAdapter {
         }
     }
 
-    public <T> byte[] encodeToBytes(ObjectMineType<T> mineType, T value) {
+    public <T> byte[] encodeToBytes(ObjectMimeType<T> mineType, T value) {
         ObjectCodec<T> codec = codec(mineType);
         try {
             return codec.encode(value);
@@ -113,7 +113,7 @@ public class ObjectCodecAdapter {
         }
     }
 
-    public <T> T decodeByBytes(ObjectMineType<T> mineType, byte[] data) {
+    public <T> T decodeByBytes(ObjectMimeType<T> mineType, byte[] data) {
         ObjectCodec<T> codec = codec(mineType);
         try {
             return codec.decode(data);
@@ -135,7 +135,7 @@ public class ObjectCodecAdapter {
         return as(this.objectCodecHolderMap.computeIfAbsent(type, ObjectCodecHolder::new));
     }
 
-    private <T> ObjectCodecHolder<T> holder(ObjectMineType<T> mineType) {
+    private <T> ObjectCodecHolder<T> holder(ObjectMimeType<T> mineType) {
         return as(this.objectCodecHolderMap.computeIfAbsent(mineType.getType(), ObjectCodecHolder::new));
     }
 
@@ -162,7 +162,7 @@ public class ObjectCodecAdapter {
 
         public ObjectCodecHolder(Type type) {
             this.type = type;
-            this.defaultFormat = loadTypeFormat(type);
+            this.defaultFormat = loadMimeType(type);
             if (this.defaultFormat != null) {
                 ObjectCodec<T> codec = createObjectCodec(this.defaultFormat);
                 this.defaultCodec = codec;
@@ -194,11 +194,11 @@ public class ObjectCodecAdapter {
             return this.defaultFormat;
         }
 
-        public ObjectCodec<T> loadOrCreateObjectCodec(String format) {
+        public ObjectCodec<T> loadObjectCodec(String format) {
             return this.objectCodecs.computeIfAbsent(format, t -> createObjectCodec(format));
         }
 
-        private String loadTypeFormat(Type type) {
+        private String loadMimeType(Type type) {
             Class<?> clazz = null;
             if (type instanceof Class) {
                 clazz = as(type);

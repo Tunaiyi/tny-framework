@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.rpc;
 
 import com.google.common.collect.ImmutableMap;
@@ -27,11 +27,11 @@ public class RpcRemoteInstance {
 
     private final RpcRemoteSetting setting;
 
-    private final RpcRemoterSet serviceSet;
+    private final RpcRemoteSet serviceSet;
 
     private Map<Method, RpcRemoteInvoker> invokerMap = ImmutableMap.of();
 
-    public RpcRemoteInstance(Class<?> rpcClass, RpcRemoteSetting setting, RpcRemoterSet serviceSet) {
+    public RpcRemoteInstance(Class<?> rpcClass, RpcRemoteSetting setting, RpcRemoteSet serviceSet) {
         this.rpcClass = rpcClass;
         this.setting = setting;
         this.serviceSet = serviceSet;
@@ -45,7 +45,7 @@ public class RpcRemoteInstance {
         return setting;
     }
 
-    public RpcRemoterSet getServiceSet() {
+    public RpcRemoteSet getServiceSet() {
         return serviceSet;
     }
 

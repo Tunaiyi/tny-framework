@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.endpoint;
 
 import com.google.common.collect.ImmutableList;
@@ -78,7 +78,7 @@ public class EndpointService {
      * @param protocol     协议
      */
     public void pushByUid(MessagerType messagerType, Object uid, Protocol protocol, RpcResult<?> message) {
-        this.pushByUid(messagerType, uid, protocol, message.getResultCode(), message.getBody());
+        this.pushByUid(messagerType, uid, protocol, message.resultCode(), message.getBody());
     }
 
     /**
@@ -111,7 +111,7 @@ public class EndpointService {
      * @param uid          用户ID
      */
     public void pushByUid(MessagerType messagerType, Object uid, RpcResult<?> message) {
-        this.pushByUid(messagerType, uid, Protocols.PUSH, message.getResultCode(), message.getBody());
+        this.pushByUid(messagerType, uid, Protocols.PUSH, message.resultCode(), message.getBody());
     }
 
     /**
@@ -145,7 +145,7 @@ public class EndpointService {
      * @param protocol 协议
      */
     public void push2User(Messager user, Protocol protocol, RpcResult<?> message) {
-        this.push2User(user, protocol, message.getResultCode(), message.getBody());
+        this.push2User(user, protocol, message.resultCode(), message.getBody());
     }
 
     /**
@@ -175,7 +175,7 @@ public class EndpointService {
      * @param user 可标识用户的对象
      */
     public void push2User(Messager user, RpcResult<?> message) {
-        this.push2User(user, Protocols.PUSH, message.getResultCode(), message.getBody());
+        this.push2User(user, Protocols.PUSH, message.resultCode(), message.getBody());
     }
 
     /**
@@ -208,7 +208,7 @@ public class EndpointService {
      * @param protocol 协议
      */
     public void push2Users(Stream<? extends Messager> users, Protocol protocol, RpcResult<?> message) {
-        this.push2Users(users, protocol, message.getResultCode(), message.getBody());
+        this.push2Users(users, protocol, message.resultCode(), message.getBody());
     }
 
     /**
@@ -238,7 +238,7 @@ public class EndpointService {
      * @param users 用户流
      */
     public void push2Users(Stream<? extends Messager> users, RpcResult<?> message) {
-        this.push2Users(users, Protocols.PUSH, message.getResultCode(), message.getBody());
+        this.push2Users(users, Protocols.PUSH, message.resultCode(), message.getBody());
     }
 
     /**
@@ -272,7 +272,7 @@ public class EndpointService {
      * @param protocol     协议
      */
     public void push2Online(MessagerType messagerType, Protocol protocol, RpcResult<?> message) {
-        this.push2Online(messagerType, protocol, message.getResultCode(), message.getBody());
+        this.push2Online(messagerType, protocol, message.resultCode(), message.getBody());
     }
 
     /**
@@ -302,7 +302,7 @@ public class EndpointService {
      * @param messagerType 用户类型
      */
     public void push2Online(MessagerType messagerType, RpcResult<?> message) {
-        this.push2Online(messagerType, Protocols.PUSH, message.getResultCode(), message.getBody());
+        this.push2Online(messagerType, Protocols.PUSH, message.resultCode(), message.getBody());
     }
 
     /**

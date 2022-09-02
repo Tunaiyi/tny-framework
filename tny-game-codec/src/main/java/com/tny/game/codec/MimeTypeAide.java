@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.codec;
 
 import com.tny.game.codec.annotation.*;
@@ -51,12 +51,12 @@ public interface MimeTypeAide {
         return StringUtils.isBlank(mimeType) ? defaultType : mimeType;
     }
 
-    static String getMimeType(Codable codecable) {
-        if (StringUtils.isNotBlank(codecable.mimeType())) {
-            return codecable.mimeType();
+    static String getMimeType(Codable codable) {
+        if (StringUtils.isNotBlank(codable.mimeType())) {
+            return codable.mimeType();
         }
-        if (StringUtils.isNotBlank(codecable.value())) {
-            return codecable.value();
+        if (StringUtils.isNotBlank(codable.value())) {
+            return codable.value();
         }
         return MimeTypeAide.NONE;
     }

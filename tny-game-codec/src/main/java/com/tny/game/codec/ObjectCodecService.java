@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.codec;
 
 import org.springframework.util.MimeType;
@@ -40,7 +40,7 @@ public class ObjectCodecService {
         return objectCodecMatcher.codec(type, mineType);
     }
 
-    public <T> ObjectCodec<T> codec(ObjectMineType<T> mineType) {
+    public <T> ObjectCodec<T> codec(ObjectMimeType<T> mineType) {
         return objectCodecMatcher.codec(mineType);
     }
 
@@ -56,7 +56,7 @@ public class ObjectCodecService {
         return objectCodecMatcher.encodeToBytes(value);
     }
 
-    public <T> byte[] encodeToBytes(ObjectMineType<T> mineType, T value) {
+    public <T> byte[] encodeToBytes(ObjectMimeType<T> mineType, T value) {
         return objectCodecMatcher.encodeToBytes(mineType, value);
     }
 
@@ -68,7 +68,7 @@ public class ObjectCodecService {
         return objectCodecMatcher.decodeByBytes(type, data);
     }
 
-    public <T> T decodeByBytes(ObjectMineType<T> mineType, byte[] data) {
+    public <T> T decodeByBytes(ObjectMimeType<T> mineType, byte[] data) {
         return objectCodecMatcher.decodeByBytes(mineType, data);
     }
 

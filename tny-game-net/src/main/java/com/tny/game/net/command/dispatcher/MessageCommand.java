@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.command.dispatcher;
 
 import com.google.common.base.MoreObjects;
@@ -195,7 +195,7 @@ public abstract class MessageCommand implements Command {
             voidable = promise.isVoidable();
             if (result instanceof RpcResult) {
                 RpcResult<?> commandResult = as(result);
-                code = commandResult.getResultCode();
+                code = commandResult.resultCode();
                 body = commandResult.getBody();
             } else if (result instanceof ResultCode) {
                 code = (ResultCode)result;
@@ -207,49 +207,25 @@ public abstract class MessageCommand implements Command {
         } else {
             Throwable cause = promise.getCause();
             RpcResult<?> commandResult = exceptionResult(promise.getCause());
-            code = commandResult.getResultCode();
+            code = commandResult.resultCode();
             body = commandResult.getBody();
             this.invokeDone(cause);
         }
-        MessageContext context = null;
-        RpcForwardHeader messageForwardHeader = message.getHeader(MessageHeaderConstants.RPC_FORWARD_HEADER);
-        RpcOriginalMessageIdHeader messageIdHeader = message.getHeader(MessageHeaderConstants.RPC_ORIGINAL_MESSAGE_ID);
         switch (this.message.getMode()) {
             case PUSH:
                 if (body != null) {
-                    context = MessageContexts.push(head, code, body)
-                            .withHeader(createBackForwardHeader(messageForwardHeader));
+                    MessageSendAide.push(tunnel, message, code, body);
                 }
                 break;
             case REQUEST:
-                if (!relay || !voidable) { // 如果转发并且返回值为 void, 表名由relay进行返回
-                    long toMessage = this.message.getId();
-                    if (messageIdHeader != null) {
-                        toMessage = messageIdHeader.getMessageId();
-                    }
-                    context = MessageContexts.respond(this.message, code, body, toMessage)
-                            .withHeader(createBackForwardHeader(messageForwardHeader));
+                if (!relay || !voidable) { // 如果转发并且返回值为 void, 表明由relay进行返回
+                    MessageSendAide.response(tunnel, message, code, body);
                 }
                 break;
-        }
-        if (context != null) {
-            TunnelAide.responseMessage(this.tunnel, code, context);
         }
         if (relay && code.isSuccess()) {
             this.relayTunnel.relay(message, false);
         }
-    }
-
-    private RpcForwardHeader createBackForwardHeader(RpcForwardHeader messageForwardHeader) {
-        if (messageForwardHeader != null) {
-            return RpcForwardHeaderBuilder.newBuilder()
-                    .setFrom(messageForwardHeader.getTo())
-                    .setSender(messageForwardHeader.getReceiver())
-                    .setTo(messageForwardHeader.getFrom())
-                    .setReceiver(messageForwardHeader.getSender())
-                    .build();
-        }
-        return null;
     }
 
     private void fireExecuteStart() {

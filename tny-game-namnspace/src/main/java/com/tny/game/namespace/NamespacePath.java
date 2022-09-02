@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.namespace;
 
 import org.apache.commons.lang3.StringUtils;
@@ -40,18 +40,9 @@ public class NamespacePath {
 
     public static NamespacePath path(NamespacePath parent, String node) {
         if (parent == null) {
-            if (StringUtils.isBlank(node)) {
-                return ROOT;
-            } else {
-                return new NamespacePath(null, node);
-            }
-        } else {
-            if (StringUtils.isBlank(node)) {
-                return parent;
-            } else {
-                return new NamespacePath(parent, node);
-            }
+            return StringUtils.isBlank(node) ? ROOT : new NamespacePath(null, node);
         }
+        return StringUtils.isBlank(node) ? parent : new NamespacePath(parent, node);
     }
 
     private NamespacePath() {
@@ -61,15 +52,9 @@ public class NamespacePath {
     }
 
     private NamespacePath(NamespacePath parent, String node) {
-        if (parent == null) {
-            this.pathname = NamespacePathNames.dirPath(node);
-            this.node = node;
-            this.parent = null;
-        } else {
-            this.pathname = NamespacePathNames.dirPath(parent.getPathname(), node);
-            this.node = node;
-            this.parent = parent;
-        }
+        this.parent = parent;
+        this.node = node;
+        this.pathname = parent == null ? NamespacePathNames.dirPath(node) : NamespacePathNames.dirPath(parent.getPathname(), node);
     }
 
     /**

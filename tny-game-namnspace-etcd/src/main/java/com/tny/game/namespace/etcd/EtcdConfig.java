@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.namespace.etcd;
 
 import java.util.*;
@@ -20,13 +20,7 @@ import java.util.*;
  **/
 public class EtcdConfig {
 
-    private long leaseTtl = 5;
-
-    private long leaseId = -1;
-
     private String charset = "UTF-8";
-
-    private boolean leaseEnable = false;
 
     private List<String> endpoints;
 
@@ -61,18 +55,6 @@ public class EtcdConfig {
     private Map<String, String> headers = new HashMap<>();
 
     private Map<String, String> authHeaders = new HashMap<>();
-
-    public long getLeaseTtl() {
-        return leaseTtl;
-    }
-
-    public long getLeaseId() {
-        return leaseId;
-    }
-
-    public boolean isLeaseEnable() {
-        return leaseEnable;
-    }
 
     public List<String> getEndpoints() {
         return endpoints;
@@ -148,21 +130,6 @@ public class EtcdConfig {
 
     public EtcdConfig setCharset(String charset) {
         this.charset = charset;
-        return this;
-    }
-
-    public EtcdConfig setLeaseTtl(long leaseTtl) {
-        this.leaseTtl = leaseTtl;
-        return this;
-    }
-
-    public EtcdConfig setLeaseId(long leaseId) {
-        this.leaseId = leaseId;
-        return this;
-    }
-
-    public EtcdConfig setLeaseEnable(boolean leaseEnable) {
-        this.leaseEnable = leaseEnable;
         return this;
     }
 

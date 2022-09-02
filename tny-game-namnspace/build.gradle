@@ -2,6 +2,8 @@ dependencies {
 
     api project(":tny-game-common-lang")
     api project(":tny-game-codec")
-    api 'net.openhft:zero-allocation-hashing:0.15'
+    api 'commons-codec:commons-codec:1.15'
+    api 'cn.hutool:hutool-core:5.8.5'
+    api 'net.openhft:zero-allocation-hashing:0.16'
 }
 
