@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.rpc;
 
 import java.util.List;
@@ -21,13 +21,13 @@ import java.util.List;
 public class FirstRpcRouter implements RpcRouter {
 
     @Override
-    public RpcRemoterAccess route(RpcRemoterSet servicer, RpcRemoteMethod invoker, RpcRemoteInvokeParams invokeParams) {
-        List<? extends RpcRemoterNode> nodes = servicer.getOrderRemoterNodes();
+    public RpcRemoteAccess route(RpcRemoteSet servicer, RpcRemoteMethod invoker, RpcRemoteInvokeParams invokeParams) {
+        List<? extends RpcRemoteNode> nodes = servicer.getOrderRemoteNodes();
         if (nodes.isEmpty()) {
             return null;
         }
-        RpcRemoterNode node = nodes.get(0);
-        List<? extends RpcRemoterAccess> accessPoints = node.getOrderRemoterAccesses();
+        RpcRemoteNode node = nodes.get(0);
+        List<? extends RpcRemoteAccess> accessPoints = node.getOrderRemoteAccesses();
         if (accessPoints.isEmpty()) {
             return null;
         }

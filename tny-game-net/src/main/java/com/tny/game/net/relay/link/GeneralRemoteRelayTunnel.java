@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.relay.link;
 
 import com.google.common.collect.ImmutableMap;
@@ -85,7 +85,7 @@ public class GeneralRemoteRelayTunnel<UID> extends ServerTunnel<UID, NetSession<
         } else {
             ResultCode code = NetResultCode.CLUSTER_NETWORK_UNCONNECTED_ERROR;
             LOGGER.warn("# Tunnel ({}) 服务器主动关闭连接, 不支持 {} 集群", this, service);
-            TunnelAide.responseMessage(this, code, MessageContexts.push(Protocols.PUSH, code));
+            MessageSendAide.push(this, message, code, null);
             if (promise != null) {
                 promise.completeExceptionally(new NetGeneralException(code));
             }

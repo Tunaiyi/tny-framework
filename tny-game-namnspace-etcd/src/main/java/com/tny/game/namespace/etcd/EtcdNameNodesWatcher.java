@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.namespace.etcd;
 
 import com.tny.game.codec.*;
@@ -60,7 +60,7 @@ public class EtcdNameNodesWatcher<T> extends EtcdObject implements NameNodesWatc
 
     private final Watch watch;
 
-    private final ObjectMineType<T> valueType;
+    private final ObjectMimeType<T> valueType;
 
     private final EventFirer<WatcherListener, NameNodesWatcher<T>> watcherEvent = EventFirers.firer(WatcherListener.class);
 
@@ -77,12 +77,12 @@ public class EtcdNameNodesWatcher<T> extends EtcdObject implements NameNodesWatc
     private volatile int status = UNWATCH;
 
     public EtcdNameNodesWatcher(String watchPath, boolean match, KV kv, Watch watch,
-            ObjectMineType<T> valueType, ObjectCodecAdapter objectCodecAdapter, Charset charset) {
+            ObjectMimeType<T> valueType, ObjectCodecAdapter objectCodecAdapter, Charset charset) {
         this(watchPath, null, match, kv, watch, valueType, objectCodecAdapter, charset);
     }
 
     public EtcdNameNodesWatcher(String watchPath, String endPath, boolean match, KV kv, Watch watch,
-            ObjectMineType<T> valueType, ObjectCodecAdapter objectCodecAdapter, Charset charset) {
+            ObjectMimeType<T> valueType, ObjectCodecAdapter objectCodecAdapter, Charset charset) {
         super(objectCodecAdapter, charset);
         this.watchPath = watchPath;
         this.endPath = endPath;
@@ -111,20 +111,19 @@ public class EtcdNameNodesWatcher<T> extends EtcdObject implements NameNodesWatc
     @Override
     public CompletableFuture<NameNodesWatcher<T>> watch() {
         if (status != UNWATCH) {
-            return CompletableFuture.failedFuture(new NameNodeWatchException("watch failed when status is " + this.status));
+            return CompletableFuture.failedFuture(new NamespaceWatchException("watch failed when status is " + this.status));
         }
         synchronized (this) {
             if (status != UNWATCH) {
-                return CompletableFuture.failedFuture(new NameNodeWatchException("watch failed when status is " + this.status));
+                return CompletableFuture.failedFuture(new NamespaceWatchException("watch failed when status is " + this.status));
             }
             status = TRY_WATCH;
             try {
-                GetOption option = GetOption.DEFAULT;
-                if (match) {
-                    option = GetOption.newBuilder().isPrefix(true).build();
-                }
+                GetOption option;
                 if (endPath != null) {
                     option = GetOption.newBuilder().withRange(endKey).build();
+                } else {
+                    option = GetOption.newBuilder().isPrefix(match).build();
                 }
                 CompletableFuture<NameNodesWatcher<T>> future = new CompletableFuture<>();
                 kv.get(key, option)
@@ -133,7 +132,7 @@ public class EtcdNameNodesWatcher<T> extends EtcdObject implements NameNodesWatc
                                 doLoadFailed(cause);
                                 future.completeExceptionally(cause);
                             } else {
-                                doWatch(key, response, future);
+                                doWatch(response, future);
                             }
                         });
                 return future;
@@ -209,13 +208,13 @@ public class EtcdNameNodesWatcher<T> extends EtcdObject implements NameNodesWatc
         if (this.status == TRY_WATCH) {
             this.status = UNWATCH;
         }
-        throw new NameNodeWatchException(format("load {} exception", watchPath, status), cause);
+        throw new NamespaceWatchException(format("load {} exception", watchPath, status), cause);
     }
 
-    private synchronized void doWatch(ByteSequence key, GetResponse response, CompletableFuture<NameNodesWatcher<T>> future) {
+    private synchronized void doWatch(GetResponse response, CompletableFuture<NameNodesWatcher<T>> future) {
         try {
             if (status != TRY_WATCH) {
-                throw new NameNodeWatchException(format("watch {} failed when status is {}", watchPath, status));
+                throw new NamespaceWatchException(format("watch {} failed when status is {}", watchPath, status));
             }
             long watchRevision = response.getHeader().getRevision();
             List<NameNode<T>> nodes = as(decodeAllKeyValues(response.getKvs(), valueType));
@@ -229,11 +228,12 @@ public class EtcdNameNodesWatcher<T> extends EtcdObject implements NameNodesWatc
                 optionBuilder.withRange(endKey).isPrefix(false);
             }
             this.watcher = watch.watch(key, optionBuilder.build(), etcdWatchListener);
+
             status = WATCH;
             future.complete(this);
         } catch (Throwable e) {
             status = UNWATCH;
-            var cause = new NameNodeWatchException(format("watch {} exception", watchPath), e);
+            var cause = new NamespaceWatchException(format("watch {} exception", watchPath), e);
             future.completeExceptionally(cause);
             throw cause;
         }

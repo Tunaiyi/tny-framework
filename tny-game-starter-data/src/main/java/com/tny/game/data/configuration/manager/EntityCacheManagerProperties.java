@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.data.configuration.manager;
 
 import com.tny.game.data.cache.*;
@@ -23,18 +23,18 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "tny.data.entity-manager")
 public class EntityCacheManagerProperties {
 
-    private String keyMakerFactory = AnnotationEntityKeyMakerFactory.MAKER_NAME;
+    private String cacheKeyMakerFactory = AnnotationCacheKeyMakerFactory.MAKER_NAME;
 
     private String cacheFactory = LocalObjectCacheFactory.CACHE_NAME;
 
     private String storageFactory = QueueObjectStorageFactory.STORAGE_NAME;
 
-    public String getKeyMakerFactory() {
-        return keyMakerFactory;
+    public String getCacheKeyMakerFactory() {
+        return cacheKeyMakerFactory;
     }
 
-    public EntityCacheManagerProperties setKeyMakerFactory(String keyMakerFactory) {
-        this.keyMakerFactory = keyMakerFactory;
+    public EntityCacheManagerProperties setCacheKeyMakerFactory(String cacheKeyMakerFactory) {
+        this.cacheKeyMakerFactory = cacheKeyMakerFactory;
         return this;
     }
 

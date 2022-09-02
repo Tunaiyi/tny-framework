@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.namespace.etcd;
 
 import com.tny.game.codec.*;
@@ -27,12 +27,19 @@ public abstract class EtcdHashing<T> {
 
     protected final String path;
 
-    protected final ObjectMineType<T> mineType;
+    protected final long maxSlots;
 
-    public EtcdHashing(String path, ObjectMineType<T> mineType, NamespaceExplorer explorer) {
+    protected final ObjectMimeType<T> mineType;
+
+    public EtcdHashing(String path, long maxSlots, ObjectMimeType<T> mineType, NamespaceExplorer explorer) {
         this.explorer = explorer;
+        this.maxSlots = maxSlots;
         this.path = path;
         this.mineType = mineType;
+    }
+
+    public String getPath() {
+        return path;
     }
 
     protected String slotName(long hashCode) {
@@ -43,9 +50,11 @@ public abstract class EtcdHashing<T> {
         return NumberFormatAide.alignDigits(hashCode, max);
     }
 
-    protected abstract long getMaxSlots();
+    protected long getMaxSlots() {
+        return maxSlots;
+    }
 
-    public ObjectMineType<T> getMineType() {
+    public ObjectMimeType<T> getMineType() {
         return mineType;
     }
 

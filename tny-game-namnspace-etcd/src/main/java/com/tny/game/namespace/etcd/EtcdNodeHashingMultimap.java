@@ -4,16 +4,16 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.namespace.etcd;
 
 import com.google.common.collect.*;
 import com.tny.game.codec.*;
 import com.tny.game.namespace.*;
-import com.tny.game.namespace.consistenthash.*;
+import com.tny.game.namespace.sharding.*;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -29,15 +29,20 @@ import java.util.stream.Collectors;
  **/
 public class EtcdNodeHashingMultimap<N extends ShardingNode> extends EtcdNodeHashing<N> {
 
+    private static final Comparator<Partition<?>> partitionComparator = Comparator.comparing((Partition<?> o) -> o.getNodeKey())
+            .thenComparingLong(Partition::getSlot);
+
     // 节点
-    private final Multimap<Long, Partition<N>> partitionMap = Multimaps.newSetMultimap(new ConcurrentHashMap<>(), CopyOnWriteArraySet::new);
+    private final Multimap<Long, Partition<N>> slotPartitionsMap = Multimaps.newSetMultimap(new ConcurrentHashMap<>(),
+            () -> new ConcurrentSkipListSet<>(partitionComparator));
+
+    private final Map<String, Partition<N>> partitionMap = new Hashtable<>();
 
     private final ReadWriteLock mutex = new ReentrantReadWriteLock(true);
 
     private volatile List<ShardingRange<N>> ranges;
 
-    protected EtcdNodeHashingMultimap(String rootPath, HashingOptions<N> option, NamespaceExplorer explorer,
-            ObjectCodecAdapter objectCodecAdapter) {
+    protected EtcdNodeHashingMultimap(String rootPath, HashingOptions<N> option, NamespaceExplorer explorer, ObjectCodecAdapter objectCodecAdapter) {
         super(rootPath, option, explorer, objectCodecAdapter, false);
     }
 
@@ -46,8 +51,11 @@ public class EtcdNodeHashingMultimap<N extends ShardingNode> extends EtcdNodeHas
         mutex.writeLock().lock();
         try {
             var addList = partitions.stream()
-                    .filter(partition -> partitionMap.put(partition.getSlotIndex(), partition))
+                    .filter(this::doAddPartition)
                     .collect(Collectors.toList());
+            if (addList.isEmpty()) {
+                return;
+            }
             this.resetRange();
             this.fireChange(this, addList);
         } finally {
@@ -59,7 +67,9 @@ public class EtcdNodeHashingMultimap<N extends ShardingNode> extends EtcdNodeHas
     protected void putPartition(Partition<N> partition) {
         mutex.writeLock().lock();
         try {
-            partitionMap.put(partition.getSlotIndex(), partition);
+            if (!doReplacePartition(partition)) {
+                return;
+            }
             this.resetRange();
             this.fireChange(this, Collections.singletonList(partition));
         } finally {
@@ -71,13 +81,39 @@ public class EtcdNodeHashingMultimap<N extends ShardingNode> extends EtcdNodeHas
     protected void removePartition(Partition<N> partition) {
         mutex.writeLock().lock();
         try {
-            if (partitionMap.remove(partition.getSlotIndex(), partition)) {
-                this.fireRemove(this, Collections.singletonList(partition));
-                this.resetRange();
+            var exist = doRemovePartition(partition);
+            if (exist == null) {
+                return;
             }
+            this.resetRange();
+            this.fireRemove(this, Collections.singletonList(partition));
         } finally {
             mutex.writeLock().unlock();
         }
+    }
+
+    private boolean doAddPartition(Partition<N> partition) {
+        if (partitionMap.putIfAbsent(partition.getKey(), partition) != null) {
+            return false;
+        }
+        return slotPartitionsMap.put(partition.getSlot(), partition);
+    }
+
+    private boolean doReplacePartition(Partition<N> partition) {
+        var exist = partitionMap.put(partition.getKey(), partition);
+        if (exist != null) {
+            slotPartitionsMap.remove(partition.getSlot(), partition);
+        }
+        return slotPartitionsMap.put(partition.getSlot(), partition);
+    }
+
+    private Partition<N> doRemovePartition(Partition<N> partition) {
+        var exist = partitionMap.remove(partition.getKey());
+        if (exist == null) {
+            return null;
+        }
+        slotPartitionsMap.remove(exist.getSlot(), exist);
+        return exist;
     }
 
     @Override
@@ -88,7 +124,7 @@ public class EtcdNodeHashingMultimap<N extends ShardingNode> extends EtcdNodeHas
     public boolean contains(Partition<N> partition) {
         mutex.readLock().lock();
         try {
-            return partitionMap.containsValue(partition);
+            return slotPartitionsMap.containsValue(partition);
         } finally {
             mutex.readLock().unlock();
         }
@@ -98,7 +134,7 @@ public class EtcdNodeHashingMultimap<N extends ShardingNode> extends EtcdNodeHas
     public List<Partition<N>> findPartitions(String nodeId) {
         mutex.readLock().lock();
         try {
-            return partitionMap.values()
+            return slotPartitionsMap.values()
                     .stream()
                     .filter(p -> Objects.equals(nodeId, p.getNodeKey()))
                     .collect(Collectors.toList());
@@ -111,10 +147,10 @@ public class EtcdNodeHashingMultimap<N extends ShardingNode> extends EtcdNodeHas
     public List<ShardingRange<N>> findRanges(String nodeId) {
         mutex.readLock().lock();
         try {
-            return partitionMap.values()
+            return slotPartitionsMap.values()
                     .stream()
                     .filter(p -> Objects.equals(nodeId, p.getNodeKey()))
-                    .map(p -> new ShardingRange<>(p.getSlotIndex(), p.getSlotIndex(), p, getMaxSlots()))
+                    .map(p -> new ShardingRange<>(p.getSlot(), p, getMaxSlots()))
                     .collect(Collectors.toList());
         } finally {
             mutex.readLock().unlock();
@@ -128,13 +164,21 @@ public class EtcdNodeHashingMultimap<N extends ShardingNode> extends EtcdNodeHas
             if (this.ranges != null) {
                 return ranges;
             }
-            this.ranges = partitionMap.values()
+        } finally {
+            mutex.readLock().unlock();
+        }
+        mutex.writeLock().lock();
+        try {
+            if (this.ranges != null) {
+                return ranges;
+            }
+            this.ranges = slotPartitionsMap.values()
                     .stream()
-                    .map(p -> new ShardingRange<>(p.getSlotIndex(), p.getSlotIndex(), p, getMaxSlots()))
+                    .map(p -> new ShardingRange<>(p.getSlot(), p.getSlot(), p, getMaxSlots()))
                     .collect(Collectors.toList());
             return this.ranges;
         } finally {
-            mutex.readLock().unlock();
+            mutex.writeLock().unlock();
         }
     }
 
@@ -156,7 +200,7 @@ public class EtcdNodeHashingMultimap<N extends ShardingNode> extends EtcdNodeHas
         mutex.readLock().lock();
         try {
             var index = slot % getMaxSlots();
-            return partitionMap.get(index).stream().findFirst();
+            return slotPartitionsMap.get(index).stream().findFirst();
         } finally {
             mutex.readLock().unlock();
         }
@@ -166,7 +210,7 @@ public class EtcdNodeHashingMultimap<N extends ShardingNode> extends EtcdNodeHas
     public List<Partition<N>> getAllPartitions() {
         mutex.readLock().lock();
         try {
-            return new ArrayList<>(partitionMap.values());
+            return new ArrayList<>(slotPartitionsMap.values());
         } finally {
             mutex.readLock().unlock();
         }
@@ -186,25 +230,20 @@ public class EtcdNodeHashingMultimap<N extends ShardingNode> extends EtcdNodeHas
     public List<Partition<N>> locate(String key, int count) {
         mutex.readLock().lock();
         try {
-            mutex.readLock().lock();
-            try {
-                return partitionMap.get(keyHash(key)).stream().limit(count).collect(Collectors.toList());
-            } finally {
-                mutex.readLock().unlock();
-            }
+            return slotPartitionsMap.get(keyHash(key)).stream().limit(count).collect(Collectors.toList());
         } finally {
             mutex.readLock().unlock();
         }
     }
 
     @Override
-    protected String partitionedNodePath(String slotPath, PartitionedNode<N> partition) {
+    protected String partitionPath(String slotPath, Partition<N> partition) {
         return NamespacePathNames.nodePath(slotPath, partition.getKey());
     }
 
     @Override
     public int partitionSize() {
-        return partitionMap.size();
+        return slotPartitionsMap.size();
     }
 
 }

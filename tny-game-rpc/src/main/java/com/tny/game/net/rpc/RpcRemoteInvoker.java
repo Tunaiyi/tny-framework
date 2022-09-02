@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.rpc;
 
 import com.tny.game.common.exception.*;
@@ -47,7 +47,7 @@ public class RpcRemoteInvoker {
     /**
      * 远程服务
      */
-    private final RpcRemoterSet servicer;
+    private final RpcRemoteSet servicer;
 
     /**
      * 路由
@@ -68,7 +68,7 @@ public class RpcRemoteInvoker {
 
     public <T> Object invoke(Object... params) {
         RpcRemoteInvokeParams invokeParams = method.getParams(params);
-        RpcRemoterAccess accessPoint = router.route(servicer, method, invokeParams);
+        RpcRemoteAccess accessPoint = router.route(servicer, method, invokeParams);
         if (accessPoint == null) {
             throw new RpcInvokeException(NetResultCode.RPC_SERVICE_NOT_AVAILABLE, "调用 {} 异常, 未找到有效的远程服务节点", this.method);
         }
@@ -119,7 +119,7 @@ public class RpcRemoteInvoker {
         return rpcFuture;
     }
 
-    private Object request(RpcRemoterAccess access, long timeout, RpcRemoteInvokeParams invokeParams) {
+    private Object request(RpcRemoteAccess access, long timeout, RpcRemoteInvokeParams invokeParams) {
         RequestContext requestContext = MessageContexts.request(protocol(), invokeParams.getParams());
         requestContext.willRespondAwaiter(timeout)
                 .withHeaders(invokeParams.getAllHeaders());

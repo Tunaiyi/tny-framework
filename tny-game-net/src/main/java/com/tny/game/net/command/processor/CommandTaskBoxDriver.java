@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.command.processor;
 
 import com.tny.game.common.runtime.*;
@@ -124,7 +124,7 @@ public class CommandTaskBoxDriver implements Runnable {
                 if (this.taskBox.isClosed()) {
                     return;
                 }
-                CommandTask task = this.taskBox.poll();
+                CommandTask task = this.taskBox.pollCommandTask();
                 if (task != null) {
                     this.currentCommand = task.createCommand();
                     if (this.currentCommand != null) {
@@ -144,7 +144,23 @@ public class CommandTaskBoxDriver implements Runnable {
                     LOG_NET.error("execute command exception", e);
                 }
             } finally {
+                executeBox();
                 tracer.done();
+            }
+        }
+    }
+
+    private void executeBox() {
+        Runnable result;
+        while (true) {
+            result = this.taskBox.pollExecuteTask();
+            if (result == null) {
+                return;
+            }
+            try {
+                result.run();
+            } catch (Throwable e) {
+                LOG_NET.error("execute runnable exception", e);
             }
         }
     }
@@ -166,13 +182,13 @@ public class CommandTaskBoxDriver implements Runnable {
         int currentState = this.executeStatus.get();
         if (currentState != SUBMIT_VALUE && currentState != PROCESSING_VALUE
                 && isCanRun() && this.executeStatus.compareAndSet(currentState, SUBMIT_VALUE)) {
-            this.executor.execute(this);
+            this.executor.handle(this);
         }
     }
 
     private void trySubmitWhen(CommandTaskBoxStatus status) {
         if (isCanRun() && this.executeStatus.get() == status.getId() && this.executeStatus.compareAndSet(status.getId(), SUBMIT.getId())) {
-            this.executor.execute(this);
+            this.executor.handle(this);
         }
     }
 

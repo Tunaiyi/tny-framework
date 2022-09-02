@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.data.storage;
 
 import com.tny.game.common.concurrent.lock.locker.*;
@@ -34,7 +34,7 @@ public class QueueObjectStorage<K extends Comparable<?>, O> implements AsyncObje
     /**
      * 对象访问器
      */
-    private final StorageAccessor<K, O> accessor;
+    private final AsyncStorageAccessor<K, O> accessor;
 
     /**
      * 提交的实体
@@ -56,7 +56,7 @@ public class QueueObjectStorage<K extends Comparable<?>, O> implements AsyncObje
      */
     private final ObjectLocker<Object> locker;
 
-    public QueueObjectStorage(Class<O> entityClass, StorageAccessor<K, O> accessor, ObjectLocker<Object> locker) {
+    public QueueObjectStorage(Class<O> entityClass, AsyncStorageAccessor<K, O> accessor, ObjectLocker<Object> locker) {
         this.accessor = accessor;
         this.locker = locker;
         this.entityClass = entityClass;

@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.command.dispatcher;
 
 import com.google.common.collect.ImmutableList;
@@ -16,7 +16,6 @@ import com.tny.game.common.reflect.javassist.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.expr.*;
 import com.tny.game.net.annotation.*;
-import com.tny.game.net.base.*;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
@@ -57,9 +56,9 @@ public final class ClassControllerHolder extends ControllerHolder {
         ClassAccessor access = JavassistAccessors.getGClass(executor.getClass(), FILTER);
         for (MethodAccessor method : access.getGMethodList()) {
             Method javaMethod = method.getJavaMethod();
-            if (javaMethod.getReturnType() == RpcReturn.class) {
-                continue;
-            }
+            //            if (javaMethod.getReturnType() == RpcReturn.class) {
+            //                continue;
+            //            }
             if (javaMethod.isBridge()) {
                 continue;
             }

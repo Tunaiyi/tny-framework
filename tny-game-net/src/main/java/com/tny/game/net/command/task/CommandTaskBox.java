@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.command.task;
 
 import com.tny.game.common.concurrent.utils.*;
@@ -46,13 +46,21 @@ public class CommandTaskBox implements Executor {
     /**
      * 命令任务队列
      */
-    private volatile Queue<CommandTask> taskQueue = new ConcurrentLinkedQueue<>();
+    private volatile Queue<CommandTask> commandTaskQueue = new ConcurrentLinkedQueue<>();
+
+    /**
+     * 执行任务
+     */
+    private volatile Queue<Runnable> executeTaskQueue = new ConcurrentLinkedQueue<>();
 
     /**
      * 是否关闭
      */
     private volatile boolean closed = false;
 
+    /**
+     * 附件
+     */
     private Object attachment;
 
     public CommandTaskBox(CommandTaskBoxProcessor executor) {
@@ -60,8 +68,8 @@ public class CommandTaskBox implements Executor {
     }
 
     @Override
-    public void execute(@Nonnull Runnable command) {
-        this.addTask(command);
+    public void execute(@Nonnull Runnable runnable) {
+        StampedLockAide.supplyInOptimisticReadLock(this.queueLock, () -> this.doAddRunnable(runnable));
     }
 
     public boolean addTask(CommandTask task) {
@@ -92,17 +100,18 @@ public class CommandTaskBox implements Executor {
                     if (this.closed) {
                         return false;
                     }
-                    Optional<Queue<CommandTask>> optional = box.close();
+                    var optional = box.close();
                     if (optional.isEmpty()) {
                         return false;
                     }
-                    Queue<CommandTask> queue = optional.get();
-                    this.taskQueue.addAll(queue);
+                    var result = optional.get();
+                    this.commandTaskQueue.addAll(result.getCommandTaskQueue());
+                    this.executeTaskQueue.addAll(result.getExecuteTaskQueue());
                     return true;
                 });
     }
 
-    private Optional<Queue<CommandTask>> close() {
+    private Optional<ClosedResult> close() {
         if (this.closed) {
             return Optional.empty();
         }
@@ -114,22 +123,34 @@ public class CommandTaskBox implements Executor {
                             return Optional.empty();
                         }
                         this.closed = true;
-                        Queue<CommandTask> taskQueue = this.taskQueue;
-                        this.taskQueue = new ConcurrentLinkedQueue<>();
-                        return Optional.ofNullable(taskQueue);
+                        var commandTaskQueue = this.commandTaskQueue;
+                        var executeTaskQueue = this.executeTaskQueue;
+                        this.commandTaskQueue = new ConcurrentLinkedQueue<>();
+                        this.executeTaskQueue = new ConcurrentLinkedQueue<>();
+                        return Optional.of(new ClosedResult(commandTaskQueue, executeTaskQueue));
                     } finally {
                         this.queueLock.unlockWrite(stamp);
                     }
                 });
     }
 
-    public CommandTask poll() {
+    public CommandTask pollCommandTask() {
         return StampedLockAide.supplyInOptimisticReadLock(this.queueLock,
                 () -> {
                     if (this.closed) {
                         return null;
                     }
-                    return this.taskQueue.poll();
+                    return this.commandTaskQueue.poll();
+                });
+    }
+
+    public Runnable pollExecuteTask() {
+        return StampedLockAide.supplyInOptimisticReadLock(this.queueLock,
+                () -> {
+                    if (this.closed) {
+                        return null;
+                    }
+                    return this.executeTaskQueue.poll();
                 });
     }
 
@@ -138,7 +159,7 @@ public class CommandTaskBox implements Executor {
     }
 
     public boolean isEmpty() {
-        return this.taskQueue.isEmpty();
+        return this.commandTaskQueue.isEmpty();
     }
 
     public <T> T getAttachment(CommandTaskBoxProcessor executor) {
@@ -196,9 +217,39 @@ public class CommandTaskBox implements Executor {
         if (this.closed) {
             return false;
         }
-        this.taskQueue.add(task);
+        this.commandTaskQueue.add(task);
         this.executor.submit(this);
         return true;
+    }
+
+    private boolean doAddRunnable(Runnable runnable) {
+        if (this.closed) {
+            return false;
+        }
+        this.executeTaskQueue.add(runnable);
+        this.executor.submit(this);
+        return true;
+    }
+
+    private static class ClosedResult {
+
+        private final Queue<CommandTask> commandTaskQueue;
+
+        private final Queue<Runnable> executeTaskQueue;
+
+        private ClosedResult(Queue<CommandTask> commandTaskQueue, Queue<Runnable> executeTaskQueue) {
+            this.commandTaskQueue = commandTaskQueue;
+            this.executeTaskQueue = executeTaskQueue;
+        }
+
+        private Queue<CommandTask> getCommandTaskQueue() {
+            return commandTaskQueue;
+        }
+
+        private Queue<Runnable> getExecuteTaskQueue() {
+            return executeTaskQueue;
+        }
+
     }
 
 }

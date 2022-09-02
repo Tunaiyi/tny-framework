@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.data.storage;
 
 import com.tny.game.common.concurrent.lock.locker.*;
@@ -16,6 +16,7 @@ import com.tny.game.data.accessor.*;
 import com.tny.game.data.cache.*;
 
 import static com.tny.game.common.utils.ObjectAide.*;
+import static com.tny.game.common.utils.StringAide.*;
 
 /**
  * <p>
@@ -51,11 +52,14 @@ public class QueueObjectStorageFactory extends AbstractCachedFactory<Class<?>, O
     }
 
     @Override
-    public <K extends Comparable<?>, O> ObjectStorage<K, O> createStorage(EntityScheme scheme, EntityKeyMaker<K, O> keyMaker) {
+    public <K extends Comparable<?>, O> ObjectStorage<K, O> createStorage(EntityScheme scheme, CacheKeyMaker<K, O> keyMaker) {
         return loadOrCreate(scheme.getEntityClass(), (key) -> {
             StorageAccessor<K, O> accessor = accessorFactory.createAccessor(scheme, keyMaker);
+            if (!(accessor instanceof AsyncStorageAccessor)) {
+                throw new IllegalArgumentException(format("{} accessor 非 {}", accessor.getClass(), AsyncStorageAccessor.class));
+            }
             AsyncObjectStorage<K, O> storage = new QueueObjectStorage<>(
-                    as(scheme.getEntityClass()), accessor, new HashObjectLocker<>(scheme.concurrencyLevel()));
+                    as(scheme.getEntityClass()), as(accessor), new HashObjectLocker<>(scheme.concurrencyLevel()));
             storeExecutor.register(storage);
             return storage;
         });

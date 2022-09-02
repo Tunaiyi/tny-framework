@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.command.dispatcher;
 
 import com.tny.game.net.endpoint.*;
@@ -29,29 +29,23 @@ import static com.tny.game.common.utils.ObjectAide.*;
  */
 public class RpcHandleContext {
 
-    private static final ThreadLocal<RpcHandleContext> CONTEXT = new ThreadLocal<>();
+    private static final ThreadLocal<RpcHandleContext> LOCAL_CONTEXT = new ThreadLocal<>();
 
     private MessageCommand command;
 
-    private Thread thread;
-
     private RpcHandleContext() {
-    }
-
-    private RpcHandleContext(Thread thread) {
-        this.thread = thread;
     }
 
     /**
      * 获取当前线程正在执行的控制信息 <br>
      *
-     * @return
+     * @return 获取当前线程正在执行的控制信息
      */
     public static RpcHandleContext current() {
-        RpcHandleContext info = CONTEXT.get();
+        RpcHandleContext info = LOCAL_CONTEXT.get();
         if (info == null) {
             info = new RpcHandleContext();
-            CONTEXT.set(info);
+            LOCAL_CONTEXT.set(info);
         }
         return info;
     }
@@ -78,23 +72,19 @@ public class RpcHandleContext {
     }
 
     static void setCurrent(MessageCommand command) {
-        RpcHandleContext info = CONTEXT.get();
+        RpcHandleContext info = LOCAL_CONTEXT.get();
         if (info == null) {
             info = new RpcHandleContext();
-            CONTEXT.set(info);
+            LOCAL_CONTEXT.set(info);
         }
         info.command = command;
     }
 
     static void clean() {
-        RpcHandleContext info = CONTEXT.get();
+        RpcHandleContext info = LOCAL_CONTEXT.get();
         if (info != null) {
             info.command = null;
         }
-    }
-
-    public Thread getThread() {
-        return this.thread;
     }
 
     /**
