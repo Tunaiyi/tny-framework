@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.boot.launcher;
 
 import com.tny.game.common.concurrent.utils.*;
@@ -86,37 +86,37 @@ class ApplicationLifecycleProcessor {
         addAppPrepareStarts(Arrays.asList(prepareStarts));
     }
 
-    public static void addAppPrepareStarts(Collection<? extends AppPrepareStart> prepareStarts) {
-        addLifecycle(AppPrepareStart.class, AppPrepareStart::getPrepareStarter, prepareStarts);
+    public static void addAppPrepareStarts(Collection<? extends AppPrepareStart> prepareStartList) {
+        addLifecycleHandler(AppPrepareStart.class, AppPrepareStart::getPrepareStarter, prepareStartList);
     }
 
     public static void addAppPostStart(AppPostStart... postStarts) {
         addAppPostStart(Arrays.asList(postStarts));
     }
 
-    public static void addAppPostStart(Collection<? extends AppPostStart> postStarts) {
-        addLifecycle(AppPostStart.class, AppPostStart::getPostStarter, postStarts);
+    public static void addAppPostStart(Collection<? extends AppPostStart> postStartList) {
+        addLifecycleHandler(AppPostStart.class, AppPostStart::getPostStarter, postStartList);
     }
 
     public static void addAppClosed(AppClosed... postStarts) {
         addAppClosed(Arrays.asList(postStarts));
     }
 
-    public static void addAppClosed(Collection<? extends AppClosed> appCloseds) {
-        addLifecycle(AppClosed.class, AppClosed::getPostCloser, appCloseds);
+    public static void addAppClosed(Collection<? extends AppClosed> appClosedList) {
+        addLifecycleHandler(AppClosed.class, AppClosed::getPostCloser, appClosedList);
     }
 
-    private static <T extends LifecycleHandler> void addLifecycle(Class<T> lifecycleClass, Function<T, ? extends Lifecycle<?, ?>> lifecycleGetter,
-            Collection<? extends T> lifecycles) {
+    private static <T extends LifecycleHandler> void addLifecycleHandler(
+            Class<T> lifecycleClass, Function<T, ? extends Lifecycle<?, ?>> lifecycleGetter, Collection<? extends T> lifecycles) {
         List<Lifecycle<?, ?>> process = lifecycles.stream()
-                .peek(i -> {
-                    Lifecycle<?, ?> lifecycle = lifecycleGetter.apply(i);
-                    if (!lifecycle.getHandlerClass().isAssignableFrom(i.getClass())) {
-                        throw new IllegalArgumentException(format("{} 不符合 {}", i.getClass(), lifecycle));
+                .map(handle -> {
+                    Lifecycle<?, ?> lifecycle = lifecycleGetter.apply(handle);
+                    if (!lifecycle.getHandlerClass().isAssignableFrom(handle.getClass())) {
+                        throw new IllegalArgumentException(format("{} 不符合 {}", handle.getClass(), lifecycle));
                     }
-                    HANDLER_MAP.computeIfAbsent(lifecycle, l -> new ArrayList<>()).add(i);
+                    HANDLER_MAP.computeIfAbsent(lifecycle, l -> new ArrayList<>()).add(handle);
+                    return lifecycle;
                 })
-                .map(lifecycleGetter)
                 .collect(Collectors.toList());
         LIFECYCLE_MAP.computeIfAbsent(lifecycleClass, k -> new ConcurrentSkipListSet<>())
                 .addAll(process);
@@ -128,10 +128,10 @@ class ApplicationLifecycleProcessor {
         loadHandler(AppClosed.class, AppClosed::getPostCloser, context);
     }
 
-    private static <T extends LifecycleHandler> void loadHandler(Class<T> processorClass, Function<T, ? extends Lifecycle<?, ?>> lifecycleGetter,
-            ApplicationContext context) {
-        Map<String, ? extends T> InitiatorMap = context.getBeansOfType(processorClass);
-        addLifecycle(processorClass, lifecycleGetter, InitiatorMap.values());
+    private static <T extends LifecycleHandler> void loadHandler(
+            Class<T> processorClass, Function<T, ? extends Lifecycle<?, ?>> lifecycleGetter, ApplicationContext context) {
+        Map<String, ? extends T> lifecycleMap = context.getBeansOfType(processorClass);
+        addLifecycleHandler(processorClass, lifecycleGetter, lifecycleMap.values());
     }
 
     private <T extends LifecycleHandler> void process(String methodName, Class<T> processorClass, ProcessorRunner<T> runner, boolean errorContinue)
@@ -141,15 +141,16 @@ class ApplicationLifecycleProcessor {
         // Map<String, ? extends T> InitiatorMap = this.appContext.getBeansOfType(processorClass);
         Set<Lifecycle<?, ?>> lifecycleList = LIFECYCLE_MAP.getOrDefault(processorClass, Collections.emptySet());
         int index = 0;
-        Map<Lifecycle<?, ?>, Set<LifecycleHandler>> cloneMap = HANDLER_MAP.entrySet()
+        Map<Lifecycle<?, ?>, List<LifecycleHandler>> cloneMap = HANDLER_MAP
+                .entrySet()
                 .stream()
-                .collect(Collectors.toMap(Entry::getKey, e -> new HashSet<>(e.getValue())));
+                .collect(Collectors.toMap(Entry::getKey, e -> new ArrayList<>(e.getValue())));
         List<ForkJoinTask<?>> tasks = new ArrayList<>();
         for (Lifecycle<?, ?> lifecycle : lifecycleList) {
             long current = System.currentTimeMillis();
             Lifecycle<?, ?> currentLifecycle = lifecycle.head();
             while (currentLifecycle != null) {
-                Set<T> processors = as(cloneMap.remove(currentLifecycle));
+                List<T> processors = as(cloneMap.remove(currentLifecycle));
                 if (processors != null) {
                     for (T processor : processors) {
                         Method method = processor.getClass().getMethod(methodName);
@@ -173,9 +174,8 @@ class ApplicationLifecycleProcessor {
                             try {
                                 runner.process(processor);
                             } catch (Throwable e) {
-                                if (errorContinue) {
-                                    LOGGER.error("服务生命周期 {} # 处理器 [{}] index {} | -> 异常", name, processor.getClass(), currentIndex, e);
-                                } else {
+                                LOGGER.error("服务生命周期 {} # 处理器 [{}] index {} | -> 异常", name, processor.getClass(), currentIndex, e);
+                                if (!errorContinue) {
                                     throw new LifecycleProcessException(e);
                                 }
                             }

@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.common.lifecycle;
 
 import com.tny.game.common.utils.*;
@@ -27,7 +27,7 @@ public final class LifecyclePriorities {
 
     static {
         for (LifecycleLevel level : LifecycleLevel.values()) {
-            priorities.put(level.getPriority(), level);
+            priorities.put(level.getOrder(), level);
         }
     }
 
@@ -43,12 +43,12 @@ public final class LifecyclePriorities {
     }
 
     public static LifecyclePriority lowest() {
-        return of(0);
+        return of(1);
     }
 
-    public static LifecyclePriority lower(LifecyclePriority priority, int num) {
-        Asserts.checkArgument(num > 0, "num {} must > 0", num);
-        var priorityValue = priority.getPriority() - num;
+    public static LifecyclePriority lower(LifecyclePriority priority, int order) {
+        Asserts.checkArgument(order > 0, "order {} must > 0", order);
+        var priorityValue = priority.getOrder() - order;
         Asserts.checkArgument(priorityValue >= 0, "{} is lowest", priorityValue);
         return of(priorityValue);
     }
@@ -57,11 +57,11 @@ public final class LifecyclePriorities {
         return lower(priority, 1);
     }
 
-    public static LifecyclePriority higher(LifecyclePriority priority, int num) {
-        Asserts.checkArgument(num > 0, "num {} must > 0", num);
-        long priorityValue = (long)priority.getPriority() + num;
-        Asserts.checkArgument(priorityValue < Integer.MAX_VALUE, "num {} must <= {}", priorityValue, Integer.MAX_VALUE);
-        return of((int)priorityValue);
+    public static LifecyclePriority higher(LifecyclePriority priority, int order) {
+        Asserts.checkArgument(order > 0, "order {} must > 0", order);
+        var priorityValue = priority.getOrder() + order;
+        Asserts.checkArgument(priorityValue < Integer.MAX_VALUE, "order {} must <= {}", priorityValue, Integer.MAX_VALUE);
+        return of(priorityValue);
     }
 
     public static LifecyclePriority higher(LifecyclePriority priority) {
@@ -77,7 +77,7 @@ public final class LifecyclePriorities {
         }
 
         @Override
-        public int getPriority() {
+        public int getOrder() {
             return priority;
         }
 
