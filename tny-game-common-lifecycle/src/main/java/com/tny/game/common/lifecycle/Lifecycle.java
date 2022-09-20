@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.common.lifecycle;
 
 import com.tny.game.common.concurrent.collection.*;
@@ -48,10 +48,10 @@ public abstract class Lifecycle<L extends Lifecycle<?, ?>, P extends LifecycleHa
         return map;
     }
 
-    static void putLifecycle(Class<? extends Lifecycle<?, ?>> lifecycleClass, Lifecycle<?, ?> Initiator) {
-        Lifecycle<?, ?> old = map(lifecycleClass).put(Initiator.getHandlerClass(), Initiator);
+    static void putLifecycle(Class<? extends Lifecycle<?, ?>> lifecycleClass, Lifecycle<?, ?> lifecycle) {
+        Lifecycle<?, ?> old = map(lifecycleClass).putIfAbsent(lifecycle.getHandlerClass(), lifecycle);
         if (old != null) {
-            throw new IllegalArgumentException(format("{} 已经存在 {}, 无法添加 {}", Initiator.getHandlerClass(), old, Initiator));
+            throw new IllegalArgumentException(format("{} 已经存在 {}, 无法添加 {}", lifecycle.getHandlerClass(), old, lifecycle));
         }
     }
 
@@ -69,8 +69,8 @@ public abstract class Lifecycle<L extends Lifecycle<?, ?>, P extends LifecycleHa
         return this.processorClass;
     }
 
-    public int getPriority() {
-        return this.priority.getPriority();
+    public int getOrder() {
+        return this.priority.getOrder();
     }
 
     public Lifecycle<?, ?> getNext() {
@@ -93,8 +93,8 @@ public abstract class Lifecycle<L extends Lifecycle<?, ?>, P extends LifecycleHa
         if (this.next != null) {
             throw new IllegalArgumentException(format("{} next is exist {}", this, this.next));
         }
-        if (initiator.getPriority() > this.getPriority()) {
-            throw new IllegalArgumentException(format("{} [{}] prior to {} [{}]", initiator, initiator.getPriority(), this, this.getPriority()));
+        if (initiator.getOrder() > this.getOrder()) {
+            throw new IllegalArgumentException(format("{} [{}] prior to {} [{}]", initiator, initiator.getOrder(), this, this.getOrder()));
         }
         initiator.setPrev(as(this));
         return this.next = initiator;
@@ -115,7 +115,7 @@ public abstract class Lifecycle<L extends Lifecycle<?, ?>, P extends LifecycleHa
 
     @Override
     public int compareTo(Lifecycle o) {
-        int value = o.getPriority() - this.getPriority();
+        int value = o.getOrder() - this.getOrder();
         if (value == 0) {
             return this.processorClass.getName().compareTo(o.processorClass.getName());
         }
