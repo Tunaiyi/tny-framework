@@ -68,7 +68,7 @@ public abstract class AbstractMessageDispatcher implements MessageDispatcher {
             LOGGER.warn("{} controller [{}] not exist", message.getMode(), message.getProtocolId());
             return new RunnableCommand(() -> MessageSendAide.response(tunnel, message, NetResultCode.SERVER_NO_SUCH_PROTOCOL, null));
         }
-        return null;
+        return NoopCommand.command();
     }
 
     @Override

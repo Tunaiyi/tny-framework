@@ -30,7 +30,7 @@ public final class PostCloser extends Lifecycle<PostCloser, AppClosed> {
     }
 
     private PostCloser(Class<? extends AppClosed> InitiatorClass, LifecyclePriority lifeCycleLevel) {
-        super(InitiatorClass, lifeCycleLevel);
+        super(PostCloser.class, InitiatorClass, lifeCycleLevel);
     }
 
     @Override

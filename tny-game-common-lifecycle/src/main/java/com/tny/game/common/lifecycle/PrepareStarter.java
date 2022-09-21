@@ -30,7 +30,7 @@ public final class PrepareStarter extends Lifecycle<PrepareStarter, AppPrepareSt
     }
 
     private PrepareStarter(Class<? extends AppPrepareStart> InitiatorClass, LifecyclePriority lifeCycleLevel) {
-        super(InitiatorClass, lifeCycleLevel);
+        super(PrepareStarter.class, InitiatorClass, lifeCycleLevel);
     }
 
     @Override

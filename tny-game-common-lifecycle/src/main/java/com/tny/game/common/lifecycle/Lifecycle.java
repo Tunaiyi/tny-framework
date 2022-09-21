@@ -12,7 +12,6 @@ package com.tny.game.common.lifecycle;
 
 import com.tny.game.common.concurrent.collection.*;
 import com.tny.game.common.utils.*;
-import org.apache.commons.lang3.builder.*;
 
 import java.util.*;
 
@@ -28,6 +27,8 @@ public abstract class Lifecycle<L extends Lifecycle<?, ?>, P extends LifecycleHa
 
     private static final Map<Class<? extends Lifecycle<?, ?>>, Map<Class<? extends LifecycleHandler>, Lifecycle<?, ?>>> INITIATOR_MAP
             = new CopyOnWriteMap<>();
+
+    private Class<L> lifecycleClass;
 
     private Class<? extends P> processorClass;
 
@@ -60,7 +61,8 @@ public abstract class Lifecycle<L extends Lifecycle<?, ?>, P extends LifecycleHa
         return (I)Initiator;
     }
 
-    Lifecycle(Class<? extends P> processorClass, LifecyclePriority priority) {
+    Lifecycle(Class<L> lifecycleClass, Class<? extends P> processorClass, LifecyclePriority priority) {
+        this.lifecycleClass = lifecycleClass;
         this.processorClass = processorClass;
         this.priority = priority;
     }
@@ -127,19 +129,16 @@ public abstract class Lifecycle<L extends Lifecycle<?, ?>, P extends LifecycleHa
         if (this == o) {
             return true;
         }
-
         if (!(o instanceof Lifecycle)) {
             return false;
         }
-
         Lifecycle<?, ?> lifecycle = (Lifecycle<?, ?>)o;
-
-        return new EqualsBuilder().append(this.processorClass, lifecycle.processorClass).isEquals();
+        return lifecycleClass.equals(lifecycle.lifecycleClass) && processorClass.equals(lifecycle.processorClass);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(this.processorClass).toHashCode();
+        return Objects.hash(lifecycleClass, processorClass);
     }
 
     @Override
