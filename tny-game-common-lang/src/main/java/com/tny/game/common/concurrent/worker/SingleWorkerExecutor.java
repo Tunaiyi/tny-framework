@@ -8,7 +8,7 @@
  * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-package com.tny.game.common.concurrent;
+package com.tny.game.common.concurrent.worker;
 
 import java.util.Queue;
 import java.util.concurrent.*;
@@ -32,12 +32,26 @@ public class SingleWorkerExecutor extends SerialWorkerExecutor {
         super(masterExecutor, immediatelyInExecutor);
     }
 
-    public SingleWorkerExecutor(Executor masterExecutor, Queue<Runnable> taskQueue, boolean unsafeQueue) {
+    public SingleWorkerExecutor(Executor masterExecutor, Queue<ExecuteTask<?>> taskQueue, boolean unsafeQueue) {
         super(masterExecutor, taskQueue, unsafeQueue);
     }
 
-    public SingleWorkerExecutor(Executor masterExecutor, Queue<Runnable> taskQueue, boolean immediatelyInExecutor, boolean unsafeQueue) {
+    public SingleWorkerExecutor(Executor masterExecutor, Queue<ExecuteTask<?>> taskQueue, boolean immediatelyInExecutor, boolean unsafeQueue) {
         super(masterExecutor, taskQueue, immediatelyInExecutor, unsafeQueue);
+    }
+
+    @Override
+    public CompletableFuture<Void> awaitDelay(Runnable runnable, int delayTime, TimeUnit timeUnit) {
+        var delay = CompletableFuture.delayedExecutor(delayTime, timeUnit);
+        return await(() -> CompletableFuture.runAsync(NOOP, delay))
+                .thenAccept((v) -> runnable.run());
+    }
+
+    @Override
+    public <T> CompletableFuture<T> awaitDelay(Supplier<T> supplier, int delayTime, TimeUnit timeUnit) {
+        var delay = CompletableFuture.delayedExecutor(delayTime, timeUnit, this);
+        return await(() -> CompletableFuture.runAsync(NOOP, delay))
+                .thenApply((v) -> supplier.get());
     }
 
     @Override

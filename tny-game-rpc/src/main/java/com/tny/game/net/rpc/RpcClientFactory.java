@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.rpc;
 
 import com.tny.game.common.url.*;
@@ -70,9 +70,9 @@ public class RpcClientFactory implements Serve {
             long id = RpcAccessIdentify.formatId(serviceType, serverId, index);
             RequestContext context = RpcAuthMessageContexts
                     .authRequest(id, setting.getPassword())
-                    .willRespondAwaiter(3000L);
+                    .willRespondAwaiter(setting.getAuthenticateTimeout());
             c.send(context);
-            context.respond().get(12000, TimeUnit.MILLISECONDS);
+            context.respond().get(setting.getAuthenticateTimeout() + 500, TimeUnit.MILLISECONDS);
             return true;
         };
     }

@@ -25,7 +25,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.nio.charset.Charset;
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.function.Consumer;
+import java.util.function.*;
 
 import static com.tny.game.common.utils.StringAide.*;
 
@@ -38,6 +38,10 @@ import static com.tny.game.common.utils.StringAide.*;
 public class EtcdNamespaceExplorer extends EtcdObject implements NamespaceExplorer {
 
     private static final ScheduledExecutorService SCHEDULED = Executors.newScheduledThreadPool(1, new CoreThreadFactory("EtcdNamespaceExplorer"));
+
+    private static final LongFunction<CmpTarget<Long>> VERSION_TARGET = CmpTarget::version;
+
+    private static final LongFunction<CmpTarget<Long>> MOD_REVISION_TARGET = CmpTarget::modRevision;
 
     private final Client client;
 
@@ -185,86 +189,132 @@ public class EtcdNamespaceExplorer extends EtcdObject implements NamespaceExplor
 
     @Override
     public <T> CompletableFuture<NameNode<T>> update(String path, ObjectMimeType<T> type, T value) {
-        return doUpdate(path, type, value, null, null, null, 0L, RangeBorder.UNLIMITED, 0L, RangeBorder.UNLIMITED);
+        return doUpdate(path, type, value, null, null, null, null, 0L, RangeBorder.UNLIMITED, 0L, RangeBorder.UNLIMITED);
     }
 
     @Override
     public <T> CompletableFuture<NameNode<T>> update(String path, ObjectMimeType<T> type, T value, Lessee lessee) {
-        return doUpdate(path, type, value, lessee, null, null, 0L, RangeBorder.UNLIMITED, 0L, RangeBorder.UNLIMITED);
+        return doUpdate(path, type, value, lessee, null, null, null, 0L, RangeBorder.UNLIMITED, 0L, RangeBorder.UNLIMITED);
     }
 
     @Override
     public <T> CompletableFuture<NameNode<T>> updateIf(String path, ObjectMimeType<T> type, T expect, T value) {
-        return doUpdate(path, type, value, null, null, expect, 0L, RangeBorder.UNLIMITED, 0L, RangeBorder.UNLIMITED);
+        return doUpdate(path, type, value, null, null, expect, null, 0L, RangeBorder.UNLIMITED, 0L, RangeBorder.UNLIMITED);
     }
 
     @Override
     public <T> CompletableFuture<NameNode<T>> updateIf(String path, ObjectMimeType<T> type, T expect, T value, Lessee lessee) {
-        return doUpdate(path, type, value, lessee, null, expect, 0L, RangeBorder.UNLIMITED, 0L, RangeBorder.UNLIMITED);
+        return doUpdate(path, type, value, lessee, null, expect, null, 0L, RangeBorder.UNLIMITED, 0L, RangeBorder.UNLIMITED);
     }
 
     @Override
-    public <T> CompletableFuture<NameNode<T>> updateIf(String path, long version, ObjectMimeType<T> type, T value) {
-        return doUpdate(path, type, value, null, null, null, version, RangeBorder.CLOSE, version, RangeBorder.CLOSE);
+    public <T> CompletableFuture<NameNode<T>> updateIfVersion(String path, long version, ObjectMimeType<T> type, T value) {
+        return doUpdate(path, type, value, null, null, null, VERSION_TARGET, version, RangeBorder.CLOSE, version, RangeBorder.CLOSE);
     }
 
     @Override
-    public <T> CompletableFuture<NameNode<T>> updateIf(String path, long version, ObjectMimeType<T> type, T value, Lessee lessee) {
-        return doUpdate(path, type, value, lessee, null, null, version, RangeBorder.CLOSE, version, RangeBorder.CLOSE);
+    public <T> CompletableFuture<NameNode<T>> updateIfVersion(String path, long version, ObjectMimeType<T> type, T value, Lessee lessee) {
+        return doUpdate(path, type, value, lessee, null, null, VERSION_TARGET, version, RangeBorder.CLOSE, version, RangeBorder.CLOSE);
     }
 
     @Override
-    public <T> CompletableFuture<NameNode<T>> updateIf(String path, long minVersion, RangeBorder minBorder, long maxVersion, RangeBorder maxBorder,
-            ObjectMimeType<T> type, T value) {
-        return doUpdate(path, type, value, null, null, null, minVersion, minBorder, maxVersion, maxBorder);
+    public <T> CompletableFuture<NameNode<T>> updateIfVersion(String path, long minVersion, RangeBorder minBorder, long maxVersion,
+            RangeBorder maxBorder, ObjectMimeType<T> type, T value) {
+        return doUpdate(path, type, value, null, null, null, VERSION_TARGET, minVersion, minBorder, maxVersion, maxBorder);
     }
 
     @Override
-    public <T> CompletableFuture<NameNode<T>> updateIf(String path, long minVersion, RangeBorder minBorder, long maxVersion, RangeBorder maxBorder,
-            ObjectMimeType<T> type, T value, Lessee lessee) {
-        return doUpdate(path, type, value, lessee, null, null, minVersion, minBorder, maxVersion, maxBorder);
+    public <T> CompletableFuture<NameNode<T>> updateIfVersion(String path, long minVersion, RangeBorder minBorder, long maxVersion,
+            RangeBorder maxBorder, ObjectMimeType<T> type, T value, Lessee lessee) {
+        return doUpdate(path, type, value, lessee, null, null, VERSION_TARGET, minVersion, minBorder, maxVersion, maxBorder);
+    }
+
+    @Override
+    public <T> CompletableFuture<NameNode<T>> updateIfRevision(String path, long revision, ObjectMimeType<T> type, T value) {
+        return doUpdate(path, type, value, null, null, null, MOD_REVISION_TARGET, revision, RangeBorder.CLOSE, revision, RangeBorder.CLOSE);
+    }
+
+    @Override
+    public <T> CompletableFuture<NameNode<T>> updateIfRevision(String path, long revision, ObjectMimeType<T> type, T value, Lessee lessee) {
+        return doUpdate(path, type, value, lessee, null, null, MOD_REVISION_TARGET, revision, RangeBorder.CLOSE, revision, RangeBorder.CLOSE);
+    }
+
+    @Override
+    public <T> CompletableFuture<NameNode<T>> updateIfRevision(String path, long minRevision, RangeBorder minBorder, long maxRevision,
+            RangeBorder maxBorder, ObjectMimeType<T> type, T value) {
+        return doUpdate(path, type, value, null, null, null, MOD_REVISION_TARGET, minRevision, minBorder, maxRevision, maxBorder);
+    }
+
+    @Override
+    public <T> CompletableFuture<NameNode<T>> updateIfRevision(String path, long minRevision, RangeBorder minBorder, long maxRevision,
+            RangeBorder maxBorder, ObjectMimeType<T> type, T value, Lessee lessee) {
+        return doUpdate(path, type, value, lessee, null, null, MOD_REVISION_TARGET, minRevision, minBorder, maxRevision, maxBorder);
     }
 
     @Override
     public <T> CompletableFuture<NameNode<T>> updateById(String path, long id, ObjectMimeType<T> type, T value) {
-        return doUpdate(path, type, value, null, id, null, 0L, RangeBorder.UNLIMITED, 0L, RangeBorder.UNLIMITED);
+        return doUpdate(path, type, value, null, id, null, null, 0L, RangeBorder.UNLIMITED, 0L, RangeBorder.UNLIMITED);
     }
 
     @Override
     public <T> CompletableFuture<NameNode<T>> updateById(String path, long id, ObjectMimeType<T> type, T value, Lessee lessee) {
-        return doUpdate(path, type, value, lessee, id, null, 0L, RangeBorder.UNLIMITED, 0L, RangeBorder.UNLIMITED);
+        return doUpdate(path, type, value, lessee, id, null, null, 0L, RangeBorder.UNLIMITED, 0L, RangeBorder.UNLIMITED);
     }
 
     @Override
     public <T> CompletableFuture<NameNode<T>> updateByIdAndIf(String path, long id, ObjectMimeType<T> type, T expect, T value) {
-        return doUpdate(path, type, value, null, id, expect, 0L, RangeBorder.UNLIMITED, 0L, RangeBorder.UNLIMITED);
+        return doUpdate(path, type, value, null, id, expect, null, 0L, RangeBorder.UNLIMITED, 0L, RangeBorder.UNLIMITED);
     }
 
     @Override
     public <T> CompletableFuture<NameNode<T>> updateByIdAndIf(String path, long id, ObjectMimeType<T> type, T expect, T value, Lessee lessee) {
-        return doUpdate(path, type, value, lessee, id, expect, 0L, RangeBorder.UNLIMITED, 0L, RangeBorder.UNLIMITED);
+        return doUpdate(path, type, value, lessee, id, expect, null, 0L, RangeBorder.UNLIMITED, 0L, RangeBorder.UNLIMITED);
     }
 
     @Override
-    public <T> CompletableFuture<NameNode<T>> updateByIdAndIf(String path, long id, long version, ObjectMimeType<T> type, T value) {
-        return doUpdate(path, type, value, null, id, null, version, RangeBorder.CLOSE, version, RangeBorder.CLOSE);
+    public <T> CompletableFuture<NameNode<T>> updateByIdAndIfVersion(String path, long id, long version, ObjectMimeType<T> type, T value) {
+        return doUpdate(path, type, value, null, id, null, VERSION_TARGET, version, RangeBorder.CLOSE, version, RangeBorder.CLOSE);
     }
 
     @Override
-    public <T> CompletableFuture<NameNode<T>> updateByIdAndIf(String path, long id, long version, ObjectMimeType<T> type, T value, Lessee lessee) {
-        return doUpdate(path, type, value, lessee, id, null, version, RangeBorder.CLOSE, version, RangeBorder.CLOSE);
+    public <T> CompletableFuture<NameNode<T>> updateByIdAndIfVersion(String path, long id, long version, ObjectMimeType<T> type, T value,
+            Lessee lessee) {
+        return doUpdate(path, type, value, lessee, id, null, VERSION_TARGET, version, RangeBorder.CLOSE, version, RangeBorder.CLOSE);
     }
 
     @Override
-    public <T> CompletableFuture<NameNode<T>> updateByIdAndIf(String path, long id, long minVersion, RangeBorder minBorder, long maxVersion,
+    public <T> CompletableFuture<NameNode<T>> updateByIdAndIfVersion(String path, long id, long minVersion, RangeBorder minBorder, long maxVersion,
             RangeBorder maxBorder, ObjectMimeType<T> type, T value) {
-        return doUpdate(path, type, value, null, id, null, minVersion, minBorder, maxVersion, maxBorder);
+        return doUpdate(path, type, value, null, id, null, VERSION_TARGET, minVersion, minBorder, maxVersion, maxBorder);
     }
 
     @Override
-    public <T> CompletableFuture<NameNode<T>> updateByIdAndIf(String path, long id, long minVersion, RangeBorder minBorder, long maxVersion,
+    public <T> CompletableFuture<NameNode<T>> updateByIdAndIfVersion(String path, long id, long minVersion, RangeBorder minBorder, long maxVersion,
             RangeBorder maxBorder, ObjectMimeType<T> type, T value, Lessee lessee) {
-        return doUpdate(path, type, value, lessee, id, null, minVersion, minBorder, maxVersion, maxBorder);
+        return doUpdate(path, type, value, lessee, id, null, VERSION_TARGET, minVersion, minBorder, maxVersion, maxBorder);
+    }
+
+    @Override
+    public <T> CompletableFuture<NameNode<T>> updateByIdAndIfRevision(String path, long id, long revision, ObjectMimeType<T> type, T value) {
+        return doUpdate(path, type, value, null, id, null, MOD_REVISION_TARGET, revision, RangeBorder.CLOSE, revision, RangeBorder.CLOSE);
+    }
+
+    @Override
+    public <T> CompletableFuture<NameNode<T>> updateByIdAndIfRevision(String path, long id, long revision, ObjectMimeType<T> type, T value,
+            Lessee lessee) {
+        return doUpdate(path, type, value, lessee, id, null, MOD_REVISION_TARGET, revision, RangeBorder.CLOSE, revision, RangeBorder.CLOSE);
+    }
+
+    @Override
+    public <T> CompletableFuture<NameNode<T>> updateByIdAndIfRevision(String path, long id, long minRevision, RangeBorder minBorder, long maxRevision,
+            RangeBorder maxBorder, ObjectMimeType<T> type, T value) {
+        return doUpdate(path, type, value, null, id, null, MOD_REVISION_TARGET, minRevision, minBorder, maxRevision, maxBorder);
+    }
+
+    @Override
+    public <T> CompletableFuture<NameNode<T>> updateByIdAndIfRevision(String path, long id, long minRevision, RangeBorder minBorder, long maxRevision,
+            RangeBorder maxBorder, ObjectMimeType<T> type, T value, Lessee lessee) {
+        return doUpdate(path, type, value, lessee, id, null, MOD_REVISION_TARGET, minRevision, minBorder, maxRevision, maxBorder);
     }
 
     @Override
@@ -279,7 +329,7 @@ public class EtcdNamespaceExplorer extends EtcdObject implements NamespaceExplor
 
     @Override
     public <T> CompletableFuture<NameNode<T>> removeAndGet(String path, ObjectMimeType<T> type) {
-        return doDelete(path, type, null, null, 0L, RangeBorder.UNLIMITED, 0L, RangeBorder.UNLIMITED);
+        return doDelete(path, type, null, null, null, 0L, RangeBorder.UNLIMITED, 0L, RangeBorder.UNLIMITED);
     }
 
     @Override
@@ -289,39 +339,61 @@ public class EtcdNamespaceExplorer extends EtcdObject implements NamespaceExplor
 
     @Override
     public <T> CompletableFuture<NameNode<T>> removeIf(String path, ObjectMimeType<T> type, T expect) {
-        return doDelete(path, type, null, expect, 0L, RangeBorder.UNLIMITED, 0L, RangeBorder.UNLIMITED);
+        return doDelete(path, type, null, expect, null, 0L, RangeBorder.UNLIMITED, 0L, RangeBorder.UNLIMITED);
     }
 
     @Override
-    public <T> CompletableFuture<NameNode<T>> removeIf(String path, long version, ObjectMimeType<T> type) {
-        return doDelete(path, type, null, null, version, RangeBorder.CLOSE, version, RangeBorder.CLOSE);
+    public <T> CompletableFuture<NameNode<T>> removeIfVersion(String path, long version, ObjectMimeType<T> type) {
+        return doDelete(path, type, null, null, VERSION_TARGET, version, RangeBorder.CLOSE, version, RangeBorder.CLOSE);
     }
 
     @Override
-    public <T> CompletableFuture<NameNode<T>> removeIf(String path, long minVersion, RangeBorder minBorder, long maxVersion, RangeBorder maxBorder,
-            ObjectMimeType<T> type) {
-        return doDelete(path, type, null, null, minVersion, minBorder, maxVersion, maxBorder);
+    public <T> CompletableFuture<NameNode<T>> removeIfVersion(String path, long minVersion, RangeBorder minBorder, long maxVersion,
+            RangeBorder maxBorder, ObjectMimeType<T> type) {
+        return doDelete(path, type, null, null, VERSION_TARGET, minVersion, minBorder, maxVersion, maxBorder);
+    }
+
+    @Override
+    public <T> CompletableFuture<NameNode<T>> removeIfRevision(String path, long revision, ObjectMimeType<T> type) {
+        return doDelete(path, type, null, null, MOD_REVISION_TARGET, revision, RangeBorder.CLOSE, revision, RangeBorder.CLOSE);
+    }
+
+    @Override
+    public <T> CompletableFuture<NameNode<T>> removeIfRevision(String path, long minRevision, RangeBorder minBorder, long maxRevision,
+            RangeBorder maxBorder, ObjectMimeType<T> type) {
+        return doDelete(path, type, null, null, MOD_REVISION_TARGET, minRevision, minBorder, maxRevision, maxBorder);
     }
 
     @Override
     public <T> CompletableFuture<NameNode<T>> removeById(String path, long id, ObjectMimeType<T> type) {
-        return doDelete(path, type, id, null, 0L, RangeBorder.UNLIMITED, 0L, RangeBorder.UNLIMITED);
+        return doDelete(path, type, id, null, null, 0L, RangeBorder.UNLIMITED, 0L, RangeBorder.UNLIMITED);
     }
 
     @Override
     public <T> CompletableFuture<NameNode<T>> removeByIdAndIf(String path, long id, ObjectMimeType<T> type, T expect) {
-        return doDelete(path, type, id, expect, 0L, RangeBorder.UNLIMITED, 0L, RangeBorder.UNLIMITED);
+        return doDelete(path, type, id, expect, null, 0L, RangeBorder.UNLIMITED, 0L, RangeBorder.UNLIMITED);
     }
 
     @Override
-    public <T> CompletableFuture<NameNode<T>> removeByIdAndIf(String path, long id, long version, ObjectMimeType<T> type) {
-        return doDelete(path, type, id, null, version, RangeBorder.CLOSE, version, RangeBorder.CLOSE);
+    public <T> CompletableFuture<NameNode<T>> removeByIdAndIfVersion(String path, long id, long version, ObjectMimeType<T> type) {
+        return doDelete(path, type, id, null, VERSION_TARGET, version, RangeBorder.CLOSE, version, RangeBorder.CLOSE);
     }
 
     @Override
-    public <T> CompletableFuture<NameNode<T>> removeByIdAndIf(String path, long id, long minVersion, RangeBorder minBorder, long maxVersion,
+    public <T> CompletableFuture<NameNode<T>> removeByIdAndIfVersion(String path, long id, long minVersion, RangeBorder minBorder, long maxVersion,
             RangeBorder maxBorder, ObjectMimeType<T> type) {
-        return doDelete(path, type, id, null, minVersion, minBorder, maxVersion, maxBorder);
+        return doDelete(path, type, id, null, VERSION_TARGET, minVersion, minBorder, maxVersion, maxBorder);
+    }
+
+    @Override
+    public <T> CompletableFuture<NameNode<T>> removeByIdAndIfRevision(String path, long id, long revision, ObjectMimeType<T> type) {
+        return doDelete(path, type, id, null, MOD_REVISION_TARGET, revision, RangeBorder.CLOSE, revision, RangeBorder.CLOSE);
+    }
+
+    @Override
+    public <T> CompletableFuture<NameNode<T>> removeByIdAndIfRevision(String path, long id, long minRevision, RangeBorder minBorder, long maxRevision,
+            RangeBorder maxBorder, ObjectMimeType<T> type) {
+        return doDelete(path, type, id, null, MOD_REVISION_TARGET, minRevision, minBorder, maxRevision, maxBorder);
     }
 
     public CompletableFuture<TxnResponse> transact(Consumer<Txn> consumer) {
@@ -375,26 +447,24 @@ public class EtcdNamespaceExplorer extends EtcdObject implements NamespaceExplor
     }
 
     private <T> CompletableFuture<NameNode<T>> doUpdate(String path, ObjectMimeType<T> type, T value, Lessee lessee, Long id, T expect,
-            long minVersion,
-            RangeBorder minBorder,
-            long maxVersion, RangeBorder maxBorder) {
+            LongFunction<CmpTarget<Long>> targetFunc, long minVersion, RangeBorder minBorder, long maxVersion, RangeBorder maxBorder) {
         return inTxn(txn -> {
             ByteSequence key = toBytes(path);
             ByteSequence valueBytes = encode(value, type);
             ByteSequence expectBytes = expect == null ? null : encode(expect, type);
             Op getOp = Op.get(key, GetOption.DEFAULT);
             PutOption option = lessee != null ? PutOption.newBuilder().withLeaseId(lessee.getId()).build() : PutOption.DEFAULT;
-            List<Cmp> cmpList = createCmpList(id, expectBytes, key, minVersion, minBorder, maxVersion, maxBorder);
+            List<Cmp> cmpList = createCmpList(id, expectBytes, key, targetFunc, minVersion, minBorder, maxVersion, maxBorder);
             txn.If(cmpList.toArray(new Cmp[0])).Then(Op.put(key, valueBytes, option), getOp);
         }).thenApply(txn -> decodeOne(txn.getGetResponses(), type));
     }
 
-    private <T> CompletableFuture<NameNode<T>> doDelete(String path, ObjectMimeType<T> type, Long id, T expect, long minVersion,
-            RangeBorder minBorder, long maxVersion, RangeBorder maxBorder) {
+    private <T> CompletableFuture<NameNode<T>> doDelete(String path, ObjectMimeType<T> type, Long id, T expect,
+            LongFunction<CmpTarget<Long>> targetFunc, long minVersion, RangeBorder minBorder, long maxVersion, RangeBorder maxBorder) {
         return inTxn(txn -> {
             ByteSequence key = toBytes(path);
             ByteSequence expectBytes = expect == null ? null : encode(expect, type);
-            List<Cmp> cmpList = createCmpList(id, expectBytes, key, minVersion, minBorder, maxVersion, maxBorder);
+            List<Cmp> cmpList = createCmpList(id, expectBytes, key, targetFunc, minVersion, minBorder, maxVersion, maxBorder);
             txn.If(cmpList.toArray(new Cmp[0])).Then(Op.delete(key, DEL_OPTION));
         }).thenApply(txn -> {
             List<DeleteResponse> responses = txn.getDeleteResponses();
@@ -406,9 +476,9 @@ public class EtcdNamespaceExplorer extends EtcdObject implements NamespaceExplor
         });
     }
 
-    private <T> List<Cmp> createCmpList(Long id, ByteSequence expect, ByteSequence key, long minVersion, RangeBorder minBorder, long maxVersion,
-            RangeBorder maxBorder) {
-        List<Cmp> cmpList = versionCmpList(key, minVersion, minBorder, maxVersion, maxBorder);
+    private <T> List<Cmp> createCmpList(Long id, ByteSequence expect, ByteSequence key, LongFunction<CmpTarget<Long>> targetFunc,
+            long minVersion, RangeBorder minBorder, long maxVersion, RangeBorder maxBorder) {
+        List<Cmp> cmpList = verCmpList(key, targetFunc, minVersion, minBorder, maxVersion, maxBorder);
         if (id != null) {
             cmpList.add(new Cmp(key, Cmp.Op.EQUAL, CmpTarget.createRevision(id)));
         }
@@ -421,7 +491,8 @@ public class EtcdNamespaceExplorer extends EtcdObject implements NamespaceExplor
         return cmpList;
     }
 
-    private List<Cmp> versionCmpList(ByteSequence key, long minVersion, RangeBorder minBorder, long maxVersion, RangeBorder maxBorder) {
+    private List<Cmp> verCmpList(ByteSequence key, LongFunction<CmpTarget<Long>> targetFunc,
+            long minVersion, RangeBorder minBorder, long maxVersion, RangeBorder maxBorder) {
         if (minBorder == RangeBorder.UNLIMITED && maxBorder == RangeBorder.UNLIMITED) {
             return new ArrayList<>();
         }
@@ -430,24 +501,24 @@ public class EtcdNamespaceExplorer extends EtcdObject implements NamespaceExplor
         }
         List<Cmp> cmpList = new ArrayList<>();
         if (minBorder == RangeBorder.CLOSE && maxBorder == RangeBorder.CLOSE && Objects.equals(maxVersion, minVersion)) {
-            cmpList.add(new Cmp(key, Cmp.Op.EQUAL, CmpTarget.version(maxVersion)));
+            cmpList.add(new Cmp(key, Cmp.Op.EQUAL, targetFunc.apply(maxVersion)));
         } else {
             switch (minBorder) {
                 case OPEN:
-                    cmpList.add(new Cmp(key, Cmp.Op.GREATER, CmpTarget.version(minVersion)));
+                    cmpList.add(new Cmp(key, Cmp.Op.GREATER, targetFunc.apply(minVersion)));
                     break;
                 case CLOSE:
-                    cmpList.add(new Cmp(key, Cmp.Op.GREATER, CmpTarget.version(minVersion - 1)));
+                    cmpList.add(new Cmp(key, Cmp.Op.GREATER, targetFunc.apply(minVersion - 1)));
                     break;
                 case UNLIMITED:
                     break;
             }
             switch (maxBorder) {
                 case OPEN:
-                    cmpList.add(new Cmp(key, Cmp.Op.LESS, CmpTarget.version(maxVersion)));
+                    cmpList.add(new Cmp(key, Cmp.Op.LESS, targetFunc.apply(maxVersion)));
                     break;
                 case CLOSE:
-                    cmpList.add(new Cmp(key, Cmp.Op.LESS, CmpTarget.version(maxVersion + 1)));
+                    cmpList.add(new Cmp(key, Cmp.Op.LESS, targetFunc.apply(maxVersion + 1)));
                     break;
                 case UNLIMITED:
                     break;

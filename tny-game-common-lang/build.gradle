@@ -9,7 +9,7 @@ dependencies {
     api libs.commons_lang3
     api libs.commons_collections4
 
-//    api libs.google_finbugs
+    api libs.netty_common
 //    api libs.commons_codec
 //    api libs.cglib_nodep
 //    api libs.javassist

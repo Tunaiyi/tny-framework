@@ -140,13 +140,12 @@ public class RpcAccessIdentify implements RpcServicerPoint, Messager {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("RpcAccessIdentify{");
-        sb.append("id=").append(id);
-        sb.append(", serviceType=").append(serviceType);
-        sb.append(", serverId=").append(serverId);
-        sb.append(", index=").append(parseIndex(id));
-        sb.append('}');
-        return sb.toString();
+        String sb = "RpcAccessIdentify{" + "id=" + id +
+                ", serviceType=" + serviceType +
+                ", serverId=" + serverId +
+                ", index=" + parseIndex(id) +
+                '}';
+        return sb;
     }
 
     @Override

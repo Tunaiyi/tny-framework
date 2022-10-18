@@ -347,7 +347,7 @@ public interface NamespaceExplorer {
      * @param <T>     值类型
      * @return 返回更新的节点 Future
      */
-    <T> CompletableFuture<NameNode<T>> updateIf(String path, long version, ObjectMimeType<T> type, T value);
+    <T> CompletableFuture<NameNode<T>> updateIfVersion(String path, long version, ObjectMimeType<T> type, T value);
 
     /**
      * 如果指定 path 节点存在并且节点版本等于指定version, 则更新该租约节点.
@@ -359,7 +359,7 @@ public interface NamespaceExplorer {
      * @param <T>     值类型
      * @return 返回更新的节点 Future
      */
-    <T> CompletableFuture<NameNode<T>> updateIf(String path, long version, ObjectMimeType<T> type, T value, Lessee lessee);
+    <T> CompletableFuture<NameNode<T>> updateIfVersion(String path, long version, ObjectMimeType<T> type, T value, Lessee lessee);
 
     /**
      * 如果指定 path 节点存在并且节点版本在指定区间内, 则更新该节点.
@@ -373,7 +373,7 @@ public interface NamespaceExplorer {
      * @param <T>        值类型
      * @return 返回更新的节点 Future
      */
-    <T> CompletableFuture<NameNode<T>> updateIf(String path, long minVersion, RangeBorder minBorder, long maxVersion, RangeBorder maxBorder,
+    <T> CompletableFuture<NameNode<T>> updateIfVersion(String path, long minVersion, RangeBorder minBorder, long maxVersion, RangeBorder maxBorder,
             ObjectMimeType<T> type, T value);
 
     /**
@@ -389,7 +389,61 @@ public interface NamespaceExplorer {
      * @param <T>        值类型
      * @return 返回更新的节点 Future
      */
-    <T> CompletableFuture<NameNode<T>> updateIf(String path, long minVersion, RangeBorder minBorder, long maxVersion, RangeBorder maxBorder,
+    <T> CompletableFuture<NameNode<T>> updateIfVersion(String path, long minVersion, RangeBorder minBorder, long maxVersion, RangeBorder maxBorder,
+            ObjectMimeType<T> type, T value, Lessee lessee);
+
+    /**
+     * 如果指定 path 节点存在并且节点修订版本等于指定revision, 则更新该节点.
+     *
+     * @param path     路径
+     * @param revision 期待值
+     * @param value    值
+     * @param <T>      值类型
+     * @return 返回更新的节点 Future
+     */
+    <T> CompletableFuture<NameNode<T>> updateIfRevision(String path, long revision, ObjectMimeType<T> type, T value);
+
+    /**
+     * 如果指定 path 节点存在并且节点修订版本等于指定revision, 则更新该租约节点.
+     *
+     * @param path     路径
+     * @param revision 期待值
+     * @param value    值
+     * @param lessee   租客
+     * @param <T>      值类型
+     * @return 返回更新的节点 Future
+     */
+    <T> CompletableFuture<NameNode<T>> updateIfRevision(String path, long revision, ObjectMimeType<T> type, T value, Lessee lessee);
+
+    /**
+     * 如果指定 path 节点存在并且节点修订版本在指定区间内, 则更新该节点.
+     *
+     * @param path        路径
+     * @param minRevision 最小值
+     * @param minBorder   最小值边界
+     * @param maxRevision 最大值
+     * @param maxBorder   最大值边界
+     * @param value       值
+     * @param <T>         值类型
+     * @return 返回更新的节点 Future
+     */
+    <T> CompletableFuture<NameNode<T>> updateIfRevision(String path, long minRevision, RangeBorder minBorder, long maxRevision, RangeBorder maxBorder,
+            ObjectMimeType<T> type, T value);
+
+    /**
+     * 如果指定 path 节点存在并且节点修订版本在指定区间内, 则更新该租约节点.
+     *
+     * @param path        路径
+     * @param minRevision 最小值
+     * @param minBorder   最小值边界
+     * @param maxRevision 最大值
+     * @param maxBorder   最大值边界
+     * @param value       值
+     * @param lessee      租客
+     * @param <T>         值类型
+     * @return 返回更新的节点 Future
+     */
+    <T> CompletableFuture<NameNode<T>> updateIfRevision(String path, long minRevision, RangeBorder minBorder, long maxRevision, RangeBorder maxBorder,
             ObjectMimeType<T> type, T value, Lessee lessee);
 
     /**
@@ -450,7 +504,7 @@ public interface NamespaceExplorer {
      * @param <T>     值类型
      * @return 返回更新的节点 Future
      */
-    <T> CompletableFuture<NameNode<T>> updateByIdAndIf(String path, long id, long version, ObjectMimeType<T> type, T value);
+    <T> CompletableFuture<NameNode<T>> updateByIdAndIfVersion(String path, long id, long version, ObjectMimeType<T> type, T value);
 
     /**
      * 如果指定 path 节点存在,同时id等于指定id,且版本等于指定version, 则更新该租约节点.
@@ -463,7 +517,7 @@ public interface NamespaceExplorer {
      * @param <T>     值类型
      * @return 返回更新的节点 Future
      */
-    <T> CompletableFuture<NameNode<T>> updateByIdAndIf(String path, long id, long version, ObjectMimeType<T> type, T value, Lessee lessee);
+    <T> CompletableFuture<NameNode<T>> updateByIdAndIfVersion(String path, long id, long version, ObjectMimeType<T> type, T value, Lessee lessee);
 
     /**
      * 如果指定 path 节点存在,同时id等于指定id,并且节点版本在指定区间内, 则更新该节点.
@@ -477,7 +531,7 @@ public interface NamespaceExplorer {
      * @param <T>        值类型
      * @return 返回更新的节点 Future
      */
-    <T> CompletableFuture<NameNode<T>> updateByIdAndIf(String path, long id, long minVersion, RangeBorder minBorder, long maxVersion,
+    <T> CompletableFuture<NameNode<T>> updateByIdAndIfVersion(String path, long id, long minVersion, RangeBorder minBorder, long maxVersion,
             RangeBorder maxBorder, ObjectMimeType<T> type, T value);
 
     /**
@@ -492,7 +546,62 @@ public interface NamespaceExplorer {
      * @param <T>        值类型
      * @return 返回更新的节点 Future
      */
-    <T> CompletableFuture<NameNode<T>> updateByIdAndIf(String path, long id, long minVersion, RangeBorder minBorder, long maxVersion,
+    <T> CompletableFuture<NameNode<T>> updateByIdAndIfVersion(String path, long id, long minVersion, RangeBorder minBorder, long maxVersion,
+            RangeBorder maxBorder, ObjectMimeType<T> type, T value, Lessee lessee);
+
+    /**
+     * 如果指定 path 节点存在,同时id等于指定id,且修订版本等于指定revision, 则更新该节点.
+     *
+     * @param path     路径
+     * @param id       指定 id
+     * @param revision 期待值
+     * @param value    值
+     * @param <T>      值类型
+     * @return 返回更新的节点 Future
+     */
+    <T> CompletableFuture<NameNode<T>> updateByIdAndIfRevision(String path, long id, long revision, ObjectMimeType<T> type, T value);
+
+    /**
+     * 如果指定 path 节点存在,同时id等于指定id,且修订版本等于指定revision, 则更新该租约节点.
+     *
+     * @param path     路径
+     * @param id       指定 id
+     * @param revision 期待值
+     * @param value    值
+     * @param lessee   租客
+     * @param <T>      值类型
+     * @return 返回更新的节点 Future
+     */
+    <T> CompletableFuture<NameNode<T>> updateByIdAndIfRevision(String path, long id, long revision, ObjectMimeType<T> type, T value, Lessee lessee);
+
+    /**
+     * 如果指定 path 节点存在,同时id等于指定id,并且节点修订版本在指定区间内, 则更新该节点.
+     *
+     * @param path        路径
+     * @param minRevision 最小值
+     * @param minBorder   最小值边界
+     * @param maxRevision 最大值
+     * @param maxBorder   最大值边界
+     * @param value       值
+     * @param <T>         值类型
+     * @return 返回更新的节点 Future
+     */
+    <T> CompletableFuture<NameNode<T>> updateByIdAndIfRevision(String path, long id, long minRevision, RangeBorder minBorder, long maxRevision,
+            RangeBorder maxBorder, ObjectMimeType<T> type, T value);
+
+    /**
+     * 如果指定 path 节点存在,同时id等于指定id,并且节点修订版本在指定区间内, 则更新该租约节点.
+     *
+     * @param path        路径
+     * @param minRevision 最小值
+     * @param minBorder   最小值边界
+     * @param maxRevision 最大值
+     * @param maxBorder   最大值边界
+     * @param lessee      租客
+     * @param <T>         值类型
+     * @return 返回更新的节点 Future
+     */
+    <T> CompletableFuture<NameNode<T>> updateByIdAndIfRevision(String path, long id, long minRevision, RangeBorder minBorder, long maxRevision,
             RangeBorder maxBorder, ObjectMimeType<T> type, T value, Lessee lessee);
 
     /**
@@ -543,7 +652,7 @@ public interface NamespaceExplorer {
      * @param version 期望版本
      * @return 返回删除节点 Future
      */
-    <T> CompletableFuture<NameNode<T>> removeIf(String path, long version, ObjectMimeType<T> type);
+    <T> CompletableFuture<NameNode<T>> removeIfVersion(String path, long version, ObjectMimeType<T> type);
 
     /**
      * 删除指定 path 节点, 并且节点版本在指定区间内.
@@ -556,7 +665,30 @@ public interface NamespaceExplorer {
      * @param <T>        值类型
      * @return 返回更新的节点 Future
      */
-    <T> CompletableFuture<NameNode<T>> removeIf(String path, long minVersion, RangeBorder minBorder, long maxVersion, RangeBorder maxBorder,
+    <T> CompletableFuture<NameNode<T>> removeIfVersion(String path, long minVersion, RangeBorder minBorder, long maxVersion, RangeBorder maxBorder,
+            ObjectMimeType<T> type);
+
+    /**
+     * 删除指定 path 节点, 且修订版本等于revision值
+     *
+     * @param path     路径
+     * @param revision 期望修订版本
+     * @return 返回删除节点 Future
+     */
+    <T> CompletableFuture<NameNode<T>> removeIfRevision(String path, long revision, ObjectMimeType<T> type);
+
+    /**
+     * 删除指定 path 节点, 并且节点修订版本在指定区间内.
+     *
+     * @param path        路径
+     * @param minRevision 最小值
+     * @param minBorder   最小值边界
+     * @param maxRevision 最大值
+     * @param maxBorder   最大值边界
+     * @param <T>         值类型
+     * @return 返回更新的节点 Future
+     */
+    <T> CompletableFuture<NameNode<T>> removeIfRevision(String path, long minRevision, RangeBorder minBorder, long maxRevision, RangeBorder maxBorder,
             ObjectMimeType<T> type);
 
     /**
@@ -588,7 +720,7 @@ public interface NamespaceExplorer {
      * @param type    期望版本
      * @return 返回删除节点 Future
      */
-    <T> CompletableFuture<NameNode<T>> removeByIdAndIf(String path, long id, long version, ObjectMimeType<T> type);
+    <T> CompletableFuture<NameNode<T>> removeByIdAndIfVersion(String path, long id, long version, ObjectMimeType<T> type);
 
     /**
      * 删除指定 path 节点, 同时id等于指定id,并且节点版本在指定区间内.
@@ -602,7 +734,33 @@ public interface NamespaceExplorer {
      * @param <T>        值类型
      * @return 返回更新的节点 Future
      */
-    <T> CompletableFuture<NameNode<T>> removeByIdAndIf(String path, long id, long minVersion, RangeBorder minBorder, long maxVersion,
+    <T> CompletableFuture<NameNode<T>> removeByIdAndIfVersion(String path, long id, long minVersion, RangeBorder minBorder, long maxVersion,
+            RangeBorder maxBorder, ObjectMimeType<T> type);
+
+    /**
+     * 删除指定 path 节点, 且id等于指定id, 且版本等于revision值
+     *
+     * @param path     路径
+     * @param id       id
+     * @param revision 期望版本
+     * @param type     期望版本
+     * @return 返回删除节点 Future
+     */
+    <T> CompletableFuture<NameNode<T>> removeByIdAndIfRevision(String path, long id, long revision, ObjectMimeType<T> type);
+
+    /**
+     * 删除指定 path 节点, 同时id等于指定id,并且节点版本在指定区间内.
+     *
+     * @param path        路径
+     * @param id          id
+     * @param minRevision 最小值
+     * @param minBorder   最小值边界
+     * @param maxRevision 最大值
+     * @param maxBorder   最大值边界
+     * @param <T>         值类型
+     * @return 返回更新的节点 Future
+     */
+    <T> CompletableFuture<NameNode<T>> removeByIdAndIfRevision(String path, long id, long minRevision, RangeBorder minBorder, long maxRevision,
             RangeBorder maxBorder, ObjectMimeType<T> type);
 
 }

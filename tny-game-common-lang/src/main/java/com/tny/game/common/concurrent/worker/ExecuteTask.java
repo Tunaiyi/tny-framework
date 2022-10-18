@@ -8,31 +8,20 @@
  * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-package com.tny.game.redisson.annotation;
+package com.tny.game.common.concurrent.worker;
 
-import com.tny.game.codec.annotation.*;
-
-import java.lang.annotation.*;
+import java.util.concurrent.CompletableFuture;
 
 /**
- * 注册 Json2Redis 持久化类
  * <p>
- */
-@Documented
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface RedisObject {
+ *
+ * @author kgtny
+ * @date 2022/9/27 14:42
+ **/
+public interface ExecuteTask<T> {
 
-    /**
-     * @return 数据源 beam名字
-     */
-    String source() default "";
+    CompletableFuture<T> execute();
 
-    /**
-     * 如果配置优先查看是否由 CodecableObject 注解
-     *
-     * @return 序列化类型
-     */
-    Codable codec() default @Codable("");
+    CompletableFuture<T> getFuture();
 
 }
