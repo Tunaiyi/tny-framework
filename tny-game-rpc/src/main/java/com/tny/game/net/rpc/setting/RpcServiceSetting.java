@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.rpc.setting;
 
 import com.tny.game.common.url.*;
@@ -50,6 +50,10 @@ public class RpcServiceSetting implements Serve {
 
     private int connectSize = 1;
 
+    private long connectTimeout = 10000L;
+
+    private long authenticateTimeout = 10000L;
+
     public boolean isDiscovery() {
         return discovery || StringUtils.isNoneBlank(serveName);
     }
@@ -90,6 +94,14 @@ public class RpcServiceSetting implements Serve {
 
     public String getUsername() {
         return username;
+    }
+
+    public long getConnectTimeout() {
+        return connectTimeout;
+    }
+
+    public long getAuthenticateTimeout() {
+        return authenticateTimeout;
     }
 
     public Optional<URL> url() {
@@ -141,6 +153,16 @@ public class RpcServiceSetting implements Serve {
 
     public RpcServiceSetting setDiscovery(boolean discovery) {
         this.discovery = discovery;
+        return this;
+    }
+
+    public RpcServiceSetting setConnectTimeout(long connectTimeout) {
+        this.connectTimeout = connectTimeout;
+        return this;
+    }
+
+    public RpcServiceSetting setAuthenticateTimeout(long authenticateTimeout) {
+        this.authenticateTimeout = authenticateTimeout;
         return this;
     }
 

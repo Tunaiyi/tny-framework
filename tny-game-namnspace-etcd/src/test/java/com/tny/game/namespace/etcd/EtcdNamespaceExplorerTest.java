@@ -638,13 +638,13 @@ class EtcdNamespaceExplorerTest {
     void testUpdateIfVersion() throws ExecutionException, InterruptedException {
         Player player1 = new Player(PLAYER_NODE + "PL_1", 100);
         Player player2 = new Player(PLAYER_NODE + "PL_2", 102);
-        NameNode<Player> nameNode = explorer.updateIf(PLAYER_NODE_1_KEY, 2, MINE_TYPE, player1).get();
+        NameNode<Player> nameNode = explorer.updateIfVersion(PLAYER_NODE_1_KEY, 2, MINE_TYPE, player1).get();
         assertNull(nameNode);
 
-        nameNode = explorer.updateIf(PLAYER_NODE_1_KEY, 0, MINE_TYPE, player1).get();
+        nameNode = explorer.updateIfVersion(PLAYER_NODE_1_KEY, 0, MINE_TYPE, player1).get();
         assertEquals(player1, nameNode.getValue());
 
-        nameNode = explorer.updateIf(PLAYER_NODE_1_KEY, 1, MINE_TYPE, player2).get();
+        nameNode = explorer.updateIfVersion(PLAYER_NODE_1_KEY, 1, MINE_TYPE, player2).get();
         assertEquals(player2, nameNode.getValue());
 
     }
@@ -656,13 +656,13 @@ class EtcdNamespaceExplorerTest {
 
         Lessee lessee = explorer.lease("testUpdateIfVersionWithLessee", 3000).get();
 
-        NameNode<Player> nameNode = explorer.updateIf(PLAYER_NODE_1_KEY, 2, MINE_TYPE, player1, lessee).get();
+        NameNode<Player> nameNode = explorer.updateIfVersion(PLAYER_NODE_1_KEY, 2, MINE_TYPE, player1, lessee).get();
         assertNull(nameNode);
 
-        nameNode = explorer.updateIf(PLAYER_NODE_1_KEY, 0, MINE_TYPE, player1, lessee).get();
+        nameNode = explorer.updateIfVersion(PLAYER_NODE_1_KEY, 0, MINE_TYPE, player1, lessee).get();
         assertEquals(player1, nameNode.getValue());
 
-        nameNode = explorer.updateIf(PLAYER_NODE_1_KEY, 1, MINE_TYPE, player2, lessee).get();
+        nameNode = explorer.updateIfVersion(PLAYER_NODE_1_KEY, 1, MINE_TYPE, player2, lessee).get();
         assertEquals(player2, nameNode.getValue());
 
         lessee.shutdown().join();
@@ -677,23 +677,23 @@ class EtcdNamespaceExplorerTest {
         Player player2 = new Player(PLAYER_NODE + "PL_2", 102);
 
         // 0 x
-        NameNode<Player> nameNode = explorer.updateIf(PLAYER_NODE_1_KEY, 1, RangeBorder.CLOSE, 2, RangeBorder.CLOSE, MINE_TYPE, player1).get();
+        NameNode<Player> nameNode = explorer.updateIfVersion(PLAYER_NODE_1_KEY, 1, RangeBorder.CLOSE, 2, RangeBorder.CLOSE, MINE_TYPE, player1).get();
         assertNull(nameNode);
 
         // 0 -> 1
-        nameNode = explorer.updateIf(PLAYER_NODE_1_KEY, 0, RangeBorder.CLOSE, 2, RangeBorder.CLOSE, MINE_TYPE, player1).get();
+        nameNode = explorer.updateIfVersion(PLAYER_NODE_1_KEY, 0, RangeBorder.CLOSE, 2, RangeBorder.CLOSE, MINE_TYPE, player1).get();
         assertEquals(player1, nameNode.getValue());
 
         // 1 -> 2
-        nameNode = explorer.updateIf(PLAYER_NODE_1_KEY, 0, RangeBorder.CLOSE, 2, RangeBorder.CLOSE, MINE_TYPE, player2).get();
+        nameNode = explorer.updateIfVersion(PLAYER_NODE_1_KEY, 0, RangeBorder.CLOSE, 2, RangeBorder.CLOSE, MINE_TYPE, player2).get();
         assertEquals(player2, nameNode.getValue());
 
         // 2 -> 3
-        nameNode = explorer.updateIf(PLAYER_NODE_1_KEY, 0, RangeBorder.CLOSE, 2, RangeBorder.CLOSE, MINE_TYPE, player1).get();
+        nameNode = explorer.updateIfVersion(PLAYER_NODE_1_KEY, 0, RangeBorder.CLOSE, 2, RangeBorder.CLOSE, MINE_TYPE, player1).get();
         assertEquals(player1, nameNode.getValue());
 
         // 3 x
-        nameNode = explorer.updateIf(PLAYER_NODE_1_KEY, 0, RangeBorder.CLOSE, 2, RangeBorder.CLOSE, MINE_TYPE, player2).get();
+        nameNode = explorer.updateIfVersion(PLAYER_NODE_1_KEY, 0, RangeBorder.CLOSE, 2, RangeBorder.CLOSE, MINE_TYPE, player2).get();
         assertNull(nameNode);
 
         nameNode = explorer.get(PLAYER_NODE_1_KEY, MINE_TYPE).get();
@@ -702,59 +702,59 @@ class EtcdNamespaceExplorerTest {
         explorer.remove(PLAYER_NODE_1_KEY).get();
 
         // 0 x
-        nameNode = explorer.updateIf(PLAYER_NODE_1_KEY, 0, RangeBorder.OPEN, 2, RangeBorder.OPEN, MINE_TYPE, player2).get();
+        nameNode = explorer.updateIfVersion(PLAYER_NODE_1_KEY, 0, RangeBorder.OPEN, 2, RangeBorder.OPEN, MINE_TYPE, player2).get();
         assertNull(nameNode);
 
         // 0 -> 1
-        nameNode = explorer.updateIf(PLAYER_NODE_1_KEY, -1, RangeBorder.OPEN, 2, RangeBorder.OPEN, MINE_TYPE, player2).get();
+        nameNode = explorer.updateIfVersion(PLAYER_NODE_1_KEY, -1, RangeBorder.OPEN, 2, RangeBorder.OPEN, MINE_TYPE, player2).get();
         assertEquals(player2, nameNode.getValue());
 
         // 1 -> 2
-        nameNode = explorer.updateIf(PLAYER_NODE_1_KEY, 0, RangeBorder.OPEN, 2, RangeBorder.OPEN, MINE_TYPE, player1).get();
+        nameNode = explorer.updateIfVersion(PLAYER_NODE_1_KEY, 0, RangeBorder.OPEN, 2, RangeBorder.OPEN, MINE_TYPE, player1).get();
         assertEquals(player1, nameNode.getValue());
 
         // 2 x
-        nameNode = explorer.updateIf(PLAYER_NODE_1_KEY, 0, RangeBorder.OPEN, 2, RangeBorder.OPEN, MINE_TYPE, player2).get();
+        nameNode = explorer.updateIfVersion(PLAYER_NODE_1_KEY, 0, RangeBorder.OPEN, 2, RangeBorder.OPEN, MINE_TYPE, player2).get();
         assertNull(nameNode);
 
         // 2 -> 3
-        nameNode = explorer.updateIf(PLAYER_NODE_1_KEY, 0, RangeBorder.OPEN, 3, RangeBorder.UNLIMITED, MINE_TYPE, player2).get();
+        nameNode = explorer.updateIfVersion(PLAYER_NODE_1_KEY, 0, RangeBorder.OPEN, 3, RangeBorder.UNLIMITED, MINE_TYPE, player2).get();
         assertEquals(player2, nameNode.getValue());
 
         explorer.remove(PLAYER_NODE_1_KEY).get();
 
-        nameNode = explorer.updateIf(PLAYER_NODE_1_KEY, 0, RangeBorder.CLOSE, 0, RangeBorder.UNLIMITED, MINE_TYPE, player1).get();
+        nameNode = explorer.updateIfVersion(PLAYER_NODE_1_KEY, 0, RangeBorder.CLOSE, 0, RangeBorder.UNLIMITED, MINE_TYPE, player1).get();
         assertEquals(player1, nameNode.getValue());
 
-        nameNode = explorer.updateIf(PLAYER_NODE_1_KEY, 0, RangeBorder.CLOSE, 0, RangeBorder.UNLIMITED, MINE_TYPE, player2).get();
+        nameNode = explorer.updateIfVersion(PLAYER_NODE_1_KEY, 0, RangeBorder.CLOSE, 0, RangeBorder.UNLIMITED, MINE_TYPE, player2).get();
         assertEquals(player2, nameNode.getValue());
 
-        nameNode = explorer.updateIf(PLAYER_NODE_1_KEY, 2, RangeBorder.OPEN, 0, RangeBorder.UNLIMITED, MINE_TYPE, player1).get();
+        nameNode = explorer.updateIfVersion(PLAYER_NODE_1_KEY, 2, RangeBorder.OPEN, 0, RangeBorder.UNLIMITED, MINE_TYPE, player1).get();
         assertNull(nameNode);
 
-        nameNode = explorer.updateIf(PLAYER_NODE_1_KEY, 1, RangeBorder.OPEN, 0, RangeBorder.UNLIMITED, MINE_TYPE, player1).get();
+        nameNode = explorer.updateIfVersion(PLAYER_NODE_1_KEY, 1, RangeBorder.OPEN, 0, RangeBorder.UNLIMITED, MINE_TYPE, player1).get();
         assertEquals(player1, nameNode.getValue());
 
         explorer.remove(PLAYER_NODE_1_KEY).get();
 
-        nameNode = explorer.updateIf(PLAYER_NODE_1_KEY, 0, RangeBorder.UNLIMITED, 0, RangeBorder.CLOSE, MINE_TYPE, player1).get();
+        nameNode = explorer.updateIfVersion(PLAYER_NODE_1_KEY, 0, RangeBorder.UNLIMITED, 0, RangeBorder.CLOSE, MINE_TYPE, player1).get();
         assertEquals(player1, nameNode.getValue());
 
-        nameNode = explorer.updateIf(PLAYER_NODE_1_KEY, 0, RangeBorder.UNLIMITED, 2, RangeBorder.CLOSE, MINE_TYPE, player2).get();
+        nameNode = explorer.updateIfVersion(PLAYER_NODE_1_KEY, 0, RangeBorder.UNLIMITED, 2, RangeBorder.CLOSE, MINE_TYPE, player2).get();
         assertEquals(player2, nameNode.getValue());
 
-        nameNode = explorer.updateIf(PLAYER_NODE_1_KEY, 2, RangeBorder.UNLIMITED, 2, RangeBorder.OPEN, MINE_TYPE, player1).get();
+        nameNode = explorer.updateIfVersion(PLAYER_NODE_1_KEY, 2, RangeBorder.UNLIMITED, 2, RangeBorder.OPEN, MINE_TYPE, player1).get();
         assertNull(nameNode);
 
-        nameNode = explorer.updateIf(PLAYER_NODE_1_KEY, 1, RangeBorder.UNLIMITED, 3, RangeBorder.OPEN, MINE_TYPE, player1).get();
+        nameNode = explorer.updateIfVersion(PLAYER_NODE_1_KEY, 1, RangeBorder.UNLIMITED, 3, RangeBorder.OPEN, MINE_TYPE, player1).get();
         assertEquals(player1, nameNode.getValue());
 
-        nameNode = explorer.updateIf(PLAYER_NODE_1_KEY, 1, RangeBorder.UNLIMITED, 3, RangeBorder.UNLIMITED, MINE_TYPE, player2).get();
+        nameNode = explorer.updateIfVersion(PLAYER_NODE_1_KEY, 1, RangeBorder.UNLIMITED, 3, RangeBorder.UNLIMITED, MINE_TYPE, player2).get();
         assertEquals(player2, nameNode.getValue());
 
         explorer.remove(PLAYER_NODE_1_KEY).get();
 
-        nameNode = explorer.updateIf(PLAYER_NODE_1_KEY, 1, RangeBorder.UNLIMITED, 3, RangeBorder.UNLIMITED, MINE_TYPE, player2).get();
+        nameNode = explorer.updateIfVersion(PLAYER_NODE_1_KEY, 1, RangeBorder.UNLIMITED, 3, RangeBorder.UNLIMITED, MINE_TYPE, player2).get();
         assertNull(nameNode);
 
     }
@@ -765,7 +765,8 @@ class EtcdNamespaceExplorerTest {
 
         Lessee lessee = explorer.lease("testUpdateIfMinAndMaxVersionWithLessee", 3000).get();
 
-        NameNode<Player> nameNode = explorer.updateIf(PLAYER_NODE_1_KEY, 0, RangeBorder.CLOSE, 2, RangeBorder.CLOSE, MINE_TYPE, player1, lessee)
+        NameNode<Player> nameNode = explorer.updateIfVersion(PLAYER_NODE_1_KEY, 0, RangeBorder.CLOSE, 2, RangeBorder.CLOSE, MINE_TYPE, player1,
+                        lessee)
                 .get();
         assertEquals(player1, nameNode.getValue());
 
@@ -855,19 +856,19 @@ class EtcdNamespaceExplorerTest {
         Player player1 = new Player(PLAYER_NODE + "PL_2", 100);
         Player player2 = new Player(PLAYER_NODE + "PL_1", 102);
 
-        NameNode<Player> nameNode = explorer.updateByIdAndIf(PLAYER_NODE_1_KEY, 100, 2, MINE_TYPE, player1).get();
+        NameNode<Player> nameNode = explorer.updateByIdAndIfVersion(PLAYER_NODE_1_KEY, 100, 2, MINE_TYPE, player1).get();
         assertNull(nameNode);
 
-        nameNode = explorer.updateByIdAndIf(PLAYER_NODE_1_KEY, 100, 0, MINE_TYPE, player1).get();
+        nameNode = explorer.updateByIdAndIfVersion(PLAYER_NODE_1_KEY, 100, 0, MINE_TYPE, player1).get();
         assertNull(nameNode);
 
         nameNode = explorer.save(PLAYER_NODE_1_KEY, MINE_TYPE, player1).get();
         long id = nameNode.getId();
 
-        nameNode = explorer.updateByIdAndIf(PLAYER_NODE_1_KEY, id, 2, MINE_TYPE, player2).get();
+        nameNode = explorer.updateByIdAndIfVersion(PLAYER_NODE_1_KEY, id, 2, MINE_TYPE, player2).get();
         assertNull(nameNode);
 
-        nameNode = explorer.updateByIdAndIf(PLAYER_NODE_1_KEY, id, 1, MINE_TYPE, player2).get();
+        nameNode = explorer.updateByIdAndIfVersion(PLAYER_NODE_1_KEY, id, 1, MINE_TYPE, player2).get();
         assertEquals(player2, nameNode.getValue());
 
     }
@@ -879,19 +880,19 @@ class EtcdNamespaceExplorerTest {
 
         Lessee lessee = explorer.lease("testUpdateByIdIfVersionWithLessee", 3000).get();
 
-        NameNode<Player> nameNode = explorer.updateByIdAndIf(PLAYER_NODE_1_KEY, 100, 2, MINE_TYPE, player1, lessee).get();
+        NameNode<Player> nameNode = explorer.updateByIdAndIfVersion(PLAYER_NODE_1_KEY, 100, 2, MINE_TYPE, player1, lessee).get();
         assertNull(nameNode);
 
-        nameNode = explorer.updateByIdAndIf(PLAYER_NODE_1_KEY, 100, 0, MINE_TYPE, player1, lessee).get();
+        nameNode = explorer.updateByIdAndIfVersion(PLAYER_NODE_1_KEY, 100, 0, MINE_TYPE, player1, lessee).get();
         assertNull(nameNode);
 
         nameNode = explorer.save(PLAYER_NODE_1_KEY, MINE_TYPE, player1).get();
         long id = nameNode.getId();
 
-        nameNode = explorer.updateByIdAndIf(PLAYER_NODE_1_KEY, id, 2, MINE_TYPE, player2, lessee).get();
+        nameNode = explorer.updateByIdAndIfVersion(PLAYER_NODE_1_KEY, id, 2, MINE_TYPE, player2, lessee).get();
         assertNull(nameNode);
 
-        nameNode = explorer.updateByIdAndIf(PLAYER_NODE_1_KEY, id, 1, MINE_TYPE, player2, lessee).get();
+        nameNode = explorer.updateByIdAndIfVersion(PLAYER_NODE_1_KEY, id, 1, MINE_TYPE, player2, lessee).get();
         assertEquals(player2, nameNode.getValue());
 
         lessee.shutdown().join();
@@ -906,7 +907,8 @@ class EtcdNamespaceExplorerTest {
         Player player2 = new Player(PLAYER_NODE + "PL_2", 102);
 
         // 0 -> 1
-        NameNode<Player> nameNode = explorer.updateByIdAndIf(PLAYER_NODE_1_KEY, 100, 0, RangeBorder.CLOSE, 2, RangeBorder.CLOSE, MINE_TYPE, player1)
+        NameNode<Player> nameNode = explorer.updateByIdAndIfVersion(PLAYER_NODE_1_KEY, 100, 0, RangeBorder.CLOSE, 2, RangeBorder.CLOSE, MINE_TYPE,
+                        player1)
                 .get();
         assertNull(nameNode);
 
@@ -914,19 +916,19 @@ class EtcdNamespaceExplorerTest {
         long id = nameNode.getId();
 
         // 1 -> 2
-        nameNode = explorer.updateByIdAndIf(PLAYER_NODE_1_KEY, id, 1, RangeBorder.CLOSE, 3, RangeBorder.CLOSE, MINE_TYPE, player1).get();
+        nameNode = explorer.updateByIdAndIfVersion(PLAYER_NODE_1_KEY, id, 1, RangeBorder.CLOSE, 3, RangeBorder.CLOSE, MINE_TYPE, player1).get();
         assertEquals(player1, nameNode.getValue());
 
         // 2 -> 3
-        nameNode = explorer.updateByIdAndIf(PLAYER_NODE_1_KEY, id, 1, RangeBorder.CLOSE, 3, RangeBorder.CLOSE, MINE_TYPE, player2).get();
+        nameNode = explorer.updateByIdAndIfVersion(PLAYER_NODE_1_KEY, id, 1, RangeBorder.CLOSE, 3, RangeBorder.CLOSE, MINE_TYPE, player2).get();
         assertEquals(player2, nameNode.getValue());
 
         // 3 -> 4
-        nameNode = explorer.updateByIdAndIf(PLAYER_NODE_1_KEY, id, 1, RangeBorder.CLOSE, 3, RangeBorder.CLOSE, MINE_TYPE, player1).get();
+        nameNode = explorer.updateByIdAndIfVersion(PLAYER_NODE_1_KEY, id, 1, RangeBorder.CLOSE, 3, RangeBorder.CLOSE, MINE_TYPE, player1).get();
         assertEquals(player1, nameNode.getValue());
 
         // 4 x
-        nameNode = explorer.updateByIdAndIf(PLAYER_NODE_1_KEY, id, 1, RangeBorder.CLOSE, 3, RangeBorder.CLOSE, MINE_TYPE, player2).get();
+        nameNode = explorer.updateByIdAndIfVersion(PLAYER_NODE_1_KEY, id, 1, RangeBorder.CLOSE, 3, RangeBorder.CLOSE, MINE_TYPE, player2).get();
         assertNull(nameNode);
 
         nameNode = explorer.get(PLAYER_NODE_1_KEY, MINE_TYPE).get();
@@ -937,65 +939,67 @@ class EtcdNamespaceExplorerTest {
         id = nameNode.getId();
 
         // 1 x
-        nameNode = explorer.updateByIdAndIf(PLAYER_NODE_1_KEY, id, 1, RangeBorder.OPEN, 3, RangeBorder.OPEN, MINE_TYPE, player2).get();
+        nameNode = explorer.updateByIdAndIfVersion(PLAYER_NODE_1_KEY, id, 1, RangeBorder.OPEN, 3, RangeBorder.OPEN, MINE_TYPE, player2).get();
         assertNull(nameNode);
 
         // 1 -> 2
-        nameNode = explorer.updateByIdAndIf(PLAYER_NODE_1_KEY, id, 0, RangeBorder.OPEN, 3, RangeBorder.OPEN, MINE_TYPE, player2).get();
+        nameNode = explorer.updateByIdAndIfVersion(PLAYER_NODE_1_KEY, id, 0, RangeBorder.OPEN, 3, RangeBorder.OPEN, MINE_TYPE, player2).get();
         assertEquals(player2, nameNode.getValue());
 
         // 2 -> 3
-        nameNode = explorer.updateByIdAndIf(PLAYER_NODE_1_KEY, id, 1, RangeBorder.OPEN, 3, RangeBorder.OPEN, MINE_TYPE, player1).get();
+        nameNode = explorer.updateByIdAndIfVersion(PLAYER_NODE_1_KEY, id, 1, RangeBorder.OPEN, 3, RangeBorder.OPEN, MINE_TYPE, player1).get();
         assertEquals(player1, nameNode.getValue());
 
         // 3 x
-        nameNode = explorer.updateByIdAndIf(PLAYER_NODE_1_KEY, id, 1, RangeBorder.OPEN, 3, RangeBorder.OPEN, MINE_TYPE, player2).get();
+        nameNode = explorer.updateByIdAndIfVersion(PLAYER_NODE_1_KEY, id, 1, RangeBorder.OPEN, 3, RangeBorder.OPEN, MINE_TYPE, player2).get();
         assertNull(nameNode);
 
         // 3 -> 4
-        nameNode = explorer.updateByIdAndIf(PLAYER_NODE_1_KEY, id, 1, RangeBorder.OPEN, 4, RangeBorder.UNLIMITED, MINE_TYPE, player2).get();
+        nameNode = explorer.updateByIdAndIfVersion(PLAYER_NODE_1_KEY, id, 1, RangeBorder.OPEN, 4, RangeBorder.UNLIMITED, MINE_TYPE, player2).get();
         assertEquals(player2, nameNode.getValue());
 
         explorer.remove(PLAYER_NODE_1_KEY).get();
         nameNode = explorer.save(PLAYER_NODE_1_KEY, MINE_TYPE, player2).get();
         id = nameNode.getId();
 
-        nameNode = explorer.updateByIdAndIf(PLAYER_NODE_1_KEY, id, 1, RangeBorder.CLOSE, 0, RangeBorder.UNLIMITED, MINE_TYPE, player1).get();
+        nameNode = explorer.updateByIdAndIfVersion(PLAYER_NODE_1_KEY, id, 1, RangeBorder.CLOSE, 0, RangeBorder.UNLIMITED, MINE_TYPE, player1).get();
         assertEquals(player1, nameNode.getValue());
 
-        nameNode = explorer.updateByIdAndIf(PLAYER_NODE_1_KEY, id, 1, RangeBorder.CLOSE, 0, RangeBorder.UNLIMITED, MINE_TYPE, player2).get();
+        nameNode = explorer.updateByIdAndIfVersion(PLAYER_NODE_1_KEY, id, 1, RangeBorder.CLOSE, 0, RangeBorder.UNLIMITED, MINE_TYPE, player2).get();
         assertEquals(player2, nameNode.getValue());
 
-        nameNode = explorer.updateByIdAndIf(PLAYER_NODE_1_KEY, id, 3, RangeBorder.OPEN, 0, RangeBorder.UNLIMITED, MINE_TYPE, player1).get();
+        nameNode = explorer.updateByIdAndIfVersion(PLAYER_NODE_1_KEY, id, 3, RangeBorder.OPEN, 0, RangeBorder.UNLIMITED, MINE_TYPE, player1).get();
         assertNull(nameNode);
 
-        nameNode = explorer.updateByIdAndIf(PLAYER_NODE_1_KEY, id, 2, RangeBorder.OPEN, 0, RangeBorder.UNLIMITED, MINE_TYPE, player1).get();
+        nameNode = explorer.updateByIdAndIfVersion(PLAYER_NODE_1_KEY, id, 2, RangeBorder.OPEN, 0, RangeBorder.UNLIMITED, MINE_TYPE, player1).get();
         assertEquals(player1, nameNode.getValue());
 
         explorer.remove(PLAYER_NODE_1_KEY).get();
         nameNode = explorer.save(PLAYER_NODE_1_KEY, MINE_TYPE, player2).get();
         id = nameNode.getId();
 
-        nameNode = explorer.updateByIdAndIf(PLAYER_NODE_1_KEY, id, 0, RangeBorder.UNLIMITED, 1, RangeBorder.CLOSE, MINE_TYPE, player1).get();
+        nameNode = explorer.updateByIdAndIfVersion(PLAYER_NODE_1_KEY, id, 0, RangeBorder.UNLIMITED, 1, RangeBorder.CLOSE, MINE_TYPE, player1).get();
         assertEquals(player1, nameNode.getValue());
 
-        nameNode = explorer.updateByIdAndIf(PLAYER_NODE_1_KEY, id, 0, RangeBorder.UNLIMITED, 3, RangeBorder.CLOSE, MINE_TYPE, player2).get();
+        nameNode = explorer.updateByIdAndIfVersion(PLAYER_NODE_1_KEY, id, 0, RangeBorder.UNLIMITED, 3, RangeBorder.CLOSE, MINE_TYPE, player2).get();
         assertEquals(player2, nameNode.getValue());
 
-        nameNode = explorer.updateByIdAndIf(PLAYER_NODE_1_KEY, id, 0, RangeBorder.UNLIMITED, 3, RangeBorder.OPEN, MINE_TYPE, player1).get();
+        nameNode = explorer.updateByIdAndIfVersion(PLAYER_NODE_1_KEY, id, 0, RangeBorder.UNLIMITED, 3, RangeBorder.OPEN, MINE_TYPE, player1).get();
         assertNull(nameNode);
 
-        nameNode = explorer.updateByIdAndIf(PLAYER_NODE_1_KEY, id, 0, RangeBorder.UNLIMITED, 4, RangeBorder.OPEN, MINE_TYPE, player1).get();
+        nameNode = explorer.updateByIdAndIfVersion(PLAYER_NODE_1_KEY, id, 0, RangeBorder.UNLIMITED, 4, RangeBorder.OPEN, MINE_TYPE, player1).get();
         assertEquals(player1, nameNode.getValue());
 
-        nameNode = explorer.updateByIdAndIf(PLAYER_NODE_1_KEY, id, 0, RangeBorder.UNLIMITED, 4, RangeBorder.UNLIMITED, MINE_TYPE, player2).get();
+        nameNode = explorer.updateByIdAndIfVersion(PLAYER_NODE_1_KEY, id, 0, RangeBorder.UNLIMITED, 4, RangeBorder.UNLIMITED, MINE_TYPE, player2)
+                .get();
         assertEquals(player2, nameNode.getValue());
 
         explorer.remove(PLAYER_NODE_1_KEY).get();
         nameNode = explorer.save(PLAYER_NODE_1_KEY, MINE_TYPE, player2).get();
         id = nameNode.getId();
 
-        nameNode = explorer.updateByIdAndIf(PLAYER_NODE_1_KEY, id, 0, RangeBorder.UNLIMITED, 0, RangeBorder.UNLIMITED, MINE_TYPE, player2).get();
+        nameNode = explorer.updateByIdAndIfVersion(PLAYER_NODE_1_KEY, id, 0, RangeBorder.UNLIMITED, 0, RangeBorder.UNLIMITED, MINE_TYPE, player2)
+                .get();
         assertEquals(player2, nameNode.getValue());
 
     }
@@ -1010,7 +1014,7 @@ class EtcdNamespaceExplorerTest {
         NameNode<Player> nameNode = explorer.save(PLAYER_NODE_1_KEY, MINE_TYPE, player2).get();
         long id = nameNode.getId();
 
-        nameNode = explorer.updateByIdAndIf(PLAYER_NODE_1_KEY, id, 0, RangeBorder.CLOSE, 2, RangeBorder.CLOSE, MINE_TYPE, player1, lessee)
+        nameNode = explorer.updateByIdAndIfVersion(PLAYER_NODE_1_KEY, id, 0, RangeBorder.CLOSE, 2, RangeBorder.CLOSE, MINE_TYPE, player1, lessee)
                 .get();
         assertEquals(player1, nameNode.getValue());
 
@@ -1100,15 +1104,15 @@ class EtcdNamespaceExplorerTest {
     void testRemoveIfVersion() throws ExecutionException, InterruptedException {
         Player player1 = new Player(PLAYER_NODE + "PL_1", 100);
 
-        NameNode<Player> nameNode = explorer.removeIf(PLAYER_NODE_1_KEY, 2, MINE_TYPE).get();
+        NameNode<Player> nameNode = explorer.removeIfVersion(PLAYER_NODE_1_KEY, 2, MINE_TYPE).get();
         assertNull(nameNode);
 
         explorer.save(PLAYER_NODE_1_KEY, MINE_TYPE, player1).get();
 
-        nameNode = explorer.removeIf(PLAYER_NODE_1_KEY, 2, MINE_TYPE).get();
+        nameNode = explorer.removeIfVersion(PLAYER_NODE_1_KEY, 2, MINE_TYPE).get();
         assertNull(nameNode);
 
-        nameNode = explorer.removeIf(PLAYER_NODE_1_KEY, 1, MINE_TYPE).get();
+        nameNode = explorer.removeIfVersion(PLAYER_NODE_1_KEY, 1, MINE_TYPE).get();
         assertEquals(player1, nameNode.getValue());
     }
 
@@ -1116,70 +1120,70 @@ class EtcdNamespaceExplorerTest {
     void testRemoveIfMinAndMaxVersion() throws ExecutionException, InterruptedException {
         Player player1 = new Player(PLAYER_NODE + "PL_1", 100);
 
-        NameNode<Player> nameNode = explorer.removeIf(PLAYER_NODE_1_KEY, 1, RangeBorder.CLOSE, 1, RangeBorder.CLOSE, MINE_TYPE).get();
+        NameNode<Player> nameNode = explorer.removeIfVersion(PLAYER_NODE_1_KEY, 1, RangeBorder.CLOSE, 1, RangeBorder.CLOSE, MINE_TYPE).get();
         assertNull(nameNode);
 
         explorer.save(PLAYER_NODE_1_KEY, MINE_TYPE, player1).get();
-        nameNode = explorer.removeIf(PLAYER_NODE_1_KEY, 1, RangeBorder.CLOSE, 1, RangeBorder.CLOSE, MINE_TYPE).get();
+        nameNode = explorer.removeIfVersion(PLAYER_NODE_1_KEY, 1, RangeBorder.CLOSE, 1, RangeBorder.CLOSE, MINE_TYPE).get();
         assertEquals(player1, nameNode.getValue());
 
         saveToVersion(PLAYER_NODE_1_KEY, player1, 3);
 
-        nameNode = explorer.removeIf(PLAYER_NODE_1_KEY, 4, RangeBorder.CLOSE, 5, RangeBorder.CLOSE, MINE_TYPE).get();
+        nameNode = explorer.removeIfVersion(PLAYER_NODE_1_KEY, 4, RangeBorder.CLOSE, 5, RangeBorder.CLOSE, MINE_TYPE).get();
         assertNull(nameNode);
 
-        nameNode = explorer.removeIf(PLAYER_NODE_1_KEY, 1, RangeBorder.CLOSE, 2, RangeBorder.CLOSE, MINE_TYPE).get();
+        nameNode = explorer.removeIfVersion(PLAYER_NODE_1_KEY, 1, RangeBorder.CLOSE, 2, RangeBorder.CLOSE, MINE_TYPE).get();
         assertNull(nameNode);
 
-        nameNode = explorer.removeIf(PLAYER_NODE_1_KEY, 3, RangeBorder.CLOSE, 4, RangeBorder.CLOSE, MINE_TYPE).get();
+        nameNode = explorer.removeIfVersion(PLAYER_NODE_1_KEY, 3, RangeBorder.CLOSE, 4, RangeBorder.CLOSE, MINE_TYPE).get();
         assertEquals(player1, nameNode.getValue());
 
         saveToVersion(PLAYER_NODE_1_KEY, player1, 3);
 
-        nameNode = explorer.removeIf(PLAYER_NODE_1_KEY, 1, RangeBorder.CLOSE, 3, RangeBorder.CLOSE, MINE_TYPE).get();
+        nameNode = explorer.removeIfVersion(PLAYER_NODE_1_KEY, 1, RangeBorder.CLOSE, 3, RangeBorder.CLOSE, MINE_TYPE).get();
         assertEquals(player1, nameNode.getValue());
 
         saveToVersion(PLAYER_NODE_1_KEY, player1, 3);
 
-        nameNode = explorer.removeIf(PLAYER_NODE_1_KEY, 3, RangeBorder.OPEN, 5, RangeBorder.OPEN, MINE_TYPE).get();
+        nameNode = explorer.removeIfVersion(PLAYER_NODE_1_KEY, 3, RangeBorder.OPEN, 5, RangeBorder.OPEN, MINE_TYPE).get();
         assertNull(nameNode);
 
-        nameNode = explorer.removeIf(PLAYER_NODE_1_KEY, 0, RangeBorder.OPEN, 3, RangeBorder.OPEN, MINE_TYPE).get();
+        nameNode = explorer.removeIfVersion(PLAYER_NODE_1_KEY, 0, RangeBorder.OPEN, 3, RangeBorder.OPEN, MINE_TYPE).get();
         assertNull(nameNode);
 
-        nameNode = explorer.removeIf(PLAYER_NODE_1_KEY, 2, RangeBorder.OPEN, 4, RangeBorder.OPEN, MINE_TYPE).get();
+        nameNode = explorer.removeIfVersion(PLAYER_NODE_1_KEY, 2, RangeBorder.OPEN, 4, RangeBorder.OPEN, MINE_TYPE).get();
         assertEquals(player1, nameNode.getValue());
 
         saveToVersion(PLAYER_NODE_1_KEY, player1, 3);
 
-        nameNode = explorer.removeIf(PLAYER_NODE_1_KEY, 3, RangeBorder.OPEN, 5, RangeBorder.UNLIMITED, MINE_TYPE).get();
+        nameNode = explorer.removeIfVersion(PLAYER_NODE_1_KEY, 3, RangeBorder.OPEN, 5, RangeBorder.UNLIMITED, MINE_TYPE).get();
         assertNull(nameNode);
 
-        nameNode = explorer.removeIf(PLAYER_NODE_1_KEY, 2, RangeBorder.OPEN, 5, RangeBorder.UNLIMITED, MINE_TYPE).get();
+        nameNode = explorer.removeIfVersion(PLAYER_NODE_1_KEY, 2, RangeBorder.OPEN, 5, RangeBorder.UNLIMITED, MINE_TYPE).get();
         assertEquals(player1, nameNode.getValue());
 
         saveToVersion(PLAYER_NODE_1_KEY, player1, 3);
 
-        nameNode = explorer.removeIf(PLAYER_NODE_1_KEY, 4, RangeBorder.CLOSE, 5, RangeBorder.UNLIMITED, MINE_TYPE).get();
+        nameNode = explorer.removeIfVersion(PLAYER_NODE_1_KEY, 4, RangeBorder.CLOSE, 5, RangeBorder.UNLIMITED, MINE_TYPE).get();
         assertNull(nameNode);
 
-        nameNode = explorer.removeIf(PLAYER_NODE_1_KEY, 3, RangeBorder.CLOSE, 5, RangeBorder.UNLIMITED, MINE_TYPE).get();
+        nameNode = explorer.removeIfVersion(PLAYER_NODE_1_KEY, 3, RangeBorder.CLOSE, 5, RangeBorder.UNLIMITED, MINE_TYPE).get();
         assertEquals(player1, nameNode.getValue());
 
         saveToVersion(PLAYER_NODE_1_KEY, player1, 3);
 
-        nameNode = explorer.removeIf(PLAYER_NODE_1_KEY, 0, RangeBorder.UNLIMITED, 3, RangeBorder.OPEN, MINE_TYPE).get();
+        nameNode = explorer.removeIfVersion(PLAYER_NODE_1_KEY, 0, RangeBorder.UNLIMITED, 3, RangeBorder.OPEN, MINE_TYPE).get();
         assertNull(nameNode);
 
-        nameNode = explorer.removeIf(PLAYER_NODE_1_KEY, 0, RangeBorder.UNLIMITED, 4, RangeBorder.OPEN, MINE_TYPE).get();
+        nameNode = explorer.removeIfVersion(PLAYER_NODE_1_KEY, 0, RangeBorder.UNLIMITED, 4, RangeBorder.OPEN, MINE_TYPE).get();
         assertEquals(player1, nameNode.getValue());
 
         saveToVersion(PLAYER_NODE_1_KEY, player1, 3);
 
-        nameNode = explorer.removeIf(PLAYER_NODE_1_KEY, 0, RangeBorder.UNLIMITED, 2, RangeBorder.CLOSE, MINE_TYPE).get();
+        nameNode = explorer.removeIfVersion(PLAYER_NODE_1_KEY, 0, RangeBorder.UNLIMITED, 2, RangeBorder.CLOSE, MINE_TYPE).get();
         assertNull(nameNode);
 
-        nameNode = explorer.removeIf(PLAYER_NODE_1_KEY, 0, RangeBorder.UNLIMITED, 3, RangeBorder.CLOSE, MINE_TYPE).get();
+        nameNode = explorer.removeIfVersion(PLAYER_NODE_1_KEY, 0, RangeBorder.UNLIMITED, 3, RangeBorder.CLOSE, MINE_TYPE).get();
         assertEquals(player1, nameNode.getValue());
 
     }
@@ -1230,12 +1234,12 @@ class EtcdNamespaceExplorerTest {
         nameNode = explorer.get(PLAYER_NODE_1_KEY, MINE_TYPE).get();
         long id = nameNode.getId();
 
-        nameNode = explorer.removeByIdAndIf(PLAYER_NODE_1_KEY, id, 1, MINE_TYPE).get();
+        nameNode = explorer.removeByIdAndIfVersion(PLAYER_NODE_1_KEY, id, 1, MINE_TYPE).get();
         assertNull(nameNode);
-        nameNode = explorer.removeByIdAndIf(PLAYER_NODE_1_KEY, id, 3, MINE_TYPE).get();
+        nameNode = explorer.removeByIdAndIfVersion(PLAYER_NODE_1_KEY, id, 3, MINE_TYPE).get();
         assertNull(nameNode);
 
-        nameNode = explorer.removeByIdAndIf(PLAYER_NODE_1_KEY, id, 2, MINE_TYPE).get();
+        nameNode = explorer.removeByIdAndIfVersion(PLAYER_NODE_1_KEY, id, 2, MINE_TYPE).get();
         assertEquals(player1, nameNode.getValue());
     }
 
@@ -1243,73 +1247,74 @@ class EtcdNamespaceExplorerTest {
     void testRemoveByIdAndIfMinAndMaxVersion() throws ExecutionException, InterruptedException {
         Player player1 = new Player(PLAYER_NODE + "PL_1", 100);
 
-        NameNode<Player> nameNode = explorer.removeByIdAndIf(PLAYER_NODE_1_KEY, 100, 1, RangeBorder.CLOSE, 1, RangeBorder.CLOSE, MINE_TYPE).get();
+        NameNode<Player> nameNode = explorer.removeByIdAndIfVersion(PLAYER_NODE_1_KEY, 100, 1, RangeBorder.CLOSE, 1, RangeBorder.CLOSE, MINE_TYPE)
+                .get();
         assertNull(nameNode);
 
         nameNode = explorer.save(PLAYER_NODE_1_KEY, MINE_TYPE, player1).get();
         long id = nameNode.getId();
 
-        nameNode = explorer.removeByIdAndIf(PLAYER_NODE_1_KEY, id, 1, RangeBorder.CLOSE, 1, RangeBorder.CLOSE, MINE_TYPE).get();
+        nameNode = explorer.removeByIdAndIfVersion(PLAYER_NODE_1_KEY, id, 1, RangeBorder.CLOSE, 1, RangeBorder.CLOSE, MINE_TYPE).get();
         assertEquals(player1, nameNode.getValue());
 
         nameNode = saveToVersion(PLAYER_NODE_1_KEY, player1, 3);
         id = nameNode.getId();
 
-        nameNode = explorer.removeByIdAndIf(PLAYER_NODE_1_KEY, id, 4, RangeBorder.CLOSE, 5, RangeBorder.CLOSE, MINE_TYPE).get();
+        nameNode = explorer.removeByIdAndIfVersion(PLAYER_NODE_1_KEY, id, 4, RangeBorder.CLOSE, 5, RangeBorder.CLOSE, MINE_TYPE).get();
         assertNull(nameNode);
 
-        nameNode = explorer.removeByIdAndIf(PLAYER_NODE_1_KEY, id, 1, RangeBorder.CLOSE, 2, RangeBorder.CLOSE, MINE_TYPE).get();
+        nameNode = explorer.removeByIdAndIfVersion(PLAYER_NODE_1_KEY, id, 1, RangeBorder.CLOSE, 2, RangeBorder.CLOSE, MINE_TYPE).get();
         assertNull(nameNode);
 
-        nameNode = explorer.removeByIdAndIf(PLAYER_NODE_1_KEY, id, 3, RangeBorder.CLOSE, 4, RangeBorder.CLOSE, MINE_TYPE).get();
+        nameNode = explorer.removeByIdAndIfVersion(PLAYER_NODE_1_KEY, id, 3, RangeBorder.CLOSE, 4, RangeBorder.CLOSE, MINE_TYPE).get();
         assertEquals(player1, nameNode.getValue());
 
         id = saveToVersion(PLAYER_NODE_1_KEY, player1, 3).getId();
 
-        nameNode = explorer.removeByIdAndIf(PLAYER_NODE_1_KEY, id, 1, RangeBorder.CLOSE, 3, RangeBorder.CLOSE, MINE_TYPE).get();
+        nameNode = explorer.removeByIdAndIfVersion(PLAYER_NODE_1_KEY, id, 1, RangeBorder.CLOSE, 3, RangeBorder.CLOSE, MINE_TYPE).get();
         assertEquals(player1, nameNode.getValue());
 
         id = saveToVersion(PLAYER_NODE_1_KEY, player1, 3).getId();
 
-        nameNode = explorer.removeByIdAndIf(PLAYER_NODE_1_KEY, id, 3, RangeBorder.OPEN, 5, RangeBorder.OPEN, MINE_TYPE).get();
+        nameNode = explorer.removeByIdAndIfVersion(PLAYER_NODE_1_KEY, id, 3, RangeBorder.OPEN, 5, RangeBorder.OPEN, MINE_TYPE).get();
         assertNull(nameNode);
 
-        nameNode = explorer.removeByIdAndIf(PLAYER_NODE_1_KEY, id, 0, RangeBorder.OPEN, 3, RangeBorder.OPEN, MINE_TYPE).get();
+        nameNode = explorer.removeByIdAndIfVersion(PLAYER_NODE_1_KEY, id, 0, RangeBorder.OPEN, 3, RangeBorder.OPEN, MINE_TYPE).get();
         assertNull(nameNode);
 
-        nameNode = explorer.removeByIdAndIf(PLAYER_NODE_1_KEY, id, 2, RangeBorder.OPEN, 4, RangeBorder.OPEN, MINE_TYPE).get();
+        nameNode = explorer.removeByIdAndIfVersion(PLAYER_NODE_1_KEY, id, 2, RangeBorder.OPEN, 4, RangeBorder.OPEN, MINE_TYPE).get();
         assertEquals(player1, nameNode.getValue());
 
         id = saveToVersion(PLAYER_NODE_1_KEY, player1, 3).getId();
 
-        nameNode = explorer.removeByIdAndIf(PLAYER_NODE_1_KEY, id, 3, RangeBorder.OPEN, 5, RangeBorder.UNLIMITED, MINE_TYPE).get();
+        nameNode = explorer.removeByIdAndIfVersion(PLAYER_NODE_1_KEY, id, 3, RangeBorder.OPEN, 5, RangeBorder.UNLIMITED, MINE_TYPE).get();
         assertNull(nameNode);
 
-        nameNode = explorer.removeByIdAndIf(PLAYER_NODE_1_KEY, id, 2, RangeBorder.OPEN, 5, RangeBorder.UNLIMITED, MINE_TYPE).get();
+        nameNode = explorer.removeByIdAndIfVersion(PLAYER_NODE_1_KEY, id, 2, RangeBorder.OPEN, 5, RangeBorder.UNLIMITED, MINE_TYPE).get();
         assertEquals(player1, nameNode.getValue());
 
         id = saveToVersion(PLAYER_NODE_1_KEY, player1, 3).getId();
 
-        nameNode = explorer.removeByIdAndIf(PLAYER_NODE_1_KEY, id, 4, RangeBorder.CLOSE, 5, RangeBorder.UNLIMITED, MINE_TYPE).get();
+        nameNode = explorer.removeByIdAndIfVersion(PLAYER_NODE_1_KEY, id, 4, RangeBorder.CLOSE, 5, RangeBorder.UNLIMITED, MINE_TYPE).get();
         assertNull(nameNode);
 
-        nameNode = explorer.removeByIdAndIf(PLAYER_NODE_1_KEY, id, 3, RangeBorder.CLOSE, 5, RangeBorder.UNLIMITED, MINE_TYPE).get();
+        nameNode = explorer.removeByIdAndIfVersion(PLAYER_NODE_1_KEY, id, 3, RangeBorder.CLOSE, 5, RangeBorder.UNLIMITED, MINE_TYPE).get();
         assertEquals(player1, nameNode.getValue());
 
         id = saveToVersion(PLAYER_NODE_1_KEY, player1, 3).getId();
 
-        nameNode = explorer.removeByIdAndIf(PLAYER_NODE_1_KEY, id, 0, RangeBorder.UNLIMITED, 3, RangeBorder.OPEN, MINE_TYPE).get();
+        nameNode = explorer.removeByIdAndIfVersion(PLAYER_NODE_1_KEY, id, 0, RangeBorder.UNLIMITED, 3, RangeBorder.OPEN, MINE_TYPE).get();
         assertNull(nameNode);
 
-        nameNode = explorer.removeByIdAndIf(PLAYER_NODE_1_KEY, id, 0, RangeBorder.UNLIMITED, 4, RangeBorder.OPEN, MINE_TYPE).get();
+        nameNode = explorer.removeByIdAndIfVersion(PLAYER_NODE_1_KEY, id, 0, RangeBorder.UNLIMITED, 4, RangeBorder.OPEN, MINE_TYPE).get();
         assertEquals(player1, nameNode.getValue());
 
         id = saveToVersion(PLAYER_NODE_1_KEY, player1, 3).getId();
 
-        nameNode = explorer.removeByIdAndIf(PLAYER_NODE_1_KEY, id, 0, RangeBorder.UNLIMITED, 2, RangeBorder.CLOSE, MINE_TYPE).get();
+        nameNode = explorer.removeByIdAndIfVersion(PLAYER_NODE_1_KEY, id, 0, RangeBorder.UNLIMITED, 2, RangeBorder.CLOSE, MINE_TYPE).get();
         assertNull(nameNode);
 
-        nameNode = explorer.removeByIdAndIf(PLAYER_NODE_1_KEY, id, 0, RangeBorder.UNLIMITED, 3, RangeBorder.CLOSE, MINE_TYPE).get();
+        nameNode = explorer.removeByIdAndIfVersion(PLAYER_NODE_1_KEY, id, 0, RangeBorder.UNLIMITED, 3, RangeBorder.CLOSE, MINE_TYPE).get();
         assertEquals(player1, nameNode.getValue());
     }
 

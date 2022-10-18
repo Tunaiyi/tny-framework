@@ -5,7 +5,7 @@ ext.vers = [
         junit_platform                      : "1.8.2",
         junirocketmqt5                      : "5.4.2",
         mockito                             : "3.9.0",
-        netty                               : "4.1.78.Final",
+        netty                               : "4.1.82.Final",
 
         spring                              : "5.3.5",
         slf4j                               : "1.7.30",
@@ -97,6 +97,7 @@ ext.libs = [
 
         netty                                    : "io.netty:netty-all:${vers.netty}",
         netty_all                                : "io.netty:netty-all:${vers.netty}",
+        netty_common                             : "io.netty:netty-common:${vers.netty}",
         netty_tcnative_boringssl_static          : "io.netty:netty-tcnative-boringssl-static:${vers.netty_tcnative_boringssl_static}",
 
         orika                                    : "ma.glasnost.orika:orika-core:1.5.4",
