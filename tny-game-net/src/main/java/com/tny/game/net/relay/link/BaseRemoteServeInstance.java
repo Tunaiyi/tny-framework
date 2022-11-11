@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.relay.link;
 
 import com.google.common.collect.ImmutableList;
@@ -54,9 +54,9 @@ public class BaseRemoteServeInstance implements NetRemoteServeInstance {
 
     private final AtomicBoolean close = new AtomicBoolean(false);
 
-    private Map<String, RemoteRelayLink> relayLinkMap = new ConcurrentHashMap<>();
+    private Map<String, ClientRelayLink> relayLinkMap = new ConcurrentHashMap<>();
 
-    private volatile List<RemoteRelayLink> activeRelayLinks = ImmutableList.of();
+    private volatile List<ClientRelayLink> activeRelayLinks = ImmutableList.of();
 
     public BaseRemoteServeInstance(NetRemoteServeCluster cluster, ServeNode node) {
         this.id = node.getId();
@@ -135,7 +135,7 @@ public class BaseRemoteServeInstance implements NetRemoteServeInstance {
     }
 
     @Override
-    public List<RemoteRelayLink> getActiveRelayLinks() {
+    public List<ClientRelayLink> getActiveRelayLinks() {
         return activeRelayLinks;
     }
 
@@ -148,7 +148,7 @@ public class BaseRemoteServeInstance implements NetRemoteServeInstance {
     public synchronized void close() {
         if (close.compareAndSet(false, true)) {
             this.prepareClose();
-            Map<String, RemoteRelayLink> oldMap = this.relayLinkMap;
+            Map<String, ClientRelayLink> oldMap = this.relayLinkMap;
             this.relayLinkMap = new ConcurrentHashMap<>();
             oldMap.forEach((id, link) -> link.close());
             oldMap.clear();
@@ -160,7 +160,7 @@ public class BaseRemoteServeInstance implements NetRemoteServeInstance {
     public void heartbeat() {
         long lifeTime = cluster.getContext().getLinkMaxIdleTime();
         long now = System.currentTimeMillis();
-        for (RemoteRelayLink link : relayLinkMap.values()) {
+        for (ClientRelayLink link : relayLinkMap.values()) {
             ExeAide.runQuietly(() -> {
                 if (link.isActive()) {
                     link.ping();
@@ -193,7 +193,7 @@ public class BaseRemoteServeInstance implements NetRemoteServeInstance {
     }
 
     private synchronized void refreshActiveLinks() {
-        this.activeRelayLinks = ImmutableList.sortedCopyOf(Comparator.comparing(RemoteRelayLink::getId), relayLinkMap.values()
+        this.activeRelayLinks = ImmutableList.sortedCopyOf(Comparator.comparing(ClientRelayLink::getId), relayLinkMap.values()
                 .stream()
                 .filter(RelayLink::isActive)
                 .collect(Collectors.toList()));
@@ -201,7 +201,7 @@ public class BaseRemoteServeInstance implements NetRemoteServeInstance {
     }
 
     @Override
-    public synchronized void register(RemoteRelayLink link) {
+    public synchronized void register(ClientRelayLink link) {
         NetRelayLink old = relayLinkMap.put(link.getId(), link);
         if (old != null && old != link) {
             old.close();
@@ -211,7 +211,7 @@ public class BaseRemoteServeInstance implements NetRemoteServeInstance {
     }
 
     @Override
-    public void disconnected(RemoteRelayLink link) {
+    public void disconnected(ClientRelayLink link) {
         NetRelayLink current = relayLinkMap.get(link.getId());
         if (current != link) {
             return;
@@ -223,7 +223,7 @@ public class BaseRemoteServeInstance implements NetRemoteServeInstance {
     }
 
     @Override
-    public synchronized void relieve(RemoteRelayLink link) {
+    public synchronized void relieve(ClientRelayLink link) {
         if (relayLinkMap.remove(link.getId(), link)) {
             if (link.isActive()) {
                 link.close();
@@ -233,11 +233,11 @@ public class BaseRemoteServeInstance implements NetRemoteServeInstance {
         }
     }
 
-    protected void onRegister(RemoteRelayLink link) {
+    protected void onRegister(ClientRelayLink link) {
 
     }
 
-    protected void onRelieve(RemoteRelayLink link) {
+    protected void onRelieve(ClientRelayLink link) {
 
     }
 

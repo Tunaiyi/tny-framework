@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.transport;
 
 import com.tny.game.common.concurrent.utils.*;
@@ -15,6 +15,7 @@ import com.tny.game.net.base.*;
 import com.tny.game.net.command.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
+import com.tny.game.net.rpc.*;
 import org.slf4j.*;
 
 import java.util.Objects;
@@ -40,7 +41,7 @@ public abstract class AbstractNetTunnel<UID, E extends NetEndpoint<UID>> extends
     private long accessId;
 
     /* 管道模式 */
-    private final TunnelMode mode;
+    private final NetAccessMode accessMode;
 
     /* 会话终端 */
     protected volatile E endpoint;
@@ -51,9 +52,9 @@ public abstract class AbstractNetTunnel<UID, E extends NetEndpoint<UID>> extends
     /* endpoint 锁 */
     private final StampedLock endpointLock = new StampedLock();
 
-    protected AbstractNetTunnel(long id, TunnelMode mode, NetworkContext context) {
+    protected AbstractNetTunnel(long id, NetAccessMode accessMode, NetworkContext context) {
         this.id = id;
-        this.mode = mode;
+        this.accessMode = accessMode;
         this.context = context;
     }
 
@@ -68,8 +69,8 @@ public abstract class AbstractNetTunnel<UID, E extends NetEndpoint<UID>> extends
     }
 
     @Override
-    public TunnelMode getMode() {
-        return this.mode;
+    public NetAccessMode getAccessMode() {
+        return this.accessMode;
     }
 
     @Override
@@ -139,12 +140,12 @@ public abstract class AbstractNetTunnel<UID, E extends NetEndpoint<UID>> extends
     }
 
     @Override
-    public SendReceipt send(MessageContext messageContext) {
+    public SendReceipt send(MessageContent content) {
         return StampedLockAide.supplyInOptimisticReadLock(this.endpointLock,
-                () -> doSend(messageContext));
+                () -> doSend(content));
     }
 
-    private SendReceipt doSend(MessageContext messageContext) {
+    private SendReceipt doSend(MessageContent messageContext) {
         return this.endpoint.send(this, messageContext);
     }
 

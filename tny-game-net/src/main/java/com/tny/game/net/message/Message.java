@@ -23,7 +23,7 @@ import java.util.*;
  * @date: 2018/8/31 下午10:23
  */
 
-public interface Message extends Serializable, MessageContent, MessageHead {
+public interface Message extends Serializable, MessageSubject, MessageHead {
 
     /**
      * @return 获取消息 ID
@@ -71,8 +71,8 @@ public interface Message extends Serializable, MessageContent, MessageHead {
     }
 
     @Override
-    default Map<String, MessageHeader<?>> getAllHeadersMap() {
-        return getHead().getAllHeadersMap();
+    default Map<String, MessageHeader<?>> getAllHeaderMap() {
+        return getHead().getAllHeaderMap();
     }
 
     @Override

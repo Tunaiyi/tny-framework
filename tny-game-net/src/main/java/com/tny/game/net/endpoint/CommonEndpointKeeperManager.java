@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.endpoint;
 
 import com.google.common.collect.ImmutableMap;
@@ -18,7 +18,7 @@ import com.tny.game.common.lifecycle.unit.annotation.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.endpoint.listener.*;
-import com.tny.game.net.transport.*;
+import com.tny.game.net.rpc.*;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -108,35 +108,35 @@ public class CommonEndpointKeeperManager implements EndpointKeeperManager, AppPr
         this.terminalKeeperSettingMap = ImmutableMap.copyOf(terminalSettingMap);
     }
 
-    private NetEndpointKeeper<?, ?> create(MessagerType messagerType, TunnelMode tunnelMode) {
-        if (tunnelMode == TunnelMode.SERVER) {
+    private NetEndpointKeeper<?, ?> create(MessagerType messagerType, NetAccessMode accessMode) {
+        if (accessMode == NetAccessMode.SERVER) {
             SessionKeeperSetting setting = this.sessionKeeperSettingMap.get(messagerType);
             if (setting == null) {
                 setting = this.sessionKeeperSettingMap.get(DEFAULT_KEY);
             }
-            return create(messagerType, tunnelMode, setting, this.sessionFactoryMap.get(setting.getKeeperFactory()));
+            return create(messagerType, accessMode, setting, this.sessionFactoryMap.get(setting.getKeeperFactory()));
         } else {
             TerminalKeeperSetting setting = this.terminalKeeperSettingMap.get(messagerType);
             if (setting == null) {
                 setting = this.terminalKeeperSettingMap.get(DEFAULT_KEY);
             }
-            return create(messagerType, tunnelMode, setting, this.terminalFactoryMap.get(setting.getKeeperFactory()));
+            return create(messagerType, accessMode, setting, this.terminalFactoryMap.get(setting.getKeeperFactory()));
         }
     }
 
     private <E extends Endpoint<?>, EK extends NetEndpointKeeper<?, E>, S extends EndpointKeeperSetting> EK create(
-            MessagerType messagerType, TunnelMode endpointType, S setting, EndpointKeeperFactory<?, EK, S> factory) {
-        Asserts.checkNotNull(factory, "can not found {}.{} session factory", endpointType, messagerType);
+            MessagerType messagerType, NetAccessMode accessMode, S setting, EndpointKeeperFactory<?, EK, S> factory) {
+        Asserts.checkNotNull(factory, "can not found {}.{} session factory", accessMode, messagerType);
         return factory.createKeeper(messagerType, setting);
     }
 
     @Override
-    public <UID, K extends EndpointKeeper<UID, ? extends Endpoint<UID>>> K loadEndpoint(MessagerType messagerType, TunnelMode tunnelMode) {
+    public <UID, K extends EndpointKeeper<UID, ? extends Endpoint<UID>>> K loadEndpoint(MessagerType messagerType, NetAccessMode accessMode) {
         EndpointKeeper<?, ?> keeper = this.endpointKeeperMap.get(messagerType);
         if (keeper != null) {
             return as(keeper);
         }
-        NetEndpointKeeper<?, ?> newOne = create(messagerType, tunnelMode);
+        NetEndpointKeeper<?, ?> newOne = create(messagerType, accessMode);
         keeper = as(this.endpointKeeperMap.computeIfAbsent(messagerType, (k) -> newOne));
         if (keeper == newOne) {
             ON_CREATE.notify(keeper);

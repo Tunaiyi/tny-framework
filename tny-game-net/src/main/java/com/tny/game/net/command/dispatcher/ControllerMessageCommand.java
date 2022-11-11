@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.command.dispatcher;
 
 import com.tny.game.common.runtime.*;
@@ -158,7 +158,7 @@ public class ControllerMessageCommand extends MessageCommand {
         // 是否需要做登录校验,判断是否已经登录
         if (certificate != null && certificate.isAuthenticated()) {
             EndpointKeeper<Object, Endpoint<Object>> endpointKeeper = this.endpointKeeperManager
-                    .loadEndpoint(certificate.getMessagerType(), this.tunnel.getMode());
+                    .loadEndpoint(certificate.getMessagerType(), this.tunnel.getAccessMode());
             endpointKeeper.online(certificate, this.tunnel);
         }
     }

@@ -56,8 +56,8 @@ public class MessagerRemoteAccess implements RpcRemoteAccess {
     }
 
     @Override
-    public SendReceipt send(MessageContext messageContext) {
-        return endpoint.send(messageContext);
+    public SendReceipt send(MessageContent content) {
+        return endpoint.send(content);
     }
 
 }

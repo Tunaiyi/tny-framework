@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.relay.packet;
 
 import com.tny.game.common.enums.*;
@@ -28,7 +28,7 @@ import static com.tny.game.net.relay.RelayCodecConstants.*;
  */
 public enum RelayPacketType implements ByteEnumerable {
 
-    LINK_OPENING(RELAY_PACKET_TYPE_LINK_OPENING,
+    LINK_OPEN(RELAY_PACKET_TYPE_LINK_OPENING,
             LinkOpenPacket.class, LinkOpenArguments.class,
             LinkOpenPacket.FACTORY,
             RelayPacketProcessor::onLinkOpen),
@@ -84,7 +84,7 @@ public enum RelayPacketType implements ByteEnumerable {
 
     private final Class<? extends RelayPacket<?>> packetClass;
 
-    private final Class<? extends RelayPacketArguments> argumentsClass;
+    private final Class<? extends RelayPacketArguments> classOfArguments;
 
     private final RelayPacketFactory<RelayPacket<RelayPacketArguments>, RelayPacketArguments> packetFactory;
 
@@ -93,27 +93,27 @@ public enum RelayPacketType implements ByteEnumerable {
     private final RelayPacketHandleByTransporterInvoker<RelayPacket<?>> handleByTransporter;
 
     <A extends RelayPacketArguments, P extends RelayPacket<A>> RelayPacketType(int id,
-            Class<P> packetClass, Class<A> argumentsClass,
+            Class<P> packetClass, Class<A> classOfArguments,
             RelayPacketFactory<P, A> packetFactory,
             RelayPacketHandleByLinkInvoker<P> packetHandlerInvoker) {
-        this(id, packetClass, argumentsClass, packetFactory, packetHandlerInvoker, null);
+        this(id, packetClass, classOfArguments, packetFactory, packetHandlerInvoker, null);
     }
 
     <A extends RelayPacketArguments, P extends RelayPacket<A>> RelayPacketType(int id,
-            Class<P> packetClass, Class<A> argumentsClass,
+            Class<P> packetClass, Class<A> classOfArguments,
             RelayPacketFactory<P, A> packetFactory,
             RelayPacketHandleByTransporterInvoker<P> transporterHandlerInvoker) {
-        this(id, packetClass, argumentsClass, packetFactory, null, transporterHandlerInvoker);
+        this(id, packetClass, classOfArguments, packetFactory, null, transporterHandlerInvoker);
     }
 
     <A extends RelayPacketArguments, P extends RelayPacket<A>> RelayPacketType(int id,
-            Class<P> packetClass, Class<A> argumentsClass,
+            Class<P> packetClass, Class<A> classOfArguments,
             RelayPacketFactory<P, A> packetFactory,
             RelayPacketHandleByLinkInvoker<P> packetHandlerInvoker,
             RelayPacketHandleByTransporterInvoker<?> transporterHandlerInvoker) {
         this.id = (byte)id;
         this.packetClass = packetClass;
-        this.argumentsClass = argumentsClass;
+        this.classOfArguments = classOfArguments;
         this.packetFactory = as(packetFactory);
         this.handleByLink = as(packetHandlerInvoker);
         this.handleByTransporter = as(transporterHandlerInvoker);
@@ -160,8 +160,8 @@ public enum RelayPacketType implements ByteEnumerable {
         return packetClass;
     }
 
-    public Class<? extends RelayPacketArguments> getArgumentsClass() {
-        return argumentsClass;
+    public Class<? extends RelayPacketArguments> getClassOfArguments() {
+        return classOfArguments;
     }
 
     public byte getOption() {

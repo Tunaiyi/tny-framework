@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.endpoint;
 
 import com.tny.game.common.event.bus.*;
@@ -99,7 +99,7 @@ public abstract class AbstractEndpointKeeper<UID, E extends Endpoint<UID>, NE ex
     }
 
     @Override
-    public void send2User(UID userId, MessageContext context) {
+    public void send2User(UID userId, MessageContent context) {
         E endpoint = this.getEndpoint(userId);
         if (endpoint != null) {
             endpoint.send(context);
@@ -107,17 +107,17 @@ public abstract class AbstractEndpointKeeper<UID, E extends Endpoint<UID>, NE ex
     }
 
     @Override
-    public void send2Users(Collection<UID> userIds, MessageContext context) {
+    public void send2Users(Collection<UID> userIds, MessageContent context) {
         this.doSendMultiId(userIds.stream(), context);
     }
 
     @Override
-    public void send2Users(Stream<UID> userIdsStream, MessageContext context) {
+    public void send2Users(Stream<UID> userIdsStream, MessageContent context) {
         this.doSendMultiId(userIdsStream, context);
     }
 
     @Override
-    public void send2AllOnline(MessageContext context) {
+    public void send2AllOnline(MessageContent context) {
         for (E endpoint : this.endpointMap.values())
             endpoint.send(context);
     }
@@ -214,7 +214,7 @@ public abstract class AbstractEndpointKeeper<UID, E extends Endpoint<UID>, NE ex
         onRemoveSession.removeListener(listener);
     }
 
-    private void doSendMultiId(Stream<UID> userIds, MessageContext context) {
+    private void doSendMultiId(Stream<UID> userIds, MessageContent context) {
         userIds.forEach(userId -> {
             E endpoint = this.getEndpoint(userId);
             if (endpoint != null) {

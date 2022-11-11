@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.netty4.network;
 
 import com.tny.game.common.concurrent.collection.*;
@@ -166,7 +166,7 @@ public class NettyServerGuide extends NettyBootstrap<NettyNetServerBootstrapSett
             this.bootstrap.option(ChannelOption.SO_REUSEADDR, true);
             this.bootstrap.childOption(ChannelOption.TCP_NODELAY, true);
             this.bootstrap.childOption(ChannelOption.SO_KEEPALIVE, true);
-            this.bootstrap.childHandler(new ChannelInitializer<Channel>() {
+            this.bootstrap.childHandler(new ChannelInitializer<>() {
 
                 @Override
                 protected void initChannel(Channel channel) throws Exception {

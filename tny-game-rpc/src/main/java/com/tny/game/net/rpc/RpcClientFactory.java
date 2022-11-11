@@ -68,7 +68,7 @@ public class RpcClientFactory implements Serve {
             RpcServiceType serviceType = RpcServiceTypes.checkService(user);
             int serverId = appContext.getServerId();
             long id = RpcAccessIdentify.formatId(serviceType, serverId, index);
-            RequestContext context = RpcAuthMessageContexts
+            RequestContent context = RpcAuthMessageContexts
                     .authRequest(id, setting.getPassword())
                     .willRespondAwaiter(setting.getAuthenticateTimeout());
             c.send(context);

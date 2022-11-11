@@ -68,7 +68,7 @@ public class GameClientApp {
                         String message = "[" + IDS + "] 请求登录 " + times.incrementAndGet() + " 次";
                         System.out.println("!!@   [发送] 请求 = " + message);
                         SendReceipt context = tunnel
-                                .send(MessageContexts.request(Protocols.protocol(CtrlerIds.LOGIN$LOGIN), 888888L, userId)
+                                .send(MessageContents.request(Protocols.protocol(CtrlerIds.LOGIN$LOGIN), 888888L, userId)
                                         .willRespondAwaiter(3000000L));
                         try {
                             Message response = context.respond().get(300000L, TimeUnit.MILLISECONDS);
@@ -181,7 +181,7 @@ public class GameClientApp {
     }
 
     private static <T> T send(Client<Long> client, Protocol protocol, Class<T> returnClass, long waitTimeout, Object... params) {
-        RequestContext messageContent = MessageContexts.request(protocol, params);
+        RequestContent messageContent = MessageContents.request(protocol, params);
         if (waitTimeout > 0) {
             SendReceipt context = client.send(messageContent
                     .willRespondAwaiter(waitTimeout));
@@ -200,7 +200,7 @@ public class GameClientApp {
     }
 
     private static void send(Client<Long> client, String content, boolean wait) {
-        RequestContext messageContent = MessageContexts.request(Protocols.protocol(CtrlerIds.SPEAK$SAY), content);
+        RequestContent messageContent = MessageContents.request(Protocols.protocol(CtrlerIds.SPEAK$SAY), content);
         if (wait) {
             RpcResult<SayContentDTO> result = speakService.say(content);
             LOGGER.info("SpeakService receive [code({})] : {}", result.getCode(), result.getBody());
@@ -211,7 +211,7 @@ public class GameClientApp {
 
     private static void test(Client<Long> client, String content, boolean wait) {
         ThreadLocalRandom random = ThreadLocalRandom.current();
-        RequestContext messageContent = MessageContexts.request(Protocols.protocol(CtrlerIds.SPEAK$TEST),
+        RequestContent messageContent = MessageContents.request(Protocols.protocol(CtrlerIds.SPEAK$TEST),
                 (byte)random.nextInt(Byte.MIN_VALUE, Byte.MAX_VALUE),
                 (short)random.nextInt(Short.MIN_VALUE, Short.MAX_VALUE),
                 random.nextInt(Integer.MIN_VALUE, Integer.MAX_VALUE),

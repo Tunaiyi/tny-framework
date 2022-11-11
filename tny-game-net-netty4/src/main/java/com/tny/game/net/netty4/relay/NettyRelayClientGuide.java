@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.netty4.relay;
 
 import com.tny.game.common.lifecycle.unit.*;
@@ -22,12 +22,14 @@ import com.tny.game.net.netty4.network.*;
 import com.tny.game.net.relay.*;
 import com.tny.game.net.relay.link.*;
 import com.tny.game.net.relay.packet.*;
+import com.tny.game.net.rpc.*;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.epoll.EpollSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import org.slf4j.*;
 
+import javax.annotation.Nonnull;
 import java.net.InetSocketAddress;
 import java.util.Map;
 import java.util.concurrent.*;
@@ -51,7 +53,7 @@ public class NettyRelayClientGuide extends NettyBootstrap<NettyRelayClientBootst
 
     private final AtomicBoolean closed = new AtomicBoolean(false);
 
-    private RemoteRelayExplorer localRelayExplorer;
+    private ClientRelayExplorer localRelayExplorer;
 
     private final ClientCloseListener<Object> closeListener = (client) -> this.clients.remove(clientKey(client.getUrl()),
             as(client, NettyClient.class));
@@ -113,7 +115,7 @@ public class NettyRelayClientGuide extends NettyBootstrap<NettyRelayClientBootst
 
     @Override
     protected void onLoadUnit(NettyRelayClientBootstrapSetting setting) {
-        this.localRelayExplorer = UnitLoader.getLoader(RemoteRelayExplorer.class).checkUnit();
+        this.localRelayExplorer = UnitLoader.getLoader(ClientRelayExplorer.class).checkUnit();
     }
 
     private Bootstrap getBootstrap() {
@@ -125,17 +127,17 @@ public class NettyRelayClientGuide extends NettyBootstrap<NettyRelayClientBootst
                 return this.bootstrap;
             }
             this.bootstrap = new Bootstrap();
-            RelayPacketProcessor relayPacketProcessor = new RemoteRelayPacketProcessor(this.localRelayExplorer);
-            NettyRelayPacketHandler relayMessageHandler = new NettyRelayPacketHandler(relayPacketProcessor);
+            RelayPacketProcessor relayPacketProcessor = new RelayPacketClientProcessor(this.localRelayExplorer);
+            NettyRelayPacketHandler relayMessageHandler = new NettyRelayPacketHandler(NetAccessMode.CLIENT, relayPacketProcessor);
             this.bootstrap.group(workerGroup)
                     .channel(EPOLL ? EpollSocketChannel.class : NioSocketChannel.class)
                     .option(ChannelOption.SO_REUSEADDR, true)
                     .option(ChannelOption.TCP_NODELAY, true)
                     .option(ChannelOption.SO_KEEPALIVE, true)
-                    .handler(new ChannelInitializer<Channel>() {
+                    .handler(new ChannelInitializer<>() {
 
                         @Override
-                        protected void initChannel(Channel channel) throws Exception {
+                        protected void initChannel(@Nonnull Channel channel) throws Exception {
                             try {
                                 if (NettyRelayClientGuide.this.channelMaker != null) {
                                     NettyRelayClientGuide.this.channelMaker.initChannel(channel);
@@ -170,7 +172,7 @@ public class NettyRelayClientGuide extends NettyBootstrap<NettyRelayClientBootst
     }
 
     private RelayTransporter createNetRelayLink(Channel channel) {
-        return new NettyChannelRelayTransporter(channel, this.getContext());
+        return new NettyChannelRelayTransporter(NetAccessMode.CLIENT, channel, this.getContext());
     }
 
 }

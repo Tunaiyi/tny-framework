@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.netty4.relay;
 
 import com.tny.game.common.url.*;
@@ -23,7 +23,7 @@ class NettyRelayLinkConnector implements RelayConnectCallback {
 
     private String linkKey;
 
-    private final RemoteRelayContext relayContext;
+    private final ClientRelayContext relayContext;
 
     private final NetRemoteServeInstance instance;
 
@@ -31,7 +31,7 @@ class NettyRelayLinkConnector implements RelayConnectCallback {
 
     private volatile RelayConnectorStatus status = RelayConnectorStatus.INIT;
 
-    private volatile RemoteRelayLink link;
+    private volatile ClientRelayLink link;
 
     private int times;
 
@@ -39,7 +39,7 @@ class NettyRelayLinkConnector implements RelayConnectCallback {
 
     private final static long[] delayTimeList = {1, 2, 2, 3, 3, 3, 5, 5, 5, 5, 10, 10, 10, 10, 10, 15};
 
-    NettyRelayLinkConnector(RemoteRelayContext relayContext, NetRemoteServeInstance instance, NettyServeInstanceConnectMonitor connector) {
+    NettyRelayLinkConnector(ClientRelayContext relayContext, NetRemoteServeInstance instance, NettyServeInstanceConnectMonitor connector) {
         this.relayContext = relayContext;
         this.instance = instance;
         this.connector = connector;
@@ -68,7 +68,7 @@ class NettyRelayLinkConnector implements RelayConnectCallback {
         this.status = RelayConnectorStatus.OPEN;
         this.times = 0;
         this.linkKey = relayContext.createLinkKey(username);
-        this.link = new CommonRemoteRelayLink(this.linkKey, instance, transporter);
+        this.link = new CommonClientRelayLink(this.linkKey, instance, transporter);
         this.link.auth(username, relayContext.getAppInstanceId());
         transporter.addCloseListener(this::onClose);
     }

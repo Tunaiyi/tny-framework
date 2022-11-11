@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.message;
 
 import com.tny.game.common.context.*;
@@ -69,6 +69,31 @@ public abstract class AbstractNetMessage extends AttributesHolder implements Net
     @Override
     public <T> T bodyAs(Class<T> clazz) {
         return ObjectAide.convertTo(this.body, clazz);
+    }
+
+    @Override
+    public MessageHeader<?> putHeader(MessageHeader<?> header) {
+        return head.putHeader(header);
+    }
+
+    @Override
+    public MessageHeader<?> putHeaderIfAbsent(MessageHeader<?> header) {
+        return head.putHeaderIfAbsent(header);
+    }
+
+    @Override
+    public <T extends MessageHeader<?>> T removeHeader(String key) {
+        return head.removeHeader(key);
+    }
+
+    @Override
+    public <T extends MessageHeader<?>> T removeHeader(String key, Class<T> headerClass) {
+        return head.removeHeader(key, headerClass);
+    }
+
+    @Override
+    public <T extends MessageHeader<?>> T removeHeader(MessageHeaderKey<T> key) {
+        return head.removeHeader(key);
     }
 
     @Override

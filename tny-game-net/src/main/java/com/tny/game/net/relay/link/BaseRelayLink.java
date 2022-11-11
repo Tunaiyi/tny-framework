@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.relay.link;
 
 import com.tny.game.common.event.firer.*;
@@ -16,6 +16,7 @@ import com.tny.game.net.message.*;
 import com.tny.game.net.relay.link.listener.*;
 import com.tny.game.net.relay.packet.*;
 import com.tny.game.net.relay.packet.arguments.*;
+import com.tny.game.net.rpc.*;
 import com.tny.game.net.transport.*;
 import org.apache.commons.lang3.builder.*;
 import org.slf4j.*;
@@ -57,6 +58,11 @@ public abstract class BaseRelayLink implements NetRelayLink {
     private final long instanceId;
 
     /**
+     * 接入模式
+     */
+    private final NetAccessMode accessMode;
+
+    /**
      * 创建时间
      */
     private final long createAt;
@@ -81,10 +87,11 @@ public abstract class BaseRelayLink implements NetRelayLink {
      */
     private final AtomicInteger packetIdCreator = new AtomicInteger();
 
-    public BaseRelayLink(String key, String service, long instanceId, RelayTransporter transporter) {
+    public BaseRelayLink(NetAccessMode accessMode, String key, String service, long instanceId, RelayTransporter transporter) {
         this.key = key;
         this.service = service;
         this.instanceId = instanceId;
+        this.accessMode = accessMode;
         this.id = NetRelayLink.idOf(this);
         this.transporter = transporter;
         this.createAt = System.currentTimeMillis();
@@ -99,6 +106,11 @@ public abstract class BaseRelayLink implements NetRelayLink {
     @Override
     public String getService() {
         return service;
+    }
+
+    @Override
+    public NetAccessMode getAccessMode() {
+        return accessMode;
     }
 
     @Override
@@ -167,7 +179,7 @@ public abstract class BaseRelayLink implements NetRelayLink {
     }
 
     @Override
-    public MessageWriteAwaiter relay(RelayTunnel<?> tunnel, MessageAllocator allocator, MessageFactory factory, MessageContext context) {
+    public MessageWriteAwaiter relay(RelayTunnel<?> tunnel, MessageAllocator allocator, MessageFactory factory, MessageContent context) {
         return this.transporter.write(
                 () -> new TunnelRelayPacket(createPacketId(), tunnel.getInstanceId(), tunnel.getId(), allocator.allocate(factory, context)),
                 context.getWriteAwaiter());
@@ -312,10 +324,7 @@ public abstract class BaseRelayLink implements NetRelayLink {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this)
-                .append("id", this.getId())
-                .append("link", this.transporter.getLocalAddress())
-                .toString();
+        return "RelayLink(" + this.getAccessMode() + ")[" + this.getId() + "]" + this.transporter;
     }
 
 }

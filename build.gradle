@@ -2,7 +2,7 @@ plugins {
     id 'org.ajoberstar.grgit' version '4.0.2' apply false
     id 'org.springframework.boot' version "${springBootVersion}" apply false
     id 'io.spring.dependency-management' version '1.0.11.RELEASE' apply false
-    id 'com.baidu.jprotobuf' version "1.1.1" apply false
+    id "com.baidu.jprotobuf" version "1.2.1" apply false
 }
 
 apply from: "${rootDir}/gradle/dependency.gradle"
@@ -14,7 +14,6 @@ ext {
     javaProjects = moduleProjects - project(":tny-game-bom")
     javaProjects = javaProjects.findAll { !it.name.endsWith("-gradle") }
     gradleProjects = moduleProjects.findAll { it.name.endsWith("-gradle") }
-//    moduleProjects = moduleProjects - project(":tny-game-bom")
 }
 
 configure(allprojects) {

@@ -120,7 +120,7 @@ public class RpcRemoteInvoker {
     }
 
     private Object request(RpcRemoteAccess access, long timeout, RpcRemoteInvokeParams invokeParams) {
-        RequestContext requestContext = MessageContexts.request(protocol(), invokeParams.getParams());
+        RequestContent requestContext = MessageContents.request(protocol(), invokeParams.getParams());
         requestContext.willRespondAwaiter(timeout)
                 .withHeaders(invokeParams.getAllHeaders());
         access.send(requestContext);
@@ -155,7 +155,7 @@ public class RpcRemoteInvoker {
 
     private void push(Sender sender, long timeout, RpcRemoteInvokeParams invokeParams) {
         ResultCode code = ObjectAide.ifNull(invokeParams.getCode(), NetResultCode.SUCCESS);
-        MessageContext messageContext = MessageContexts.push(protocol(), code)
+        MessageContent messageContext = MessageContents.push(protocol(), code)
                 .withBody(invokeParams.getBody())
                 .withHeaders(invokeParams.getAllHeaders());
         sender.send(messageContext);

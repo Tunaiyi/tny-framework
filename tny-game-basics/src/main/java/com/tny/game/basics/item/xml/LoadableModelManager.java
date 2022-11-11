@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.basics.item.xml;
 
 import com.tny.game.basics.item.*;
@@ -22,6 +22,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.*;
 
 import javax.annotation.PostConstruct;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 import static com.tny.game.common.utils.ObjectAide.*;
@@ -120,7 +121,8 @@ public abstract class LoadableModelManager<M extends Model> extends BaseModelMan
     protected void onLoadCreate(ModelLoader<M> loader) {
     }
 
-    protected void loadAndInitModel(List<M> models, String path, boolean reload) throws InstantiationException, IllegalAccessException {
+    protected void loadAndInitModel(List<M> models, String path, boolean reload) throws InstantiationException, IllegalAccessException,
+            InvocationTargetException, NoSuchMethodException {
         RunChecker.trace(this.getClass());
         Map<Integer, WrapperProxy<M>> handlerMap = new HashMap<>();
         Map<Integer, M> modelMap = new HashMap<>();

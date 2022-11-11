@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.netty4.network;
 
 import com.google.common.base.MoreObjects;
@@ -17,6 +17,7 @@ import com.tny.game.net.base.*;
 import com.tny.game.net.command.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.exception.*;
+import com.tny.game.net.rpc.*;
 import com.tny.game.net.transport.*;
 import io.netty.channel.Channel;
 import org.apache.commons.lang3.StringUtils;
@@ -157,7 +158,7 @@ public class NettyClient<UID> extends BaseNetEndpoint<UID> implements NettyTermi
     @Override
     public MessageTransporter connect() throws NetException {
         Channel channel = this.guide.connect(this.url, getConnectTimeout());
-        return new NettyChannelMessageTransporter(channel);
+        return new NettyChannelMessageTransporter(NetAccessMode.CLIENT, channel);
     }
 
     @Override

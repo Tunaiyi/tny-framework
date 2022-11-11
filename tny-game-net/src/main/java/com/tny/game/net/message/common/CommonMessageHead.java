@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.message.common;
 
 import com.tny.game.common.collection.empty.*;
@@ -54,14 +54,14 @@ public class CommonMessageHead extends AbstractNetMessageHead {
         }
     }
 
-    public CommonMessageHead(long id, MessageContent subject) {
+    public CommonMessageHead(long id, MessageSubject subject) {
         super(subject.getMode());
         this.id = id;
         this.protocol = subject.getProtocolId();
         this.code = subject.getCode();
         this.toMessage = subject.getToMessage();
         this.time = System.currentTimeMillis();
-        Map<String, MessageHeader<?>> headers = subject.getAllHeadersMap();
+        Map<String, MessageHeader<?>> headers = subject.getAllHeaderMap();
         if (MapUtils.isNotEmpty(headers)) {
             this.headers.putAll(headers);
         }
@@ -116,7 +116,7 @@ public class CommonMessageHead extends AbstractNetMessageHead {
     }
 
     @Override
-    public Map<String, MessageHeader<?>> getAllHeadersMap() {
+    public Map<String, MessageHeader<?>> getAllHeaderMap() {
         return Collections.unmodifiableMap(this.headers);
     }
 
@@ -136,10 +136,7 @@ public class CommonMessageHead extends AbstractNetMessageHead {
         if (header == null) {
             return false;
         }
-        if (headerClass.isInstance(header)) {
-            return true;
-        }
-        return false;
+        return headerClass.isInstance(header);
     }
 
     @Override
@@ -167,6 +164,31 @@ public class CommonMessageHead extends AbstractNetMessageHead {
         if (this.id <= -1) {
             this.id = id;
         }
+    }
+
+    @Override
+    public MessageHeader<?> putHeader(MessageHeader<?> header) {
+        return this.headers.put(header.getKey(), header);
+    }
+
+    @Override
+    public MessageHeader<?> putHeaderIfAbsent(MessageHeader<?> header) {
+        return this.headers.putIfAbsent(header.getKey(), header);
+    }
+
+    @Override
+    public <T extends MessageHeader<?>> T removeHeader(String key) {
+        return as(this.headers.remove(key));
+    }
+
+    @Override
+    public <T extends MessageHeader<?>> T removeHeader(String key, Class<T> headerClass) {
+        return as(this.headers.remove(key), headerClass);
+    }
+
+    @Override
+    public <T extends MessageHeader<?>> T removeHeader(MessageHeaderKey<T> key) {
+        return as(this.headers.remove(key.getKey()), key.getHeaderClass());
     }
 
     CommonMessageHead setId(long id) {

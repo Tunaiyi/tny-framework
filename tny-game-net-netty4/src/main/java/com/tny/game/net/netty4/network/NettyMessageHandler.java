@@ -15,6 +15,7 @@ import com.tny.game.common.lifecycle.unit.annotation.*;
 import com.tny.game.common.result.*;
 import com.tny.game.common.runtime.*;
 import com.tny.game.net.message.*;
+import com.tny.game.net.monitor.*;
 import com.tny.game.net.rpc.*;
 import com.tny.game.net.transport.*;
 import io.netty.channel.*;
@@ -22,6 +23,7 @@ import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.handler.timeout.*;
 import org.slf4j.*;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.nio.channels.ClosedChannelException;
 
@@ -41,10 +43,14 @@ public class NettyMessageHandler extends ChannelDuplexHandler {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(NettyMessageHandler.class);
 
-    private RpcForwarder messageForwarder;
+    protected final RpcMonitor monitor;
+
+    public NettyMessageHandler(NetAccessMode mode) {
+        monitor = new RpcMonitor(mode);
+    }
 
     @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+    public void channelActive(@Nonnull ChannelHandlerContext ctx) throws Exception {
         if (LOGGER.isInfoEnabled()) {
             Channel channel = ctx.channel();
             if (channel.isActive()) {
@@ -87,7 +93,7 @@ public class NettyMessageHandler extends ChannelDuplexHandler {
                     channel.remoteAddress(), channel.localAddress(), code, code.getCode(), code.getMessage(), cause.getMessage(), cause);
             NetTunnel<?> tunnel = channel.attr(NettyNetAttrKeys.TUNNEL).getAndSet(null);
             if (tunnel != null) {
-                MessageSendAide.send(tunnel, MessageContexts.push(PUSH, code), true);
+                MessageSendAide.send(tunnel, MessageContents.push(PUSH, code), true);
             }
         } else {
             LOGGER.error("[Tunnel]  ## 通道 {} ==> {} 异常 # cause {}({})[{}], message:{}",
@@ -96,17 +102,13 @@ public class NettyMessageHandler extends ChannelDuplexHandler {
     }
 
     @Override
-    public void channelRead(ChannelHandlerContext context, Object object) {
+    public void channelRead(ChannelHandlerContext context, @Nonnull Object object) {
         Channel channel = context.channel();
-        if (object == null) {
-            LOGGER.info("[Tunnel] {} ## 通道 {} ==> {} 断开链接", "消息为null", channel.remoteAddress(), channel.localAddress());
-            channel.disconnect();
-            return;
-        }
         if (object instanceof NetMessage) {
             try {
                 NetMessage message = as(object);
                 NetTunnel<?> tunnel = channel.attr(NettyNetAttrKeys.TUNNEL).get();
+                monitor.onReadMessage(tunnel, message);
                 if (tunnel != null) {
                     tunnel.receive(message);
                 }
@@ -117,12 +119,18 @@ public class NettyMessageHandler extends ChannelDuplexHandler {
     }
 
     @Override
-    public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) {
+    public void write(ChannelHandlerContext context, Object msg, ChannelPromise promise) {
         try (ProcessTracer ignored = MESSAGE_ENCODE_WATCHER.trace()) {
             if (msg instanceof NettyMessageBearer) {
                 msg = ((NettyMessageBearer)msg).message();
             }
-            ctx.write(msg, promise);
+            if (msg instanceof Message) {
+                var message = (Message)msg;
+                Channel channel = context.channel();
+                NetTunnel<?> tunnel = channel.attr(NettyNetAttrKeys.TUNNEL).get();
+                monitor.onWriteMessage(tunnel, message);
+            }
+            context.write(msg, promise);
         }
     }
 
@@ -131,10 +139,8 @@ public class NettyMessageHandler extends ChannelDuplexHandler {
         Channel channel = ctx.channel();
         NetTunnel<?> tunnel = channel.attr(NettyNetAttrKeys.TUNNEL).getAndSet(null);
         if (tunnel != null) {
-            if (LOGGER.isInfoEnabled()) {
-                LOGGER.info("[Tunnel] 断开链接 ## 通道 {} ==> {} 断开链接", channel.remoteAddress(), channel.localAddress());
-            }
-            if (tunnel.getMode() == TunnelMode.SERVER) {
+            LOGGER.info("[Tunnel] 断开链接 ## 通道 {} 断开链接", channel);
+            if (tunnel.getAccessMode() == NetAccessMode.SERVER) {
                 tunnel.close();
             } else {
                 tunnel.disconnect();

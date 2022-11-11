@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.protoex;
 
 import com.tny.game.common.concurrent.utils.*;
@@ -15,6 +15,8 @@ import com.tny.game.protoex.field.runtime.*;
 
 import java.util.*;
 import java.util.function.Supplier;
+
+import static com.tny.game.common.utils.ObjectAide.*;
 
 /**
  * ProtoEx类型读取器
@@ -134,10 +136,10 @@ public class ProtoExReader implements AutoCloseable {
         return this.readMessage(null);
     }
 
-    public <T> T readMessage(Class<T> clazz) {
+    public <T, C extends T> C readMessage(Class<T> clazz) {
         Tag tag = this.inputStream.getTag();
         ProtoExSchema<T> schema = ProtoExIO.getSchema(this.inputStream, clazz, tag);
-        return schema.readMessage(this.inputStream, null);
+        return as(schema.readMessage(this.inputStream, null));
     }
 
     /*
@@ -151,7 +153,6 @@ public class ProtoExReader implements AutoCloseable {
                 ProtoExIO.createRepeat(ArrayList.class, elementType, true));
     }
 
-    @SuppressWarnings("unchecked")
     public <T, C extends Collection<T>> C readCollection(C collection, Class<T> elementType) {
         Tag tag = this.inputStream.getTag();
         this.checkType(ProtoExType.REPEAT, tag);
@@ -159,30 +160,14 @@ public class ProtoExReader implements AutoCloseable {
                 ProtoExIO.createRepeat(collection.getClass(), elementType, true));
     }
 
-    @SuppressWarnings("unchecked")
     public <T, C extends Collection<T>> C readCollection(Class<C> collectionClass, Class<T> elementType)
-            throws IllegalAccessException, InstantiationException {
+            throws Exception {
         Tag tag = this.inputStream.getTag();
         this.checkType(ProtoExType.REPEAT, tag);
-        Supplier<C> supplier = ExeAide.callUnchecked(collectionClass::newInstance)::get;
+        Supplier<C> supplier = ExeAide.callUnchecked(Objects.requireNonNull(collectionClass).getDeclaredConstructor()::newInstance)::get;
         return RuntimeCollectionSchema.COLLECTION_SCHEMA.readMessage(supplier, this.inputStream,
                 ProtoExIO.createRepeat(collectionClass, elementType, true));
     }
-
-    // @SuppressWarnings("unchecked")
-    // public <T> T[] readArrays(Class<T> elementType) {
-    //     Tag tag = this.inputStream.getTag();
-    //     this.checkType(ProtoExType.REPEAT, tag);
-    //     return (Collection<T>) RuntimeRepeatSchema.COLLECTION_SCHEMA.readMessage(this.inputStream,
-    //             ProtoExIO.createRepeat(elementType, true));
-    // }
-    //
-    // public <T> T[] readArrays(C collection, Class<T> elementType) {
-    //     Collection<T> values = this.readRepeat(elementType);
-    //     if (values != null)
-    //         collection.addAll(values);
-    //     return collection;
-    // }
 
     /*
      * ======================= map =======================

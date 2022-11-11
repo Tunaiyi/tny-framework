@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.netty4.network;
 
 import com.tny.game.common.runtime.*;
@@ -16,6 +16,7 @@ import com.tny.game.net.endpoint.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.netty4.channel.*;
+import com.tny.game.net.rpc.*;
 import com.tny.game.net.transport.*;
 import io.netty.channel.*;
 import org.slf4j.*;
@@ -35,8 +36,8 @@ public class NettyChannelMessageTransporter extends NettyChannelConnection imple
 
     public static final Logger LOGGER = LoggerFactory.getLogger(NettyChannelMessageTransporter.class);
 
-    public NettyChannelMessageTransporter(Channel channel) {
-        super(channel);
+    public NettyChannelMessageTransporter(NetAccessMode accessMode, Channel channel) {
+        super(accessMode, channel);
     }
 
     public Channel getChannel() {
@@ -51,7 +52,7 @@ public class NettyChannelMessageTransporter extends NettyChannelConnection imple
     }
 
     @Override
-    public MessageWriteAwaiter write(MessageAllocator maker, MessageFactory factory, MessageContext context) throws NetException {
+    public MessageWriteAwaiter write(MessageAllocator maker, MessageFactory factory, MessageContent context) throws NetException {
         MessageWriteAwaiter awaiter = context.getWriteAwaiter();
         ProcessTracer tracer = NetLogger.NET_TRACE_OUTPUT_WRITE_TO_ENCODE_WATCHER.trace();
         this.channel.eventLoop()

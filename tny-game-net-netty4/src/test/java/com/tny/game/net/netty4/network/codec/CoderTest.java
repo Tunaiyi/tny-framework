@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.netty4.network.codec;
 
 import com.tny.game.common.digest.binary.*;
@@ -73,13 +73,13 @@ public class CoderTest {
                     protocolId, index);
             switch (mode) {
                 case 0:
-                    message = messageFactory.create(index, MessageContexts.push(Protocols.protocol(protocolId), body));
+                    message = messageFactory.create(index, MessageContents.push(Protocols.protocol(protocolId), body));
                     break;
                 case 1:
-                    message = messageFactory.create(index, MessageContexts.respond(Protocols.protocol(protocolId), body, index));
+                    message = messageFactory.create(index, MessageContents.respond(Protocols.protocol(protocolId), body, index));
                     break;
                 case 2:
-                    message = messageFactory.create(index, MessageContexts.request(Protocols.protocol(protocolId), body));
+                    message = messageFactory.create(index, MessageContents.request(Protocols.protocol(protocolId), body));
                     break;
                 case 3:
                     message = TickMessage.ping();

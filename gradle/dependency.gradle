@@ -23,6 +23,8 @@ ext.vers = [
         spring_security_oauth2_autoconfigure: "2.5.2",
         spring_boot_admin                   : "2.3.1",
 
+        skywalking                          : "8.12.0",
+
         httpclient                          : "4.5.12",
         aspectj                             : "1.9.7",
         redisson                            : "3.16.0",
@@ -234,6 +236,10 @@ ext.libs = [
         spring_cloud_starter_zookeeper_discovery : "org.springframework.cloud:spring-cloud-starter-zookeeper-discovery",
         spring_boot_admin_dependencies           : "de.codecentric:spring-boot-admin-dependencies:$vers.spring_boot_admin",
         spring_boot_admin_starter_server         : "de.codecentric:spring-boot-admin-starter-server",
+
+        skywalking_apm_agent_core                : "org.apache.skywalking:apm-agent-core:$vers.skywalking",
+        skywalking_java_agent_util               : "org.apache.skywalking:java-agent-util:$vers.skywalking",
+
 
         alibaba_nacos_client                     : "com.alibaba.nacos:nacos-client:2.0.0",
 //        alibaba_cloud_dependencies               : "com.alibaba.cloud:spring-cloud-alibaba-dependencies:$vers.alibaba_cloud",
