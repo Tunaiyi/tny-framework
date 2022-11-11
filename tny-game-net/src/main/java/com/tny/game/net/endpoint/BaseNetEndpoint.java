@@ -17,6 +17,7 @@ import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.command.task.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
+import com.tny.game.net.rpc.*;
 import com.tny.game.net.transport.*;
 import org.slf4j.*;
 
@@ -98,6 +99,11 @@ public abstract class BaseNetEndpoint<UID> extends AbstractCommunicator<UID> imp
         return this.certificate;
     }
 
+    @Override
+    public NetAccessMode getAccessMode() {
+        return tunnel.getAccessMode();
+    }
+
     private RespondFutureMonitor respondFutureMonitor() {
         if (this.respondFutureMonitor != null) {
             return this.respondFutureMonitor;
@@ -117,7 +123,7 @@ public abstract class BaseNetEndpoint<UID> extends AbstractCommunicator<UID> imp
         respondFutureMonitor().putFuture(messageId, respondFuture);
     }
 
-    private <M> MessageRespondAwaiter pollFuture(Message message) {
+    private MessageRespondAwaiter pollFuture(Message message) {
         RespondFutureMonitor respondFutureHolder = this.respondFutureMonitor;
         if (respondFutureHolder == null) {
             return null;
@@ -182,7 +188,7 @@ public abstract class BaseNetEndpoint<UID> extends AbstractCommunicator<UID> imp
     }
 
     @Override
-    public SendReceipt send(NetTunnel<UID> tunnel, MessageContext context) {
+    public SendReceipt send(NetTunnel<UID> tunnel, MessageContent context) {
         try {
             if (this.isClosed()) {
                 context.cancel(new EndpointCloseException(format("endpoint {} closed", this)));
@@ -231,8 +237,6 @@ public abstract class BaseNetEndpoint<UID> extends AbstractCommunicator<UID> imp
         if (tunnel == null) {
             tunnel = currentTunnel();
         }
-        //        this.eventsBox.addOutputEvent(new EndpointResendEvent<>(tunnel, filter));
-        //        this.eventHandler.onOutput(this.eventsBox, this);
         for (Message message : this.getSentMessages(filter)) {
             tunnel.write(message, null);
         }
@@ -270,8 +274,8 @@ public abstract class BaseNetEndpoint<UID> extends AbstractCommunicator<UID> imp
     }
 
     @Override
-    public SendReceipt send(MessageContext messageContext) {
-        return this.send(null, messageContext);
+    public SendReceipt send(MessageContent content) {
+        return this.send(null, content);
     }
 
     protected NetTunnel<UID> currentTunnel() {
@@ -293,29 +297,11 @@ public abstract class BaseNetEndpoint<UID> extends AbstractCommunicator<UID> imp
         return this.commandTaskBox;
     }
 
-    //	@Override
-    //	public void writeMessage(NetTunnel<UID> tunnel, MessageContext context) {
-    //		MessageFactory messageFactory = this.tunnel.getMessageFactory();
-    //		Message message = messageFactory.create(allocateMessageId(), context);
-    //		RespondFuture respondFuture = context.getRespondFuture();
-    //		if (respondFuture != null) {
-    //			context.willWriteFuture((future) -> {
-    //				if (future.isSuccess()) {
-    //					this.putFuture(message.getId(), respondFuture);
-    //				} else {
-    //					respondFuture.completeExceptionally(future.cause());
-    //				}
-    //			});
-    //		}
-    //		this.tryCreateFuture(context);
-    //		this.tunnel.write(message, as(context.getMessageWriteAwaiter()));
-    //	}
-
     @Override
-    public NetMessage createMessage(MessageFactory messageFactory, MessageContext context) {
+    public NetMessage createMessage(MessageFactory messageFactory, MessageContent context) {
         NetMessage message = messageFactory.create(allocateMessageId(), context);
-        if (context instanceof RequestContext) {
-            this.putFuture(message.getId(), ((RequestContext)context).getResponseAwaiter());
+        if (context instanceof RequestContent) {
+            this.putFuture(message.getId(), ((RequestContent)context).getResponseAwaiter());
         }
         this.sentMessageQueue.addMessage(message);
         return message;

@@ -4,16 +4,17 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.transport;
 
 import com.tny.game.net.base.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
+import com.tny.game.net.rpc.*;
 
 import java.net.InetSocketAddress;
 
@@ -24,8 +25,8 @@ public abstract class BaseNetTunnel<UID, E extends NetEndpoint<UID>, T extends M
 
     protected volatile T transporter;
 
-    protected BaseNetTunnel(long id, T transporter, TunnelMode mode, NetworkContext context) {
-        super(id, mode, context);
+    protected BaseNetTunnel(long id, T transporter, NetAccessMode accessMode, NetworkContext context) {
+        super(id, accessMode, context);
         if (transporter != null) {
             this.transporter = transporter;
             this.transporter.bind(this);
@@ -61,7 +62,7 @@ public abstract class BaseNetTunnel<UID, E extends NetEndpoint<UID>, T extends M
     }
 
     @Override
-    public MessageWriteAwaiter write(MessageAllocator allocator, MessageContext context) throws NetException {
+    public MessageWriteAwaiter write(MessageAllocator allocator, MessageContent context) throws NetException {
         MessageWriteAwaiter promise = context.getWriteAwaiter();
         if (this.checkAvailable(promise)) {
             return this.transporter.write(allocator, this.getMessageFactory(), context);
@@ -118,7 +119,7 @@ public abstract class BaseNetTunnel<UID, E extends NetEndpoint<UID>, T extends M
 
     @Override
     public String toString() {
-        return this.getMode() + "[" + this.getUserGroup() + "(" + this.getUserId() + ") " + this.transporter + "]";
+        return "Tunnel(" + this.getAccessMode() + ")[" + this.getUserGroup() + "(" + this.getUserId() + ")]" + this.transporter;
     }
 
 }

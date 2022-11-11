@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.netty4.relay.codec.arguments;
 
 import com.tny.game.common.utils.*;
@@ -31,46 +31,46 @@ import static com.tny.game.common.utils.StringAide.*;
  */
 public class RelayPacketArgumentsCodecService {
 
-    private final Map<Class<?>, RelayPacketArgumentsCodecor<?>> argumentsCodecorMap = new HashMap<>();
+    private final Map<Class<?>, RelayPacketArgumentsCodec<?>> argumentsCodecMap = new HashMap<>();
 
     public RelayPacketArgumentsCodecService() {
-        this.addCodecor(new LinkOpenArgumentsCodecor());
-        this.addCodecor(new LinkOpenedArgumentsCodecor());
-        this.addCodecor(new LinkVoidArgumentsCodecor());
-        this.addCodecor(new TunnelConnectArgumentsCodecor());
-        this.addCodecor(new TunnelConnectedArgumentsCodecor());
-        this.addCodecor(new TunnelVoidArgumentsCodecor());
+        this.addCodec(new LinkOpenArgumentsCodec());
+        this.addCodec(new LinkOpenedArgumentsCodec());
+        this.addCodec(new LinkVoidArgumentsCodec());
+        this.addCodec(new TunnelConnectArgumentsCodec());
+        this.addCodec(new TunnelConnectedArgumentsCodec());
+        this.addCodec(new TunnelVoidArgumentsCodec());
     }
 
-    private void addCodecor(RelayPacketArgumentsCodecor<?> codecor) {
-        RelayPacketArgumentsCodecor<?> old = this.argumentsCodecorMap.putIfAbsent(codecor.getArgumentsClass(), codecor);
+    private void addCodec(RelayPacketArgumentsCodec<?> codec) {
+        RelayPacketArgumentsCodec<?> old = this.argumentsCodecMap.putIfAbsent(codec.getClassOfArguments(), codec);
         if (old != null) {
-            throw new IllegalArgumentException(format("Add {} for {} CodecorClass, {} is exist", codecor, codecor.getArgumentsClass(), old));
+            throw new IllegalArgumentException(format("Add {} for {} CodecorClass, {} is exist", codec, codec.getClassOfArguments(), old));
         }
     }
 
     public void setMessageCodec(NettyMessageCodec messageCodec) {
-        addCodecor(new TunnelRelayArgumentsCodecor(messageCodec));
+        addCodec(new TunnelRelayArgumentsCodec(messageCodec));
     }
 
-    private <A extends RelayPacketArguments> RelayPacketArgumentsCodecor<A> codecor(Class<?> clazz) {
-        RelayPacketArgumentsCodecor<A> codecor = as(this.argumentsCodecorMap.get(clazz));
-        Asserts.checkNotNull(codecor, "不支持 {} RelayPacketArguments codecor");
-        return as(codecor);
+    private <A extends RelayPacketArguments> RelayPacketArgumentsCodec<A> codec(Class<?> clazz) {
+        RelayPacketArgumentsCodec<A> codec = as(this.argumentsCodecMap.get(clazz));
+        Asserts.checkNotNull(codec, "不支持 {} RelayPacketArguments codecor");
+        return as(codec);
     }
 
     public void encode(ChannelHandlerContext ctx, RelayPacketArguments arguments, ByteBuf out) throws Exception {
         if (arguments != null) {
-            RelayPacketArgumentsCodecor<RelayPacketArguments> codecor = this.codecor(arguments.getClass());
-            if (codecor != null) {
-                codecor.encode(ctx, arguments, out);
+            RelayPacketArgumentsCodec<RelayPacketArguments> codec = this.codec(arguments.getClass());
+            if (codec != null) {
+                codec.encode(ctx, arguments, out);
             }
         }
     }
 
     public RelayPacketArguments decode(ChannelHandlerContext ctx, ByteBuf in, RelayPacketType relayType) throws Exception {
-        RelayPacketArgumentsCodecor<RelayPacketArguments> codecor = this.codecor(relayType.getArgumentsClass());
-        return codecor.decode(ctx, in);
+        RelayPacketArgumentsCodec<RelayPacketArguments> codec = this.codec(relayType.getClassOfArguments());
+        return codec.decode(ctx, in);
     }
 
 }

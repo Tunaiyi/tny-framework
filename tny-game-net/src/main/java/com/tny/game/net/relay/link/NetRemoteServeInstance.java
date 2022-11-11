@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.relay.link;
 
 import java.util.Map;
@@ -26,19 +26,19 @@ public interface NetRemoteServeInstance extends RemoteServeInstance {
      *
      * @param link 集群实例
      */
-    void register(RemoteRelayLink link);
+    void register(ClientRelayLink link);
 
     /**
      * @param link 断开连接
      */
-    void disconnected(RemoteRelayLink link);
+    void disconnected(ClientRelayLink link);
 
     /**
      * 释放转发连接
      *
      * @param link 集群实例
      */
-    void relieve(RemoteRelayLink link);
+    void relieve(ClientRelayLink link);
 
     /**
      * @return 获取登录用户名

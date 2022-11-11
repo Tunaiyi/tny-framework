@@ -54,7 +54,7 @@ public class RpcRemoteInstanceFactory {
         };
         Object proxy;
         try {
-            proxy = c.newInstance();
+            proxy = c.getDeclaredConstructor().newInstance();
         } catch (Throwable e) {
             throw new RpcException(ResultCode.FAILURE, e);
         }

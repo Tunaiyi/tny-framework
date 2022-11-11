@@ -123,6 +123,31 @@ public class RelayMessage implements NetMessage {
     }
 
     @Override
+    public MessageHeader<?> putHeader(MessageHeader<?> header) {
+        return message.putHeader(header);
+    }
+
+    @Override
+    public MessageHeader<?> putHeaderIfAbsent(MessageHeader<?> header) {
+        return message.putHeaderIfAbsent(header);
+    }
+
+    @Override
+    public <T extends MessageHeader<?>> T removeHeader(String key) {
+        return message.removeHeader(key);
+    }
+
+    @Override
+    public <T extends MessageHeader<?>> T removeHeader(String key, Class<T> headerClass) {
+        return message.removeHeader(key, headerClass);
+    }
+
+    @Override
+    public <T extends MessageHeader<?>> T removeHeader(MessageHeaderKey<T> key) {
+        return message.removeHeader(key);
+    }
+
+    @Override
     public boolean isOwn(Protocol protocol) {
         return message.isOwn(protocol);
     }

@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.message;
 
 import org.junit.*;
@@ -62,7 +62,7 @@ public abstract class ProtocolTest {
         assertFalse(protocol.isOwn(this.message));
         when(this.message.getHead()).thenReturn(this.header);
         when(this.message.getProtocolId()).thenReturn(protocol.getProtocolId());
-        assertTrue(protocol.isOwn((MessageContent)this.message));
+        assertTrue(protocol.isOwn((MessageSubject)this.message));
     }
 
     @Test

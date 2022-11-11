@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.netty4.relay;
 
 import com.tny.game.common.lifecycle.unit.annotation.*;
@@ -17,10 +17,13 @@ import com.tny.game.net.message.*;
 import com.tny.game.net.netty4.network.*;
 import com.tny.game.net.relay.link.*;
 import com.tny.game.net.relay.message.*;
+import com.tny.game.net.rpc.*;
 import com.tny.game.net.transport.*;
 import io.netty.channel.*;
 import io.netty.channel.ChannelHandler.Sharable;
 import org.slf4j.*;
+
+import javax.annotation.Nonnull;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 
@@ -39,8 +42,12 @@ public class RelayNettyMessageHandler extends NettyMessageHandler {
 
     protected static final Logger LOG = LoggerFactory.getLogger(NettyMessageHandler.class);
 
+    public RelayNettyMessageHandler(NetAccessMode mode) {
+        super(mode);
+    }
+
     @Override
-    public void channelRead(ChannelHandlerContext context, Object object) {
+    public void channelRead(ChannelHandlerContext context, @Nonnull Object object) {
         if (object instanceof NetMessage) {
             NetMessage message = (NetMessage)object;
             if (message.isRelay()) {
@@ -54,6 +61,7 @@ public class RelayNettyMessageHandler extends NettyMessageHandler {
     private void relayMessage(ChannelHandlerContext context, RelayMessage message) {
         Channel channel = context.channel();
         NetTunnel<?> tunnel = channel.attr(NettyNetAttrKeys.TUNNEL).get();
+        monitor.onReadMessage(tunnel, message);
         if (tunnel instanceof NetRelayTunnel) {
             RelayTunnel<?> relayTunnel = as(tunnel);
             relayTunnel.relay(message, false);

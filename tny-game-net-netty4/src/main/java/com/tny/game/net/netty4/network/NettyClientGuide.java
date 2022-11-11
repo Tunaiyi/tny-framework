@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.netty4.network;
 
 import com.tny.game.common.concurrent.collection.*;
@@ -20,6 +20,7 @@ import com.tny.game.net.endpoint.listener.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.netty4.*;
 import com.tny.game.net.netty4.channel.*;
+import com.tny.game.net.rpc.*;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.epoll.EpollSocketChannel;
@@ -84,13 +85,13 @@ public class NettyClientGuide extends NettyBootstrap<NettyNetClientBootstrapSett
                 return this.bootstrap;
             }
             this.bootstrap = new Bootstrap();
-            NettyMessageHandler messageHandler = new NettyMessageHandler();
+            NettyMessageHandler messageHandler = new NettyMessageHandler(NetAccessMode.CLIENT);
             this.bootstrap.group(workerGroup)
                     .channel(EPOLL ? EpollSocketChannel.class : NioSocketChannel.class)
                     .option(ChannelOption.SO_REUSEADDR, true)
                     .option(ChannelOption.TCP_NODELAY, true)
                     .option(ChannelOption.SO_KEEPALIVE, true)
-                    .handler(new ChannelInitializer<Channel>() {
+                    .handler(new ChannelInitializer<>() {
 
                         @Override
                         protected void initChannel(Channel channel) throws Exception {

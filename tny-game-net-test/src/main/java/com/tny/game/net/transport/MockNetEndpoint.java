@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.transport;
 
 import com.tny.game.common.context.*;
@@ -17,7 +17,9 @@ import com.tny.game.net.command.task.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
+import com.tny.game.net.rpc.*;
 
+import javax.annotation.Nonnull;
 import java.net.InetSocketAddress;
 import java.util.*;
 import java.util.function.Predicate;
@@ -29,21 +31,24 @@ public class MockNetEndpoint extends AttributesHolder implements NetEndpoint<Lon
 
     private Certificate<Long> certificate;
 
-    private final List<MessageContext> writeQueue = new ArrayList<>();
+    private final List<MessageContent> writeQueue = new ArrayList<>();
 
-    private final List<MessageContext> sendQueue = new ArrayList<>();
+    private final List<MessageContent> sendQueue = new ArrayList<>();
 
     private final List<Message> receiveQueue = new ArrayList<>();
 
     private EndpointStatus state;
 
-    public MockNetEndpoint(Certificate<Long> certificate) {
+    private final NetAccessMode accessMode;
+
+    public MockNetEndpoint(Certificate<Long> certificate, NetAccessMode accessMode) {
         this.certificate = certificate;
         if (this.certificate.isAuthenticated()) {
             this.state = EndpointStatus.ONLINE;
         } else {
             this.state = EndpointStatus.OFFLINE;
         }
+        this.accessMode = accessMode;
     }
 
     @Override
@@ -56,19 +61,8 @@ public class MockNetEndpoint extends AttributesHolder implements NetEndpoint<Lon
 
     }
 
-    //    @Override
-    //    public void createMessage(NetTunnel<Long> tunnel, MessageContext<Long> context) {
-    //        this.writeQueue.add(context);
-    //    }
-
-    //	@Override
-    //	public Message createMessage(MessageContext context) {
-    //		this.writeQueue.add(context);
-    //		return null;
-    //	}
-
     @Override
-    public NetMessage createMessage(MessageFactory messageFactory, MessageContext context) {
+    public NetMessage createMessage(MessageFactory messageFactory, MessageContent context) {
         this.writeQueue.add(context);
         return null;
     }
@@ -80,7 +74,7 @@ public class MockNetEndpoint extends AttributesHolder implements NetEndpoint<Lon
     }
 
     @Override
-    public SendReceipt send(NetTunnel<Long> tunnel, MessageContext messageContext) {
+    public SendReceipt send(NetTunnel<Long> tunnel, MessageContent messageContext) {
         this.sendQueue.add(messageContext);
         return messageContext;
     }
@@ -217,20 +211,25 @@ public class MockNetEndpoint extends AttributesHolder implements NetEndpoint<Lon
     }
 
     @Override
+    public NetAccessMode getAccessMode() {
+        return accessMode;
+    }
+
+    @Override
     public boolean receive(Message message) {
         return false;
     }
 
     @Override
-    public SendReceipt send(MessageContext messageContext) {
+    public SendReceipt send(MessageContent content) {
         return null;
     }
 
-    public List<MessageContext> getWriteQueue() {
+    public List<MessageContent> getWriteQueue() {
         return this.writeQueue;
     }
 
-    public List<MessageContext> getSendQueue() {
+    public List<MessageContent> getSendQueue() {
         return this.sendQueue;
     }
 
@@ -279,8 +278,8 @@ public class MockNetEndpoint extends AttributesHolder implements NetEndpoint<Lon
     }
 
     @Override
-    public void execute(Runnable command) {
-        
+    public void execute(@Nonnull Runnable command) {
+
     }
 
 }

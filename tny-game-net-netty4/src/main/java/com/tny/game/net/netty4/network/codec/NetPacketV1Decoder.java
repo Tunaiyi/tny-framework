@@ -4,13 +4,12 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.netty4.network.codec;
 
-import com.tny.game.net.base.*;
 import com.tny.game.net.codec.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
@@ -80,9 +79,7 @@ public class NetPacketV1Decoder extends NetPacketV1Codec implements NetPacketDec
             return null;
         }
         try {
-            Message message = readPayload(channel, in, option, payloadLength);
-            NetLogger.logReceive(() -> channel.attr(NettyNetAttrKeys.TUNNEL).get(), message);
-            return message;
+            return readPayload(channel, in, option, payloadLength);
         } finally {
             marker.reset();
         }

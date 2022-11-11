@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.endpoint;
 
 import com.tny.game.net.command.*;
@@ -36,7 +36,7 @@ public interface NetEndpoint<UID> extends Endpoint<UID>, SentMessageHistory, Rec
      * @param messageContext 发送消息上下文
      * @return 返回发送上下文
      */
-    SendReceipt send(NetTunnel<UID> tunnel, MessageContext messageContext);
+    SendReceipt send(NetTunnel<UID> tunnel, MessageContent messageContext);
 
     /**
      * 分配生成消息
@@ -45,7 +45,7 @@ public interface NetEndpoint<UID> extends Endpoint<UID>, SentMessageHistory, Rec
      * @param context        发送内容
      * @return 返回创建消息
      */
-    NetMessage createMessage(MessageFactory messageFactory, MessageContext context);
+    NetMessage createMessage(MessageFactory messageFactory, MessageContent context);
 
     /**
      * 使用指定认证登陆

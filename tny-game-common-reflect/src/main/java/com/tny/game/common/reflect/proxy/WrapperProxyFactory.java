@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.common.reflect.proxy;
 
 import com.tny.game.common.reflect.*;
@@ -29,9 +29,13 @@ public class WrapperProxyFactory {
 
     private final static String PROXY_CLASS_NAME = ".WrapperProxy$$";
 
-    public static <T> WrapperProxy<T> createWrapper(T proxied) throws InstantiationException, IllegalAccessException {
+    public static <T> WrapperProxy<T> createWrapper(T proxied)
+            throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         Class<WrapperProxy<T>> wrapperClazz = getWrapperProxyClass(proxied.getClass());
-        WrapperProxy<T> wrapperProxy = wrapperClazz.newInstance();
+        if (wrapperClazz == null) {
+            throw new NullPointerException(proxied.getClass() + "WrapperProxyClass is null");
+        }
+        WrapperProxy<T> wrapperProxy = wrapperClazz.getDeclaredConstructor().newInstance();
         wrapperProxy.set$Proxied(proxied);
         return wrapperProxy;
     }

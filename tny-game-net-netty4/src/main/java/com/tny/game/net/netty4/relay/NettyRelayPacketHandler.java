@@ -4,26 +4,29 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.netty4.relay;
 
 import com.tny.game.common.result.*;
 import com.tny.game.common.runtime.*;
 import com.tny.game.net.exception.*;
+import com.tny.game.net.monitor.*;
 import com.tny.game.net.netty4.network.*;
 import com.tny.game.net.relay.*;
 import com.tny.game.net.relay.link.*;
 import com.tny.game.net.relay.packet.*;
 import com.tny.game.net.relay.packet.arguments.*;
+import com.tny.game.net.rpc.*;
 import com.tny.game.net.transport.*;
 import io.netty.channel.*;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.handler.timeout.*;
 import org.slf4j.*;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.nio.channels.ClosedChannelException;
 
@@ -43,12 +46,15 @@ public class NettyRelayPacketHandler extends ChannelDuplexHandler {
 
     private final RelayPacketProcessor relayPacketProcessor;
 
-    public NettyRelayPacketHandler(RelayPacketProcessor relayPacketProcessor) {
+    private final RelayMonitor monitor;
+
+    public NettyRelayPacketHandler(NetAccessMode mode, RelayPacketProcessor relayPacketProcessor) {
         this.relayPacketProcessor = relayPacketProcessor;
+        this.monitor = new RelayMonitor(mode);
     }
 
     @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+    public void channelActive(@Nonnull ChannelHandlerContext ctx) throws Exception {
         if (LOGGER.isInfoEnabled()) {
             Channel channel = ctx.channel();
             if (channel.isActive()) {
@@ -61,30 +67,32 @@ public class NettyRelayPacketHandler extends ChannelDuplexHandler {
     }
 
     @Override
-    public void channelRead(ChannelHandlerContext context, Object object) {
+    public void channelRead(ChannelHandlerContext context, @Nonnull Object object) {
         Channel channel = context.channel();
-        if (object == null) {
-            LOGGER.warn("[RelayLink] 读取消息 ## 通道 {} ==> {} 消息为null", channel.localAddress(), channel.remoteAddress());
-            channel.disconnect();
-            return;
-        }
         if (object instanceof RelayPacket) {
             RelayPacket<?> packet = as(object);
             try {
                 RelayPacketType packetType = packet.getType();
-                if (packetType.isHandleByLink()) { // link 处理
-                    NetRelayLink link = channel.attr(NettyRelayAttrKeys.RELAY_LINK).get();
-                    packetType.handle(this.relayPacketProcessor, link, packet);
-                } else if (packetType.isHandleByTransporter()) { // transporter 处理
+                if (packetType == RelayPacketType.LINK_OPEN) { // transporter 处理
                     RelayTransporter transporter = channel.attr(NettyRelayAttrKeys.RELAY_TRANSPORTER).get();
-                    packetType.handle(this.relayPacketProcessor, transporter, packet);
+                    var openPacket = (LinkOpenPacket)packet;
+                    this.monitor.onLinkOpen(transporter, openPacket);
+                    this.relayPacketProcessor.onLinkOpen(transporter, openPacket);
+                } else {
+                    if (packetType.isHandleByLink()) { // link 处理
+                        NetRelayLink link = channel.attr(NettyRelayAttrKeys.RELAY_LINK).get();
+                        this.monitor.onReadPacket(link, packet);
+                        packetType.handle(this.relayPacketProcessor, link, packet);
+                    }
                 }
             } catch (NetGeneralException ex) {
                 if (ex.getCode().getLevel() == ResultLevel.ERROR) {
                     channel.close();
-                    LOGGER.warn("[RelayLink] 读取消息 ## 通道 {} ==> {} 时断开链接 # RelayLink 为空", channel.localAddress(), channel.remoteAddress(), ex);
+                    LOGGER.warn("[RelayLink] 读取消息 ## 通道 {} ==> {} 时断开链接 # RelayLink 为空",
+                            channel.localAddress(), channel.remoteAddress(), ex);
                 } else {
-                    LOGGER.warn("[RelayLink] 读取消息 ## 通道 {} ==> {} 接受转发包{}异常", channel.localAddress(), channel.remoteAddress(), packet, ex);
+                    LOGGER.warn("[RelayLink] 读取消息 ## 通道 {} ==> {} 接受转发包{}异常",
+                            channel.localAddress(), channel.remoteAddress(), packet, ex);
                 }
             } catch (Throwable ex) {
                 release(packet);
@@ -98,10 +106,21 @@ public class NettyRelayPacketHandler extends ChannelDuplexHandler {
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
         try (ProcessTracer ignored = MESSAGE_ENCODE_WATCHER.trace()) {
+            RelayPacket<?> packet = null;
             if (msg instanceof RelayPacketMaker) {
-                msg = ((RelayPacketMaker)msg).make();
+                packet = ((RelayPacketMaker)msg).make();
             }
-            ctx.write(msg, promise);
+            if (msg instanceof RelayPacket) {
+                packet = (RelayPacket<?>)msg;
+            }
+            if (packet != null) {
+                var channel = ctx.channel();
+                NetRelayLink link = channel.attr(NettyRelayAttrKeys.RELAY_LINK).get();
+                if (link != null) {
+                    monitor.onWritePacket(link, packet);
+                }
+                ctx.write(packet, promise);
+            }
         }
     }
 

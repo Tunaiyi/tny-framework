@@ -4,22 +4,23 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.common.aop;
 
 import com.tny.game.common.reflect.aop.*;
 import com.tny.game.common.reflect.proxy.*;
 import org.junit.jupiter.api.*;
 
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
+import java.util.Objects;
 
 class AOPTest {
 
     @Test
-    void testPlayerProxy() throws InstantiationException, IllegalAccessException {
+    void testPlayerProxy() throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         Player player = new PlayerProxy();
         Player playerProxy = AoperBuilder.newBuilder(Player.class)
                 .setAfterReturningAdvice(new AfterReturningAdvice() {
@@ -47,11 +48,11 @@ class AOPTest {
         playerProxy.friend(20, player, 100L);
         try {
             playerProxy.tryException();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
 
         WrapperProxy<Player> wrapperProxy = WrapperProxyFactory.createWrapper(player);
-        Player wrapperPlayer = wrapperProxy.get$Wrapper();
+        Player wrapperPlayer = Objects.requireNonNull(wrapperProxy).get$Wrapper();
         wrapperPlayer.callName();
         wrapperPlayer.getName();
         wrapperPlayer.friend(20, player, 100L);
@@ -65,7 +66,7 @@ class AOPTest {
     }
 
     @Test
-    void testPlayer() throws InstantiationException, IllegalAccessException {
+    void testPlayer() throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         Player player = new Player();
         Player playerProxy = AoperBuilder.newBuilder(Player.class)
                 .setAfterReturningAdvice((returnValue, method, args, target) -> System.out
@@ -80,7 +81,7 @@ class AOPTest {
         playerProxy.friend(20, player, 100L);
         try {
             playerProxy.tryException();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         WrapperProxy<Player> wrapperProxy = WrapperProxyFactory.createWrapper(player);
         Player wraperPlayer = wrapperProxy.get$Wrapper();

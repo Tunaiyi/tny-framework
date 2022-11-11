@@ -4,40 +4,31 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.base;
 
 import com.tny.game.common.context.*;
 import com.tny.game.common.runtime.*;
 import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.message.*;
+import com.tny.game.net.relay.link.*;
+import com.tny.game.net.relay.packet.*;
 import com.tny.game.net.transport.*;
 import org.slf4j.*;
 
+import java.util.EnumSet;
 import java.util.concurrent.*;
-import java.util.function.Supplier;
 
+import static com.tny.game.common.utils.ObjectAide.*;
 import static com.tny.game.common.utils.StringAide.*;
 
 public class NetLogger {
 
-    public static final ProcessWatcher NET_TRACE_ALL_WATCHER = ProcessWatcher.of(MessageCommand.class + ".track_all_receive_send",
-            TrackPrintOption.CLOSE);//.schedule(15, TimeUnit.SECONDS);
-
-    public static final ProcessWatcher NET_TRACE_INPUT_ALL = ProcessWatcher.of(MessageCommand.class + ".track_input-all", TrackPrintOption.CLOSE);
-    //.schedule(15, TimeUnit.SECONDS);
-
     public static final ProcessWatcher MESSAGE_DECODE_WATCHER = ProcessWatcher.of(MessageCommand.class + ".track_input-decode",
             TrackPrintOption.CLOSE);//.schedule(15, TimeUnit.SECONDS);
-
-    public static final ProcessWatcher NET_TRACE_INPUT_READ_TO_TUNNEL_WATCHER = ProcessWatcher.of(
-            MessageCommand.class + ".track_input-read_to_tunnel", TrackPrintOption.CLOSE);//.schedule(15, TimeUnit.SECONDS);
-
-    public static final ProcessWatcher NET_TRACE_INPUT_TUNNEL_TO_EXECUTE_WATCHER = ProcessWatcher.of(
-            MessageCommand.class + ".track_input-tunnel_to_execute", TrackPrintOption.CLOSE);//.schedule(15, TimeUnit.SECONDS);
 
     public static final ProcessWatcher NET_TRACE_INPUT_BOX_PROCESS_WATCHER = ProcessWatcher.of(MessageCommand.class + ".track_input-box_process",
             TrackPrintOption.CLOSE);//.schedule(15, TimeUnit.SECONDS);
@@ -45,17 +36,11 @@ public class NetLogger {
     public static final ProcessWatcher NET_TRACE_INPUT_EXECUTE_COMMAND_WATCHER = ProcessWatcher.of(
             MessageCommand.class + ".track_input-execute_command", TrackPrintOption.CLOSE);//.schedule(15, TimeUnit.SECONDS);
 
-    public static final ProcessWatcher NET_TRACE_OUTPUT_WRITTEN_WATCHER = ProcessWatcher.of(MessageCommand.class + ".track_output-all",
-            TrackPrintOption.CLOSE);//.schedule(15, TimeUnit.SECONDS);
-
     public static final ProcessWatcher MESSAGE_ENCODE_WATCHER = ProcessWatcher.of(MessageCommand.class + ".track_output-encode",
             TrackPrintOption.CLOSE);//.schedule(15, TimeUnit.SECONDS);
 
     public static final ProcessWatcher NET_TRACE_OUTPUT_WRITE_TO_ENCODE_WATCHER = ProcessWatcher.of(
             MessageCommand.class + ".track_output-write_to_encode", TrackPrintOption.CLOSE);//.schedule(15, TimeUnit.SECONDS);
-
-    public static final ProcessWatcher MESSAGE_EXE_INVOKE_WATCHER = ProcessWatcher.of(MessageCommand.class + ".command_exe_invoke",
-            TrackPrintOption.CLOSE);//.schedule(15, TimeUnit.SECONDS);
 
     public static final ProcessWatcher MESSAGE_EXE_INVOKE_GET_CONTROLLER_WATCHER = ProcessWatcher.of(
             MessageCommand.class + ".command_exe_invoke-get_controller", TrackPrintOption.CLOSE);//.schedule(15, TimeUnit.SECONDS);
@@ -75,33 +60,6 @@ public class NetLogger {
     public static final ProcessWatcher MESSAGE_EXE_INVOKE_AFTER_PLUGINS_WATCHER = ProcessWatcher.of(
             MessageCommand.class + ".command_exe_invoke-after_plugins", TrackPrintOption.CLOSE);//.schedule(15, TimeUnit.SECONDS);
 
-    public static final ProcessWatcher MESSAGE_EXE_HANDLE_RESULT_WATCHER = ProcessWatcher.of(MessageCommand.class + ".command_exe_handle_result",
-            TrackPrintOption.CLOSE);//.schedule(15, TimeUnit.SECONDS);
-
-    //    public static final ProcessWatcher MSG_TICK_2_WATCHER = ProcessWatcher
-    //            .of(MessageCommand.class + ".tick2", TrackPrintOption.CLOSE)
-    //            ;//.schedule(15, TimeUnit.SECONDS);
-    //
-    //    public static final ProcessWatcher MSG_TICK_3_WATCHER = ProcessWatcher
-    //            .of(MessageCommand.class + ".tick3", TrackPrintOption.CLOSE)
-    //            ;//.schedule(15, TimeUnit.SECONDS);
-
-    public static final AttrKey<ProcessTracer> NET_TRACE_ALL_ATTR_KEY = AttrKeys.key(ProcessWatcher.class, "NET_TRACE_ALL_ATTR_KEY");
-
-    public static final AttrKey<ProcessTracer> NET_TRACE_INPUT_READ_TO_TUNNEL_ATTR_KEY = AttrKeys.key(ProcessWatcher.class,
-            "NET_TRACE_INPUT_READ_TO_TUNNEL_ATTR_KEY");
-
-    public static final AttrKey<ProcessTracer> NET_TRACE_INPUT_ALL_ATTR_KEY = AttrKeys.key(ProcessWatcher.class, "NET_TRACE_INPUT_ALL_ATTR_KEY");
-
-    public static final AttrKey<ProcessTracer> NET_TRACE_INPUT_TUNNEL_TO_EXECUTE_ATTR_KEY = AttrKeys.key(ProcessWatcher.class,
-            "NET_TRACE_INPUT_TUNNEL_TO_EXECUTE_ATTR_KEY");
-
-    public static final AttrKey<ProcessTracer> MESSAGE_DISPATCH_TO_EXECUTE_ATTR_KEY = AttrKeys.key(ProcessWatcher.class,
-            "MESSAGE_DISPATCH_TO_EXECUTE_ATTR_KEY");
-
-    public static final AttrKey<ProcessTracer> NET_TRACE_OUTPUT_WRITE_TO_ENCODE_ATTR_KEY = AttrKeys.key(ProcessWatcher.class,
-            "NET_TRACE_OUTPUT_WRITE_TO_ENCODE_ATTR_KEY");
-
     private static class WatcherAttribute {
 
         private final AttrKey<ProcessTracer> key;
@@ -114,19 +72,6 @@ public class NetLogger {
         }
 
     }
-
-    public static final WatcherAttribute NET_TRACE_ALL_ATTR = new WatcherAttribute(NET_TRACE_ALL_WATCHER, NET_TRACE_ALL_ATTR_KEY);
-
-    public static final WatcherAttribute NET_TRACE_INPUT_ALL_ATTR = new WatcherAttribute(NET_TRACE_INPUT_ALL, NET_TRACE_INPUT_ALL_ATTR_KEY);
-
-    public static final WatcherAttribute NET_TRACE_INPUT_READ_TO_TUNNEL_ATTR = new WatcherAttribute(NET_TRACE_INPUT_READ_TO_TUNNEL_WATCHER,
-            NET_TRACE_INPUT_READ_TO_TUNNEL_ATTR_KEY);
-
-    public static final WatcherAttribute NET_TRACE_INPUT_TUNNEL_TO_EXECUTE_ATTR = new WatcherAttribute(NET_TRACE_INPUT_TUNNEL_TO_EXECUTE_WATCHER,
-            NET_TRACE_INPUT_TUNNEL_TO_EXECUTE_ATTR_KEY);
-
-    public static final WatcherAttribute NET_TRACE_OUTPUT_WRITE_TO_ENCODE_ATTR = new WatcherAttribute(NET_TRACE_OUTPUT_WRITE_TO_ENCODE_WATCHER,
-            NET_TRACE_OUTPUT_WRITE_TO_ENCODE_ATTR_KEY);
 
     public static void trace(WatcherAttribute attribute, Message message) {
         if (attribute.watcher.isSchedule()) {
@@ -161,176 +106,102 @@ public class NetLogger {
 
     public static final String EXECUTOR = "com.tny.game.net.executor";
 
-    private static final String RECEIVE = "com.tny.game.net.message.receive.{}";
+    private static final String MESSAGE_RECEIVE_LOGGER_NAME = "com.tny.game.net.message.receive.{}.{}";
 
-    private static final String SEND = "com.tny.game.net.message.send.{}";
+    private static final String MESSAGE_SEND_LOGGER_NAME = "com.tny.game.net.message.send.{}.{}";
 
-    private static final String RECEIVE_RQS = "com.tny.game.net.message.receive.{}.Request";
+    private static final String RELAY_RECEIVE_LOGGER_NAME = "com.tny.game.net.relay.receive.{}.{}";
 
-    private static final String RECEIVE_RSP = "com.tny.game.net.message.receive.{}.Response";
+    private static final String RELAY_SEND_LOGGER_NAME = "com.tny.game.net.relay.send.{}.{}";
 
-    private static final String RECEIVE_PUSH = "com.tny.game.net.message.receive.{}.Push";
-
-    private static final String SEND_RQS = "com.tny.game.net.message.send.{}.Request";
-
-    private static final String SEND_RSP = "com.tny.game.net.message.send.{}.Response";
-
-    private static final String SEND_PUSH = "com.tny.game.net.message.send.{}.Push";
-
-    private static class NetLoggerGroup {
-
-        private final String userType;
-
-        private final Logger receiveLogger;
-
-        private final Logger pushReceiveLogger;
-
-        private final Logger requestReceiveLogger;
-
-        private final Logger responseReceiveLogger;
-
-        private final Logger sendLogger;
-
-        private final Logger pushSendLogger;
-
-        private final Logger requestSendLogger;
-
-        private final Logger responseSendLogger;
-
-        private static final ConcurrentMap<String, NetLoggerGroup> NET_LOGGER_GROUP_MAP = new ConcurrentHashMap<>();
-
-        private static NetLoggerGroup of(String userType) {
-            return NET_LOGGER_GROUP_MAP.computeIfAbsent(userType, NetLoggerGroup::new);
-        }
-
-        private NetLoggerGroup(String userType) {
-            this.userType = userType;
-            this.receiveLogger = LoggerFactory.getLogger(format(NetLogger.RECEIVE, userType));
-            this.pushReceiveLogger = LoggerFactory.getLogger(format(NetLogger.RECEIVE_PUSH, userType));
-            this.requestReceiveLogger = LoggerFactory.getLogger(format(NetLogger.RECEIVE_RQS, userType));
-            this.responseReceiveLogger = LoggerFactory.getLogger(format(NetLogger.RECEIVE_RSP, userType));
-
-            this.sendLogger = LoggerFactory.getLogger(format(NetLogger.SEND, userType));
-            this.pushSendLogger = LoggerFactory.getLogger(format(NetLogger.SEND_PUSH, userType));
-            this.requestSendLogger = LoggerFactory.getLogger(format(NetLogger.SEND_RQS, userType));
-            this.responseSendLogger = LoggerFactory.getLogger(format(NetLogger.SEND_RSP, userType));
-        }
-
-        public String getUserType() {
-            return userType;
-        }
-
-        public Logger forReceiveMessage(Message message) {
-            switch (message.getMode()) {
-                case PUSH:
-                    return pushReceiveLogger;
-                case REQUEST:
-                    return requestReceiveLogger;
-                case RESPONSE:
-                    return responseReceiveLogger;
-                default:
-                    return receiveLogger;
-            }
-        }
-
-        public Logger forSendMessage(Message message) {
-            switch (message.getMode()) {
-                case PUSH:
-                    return pushSendLogger;
-                case REQUEST:
-                    return requestSendLogger;
-                case RESPONSE:
-                    return responseSendLogger;
-                default:
-                    return sendLogger;
-            }
-        }
-
+    private static Logger getMessageSendLogger(String service, Message message) {
+        return NetLoggerGroup.ofRpc(service).forSendMessage(message.getMode());
     }
 
-    private static Logger getLoggerByMessage(Message message, Logger pushLogger, Logger rqsLogger, Logger rspLogger) {
-        if (message == null) {
-            return null;
-        }
-        switch (message.getMode()) {
-            case PUSH:
-                return pushLogger;
-            case REQUEST:
-                return rqsLogger;
-            case RESPONSE:
-                return rspLogger;
-        }
-        return null;
+    private static Logger getMessageReceiveLogger(String service, Message message) {
+        return NetLoggerGroup.ofRpc(service).forReceiveMessage(message.getMode());
     }
 
-    private static Logger getSendLogger(String userType, Message message) {
-        return NetLoggerGroup.of(userType).forSendMessage(message);
+    private static Logger getRelayPacketSendLogger(String service, RelayPacket<?> packet) {
+        return NetLoggerGroup.ofRelay(service).forSendMessage(packet.getType());
     }
 
-    private static Logger getReceiveLogger(String userType, Message message) {
-        return NetLoggerGroup.of(userType).forReceiveMessage(message);
+    private static Logger getRelayPacketReceiveLogger(String service, RelayPacket<?> packet) {
+        return NetLoggerGroup.ofRelay(service).forReceiveMessage(packet.getType());
     }
 
-    //    private static Object[] toMessageArgs(Message message, Object[] args) {
-    //        Object[] msgArgs = new Object[5];
-    //        MessageHead head = message.getHead();
-    //        msgArgs[0] = message.getMode();
-    //        msgArgs[1] = head.getId();
-    //        msgArgs[2] = head.getId();
-    //        msgArgs[3] = head.getToMessage();
-    //        msgArgs[4] = message.getBody(Object.class);
-    //        if (args.length > 0) {
-    //            msgArgs = ArrayUtils.addAll(msgArgs, args);
-    //        }
-    //        return msgArgs;
-    //    }
-
-    public static void logSend(Supplier<Tunnel<?>> tunnelSupplier, Message message) {
-        logSend(tunnelSupplier.get(), message);
-    }
-
-    private static void logSend(Tunnel<?> tunnel, Message message) {
-        Logger logger = getSendLogger(tunnel.getUserGroup(), message);
+    public static void logSend(Tunnel<?> tunnel, Message message) {
+        Logger logger = getMessageSendLogger(tunnel.getUserGroup(), message);
         if (logger != null && logger.isDebugEnabled()) {
-            doLogSend(logger, tunnel, message);
+            logger.debug("# Tunnel {} [发送] =>> Message : {}", tunnel, message);
         }
-
-    }
-
-    public static void doLogSend(Logger logger, Tunnel<?> tunnel, Message message) {
-        MessageHead head = message.getHead();
-        logger.debug("\n    # Tunnel {} >> [发送]消息 {}", tunnel, message);
-    }
-
-    public static void logReceive(Supplier<Tunnel<?>> tunnelSupplier, Message message) {
-        logReceive(tunnelSupplier.get(), message);
     }
 
     public static void logReceive(Tunnel<?> tunnel, Message message) {
-        Logger logger = getReceiveLogger(tunnel.getUserGroup(), message);
+        Logger logger = getMessageReceiveLogger(tunnel.getUserGroup(), message);
         if (logger != null && logger.isDebugEnabled()) {
-            doLogReceive(logger, tunnel, message);
+            logger.debug("# Tunnel {} [接收] <<= Message : {}", tunnel, message);
         }
     }
 
-    private static void doLogReceive(Logger logger, Tunnel<?> tunnel, Message message) {
-        MessageHead head = message.getHead();
-        logger.debug("\n    # Tunnel {} << [接收]消息 {}", tunnel, message);
+    public static void logReceive(NetRelayLink link, RelayPacket<?> packet) {
+        Logger logger = getRelayPacketReceiveLogger(link.getService(), packet);
+        if (logger != null && logger.isDebugEnabled()) {
+            logger.debug("#{} [接收] << LinkPacket : {}", link, packet);
+        }
     }
-    // public static void log(Session session, Protocol protocol, ResultCode code, Object body) {
-    //     if (RECEIVE_LOGGER.isDebugEnabled())
-    //         RECEIVE_LOGGER.debug("\n##响应到 [{}|{}|{}] \n##响应 - 请求 [{}] {} ##响应码 : {} \n##响应消息体 : {}",
-    //                 session.getGroup(), session.getHostName(), session.getUID(),
-    //                 0, protocol.getProtocol(),
-    //                 code.getCode(), body);
-    // }
-    //
-    // public static void log(Session session, Protocol protocol, int code, Object body) {
-    //     if (LOG_REQUEST.isDebugEnabled())
-    //         RECEIVE_LOGGER.debug("\n##响应到 [{}|{}|{}] \n##响应 - 请求 [{}] {} ##响应码 : {} \n##响应消息体 : {}",
-    //                 session.getGroup(), session.getHostName(), session.getUID(),
-    //                 0, protocol.getProtocol(),
-    //                 code, body);
-    // }
+
+    public static void logSend(NetRelayLink link, RelayPacket<?> packet) {
+        Logger logger = getRelayPacketSendLogger(link.getService(), packet);
+        if (logger != null && logger.isDebugEnabled()) {
+            logger.debug("#{} [发送] >> LinkPacket : {}", link, packet);
+        }
+    }
+
+    public static void logReceive(RelayTransporter transporter, LinkOpenPacket packet) {
+        var arguments = packet.getArguments();
+        Logger logger = getRelayPacketSendLogger(arguments.getService(), packet);
+        if (logger != null && logger.isDebugEnabled()) {
+            logger.debug("RelayLink({})[{}]{} # [接收] << LinkPacket : {}", transporter.getAccessMode(), "NEW-LINK", transporter, packet);
+        }
+    }
+
+    private static class NetLoggerGroup<E extends Enum<E>> {
+
+        private final Logger[] receiveLoggers;
+
+        private final Logger[] sendLoggers;
+
+        private static final ConcurrentMap<String, NetLoggerGroup<?>> NET_LOGGER_GROUP_MAP = new ConcurrentHashMap<>();
+
+        private static NetLoggerGroup<MessageMode> ofRpc(String userType) {
+            return as(NET_LOGGER_GROUP_MAP.computeIfAbsent("Rpc:" + userType,
+                    (k) -> new NetLoggerGroup<>(userType, MessageMode.class, MESSAGE_RECEIVE_LOGGER_NAME, MESSAGE_SEND_LOGGER_NAME)));
+        }
+
+        private static NetLoggerGroup<RelayPacketType> ofRelay(String userType) {
+            return as(NET_LOGGER_GROUP_MAP.computeIfAbsent("Relay:" + userType,
+                    (k) -> new NetLoggerGroup<>(userType, RelayPacketType.class, RELAY_RECEIVE_LOGGER_NAME, RELAY_SEND_LOGGER_NAME)));
+        }
+
+        private NetLoggerGroup(String service, Class<E> enumClass, String subReceiveLoggerKey, String subSendLoggerKey) {
+            var enumSet = EnumSet.allOf(enumClass);
+            this.receiveLoggers = new Logger[enumSet.size()];
+            this.sendLoggers = new Logger[enumSet.size()];
+            for (E item : enumSet) {
+                receiveLoggers[item.ordinal()] = LoggerFactory.getLogger(format(subReceiveLoggerKey, service, item.name()));
+                sendLoggers[item.ordinal()] = LoggerFactory.getLogger(format(subSendLoggerKey, service, item.name()));
+            }
+        }
+
+        public Logger forReceiveMessage(E enumValue) {
+            return receiveLoggers[enumValue.ordinal()];
+        }
+
+        public Logger forSendMessage(E enumValue) {
+            return sendLoggers[enumValue.ordinal()];
+        }
+
+    }
 
 }

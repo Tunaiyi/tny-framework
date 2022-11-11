@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.endpoint;
 
 import com.tny.game.net.base.*;
@@ -62,7 +62,7 @@ public interface EndpointKeeper<UID, E extends Endpoint<UID>> {
      * @param userId  用户ID
      * @param context 消息内容
      */
-    void send2User(UID userId, MessageContext context);
+    void send2User(UID userId, MessageContent context);
 
     /**
      * 发信息给用户集合 <br>
@@ -70,7 +70,7 @@ public interface EndpointKeeper<UID, E extends Endpoint<UID>> {
      * @param userIds 用户ID列表
      * @param context 消息内容
      */
-    void send2Users(Collection<UID> userIds, MessageContext context);
+    void send2Users(Collection<UID> userIds, MessageContent context);
 
     /**
      * 发信息给用户集合 <br>
@@ -78,12 +78,12 @@ public interface EndpointKeeper<UID, E extends Endpoint<UID>> {
      * @param userIdsStream 用户ID流
      * @param context       消息内容
      */
-    void send2Users(Stream<UID> userIdsStream, MessageContext context);
+    void send2Users(Stream<UID> userIdsStream, MessageContent context);
 
     /**
      * 发送给所有在线的用户 <br>
      */
-    void send2AllOnline(MessageContext context);
+    void send2AllOnline(MessageContent context);
 
     /**
      * 使指定userId的session关闭

@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.message;
 
 import com.tny.game.common.result.*;
@@ -87,12 +87,37 @@ public class TickMessageHead extends AbstractNetMessageHead {
     }
 
     @Override
+    public MessageHeader<?> putHeader(MessageHeader<?> header) {
+        return null;
+    }
+
+    @Override
+    public MessageHeader<?> putHeaderIfAbsent(MessageHeader<?> header) {
+        return null;
+    }
+
+    @Override
+    public <T extends MessageHeader<?>> T removeHeader(String key) {
+        return null;
+    }
+
+    @Override
+    public <T extends MessageHeader<?>> T removeHeader(String key, Class<T> headerClass) {
+        return null;
+    }
+
+    @Override
+    public <T extends MessageHeader<?>> T removeHeader(MessageHeaderKey<T> key) {
+        return null;
+    }
+
+    @Override
     public boolean isHasHeaders() {
         return false;
     }
 
     @Override
-    public Map<String, MessageHeader<?>> getAllHeadersMap() {
+    public Map<String, MessageHeader<?>> getAllHeaderMap() {
         return Collections.emptyMap();
     }
 

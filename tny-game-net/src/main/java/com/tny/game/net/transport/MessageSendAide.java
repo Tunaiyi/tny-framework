@@ -53,7 +53,7 @@ public class MessageSendAide {
         }
         var forwardHeader = request.getHeader(MessageHeaderConstants.RPC_FORWARD_HEADER);
         var backForward = createBackForwardHeader(forwardHeader);
-        MessageContext context = MessageContexts.respond(request, code, body, toMessage)
+        MessageContent context = MessageContents.respond(request, code, body, toMessage)
                 .withHeader(backForward);
         return send(tunnel, context, backForward == null);
     }
@@ -61,7 +61,7 @@ public class MessageSendAide {
     public static <UID> SendReceipt push(NetTunnel<UID> tunnel, Message request, ResultCode code, Object body) {
         var messageForwardHeader = request.getHeader(MessageHeaderConstants.RPC_FORWARD_HEADER);
         var backForward = createBackForwardHeader(messageForwardHeader);
-        var context = MessageContexts.push(request, code, body)
+        var context = MessageContents.push(request, code, body)
                 .withHeader(backForward);
         return send(tunnel, context, backForward == null);
     }
@@ -72,7 +72,7 @@ public class MessageSendAide {
      * @param tunnel  通道
      * @param context 消息信息上下文
      */
-    public static <UID> SendReceipt send(NetTunnel<UID> tunnel, MessageContext context) {
+    public static <UID> SendReceipt send(NetTunnel<UID> tunnel, MessageContent context) {
         return send(tunnel, context, true);
     }
 
@@ -82,7 +82,7 @@ public class MessageSendAide {
      * @param tunnel  通道
      * @param context 消息信息上下文
      */
-    public static <UID> SendReceipt send(NetTunnel<UID> tunnel, MessageContext context, boolean autoClose) {
+    public static <UID> SendReceipt send(NetTunnel<UID> tunnel, MessageContent context, boolean autoClose) {
         boolean close = context.getResultCode().getLevel() == ResultLevel.ERROR;
         if (close) {
             if (!context.isWriteAwaitable()) {

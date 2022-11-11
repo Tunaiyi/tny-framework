@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.transport;
 
 import com.tny.game.common.context.*;
@@ -16,6 +16,7 @@ import com.tny.game.net.command.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
+import com.tny.game.net.rpc.*;
 
 import java.net.InetSocketAddress;
 
@@ -26,13 +27,13 @@ public class MockNetTunnel extends AttributesHolder implements NetTunnel<Long> {
 
     private long accessId;
 
-    private TunnelMode mode;
+    private final NetAccessMode mode;
 
     private TunnelStatus state;
 
     private NetEndpoint<Long> endpoint;
 
-    private InetSocketAddress address = new InetSocketAddress(7100);
+    private final InetSocketAddress address = new InetSocketAddress(7100);
 
     private int pingTimes = 0;
 
@@ -44,9 +45,9 @@ public class MockNetTunnel extends AttributesHolder implements NetTunnel<Long> {
 
     private boolean writeSuccess = true;
 
-    private NetBootstrapContext context;
+    private final NetBootstrapContext context;
 
-    public MockNetTunnel(NetEndpoint<Long> endpoint, TunnelMode mode) {
+    public MockNetTunnel(NetEndpoint<Long> endpoint, NetAccessMode mode) {
         this.endpoint = endpoint;
         this.state = TunnelStatus.OPEN;
         this.mode = mode;
@@ -64,7 +65,7 @@ public class MockNetTunnel extends AttributesHolder implements NetTunnel<Long> {
     }
 
     @Override
-    public TunnelMode getMode() {
+    public NetAccessMode getAccessMode() {
         return this.mode;
     }
 
@@ -160,7 +161,7 @@ public class MockNetTunnel extends AttributesHolder implements NetTunnel<Long> {
     }
 
     @Override
-    public MessageWriteAwaiter write(MessageAllocator allocator, MessageContext context) throws NetException {
+    public MessageWriteAwaiter write(MessageAllocator allocator, MessageContent context) throws NetException {
         this.writeTimes++;
         return null;
     }
@@ -198,8 +199,8 @@ public class MockNetTunnel extends AttributesHolder implements NetTunnel<Long> {
     }
 
     @Override
-    public SendReceipt send(MessageContext messageContext) {
-        return this.endpoint.send(this, messageContext);
+    public SendReceipt send(MessageContent content) {
+        return this.endpoint.send(this, content);
     }
 
     public MockNetTunnel setBindSuccess(boolean bindSuccess) {

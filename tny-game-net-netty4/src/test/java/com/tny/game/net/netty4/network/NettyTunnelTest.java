@@ -4,14 +4,15 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.netty4.network;
 
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
+import com.tny.game.net.rpc.*;
 import com.tny.game.net.transport.*;
 import io.netty.channel.embedded.EmbeddedChannel;
 import org.apache.commons.collections4.CollectionUtils;
@@ -22,11 +23,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 import static com.tny.game.common.utils.ObjectAide.*;
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by Kun Yang on 2018/8/25.
@@ -39,19 +36,19 @@ public abstract class NettyTunnelTest<E extends NetEndpoint<Long>, T extends Bas
     }
 
     @Test
-    public void remoteAddress() {
+    void remoteAddress() {
         T tunnel = createBindTunnel();
         assertNotNull(tunnel.getRemoteAddress());
     }
 
     @Test
-    public void localAddress() {
+    void localAddress() {
         T tunnel = createBindTunnel();
         assertNotNull(tunnel.getLocalAddress());
     }
 
     @Test
-    public void isClosed() {
+    void isClosed() {
         T tunnel = createBindTunnel();
         assertFalse(tunnel.isClosed());
         assertTrue(tunnel.isActive());
@@ -62,23 +59,21 @@ public abstract class NettyTunnelTest<E extends NetEndpoint<Long>, T extends Bas
     }
 
     @Test
-    public void bind() {
+    void bind() {
         NetTunnel<Long> tunnel;
         MockNetEndpoint endpoint;
         TunnelTestInstance<T, ME> object;
         // 正常绑定
         object = create(createUnLoginCert(), false);
         tunnel = object.getTunnel();
-        if (tunnel.getMode() == TunnelMode.CLIENT) {
+        if (tunnel.getAccessMode() == NetAccessMode.CLIENT) {
             endpoint = object.getEndpoint();
             endpoint.online(createLoginCert(), tunnel);
-            assertTrue(tunnel.bind(endpoint));
-            assertTrue(tunnel.isAuthenticated());
         } else {
             endpoint = createEndpoint();
-            assertTrue(tunnel.bind(endpoint));
-            assertTrue(tunnel.isAuthenticated());
         }
+        assertTrue(tunnel.bind(endpoint));
+        assertTrue(tunnel.isAuthenticated());
 
         // 重复绑定 同一终端
         assertTrue(tunnel.bind(endpoint));
@@ -96,7 +91,7 @@ public abstract class NettyTunnelTest<E extends NetEndpoint<Long>, T extends Bas
     }
 
     @Test
-    public void open() {
+    void open() {
         T tunnel;
 
         // 正常开启
@@ -122,7 +117,7 @@ public abstract class NettyTunnelTest<E extends NetEndpoint<Long>, T extends Bas
         // 断开再打开
         tunnel = createTunnel(createLoginCert(), true);
         tunnel.disconnect();
-        if (tunnel.getMode() == TunnelMode.SERVER) {
+        if (tunnel.getAccessMode() == NetAccessMode.SERVER) {
             assertFalse(tunnel.open());
             assertTrue(tunnel.isClosed());
             assertFalse(tunnel.isActive());
@@ -136,7 +131,7 @@ public abstract class NettyTunnelTest<E extends NetEndpoint<Long>, T extends Bas
     }
 
     @Test
-    public void disconnect() {
+    void disconnect() {
         T tunnel;
 
         // 正常开启
@@ -155,7 +150,7 @@ public abstract class NettyTunnelTest<E extends NetEndpoint<Long>, T extends Bas
     }
 
     @Test
-    public void close() {
+    void close() {
         T tunnel;
         tunnel = createBindTunnel();
 
@@ -249,7 +244,7 @@ public abstract class NettyTunnelTest<E extends NetEndpoint<Long>, T extends Bas
     }
 
     @Test
-    public void write() {
+    void write() {
         T tunnel;
         EmbeddedChannel channel;
         TestMessages messages;

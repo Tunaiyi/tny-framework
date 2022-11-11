@@ -60,7 +60,7 @@ public class MessageForwardCommand extends BaseCommand {
         if (toAccess != null && toAccess.isActive()) {
             ForwardPoint fromPoint = new ForwardPoint(this.tunnel.getUserId());
             RpcServicerPoint toPoint = toAccess.getForwardPoint();
-            toAccess.send(MessageContexts.copy(message)
+            toAccess.send(MessageContents.copy(message)
                     .withHeader(RpcForwardHeaderBuilder.newBuilder()
                             .setFrom(fromPoint)
                             .setSender(forwardHeader.getSender())

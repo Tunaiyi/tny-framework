@@ -4,14 +4,15 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.relay.packet;
 
 import com.tny.game.net.relay.packet.arguments.*;
-import org.apache.commons.lang3.builder.ToStringBuilder;
+
+import java.util.StringJoiner;
 
 /**
  * 事件
@@ -28,7 +29,7 @@ public abstract class BaseRelayPacket<A extends RelayPacketArguments> implements
 
     private final RelayPacketType type;
 
-    private final A arguments;
+    protected final A arguments;
 
     public BaseRelayPacket(int id, RelayPacketType type, A arguments) {
         this.id = id;
@@ -66,11 +67,13 @@ public abstract class BaseRelayPacket<A extends RelayPacketArguments> implements
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this)
-                .append("id", this.id)
-                .append("type", this.type)
-                .append("nanoTime", this.time)
+        return new StringJoiner(", ", this.getClass().getSimpleName() + "[", "]")
+                .add("id=" + this.id)
+                .add("type=" + this.getType())
+                .add(toPacketMessage())
                 .toString();
     }
+
+    protected abstract String toPacketMessage();
 
 }

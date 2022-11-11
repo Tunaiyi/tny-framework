@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.netty4.relay;
 
 import com.tny.game.net.base.*;
@@ -16,6 +16,7 @@ import com.tny.game.net.netty4.network.*;
 import com.tny.game.net.relay.*;
 import com.tny.game.net.relay.link.*;
 import com.tny.game.net.relay.packet.*;
+import com.tny.game.net.rpc.*;
 import com.tny.game.net.transport.*;
 import io.netty.channel.*;
 import org.slf4j.*;
@@ -34,8 +35,8 @@ public class NettyChannelRelayTransporter extends NettyChannelConnection impleme
 
     private final NetworkContext context;
 
-    public NettyChannelRelayTransporter(Channel channel, NetworkContext context) {
-        super(channel);
+    public NettyChannelRelayTransporter(NetAccessMode accessMode, Channel channel, NetworkContext context) {
+        super(accessMode, channel);
         this.context = context;
         this.channel.attr(NettyRelayAttrKeys.RELAY_TRANSPORTER).setIfAbsent(this);
         this.channel.closeFuture().addListener(f -> this.close());

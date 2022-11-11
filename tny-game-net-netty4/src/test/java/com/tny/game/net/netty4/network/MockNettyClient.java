@@ -4,15 +4,16 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.netty4.network;
 
 import com.tny.game.common.url.*;
 import com.tny.game.net.command.*;
 import com.tny.game.net.endpoint.*;
+import com.tny.game.net.rpc.*;
 import com.tny.game.net.transport.*;
 
 import java.net.InetSocketAddress;
@@ -26,7 +27,7 @@ public class MockNettyClient extends MockNetEndpoint implements NetTerminal<Long
     private URL url;
 
     public MockNettyClient(URL url, Certificate<Long> certificate) {
-        super(certificate);
+        super(certificate, NetAccessMode.CLIENT);
         this.url = url;
     }
 
@@ -42,7 +43,7 @@ public class MockNettyClient extends MockNetEndpoint implements NetTerminal<Long
 
     @Override
     public MessageTransporter connect() {
-        return new NettyChannelMessageTransporter(new MockChannel(new InetSocketAddress(8090), new InetSocketAddress(8091)));
+        return new NettyChannelMessageTransporter(NetAccessMode.CLIENT, new MockChannel(new InetSocketAddress(8090), new InetSocketAddress(8091)));
     }
 
     @Override

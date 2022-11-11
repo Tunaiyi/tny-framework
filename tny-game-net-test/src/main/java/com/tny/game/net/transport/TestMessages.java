@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.transport;
 
 import com.tny.game.common.result.*;
@@ -72,7 +72,7 @@ public class TestMessages {
                 .collect(Collectors.toList());
     }
 
-    public List<MessageContent> getSubject() {
+    public List<MessageSubject> getSubject() {
         return this.messages.stream().map(TestMessagePack::getContext).collect(Collectors.toList());
     }
 
@@ -81,19 +81,19 @@ public class TestMessages {
     }
 
     public TestMessages addPush(ResultCode code, Object body) {
-        return addMessageContext(MessageContexts.push(Protocols.protocol(this.protocol), code, body));
+        return addMessageContext(MessageContents.push(Protocols.protocol(this.protocol), code, body));
     }
 
     public TestMessages addRequest(Object body) {
-        return addMessageContext(MessageContexts.request(Protocols.protocol(this.protocol), body));
+        return addMessageContext(MessageContents.request(Protocols.protocol(this.protocol), body));
     }
 
     public TestMessages addResponse(Object body, long toMessage) {
-        return addMessageContext(MessageContexts.respond(Protocols.protocol(this.protocol), body, toMessage));
+        return addMessageContext(MessageContents.respond(Protocols.protocol(this.protocol), body, toMessage));
     }
 
     public TestMessages addResponse(ResultCode code, Object body, long toMessage) {
-        return addMessageContext(MessageContexts.respond(Protocols.protocol(this.protocol), code, body, toMessage));
+        return addMessageContext(MessageContents.respond(Protocols.protocol(this.protocol), code, body, toMessage));
     }
 
     public TestMessages addPing() {
@@ -133,11 +133,11 @@ public class TestMessages {
         return this.addMessagePack(new TestMessagePack(null, message));
     }
 
-    public TestMessages addMessageContext(MessageContext context) {
+    public TestMessages addMessageContext(MessageContent context) {
         return this.addMessagePack(new TestMessagePack(context, createMessage(context)));
     }
 
-    private NetMessage createMessage(MessageContext context) {
+    private NetMessage createMessage(MessageContent context) {
         return this.messageBuilderFactory.create(this.idCreator.incrementAndGet(), context);
     }
 
@@ -235,11 +235,11 @@ public class TestMessages {
         this.messages.stream().map(TestMessagePack::getMessage).forEach(action);
     }
 
-    public void contextsForEach(Consumer<MessageContext> action) {
+    public void contextsForEach(Consumer<MessageContent> action) {
         this.messages.stream().map(TestMessagePack::getContext).forEach(action);
     }
 
-    public void requestContextsForEach(Consumer<RequestContext> action) {
+    public void requestContextsForEach(Consumer<RequestContent> action) {
         this.messages.stream().map(TestMessagePack::getRequestContext).forEach(action);
     }
 

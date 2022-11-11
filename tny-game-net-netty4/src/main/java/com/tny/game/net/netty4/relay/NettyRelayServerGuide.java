@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.netty4.relay;
 
 import com.tny.game.common.concurrent.collection.*;
@@ -20,12 +20,14 @@ import com.tny.game.net.netty4.channel.*;
 import com.tny.game.net.relay.*;
 import com.tny.game.net.relay.link.*;
 import com.tny.game.net.relay.packet.*;
+import com.tny.game.net.rpc.*;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import org.slf4j.*;
 
+import javax.annotation.Nonnull;
 import java.net.InetSocketAddress;
 import java.util.*;
 
@@ -45,7 +47,7 @@ public class NettyRelayServerGuide extends NettyBootstrap<NettyRelayServerBootst
 
     private final InetSocketAddress serveAddress;
 
-    private LocalRelayExplorer localRelayExplorer;
+    private ServerRelayExplorer localRelayExplorer;
 
     private final Map<String, Channel> channels = new CopyOnWriteMap<>();
 
@@ -157,17 +159,17 @@ public class NettyRelayServerGuide extends NettyBootstrap<NettyRelayServerBootst
                 return this.bootstrap;
             }
             this.bootstrap = new ServerBootstrap();
-            RelayPacketProcessor relayPacketProcessor = new LocalRelayPacketProcessor(this.localRelayExplorer, this.getContext());
-            NettyRelayPacketHandler relayMessageHandler = new NettyRelayPacketHandler(relayPacketProcessor);
+            RelayPacketProcessor relayPacketProcessor = new RelayPacketServerProcessor(this.localRelayExplorer, this.getContext());
+            NettyRelayPacketHandler relayMessageHandler = new NettyRelayPacketHandler(NetAccessMode.SERVER, relayPacketProcessor);
             this.bootstrap.group(parentGroup, childGroup);
             this.bootstrap.channel(EPOLL ? EpollServerSocketChannel.class : NioServerSocketChannel.class);
             this.bootstrap.option(ChannelOption.SO_REUSEADDR, true);
             this.bootstrap.childOption(ChannelOption.TCP_NODELAY, true);
             this.bootstrap.childOption(ChannelOption.SO_KEEPALIVE, true);
-            this.bootstrap.childHandler(new ChannelInitializer<Channel>() {
+            this.bootstrap.childHandler(new ChannelInitializer<>() {
 
                 @Override
-                protected void initChannel(Channel channel) throws Exception {
+                protected void initChannel(@Nonnull Channel channel) throws Exception {
                     try {
                         ChannelMaker<Channel> maker = NettyRelayServerGuide.this.channelMaker;
                         if (maker != null) {
@@ -189,11 +191,11 @@ public class NettyRelayServerGuide extends NettyBootstrap<NettyRelayServerBootst
 
     @Override
     protected void onLoadUnit(NettyRelayServerBootstrapSetting setting) {
-        this.localRelayExplorer = UnitLoader.getLoader(LocalRelayExplorer.class).checkUnit();
+        this.localRelayExplorer = UnitLoader.getLoader(ServerRelayExplorer.class).checkUnit();
     }
 
     private void createRelayChannelTransmitter(Channel channel) {
-        new NettyChannelRelayTransporter(channel, this.getContext());
+        new NettyChannelRelayTransporter(NetAccessMode.SERVER, channel, this.getContext());
     }
 
 }

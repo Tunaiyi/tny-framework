@@ -53,8 +53,8 @@ public class EndpointService {
         keeperOpt.ifPresent(k -> k.send2User(uid, toPush(protocol, resultCode, body)));
     }
 
-    private MessageContext toPush(Protocol protocol, ResultCode resultCode, Object body) {
-        return MessageContexts
+    private MessageContent toPush(Protocol protocol, ResultCode resultCode, Object body) {
+        return MessageContents
                 .push(protocol, resultCode, body);
     }
 

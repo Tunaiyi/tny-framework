@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.transport;
 
 import com.tny.game.net.message.*;
@@ -20,12 +20,12 @@ import com.tny.game.net.message.*;
  */
 public class TestMessagePack {
 
-    private RequestContext context;
+    private RequestContent context;
 
     private NetMessage message;
 
-    public TestMessagePack(MessageContext context, NetMessage message) {
-        this.context = (RequestContext)context;
+    public TestMessagePack(MessageContent context, NetMessage message) {
+        this.context = (RequestContent)context;
         this.message = message;
     }
 
@@ -33,11 +33,11 @@ public class TestMessagePack {
         return this.message;
     }
 
-    public MessageContext getContext() {
+    public MessageContent getContext() {
         return this.context;
     }
 
-    public RequestContext getRequestContext() {
+    public RequestContent getRequestContext() {
         return this.context;
     }
 
