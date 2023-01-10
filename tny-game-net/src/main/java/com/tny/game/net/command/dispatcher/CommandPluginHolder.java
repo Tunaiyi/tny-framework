@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.command.dispatcher;
 
 import com.tny.game.expr.*;
@@ -67,7 +67,7 @@ public class CommandPluginHolder {
         }
     }
 
-    public void invokePlugin(Tunnel<?> tunnel, Message message, MessageCommandContext context) throws Exception {
+    public void invokePlugin(Tunnel<?> tunnel, Message message, RpcHandleContext context) throws Exception {
         if (DISPATCHER_LOG.isDebugEnabled()) {
             DISPATCHER_LOG.debug("调用 {}.{} | 触发插件 {}", this.controller.getControllerClass(), this.controller.getName(), this.plugin.getClass());
         }

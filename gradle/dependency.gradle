@@ -239,6 +239,7 @@ ext.libs = [
 
         skywalking_apm_agent_core                : "org.apache.skywalking:apm-agent-core:$vers.skywalking",
         skywalking_java_agent_util               : "org.apache.skywalking:java-agent-util:$vers.skywalking",
+        skywalking_apm_toolkit_trace             : "org.apache.skywalking:apm-toolkit-trace:$vers.skywalking",
 
 
         alibaba_nacos_client                     : "com.alibaba.nacos:nacos-client:2.0.0",

@@ -54,7 +54,7 @@ public abstract class BaseNetTunnel<UID, E extends NetEndpoint<UID>, T extends M
     }
 
     @Override
-    public MessageWriteAwaiter write(Message message, MessageWriteAwaiter awaiter) throws NetException {
+    public MessageWriteFuture write(Message message, MessageWriteFuture awaiter) throws NetException {
         if (this.checkAvailable(awaiter)) {
             return this.transporter.write(message, awaiter);
         }
@@ -62,8 +62,8 @@ public abstract class BaseNetTunnel<UID, E extends NetEndpoint<UID>, T extends M
     }
 
     @Override
-    public MessageWriteAwaiter write(MessageAllocator allocator, MessageContent context) throws NetException {
-        MessageWriteAwaiter promise = context.getWriteAwaiter();
+    public MessageWriteFuture write(MessageAllocator allocator, MessageContent context) throws NetException {
+        MessageWriteFuture promise = context.getWriteFuture();
         if (this.checkAvailable(promise)) {
             return this.transporter.write(allocator, this.getMessageFactory(), context);
         }
@@ -101,11 +101,11 @@ public abstract class BaseNetTunnel<UID, E extends NetEndpoint<UID>, T extends M
         }
     }
 
-    private boolean checkAvailable(MessageWriteAwaiter awaiter) {
+    private boolean checkAvailable(MessageWriteFuture awaiter) {
         if (!this.isActive()) {
             this.onWriteUnavailable();
             if (awaiter != null) {
-                awaiter.completeExceptionally(new TunnelDisconnectException("{} is disconnect", this));
+                awaiter.completeExceptionally(new TunnelDisconnectedException("{} is disconnect", this));
             }
             return false;
         }

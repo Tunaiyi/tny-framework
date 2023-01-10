@@ -11,7 +11,6 @@
 package com.tny.game.net.transport;
 
 import com.google.common.base.MoreObjects;
-import com.tny.game.common.collection.empty.*;
 import com.tny.game.common.concurrent.*;
 import com.tny.game.common.result.*;
 import com.tny.game.common.type.*;
@@ -19,7 +18,7 @@ import com.tny.game.common.utils.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
 
-import java.util.*;
+import java.util.Collection;
 
 import static com.tny.game.net.message.MessageAide.*;
 
@@ -188,14 +187,12 @@ public class MessageContents {
         /**
          * 收到响应消息 Future, 只有 mode 为  request 才可以是使用
          */
-        private volatile MessageRespondAwaiter respondAwaiter;
+        private volatile MessageRespondFuture respondFuture;
 
         /**
          * 收到响应消息 Future, 只有 mode 为  request 才可以是使用
          */
-        private volatile MessageWriteAwaiter writeAwaiter;
-
-        private final Map<String, MessageHeader<?>> headers = new EmptyImmutableMap<>();
+        private volatile MessageWriteFuture writeFuture;
 
         private DefaultMessageContent() {
         }
@@ -238,7 +235,7 @@ public class MessageContents {
         @Override
         public MessageContent withHeader(MessageHeader<?> header) {
             if (header != null) {
-                this.headers.put(header.getKey(), header);
+                this.putHeader(header);
             }
             return this;
         }
@@ -246,7 +243,7 @@ public class MessageContents {
         @Override
         public MessageContent withHeaders(Collection<MessageHeader<?>> headers) {
             if (headers != null && !headers.isEmpty()) {
-                headers.forEach(header -> this.headers.put(header.getKey(), header));
+                headers.forEach(this::putHeader);
             }
             return this;
         }
@@ -278,11 +275,6 @@ public class MessageContents {
         }
 
         @Override
-        public Map<String, MessageHeader<?>> getAllHeaderMap() {
-            return new HashMap<>(this.headers);
-        }
-
-        @Override
         public <T> T bodyAs(Class<T> clazz) {
             return ObjectAide.convertTo(this.body, clazz);
         }
@@ -303,66 +295,66 @@ public class MessageContents {
 
         @Override
         public void cancel(boolean mayInterruptIfRunning) {
-            if (this.writeAwaiter != null && !this.writeAwaiter.isDone()) {
-                this.writeAwaiter.cancel(true);
+            if (this.writeFuture != null && !this.writeFuture.isDone()) {
+                this.writeFuture.cancel(true);
             }
-            if (this.respondAwaiter != null && !this.respondAwaiter.isDone()) {
-                this.respondAwaiter.cancel(true);
+            if (this.respondFuture != null && !this.respondFuture.isDone()) {
+                this.respondFuture.cancel(true);
             }
         }
 
         @Override
         public void cancel(Throwable throwable) {
-            if (this.writeAwaiter != null && !this.writeAwaiter.isDone()) {
-                this.writeAwaiter.completeExceptionally(throwable);
+            if (this.writeFuture != null && !this.writeFuture.isDone()) {
+                this.writeFuture.completeExceptionally(throwable);
             }
-            if (this.respondAwaiter != null && !this.respondAwaiter.isDone()) {
-                this.respondAwaiter.completeExceptionally(throwable);
+            if (this.respondFuture != null && !this.respondFuture.isDone()) {
+                this.respondFuture.completeExceptionally(throwable);
             }
         }
 
         @Override
-        public RequestContent willRespondAwaiter(long timeoutMills) {
+        public RequestContent willRespondFuture(long timeoutMills) {
             if (this.mode == MessageMode.REQUEST) {
-                this.respondAwaiter = new MessageRespondAwaiter(timeoutMills);
+                this.respondFuture = new MessageRespondFuture(timeoutMills);
             }
             return this;
         }
 
         @Override
-        public RequestContent willWriteAwaiter() {
-            this.writeAwaiter = new MessageWriteAwaiter();
+        public RequestContent willWriteFuture() {
+            this.writeFuture = new MessageWriteFuture();
             return this;
         }
 
         @Override
-        public MessageWriteAwaiter getWriteAwaiter() {
-            return this.writeAwaiter;
+        public MessageWriteFuture getWriteFuture() {
+            return this.writeFuture;
         }
 
         @Override
-        public MessageRespondAwaiter getResponseAwaiter() {
-            return this.respondAwaiter;
+        public MessageRespondFuture getRespondFuture() {
+            return this.respondFuture;
         }
 
         @Override
         public boolean isRespondAwaitable() {
-            return this.respondAwaiter != null;
+            return this.respondFuture != null;
         }
 
         @Override
         public boolean isWriteAwaitable() {
-            return this.writeAwaiter != null;
+            return this.writeFuture != null;
         }
 
         @Override
         public CompletionStageFuture<Message> respond() {
-            return this.respondAwaiter;
+            return this.respondFuture;
         }
 
         @Override
         public CompletionStageFuture<Void> written() {
-            return this.writeAwaiter;
+            return this.writeFuture;
         }
 
         @Override
@@ -373,8 +365,8 @@ public class MessageContents {
                     .add("toMessage", this.toMessage)
                     .add("code", this.code)
                     .add("body", this.body)
-                    .add("respondFuture", this.respondAwaiter != null)
-                    .add("writeFuture", this.writeAwaiter != null)
+                    .add("respondFuture", this.respondFuture != null)
+                    .add("writeFuture", this.writeFuture != null)
                     .toString();
         }
 

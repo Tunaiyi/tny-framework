@@ -24,6 +24,7 @@ import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import org.slf4j.*;
 
+import javax.annotation.Nonnull;
 import java.net.InetSocketAddress;
 import java.util.*;
 
@@ -159,8 +160,10 @@ public class NettyServerGuide extends NettyBootstrap<NettyNetServerBootstrapSett
             }
             this.bootstrap = new ServerBootstrap();
             NettyChannelSetting channelSetting = setting.getChannel();
-            NettyMessageHandler nettyMessageHandler = UnitLoader.getLoader(NettyMessageHandler.class).checkUnit(channelSetting.getMessageHandler());
+            NettyMessageHandlerFactory nettyMessageHandlerFactory = UnitLoader.getLoader(NettyMessageHandlerFactory.class)
+                    .checkUnit(channelSetting.getMessageHandlerFactory());
             NettyTunnelFactory tunnelFactory = UnitLoader.getLoader(NettyTunnelFactory.class).checkUnit(channelSetting.getTunnelFactory());
+            var messageHandler = nettyMessageHandlerFactory.create(this.getContext());
             this.bootstrap.group(parentGroup, childGroup);
             this.bootstrap.channel(EPOLL ? EpollServerSocketChannel.class : NioServerSocketChannel.class);
             this.bootstrap.option(ChannelOption.SO_REUSEADDR, true);
@@ -169,13 +172,13 @@ public class NettyServerGuide extends NettyBootstrap<NettyNetServerBootstrapSett
             this.bootstrap.childHandler(new ChannelInitializer<>() {
 
                 @Override
-                protected void initChannel(Channel channel) throws Exception {
+                protected void initChannel(@Nonnull Channel channel) throws Exception {
                     try {
                         ChannelMaker<Channel> maker = NettyServerGuide.this.channelMaker;
                         if (maker != null) {
                             maker.initChannel(channel);
                         }
-                        channel.pipeline().addLast("nettyMessageHandler", nettyMessageHandler);
+                        channel.pipeline().addLast("nettyMessageHandler", messageHandler);
                         NetworkContext context = NettyServerGuide.this.getContext();
                         NetTunnel<Object> tunnel = tunnelFactory.create(idGenerator.generate(), channel, context); // 创建 Tunnel 已经transport.bind
                         tunnel.open();

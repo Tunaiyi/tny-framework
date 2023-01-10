@@ -22,15 +22,15 @@ import com.tny.game.net.command.listener.*;
 public class MessageCommandMonitor implements MessageCommandListener {
 
     @Override
-    public void onExecuteStart(MessageCommand command) {
+    public void onExecuteStart(RpcInvokeCommand command) {
     }
 
     @Override
-    public void onExecuteEnd(MessageCommand command, Throwable cause) {
+    public void onExecuteEnd(RpcInvokeCommand command, Throwable cause) {
     }
 
     @Override
-    public void onDone(MessageCommand command, Throwable cause) {
+    public void onDone(RpcInvokeCommand command, Throwable cause) {
     }
 
 }

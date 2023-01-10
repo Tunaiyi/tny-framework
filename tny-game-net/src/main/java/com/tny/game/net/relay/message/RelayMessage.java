@@ -123,12 +123,12 @@ public class RelayMessage implements NetMessage {
     }
 
     @Override
-    public MessageHeader<?> putHeader(MessageHeader<?> header) {
+    public <H extends MessageHeader<H>> MessageHeader<H> putHeader(MessageHeader<H> header) {
         return message.putHeader(header);
     }
 
     @Override
-    public MessageHeader<?> putHeaderIfAbsent(MessageHeader<?> header) {
+    public <H extends MessageHeader<H>> MessageHeader<H> putHeaderIfAbsent(MessageHeader<?> header) {
         return message.putHeaderIfAbsent(header);
     }
 

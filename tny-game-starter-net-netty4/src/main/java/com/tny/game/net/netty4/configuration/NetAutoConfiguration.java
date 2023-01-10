@@ -17,6 +17,7 @@ import com.tny.game.net.codec.*;
 import com.tny.game.net.codec.cryptoloy.*;
 import com.tny.game.net.codec.verifier.*;
 import com.tny.game.net.command.*;
+import com.tny.game.net.command.auth.*;
 import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.command.plugins.*;
 import com.tny.game.net.command.plugins.filter.*;
@@ -24,6 +25,7 @@ import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.message.codec.*;
 import com.tny.game.net.message.common.*;
+import com.tny.game.net.monitor.*;
 import com.tny.game.net.netty4.channel.*;
 import com.tny.game.net.netty4.configuration.application.*;
 import com.tny.game.net.netty4.configuration.channel.*;
@@ -41,6 +43,8 @@ import org.springframework.boot.autoconfigure.condition.*;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.*;
+
+import java.util.List;
 
 /**
  * Game Suite 的默认配置
@@ -74,15 +78,15 @@ public class NetAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnMissingBean(EndpointService.class)
+    @ConditionalOnMissingBean(MessagerService.class)
     @ConditionalOnBean(EndpointKeeperManager.class)
-    public EndpointService endpointService(EndpointKeeperManager endpointKeeperManager) {
-        return new EndpointService(endpointKeeperManager);
+    public MessagerService messagerService(EndpointKeeperManager endpointKeeperManager) {
+        return new MessagerService(endpointKeeperManager);
     }
 
     @Bean
-    public NettyMessageHandler defaultNettyMessageHandler() {
-        return new NettyMessageHandler(NetAccessMode.SERVER);
+    public NettyMessageHandlerFactory defaultNettyMessageHandlerFactory() {
+        return new DefaultNettyMessageHandlerFactory();
     }
 
     @Bean
@@ -123,10 +127,16 @@ public class NetAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnBean({EndpointKeeperManager.class, NetAppContext.class})
-    public MessageDispatcher defaultMessageDispatcher(NetAppContext appContext, EndpointKeeperManager endpointKeeperManager,
+    @ConditionalOnBean({EndpointKeeperManager.class})
+    public MessagerAuthenticateService authenticationService(EndpointKeeperManager endpointKeeperManager) {
+        return new MessagerAuthenticateService(endpointKeeperManager);
+    }
+
+    @Bean
+    @ConditionalOnBean({EndpointKeeperManager.class, MessagerAuthenticator.class, NetAppContext.class})
+    public MessageDispatcher defaultMessageDispatcher(NetAppContext appContext, MessagerAuthenticator messagerAuthenticator,
             ExprHolderFactory exprHolderFactory) {
-        return new SpringBootMessageDispatcher(appContext, endpointKeeperManager, exprHolderFactory);
+        return new SpringBootMessageDispatcher(appContext, messagerAuthenticator, exprHolderFactory);
     }
 
     @Bean
@@ -204,6 +214,16 @@ public class NetAutoConfiguration {
     @Bean
     public RpcForwardStrategy firstRpcForwarderStrategy() {
         return new FirstRpcForwarderStrategy();
+    }
+
+    @Bean
+    public RpcMonitor rpcMonitor(
+            List<RpcMonitorReceiveHandler> receiveHandlers,
+            List<RpcMonitorSendHandler> sendHandlers,
+            List<RpcMonitorRelayHandler> relayHandlers,
+            List<RpcMonitorAfterInvokeHandler> afterInvokeHandlers,
+            List<RpcMonitorBeforeInvokeHandler> beforeInvokeHandlers) {
+        return new RpcMonitor(receiveHandlers, sendHandlers, relayHandlers, afterInvokeHandlers, beforeInvokeHandlers);
     }
 
     @Bean

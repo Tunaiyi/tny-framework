@@ -61,7 +61,7 @@ public abstract class BaseProtobufPacketArgumentsCodec<A extends RelayPacketArgu
             stream.flush();
         } catch (IOException e) {
             LOGGER.error("", e);
-            throw new NetGeneralException(NetResultCode.ENCODE_FAILED);
+            throw new NetException(NetResultCode.ENCODE_FAILED);
         }
     }
 
@@ -73,7 +73,7 @@ public abstract class BaseProtobufPacketArgumentsCodec<A extends RelayPacketArgu
             return proto.toArguments();
         } catch (IOException e) {
             LOGGER.error("", e);
-            throw new NetGeneralException(NetResultCode.ENCODE_FAILED);
+            throw new NetException(NetResultCode.ENCODE_FAILED);
         }
     }
 

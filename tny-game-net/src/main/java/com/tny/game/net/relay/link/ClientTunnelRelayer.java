@@ -12,9 +12,9 @@ package com.tny.game.net.relay.link;
 
 import com.tny.game.common.result.*;
 import com.tny.game.net.base.*;
-import com.tny.game.net.exception.*;
-import com.tny.game.net.message.*;
+import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.relay.cluster.*;
+import com.tny.game.net.relay.link.exception.*;
 import com.tny.game.net.transport.*;
 import org.slf4j.*;
 
@@ -46,17 +46,22 @@ public class ClientTunnelRelayer {
         return service;
     }
 
-    public MessageWriteAwaiter relay(ClientRelayTunnel<?> tunnel, Message message, MessageWriteAwaiter promise) {
+    public MessageWriteFuture relay(ClientRelayTunnel<?> tunnel, RpcProviderContext rpcContext, MessageWriteFuture promise) {
         ClientRelayLink link = allot(tunnel);
+        var message = rpcContext.netMessage();
         if (link != null && link.isActive()) {
-            return link.relay(tunnel, message, promise);
+            var rpcMonitor = rpcContext.rpcMonitor();
+            rpcMonitor.onRelay(tunnel, link, message);
+            var future = link.relay(tunnel, message, promise);
+            rpcContext.completeSilently();
+            return future;
         } else {
             ResultCode code = NetResultCode.CLUSTER_NETWORK_UNCONNECTED_ERROR;
             if (promise != null) {
-                promise.completeExceptionally(new NetGeneralException(code));
+                promise.completeExceptionally(new RelayException(code));
             }
             LOGGER.warn("# Tunnel ({}) 服务器主动关闭连接, {} 集群无可以用 link", tunnel, this.service);
-            MessageSendAide.push(tunnel, message, code, null);
+            rpcContext.complete(code);
         }
         return promise;
     }

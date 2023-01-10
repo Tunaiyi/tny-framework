@@ -52,14 +52,14 @@ public class NettyChannelRelayTransporter extends NettyChannelConnection impleme
     }
 
     @Override
-    public MessageWriteAwaiter write(RelayPacket<?> packet, MessageWriteAwaiter awaiter) {
+    public MessageWriteFuture write(RelayPacket<?> packet, MessageWriteFuture awaiter) {
         ChannelPromise channelPromise = createChannelPromise(awaiter);
         this.channel.writeAndFlush(packet, channelPromise);
         return awaiter;
     }
 
     @Override
-    public MessageWriteAwaiter write(RelayPacketMaker maker, MessageWriteAwaiter awaiter) {
+    public MessageWriteFuture write(RelayPacketMaker maker, MessageWriteFuture awaiter) {
         ChannelPromise channelPromise = createChannelPromise(awaiter);
         this.channel.eventLoop().execute(() -> this.channel.writeAndFlush(maker.make(), channelPromise));
         return awaiter;

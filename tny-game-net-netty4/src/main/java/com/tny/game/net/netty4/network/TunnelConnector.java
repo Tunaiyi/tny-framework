@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.netty4.network;
 
 import com.tny.game.net.base.*;
@@ -69,7 +69,7 @@ class TunnelConnector {
             ConnectCallback cb = callback;
             executor.execute(() -> doConnect(cb));
         } else {
-            callback.onConnect(ConnectCallbackStatus.CONNECTING, this.tunnel, new ConnectingException("connecting"));
+            callback.onConnect(ConnectCallbackStatus.CONNECTING, this.tunnel, new TunnelConnectException("connecting"));
         }
     }
 
@@ -118,7 +118,7 @@ class TunnelConnector {
                 if (openTunnel()) {
                     callback.onConnect(ConnectCallbackStatus.CONNECTED, this.tunnel, null);
                 } else {
-                    callback.onConnect(ConnectCallbackStatus.EXCEPTION, this.tunnel, new ConnectFailedException("connect failed"));
+                    callback.onConnect(ConnectCallbackStatus.EXCEPTION, this.tunnel, new TunnelConnectException("connect failed"));
                     if (this.client.isAutoReconnect()) {
                         reconnect();
                     }

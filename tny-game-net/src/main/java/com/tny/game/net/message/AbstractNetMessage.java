@@ -16,7 +16,7 @@ import com.tny.game.common.utils.*;
 import org.apache.commons.lang3.builder.*;
 import org.apache.commons.lang3.time.DateFormatUtils;
 
-public abstract class AbstractNetMessage extends AttributesHolder implements NetMessage {
+public abstract class AbstractNetMessage extends AttributeHolder implements NetMessage {
 
     private NetMessageHead head;
 
@@ -72,12 +72,12 @@ public abstract class AbstractNetMessage extends AttributesHolder implements Net
     }
 
     @Override
-    public MessageHeader<?> putHeader(MessageHeader<?> header) {
+    public <H extends MessageHeader<H>> MessageHeader<H> putHeader(MessageHeader<H> header) {
         return head.putHeader(header);
     }
 
     @Override
-    public MessageHeader<?> putHeaderIfAbsent(MessageHeader<?> header) {
+    public <H extends MessageHeader<H>> MessageHeader<H> putHeaderIfAbsent(MessageHeader<?> header) {
         return head.putHeaderIfAbsent(header);
     }
 

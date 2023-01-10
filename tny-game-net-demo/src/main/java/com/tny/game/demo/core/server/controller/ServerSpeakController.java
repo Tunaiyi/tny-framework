@@ -44,7 +44,7 @@ public class ServerSpeakController {
 
     @Rpc(CtrlerIds.SPEAK$SAY_FOR_RPC)
     public SayContentDTO say(@UserId RpcAccessIdentify id, @RpcParam String message) {
-        return new SayContentDTO(id.getId(), "respond " + message);
+        return new SayContentDTO(id.getMessagerId(), "respond " + message);
     }
 
     @Rpc(CtrlerIds.SPEAK$TEST)

@@ -22,7 +22,7 @@ import com.tny.game.net.transport.*;
 public class CommonSession<UID> extends BaseNetEndpoint<UID> implements NetSession<UID> {
 
     public CommonSession(SessionSetting setting, Certificate<UID> certificate, EndpointContext endpointContext) {
-        super(setting, certificate, endpointContext);
+        super(certificate, endpointContext, setting.getSendMessageCachedSize());
     }
 
     @Override
@@ -34,7 +34,7 @@ public class CommonSession<UID> extends BaseNetEndpoint<UID> implements NetSessi
             if (isOffline()) {
                 return;
             }
-            Tunnel<UID> currentTunnel = this.currentTunnel();
+            Tunnel<UID> currentTunnel = this.tunnel();
             if (currentTunnel.isActive()) {
                 return;
             }
@@ -50,7 +50,7 @@ public class CommonSession<UID> extends BaseNetEndpoint<UID> implements NetSessi
         return MoreObjects.toStringHelper(this)
                 .add("userGroup", this.getUserGroup())
                 .add("userId", this.getUserId())
-                .add("tunnel", this.currentTunnel())
+                .add("tunnel", this.tunnel())
                 .toString();
     }
 

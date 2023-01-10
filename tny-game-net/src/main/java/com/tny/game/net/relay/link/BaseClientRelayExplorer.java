@@ -123,7 +123,7 @@ public abstract class BaseClientRelayExplorer<T extends NetRemoteServeCluster> e
         ClientRelayLink link = relayer.allot(tunnel); // 分配
         if ((link == null || !link.isActive())) {
             if (filterStatus == ServeClusterFilterStatus.REQUIRED) {
-                throw new RelayLinkNoExistException("Tunnel[{}] 申请分配 {} cluster 集群无可用连接", tunnel.getRemoteAddress(),
+                throw new RelayLinkNoFoundException("Tunnel[{}] 申请分配 {} cluster 集群无可用连接", tunnel.getRemoteAddress(),
                         cluster.getServeName());
             } else {
                 LOGGER.warn("Tunnel[{}] 申请分配 {} cluster 集群无可用连接", tunnel.getRemoteAddress(), cluster.getServeName());

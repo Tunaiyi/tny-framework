@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.endpoint;
 
 import com.tny.game.common.concurrent.lock.locker.*;
@@ -19,8 +19,6 @@ import org.slf4j.*;
 
 import java.util.Optional;
 import java.util.concurrent.locks.Lock;
-
-import static com.tny.game.common.utils.StringAide.*;
 
 public class CommonSessionKeeper<UID> extends AbstractSessionKeeper<UID> implements SessionKeeper<UID> {
 
@@ -34,13 +32,13 @@ public class CommonSessionKeeper<UID> extends AbstractSessionKeeper<UID> impleme
     }
 
     @Override
-    public Optional<Session<UID>> online(Certificate<UID> certificate, NetTunnel<UID> tunnel) throws ValidatorFailException {
+    public Optional<Session<UID>> online(Certificate<UID> certificate, NetTunnel<UID> tunnel) throws AuthFailedException {
         if (!certificate.isAuthenticated()) {
-            throw new ValidatorFailException(NetResultCode.VALIDATOR_FAIL_ERROR, format("cert {} is unauthentic", certificate));
+            throw new AuthFailedException(NetResultCode.AUTH_FAIL_ERROR, "cert {} is unauthentic", certificate);
         }
         if (!this.getMessagerType().equals(certificate.getMessagerType())) {
-            throw new ValidatorFailException(NetResultCode.VALIDATOR_FAIL_ERROR,
-                    format("cert {} userType is {}, not {}", certificate, certificate.getMessagerType(), this.getMessagerType()));
+            throw new AuthFailedException(NetResultCode.AUTH_FAIL_ERROR,
+                    "cert {} userType is {}, not {}", certificate, certificate.getMessagerType(), this.getMessagerType());
         }
         UID uid = certificate.getUserId();
         Lock lock = locker.lock(uid);
@@ -55,18 +53,19 @@ public class CommonSessionKeeper<UID> extends AbstractSessionKeeper<UID> impleme
         }
     }
 
-    private Session<UID> doNewSession(Certificate<UID> certificate, NetTunnel<UID> newTunnel) throws ValidatorFailException {
+    private Session<UID> doNewSession(Certificate<UID> certificate, NetTunnel<UID> newTunnel) throws AuthFailedException {
         NetSession<UID> oldSession = findEndpoint(certificate.getUserId());
         if (oldSession != null) { // 如果旧 session 存在
             Certificate<UID> oldCert = oldSession.getCertificate();
             // 判断新授权是否比原有授权时间早, 如果是则无法登录
             if (certificate.getId() != oldCert.getId() && certificate.isOlderThan(oldCert)) {
                 LOG.warn("认证已过 {}", certificate);
-                throw new ValidatorFailException(NetResultCode.INVALID_CERTIFICATE_ERROR);
+                throw new AuthFailedException(NetResultCode.INVALID_CERTIFICATE_ERROR);
             }
         }
         NetEndpoint<UID> endpoint = newTunnel.getEndpoint();
-        NetSession<UID> session = this.factory.create(this.setting.getSession(), endpoint.getContext(), newTunnel.getCertificateFactory());
+        var networkContext = newTunnel.getContext();
+        NetSession<UID> session = this.factory.create(this.setting.getSession(), endpoint.getContext(), networkContext.getCertificateFactory());
         if (oldSession != null) {
             if (!oldSession.isClosed()) {
                 oldSession.close();
@@ -78,15 +77,15 @@ public class CommonSessionKeeper<UID> extends AbstractSessionKeeper<UID> impleme
         return session;
     }
 
-    private Session<UID> doAcceptTunnel(Certificate<UID> certificate, NetTunnel<UID> newTunnel) throws ValidatorFailException {
+    private Session<UID> doAcceptTunnel(Certificate<UID> certificate, NetTunnel<UID> newTunnel) throws AuthFailedException {
         NetSession<UID> existSession = this.findEndpoint(certificate.getUserId());
         if (existSession == null) { // 旧 session 失效
             LOG.warn("旧session {} 已经丢失", newTunnel.getUserId());
-            throw new ValidatorFailException(NetResultCode.SESSION_LOSS_ERROR);
+            throw new AuthFailedException(NetResultCode.SESSION_LOSS_ERROR);
         }
         if (existSession.isClosed()) { // 旧 session 已经关闭(失效)
             LOG.warn("旧session {} 已经关闭", existSession);
-            throw new ValidatorFailException(NetResultCode.SESSION_LOSS_ERROR);
+            throw new AuthFailedException(NetResultCode.SESSION_LOSS_ERROR);
         }
         // existSession.offline(); // 将旧 session 的 Tunnel T 下线
         existSession.online(certificate, newTunnel);

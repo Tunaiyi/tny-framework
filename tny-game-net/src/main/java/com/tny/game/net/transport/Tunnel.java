@@ -16,7 +16,7 @@ import com.tny.game.net.endpoint.*;
  * 通道
  * Created by Kun Yang on 2017/3/26.
  */
-public interface Tunnel<UID> extends Connection, Communicator<UID> {
+public interface Tunnel<UID> extends Communicator<UID> {
 
     /**
      * @return 通道 Id

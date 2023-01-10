@@ -12,12 +12,10 @@ package com.tny.game.net.message;
 
 import com.tny.game.common.type.*;
 
-import java.util.Map;
-
 /**
  * Created by Kun Yang on 2017/2/16.
  */
-public interface MessageSubject extends MessageSchema {
+public interface MessageSubject extends MessageHeaderContainer, MessageSchema {
 
     /**
      * @return 获取结果码
@@ -33,11 +31,6 @@ public interface MessageSubject extends MessageSchema {
      * @return 获取消息体
      */
     Object getBody();
-
-    /**
-     * @return 获取全部 Header
-     */
-    Map<String, MessageHeader<?>> getAllHeaderMap();
 
     /**
      * @return 获取消息体

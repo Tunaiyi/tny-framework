@@ -10,7 +10,6 @@
  */
 package com.tny.game.net.transport;
 
-import com.tny.game.common.context.*;
 import com.tny.game.net.rpc.*;
 
 import java.net.InetSocketAddress;
@@ -52,10 +51,5 @@ public interface Connection {
      * @return 接入模式
      */
     NetAccessMode getAccessMode();
-
-    /**
-     * @return 获取会话属性
-     */
-    Attributes attributes();
 
 }

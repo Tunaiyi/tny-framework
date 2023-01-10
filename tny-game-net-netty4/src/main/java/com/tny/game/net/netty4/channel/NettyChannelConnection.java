@@ -27,7 +27,7 @@ import static java.lang.String.*;
  * @author : kgtny
  * @date : 2021/5/21 3:46 下午
  */
-public abstract class NettyChannelConnection extends AttributesHolder implements Connection {
+public abstract class NettyChannelConnection extends AttributeHolder implements Connection {
 
     protected Channel channel;
 
@@ -81,7 +81,7 @@ public abstract class NettyChannelConnection extends AttributesHolder implements
     protected void doClose() {
     }
 
-    protected ChannelPromise createChannelPromise(MessageWriteAwaiter awaiter) {
+    protected ChannelPromise createChannelPromise(MessageWriteFuture awaiter) {
         ChannelPromise channelPromise = this.channel.newPromise();
         if (awaiter != null) {
             channelPromise.addListener(new NettyWriteMessageHandler(awaiter));

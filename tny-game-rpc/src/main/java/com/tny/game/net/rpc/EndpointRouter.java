@@ -23,12 +23,12 @@ import static com.tny.game.common.utils.StringAide.*;
 public class EndpointRouter implements RpcRouter {
 
     @Override
-    public RpcRemoteAccess route(RpcRemoteSet servicer, RpcRemoteMethod invoker, RpcRemoteInvokeParams invokeParams) {
+    public RpcAccess route(RpcInvokeNodeSet serviceSet, RpcRemoteMethod invoker, RpcRemoteInvokeParams invokeParams) {
         Messager messager = invokeParams.getReceiver();
         if (messager == null) {
             throw new NullPointerException(format("invoke {} Receiver is null", invoker));
         }
-        return servicer.findRemoteAccess(0, messager.getMessagerId());
+        return serviceSet.findInvokeAccess(0, messager.getMessagerId());
     }
 
 }

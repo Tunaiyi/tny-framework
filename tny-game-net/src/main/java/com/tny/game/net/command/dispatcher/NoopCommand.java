@@ -26,7 +26,7 @@ public class NoopCommand implements Command {
         return command;
     }
 
-    private NoopCommand() {
+    public NoopCommand() {
     }
 
     @Override

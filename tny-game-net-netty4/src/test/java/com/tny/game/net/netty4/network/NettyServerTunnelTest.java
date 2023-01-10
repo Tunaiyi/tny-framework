@@ -46,7 +46,7 @@ public class NettyServerTunnelTest extends NettyTunnelTest<NetSession<Long>, Tes
         TestGeneralServerTunnel tunnel = new TestGeneralServerTunnel(ID_GENERATOR.generate(),
                 new NettyChannelMessageTransporter(NetAccessMode.SERVER, mockChannel()),
                 new NetBootstrapContext(null, null, null, null, new CommonMessageFactory(), new DefaultMessagerFactory(),
-                        new DefaultCertificateFactory<Long>(), null));
+                        new DefaultCertificateFactory<Long>(), null, new RpcMonitor()));
         if (open) {
             tunnel.open();
         }

@@ -1,0 +1,17 @@
+group "com.tny.game"
+
+apply plugin: "maven-publish"
+
+dependencies {
+
+
+    annotationProcessor libs.spring_boot_configuration_processor // IDEA 使用
+
+    api project(":tny-game-net-netty4")
+
+    api libs.spring_boot_autoconfigure
+//    api libs.skywalking_apm_toolkit_trace
+    compileOnly libs.skywalking_apm_agent_core
+
+}
+

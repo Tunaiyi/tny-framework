@@ -28,13 +28,13 @@ public interface Transport {
      * @param message 发送消息
      * @param promise 发送promise
      */
-    MessageWriteAwaiter write(Message message, MessageWriteAwaiter promise) throws NetException;
+    MessageWriteFuture write(Message message, MessageWriteFuture promise) throws NetException;
 
     /**
      * 写出消息
      *
      * @param context 发送消息
      */
-    MessageWriteAwaiter write(MessageAllocator allocator, MessageContent context) throws NetException;
+    MessageWriteFuture write(MessageAllocator allocator, MessageContent context) throws NetException;
 
 }

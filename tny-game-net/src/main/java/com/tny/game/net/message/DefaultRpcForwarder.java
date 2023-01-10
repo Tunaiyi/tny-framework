@@ -26,13 +26,13 @@ import java.util.stream.Collectors;
  **/
 public class DefaultRpcForwarder implements RpcForwarder {
 
-    private final RpcForwardManager forwardManager;
+    private final RpcForwardNodeManager forwardManager;
 
     private final RpcForwardStrategy defaultStrategy;
 
     private final Map<RpcServiceType, RpcServiceForwardStrategy> strategyMap;
 
-    public DefaultRpcForwarder(RpcForwardManager forwardManager,
+    public DefaultRpcForwarder(RpcForwardNodeManager forwardManager,
             RpcForwardStrategy defaultStrategy, List<RpcServiceForwardStrategy> strategies) {
         this.forwardManager = forwardManager;
         this.defaultStrategy = defaultStrategy;
@@ -44,11 +44,11 @@ public class DefaultRpcForwarder implements RpcForwarder {
         ForwardPoint to = forwardHeader.getTo();
         RpcServiceType serviceType = to.getServiceType();
         if (to.isAccurately()) {
-            RpcForwardSet forwarderSet = forwardManager.findForwardSet(serviceType);
+            RpcForwardNodeSet forwarderSet = forwardManager.findForwardNodeSet(serviceType);
             if (forwarderSet == null) {
                 return null;
             }
-            RpcRemoteAccess access = forwarderSet.findForwardAccess(to);
+            RpcAccess access = forwarderSet.findForwardAccess(to);
             if (access != null) {
                 return (RpcServiceAccess)access;
             }
@@ -61,7 +61,7 @@ public class DefaultRpcForwarder implements RpcForwarder {
                 throw new NullPointerException("未知道 {} 转发策略");
             }
         }
-        RpcForwardSet serviceSet = forwardManager.findForwardSet(serviceType);
+        RpcForwardNodeSet serviceSet = forwardManager.findForwardNodeSet(serviceType);
         if (serviceSet == null) {
             throw new ResultCodeRuntimeException(NetResultCode.RPC_SERVICE_NOT_AVAILABLE, "未找到可用{}服务", serviceType);
         }

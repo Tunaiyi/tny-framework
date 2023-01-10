@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.rpc;
 
 import com.google.common.collect.ImmutableList;
@@ -37,14 +37,19 @@ import static com.tny.game.common.utils.StringAide.*;
 public class RpcRemoteMethod {
 
     /**
-     * 服务名
+     * 目标
      */
-    private final RpcServiceType serviceType;
+    private final MessagerType serviceType;
 
     /**
-     * 是否分发
+     * 目标
      */
-    private final boolean forward;
+    private RpcServiceType targetServiceType;
+
+    /**
+     * 转发
+     */
+    private RpcServiceType forwardServiceType;
 
     /**
      * 服务名
@@ -99,7 +104,7 @@ public class RpcRemoteMethod {
     /**
      * 异步
      */
-    private final RpcInvokeMode invocation;
+    private final RpcInvokeMode invokeMode;
 
     /**
      * 安静模式
@@ -151,15 +156,15 @@ public class RpcRemoteMethod {
             options = rpcService.options();
         }
         this.routerClass = as(options.router());
-        this.forward = StringUtils.isNoneBlank(rpcService.forwardService());
+        var forward = StringUtils.isNoneBlank(rpcService.forwardService());
         this.mode = profile.getMode();
+        serviceType = MessagerTypes.checkGroup(rpcService.value());
         if (forward) {
-            this.serviceType = RpcServiceTypes.checkService(rpcService.value());
-        } else {
-            this.serviceType = null;
+            this.targetServiceType = RpcServiceTypes.checkService(rpcService.value());
+            this.forwardServiceType = RpcServiceTypes.checkService(rpcService.forwardService());
         }
         this.name = method.getDeclaringClass().getName() + "." + method.getName();
-        this.invocation = options.mode();
+        this.invokeMode = options.mode();
         this.silently = options.silently();
         this.timeout = options.timeout();
         this.returnClass = method.getReturnType();
@@ -213,10 +218,6 @@ public class RpcRemoteMethod {
         return name;
     }
 
-    public String getService() {
-        return serviceType.getService();
-    }
-
     public int getProtocol() {
         return protocol;
     }
@@ -229,8 +230,16 @@ public class RpcRemoteMethod {
         return mode;
     }
 
+    public RpcInvokeMode getInvokeMode() {
+        return invokeMode;
+    }
+
+    public MessagerType getServiceType() {
+        return serviceType;
+    }
+
     public boolean isAsync() {
-        return returnMode.checkInvocation(this.invocation) == RpcInvokeMode.ASYNC;
+        return returnMode.checkInvocation(this.invokeMode) == RpcInvokeMode.ASYNC;
     }
 
     public boolean isSilently() {
@@ -267,20 +276,25 @@ public class RpcRemoteMethod {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this).append("service", serviceType).append("name", name).toString();
+        return new ToStringBuilder(this).append("service", targetServiceType).append("name", name).toString();
     }
 
-    public RpcRemoteInvokeParams getParams(Object[] paramValues) throws CommandException {
+    private boolean isForward() {
+        return this.forwardServiceType != null;
+    }
+
+    public RpcRemoteInvokeParams getParams(Object[] paramValues) throws RpcInvokeException {
         RpcRemoteInvokeParams params = new RpcRemoteInvokeParams(this.messageParamSize);
-        params.setForward(this.forward);
+        var forward = this.isForward();
+        params.setForward(forward);
         for (int index = 0; index < paramValues.length; index++) {
             RpcRemoteParamDescription desc = this.parameters.get(index);
             Object value = paramValues[index];
             if (desc.isRequire() && value == null) {
                 throw new NullPointerException(format("{} 第 {} 参数为 null", this.method, desc.getIndex()));
             }
-            if (this.forward && this.serviceType != null) {
-                params.setTo(serviceType);
+            if (forward) {
+                params.setTo(targetServiceType);
             }
             if (desc.getAnnotationHolder().getAnnotation(RpcRouteParam.class) != null) {
                 params.setRouteValue(value);

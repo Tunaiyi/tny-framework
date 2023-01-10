@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.command.dispatcher;
 
 import com.tny.game.common.lifecycle.unit.annotation.*;
@@ -46,7 +46,7 @@ public interface MessageDispatcherContext {
      * @param protocol 协议
      * @return 返回身份校验器
      */
-    AuthenticateValidator<?, ?> getValidator(Object protocol);
+    AuthenticationValidator<?, ?> getValidator(Object protocol);
 
     /**
      * 获取身份校验器
@@ -54,7 +54,7 @@ public interface MessageDispatcherContext {
      * @param validatorClass 类
      * @return 返回身份校验器
      */
-    AuthenticateValidator<?, ?> getValidator(Class<? extends AuthenticateValidator<?, ?>> validatorClass);
+    AuthenticationValidator<?, ?> getValidator(Class<? extends AuthenticationValidator<?, ?>> validatorClass);
 
     Collection<MessageCommandListener> getCommandListener();
 

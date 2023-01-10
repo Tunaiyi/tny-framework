@@ -147,9 +147,9 @@ public interface EndpointKeeper<UID, E extends Endpoint<UID>> {
      * 添加指定的endpoint<br>
      *
      * @param tunnel 注册tunnel
-     * @throws ValidatorFailException 认证异常
+     * @throws AuthFailedException 认证异常
      */
-    Optional<E> online(Certificate<UID> certificate, NetTunnel<UID> tunnel) throws ValidatorFailException;
+    Optional<E> online(Certificate<UID> certificate, NetTunnel<UID> tunnel) throws AuthFailedException;
 
     /**
      * <p>

@@ -4,14 +4,15 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.transport.listener;
 
 import com.tny.game.common.event.bus.*;
 import com.tny.game.net.base.*;
+import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.transport.*;
 
 /**
@@ -36,6 +37,9 @@ public class TunnelEventBuses extends BaseEventBuses<TunnelListener> {
     private final BindVoidEventBus<TunnelCloseListener, Tunnel> ON_CLOSE =
             EventBuses.of(TunnelCloseListener.class, TunnelCloseListener::onClose);
 
+    private final BindP1EventBus<TunnelReceiveListener, Tunnel, RpcProviderContext> ON_RECEIVE =
+            EventBuses.of(TunnelReceiveListener.class, TunnelReceiveListener::onReceive);
+
     private final static TunnelEventBuses eventBuses = new TunnelEventBuses();
 
     private TunnelEventBuses() {
@@ -56,6 +60,10 @@ public class TunnelEventBuses extends BaseEventBuses<TunnelListener> {
 
     public BindVoidEventBus<TunnelCloseListener, Tunnel> closeEvent() {
         return this.ON_CLOSE;
+    }
+
+    public BindP1EventBus<TunnelReceiveListener, Tunnel, RpcProviderContext> receiveEvent() {
+        return ON_RECEIVE;
     }
 
 }

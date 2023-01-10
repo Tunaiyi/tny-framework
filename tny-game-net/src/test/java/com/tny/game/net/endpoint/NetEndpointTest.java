@@ -416,7 +416,7 @@ public abstract class NetEndpointTest<E extends NetEndpoint<Long>> extends Endpo
     }
 
     private void assertAcceptTunnelException(NetEndpoint<Long> endpoint, Certificate<Long> certificate, NetTunnel<Long> tunnel) {
-        TestAide.assertRunWithException("assertLoginException", () -> endpoint.online(certificate, tunnel), ValidatorFailException.class);
+        TestAide.assertRunWithException("assertLoginException", () -> endpoint.online(certificate, tunnel), AuthFailedException.class);
     }
 
 }

@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.command.plugins.filter;
 
 import com.tny.game.common.result.*;
@@ -36,6 +36,6 @@ public interface ParamFilter<UID> {
      * @return 返回CoreResponseCode.SUCCESS(100, " 请求处理成功 ")这继续执行下面的逻辑
      * 否则返回响应ResponseCode到客户端,并停止执行接下去的逻辑
      */
-    ResultCode filter(MethodControllerHolder holder, Tunnel<UID> tunnel, Message message) throws CommandException;
+    ResultCode filter(MethodControllerHolder holder, Tunnel<UID> tunnel, Message message) throws RpcInvokeException;
 
 }

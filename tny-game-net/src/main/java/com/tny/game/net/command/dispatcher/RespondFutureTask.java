@@ -10,7 +10,6 @@
  */
 package com.tny.game.net.command.dispatcher;
 
-import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
 
 /**
@@ -18,18 +17,23 @@ import com.tny.game.net.transport.*;
  */
 public class RespondFutureTask implements Runnable {
 
-    private final MessageRespondAwaiter future;
+    private final MessageRespondFuture future;
 
-    private final Message message;
+    protected RpcProviderContext rpcContext;
 
-    public RespondFutureTask(Message message, MessageRespondAwaiter future) {
-        this.message = message;
+    public RespondFutureTask(RpcProviderContext rpcContext, MessageRespondFuture future) {
         this.future = future;
+        this.rpcContext = rpcContext;
     }
 
     @Override
     public void run() {
-        this.future.complete(this.message);
+        RpcContexts.setCurrent(rpcContext);
+        try {
+            this.future.complete(rpcContext.netMessage());
+        } finally {
+            RpcContexts.clear();
+        }
     }
 
 }

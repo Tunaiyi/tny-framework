@@ -14,7 +14,7 @@ import com.tny.game.common.utils.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.command.*;
 import com.tny.game.net.command.dispatcher.*;
-import com.tny.game.net.command.task.*;
+import com.tny.game.net.command.processor.MessageCommandBox;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.rpc.*;
@@ -54,7 +54,7 @@ public abstract class BaseNetEndpoint<UID> extends AbstractCommunicator<UID> imp
     private final AtomicLong idCreator = new AtomicLong(0);
 
     /* 消息盒子 */
-    private final CommandTaskBox commandTaskBox;
+    private final MessageCommandBox commandBox;
 
     /**
      * 上下文
@@ -76,14 +76,14 @@ public abstract class BaseNetEndpoint<UID> extends AbstractCommunicator<UID> imp
     /* 发送消息过滤器 */
     private volatile MessageHandleFilter<UID> sendFilter = MessageHandleFilter.allHandleFilter();
 
-    protected BaseNetEndpoint(SessionSetting setting, Certificate<UID> certificate, EndpointContext context) {
+    protected BaseNetEndpoint(Certificate<UID> certificate, EndpointContext context, int sendMessageCachedSize) {
         this.id = NetAide.newEndpointId();
         this.state = EndpointStatus.INIT;
         this.context = context;
         this.certificate = certificate;
-        this.commandTaskBox = new CommandTaskBox(context.getCommandTaskProcessor());
-        if (setting != null) {
-            this.sentMessageQueue = new MessageQueue<>(setting.getSendMessageCachedSize());
+        this.commandBox = new MessageCommandBox(context.getCommandTaskProcessor());
+        if (sendMessageCachedSize > 0) {
+            this.sentMessageQueue = new MessageQueue<>(sendMessageCachedSize);
         } else {
             this.sentMessageQueue = new MessageQueue<>(0);
         }
@@ -116,14 +116,14 @@ public abstract class BaseNetEndpoint<UID> extends AbstractCommunicator<UID> imp
         }
     }
 
-    private void putFuture(long messageId, MessageRespondAwaiter respondFuture) {
+    private void putFuture(long messageId, MessageRespondFuture respondFuture) {
         if (respondFuture == null) {
             return;
         }
         respondFutureMonitor().putFuture(messageId, respondFuture);
     }
 
-    private MessageRespondAwaiter pollFuture(Message message) {
+    private MessageRespondFuture pollFuture(Message message) {
         RespondFutureMonitor respondFutureHolder = this.respondFutureMonitor;
         if (respondFutureHolder == null) {
             return null;
@@ -156,77 +156,79 @@ public abstract class BaseNetEndpoint<UID> extends AbstractCommunicator<UID> imp
     }
 
     @Override
-    public boolean receive(NetTunnel<UID> tunnel, Message message) {
-        MessageHandleFilter<UID> filter = this.getReceiveFilter();
-        if (filter != null) {
-            boolean throwable = true;
-            switch (filter.filter(this, message)) {
-                case IGNORE:
-                    throwable = false;
-                case THROW:
-                    if (throwable) {
-                        String causeMessage = format("{} cannot receive {} from {} after being filtered by {}",
-                                this, message, tunnel, filter.getClass());
-                        LOGGER.warn(causeMessage);
-                        throw new EndpointException(causeMessage);
-                    }
-                    return true;
-                default:
-                    break;
+    public boolean receive(RpcProviderContext rpcContext) {
+        RpcRejectReceiveException cause;
+        var result = MessageHandleStrategy.HANDLE;
+        try {
+            MessageHandleFilter<UID> filter = this.getReceiveFilter();
+            var tunnel = rpcContext.netTunnel();
+            var message = rpcContext.netMessage();
+            MessageRespondFuture future = this.pollFuture(message);
+            if (future != null) {
+                this.commandBox.execute(new RespondFutureTask(rpcContext, future));
             }
+            if (filter != null) {
+                result = filter.filter(this, message);
+            }
+            if (result.isHandleable()) {
+                return this.commandBox.addCommand(rpcContext);
+            }
+            cause = new RpcRejectReceiveException(rejectMessage(true, filter, message, tunnel));
+        } catch (Throwable e) {
+            LOGGER.error("", e);
+            rpcContext.complete(e);
+            throw new NetException(NetResultCode.SERVER_ERROR, e);
         }
-        MessageRespondAwaiter awaiter = this.pollFuture(message);
-        if (awaiter != null) {
-            this.commandTaskBox.execute(new RespondFutureTask(message, awaiter));
+        LOGGER.warn("", cause);
+        rpcContext.complete(cause);
+        if (result.isThrowable()) {
+            throw cause;
         }
-        return this.commandTaskBox.addTask(new MessageCommandTask(tunnel, message));
+        return true;
+    }
+
+    private String rejectMessage(boolean receive, MessageHandleFilter<UID> filter, MessageSubject message, Tunnel<?> tunnel) {
+        return format("{} cannot receive {} from {} after being filtered by {}",
+                this, receive ? "receive" : "send", message, tunnel, filter.getClass());
     }
 
     @Override
     public void execute(@Nonnull Runnable command) {
-        this.commandTaskBox.execute(command);
+        this.commandBox.execute(command);
     }
 
     @Override
-    public SendReceipt send(NetTunnel<UID> tunnel, MessageContent context) {
+    public SendReceipt send(NetTunnel<UID> tunnel, MessageContent content) {
+        RpcRejectSendException cause;
+        var result = MessageHandleStrategy.HANDLE;
+        if (this.isClosed()) {
+            content.cancel(new EndpointClosedException(format("endpoint {} closed", this)));
+            return content;
+        }
         try {
-            if (this.isClosed()) {
-                context.cancel(new EndpointCloseException(format("endpoint {} closed", this)));
-                return context;
-            }
             if (tunnel == null) {
-                tunnel = currentTunnel();
+                tunnel = tunnel();
             }
             MessageHandleFilter<UID> filter = this.getSendFilter();
             if (filter != null) {
-                boolean throwable = true;
-                switch (filter.filter(this, context)) {
-                    case IGNORE:
-                        throwable = false;
-                    case THROW:
-                        context.cancel(true);
-                        String causeMessage = format("{} cannot send {} to {} after being filtered by {}", this, context, tunnel, filter.getClass());
-                        LOGGER.warn(causeMessage);
-                        if (throwable) {
-                            throw new EndpointException(causeMessage);
-                        }
-                        return context;
-                    case HANDLE:
-                        break;
-                }
+                result = filter.filter(this, content);
             }
-            tunnel.write(this::createMessage, context);
-            return context;
-        } catch (Exception e) {
+            if (result.isHandleable()) {
+                tunnel.write(this::createMessage, content);
+                return content;
+            }
+            cause = new RpcRejectSendException(rejectMessage(false, filter, content, tunnel));
+        } catch (Throwable e) {
             LOGGER.error("", e);
-            context.cancel(e);
-            throw new NetException(e);
+            content.cancel(e);
+            throw new NetException(NetResultCode.SERVER_ERROR, e);
         }
-    }
-
-    @Override
-    public boolean receive(Message message) {
-        return receive(null, message);
+        LOGGER.warn("", cause);
+        content.cancel(cause);
+        if (result.isThrowable()) {
+            throw cause;
+        }
+        return content;
     }
 
     @Override
@@ -235,7 +237,7 @@ public abstract class BaseNetEndpoint<UID> extends AbstractCommunicator<UID> imp
             return;
         }
         if (tunnel == null) {
-            tunnel = currentTunnel();
+            tunnel = tunnel();
         }
         for (Message message : this.getSentMessages(filter)) {
             tunnel.write(message, null);
@@ -248,7 +250,7 @@ public abstract class BaseNetEndpoint<UID> extends AbstractCommunicator<UID> imp
             return;
         }
         if (tunnel == null) {
-            tunnel = currentTunnel();
+            tunnel = tunnel();
         }
         for (Message message : this.getSentMessages(fromId, bound)) {
             tunnel.write(message, null);
@@ -261,7 +263,7 @@ public abstract class BaseNetEndpoint<UID> extends AbstractCommunicator<UID> imp
             return;
         }
         if (tunnel == null) {
-            tunnel = currentTunnel();
+            tunnel = tunnel();
         }
         for (Message message : this.getSentMessages(fromId, toId, bound)) {
             tunnel.write(message, null);
@@ -269,8 +271,8 @@ public abstract class BaseNetEndpoint<UID> extends AbstractCommunicator<UID> imp
     }
 
     @Override
-    public void takeOver(CommandTaskBox commandTaskBox) {
-        this.commandTaskBox.takeOver(commandTaskBox);
+    public void takeOver(MessageCommandBox commandTaskBox) {
+        this.commandBox.takeOver(commandTaskBox);
     }
 
     @Override
@@ -278,7 +280,8 @@ public abstract class BaseNetEndpoint<UID> extends AbstractCommunicator<UID> imp
         return this.send(null, content);
     }
 
-    protected NetTunnel<UID> currentTunnel() {
+    @Override
+    public NetTunnel<UID> tunnel() {
         return this.tunnel;
     }
 
@@ -293,15 +296,15 @@ public abstract class BaseNetEndpoint<UID> extends AbstractCommunicator<UID> imp
     }
 
     @Override
-    public CommandTaskBox getCommandTaskBox() {
-        return this.commandTaskBox;
+    public MessageCommandBox getCommandBox() {
+        return this.commandBox;
     }
 
     @Override
     public NetMessage createMessage(MessageFactory messageFactory, MessageContent context) {
         NetMessage message = messageFactory.create(allocateMessageId(), context);
         if (context instanceof RequestContent) {
-            this.putFuture(message.getId(), ((RequestContent)context).getResponseAwaiter());
+            this.putFuture(message.getId(), ((RequestContent)context).getRespondFuture());
         }
         this.sentMessageQueue.addMessage(message);
         return message;
@@ -388,7 +391,7 @@ public abstract class BaseNetEndpoint<UID> extends AbstractCommunicator<UID> imp
 
     private void offlineIf(NetTunnel<UID> tunnel) {
         synchronized (this) {
-            if (tunnel != currentTunnel()) {
+            if (tunnel != tunnel()) {
                 return;
             }
             if (!tunnel.isClosed()) {
@@ -407,7 +410,7 @@ public abstract class BaseNetEndpoint<UID> extends AbstractCommunicator<UID> imp
             if (isClosed()) {
                 return;
             }
-            NetTunnel<UID> tunnel = currentTunnel();
+            NetTunnel<UID> tunnel = tunnel();
             if (!tunnel.isClosed()) {
                 tunnel.close();
             }
@@ -417,7 +420,7 @@ public abstract class BaseNetEndpoint<UID> extends AbstractCommunicator<UID> imp
 
     @Override
     public void heartbeat() {
-        NetTunnel<UID> tunnel = currentTunnel();
+        NetTunnel<UID> tunnel = tunnel();
         if (tunnel.isOpen()) {
             tunnel.ping();
         }
@@ -462,19 +465,19 @@ public abstract class BaseNetEndpoint<UID> extends AbstractCommunicator<UID> imp
     private void checkOnlineCertificate(Certificate<UID> certificate) {
         Certificate<UID> currentCert = this.certificate;
         if (!certificate.isAuthenticated()) {
-            throw new ValidatorFailException(NetResultCode.NO_LOGIN);
+            throw new AuthFailedException(NetResultCode.NO_LOGIN);
         }
         if (currentCert != null && currentCert.isAuthenticated() && !currentCert.isSameCertificate(certificate)) { // 是否是同一个授权
-            throw new ValidatorFailException(format("Certificate new [{}] 与 old [{}] 不同", certificate, this.certificate));
+            throw new AuthFailedException("Certificate new [{}] 与 old [{}] 不同", certificate, this.certificate);
         }
         if (this.isClosed()) // 判断 session 状态是否可以重登
         {
-            throw new ValidatorFailException(NetResultCode.SESSION_LOSS_ERROR);
+            throw new AuthFailedException(NetResultCode.SESSION_LOSS_ERROR);
         }
     }
 
     @Override
-    public void online(Certificate<UID> certificate, NetTunnel<UID> tunnel) throws ValidatorFailException {
+    public void online(Certificate<UID> certificate, NetTunnel<UID> tunnel) throws AuthFailedException {
         Asserts.checkNotNull(tunnel, "newSession is null");
         checkOnlineCertificate(certificate);
         synchronized (this) {
@@ -485,7 +488,7 @@ public abstract class BaseNetEndpoint<UID> extends AbstractCommunicator<UID> imp
     }
 
     // 接受 Tunnel
-    private void acceptTunnel(NetTunnel<UID> newTunnel) throws ValidatorFailException {
+    private void acceptTunnel(NetTunnel<UID> newTunnel) throws AuthFailedException {
         if (newTunnel.bind(this)) {
             NetTunnel<UID> oldTunnel = this.tunnel;
             this.tunnel = newTunnel;
@@ -496,7 +499,7 @@ public abstract class BaseNetEndpoint<UID> extends AbstractCommunicator<UID> imp
             this.setOnline();
         } else {
             this.offlineIf(newTunnel);
-            throw new ValidatorFailException(format("{} tunnel is bound session", newTunnel));
+            throw new AuthFailedException("{} tunnel is bound session", newTunnel);
         }
     }
 

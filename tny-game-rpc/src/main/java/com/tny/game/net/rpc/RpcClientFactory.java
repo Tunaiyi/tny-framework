@@ -13,7 +13,9 @@ package com.tny.game.net.rpc;
 import com.tny.game.common.url.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.net.base.*;
+import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.endpoint.*;
+import com.tny.game.net.message.*;
 import com.tny.game.net.rpc.auth.*;
 import com.tny.game.net.rpc.setting.*;
 import com.tny.game.net.serve.*;
@@ -63,16 +65,24 @@ public class RpcClientFactory implements Serve {
     }
 
     private <ID> PostConnect<ID> postConnect(int index) {
-        return (c) -> {
+        return (tunnel) -> {
             String user = StringAide.ifBlank(setting.getUsername(), appContext.getAppType());
             RpcServiceType serviceType = RpcServiceTypes.checkService(user);
             int serverId = appContext.getServerId();
             long id = RpcAccessIdentify.formatId(serviceType, serverId, index);
-            RequestContent context = RpcAuthMessageContexts
+            RequestContent content = RpcAuthMessageContexts
                     .authRequest(id, setting.getPassword())
-                    .willRespondAwaiter(setting.getAuthenticateTimeout());
-            c.send(context);
-            context.respond().get(setting.getAuthenticateTimeout() + 500, TimeUnit.MILLISECONDS);
+                    .willRespondFuture(setting.getAuthenticateTimeout());
+            var invokeContext = RpcConsumerContext.create(tunnel.getEndpoint(), content, tunnel.getContext().getRpcMonitor());
+            invokeContext.prepare();
+            try {
+                tunnel.send(content);
+                Message message = content.respond().get(setting.getAuthenticateTimeout() + 500, TimeUnit.MILLISECONDS);
+                invokeContext.complete(message);
+            } catch (RuntimeException error) {
+                invokeContext.complete(error);
+                throw error;
+            }
             return true;
         };
     }

@@ -53,11 +53,12 @@ public class NetBootstrap<S extends NetBootstrapSetting> implements AppPrepareSt
         CertificateFactory<Object> certificateFactory =
                 UnitLoader.getLoader(CertificateFactory.class).checkUnit(this.setting.getCertificateFactory());
         MessageDispatcher messageDispatcher = UnitLoader.getLoader(MessageDispatcher.class).checkUnit(this.setting.getMessageDispatcher());
-        CommandTaskBoxProcessor commandTaskProcessor =
-                UnitLoader.getLoader(CommandTaskBoxProcessor.class).checkUnit(this.setting.getCommandTaskProcessor());
+        CommandBoxProcessor commandTaskProcessor =
+                UnitLoader.getLoader(CommandBoxProcessor.class).checkUnit(this.setting.getCommandTaskProcessor());
         RpcForwarder rpcForwarder = UnitLoader.getLoader(RpcForwarder.class).checkUnit(this.setting.getRpcForwarder());
-        this.context = new NetBootstrapContext(appContext, this.setting,
-                messageDispatcher, commandTaskProcessor, messageFactory, messagerFactory, certificateFactory, rpcForwarder);
+        RpcMonitor rpcMonitor = UnitLoader.getLoader(RpcMonitor.class).checkUnit();
+        this.context = new NetBootstrapContext(appContext, this.setting, messageDispatcher, commandTaskProcessor,
+                messageFactory, messagerFactory, certificateFactory, rpcForwarder, rpcMonitor);
         this.idGenerator = UnitLoader.getLoader(NetIdGenerator.class).checkUnit(this.setting.getTunnelIdGenerator());
         this.onLoadUnit(this.setting);
     }

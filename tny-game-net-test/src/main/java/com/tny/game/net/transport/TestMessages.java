@@ -12,6 +12,7 @@ package com.tny.game.net.transport;
 
 import com.tny.game.common.result.*;
 import com.tny.game.net.command.*;
+import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.message.common.*;
@@ -165,9 +166,9 @@ public class TestMessages {
         return this.responseSize;
     }
 
-    public void receive(Receiver receiver) {
+    public void receive(NetTunnel<?> receiver) {
         assertFalse(this.messages.isEmpty());
-        this.messages.forEach(p -> receiver.receive(p.getMessage()));
+        this.messages.forEach(p -> receiver.receive(RpcProviderContext.create(receiver, (NetMessage)p)));
     }
 
     public void send(Sender sender) {
@@ -188,13 +189,13 @@ public class TestMessages {
         write(transport, null);
     }
 
-    public void write(Transport transport, Consumer<MessageWriteAwaiter> check) {
+    public void write(Transport transport, Consumer<MessageWriteFuture> check) {
         assertFalse(this.messages.isEmpty());
         if (check == null) {
             check = f -> {
             };
         }
-        final Consumer<MessageWriteAwaiter> consumer = check;
+        final Consumer<MessageWriteFuture> consumer = check;
         this.messages.forEach(p -> consumer.accept(transport.write(p.getMessage(), null)));
     }
     // public void sendSync(Sender<Long> sender, long timeout) {

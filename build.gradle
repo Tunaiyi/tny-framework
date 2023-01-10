@@ -60,12 +60,9 @@ configure(allprojects) {
 
     repositories {
         mavenLocal()
+        maven { url "https://mirrors.cloud.tencent.com/nexus/repository/maven-public/" }
         maven { url "https://maven.aliyun.com/repository/public" }
-        maven { url "https://maven.aliyun.com/repository/spring" }
         maven { url "https://m2.tnydev.com/repository/maven-public/" }
-        maven { url "https://maven.aliyun.com/repository/central" }
-        maven { url "https://maven.aliyun.com/repository/google" }
-        maven { url "https://maven.aliyun.com/repository/jcenter" }
     }
 
 
@@ -96,7 +93,7 @@ configure(gradleProjects) {
     }
 
     task sourcesJar(type: Jar, dependsOn: classes) {
-        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        duplicatesStrategy = DuplicatesStrategy.INCLUDE
         archiveClassifier.set("sources")
         from sourceSets.main.allSource
     }
@@ -147,6 +144,7 @@ configure(javaProjects) {
     }
 
     jar {
+        duplicatesStrategy = DuplicatesStrategy.INCLUDE
         exclude("**.sql", "**.xml", "**.properties")
     }
 
@@ -170,7 +168,6 @@ configure(javaProjects) {
 
         testImplementation libs.mockito_junit_jupiter
         testImplementation libs.junit_jupiter
-//        testImplementation libs.junit_jupiter_engine
         testImplementation libs.jmock_junit5
         testImplementation libs.spring_test
         testImplementation libs.slf4j_simple

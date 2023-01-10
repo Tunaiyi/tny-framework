@@ -28,6 +28,6 @@ public interface MessageAllocator {
      * @param context 发送上下文
      * @return 返回消息
      */
-    Message allocate(MessageFactory factory, MessageContent context);
+    NetMessage allocate(MessageFactory factory, MessageContent context);
 
 }

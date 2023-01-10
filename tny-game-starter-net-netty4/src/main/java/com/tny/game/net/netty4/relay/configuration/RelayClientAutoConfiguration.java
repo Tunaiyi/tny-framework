@@ -11,6 +11,7 @@
 package com.tny.game.net.netty4.relay.configuration;
 
 import com.tny.game.net.base.*;
+import com.tny.game.net.netty4.network.*;
 import com.tny.game.net.netty4.relay.*;
 import com.tny.game.net.netty4.relay.cluster.*;
 import com.tny.game.net.netty4.relay.guide.*;
@@ -19,7 +20,6 @@ import com.tny.game.net.relay.cluster.*;
 import com.tny.game.net.relay.link.*;
 import com.tny.game.net.relay.link.allot.*;
 import com.tny.game.net.relay.link.route.*;
-import com.tny.game.net.rpc.*;
 import org.springframework.boot.autoconfigure.condition.*;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.*;
@@ -91,8 +91,8 @@ public class RelayClientAutoConfiguration {
     }
 
     @Bean
-    public RelayNettyMessageHandler relayNettyMessageHandler() {
-        return new RelayNettyMessageHandler(NetAccessMode.SERVER);
+    public NettyMessageHandlerFactory relayNettyMessageHandlerFactory() {
+        return new NettyRelayMessageHandlerFactory();
     }
 
     @Bean

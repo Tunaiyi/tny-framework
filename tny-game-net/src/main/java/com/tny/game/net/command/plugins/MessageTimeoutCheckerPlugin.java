@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.command.plugins;
 
 import com.tny.game.net.base.*;
@@ -34,7 +34,7 @@ public class MessageTimeoutCheckerPlugin<UID> implements CommandPlugin<UID, Long
     }
 
     @Override
-    public void execute(Tunnel<UID> tunnel, Message message, MessageCommandContext context, Long attribute) throws Exception {
+    public void execute(Tunnel<UID> communicator, Message message, RpcHandleContext context, Long attribute) throws Exception {
         if (attribute <= 0) {
             return;
         }

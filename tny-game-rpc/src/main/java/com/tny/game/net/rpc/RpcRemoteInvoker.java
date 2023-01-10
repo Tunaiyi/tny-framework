@@ -14,9 +14,10 @@ import com.tny.game.common.exception.*;
 import com.tny.game.common.result.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.net.base.*;
+import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.endpoint.*;
+import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
-import com.tny.game.net.rpc.exception.*;
 import com.tny.game.net.transport.*;
 import org.slf4j.*;
 
@@ -47,18 +48,24 @@ public class RpcRemoteInvoker {
     /**
      * 远程服务
      */
-    private final RpcRemoteSet servicer;
+    private final RpcInvokeNodeSet serviceSet;
 
     /**
      * 路由
      */
     private final RpcRouter router;
 
-    public RpcRemoteInvoker(RpcRemoteInstance instance, RpcRemoteMethod method, RpcRouter router) {
+    /**
+     * 监视器
+     */
+    private final RpcMonitor rpcMonitor;
+
+    public RpcRemoteInvoker(RpcRemoteInstance instance, RpcRemoteMethod method, RpcRouter router, RpcMonitor rpcMonitor) {
         this.method = method;
         this.instance = instance;
-        this.servicer = instance.getServiceSet();
+        this.serviceSet = instance.getServiceSet();
         this.router = as(router);
+        this.rpcMonitor = rpcMonitor;
     }
 
     private long timeout() {
@@ -68,17 +75,18 @@ public class RpcRemoteInvoker {
 
     public <T> Object invoke(Object... params) {
         RpcRemoteInvokeParams invokeParams = method.getParams(params);
-        RpcRemoteAccess accessPoint = router.route(servicer, method, invokeParams);
-        if (accessPoint == null) {
+        RpcAccess rpcAccess = router.route(serviceSet, method, invokeParams);
+        if (rpcAccess == null) {
             throw new RpcInvokeException(NetResultCode.RPC_SERVICE_NOT_AVAILABLE, "调用 {} 异常, 未找到有效的远程服务节点", this.method);
         }
+        var endpoint = rpcAccess.getEndpoint();
         long timeout = timeout();
         switch (method.getMode()) {
             case PUSH:
-                push(accessPoint, timeout, invokeParams);
+                push(endpoint, timeout, invokeParams);
                 return null;
             case REQUEST:
-                return request(accessPoint, timeout, invokeParams);
+                return request(endpoint, timeout, invokeParams);
         }
         throw new RpcInvokeException(NetResultCode.RPC_INVOKE_FAILED, "调用 {} 异常, 非法 rpc 模式", this.method);
     }
@@ -104,40 +112,56 @@ public class RpcRemoteInvoker {
         throw new RpcInvokeException(NetResultCode.REMOTE_EXCEPTION, "返回类型错误");
     }
 
-    private Object getReturnFuture(Endpoint<?> endpoint, MessageRespondAwaiter future) {
-        if (this.method.getReturnClass().isAssignableFrom(MessageRespondAwaiter.class)) {
-            return future;
+    private Object getReturnFuture(Endpoint<?> endpoint, RpcConsumerContext context, MessageRespondFuture future) {
+        RpcPromise<Object> rpcFuture = null;
+        Object returnFuture = null;
+        if (this.method.getReturnClass().isAssignableFrom(MessageRespondFuture.class)) {
+            returnFuture = future;
+        } else {
+            rpcFuture = new RpcPromise<>();
+            returnFuture = rpcFuture;
         }
-        RpcPromise<Object> rpcFuture = new RpcPromise<>();
-        future.whenComplete((message, e) -> {
-            if (e != null) {
-                rpcFuture.completeExceptionally(e);
-            } else {
-                rpcFuture.complete(endpoint, message, RpcResults.result(ResultCodes.of(message.getCode()), message.getBody()));
-            }
-        });
-        return rpcFuture;
+        var resultFuture = rpcFuture;
+        future.whenComplete((message, cause) -> handleMessageResult(endpoint, context, message, cause, resultFuture));
+        return returnFuture;
     }
 
-    private Object request(RpcRemoteAccess access, long timeout, RpcRemoteInvokeParams invokeParams) {
-        RequestContent requestContext = MessageContents.request(protocol(), invokeParams.getParams());
-        requestContext.willRespondAwaiter(timeout)
-                .withHeaders(invokeParams.getAllHeaders());
-        access.send(requestContext);
-        MessageRespondAwaiter awaiter = requestContext.getResponseAwaiter();
+    private void handleMessageResult(Endpoint<?> endpoint, RpcConsumerContext context, Message message, Throwable cause,
+            RpcPromise<Object> rpcFuture) {
+        if (cause != null) {
+            if (rpcFuture != null) {
+                rpcFuture.completeExceptionally(cause);
+            }
+            context.complete(cause);
+        } else {
+            if (rpcFuture != null) {
+                rpcFuture.complete(endpoint, message, RpcResults.result(ResultCodes.of(message.getCode()), message.getBody()));
+            }
+            context.complete(message);
+        }
+    }
+
+    private Object request(Endpoint<?> endpoint, long timeout, RpcRemoteInvokeParams params) {
+        RequestContent content = MessageContents.request(protocol(), params.getParams());
+        content.willRespondFuture(timeout)
+                .withHeaders(params.getAllHeaders());
+        var invokeContext = RpcConsumerContext.create(endpoint, content, rpcMonitor);
+        invokeContext.prepare();
+        endpoint.send(content);
+        MessageRespondFuture respondFuture = content.getRespondFuture();
         if (this.method.isAsync()) {
             switch (this.method.getReturnMode()) {
                 case FUTURE:
-                    return getReturnFuture(access.getEndpoint(), awaiter);
+                    return getReturnFuture(endpoint, invokeContext, respondFuture);
                 case VOID:
                 case RESULT:
                 case OBJECT:
                     return null;
             }
         } else {
-            Message message;
             try {
-                message = awaiter.get(timeout, TimeUnit.MILLISECONDS);
+                Message message = respondFuture.get(timeout, TimeUnit.MILLISECONDS);
+                invokeContext.complete(message);
                 switch (this.method.getReturnMode()) {
                     case RESULT:
                         return RpcResults.result(ResultCodes.of(message.getCode()), message.getBody());
@@ -146,28 +170,34 @@ public class RpcRemoteInvoker {
                     case VOID:
                         return null;
                 }
-            } catch (Throwable e) {
-                handleException(e);
+            } catch (Throwable cause) {
+                invokeContext.complete(cause);
+                handleException(cause);
             }
         }
         throw new RpcInvokeException(NetResultCode.RPC_INVOKE_FAILED, "返回类型错误");
     }
 
-    private void push(Sender sender, long timeout, RpcRemoteInvokeParams invokeParams) {
+    private void push(Endpoint<?> endpoint, long timeout, RpcRemoteInvokeParams invokeParams) {
         ResultCode code = ObjectAide.ifNull(invokeParams.getCode(), NetResultCode.SUCCESS);
-        MessageContent messageContext = MessageContents.push(protocol(), code)
+        MessageContent content = MessageContents.push(protocol(), code)
                 .withBody(invokeParams.getBody())
                 .withHeaders(invokeParams.getAllHeaders());
-        sender.send(messageContext);
-        if (this.method.isAsync()) {
-            return;
-        }
-        MessageWriteAwaiter awaiter = messageContext.getWriteAwaiter();
+        var invokeContext = RpcConsumerContext.create(endpoint, content, rpcMonitor);
+        invokeContext.prepare();
         try {
+            endpoint.send(content);
+            invokeContext.complete();
+            if (this.method.isAsync()) {
+                return;
+            }
+            MessageWriteFuture awaiter = content.getWriteFuture();
             awaiter.get(timeout, TimeUnit.MILLISECONDS);
-        } catch (Throwable e) {
-            handleException(e);
+        } catch (Throwable cause) {
+            invokeContext.complete(cause);
+            handleException(cause);
         }
+
     }
 
     private void handleException(Throwable e) {

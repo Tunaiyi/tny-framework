@@ -10,21 +10,15 @@
  */
 package com.tny.game.net.message.common;
 
-import com.tny.game.common.collection.empty.*;
-import com.tny.game.common.utils.*;
 import com.tny.game.net.message.*;
-import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.builder.*;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static com.tny.game.common.utils.ObjectAide.*;
+import java.util.Map;
 
 /**
  * Created by Kun Yang on 2018/8/20.
  */
-public class CommonMessageHead extends AbstractNetMessageHead {
+public class CommonMessageHead extends BaseMessageHeaderContainer implements NetMessageHead {
 
     private long id;
 
@@ -38,33 +32,28 @@ public class CommonMessageHead extends AbstractNetMessageHead {
 
     private int code;
 
-    private final Map<String, MessageHeader<?>> headers = new EmptyImmutableMap<>();
+    protected volatile MessageMode mode;
 
     public CommonMessageHead(long id, MessageMode mode, int line, int protocol, int code, long toMessage, long time,
             Map<String, MessageHeader<?>> headers) {
-        super(mode);
+        super(headers);
         this.id = id;
         this.line = line;
+        this.mode = mode;
         this.protocol = protocol;
         this.time = time;
         this.toMessage = toMessage;
         this.code = code;
-        if (MapUtils.isNotEmpty(headers)) {
-            this.headers.putAll(headers);
-        }
     }
 
     public CommonMessageHead(long id, MessageSubject subject) {
-        super(subject.getMode());
+        super(subject.getAllHeaderMap());
         this.id = id;
+        this.mode = subject.getMode();
         this.protocol = subject.getProtocolId();
         this.code = subject.getCode();
         this.toMessage = subject.getToMessage();
         this.time = System.currentTimeMillis();
-        Map<String, MessageHeader<?>> headers = subject.getAllHeaderMap();
-        if (MapUtils.isNotEmpty(headers)) {
-            this.headers.putAll(headers);
-        }
     }
 
     @Override
@@ -83,68 +72,6 @@ public class CommonMessageHead extends AbstractNetMessageHead {
     }
 
     @Override
-    public <T extends MessageHeader<?>> T getHeader(String key, Class<T> headerClass) {
-        MessageHeader<?> header = this.headers.get(key);
-        if (header == null) {
-            return null;
-        }
-        if (headerClass.isInstance(header)) {
-            return as(header, headerClass);
-        }
-        return null;
-    }
-
-    @Override
-    public <T extends MessageHeader<?>> List<T> getHeaders(Class<T> headerClass) {
-        if (headers.isEmpty()) {
-            return Collections.emptyList();
-        }
-        return headers.values().stream()
-                .filter(headerClass::isInstance)
-                .map((header) -> ObjectAide.as(header, headerClass))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public <T extends MessageHeader<?>> T getHeader(MessageHeaderKey<T> key) {
-        return getHeader(key.getKey(), key.getHeaderClass());
-    }
-
-    @Override
-    public boolean isHasHeaders() {
-        return MapUtils.isNotEmpty(this.headers);
-    }
-
-    @Override
-    public Map<String, MessageHeader<?>> getAllHeaderMap() {
-        return Collections.unmodifiableMap(this.headers);
-    }
-
-    @Override
-    public List<MessageHeader<?>> getAllHeaders() {
-        return new ArrayList<>(headers.values());
-    }
-
-    @Override
-    public boolean existHeader(String key) {
-        return this.headers.containsKey(key);
-    }
-
-    @Override
-    public boolean existHeader(String key, Class<? extends MessageHeader<?>> headerClass) {
-        MessageHeader<?> header = this.headers.get(key);
-        if (header == null) {
-            return false;
-        }
-        return headerClass.isInstance(header);
-    }
-
-    @Override
-    public boolean existHeader(MessageHeaderKey<?> key) {
-        return existHeader(key.getKey(), key.getHeaderClass());
-    }
-
-    @Override
     public long getToMessage() {
         return this.toMessage;
     }
@@ -160,35 +87,15 @@ public class CommonMessageHead extends AbstractNetMessageHead {
     }
 
     @Override
+    public MessageMode getMode() {
+        return this.mode;
+    }
+
+    @Override
     public void allotMessageId(long id) {
         if (this.id <= -1) {
             this.id = id;
         }
-    }
-
-    @Override
-    public MessageHeader<?> putHeader(MessageHeader<?> header) {
-        return this.headers.put(header.getKey(), header);
-    }
-
-    @Override
-    public MessageHeader<?> putHeaderIfAbsent(MessageHeader<?> header) {
-        return this.headers.putIfAbsent(header.getKey(), header);
-    }
-
-    @Override
-    public <T extends MessageHeader<?>> T removeHeader(String key) {
-        return as(this.headers.remove(key));
-    }
-
-    @Override
-    public <T extends MessageHeader<?>> T removeHeader(String key, Class<T> headerClass) {
-        return as(this.headers.remove(key), headerClass);
-    }
-
-    @Override
-    public <T extends MessageHeader<?>> T removeHeader(MessageHeaderKey<T> key) {
-        return as(this.headers.remove(key.getKey()), key.getHeaderClass());
     }
 
     CommonMessageHead setId(long id) {

@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.netty4.network;
 
 import com.tny.game.net.netty4.channel.*;
@@ -29,7 +29,7 @@ public class NettyChannelSetting {
 
     private NetPacketCodecSetting decoder;
 
-    private String messageHandler = defaultName(NettyMessageHandler.class);
+    private String messageHandlerFactory = defaultName(NettyMessageHandlerFactory.class);
 
     private String tunnelFactory = defaultName(NettyTunnelFactory.class);
 
@@ -55,8 +55,8 @@ public class NettyChannelSetting {
         return decoder;
     }
 
-    public String getMessageHandler() {
-        return messageHandler;
+    public String getMessageHandlerFactory() {
+        return messageHandlerFactory;
     }
 
     public String getTunnelFactory() {
@@ -78,8 +78,8 @@ public class NettyChannelSetting {
         return this;
     }
 
-    public NettyChannelSetting setMessageHandler(String messageHandler) {
-        this.messageHandler = messageHandler;
+    public NettyChannelSetting setMessageHandlerFactory(String messageHandlerFactory) {
+        this.messageHandlerFactory = messageHandlerFactory;
         return this;
     }
 

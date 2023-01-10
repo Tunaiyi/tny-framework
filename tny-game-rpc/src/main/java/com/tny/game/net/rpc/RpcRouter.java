@@ -18,6 +18,6 @@ package com.tny.game.net.rpc;
  */
 public interface RpcRouter {
 
-    RpcRemoteAccess route(RpcRemoteSet servicer, RpcRemoteMethod invoker, RpcRemoteInvokeParams invokeParams);
+    RpcAccess route(RpcInvokeNodeSet serviceSet, RpcRemoteMethod invoker, RpcRemoteInvokeParams invokeParams);
 
 }

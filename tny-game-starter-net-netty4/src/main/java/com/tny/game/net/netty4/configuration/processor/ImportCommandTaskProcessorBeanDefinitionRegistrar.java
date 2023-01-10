@@ -42,9 +42,9 @@ public class ImportCommandTaskProcessorBeanDefinitionRegistrar extends ImportCon
         if (setting == null || !setting.isEnable()) {
             return false;
         }
-        String beanName = getBeanName(name, CommandTaskBoxProcessor.class);
+        String beanName = getBeanName(name, CommandBoxProcessor.class);
         registry.registerBeanDefinition(beanName,
-                BeanDefinitionBuilder.genericBeanDefinition(ForkJoinEndpointCommandTaskBoxProcessor.class)
+                BeanDefinitionBuilder.genericBeanDefinition(ForkJoinEndpointCommandBoxProcessor.class)
                         .addConstructorArgValue(setting)
                         .getBeanDefinition());
         return false;
@@ -54,9 +54,9 @@ public class ImportCommandTaskProcessorBeanDefinitionRegistrar extends ImportCon
         if (setting == null || !setting.isEnable()) {
             return false;
         }
-        String beanName = getBeanName(name, CommandTaskBoxProcessor.class);
+        String beanName = getBeanName(name, CommandBoxProcessor.class);
         registry.registerBeanDefinition(beanName,
-                BeanDefinitionBuilder.genericBeanDefinition(DisruptorEndpointCommandTaskBoxProcessor.class)
+                BeanDefinitionBuilder.genericBeanDefinition(DisruptorEndpointCommandBoxProcessor.class)
                         .addConstructorArgValue(setting)
                         .getBeanDefinition());
         return true;

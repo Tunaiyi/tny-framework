@@ -25,7 +25,7 @@ import java.net.InetSocketAddress;
  * @author : kgtny
  * @date : 2021/8/24 1:02 下午
  */
-public class DefaultServerRelayTransporter extends AttributesHolder implements ServerRelayTransporter {
+public class DefaultServerRelayTransporter extends AttributeHolder implements ServerRelayTransporter {
 
     private ServerRelayTunnel<?> tunnel;
 
@@ -67,12 +67,12 @@ public class DefaultServerRelayTransporter extends AttributesHolder implements S
     }
 
     @Override
-    public MessageWriteAwaiter write(Message message, MessageWriteAwaiter promise) throws NetException {
+    public MessageWriteFuture write(Message message, MessageWriteFuture promise) throws NetException {
         return link.relay(this.tunnel, message, promise);
     }
 
     @Override
-    public MessageWriteAwaiter write(MessageAllocator maker, MessageFactory factory, MessageContent context) throws NetException {
+    public MessageWriteFuture write(MessageAllocator maker, MessageFactory factory, MessageContent context) throws NetException {
         return link.relay(this.tunnel, maker, factory, context);
     }
 

@@ -13,6 +13,7 @@ package com.tny.game.net.transport;
 import com.tny.game.common.concurrent.utils.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.command.*;
+import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.rpc.*;
@@ -123,17 +124,17 @@ public abstract class AbstractNetTunnel<UID, E extends NetEndpoint<UID>> extends
     }
 
     @Override
-    public boolean receive(Message message) {
-        return StampedLockAide.supplyInOptimisticReadLock(this.endpointLock, () -> doReceive(message));
+    public boolean receive(RpcProviderContext context) {
+        return StampedLockAide.supplyInOptimisticReadLock(this.endpointLock, this::doReceive, context);
     }
 
-    private boolean doReceive(Message message) {
+    private boolean doReceive(RpcProviderContext context) {
         E endpoint = this.endpoint;
         while (true) {
             if (endpoint.isClosed()) {
                 return false;
             }
-            if (endpoint.receive(this, message)) {
+            if (endpoint.receive(context)) {
                 return true;
             }
         }

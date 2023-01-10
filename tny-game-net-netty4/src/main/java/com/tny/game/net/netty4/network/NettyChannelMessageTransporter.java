@@ -45,15 +45,15 @@ public class NettyChannelMessageTransporter extends NettyChannelConnection imple
     }
 
     @Override
-    public MessageWriteAwaiter write(Message message, MessageWriteAwaiter awaiter) throws NetException {
+    public MessageWriteFuture write(Message message, MessageWriteFuture awaiter) throws NetException {
         ChannelPromise channelPromise = createChannelPromise(awaiter);
         this.channel.writeAndFlush(message, channelPromise);
         return awaiter;
     }
 
     @Override
-    public MessageWriteAwaiter write(MessageAllocator maker, MessageFactory factory, MessageContent context) throws NetException {
-        MessageWriteAwaiter awaiter = context.getWriteAwaiter();
+    public MessageWriteFuture write(MessageAllocator maker, MessageFactory factory, MessageContent context) throws NetException {
+        MessageWriteFuture awaiter = context.getWriteFuture();
         ProcessTracer tracer = NetLogger.NET_TRACE_OUTPUT_WRITE_TO_ENCODE_WATCHER.trace();
         this.channel.eventLoop()
                 .execute(() -> {
@@ -62,7 +62,9 @@ public class NettyChannelMessageTransporter extends NettyChannelConnection imple
                         message = maker.allocate(factory, context);
                     } catch (Throwable e) {
                         LOGGER.error("", e);
-                        awaiter.completeExceptionally(e);
+                        if (awaiter != null) {
+                            awaiter.completeExceptionally(e);
+                        }
                     }
                     if (message != null) {
                         ChannelPromise channelPromise = createChannelPromise(awaiter);

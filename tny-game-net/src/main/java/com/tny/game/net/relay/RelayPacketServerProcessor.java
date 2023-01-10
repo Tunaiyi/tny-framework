@@ -11,6 +11,7 @@
 package com.tny.game.net.relay;
 
 import com.tny.game.net.base.*;
+import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.relay.link.*;
 import com.tny.game.net.relay.packet.*;
@@ -29,10 +30,13 @@ public class RelayPacketServerProcessor extends BaseRelayPacketProcessor {
 
     private final NetworkContext networkContext;
 
+    private final RpcMonitor rpcMonitor;
+
     public RelayPacketServerProcessor(ServerRelayExplorer serverRelayExplorer, NetworkContext networkContext) {
         super(serverRelayExplorer);
         this.serverRelayExplorer = serverRelayExplorer;
         this.networkContext = networkContext;
+        this.rpcMonitor = networkContext.getRpcMonitor();
     }
 
     @Override
@@ -51,7 +55,9 @@ public class RelayPacketServerProcessor extends BaseRelayPacketProcessor {
             LOGGER.warn("{} 转发消息 {} 到 tunnel[{}], message 为 null", link, packet, arguments.getTunnelId());
             return;
         }
-        tunnel.receive(message);
+        var rpcContext = RpcProviderContext.create(tunnel, (NetMessage)message);
+        rpcMonitor.onReceive(rpcContext);
+        tunnel.receive(rpcContext);
     }
 
     @Override

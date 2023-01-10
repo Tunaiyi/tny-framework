@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.command.dispatcher;
 
 import com.tny.game.common.collection.*;
@@ -40,7 +40,7 @@ public class DefaultMessageDispatcherContext implements NetMessageDispatcherCont
     /**
      * 所有协议身法验证器
      */
-    private AuthenticateValidator<?, ?> defaultValidator;
+    private AuthenticationValidator<?, ?> defaultValidator;
 
     /**
      * 插件管理器
@@ -50,7 +50,7 @@ public class DefaultMessageDispatcherContext implements NetMessageDispatcherCont
     /**
      * 认证器列表
      */
-    private final Map<Object, AuthenticateValidator<?, ?>> authValidators = new CopyOnWriteMap<>();
+    private final Map<Object, AuthenticationValidator<?, ?>> authValidators = new CopyOnWriteMap<>();
 
     /**
      * 派发错误监听器
@@ -72,8 +72,8 @@ public class DefaultMessageDispatcherContext implements NetMessageDispatcherCont
     }
 
     @Override
-    public AuthenticateValidator<?, ?> getValidator(Class<? extends AuthenticateValidator<?, ?>> validatorClass) {
-        AuthenticateValidator<Object, ?> validator = null;
+    public AuthenticationValidator<?, ?> getValidator(Class<? extends AuthenticationValidator<?, ?>> validatorClass) {
+        AuthenticationValidator<Object, ?> validator = null;
         if (validatorClass != null) {
             validator = as(this.authValidators.get(validatorClass));
             Asserts.checkNotNull(validator, "{} 认证器不存在", validatorClass);
@@ -82,8 +82,8 @@ public class DefaultMessageDispatcherContext implements NetMessageDispatcherCont
     }
 
     @Override
-    public AuthenticateValidator<?, ?> getValidator(Object protocol) {
-        return ObjectAide.<AuthenticateValidator<Object, ?>>as(this.authValidators.getOrDefault(protocol, this.defaultValidator));
+    public AuthenticationValidator<?, ?> getValidator(Object protocol) {
+        return ObjectAide.<AuthenticationValidator<Object, ?>>as(this.authValidators.getOrDefault(protocol, this.defaultValidator));
     }
 
     @Override
@@ -118,7 +118,7 @@ public class DefaultMessageDispatcherContext implements NetMessageDispatcherCont
      * @param provider 身份校验器
      */
     @Override
-    public void addAuthProvider(AuthenticateValidator<?, ?> provider) {
+    public void addAuthProvider(AuthenticationValidator<?, ?> provider) {
         Class<?> providerClass = provider.getClass();
         AuthProtocol protocol = providerClass.getAnnotation(AuthProtocol.class);
         if (protocol != null) {
@@ -140,7 +140,7 @@ public class DefaultMessageDispatcherContext implements NetMessageDispatcherCont
      * @param providers 身份校验器列表
      */
     @Override
-    public void addAuthProvider(Collection<? extends AuthenticateValidator<?, ?>> providers) {
+    public void addAuthProvider(Collection<? extends AuthenticationValidator<?, ?>> providers) {
         providers.forEach(this::addAuthProvider);
     }
 
@@ -162,6 +162,50 @@ public class DefaultMessageDispatcherContext implements NetMessageDispatcherCont
     @Override
     public void clearCommandListeners() {
         this.commandListeners.clear();
+    }
+
+    @Override
+    public void fireExecuteStart(RpcInvokeCommand command) {
+        for (MessageCommandListener listener : this.getCommandListener()) {
+            try {
+                listener.onExecuteStart(command);
+            } catch (Throwable e) {
+                LOGGER.error("on fireExecuteStart exception", e);
+            }
+        }
+    }
+
+    @Override
+    public void fireExecuteEnd(RpcInvokeCommand command, Throwable cause) {
+        for (MessageCommandListener listener : this.getCommandListener()) {
+            try {
+                listener.onExecuteEnd(command, cause);
+            } catch (Throwable e) {
+                LOGGER.error("on fireExecuteEnd exception", e);
+            }
+        }
+    }
+
+    @Override
+    public void fireException(RpcInvokeCommand command, Throwable cause) {
+        for (MessageCommandListener listener : this.getCommandListener()) {
+            try {
+                listener.onException(command, cause);
+            } catch (Throwable e) {
+                LOGGER.error("on fireExecuteEnd exception", e);
+            }
+        }
+    }
+
+    @Override
+    public void fireDone(RpcInvokeCommand command, Throwable cause) {
+        for (MessageCommandListener listener : this.getCommandListener()) {
+            try {
+                listener.onDone(command, cause);
+            } catch (Throwable e) {
+                LOGGER.error("on fireDone( exception", e);
+            }
+        }
     }
 
     private <K, V> void putObject(Map<K, V> map, K key, V value) {

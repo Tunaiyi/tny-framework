@@ -17,31 +17,4 @@ public interface NetMessageHead extends MessageHead {
 
     void allotMessageId(long id);
 
-    /**
-     * @param header 头部信息
-     * @return 返回 context 自身
-     */
-    MessageHeader<?> putHeader(MessageHeader<?> header);
-
-    /**
-     * @param header 头部信息
-     * @return 返回 context 自身
-     */
-    MessageHeader<?> putHeaderIfAbsent(MessageHeader<?> header);
-
-    /**
-     * 删除转发 header
-     */
-    <T extends MessageHeader<?>> T removeHeader(String key);
-
-    /**
-     * 删除转发 header
-     */
-    <T extends MessageHeader<?>> T removeHeader(String key, Class<T> headerClass);
-
-    /**
-     * 删除转发 header
-     */
-    <T extends MessageHeader<?>> T removeHeader(MessageHeaderKey<T> key);
-
 }

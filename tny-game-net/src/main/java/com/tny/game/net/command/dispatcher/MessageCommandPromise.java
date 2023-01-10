@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.command.dispatcher;
 
 import com.tny.game.common.concurrent.*;
@@ -17,7 +17,6 @@ import com.tny.game.net.exception.*;
 import java.util.concurrent.Future;
 
 import static com.tny.game.common.utils.ObjectAide.*;
-import static com.tny.game.common.utils.StringAide.*;
 
 /**
  * <p>
@@ -83,7 +82,7 @@ public class MessageCommandPromise {
             } else {
                 if (this.timeout > 0 && System.currentTimeMillis() > this.timeout) {
                     try {
-                        throw new CommandTimeoutException(NetResultCode.EXECUTE_TIMEOUT, format("执行 {} 超时", this.name));
+                        throw new RpcInvokeTimeoutException(NetResultCode.EXECUTE_TIMEOUT, "执行 {} 超时", this.name);
                     } catch (Throwable e) {
                         this.setResult(e);
                     }

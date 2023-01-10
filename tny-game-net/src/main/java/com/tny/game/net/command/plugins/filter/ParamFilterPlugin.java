@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.command.plugins.filter;
 
 import com.tny.game.common.concurrent.collection.*;
@@ -55,20 +55,20 @@ public class ParamFilterPlugin<UID> implements VoidInvokeCommandPlugin<UID> {
     }
 
     @Override
-    public void doExecute(Tunnel<UID> tunnel, Message message, MessageCommandContext context) {
+    public void doExecute(Tunnel<UID> communicator, Message message, RpcHandleContext context) {
         MethodControllerHolder methodHolder = context.getController();
         Set<Class<?>> classSet = methodHolder.getParamAnnotationClass();
         for (Class<?> filterClass : classSet) {
             ParamFilter<UID> paramFilter = as(this.filterMap.get(filterClass));
             if (paramFilter != null) {
                 try {
-                    ResultCode resultCode = paramFilter.filter(methodHolder, tunnel, message);
+                    ResultCode resultCode = paramFilter.filter(methodHolder, communicator, message);
                     if (resultCode != NetResultCode.SUCCESS) {
                         // 完成 不继续执行
                         context.doneAndIntercept(resultCode);
                     }
-                } catch (CommandException e) {
-                    context.doneAndIntercept(RpcResults.fail(e.getResultCode(), e.getBody()));
+                } catch (RpcInvokeException e) {
+                    context.doneAndIntercept(RpcResults.fail(e.getCode(), e.getBody()));
                 }
             }
         }

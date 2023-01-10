@@ -31,8 +31,8 @@ public abstract class RequestContent extends MessageContent {
      *
      * @return 请求 content
      */
-    public RequestContent willRespondAwaiter() {
-        return willRespondAwaiter(MessageRespondAwaiter.DEFAULT_FUTURE_TIMEOUT);
+    public RequestContent willRespondFuture() {
+        return willRespondFuture(MessageRespondFuture.DEFAULT_FUTURE_TIMEOUT);
     }
 
     /**
@@ -41,8 +41,8 @@ public abstract class RequestContent extends MessageContent {
      * @param timeoutMills 超时时间
      * @return 请求 content
      */
-    public abstract RequestContent willRespondAwaiter(long timeoutMills);
+    public abstract RequestContent willRespondFuture(long timeoutMills);
 
-    public abstract MessageRespondAwaiter getResponseAwaiter();
+    public abstract MessageRespondFuture getRespondFuture();
 
 }

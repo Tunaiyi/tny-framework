@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.basics.scheduler;
 
 import com.tny.game.basics.configuration.*;
@@ -32,11 +32,11 @@ public class TaskReceiverSchedulerPlugin implements VoidCommandPlugin<Long> {
     }
 
     @Override
-    public void doExecute(Tunnel<Long> tunnel, Message message, MessageCommandContext context) throws Exception {
-        TaskReceiverType type = properties.getPlugin().getReceiverType(tunnel.getUserGroup());
+    public void doExecute(Tunnel<Long> communicator, Message message, RpcHandleContext context) throws Exception {
+        TaskReceiverType type = properties.getPlugin().getReceiverType(communicator.getUserGroup());
         if (type != null) {
             try {
-                this.timeTaskService.checkTask(tunnel.getUserId(), type);
+                this.timeTaskService.checkTask(communicator.getUserId(), type);
             } catch (Exception e) {
                 LOGGER.error("", e);
             }

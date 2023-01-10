@@ -174,22 +174,22 @@ public abstract class BaseRelayLink implements NetRelayLink {
     }
 
     @Override
-    public MessageWriteAwaiter relay(RelayTunnel<?> tunnel, Message message, MessageWriteAwaiter awaiter) {
-        return this.transporter.write(new TunnelRelayPacket(createPacketId(), tunnel.getInstanceId(), tunnel.getId(), message), awaiter);
+    public MessageWriteFuture relay(RelayTunnel<?> from, Message message, MessageWriteFuture awaiter) {
+        return this.transporter.write(new TunnelRelayPacket(createPacketId(), from.getInstanceId(), from.getId(), message), awaiter);
     }
 
     @Override
-    public MessageWriteAwaiter relay(RelayTunnel<?> tunnel, MessageAllocator allocator, MessageFactory factory, MessageContent context) {
+    public MessageWriteFuture relay(RelayTunnel<?> from, MessageAllocator allocator, MessageFactory factory, MessageContent content) {
         return this.transporter.write(
-                () -> new TunnelRelayPacket(createPacketId(), tunnel.getInstanceId(), tunnel.getId(), allocator.allocate(factory, context)),
-                context.getWriteAwaiter());
+                () -> new TunnelRelayPacket(createPacketId(), from.getInstanceId(), from.getId(), allocator.allocate(factory, content)),
+                content.getWriteFuture());
     }
 
     @Override
-    public <P extends RelayPacket<A>, A extends RelayPacketArguments> MessageWriteAwaiter write(RelayPacketFactory<P, A> factory, A arguments,
+    public <P extends RelayPacket<A>, A extends RelayPacketArguments> MessageWriteFuture write(RelayPacketFactory<P, A> factory, A arguments,
             boolean promise) {
         return this.transporter.write(factory.createPacket(createPacketId(), arguments, System.currentTimeMillis()),
-                promise ? new MessageWriteAwaiter() : null);
+                promise ? new MessageWriteFuture() : null);
     }
 
     @Override

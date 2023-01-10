@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.command.plugins.filter.text;
 
 import com.google.common.collect.ImmutableList;
@@ -37,12 +37,12 @@ public class TextCheckFilter<UID> extends AbstractParamFilter<UID, TextCheck, St
     }
 
     @Override
-    protected ResultCode doFilter(MethodControllerHolder holder, Tunnel<UID> tunnel, Message message, int index, TextCheck annotation,
+    protected ResultCode doFilter(MethodControllerHolder holder, Tunnel<UID> communicator, Message message, int index, TextCheck annotation,
             String param) {
         int size = param.length();
         if (size < annotation.lowLength() || annotation.highLength() < size) {
             LOGGER.warn("{} 玩家请求 协议[{}] 第{}个参数 [{}] 超出 {} - {} 范围",
-                    tunnel.getUserId(), message.getProtocolId(),
+                    communicator.getUserId(), message.getProtocolId(),
                     index, size, annotation.lowLength(), annotation.highLength());
             return code(this.lengthIllegalCode, annotation.lengthIllegalCode(), annotation.illegalCode());
         }

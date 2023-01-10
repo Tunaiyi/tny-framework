@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.transport;
 
 import com.google.common.collect.*;
@@ -69,16 +69,16 @@ public class RespondFutureMonitor {
         }
     }
 
-    private volatile ConcurrentMap<Long, MessageRespondAwaiter> futureMap;
+    private volatile ConcurrentMap<Long, MessageRespondFuture> futureMap;
 
     private void clearTimeOut() {
-        ConcurrentMap<Long, MessageRespondAwaiter> futureMap = this.futureMap;
+        ConcurrentMap<Long, MessageRespondFuture> futureMap = this.futureMap;
         if (futureMap == null) {
             return;
         }
-        for (Entry<Long, MessageRespondAwaiter> entry : futureMap.entrySet()) {
+        for (Entry<Long, MessageRespondFuture> entry : futureMap.entrySet()) {
             try {
-                MessageRespondAwaiter future = entry.getValue();
+                MessageRespondFuture future = entry.getValue();
                 if (future.isDone() || (future.isTimeout() && future.cancel(true))) {
                     futureMap.remove(entry.getKey());
                 }
@@ -93,18 +93,18 @@ public class RespondFutureMonitor {
             return;
         }
         this.close = true;
-        ConcurrentMap<Long, MessageRespondAwaiter> futureMap = this.futureMap;
+        ConcurrentMap<Long, MessageRespondFuture> futureMap = this.futureMap;
         if (futureMap == null) {
             return;
         }
-        List<MessageRespondAwaiter> futures;
+        List<MessageRespondFuture> futures;
         if (this.futureMap.isEmpty()) {
             futures = ImmutableList.of();
         } else {
             futures = new ArrayList<>(this.futureMap.values());
             this.futureMap.clear();
         }
-        for (MessageRespondAwaiter future : futures) {
+        for (MessageRespondFuture future : futures) {
             try {
                 future.cancel(true);
             } catch (Throwable e) {
@@ -113,7 +113,7 @@ public class RespondFutureMonitor {
         }
     }
 
-    private ConcurrentMap<Long, MessageRespondAwaiter> map() {
+    private ConcurrentMap<Long, MessageRespondFuture> map() {
         if (this.futureMap != null) {
             return this.futureMap;
         }
@@ -126,29 +126,29 @@ public class RespondFutureMonitor {
         return this.futureMap;
     }
 
-    public <M> MessageRespondAwaiter getFuture(long messageId) {
-        ConcurrentMap<Long, MessageRespondAwaiter> map = this.futureMap;
+    public <M> MessageRespondFuture getFuture(long messageId) {
+        ConcurrentMap<Long, MessageRespondFuture> map = this.futureMap;
         if (map == null) {
             return null;
         }
         return as(map.get(messageId));
     }
 
-    public <M> MessageRespondAwaiter pollFuture(long messageId) {
-        ConcurrentMap<Long, MessageRespondAwaiter> map = this.futureMap;
+    public <M> MessageRespondFuture pollFuture(long messageId) {
+        ConcurrentMap<Long, MessageRespondFuture> map = this.futureMap;
         if (map == null) {
             return null;
         }
         return as(map.remove(messageId));
     }
 
-    public void putFuture(long messageId, MessageRespondAwaiter future) {
+    public void putFuture(long messageId, MessageRespondFuture future) {
         if (future == null) {
             return;
         }
         if (!this.close) {
-            ConcurrentMap<Long, MessageRespondAwaiter> map = map();
-            MessageRespondAwaiter oldFuture = map.put(messageId, future);
+            ConcurrentMap<Long, MessageRespondFuture> map = map();
+            MessageRespondFuture oldFuture = map.put(messageId, future);
             if (oldFuture != null && !oldFuture.isDone()) {
                 oldFuture.cancel(true);
             }
@@ -158,7 +158,7 @@ public class RespondFutureMonitor {
     }
 
     public int size() {
-        ConcurrentMap<Long, MessageRespondAwaiter> map = this.futureMap;
+        ConcurrentMap<Long, MessageRespondFuture> map = this.futureMap;
         if (map == null) {
             return 0;
         }

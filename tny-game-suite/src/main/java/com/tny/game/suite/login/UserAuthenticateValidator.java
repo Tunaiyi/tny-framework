@@ -39,12 +39,12 @@ public abstract class UserAuthenticateValidator extends GameAuthenticateValidato
         return this.online;
     }
 
-    protected GameTicket getTicket(String openID, String openKey, String ticketWord) throws ValidatorFailException {
+    protected GameTicket getTicket(String openID, String openKey, String ticketWord) throws AuthFailedException {
         GameTicket ticket;
         try {
             if (this.isAuth()) {
                 if (ticketWord == null) {
-                    throw new ValidatorFailException(SuiteResultCode.AUTH_NO_TICKET, openID);
+                    throw new AuthFailedException(SuiteResultCode.AUTH_NO_TICKET, openID);
                 }
                 ticket = GameTicketHelper.decryptTicket(ticketWord);
                 if (!this.isOnline() && !ticket.isInterior()) {
@@ -53,7 +53,7 @@ public abstract class UserAuthenticateValidator extends GameAuthenticateValidato
                 // 维护时候只有pf为inside才可以进入
                 String checkKey = this.ticketMaker.make(ticket);
                 if (!checkKey.equals(ticket.getSecret())) {
-                    throw new ValidatorFailException(NetResultCode.VALIDATOR_FAIL_ERROR, openID);
+                    throw new AuthFailedException(NetResultCode.VALIDATOR_FAIL_ERROR, openID);
                 }
             } else {
                 if (ticketWord == null || ticketWord.equals("{}") || ticketWord.isEmpty()) {
@@ -77,16 +77,16 @@ public abstract class UserAuthenticateValidator extends GameAuthenticateValidato
                     ticket = GameTicketHelper.decryptTicket(ticketWord);
                     String checkKey = this.ticketMaker.make(ticket);
                     if (!checkKey.equals(ticket.getSecret())) {
-                        throw new ValidatorFailException(NetResultCode.VALIDATOR_FAIL_ERROR, openID);
+                        throw new AuthFailedException(NetResultCode.VALIDATOR_FAIL_ERROR, openID);
                     }
                 }
             }
         } catch (Throwable e) {
             LOGGER.error("ticket word to object JSONException", e);
-            if (e instanceof ValidatorFailException) {
-                throw (ValidatorFailException)e;
+            if (e instanceof AuthFailedException) {
+                throw (AuthFailedException)e;
             }
-            throw new ValidatorFailException(SuiteResultCode.AUTH_ERROR, openID, e);
+            throw new AuthFailedException(SuiteResultCode.AUTH_ERROR, openID, e);
         }
         return ticket;
     }

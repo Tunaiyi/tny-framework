@@ -33,7 +33,7 @@ public interface MessageHeaderConstants {
     int RPC_TRACING_TYPE_PROTO = 102;
 
     String RPC_TRACING_TYPE_PROTO_KEY = "Rpc-Tracing";
-    MessageHeaderKey<RpcOriginalMessageIdHeader> RPC_TRACING =
-            MessageHeaderKey.key(RPC_ORIGINAL_MESSAGE_ID_KEY, RpcOriginalMessageIdHeader.class);
+    MessageHeaderKey<RpcTracingHeader> RPC_TRACING =
+            MessageHeaderKey.key(RPC_TRACING_TYPE_PROTO_KEY, RpcTracingHeader.class);
 
 }

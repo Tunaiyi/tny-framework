@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.command.plugins;
 
 import com.tny.game.net.command.dispatcher.*;
@@ -24,24 +24,24 @@ public interface VoidInvokeCommandPlugin<UID> extends CommandPlugin<UID, Void> {
     /**
      * 请求过滤
      *
-     * @param tunnel  通道
-     * @param message 消息
-     * @param context 上下文
+     * @param communicator 通道
+     * @param message      消息
+     * @param context      上下文
      * @throws Exception 异常
      */
     @Override
-    default void execute(Tunnel<UID> tunnel, Message message, MessageCommandContext context, Void attribute) throws Exception {
-        this.doExecute(tunnel, message, context);
+    default void execute(Tunnel<UID> communicator, Message message, RpcHandleContext context, Void attribute) throws Exception {
+        this.doExecute(communicator, message, context);
     }
 
     /**
      * 请求过滤
      *
-     * @param tunnel  通道
-     * @param message 消息
-     * @param context 上下文
+     * @param communicator 通道
+     * @param message      消息
+     * @param context      上下文
      * @throws Exception 异常
      */
-    void doExecute(Tunnel<UID> tunnel, Message message, MessageCommandContext context) throws Exception;
+    void doExecute(Tunnel<UID> communicator, Message message, RpcHandleContext context) throws Exception;
 
 }

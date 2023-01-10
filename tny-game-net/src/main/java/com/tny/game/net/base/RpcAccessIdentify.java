@@ -98,11 +98,6 @@ public class RpcAccessIdentify implements RpcServicerPoint, Messager {
     }
 
     @Override
-    public long getMessagerId() {
-        return serverId;
-    }
-
-    @Override
     public MessagerType getMessagerType() {
         return serviceType;
     }
@@ -113,7 +108,7 @@ public class RpcAccessIdentify implements RpcServicerPoint, Messager {
     }
 
     @Override
-    public long getId() {
+    public long getMessagerId() {
         return id;
     }
 
@@ -140,12 +135,11 @@ public class RpcAccessIdentify implements RpcServicerPoint, Messager {
 
     @Override
     public String toString() {
-        String sb = "RpcAccessIdentify{" + "id=" + id +
+        return "RpcAccessIdentify{" + "id=" + id +
                 ", serviceType=" + serviceType +
                 ", serverId=" + serverId +
                 ", index=" + parseIndex(id) +
                 '}';
-        return sb;
     }
 
     @Override
@@ -157,12 +151,12 @@ public class RpcAccessIdentify implements RpcServicerPoint, Messager {
             return false;
         }
         RpcAccessIdentify identify = (RpcAccessIdentify)o;
-        return getId() == identify.getId();
+        return getMessagerId() == identify.getMessagerId();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId());
+        return Objects.hash(getMessagerId());
     }
 
 }

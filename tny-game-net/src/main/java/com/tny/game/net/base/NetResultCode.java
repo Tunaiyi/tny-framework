@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.base;
 
 import com.tny.game.common.result.*;
@@ -22,35 +22,66 @@ public enum NetResultCode implements ResultCode {
     /**
      * 服务端返回响应编码响应异常(不断开连接)
      */
-    DECODE_FAILED(191, "编码响应异常", ResultLevel.WARN),
+    DECODE_FAILED(151, "编码响应异常", ResultLevel.WARN),
 
     /**
      * 服务端返回响应编码响应异常
      */
-    ENCODE_FAILED(192, "编码响应异常", ResultLevel.WARN),
+    ENCODE_FAILED(152, "编码响应异常", ResultLevel.WARN),
 
     /**
      * 服务端接受请求解码格式错误(断开连接)
      */
-    DECODE_ERROR(193, "解码格式错误", ResultLevel.ERROR),
+    DECODE_ERROR(153, "解码格式错误", ResultLevel.ERROR),
 
     /**
      * 服务端返回响应编码响应异常
      */
-    ENCODE_ERROR(194, "编码响应错误", ResultLevel.ERROR),
+    ENCODE_ERROR(154, "编码响应错误", ResultLevel.ERROR),
     /**
      * 收到的网络包超时失效
      */
-    PACKET_TIMEOUT(195, "网络包超时失效", ResultLevel.WARN),
+    PACKET_TIMEOUT(155, "网络包超时失效", ResultLevel.WARN),
     /**
      * 网络包校验失败
      */
-    PACKET_VERIFY_FAILED(196, "网络包校验失败", ResultLevel.WARN),
+    PACKET_VERIFY_FAILED(156, "网络包校验失败", ResultLevel.WARN),
+
+    /**
+     * 拒绝接受消息
+     */
+    REJECT_TO_RECEIVE_MESSAGE(180, "拒绝接受消息", ResultLevel.WARN),
+
+    /**
+     * 拒绝发送消息
+     */
+    REJECT_TO_SEND_MESSAGE(181, "拒绝发送消息", ResultLevel.WARN),
+
+    /**
+     * 消息发送失败
+     */
+    MESSAGE_SEND_FAILED(182, "消息发送失败", ResultLevel.WARN),
+
+    /**
+     * 连接断开
+     */
+    DISCONNECTION(183, "连接断开", ResultLevel.WARN),
+
+    /**
+     * 连接失败
+     */
+    CONNECT_FAILED(184, "连接失败", ResultLevel.WARN),
+
+    /**
+     * 终端关闭
+     */
+    ENDPOINT_CLOSE(185, "终端关闭", ResultLevel.WARN),
 
     /**
      * 服务端接受请求异常
      */
     SERVER_ERROR(200, "服务端异常", ResultLevel.WARN),
+
     /**
      * 服务端接受请求异常
      */
@@ -90,7 +121,7 @@ public enum NetResultCode implements ResultCode {
     /**
      * 验证失败
      */
-    VALIDATOR_FAIL_ERROR(210, "验证失败", ResultLevel.ERROR),
+    AUTH_FAIL_ERROR(210, "验证失败", ResultLevel.ERROR),
     /**
      * 用户未登录
      */
@@ -175,10 +206,6 @@ public enum NetResultCode implements ResultCode {
      * 远程调用异常
      */
     REMOTE_EXCEPTION(303, "远程调用异常", ResultLevel.WARN),
-    /**
-     * 客户端连接中断
-     */
-    CONNECT_INTERRUPTED(304, "客户端请求中断", ResultLevel.WARN),
     /**
      * 客户端请求服务端无响应
      */

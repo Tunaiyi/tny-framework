@@ -13,7 +13,6 @@ package com.tny.game.net.rpc;
 import com.tny.game.net.base.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
-import com.tny.game.net.transport.*;
 
 /**
  * Endpoint接入点
@@ -31,11 +30,6 @@ public class RpcRemoteServiceAccess implements RpcServiceAccess {
     public RpcRemoteServiceAccess(Endpoint<RpcAccessIdentify> endpoint) {
         this.endpoint = endpoint;
         this.forwardPoint = new ForwardPoint(endpoint.getUserId());
-    }
-
-    @Override
-    public SendReceipt send(MessageContent content) {
-        return endpoint.send(content);
     }
 
     @Override

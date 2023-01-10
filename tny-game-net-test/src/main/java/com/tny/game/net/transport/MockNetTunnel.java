@@ -13,6 +13,7 @@ package com.tny.game.net.transport;
 import com.tny.game.common.context.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.command.*;
+import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
@@ -23,7 +24,7 @@ import java.net.InetSocketAddress;
 /**
  * <p>
  */
-public class MockNetTunnel extends AttributesHolder implements NetTunnel<Long> {
+public class MockNetTunnel extends AttributeHolder implements NetTunnel<Long> {
 
     private long accessId;
 
@@ -147,9 +148,9 @@ public class MockNetTunnel extends AttributesHolder implements NetTunnel<Long> {
     }
 
     @Override
-    public MessageWriteAwaiter write(Message message, MessageWriteAwaiter promise) throws NetException {
+    public MessageWriteFuture write(Message message, MessageWriteFuture promise) throws NetException {
         if (promise == null) {
-            promise = new MessageWriteAwaiter();
+            promise = new MessageWriteFuture();
         }
         if (this.writeSuccess) {
             this.writeTimes++;
@@ -161,7 +162,7 @@ public class MockNetTunnel extends AttributesHolder implements NetTunnel<Long> {
     }
 
     @Override
-    public MessageWriteAwaiter write(MessageAllocator allocator, MessageContent context) throws NetException {
+    public MessageWriteFuture write(MessageAllocator allocator, MessageContent context) throws NetException {
         this.writeTimes++;
         return null;
     }
@@ -194,8 +195,8 @@ public class MockNetTunnel extends AttributesHolder implements NetTunnel<Long> {
     }
 
     @Override
-    public boolean receive(Message message) {
-        return this.endpoint.receive(this, message);
+    public boolean receive(RpcProviderContext context) {
+        return this.endpoint.receive(context);
     }
 
     @Override
