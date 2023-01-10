@@ -27,38 +27,40 @@ import static com.tny.game.common.utils.StringAide.*;
 
 public class NetLogger {
 
-    public static final ProcessWatcher MESSAGE_DECODE_WATCHER = ProcessWatcher.of(MessageCommand.class + ".track_input-decode",
+    public static final ProcessWatcher MESSAGE_DECODE_WATCHER = ProcessWatcher.of(RpcInvokeCommand.class + ".track_input-decode",
             TrackPrintOption.CLOSE);//.schedule(15, TimeUnit.SECONDS);
 
-    public static final ProcessWatcher NET_TRACE_INPUT_BOX_PROCESS_WATCHER = ProcessWatcher.of(MessageCommand.class + ".track_input-box_process",
+    public static final ProcessWatcher NET_TRACE_INPUT_BOX_PROCESS_WATCHER = ProcessWatcher.of(
+            RpcInvokeCommand.class + ".track_input-box_process",
             TrackPrintOption.CLOSE);//.schedule(15, TimeUnit.SECONDS);
 
     public static final ProcessWatcher NET_TRACE_INPUT_EXECUTE_COMMAND_WATCHER = ProcessWatcher.of(
-            MessageCommand.class + ".track_input-execute_command", TrackPrintOption.CLOSE);//.schedule(15, TimeUnit.SECONDS);
+            RpcInvokeCommand.class + ".track_input-execute_command", TrackPrintOption.CLOSE);//.schedule(15, TimeUnit.SECONDS);
 
-    public static final ProcessWatcher MESSAGE_ENCODE_WATCHER = ProcessWatcher.of(MessageCommand.class + ".track_output-encode",
+    public static final ProcessWatcher MESSAGE_ENCODE_WATCHER = ProcessWatcher.of(RpcInvokeCommand.class + ".track_output-encode",
             TrackPrintOption.CLOSE);//.schedule(15, TimeUnit.SECONDS);
 
     public static final ProcessWatcher NET_TRACE_OUTPUT_WRITE_TO_ENCODE_WATCHER = ProcessWatcher.of(
-            MessageCommand.class + ".track_output-write_to_encode", TrackPrintOption.CLOSE);//.schedule(15, TimeUnit.SECONDS);
+            RpcInvokeCommand.class + ".track_output-write_to_encode", TrackPrintOption.CLOSE);//.schedule(15, TimeUnit.SECONDS);
 
     public static final ProcessWatcher MESSAGE_EXE_INVOKE_GET_CONTROLLER_WATCHER = ProcessWatcher.of(
-            MessageCommand.class + ".command_exe_invoke-get_controller", TrackPrintOption.CLOSE);//.schedule(15, TimeUnit.SECONDS);
+            RpcInvokeCommand.class + ".command_exe_invoke-get_controller", TrackPrintOption.CLOSE);//.schedule(15, TimeUnit.SECONDS);
 
     public static final ProcessWatcher MESSAGE_EXE_INVOKE_CHECK_AUTHENTICATE_WATCHER = ProcessWatcher.of(
-            MessageCommand.class + ".command_exe_invoke-check_authenticate", TrackPrintOption.CLOSE);//.schedule(15, TimeUnit.SECONDS);
+            RpcInvokeCommand.class + ".command_exe_invoke-check_authenticate", TrackPrintOption.CLOSE);//.schedule(15, TimeUnit.SECONDS);
 
     public static final ProcessWatcher MESSAGE_EXE_INVOKE_CHECK_INVOKABLE_WATCHER = ProcessWatcher.of(
-            MessageCommand.class + ".command_exe_invoke-check_invokable", TrackPrintOption.CLOSE);//.schedule(15, TimeUnit.SECONDS);
+            RpcInvokeCommand.class + ".command_exe_invoke-check_invokable", TrackPrintOption.CLOSE);//.schedule(15, TimeUnit.SECONDS);
 
     public static final ProcessWatcher MESSAGE_EXE_INVOKE_BEFORE_PLUGINS_WATCHER = ProcessWatcher.of(
-            MessageCommand.class + ".command_exe_invoke-before_plugins", TrackPrintOption.CLOSE);//.schedule(15, TimeUnit.SECONDS);
+            RpcInvokeCommand.class + ".command_exe_invoke-before_plugins", TrackPrintOption.CLOSE);//.schedule(15, TimeUnit.SECONDS);
 
-    public static final ProcessWatcher MESSAGE_EXE_INVOKE_INVOKING_WATCHER = ProcessWatcher.of(MessageCommand.class + ".command_exe_invoke-invoking",
+    public static final ProcessWatcher MESSAGE_EXE_INVOKE_INVOKING_WATCHER = ProcessWatcher.of(
+            RpcInvokeCommand.class + ".command_exe_invoke-invoking",
             TrackPrintOption.CLOSE);//.schedule(15, TimeUnit.SECONDS);
 
     public static final ProcessWatcher MESSAGE_EXE_INVOKE_AFTER_PLUGINS_WATCHER = ProcessWatcher.of(
-            MessageCommand.class + ".command_exe_invoke-after_plugins", TrackPrintOption.CLOSE);//.schedule(15, TimeUnit.SECONDS);
+            RpcInvokeCommand.class + ".command_exe_invoke-after_plugins", TrackPrintOption.CLOSE);//.schedule(15, TimeUnit.SECONDS);
 
     private static class WatcherAttribute {
 
@@ -189,8 +191,10 @@ public class NetLogger {
             this.receiveLoggers = new Logger[enumSet.size()];
             this.sendLoggers = new Logger[enumSet.size()];
             for (E item : enumSet) {
-                receiveLoggers[item.ordinal()] = LoggerFactory.getLogger(format(subReceiveLoggerKey, service, item.name()));
-                sendLoggers[item.ordinal()] = LoggerFactory.getLogger(format(subSendLoggerKey, service, item.name()));
+                receiveLoggers[item.ordinal()] = LoggerFactory.getLogger(
+                        format(subReceiveLoggerKey, service.toLowerCase(), item.name().toLowerCase()));
+                sendLoggers[item.ordinal()] = LoggerFactory.getLogger(
+                        format(subSendLoggerKey, service.toLowerCase(), item.name().toLowerCase()));
             }
         }
 

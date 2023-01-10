@@ -61,7 +61,7 @@ public interface NetRelayLink extends RelayLink, EventSourceObject<RelayLinkList
      * @param promise   是否需要写出应答对象
      * @return 如果promise为true返回写出应答对象, 如果promise为 false, 返回 null
      */
-    <P extends RelayPacket<A>, A extends RelayPacketArguments> MessageWriteAwaiter write(
+    <P extends RelayPacket<A>, A extends RelayPacketArguments> MessageWriteFuture write(
             RelayPacketFactory<P, A> factory, A arguments, boolean promise);
 
     /**
@@ -78,23 +78,23 @@ public interface NetRelayLink extends RelayLink, EventSourceObject<RelayLinkList
     /**
      * 转发消息到目标服务器
      *
-     * @param tunnel  tunnel
+     * @param from    tunnel
      * @param message 消息
      * @param awaiter 发送应答对象
      * @return 返回转发应答对象
      */
-    MessageWriteAwaiter relay(RelayTunnel<?> tunnel, Message message, MessageWriteAwaiter awaiter);
+    MessageWriteFuture relay(RelayTunnel<?> from, Message message, MessageWriteFuture awaiter);
 
     /**
      * 转发消息到目标服务器
      *
-     * @param tunnel    tunnel
+     * @param from      tunnel
      * @param allocator 消息装配器
      * @param factory   消息工厂
      * @param context   消息上下文
      * @return 返回转发应答对象
      */
-    MessageWriteAwaiter relay(RelayTunnel<?> tunnel, MessageAllocator allocator, MessageFactory factory, MessageContent context);
+    MessageWriteFuture relay(RelayTunnel<?> from, MessageAllocator allocator, MessageFactory factory, MessageContent context);
 
     /**
      * 开启

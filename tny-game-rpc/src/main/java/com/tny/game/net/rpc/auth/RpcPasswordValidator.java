@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.rpc.auth;
 
 import com.tny.game.common.result.*;
@@ -29,7 +29,7 @@ import static com.tny.game.net.rpc.auth.RpcAuthMessageContexts.*;
 /**
  * <p>
  */
-public class RpcPasswordValidator implements AuthenticateValidator<RpcAccessIdentify, MessagerCertificateFactory<RpcAccessIdentify>> {
+public class RpcPasswordValidator implements AuthenticationValidator<RpcAccessIdentify, MessagerCertificateFactory<RpcAccessIdentify>> {
 
     private final RpcAuthService rpcAuthService;
 
@@ -41,12 +41,12 @@ public class RpcPasswordValidator implements AuthenticateValidator<RpcAccessIden
     }
 
     @Override
-    public Certificate<RpcAccessIdentify> validate(Tunnel<RpcAccessIdentify> tunnel, Message message,
+    public Certificate<RpcAccessIdentify> validate(Tunnel<RpcAccessIdentify> communicator, Message message,
             MessagerCertificateFactory<RpcAccessIdentify> factory)
-            throws CommandException, ValidationException {
+            throws RpcInvokeException, AuthFailedException {
         Optional<MessageParamList> paramListOptional = MessageParamList.of(message.bodyAs(List.class));
         if (!paramListOptional.isPresent()) {
-            throw new ValidationException("Rpc登录参数错误");
+            throw new AuthFailedException("Rpc登录参数错误");
         }
         MessageParamList paramList = paramListOptional.get();
         long value = getIdParam(paramList);
@@ -56,7 +56,7 @@ public class RpcPasswordValidator implements AuthenticateValidator<RpcAccessIden
             RpcAccessIdentify identify = result.get();
             return factory.certificate(idCreator.createId(), identify, value, identify.getServiceType(), Instant.now());
         }
-        throw new ValidationException(format("Rpc登录认证失败, Code : {} ; Message : {}", result.getCode(), result.getMessage()));
+        throw new AuthFailedException(format("Rpc登录认证失败, Code : {} ; Message : {}", result.getCode(), result.getMessage()));
     }
 
 }

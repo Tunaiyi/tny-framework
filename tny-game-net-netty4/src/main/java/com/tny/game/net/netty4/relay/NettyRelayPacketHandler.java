@@ -10,9 +10,9 @@
  */
 package com.tny.game.net.netty4.relay;
 
+import com.tny.game.common.exception.*;
 import com.tny.game.common.result.*;
 import com.tny.game.common.runtime.*;
-import com.tny.game.net.exception.*;
 import com.tny.game.net.monitor.*;
 import com.tny.game.net.netty4.network.*;
 import com.tny.game.net.relay.*;
@@ -46,11 +46,11 @@ public class NettyRelayPacketHandler extends ChannelDuplexHandler {
 
     private final RelayPacketProcessor relayPacketProcessor;
 
-    private final RelayMonitor monitor;
+    private final RelayMonitor relayMonitor;
 
     public NettyRelayPacketHandler(NetAccessMode mode, RelayPacketProcessor relayPacketProcessor) {
         this.relayPacketProcessor = relayPacketProcessor;
-        this.monitor = new RelayMonitor(mode);
+        this.relayMonitor = new RelayMonitor(mode);
     }
 
     @Override
@@ -76,16 +76,16 @@ public class NettyRelayPacketHandler extends ChannelDuplexHandler {
                 if (packetType == RelayPacketType.LINK_OPEN) { // transporter 处理
                     RelayTransporter transporter = channel.attr(NettyRelayAttrKeys.RELAY_TRANSPORTER).get();
                     var openPacket = (LinkOpenPacket)packet;
-                    this.monitor.onLinkOpen(transporter, openPacket);
+                    this.relayMonitor.onLinkOpen(transporter, openPacket);
                     this.relayPacketProcessor.onLinkOpen(transporter, openPacket);
                 } else {
                     if (packetType.isHandleByLink()) { // link 处理
                         NetRelayLink link = channel.attr(NettyRelayAttrKeys.RELAY_LINK).get();
-                        this.monitor.onReadPacket(link, packet);
+                        this.relayMonitor.onReadPacket(link, packet);
                         packetType.handle(this.relayPacketProcessor, link, packet);
                     }
                 }
-            } catch (NetGeneralException ex) {
+            } catch (ResultCodeRuntimeException ex) {
                 if (ex.getCode().getLevel() == ResultLevel.ERROR) {
                     channel.close();
                     LOGGER.warn("[RelayLink] 读取消息 ## 通道 {} ==> {} 时断开链接 # RelayLink 为空",
@@ -117,7 +117,7 @@ public class NettyRelayPacketHandler extends ChannelDuplexHandler {
                 var channel = ctx.channel();
                 NetRelayLink link = channel.attr(NettyRelayAttrKeys.RELAY_LINK).get();
                 if (link != null) {
-                    monitor.onWritePacket(link, packet);
+                    relayMonitor.onWritePacket(link, packet);
                 }
                 ctx.write(packet, promise);
             }

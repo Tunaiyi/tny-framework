@@ -4,13 +4,14 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.netty4.rpc.configuration;
 
 import com.tny.game.net.base.*;
+import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.netty4.rpc.service.*;
 import com.tny.game.net.relay.cluster.*;
@@ -54,8 +55,10 @@ public class RpcAutoConfiguration {
     }
 
     @Bean
-    public RpcRemoteInstanceFactory rpcInstanceFactory(RpcRemoteSetting setting, RpcRemoterManager service, RpcRouteManager manager) {
-        return new RpcRemoteInstanceFactory(setting, service, manager);
+    @ConditionalOnBean(RpcMonitor.class)
+    public RpcRemoteInstanceFactory rpcInstanceFactory(
+            RpcRemoteSetting setting, RpcInvokeNodeManager remoterManager, RpcRouteManager routeManager, RpcMonitor rpcMonitor) {
+        return new RpcRemoteInstanceFactory(setting, remoterManager, routeManager, rpcMonitor);
     }
 
     @Bean
@@ -79,11 +82,11 @@ public class RpcAutoConfiguration {
 
     @Bean
     public RpcServicerManager rpcServicerManager(RpcRemoteProperties properties) {
-        return new DefaultRpcRemoterManager(properties.getClient());
+        return new DefaultRpcServicerManager(properties.getClient());
     }
 
     @Bean
-    public RpcForwarder defaultRpcForwarder(RpcForwardManager forwardManager, List<RpcServiceForwardStrategy> strategies) {
+    public RpcForwarder defaultRpcForwarder(RpcForwardNodeManager forwardManager, List<RpcServiceForwardStrategy> strategies) {
         return new DefaultRpcForwarder(forwardManager, new FirstRpcForwarderStrategy(), strategies);
     }
 

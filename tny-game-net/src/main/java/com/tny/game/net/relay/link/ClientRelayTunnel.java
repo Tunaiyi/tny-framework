@@ -36,7 +36,7 @@ public interface ClientRelayTunnel<UID> extends NetRelayTunnel<UID> {
     void unbindLink(ClientRelayLink link);
 
     /**
-     * 更具 集群id 获取转发连接
+     * 根据 集群id 获取转发连接
      *
      * @param service 服务名
      * @return 返回获取的转发连接

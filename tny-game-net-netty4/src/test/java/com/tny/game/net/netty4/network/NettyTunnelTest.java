@@ -271,7 +271,7 @@ public abstract class NettyTunnelTest<E extends NetEndpoint<Long>, T extends Bas
         T t1 = tunnel;
         messages.messagesForEach(m -> {
             try {
-                t1.write(m, new MessageWriteAwaiter());
+                t1.write(m, new MessageWriteFuture());
                 assertTrue(true);
             } catch (Throwable e) {
                 fail("write failed");

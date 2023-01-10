@@ -49,7 +49,7 @@ public class NettyClient<UID> extends BaseNetEndpoint<UID> implements NettyTermi
 
     public NettyClient(NettyClientGuide guide, NetIdGenerator idGenerator, URL url, PostConnect<UID> postConnect,
             Certificate<UID> certificate, NetworkContext context) {
-        super(null, certificate, context);
+        super(certificate, context, 0);
         this.url = url;
         this.idGenerator = idGenerator;
         this.guide = guide;
@@ -166,7 +166,7 @@ public class NettyClient<UID> extends BaseNetEndpoint<UID> implements NettyTermi
         if (this.tunnel == tunnel) {
             if (this.isClosed()) {
                 tunnel.close();
-                throw new TunnelCloseException("{} tunnel is closed", tunnel);
+                throw new TunnelDisconnectedException("{} tunnel is closed", tunnel);
             }
             try {
                 if (!this.postConnect.onConnected(tunnel)) {
@@ -194,7 +194,7 @@ public class NettyClient<UID> extends BaseNetEndpoint<UID> implements NettyTermi
                 this.reconnect();
                 return;
             }
-            Tunnel<UID> currentTunnel = this.currentTunnel();
+            Tunnel<UID> currentTunnel = this.tunnel();
             if (currentTunnel.isClosed()) {
                 return;
             }

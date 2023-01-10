@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.command.dispatcher;
 
 import com.tny.game.common.lifecycle.unit.annotation.*;
@@ -15,7 +15,6 @@ import com.tny.game.common.worker.command.*;
 import com.tny.game.net.command.listener.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
-import com.tny.game.net.transport.*;
 
 import java.util.Collection;
 
@@ -28,16 +27,23 @@ import java.util.Collection;
 public interface MessageDispatcher {
 
     /**
+     * 获取处理名
+     *
+     * @param message 处理名
+     * @return 返回
+     */
+    String getNameOf(MessageSchema message);
+
+    /**
      * 派发消息事件
      * <p>
      * <p>
      * 派发消息事件到相对应的Controller<br>
      *
-     * @param tunnel  通道
-     * @param message 消息
+     * @param context rpc上下文
      * @return 分派的命令
      */
-    Command dispatch(NetTunnel<?> tunnel, Message message) throws CommandException;
+    Command dispatch(RpcProviderContext context) throws RpcInvokeException;
 
     /**
      * 添加请求派发错误监听器

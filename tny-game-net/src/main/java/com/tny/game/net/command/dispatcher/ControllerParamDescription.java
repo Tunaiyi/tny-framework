@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.command.dispatcher;
 
 import com.tny.game.common.result.*;
@@ -145,11 +145,12 @@ class ControllerParamDescription {
         return annotationHolder.getAnnotations();
     }
 
-    Object getValue(NetTunnel<?> tunnel, Message message, Object body) throws CommandException {
+    Object getValue(NetTunnel<?> tunnel, Message message, Object body) throws RpcInvokeException {
         boolean require = this.require;
         if (body == null) {
             body = message.bodyAs(Object.class);
         }
+        NetEndpoint<?> endpoint = tunnel.getEndpoint();
         NetworkContext context = tunnel.getContext();
         MessageHead head = message.getHead();
         Object value = null;
@@ -160,32 +161,36 @@ class ControllerParamDescription {
                 value = message;
                 break;
             case SESSION: {
-                value = tunnel.getEndpoint();
+                value = endpoint;
                 if (value instanceof Session) {
                     break;
                 }
                 throw new NullPointerException(format("{} session is null", tunnel));
             }
             case CLIENT: {
-                value = tunnel.getEndpoint();
+                value = endpoint;
                 if (value instanceof Client) {
                     break;
                 }
                 throw new NullPointerException(format("{} session is null", tunnel));
             }
             case ENDPOINT: {
-                value = tunnel.getEndpoint();
+                value = endpoint;
                 break;
             }
             case TUNNEL:
                 if (this.paramClass.isInstance(tunnel)) {
                     value = tunnel;
                 } else {
-                    throw new CommandException(NetResultCode.SERVER_EXECUTE_EXCEPTION, format("{} 并非可转发通道 RelayTunnel", tunnel));
+                    throw new RpcInvokeException(NetResultCode.SERVER_EXECUTE_EXCEPTION, "{} 并非可转发通道 RelayTunnel", tunnel);
                 }
                 break;
             case SETTING:
-                value = context.getSetting();
+                if (tunnel != null) {
+                    value = context.getSetting();
+                } else {
+                    throw new NullPointerException(format("tunnel is null"));
+                }
                 break;
             case BODY:
                 value = body;
@@ -202,8 +207,8 @@ class ControllerParamDescription {
                         value = headers.get(0);
                     }
                     if (headers.size() > 1) {
-                        throw new CommandException(NetResultCode.SERVER_EXECUTE_EXCEPTION,
-                                format("{} 类型的MessageHeader多于一个 {}, 必须通过 MsgHeader 指定 key", this.paramClass, headers));
+                        throw new RpcInvokeException(NetResultCode.SERVER_EXECUTE_EXCEPTION,
+                                "{} 类型的MessageHeader多于一个 {}, 必须通过 MsgHeader 指定 key", this.paramClass, headers);
                     }
                 }
                 break;
@@ -215,14 +220,14 @@ class ControllerParamDescription {
                         } else if (body.getClass().isArray()) {
                             value = Array.get(body, this.index);
                         } else {
-                            throw new CommandException(NetResultCode.SERVER_EXECUTE_EXCEPTION,
-                                    format("{} 收到消息体为 {}, 不可通过index获取", this.method, body.getClass()));
+                            throw new RpcInvokeException(NetResultCode.SERVER_EXECUTE_EXCEPTION,
+                                    "{} 收到消息体为 {}, 不可通过index获取", this.method, body.getClass());
                         }
                     }
-                } catch (CommandException e) {
+                } catch (RpcInvokeException e) {
                     throw e;
                 } catch (Throwable e) {
-                    throw new CommandException(NetResultCode.SERVER_EXECUTE_EXCEPTION, format("{} 调用异常", this.method), e);
+                    throw new RpcInvokeException(NetResultCode.SERVER_EXECUTE_EXCEPTION, e, "{} 调用异常", this.method);
                 }
                 break;
             case CODE:
@@ -246,6 +251,9 @@ class ControllerParamDescription {
                 break;
             }
             case SENDER: {
+                if (context == null) {
+                    throw new NullPointerException(format("context is null"));
+                }
                 RpcForwardHeader forwardHeader = head.getHeader(MessageHeaderConstants.RPC_FORWARD_HEADER);
                 if (forwardHeader != null) {
                     ForwardMessager sender = forwardHeader.getSender();
@@ -254,6 +262,9 @@ class ControllerParamDescription {
                 break;
             }
             case RECEIVER: {
+                if (context == null) {
+                    throw new NullPointerException(format("context is null"));
+                }
                 RpcForwardHeader forwardHeader = head.getHeader(MessageHeaderConstants.RPC_FORWARD_HEADER);
                 if (forwardHeader != null) {
                     ForwardMessager receiver = forwardHeader.getReceiver();
@@ -263,7 +274,7 @@ class ControllerParamDescription {
             }
         }
         if (require && value == null) {
-            throw new CommandException(NetResultCode.SERVER_EXECUTE_EXCEPTION,
+            throw new RpcInvokeException(NetResultCode.SERVER_EXECUTE_EXCEPTION,
                     format("{} 第 {} 个参数不可为 null", this.method, index));
         }
         if (value != null && !this.paramClass.isInstance(value)) {

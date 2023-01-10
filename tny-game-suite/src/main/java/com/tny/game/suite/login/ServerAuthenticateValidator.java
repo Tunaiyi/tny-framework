@@ -22,11 +22,11 @@ public class ServerAuthenticateValidator extends GameAuthenticateValidator<Integ
             throws CommandException {
         ResultCode code = ResultCodes.of(message.getCode());
         if (code.isFailure()) {
-            throw new ValidatorFailException(SuiteResultCode.AUTH_TICKET_TIMEOUT, new CommandException(code));
+            throw new AuthFailedException(SuiteResultCode.AUTH_TICKET_TIMEOUT, new CommandException(code));
         }
         ServerTicket ticket = message.bodyAs(ServerTicket.class);
         if (System.currentTimeMillis() - ticket.getTime() > 60000) {
-            throw new ValidatorFailException(SuiteResultCode.AUTH_TICKET_TIMEOUT);
+            throw new AuthFailedException(SuiteResultCode.AUTH_TICKET_TIMEOUT);
         }
         AppType serverType = ticket.asServerType();
         if (this.maker.make(ticket).equals(ticket.getSecret())) {

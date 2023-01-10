@@ -12,8 +12,9 @@ package com.tny.game.net.rpc;
 
 import com.tny.game.common.result.*;
 import com.tny.game.net.base.*;
+import com.tny.game.net.command.dispatcher.*;
+import com.tny.game.net.exception.*;
 import com.tny.game.net.rpc.annotation.*;
-import com.tny.game.net.rpc.exception.*;
 import javassist.util.proxy.*;
 import org.apache.commons.lang3.StringUtils;
 
@@ -32,14 +33,18 @@ public class RpcRemoteInstanceFactory {
 
     private RpcRemoteSetting setting;
 
-    private RpcRemoterManager rpcRemoterManager;
+    private RpcMonitor rpcMonitor;
+
+    private RpcInvokeNodeManager rpcRemoterManager;
 
     private RpcRouteManager rpcRouteManager;
 
-    public RpcRemoteInstanceFactory(RpcRemoteSetting setting, RpcRemoterManager rpcRemoterManager, RpcRouteManager rpcRouteManager) {
+    public RpcRemoteInstanceFactory(RpcRemoteSetting setting, RpcInvokeNodeManager rpcRemoterManager, RpcRouteManager rpcRouteManager,
+            RpcMonitor rpcMonitor) {
         this.setting = setting;
         this.rpcRemoterManager = rpcRemoterManager;
         this.rpcRouteManager = rpcRouteManager;
+        this.rpcMonitor = rpcMonitor;
     }
 
     public <T> T create(Class<?> rpcClass) {
@@ -65,12 +70,12 @@ public class RpcRemoteInstanceFactory {
     private RpcRemoteInstance createRpcInstance(Class<?> rpcClass) {
         List<RpcRemoteMethod> methods = RpcRemoteMethod.methodsOf(rpcClass);
         RpcRemoteService rpcService = rpcClass.getAnnotation(RpcRemoteService.class);
-        String service = rpcService.value();
+        String toService = rpcService.value();
         if (StringUtils.isNoneBlank(rpcService.forwardService())) {
-            service = rpcService.forwardService();
+            toService = rpcService.forwardService();
         }
-        MessagerType messagerType = MessagerTypes.checkGroup(service);
-        RpcRemoteSet remoterSet = rpcRemoterManager.loadRemoterSet(messagerType);
+        MessagerType toServiceType = MessagerTypes.checkGroup(toService);
+        RpcInvokeNodeSet remoterSet = rpcRemoterManager.loadInvokeNodeSet(toServiceType);
         RpcRemoteInstance instance = new RpcRemoteInstance(rpcClass, this.setting, remoterSet);
         Map<Method, RpcRemoteInvoker> invokerMap = new HashMap<>();
         for (RpcRemoteMethod method : methods) {
@@ -79,7 +84,7 @@ public class RpcRemoteInstanceFactory {
                 throw new RpcInvokeException(NetResultCode.REMOTE_EXCEPTION, "调用 {} 异常, 未找到 {} RpcRouter",
                         method.getMethod(), method.getRouterClass());
             }
-            RpcRemoteInvoker invoker = new RpcRemoteInvoker(instance, method, router);
+            RpcRemoteInvoker invoker = new RpcRemoteInvoker(instance, method, router, rpcMonitor);
             invokerMap.put(method.getMethod(), invoker);
         }
         instance.setInvokerMap(invokerMap);
@@ -91,7 +96,7 @@ public class RpcRemoteInstanceFactory {
         return this;
     }
 
-    public RpcRemoteInstanceFactory setRpcRemoterManager(RpcRemoterManager rpcRemoterManager) {
+    public RpcRemoteInstanceFactory setRpcRemoterManager(RpcInvokeNodeManager rpcRemoterManager) {
         this.rpcRemoterManager = rpcRemoterManager;
         return this;
     }

@@ -11,7 +11,8 @@
 package com.tny.game.net.endpoint;
 
 import com.tny.game.net.command.*;
-import com.tny.game.net.command.task.*;
+import com.tny.game.net.command.dispatcher.*;
+import com.tny.game.net.command.processor.MessageCommandBox;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
@@ -19,40 +20,40 @@ import com.tny.game.net.transport.*;
 /**
  * <p>
  */
-public interface NetEndpoint<UID> extends Endpoint<UID>, SentMessageHistory, Receiver {
+public interface NetEndpoint<UID> extends Endpoint<UID>, SentMessageHistory {
 
     /**
      * 处理收到消息
      *
-     * @param tunnel  通道
-     * @param message 消息
+     * @param rpcContext 接受信息
      */
-    boolean receive(NetTunnel<UID> tunnel, Message message);
+    @Override
+    boolean receive(RpcProviderContext rpcContext);
 
     /**
      * 异步发送消息
      *
-     * @param tunnel         发送的通道
-     * @param messageContext 发送消息上下文
+     * @param tunnel  发送的通道
+     * @param content 发送消息上下文
      * @return 返回发送上下文
      */
-    SendReceipt send(NetTunnel<UID> tunnel, MessageContent messageContext);
+    SendReceipt send(NetTunnel<UID> tunnel, MessageContent content);
 
     /**
      * 分配生成消息
      *
      * @param messageFactory 消息工厂
-     * @param context        发送内容
+     * @param content        发送内容
      * @return 返回创建消息
      */
-    NetMessage createMessage(MessageFactory messageFactory, MessageContent context);
+    NetMessage createMessage(MessageFactory messageFactory, MessageContent content);
 
     /**
      * 使用指定认证登陆
      *
      * @param tunnel 指定认证
      */
-    void online(Certificate<UID> certificate, NetTunnel<UID> tunnel) throws ValidatorFailException;
+    void online(Certificate<UID> certificate, NetTunnel<UID> tunnel) throws AuthFailedException;
 
     /**
      * 通道销毁
@@ -62,16 +63,21 @@ public interface NetEndpoint<UID> extends Endpoint<UID>, SentMessageHistory, Rec
     void onUnactivated(NetTunnel<UID> tunnel);
 
     /**
+     * @return 当前管道
+     */
+    NetTunnel<UID> tunnel();
+
+    /**
      * @return 消息盒子
      */
-    CommandTaskBox getCommandTaskBox();
+    MessageCommandBox getCommandBox();
 
     /**
      * 载入消息盒子
      *
      * @param commandTaskBox 消息
      */
-    void takeOver(CommandTaskBox commandTaskBox);
+    void takeOver(MessageCommandBox commandTaskBox);
 
     /**
      * @return 获取EndpointContext上下文

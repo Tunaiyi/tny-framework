@@ -18,7 +18,7 @@ import java.util.Collection;
 /**
  * Created by Kun Yang on 2017/2/16.
  */
-public abstract class MessageContent implements SendReceipt, MessageSubject {
+public abstract class MessageContent extends BaseMessageHeaderContainer implements SendReceipt, MessageSubject {
 
     /**
      * @return 获取结果码
@@ -48,14 +48,14 @@ public abstract class MessageContent implements SendReceipt, MessageSubject {
      *
      * @return 返回 context 自身
      */
-    public abstract MessageContent willWriteAwaiter();
+    public abstract MessageContent willWriteFuture();
 
     /**
      * 获取写出等待对象
      *
      * @return 返回 context 自身
      */
-    public abstract MessageWriteAwaiter getWriteAwaiter();
+    public abstract MessageWriteFuture getWriteFuture();
 
     /**
      * 取消

@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.command.plugins.filter.text;
 
 import com.tny.game.common.concurrent.collection.*;
@@ -26,7 +26,7 @@ import static com.tny.game.net.command.plugins.filter.FilterCode.*;
 
 public class TextPatternLimitFilter extends AbstractParamFilter<Object, PatternMatch, String> {
 
-    private Map<String, Pattern> patternMap = new CopyOnWriteMap<>();
+    private final Map<String, Pattern> patternMap = new CopyOnWriteMap<>();
 
     private final static TextPatternLimitFilter INSTANCE = new TextPatternLimitFilter();
 
@@ -49,12 +49,13 @@ public class TextPatternLimitFilter extends AbstractParamFilter<Object, PatternM
     }
 
     @Override
-    protected ResultCode doFilter(MethodControllerHolder holder, Tunnel<Object> tunnel, Message message, int index, PatternMatch annotation,
+    protected ResultCode doFilter(MethodControllerHolder holder, Tunnel<Object> communicator, Message message, int index,
+            PatternMatch annotation,
             String param) {
         if (!this.getPattern(annotation.value()).matcher(param).matches()) {
             MessageHead head = message.getHead();
             LOGGER.warn("{} 玩家请求 协议[{}] 第{}个参数 [{}] 的字符串无法匹配正则表达式{}",
-                    tunnel.getUserId(), head.getId(),
+                    communicator.getUserId(), head.getId(),
                     index, param, annotation.value());
             return code(NetResultCode.SERVER_ILLEGAL_PARAMETERS, annotation.illegalCode());
         }

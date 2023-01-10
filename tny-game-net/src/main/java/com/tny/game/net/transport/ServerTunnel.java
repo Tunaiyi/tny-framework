@@ -12,7 +12,7 @@ package com.tny.game.net.transport;
 
 import com.tny.game.net.base.*;
 import com.tny.game.net.command.*;
-import com.tny.game.net.command.task.*;
+import com.tny.game.net.command.processor.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.rpc.*;
 
@@ -32,7 +32,7 @@ public class ServerTunnel<UID, E extends NetSession<UID>, T extends MessageTrans
     protected boolean replaceEndpoint(NetEndpoint<UID> newEndpoint) {
         Certificate<UID> certificate = this.getCertificate();
         if (!certificate.isAuthenticated()) {
-            CommandTaskBox commandTaskBox = this.endpoint.getCommandTaskBox();
+            MessageCommandBox commandTaskBox = this.endpoint.getCommandBox();
             this.endpoint = as(newEndpoint);
             this.endpoint.takeOver(commandTaskBox);
             return true;

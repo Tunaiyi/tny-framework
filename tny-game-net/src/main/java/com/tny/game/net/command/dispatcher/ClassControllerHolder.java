@@ -56,9 +56,6 @@ public final class ClassControllerHolder extends ControllerHolder {
         ClassAccessor access = JavassistAccessors.getGClass(executor.getClass(), FILTER);
         for (MethodAccessor method : access.getGMethodList()) {
             Method javaMethod = method.getJavaMethod();
-            //            if (javaMethod.getReturnType() == RpcReturn.class) {
-            //                continue;
-            //            }
             if (javaMethod.isBridge()) {
                 continue;
             }
@@ -96,19 +93,6 @@ public final class ClassControllerHolder extends ControllerHolder {
         return annotationHolder.getAnnotations(annotationClass);
     }
 
-    // @Override
-    // public boolean isCheck() {
-    //     return this.controller.check();
-    // }
-
-    // public long getTimeout() {
-    //     return this.controller.timeOut();
-    // }
-
-    // public boolean isTimeOut() {
-    //     return this.controller.timeOut() > 0;
-    // }
-
     @Override
     protected List<CommandPluginHolder> getControllerBeforePlugins() {
         if (this.beforePlugins == null) {
@@ -124,23 +108,5 @@ public final class ClassControllerHolder extends ControllerHolder {
         }
         return Collections.unmodifiableList(this.afterPlugins);
     }
-
-    // @Override
-    // public boolean isUserGroup(String group) {
-    //     return this.userGroupList.indexOf(group) > -1;
-    // }
-
-    // public MethodControllerHolder getMethodHolder(int protocol) {
-    //     return this.methodHolderMap.get(protocol);
-    // }
-
-    // public boolean isCanCall(String serverType) {
-    //     return this.serverTypeList.isEmpty() || this.serverTypeList.indexOf(serverType) > -1;
-    // }
-
-    // @Override
-    // public <A extends Annotation> A getMethodAnnotation(Class<A> annotationClass) {
-    //     return this.getAnnotation0(annotationClass);
-    // }
 
 }

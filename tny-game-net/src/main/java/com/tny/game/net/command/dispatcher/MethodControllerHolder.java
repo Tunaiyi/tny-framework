@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.command.dispatcher;
 
 import com.google.common.collect.*;
@@ -30,8 +30,6 @@ import static com.tny.game.common.utils.StringAide.*;
  * @author KGTny
  */
 public final class MethodControllerHolder extends ControllerHolder {
-
-    //	private static final ConcurrentHashMap<String, ExprHolder> cache = new ConcurrentHashMap<>();
 
     /**
      * 执行对象
@@ -108,7 +106,7 @@ public final class MethodControllerHolder extends ControllerHolder {
             this.method = method;
             this.executor = executor;
             StringBuilder nameBuilder = new StringBuilder();
-            nameBuilder.append(executor.getClass().getSimpleName()).append("#").append(method.getName());
+            nameBuilder.append(executor.getClass().getSimpleName()).append(".").append(method.getName());
             // 解析参数
             Class<?>[] parameterClasses = method.getJavaMethod().getParameterTypes();
             List<ControllerParamDescription> paramDescriptions = new ArrayList<>();
@@ -191,14 +189,14 @@ public final class MethodControllerHolder extends ControllerHolder {
         return this.executor.getClass();
     }
 
-    public Object getParameterValue(int index, NetTunnel<?> tunnel, Message message, Object body) throws CommandException {
+    public Object getParameterValue(int index, NetTunnel<?> tunnel, Message message, Object body) throws RpcInvokeException {
         if (index >= this.paramDescriptions.size()) {
-            throw new CommandException(NetResultCode.SERVER_EXECUTE_EXCEPTION,
+            throw new RpcInvokeException(NetResultCode.SERVER_EXECUTE_EXCEPTION,
                     format("{} 获取 index 为 {} 的ParamDesc越界, index < {}", this, index, this.paramDescriptions.size()));
         }
         ControllerParamDescription desc = this.paramDescriptions.get(index);
         if (desc == null) {
-            throw new CommandException(NetResultCode.SERVER_EXECUTE_EXCEPTION, format("{} 获取 index 为 {} 的ParamDesc为null", this, index));
+            throw new RpcInvokeException(NetResultCode.SERVER_EXECUTE_EXCEPTION, "{} 获取 index 为 {} 的ParamDesc为null", this, index);
         }
         return desc.getValue(tunnel, message, body);
     }
@@ -249,8 +247,12 @@ public final class MethodControllerHolder extends ControllerHolder {
         return this.auth != null ? super.isAuth() : this.classController.isAuth();
     }
 
+    public boolean isHasAuthValidator() {
+        return getAuthValidator() != null;
+    }
+
     @Override
-    public Class<? extends AuthenticateValidator<?, ?>> getAuthValidator() {
+    public Class<? extends AuthenticationValidator<?, ?>> getAuthValidator() {
         return this.auth != null ? super.getAuthValidator() : this.classController.getAuthValidator();
     }
 
@@ -315,14 +317,14 @@ public final class MethodControllerHolder extends ControllerHolder {
         return this.invoke(param);
     }
 
-    void beforeInvoke(Tunnel<?> tunnel, Message message, MessageCommandContext context) {
+    void beforeInvoke(Tunnel<?> tunnel, Message message, RpcHandleContext context) {
         if (this.beforeContext == null) {
             return;
         }
         this.beforeContext.execute(tunnel, message, context);
     }
 
-    void afterInvoke(Tunnel<?> tunnel, Message message, MessageCommandContext context) {
+    void afterInvoke(Tunnel<?> tunnel, Message message, RpcHandleContext context) {
         if (this.afterContext == null) {
             return;
         }

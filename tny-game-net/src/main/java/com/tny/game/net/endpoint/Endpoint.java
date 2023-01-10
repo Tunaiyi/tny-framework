@@ -21,7 +21,7 @@ import java.util.function.Predicate;
  * 终端, 代表通选两端
  * <p>
  */
-public interface Endpoint<UID> extends Connection, Communicator<UID>, Sender, Executor {
+public interface Endpoint<UID> extends Communicator<UID>, Sender, Receiver, Executor {
 
     /*
      * @return 终端ID

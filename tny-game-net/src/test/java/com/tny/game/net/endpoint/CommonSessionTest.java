@@ -34,7 +34,7 @@ public class CommonSessionTest extends NetEndpointTest<CommonSession<Long>> {
             }
 
             @Override
-            public CommandTaskBoxProcessor getCommandTaskProcessor() {
+            public CommandBoxProcessor getCommandTaskProcessor() {
                 return null;
             }
         });
@@ -64,7 +64,7 @@ public class CommonSessionTest extends NetEndpointTest<CommonSession<Long>> {
     //                 session.offline();
     //                 try {
     //                     session.online(mockTunnel(createLoginCert(certificateId, uid)));
-    //                 } catch (ValidatorFailException ignored) {
+    //                 } catch (AuthFailedException ignored) {
     //                 }
     //             }),
     //             TestTask.runnableTask("closeParallel", 3, () -> {
@@ -86,7 +86,7 @@ public class CommonSessionTest extends NetEndpointTest<CommonSession<Long>> {
     //
     //
     //     @Override
-    //     protected boolean acceptTunnel(NetTunnel<Long> newTunnel) throws ValidatorFailException {
+    //     protected boolean acceptTunnel(NetTunnel<Long> newTunnel) throws AuthFailedException {
     //         acceptTime.increment();
     //         return super.acceptTunnel(newTunnel);
     //     }

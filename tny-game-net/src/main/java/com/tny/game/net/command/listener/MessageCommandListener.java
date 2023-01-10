@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.command.listener;
 
 import com.tny.game.common.lifecycle.unit.annotation.*;
@@ -30,7 +30,16 @@ public interface MessageCommandListener {
      *
      * @param command 分发上下文
      */
-    default void onExecuteStart(MessageCommand command) {
+    default void onExecuteStart(RpcInvokeCommand command) {
+    }
+
+    /**
+     * 每次 Command 执行异常
+     *
+     * @param command 分发上下文
+     * @param cause   失败异常
+     */
+    default void onException(RpcInvokeCommand command, Throwable cause) {
     }
 
     /**
@@ -39,7 +48,7 @@ public interface MessageCommandListener {
      * @param command 分发上下文
      * @param cause   失败异常, 成功为 null
      */
-    default void onExecuteEnd(MessageCommand command, Throwable cause) {
+    default void onExecuteEnd(RpcInvokeCommand command, Throwable cause) {
     }
 
     /**
@@ -48,7 +57,7 @@ public interface MessageCommandListener {
      * @param command 分发上下文
      * @param cause   失败异常, 成功为 null
      */
-    default void onDone(MessageCommand command, Throwable cause) {
+    default void onDone(RpcInvokeCommand command, Throwable cause) {
     }
 
 }

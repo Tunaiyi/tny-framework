@@ -37,7 +37,7 @@ public interface MessageTransporter extends Connection {
      * @return 返回promise
      * @throws NetException 写出异常
      */
-    MessageWriteAwaiter write(Message message, MessageWriteAwaiter awaiter) throws NetException;
+    MessageWriteFuture write(Message message, MessageWriteFuture awaiter) throws NetException;
 
     /**
      * 发送消息
@@ -48,6 +48,6 @@ public interface MessageTransporter extends Connection {
      * @return 返回promise
      * @throws NetException 写出异常
      */
-    MessageWriteAwaiter write(MessageAllocator maker, MessageFactory factory, MessageContent context) throws NetException;
+    MessageWriteFuture write(MessageAllocator maker, MessageFactory factory, MessageContent context) throws NetException;
 
 }

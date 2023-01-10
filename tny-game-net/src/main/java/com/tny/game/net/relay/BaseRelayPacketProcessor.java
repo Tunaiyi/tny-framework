@@ -83,7 +83,7 @@ public abstract class BaseRelayPacketProcessor implements RelayPacketProcessor {
     protected void checkLink(NetRelayLink link, RelayPacket<?> packet) {
         if (link == null) {
             RelayPacket.release(packet);
-            throw new RelayLinkNoExistException("socket未创建转发连接NetRelayLink");
+            throw new RelayLinkNoFoundException("socket未创建转发连接NetRelayLink");
         }
     }
 

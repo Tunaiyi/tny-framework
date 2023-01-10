@@ -17,6 +17,7 @@ import com.tny.game.codec.typeprotobuf.*;
 import com.tny.game.codec.typeprotobuf.annotation.*;
 
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.function.*;
 
 import static com.tny.game.net.message.MessageHeaderConstants.*;
@@ -43,6 +44,46 @@ public class RpcTracingHeader extends MessageHeader<RpcTracingHeader> {
 
     public Map<String, String> getItemMap() {
         return Collections.unmodifiableMap(itemMap);
+    }
+
+    public int size() {
+        return itemMap.size();
+    }
+
+    public boolean isEmpty() {
+        return itemMap.isEmpty();
+    }
+
+    public boolean containsKey(Object key) {
+        return itemMap.containsKey(key);
+    }
+
+    public boolean containsValue(Object value) {
+        return itemMap.containsValue(value);
+    }
+
+    public String get(Object key) {
+        return itemMap.get(key);
+    }
+
+    public Set<String> keySet() {
+        return itemMap.keySet();
+    }
+
+    public Collection<String> values() {
+        return itemMap.values();
+    }
+
+    public Set<Entry<String, String>> entrySet() {
+        return itemMap.entrySet();
+    }
+
+    public String getOrDefault(Object key, String defaultValue) {
+        return itemMap.getOrDefault(key, defaultValue);
+    }
+
+    public void forEach(BiConsumer<? super String, ? super String> action) {
+        itemMap.forEach(action);
     }
 
     RpcTracingHeader setItemMap(Map<String, String> itemMap) {

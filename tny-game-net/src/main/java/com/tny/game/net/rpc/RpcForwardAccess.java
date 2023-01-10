@@ -20,7 +20,7 @@ import com.tny.game.net.message.*;
  * @author Kun Yang
  * @date 2022/5/25 20:11
  **/
-public interface RpcForwardAccess extends RpcRemoteAccess {
+public interface RpcForwardAccess extends RpcAccess {
 
     /**
      * @return 服务 id

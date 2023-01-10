@@ -20,13 +20,13 @@ import com.tny.game.net.endpoint.listener.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.netty4.*;
 import com.tny.game.net.netty4.channel.*;
-import com.tny.game.net.rpc.*;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.epoll.EpollSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import org.slf4j.*;
 
+import javax.annotation.Nonnull;
 import java.net.InetSocketAddress;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -85,7 +85,7 @@ public class NettyClientGuide extends NettyBootstrap<NettyNetClientBootstrapSett
                 return this.bootstrap;
             }
             this.bootstrap = new Bootstrap();
-            NettyMessageHandler messageHandler = new NettyMessageHandler(NetAccessMode.CLIENT);
+            NettyMessageHandler messageHandler = new NettyMessageHandler(this.getContext());
             this.bootstrap.group(workerGroup)
                     .channel(EPOLL ? EpollSocketChannel.class : NioSocketChannel.class)
                     .option(ChannelOption.SO_REUSEADDR, true)
@@ -94,7 +94,7 @@ public class NettyClientGuide extends NettyBootstrap<NettyNetClientBootstrapSett
                     .handler(new ChannelInitializer<>() {
 
                         @Override
-                        protected void initChannel(Channel channel) throws Exception {
+                        protected void initChannel(@Nonnull Channel channel) throws Exception {
                             try {
                                 if (NettyClientGuide.this.channelMaker != null) {
                                     NettyClientGuide.this.channelMaker.initChannel(channel);

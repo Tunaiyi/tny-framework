@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.command.plugins.filter;
 
 import com.tny.game.common.result.*;
@@ -40,14 +40,14 @@ public abstract class AbstractParamFilter<UID, A extends Annotation, P> implemen
 
     @Override
     @SuppressWarnings("unchecked")
-    public ResultCode filter(MethodControllerHolder holder, Tunnel<UID> tunnel, Message message) throws CommandException {
+    public ResultCode filter(MethodControllerHolder holder, Tunnel<UID> communicator, Message message) throws RpcInvokeException {
         List<A> annotations = holder.getAnnotationsOfParametersByType(this.annClass);
         int index = 0;
         Object body = message.bodyAs(Object.class);
         for (A an : annotations) {
             if (an != null) {
-                P param = (P)holder.getParameterValue(index, as(tunnel), message, body);
-                ResultCode result = this.doFilter(holder, tunnel, message, index, an, param);
+                P param = (P)holder.getParameterValue(index, as(communicator), message, body);
+                ResultCode result = this.doFilter(holder, communicator, message, index, an, param);
                 if (result != NetResultCode.SUCCESS) {
                     return result;
                 }
@@ -57,6 +57,7 @@ public abstract class AbstractParamFilter<UID, A extends Annotation, P> implemen
         return NetResultCode.SUCCESS;
     }
 
-    protected abstract ResultCode doFilter(MethodControllerHolder holder, Tunnel<UID> tunnel, Message message, int index, A annotation, P param);
+    protected abstract ResultCode doFilter(MethodControllerHolder holder, Tunnel<UID> communicator, Message message, int index, A annotation,
+            P param);
 
 }

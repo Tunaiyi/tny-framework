@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.base;
 
 import com.tny.game.common.concurrent.*;
@@ -25,13 +25,13 @@ public class ClientConnectPromise<UID> extends CompleteStageFuture<Client<UID>> 
 
     public static <UID> ClientConnectPromise<UID> connected(URL url) {
         ClientConnectPromise<UID> future = new ClientConnectPromise<>();
-        future.completeExceptionally(new ConnectedException("client {} connected", url));
+        future.completeExceptionally(new TunnelConnectException("client {} connected", url));
         return future;
     }
 
     public static <UID> ClientConnectPromise<UID> closed(URL url) {
         ClientConnectPromise<UID> future = new ClientConnectPromise<>();
-        future.completeExceptionally(new CloseException("client {} close", url));
+        future.completeExceptionally(new EndpointClosedException("client {} close", url));
         return future;
     }
 

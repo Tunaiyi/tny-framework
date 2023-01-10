@@ -58,7 +58,7 @@ public abstract class AbstractEndpointKeeper<UID, E extends Endpoint<UID>, NE ex
 
     @Override
     public void notifyEndpointOnline(Endpoint<?> endpoint) {
-        if (!this.getMessagerType().equals(endpoint.getUserGroup())) {
+        if (!Objects.equals(this.getMessagerType(), endpoint.getMessagerType())) {
             return;
         }
         this.onEndpointOnline((E)endpoint);
@@ -66,7 +66,7 @@ public abstract class AbstractEndpointKeeper<UID, E extends Endpoint<UID>, NE ex
 
     @Override
     public void notifyEndpointOffline(Endpoint<?> endpoint) {
-        if (!this.getMessagerType().equals(endpoint.getUserGroup())) {
+        if (!Objects.equals(this.getMessagerType(), endpoint.getMessagerType())) {
             return;
         }
         this.onEndpointOffline((E)endpoint);
@@ -74,7 +74,7 @@ public abstract class AbstractEndpointKeeper<UID, E extends Endpoint<UID>, NE ex
 
     @Override
     public void notifyEndpointClose(Endpoint<?> endpoint) {
-        if (!this.getMessagerType().equals(endpoint.getUserGroup())) {
+        if (!Objects.equals(this.getMessagerType(), endpoint.getMessagerType())) {
             return;
         }
         NE netSession = as(endpoint);

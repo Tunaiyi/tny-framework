@@ -39,14 +39,17 @@ public class NetBootstrapContext implements NetworkContext {
 
     private final MessageDispatcher messageDispatcher;
 
-    private final CommandTaskBoxProcessor commandTaskProcessor;
+    private final CommandBoxProcessor commandTaskProcessor;
 
     private final RpcForwarder rpcForwarder;
+
+    private final RpcMonitor rpcMonitor;
 
     public NetBootstrapContext() {
         this.messageFactory = new CommonMessageFactory();
         this.messagerFactory = new DefaultMessagerFactory();
         this.certificateFactory = new DefaultCertificateFactory<>();
+        this.rpcMonitor = new RpcMonitor();
         this.appContext = null;
         this.setting = null;
         this.messageDispatcher = null;
@@ -58,11 +61,12 @@ public class NetBootstrapContext implements NetworkContext {
             NetAppContext appContext,
             NetBootstrapSetting setting,
             MessageDispatcher messageDispatcher,
-            CommandTaskBoxProcessor commandTaskProcessor,
+            CommandBoxProcessor commandTaskProcessor,
             MessageFactory messageFactory,
             MessagerFactory messagerFactory,
             CertificateFactory<?> certificateFactory,
-            RpcForwarder rpcForwarder) {
+            RpcForwarder rpcForwarder,
+            RpcMonitor rpcMonitor) {
         this.appContext = appContext;
         this.setting = setting;
         this.messageDispatcher = messageDispatcher;
@@ -71,6 +75,7 @@ public class NetBootstrapContext implements NetworkContext {
         this.messagerFactory = messagerFactory;
         this.certificateFactory = certificateFactory;
         this.rpcForwarder = rpcForwarder;
+        this.rpcMonitor = rpcMonitor;
     }
 
     @Override
@@ -99,13 +104,18 @@ public class NetBootstrapContext implements NetworkContext {
     }
 
     @Override
-    public CommandTaskBoxProcessor getCommandTaskProcessor() {
+    public CommandBoxProcessor getCommandTaskProcessor() {
         return this.commandTaskProcessor;
     }
 
     @Override
     public RpcForwarder getRpcForwarder() {
         return rpcForwarder;
+    }
+
+    @Override
+    public RpcMonitor getRpcMonitor() {
+        return rpcMonitor;
     }
 
     @Override

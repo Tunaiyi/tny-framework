@@ -14,8 +14,9 @@ import com.tny.game.common.exception.*;
 import com.tny.game.common.lifecycle.unit.annotation.*;
 import com.tny.game.common.result.*;
 import com.tny.game.common.runtime.*;
+import com.tny.game.net.base.*;
+import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.message.*;
-import com.tny.game.net.monitor.*;
 import com.tny.game.net.rpc.*;
 import com.tny.game.net.transport.*;
 import io.netty.channel.*;
@@ -43,10 +44,10 @@ public class NettyMessageHandler extends ChannelDuplexHandler {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(NettyMessageHandler.class);
 
-    protected final RpcMonitor monitor;
+    protected final RpcMonitor rpcMonitor;
 
-    public NettyMessageHandler(NetAccessMode mode) {
-        monitor = new RpcMonitor(mode);
+    public NettyMessageHandler(NetworkContext networkContext) {
+        this.rpcMonitor = networkContext.getRpcMonitor();
     }
 
     @Override
@@ -93,7 +94,7 @@ public class NettyMessageHandler extends ChannelDuplexHandler {
                     channel.remoteAddress(), channel.localAddress(), code, code.getCode(), code.getMessage(), cause.getMessage(), cause);
             NetTunnel<?> tunnel = channel.attr(NettyNetAttrKeys.TUNNEL).getAndSet(null);
             if (tunnel != null) {
-                MessageSendAide.send(tunnel, MessageContents.push(PUSH, code), true);
+                RpcMessageAide.send(tunnel, MessageContents.push(PUSH, code), true);
             }
         } else {
             LOGGER.error("[Tunnel]  ## 通道 {} ==> {} 异常 # cause {}({})[{}], message:{}",
@@ -108,9 +109,10 @@ public class NettyMessageHandler extends ChannelDuplexHandler {
             try {
                 NetMessage message = as(object);
                 NetTunnel<?> tunnel = channel.attr(NettyNetAttrKeys.TUNNEL).get();
-                monitor.onReadMessage(tunnel, message);
+                var rpcContext = RpcProviderContext.create(tunnel, message);
+                rpcMonitor.onReceive(rpcContext);
                 if (tunnel != null) {
-                    tunnel.receive(message);
+                    tunnel.receive(rpcContext);
                 }
             } catch (Throwable ex) {
                 LOGGER.error("#GameServerHandler#接受请求异常", ex);
@@ -128,7 +130,7 @@ public class NettyMessageHandler extends ChannelDuplexHandler {
                 var message = (Message)msg;
                 Channel channel = context.channel();
                 NetTunnel<?> tunnel = channel.attr(NettyNetAttrKeys.TUNNEL).get();
-                monitor.onWriteMessage(tunnel, message);
+                rpcMonitor.onSend(tunnel, message);
             }
             context.write(msg, promise);
         }

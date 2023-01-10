@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.message;
 
 import com.baidu.bjf.remoting.protobuf.annotation.*;
@@ -39,7 +39,7 @@ public class ForwardPoint implements RpcServicerPoint {
         this.serviceType = servicer.getServiceType();
         this.serviceTypeId = this.serviceType.id();
         if (servicer instanceof RpcServicerPoint) {
-            this.accessId = new RpcAccessId(((RpcServicerPoint)servicer).getId());
+            this.accessId = new RpcAccessId(servicer.getMessagerId());
         }
     }
 
@@ -79,6 +79,11 @@ public class ForwardPoint implements RpcServicerPoint {
     }
 
     @Override
+    public long getMessagerId() {
+        return accessId == null ? -1 : accessId.getId();
+    }
+
+    @Override
     public int getServerId() {
         return accessId == null ? -1 : accessId.getServiceId();
     }
@@ -86,11 +91,6 @@ public class ForwardPoint implements RpcServicerPoint {
     public ForwardPoint setAccessId(RpcAccessId accessId) {
         this.accessId = accessId;
         return this;
-    }
-
-    @Override
-    public long getId() {
-        return accessId == null ? -1 : accessId.getId();
     }
 
 }

@@ -119,27 +119,25 @@ public enum RelayPacketType implements ByteEnumerable {
         this.handleByTransporter = as(transporterHandlerInvoker);
     }
 
-    public void handle(RelayPacketProcessor handler, NetRelayLink link, RelayPacket<?> packet) throws InvokeHandlerException {
+    public void handle(RelayPacketProcessor handler, NetRelayLink link, RelayPacket<?> packet) throws RelayPacketHandleException {
         if (packet == null) {
             throw new NullPointerException(format("invoke {} handler error, datagram is null", this));
         }
         if (this.packetClass.isInstance(packet)) {
             this.handleByLink.invoke(handler, link, packet);
         } else {
-            throw new InvokeHandlerException(
-                    format("invoke {} handler error, datagram is {} instead of {}", this, packet.getClass(), this.packetClass));
+            throw new RelayPacketHandleException("invoke {} handler error, datagram is {} instead of {}", this, packet.getClass(), this.packetClass);
         }
     }
 
-    public void handle(RelayPacketProcessor handler, RelayTransporter transporter, RelayPacket<?> packet) throws InvokeHandlerException {
+    public void handle(RelayPacketProcessor handler, RelayTransporter transporter, RelayPacket<?> packet) throws RelayPacketHandleException {
         if (packet == null) {
             throw new NullPointerException(format("invoke {} handler error, datagram is null", this));
         }
         if (this.packetClass.isInstance(packet)) {
             this.handleByTransporter.invoke(handler, transporter, packet);
         } else {
-            throw new InvokeHandlerException(
-                    format("invoke {} handler error, datagram is {} instead of {}", this, packet.getClass(), this.packetClass));
+            throw new RelayPacketHandleException("invoke {} handler error, datagram is {} instead of {}", this, packet.getClass(), this.packetClass);
         }
     }
 

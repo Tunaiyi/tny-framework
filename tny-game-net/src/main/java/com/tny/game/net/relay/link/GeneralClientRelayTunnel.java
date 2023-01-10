@@ -14,9 +14,9 @@ import com.google.common.collect.ImmutableMap;
 import com.tny.game.common.concurrent.collection.*;
 import com.tny.game.common.result.*;
 import com.tny.game.net.base.*;
+import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.endpoint.*;
-import com.tny.game.net.exception.*;
-import com.tny.game.net.message.*;
+import com.tny.game.net.relay.link.exception.*;
 import com.tny.game.net.relay.link.route.*;
 import com.tny.game.net.transport.*;
 
@@ -73,22 +73,23 @@ public class GeneralClientRelayTunnel<UID> extends ServerTunnel<UID, NetSession<
     }
 
     @Override
-    public MessageWriteAwaiter relay(Message message, boolean needPromise) {
-        MessageWriteAwaiter promise = needPromise ? new MessageWriteAwaiter() : null;
+    public MessageWriteFuture relay(RpcProviderContext rpcContext, boolean needPromise) {
+        MessageWriteFuture promise = needPromise ? new MessageWriteFuture() : null;
+        var message = rpcContext.netMessage();
         String service = relayMessageRouter.route(this, message);
         if (service == null) {
             service = "-None";
         }
         ClientTunnelRelayer relayer = relayerMap.get(service);
         if (relayer != null) {
-            return relayer.relay(this, message, promise);
+            return relayer.relay(this, rpcContext, promise);
         } else {
             ResultCode code = NetResultCode.CLUSTER_NETWORK_UNCONNECTED_ERROR;
             LOGGER.warn("# Tunnel ({}) 服务器主动关闭连接, 不支持 {} 集群", this, service);
-            MessageSendAide.push(this, message, code, null);
             if (promise != null) {
-                promise.completeExceptionally(new NetGeneralException(code));
+                promise.completeExceptionally(new RelayException(code));
             }
+            rpcContext.complete(code);
         }
         return promise;
     }

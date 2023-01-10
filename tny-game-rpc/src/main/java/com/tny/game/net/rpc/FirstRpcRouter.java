@@ -21,13 +21,13 @@ import java.util.List;
 public class FirstRpcRouter implements RpcRouter {
 
     @Override
-    public RpcRemoteAccess route(RpcRemoteSet servicer, RpcRemoteMethod invoker, RpcRemoteInvokeParams invokeParams) {
-        List<? extends RpcRemoteNode> nodes = servicer.getOrderRemoteNodes();
+    public RpcAccess route(RpcInvokeNodeSet serviceSet, RpcRemoteMethod invoker, RpcRemoteInvokeParams invokeParams) {
+        List<? extends RpcInvokeNode> nodes = serviceSet.getOrderInvokeNodes();
         if (nodes.isEmpty()) {
             return null;
         }
-        RpcRemoteNode node = nodes.get(0);
-        List<? extends RpcRemoteAccess> accessPoints = node.getOrderRemoteAccesses();
+        RpcInvokeNode node = nodes.get(0);
+        List<? extends RpcAccess> accessPoints = node.getOrderAccesses();
         if (accessPoints.isEmpty()) {
             return null;
         }

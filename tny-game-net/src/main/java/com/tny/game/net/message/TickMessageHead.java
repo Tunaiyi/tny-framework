@@ -17,11 +17,13 @@ import java.util.*;
 /**
  * Created by Kun Yang on 2018/8/20.
  */
-public class TickMessageHead extends AbstractNetMessageHead {
+public class TickMessageHead implements NetMessageHead {
 
     private final int protocol;
 
     private final long time;
+
+    protected final MessageMode mode;
 
     public static TickMessageHead ping() {
         return new TickMessageHead(PING_PONG_PROTOCOL_NUM, MessageMode.PING);
@@ -32,7 +34,7 @@ public class TickMessageHead extends AbstractNetMessageHead {
     }
 
     private TickMessageHead(int protocol, MessageMode mode) {
-        super(mode);
+        this.mode = mode;
         this.time = System.currentTimeMillis();
         this.protocol = protocol;
     }
@@ -67,6 +69,11 @@ public class TickMessageHead extends AbstractNetMessageHead {
     }
 
     @Override
+    public MessageMode getMode() {
+        return mode;
+    }
+
+    @Override
     public long getTime() {
         return this.time;
     }
@@ -87,12 +94,12 @@ public class TickMessageHead extends AbstractNetMessageHead {
     }
 
     @Override
-    public MessageHeader<?> putHeader(MessageHeader<?> header) {
+    public <H extends MessageHeader<H>> MessageHeader<H> putHeader(MessageHeader<H> header) {
         return null;
     }
 
     @Override
-    public MessageHeader<?> putHeaderIfAbsent(MessageHeader<?> header) {
+    public <H extends MessageHeader<H>> MessageHeader<H> putHeaderIfAbsent(MessageHeader<?> header) {
         return null;
     }
 

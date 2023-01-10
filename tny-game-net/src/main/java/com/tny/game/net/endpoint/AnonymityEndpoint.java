@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.endpoint;
 
 import com.tny.game.net.command.*;
@@ -18,10 +18,8 @@ import com.tny.game.net.transport.*;
  */
 public class AnonymityEndpoint<UID> extends BaseNetEndpoint<UID> implements NetSession<UID> {
 
-    private static final CommonSessionSetting SETTING = new CommonSessionSetting().setSendMessageCachedSize(0);
-
     public AnonymityEndpoint(CertificateFactory<UID> certificateFactory, EndpointContext endpointContext, NetTunnel<UID> tunnel) {
-        super(SETTING, certificateFactory.anonymous(), endpointContext);
+        super(certificateFactory.anonymous(), endpointContext, 0);
         this.tunnel = tunnel;
     }
 

@@ -17,6 +17,6 @@ package com.tny.game.net.rpc;
  * @author Kun Yang
  * @date 2022/4/23 17:07
  **/
-public interface RpcServiceAccess extends RpcRemoteAccess, RpcForwardAccess {
+public interface RpcServiceAccess extends RpcForwardAccess {
 
 }

@@ -10,6 +10,8 @@
  */
 package com.tny.game.net.relay;
 
+import com.tny.game.net.base.*;
+import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.relay.link.*;
 import com.tny.game.net.relay.packet.*;
@@ -26,9 +28,13 @@ public class RelayPacketClientProcessor extends BaseRelayPacketProcessor {
 
     private final ClientRelayExplorer remoteRelayExplorer;
 
-    public RelayPacketClientProcessor(ClientRelayExplorer remoteRelayExplorer) {
+    private final RpcMonitor rpcMonitor;
+
+    public RelayPacketClientProcessor(ClientRelayExplorer remoteRelayExplorer, NetworkContext networkContext) {
         super(remoteRelayExplorer);
         this.remoteRelayExplorer = remoteRelayExplorer;
+        //        this.networkContext = networkContext;
+        this.rpcMonitor = networkContext.getRpcMonitor();
     }
 
     @Override
@@ -55,6 +61,7 @@ public class RelayPacketClientProcessor extends BaseRelayPacketProcessor {
             return;
         }
         Message message = arguments.getMessage();
+        rpcMonitor.onRelay(link, tunnel, message);
         tunnel.write(message, null);
     }
 

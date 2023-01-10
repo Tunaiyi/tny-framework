@@ -11,8 +11,8 @@
 package com.tny.game.net.relay.link;
 
 import com.tny.game.net.base.*;
+import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.endpoint.*;
-import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
 
 import java.net.InetSocketAddress;
@@ -50,9 +50,9 @@ public class GeneralServerRelayTunnel<UID> extends ServerTunnel<UID, NetSession<
     }
 
     @Override
-    public MessageWriteAwaiter relay(Message message, boolean needPromise) {
-        MessageWriteAwaiter promise = needPromise ? new MessageWriteAwaiter() : null;
-        this.write(message, promise);
+    public MessageWriteFuture relay(RpcProviderContext rpcContext, boolean needPromise) {
+        MessageWriteFuture promise = needPromise ? new MessageWriteFuture() : null;
+        this.write(rpcContext.netMessage(), promise);
         return promise;
     }
 

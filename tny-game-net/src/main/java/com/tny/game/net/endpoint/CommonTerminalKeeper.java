@@ -30,7 +30,7 @@ public class CommonTerminalKeeper<UID> extends AbstractEndpointKeeper<UID, Termi
     }
 
     @Override
-    public Optional<Terminal<UID>> online(Certificate<UID> certificate, NetTunnel<UID> tunnel) throws ValidatorFailException {
+    public Optional<Terminal<UID>> online(Certificate<UID> certificate, NetTunnel<UID> tunnel) throws AuthFailedException {
         if (tunnel.getAccessMode() == NetAccessMode.CLIENT) {
             NetEndpoint<UID> endpoint = tunnel.getEndpoint();
             if (endpoint instanceof Client) {

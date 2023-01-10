@@ -12,6 +12,7 @@ package com.tny.game.net.endpoint;
 
 import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.command.processor.*;
+import com.tny.game.net.rpc.*;
 
 /**
  * 终端上下文
@@ -23,6 +24,11 @@ import com.tny.game.net.command.processor.*;
 public interface EndpointContext {
 
     /**
+     * @return 接入模式
+     */
+    NetAccessMode getAccessMode();
+
+    /**
      * @return 消息分发器
      */
     MessageDispatcher getMessageDispatcher();
@@ -30,6 +36,6 @@ public interface EndpointContext {
     /**
      * @return 命令任务执行器
      */
-    CommandTaskBoxProcessor getCommandTaskProcessor();
+    CommandBoxProcessor getCommandTaskProcessor();
 
 }

@@ -13,7 +13,8 @@ package com.tny.game.net.transport;
 import com.tny.game.common.context.*;
 import com.tny.game.common.url.*;
 import com.tny.game.net.command.*;
-import com.tny.game.net.command.task.*;
+import com.tny.game.net.command.dispatcher.*;
+import com.tny.game.net.command.processor.MessageCommandBox;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
@@ -27,7 +28,7 @@ import java.util.function.Predicate;
 /**
  * <p>
  */
-public class MockNetEndpoint extends AttributesHolder implements NetEndpoint<Long>, NetSession<Long>, NetTerminal<Long> {
+public class MockNetEndpoint extends AttributeHolder implements NetEndpoint<Long>, NetSession<Long>, NetTerminal<Long> {
 
     private Certificate<Long> certificate;
 
@@ -52,7 +53,7 @@ public class MockNetEndpoint extends AttributesHolder implements NetEndpoint<Lon
     }
 
     @Override
-    public void online(Certificate<Long> certificate, NetTunnel<Long> tunnel) throws ValidatorFailException {
+    public void online(Certificate<Long> certificate, NetTunnel<Long> tunnel) throws AuthFailedException {
         this.certificate = certificate;
     }
 
@@ -62,21 +63,26 @@ public class MockNetEndpoint extends AttributesHolder implements NetEndpoint<Lon
     }
 
     @Override
-    public NetMessage createMessage(MessageFactory messageFactory, MessageContent context) {
-        this.writeQueue.add(context);
+    public NetTunnel<Long> tunnel() {
         return null;
     }
 
     @Override
-    public boolean receive(NetTunnel<Long> tunnel, Message message) {
-        this.receiveQueue.add(message);
+    public NetMessage createMessage(MessageFactory messageFactory, MessageContent content) {
+        this.writeQueue.add(content);
+        return null;
+    }
+
+    @Override
+    public boolean receive(RpcProviderContext context) {
+        this.receiveQueue.add(context.netMessage());
         return true;
     }
 
     @Override
-    public SendReceipt send(NetTunnel<Long> tunnel, MessageContent messageContext) {
-        this.sendQueue.add(messageContext);
-        return messageContext;
+    public SendReceipt send(NetTunnel<Long> tunnel, MessageContent content) {
+        this.sendQueue.add(content);
+        return content;
     }
 
     @Override
@@ -95,12 +101,12 @@ public class MockNetEndpoint extends AttributesHolder implements NetEndpoint<Lon
     }
 
     @Override
-    public CommandTaskBox getCommandTaskBox() {
+    public MessageCommandBox getCommandBox() {
         return null;
     }
 
     @Override
-    public void takeOver(CommandTaskBox commandTaskBox) {
+    public void takeOver(MessageCommandBox commandTaskBox) {
 
     }
 
@@ -213,11 +219,6 @@ public class MockNetEndpoint extends AttributesHolder implements NetEndpoint<Lon
     @Override
     public NetAccessMode getAccessMode() {
         return accessMode;
-    }
-
-    @Override
-    public boolean receive(Message message) {
-        return false;
     }
 
     @Override
