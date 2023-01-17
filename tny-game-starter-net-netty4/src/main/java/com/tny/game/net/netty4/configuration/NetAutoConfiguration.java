@@ -222,8 +222,9 @@ public class NetAutoConfiguration {
             List<RpcMonitorSendHandler> sendHandlers,
             List<RpcMonitorRelayHandler> relayHandlers,
             List<RpcMonitorAfterInvokeHandler> afterInvokeHandlers,
-            List<RpcMonitorBeforeInvokeHandler> beforeInvokeHandlers) {
-        return new RpcMonitor(receiveHandlers, sendHandlers, relayHandlers, afterInvokeHandlers, beforeInvokeHandlers);
+            List<RpcMonitorBeforeInvokeHandler> beforeInvokeHandlers,
+            List<RpcMonitorInvokeResultHandler> invokeResultHandlers) {
+        return new RpcMonitor(receiveHandlers, sendHandlers, relayHandlers, afterInvokeHandlers, beforeInvokeHandlers, invokeResultHandlers);
     }
 
     @Bean

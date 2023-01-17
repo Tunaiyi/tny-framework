@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.message;
 
 import com.tny.game.common.result.*;
@@ -49,7 +49,7 @@ public abstract class MessageHeadTest extends ProtocolTest {
 
     private MessageHead FAIL_RESPONSE_HEAD = create(this.id, MessageMode.RESPONSE, protocol, ResultCode.FAILURE_CODE, now, this.toMessage);
 
-    private MessageHead PUSH_HEAD = create(this.id, MessageMode.PUSH, protocol, ResultCode.SUCCESS_CODE, now, MessageAide.EMPTY_MESSAGE_ID);
+    private MessageHead PUSH_HEAD = create(this.id, MessageMode.PUSH, protocol, ResultCode.SUCCESS_CODE, now, MessageConstants.EMPTY_MESSAGE_ID);
 
     public MessageHeadTest() {
         super(protocol);
@@ -88,10 +88,10 @@ public abstract class MessageHeadTest extends ProtocolTest {
 
     @Test
     public void getToMessage() {
-        assertEquals(this.REQUEST_HEAD.getToMessage(), MessageAide.EMPTY_MESSAGE_ID);
+        assertEquals(this.REQUEST_HEAD.getToMessage(), MessageConstants.EMPTY_MESSAGE_ID);
         assertEquals(this.SUCCESS_RESPONSE_HEAD.getToMessage(), this.toMessage);
         assertEquals(this.FAIL_RESPONSE_HEAD.getToMessage(), this.toMessage);
-        assertEquals(this.PUSH_HEAD.getToMessage(), MessageAide.EMPTY_MESSAGE_ID);
+        assertEquals(this.PUSH_HEAD.getToMessage(), MessageConstants.EMPTY_MESSAGE_ID);
     }
 
     @Test

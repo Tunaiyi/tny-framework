@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.tny.game.net.netty4.apm.skywalking.configuration.NetApmSkywalkingConfiguration
+

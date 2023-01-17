@@ -22,11 +22,13 @@ import com.tny.game.net.transport.*;
 import io.netty.channel.*;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.handler.timeout.*;
+import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.*;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.nio.channels.ClosedChannelException;
+import java.util.Collection;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 import static com.tny.game.net.base.NetLogger.*;
@@ -46,8 +48,11 @@ public class NettyMessageHandler extends ChannelDuplexHandler {
 
     protected final RpcMonitor rpcMonitor;
 
+    private final NetBootstrapSetting bootstrapSetting;
+
     public NettyMessageHandler(NetworkContext networkContext) {
         this.rpcMonitor = networkContext.getRpcMonitor();
+        this.bootstrapSetting = networkContext.getSetting();
     }
 
     @Override
@@ -77,10 +82,8 @@ public class NettyMessageHandler extends ChannelDuplexHandler {
             } else if (cause instanceof ReadTimeoutException) {
                 LOGGER.warn("[Tunnel]  ## 通道 {} ==> {} 断开链接 # cause {} 读取数据超时, message: {}",
                         channel.remoteAddress(), channel.localAddress(), ReadTimeoutException.class, cause.getMessage());
-            } else if (cause instanceof ResultCodeException) {
-                handleResultCodeException(channel, ((ResultCodeException)cause).getCode(), cause);
-            } else if (cause instanceof ResultCodeRuntimeException) {
-                handleResultCodeException(channel, ((ResultCodeRuntimeException)cause).getCode(), cause);
+            } else if (cause instanceof ResultCodableException) {
+                handleResultCodeException(channel, ((ResultCodableException)cause).getCode(), cause);
             }
         } else {
             LOGGER.error(this.getClass().getName() + ".exceptionCaught() 截获异常", cause);
@@ -108,6 +111,7 @@ public class NettyMessageHandler extends ChannelDuplexHandler {
         if (object instanceof NetMessage) {
             try {
                 NetMessage message = as(object);
+                ignoreHeaders(message, bootstrapSetting.getReadIgnoreHeaders());
                 NetTunnel<?> tunnel = channel.attr(NettyNetAttrKeys.TUNNEL).get();
                 var rpcContext = RpcProviderContext.create(tunnel, message);
                 rpcMonitor.onReceive(rpcContext);
@@ -120,17 +124,29 @@ public class NettyMessageHandler extends ChannelDuplexHandler {
         }
     }
 
+    private void ignoreHeaders(NetMessage message, Collection<String> ignoreSet) {
+        if (CollectionUtils.isNotEmpty(ignoreSet)) {
+            if (ignoreSet.contains("*")) {
+                message.removeAllHeaders();
+            } else {
+                message.removeHeaders(ignoreSet);
+            }
+        }
+    }
+
     @Override
     public void write(ChannelHandlerContext context, Object msg, ChannelPromise promise) {
         try (ProcessTracer ignored = MESSAGE_ENCODE_WATCHER.trace()) {
             if (msg instanceof NettyMessageBearer) {
                 msg = ((NettyMessageBearer)msg).message();
             }
-            if (msg instanceof Message) {
-                var message = (Message)msg;
+            if (msg instanceof NetMessage) {
+                var message = (NetMessage)msg;
+                ignoreHeaders(message, bootstrapSetting.getWriteIgnoreHeaders());
                 Channel channel = context.channel();
                 NetTunnel<?> tunnel = channel.attr(NettyNetAttrKeys.TUNNEL).get();
                 rpcMonitor.onSend(tunnel, message);
+
             }
             context.write(msg, promise);
         }

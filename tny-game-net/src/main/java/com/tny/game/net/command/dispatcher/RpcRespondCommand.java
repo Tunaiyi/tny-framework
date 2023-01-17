@@ -14,6 +14,8 @@ import com.tny.game.common.result.*;
 import com.tny.game.common.worker.command.*;
 import org.slf4j.*;
 
+import static com.tny.game.net.command.dispatcher.RpcInvocationContext.*;
+
 /**
  * <p>
  *
@@ -40,7 +42,8 @@ public class RpcRespondCommand extends BaseCommand implements RpcCommand {
     protected void action() throws Throwable {
         RpcContexts.setCurrent(rpcContext);
         try {
-            rpcContext.prepare();
+            var message = rpcContext.netMessage();
+            rpcContext.prepare(errorOperation(message));
             rpcContext.complete(code, body);
         } catch (Throwable cause) {
             rpcContext.complete(cause);

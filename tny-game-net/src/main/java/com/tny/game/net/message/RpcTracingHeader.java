@@ -35,112 +35,121 @@ import static com.tny.game.net.message.MessageHeaderConstants.*;
 public class RpcTracingHeader extends MessageHeader<RpcTracingHeader> {
 
     @Protobuf(order = 1, fieldType = FieldType.MAP)
-    private Map<String, String> itemMap = new HashMap<>();
+    private Map<String, String> attributes = new HashMap<>();
 
     @Override
     public String getKey() {
         return RPC_TRACING_TYPE_PROTO_KEY;
     }
 
-    public Map<String, String> getItemMap() {
-        return Collections.unmodifiableMap(itemMap);
+    @Override
+    public boolean isTransitive() {
+        return true;
     }
 
-    public int size() {
-        return itemMap.size();
+    public Map<String, String> getAttributes() {
+        return attributes;
     }
 
-    public boolean isEmpty() {
-        return itemMap.isEmpty();
-    }
-
-    public boolean containsKey(Object key) {
-        return itemMap.containsKey(key);
-    }
-
-    public boolean containsValue(Object value) {
-        return itemMap.containsValue(value);
-    }
-
-    public String get(Object key) {
-        return itemMap.get(key);
-    }
-
-    public Set<String> keySet() {
-        return itemMap.keySet();
-    }
-
-    public Collection<String> values() {
-        return itemMap.values();
-    }
-
-    public Set<Entry<String, String>> entrySet() {
-        return itemMap.entrySet();
-    }
-
-    public String getOrDefault(Object key, String defaultValue) {
-        return itemMap.getOrDefault(key, defaultValue);
-    }
-
-    public void forEach(BiConsumer<? super String, ? super String> action) {
-        itemMap.forEach(action);
-    }
-
-    RpcTracingHeader setItemMap(Map<String, String> itemMap) {
-        this.itemMap = itemMap;
+    RpcTracingHeader setAttributes(Map<String, String> attributes) {
+        this.attributes = new HashMap<>(attributes);
         return this;
     }
 
+    public Map<String, String> getAllAttributes() {
+        return Collections.unmodifiableMap(attributes);
+    }
+
+    public int size() {
+        return attributes.size();
+    }
+
+    public boolean isEmpty() {
+        return attributes.isEmpty();
+    }
+
+    public boolean containsKey(Object key) {
+        return attributes.containsKey(key);
+    }
+
+    public boolean containsValue(Object value) {
+        return attributes.containsValue(value);
+    }
+
+    public String get(Object key) {
+        return attributes.get(key);
+    }
+
+    public Set<String> keySet() {
+        return attributes.keySet();
+    }
+
+    public Collection<String> values() {
+        return attributes.values();
+    }
+
+    public Set<Entry<String, String>> entrySet() {
+        return attributes.entrySet();
+    }
+
+    public String getOrDefault(Object key, String defaultValue) {
+        return attributes.getOrDefault(key, defaultValue);
+    }
+
+    public void forEach(BiConsumer<? super String, ? super String> action) {
+        attributes.forEach(action);
+    }
+
     public String put(String key, String value) {
-        return itemMap.put(key, value);
+        return attributes.put(key, value);
     }
 
     public String remove(Object key) {
-        return itemMap.remove(key);
+        return attributes.remove(key);
     }
 
     public void putAll(Map<? extends String, ? extends String> m) {
-        itemMap.putAll(m);
+        attributes.putAll(m);
     }
 
     public void clear() {
-        itemMap.clear();
+        attributes.clear();
     }
 
     public void replaceAll(BiFunction<? super String, ? super String, ? extends String> function) {
-        itemMap.replaceAll(function);
+        attributes.replaceAll(function);
     }
 
     public String putIfAbsent(String key, String value) {
-        return itemMap.putIfAbsent(key, value);
+        return attributes.putIfAbsent(key, value);
     }
 
     public boolean remove(Object key, Object value) {
-        return itemMap.remove(key, value);
+        return attributes.remove(key, value);
     }
 
     public boolean replace(String key, String oldValue, String newValue) {
-        return itemMap.replace(key, oldValue, newValue);
+        return attributes.replace(key, oldValue, newValue);
     }
 
     public String replace(String key, String value) {
-        return itemMap.replace(key, value);
+        return attributes.replace(key, value);
     }
 
     public String computeIfAbsent(String key, Function<? super String, ? extends String> mappingFunction) {
-        return itemMap.computeIfAbsent(key, mappingFunction);
+        return attributes.computeIfAbsent(key, mappingFunction);
     }
 
     public String computeIfPresent(String key, BiFunction<? super String, ? super String, ? extends String> remappingFunction) {
-        return itemMap.computeIfPresent(key, remappingFunction);
+        return attributes.computeIfPresent(key, remappingFunction);
     }
 
     public String compute(String key, BiFunction<? super String, ? super String, ? extends String> remappingFunction) {
-        return itemMap.compute(key, remappingFunction);
+        return attributes.compute(key, remappingFunction);
     }
 
     public String merge(String key, String value, BiFunction<? super String, ? super String, ? extends String> remappingFunction) {
-        return itemMap.merge(key, value, remappingFunction);
+        return attributes.merge(key, value, remappingFunction);
     }
 
 }

@@ -65,7 +65,7 @@ public class TickMessageHead implements NetMessageHead {
 
     @Override
     public long getToMessage() {
-        return MessageAide.EMPTY_MESSAGE_ID;
+        return MessageConstants.EMPTY_MESSAGE_ID;
     }
 
     @Override
@@ -116,6 +116,14 @@ public class TickMessageHead implements NetMessageHead {
     @Override
     public <T extends MessageHeader<?>> T removeHeader(MessageHeaderKey<T> key) {
         return null;
+    }
+
+    @Override
+    public void removeHeaders(Iterable<String> keys) {
+    }
+
+    @Override
+    public void removeAllHeaders() {
     }
 
     @Override

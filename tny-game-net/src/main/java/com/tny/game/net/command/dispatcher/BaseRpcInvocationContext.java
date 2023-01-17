@@ -11,6 +11,7 @@
 package com.tny.game.net.command.dispatcher;
 
 import com.tny.game.common.context.*;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -30,6 +31,8 @@ public abstract class BaseRpcInvocationContext implements RpcInvocationContext {
 
     private final AtomicBoolean prepared = new AtomicBoolean();
 
+    private String operationName;
+
     protected BaseRpcInvocationContext() {
         this(null);
     }
@@ -44,9 +47,21 @@ public abstract class BaseRpcInvocationContext implements RpcInvocationContext {
     }
 
     @Override
-    public boolean prepare() {
+    public String getOperationName() {
+        return operationName;
+    }
+
+    @Override
+    public boolean prepare(String operationName) {
         if (prepared.get()) {
             return false;
+        }
+        if (StringUtils.isBlank(this.operationName)) {
+            if (StringUtils.isNotBlank(operationName)) {
+                this.operationName = operationName;
+            } else if (this.isError()) {
+                this.operationName = RpcInvocationContext.errorOperation(this.getMessageSubject());
+            }
         }
         if (prepared.compareAndSet(false, true)) {
             this.onPrepare();
@@ -57,7 +72,11 @@ public abstract class BaseRpcInvocationContext implements RpcInvocationContext {
 
     @Override
     public boolean complete(Throwable error) {
-        return tryCompleted(error);
+        if (tryCompleted(error)) {
+            this.onComplete();
+            return true;
+        }
+        return false;
     }
 
     protected boolean tryCompleted() {
@@ -65,10 +84,9 @@ public abstract class BaseRpcInvocationContext implements RpcInvocationContext {
     }
 
     protected boolean tryCompleted(Throwable error) {
-        this.prepare();
         if (completed.compareAndSet(false, true)) {
             this.cause = error;
-            onComplete();
+            this.prepare(null);
             return true;
         }
         return false;

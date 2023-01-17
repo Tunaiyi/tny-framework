@@ -66,7 +66,7 @@ public class RpcHandleContext {
      * @return 获取名字
      */
     public String getName() {
-        return this.controller.getName();
+        return this.controller.getSimpleName();
     }
 
     public String getAppType() {

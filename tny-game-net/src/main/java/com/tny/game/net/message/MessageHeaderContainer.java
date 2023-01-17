@@ -102,18 +102,28 @@ public interface MessageHeaderContainer {
     <H extends MessageHeader<H>> MessageHeader<H> putHeaderIfAbsent(MessageHeader<?> header);
 
     /**
-     * 删除转发 header
+     * 删除 header
      */
     <T extends MessageHeader<?>> T removeHeader(String key);
 
     /**
-     * 删除转发 header
+     * 删除 header
      */
     <T extends MessageHeader<?>> T removeHeader(String key, Class<T> headerClass);
 
     /**
-     * 删除转发 header
+     * 删除 header
      */
     <T extends MessageHeader<?>> T removeHeader(MessageHeaderKey<T> key);
+
+    /**
+     * 删除 header
+     */
+    void removeHeaders(Iterable<String> keys);
+
+    /**
+     * 删除所有 header
+     */
+    void removeAllHeaders();
 
 }

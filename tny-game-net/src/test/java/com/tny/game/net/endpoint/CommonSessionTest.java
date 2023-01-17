@@ -13,6 +13,7 @@ package com.tny.game.net.endpoint;
 import com.tny.game.net.command.*;
 import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.command.processor.*;
+import com.tny.game.net.rpc.*;
 
 /**
  * Created by Kun Yang on 2018/8/12.
@@ -27,6 +28,11 @@ public class CommonSessionTest extends NetEndpointTest<CommonSession<Long>> {
             //			public <T> CertificateFactory<T> getCertificateFactory() {
             //				return new DefaultCertificateFactory<>();
             //			}
+
+            @Override
+            public NetAccessMode getAccessMode() {
+                return NetAccessMode.SERVER;
+            }
 
             @Override
             public MessageDispatcher getMessageDispatcher() {

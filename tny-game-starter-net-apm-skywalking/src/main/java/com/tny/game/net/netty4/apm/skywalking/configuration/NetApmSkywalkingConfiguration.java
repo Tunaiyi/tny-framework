@@ -10,7 +10,8 @@
  */
 package com.tny.game.net.netty4.apm.skywalking.configuration;
 
-import org.springframework.context.annotation.Configuration;
+import com.tny.game.net.netty4.apm.skywalking.*;
+import org.springframework.context.annotation.*;
 
 /**
  * <p>
@@ -20,5 +21,10 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration(proxyBeanMethods = false)
 public class NetApmSkywalkingConfiguration {
+
+    @Bean
+    public SkywalkingRpcMonitorHandler skywalkingRpcMonitorHandler() {
+        return new SkywalkingRpcMonitorHandler();
+    }
 
 }

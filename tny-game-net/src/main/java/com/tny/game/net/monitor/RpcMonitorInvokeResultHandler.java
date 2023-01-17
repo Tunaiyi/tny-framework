@@ -8,20 +8,19 @@
  * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-package com.tny.game.common.exception;
+package com.tny.game.net.monitor;
 
-import com.tny.game.common.result.*;
+import com.tny.game.net.command.dispatcher.*;
+import com.tny.game.net.message.*;
 
 /**
  * <p>
  *
  * @author kgtny
- * @date 2022/12/20 17:13
+ * @date 2022/12/16 12:45
  **/
-public interface ResultCodableException {
+public interface RpcMonitorInvokeResultHandler {
 
-    ResultCode getCode();
-
-    String getMessage();
+    void onInvokeResult(RpcContext rpcContext, MessageSubject result, Throwable exception);
 
 }

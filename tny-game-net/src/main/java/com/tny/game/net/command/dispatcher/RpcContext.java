@@ -13,6 +13,9 @@ package com.tny.game.net.command.dispatcher;
 import com.tny.game.common.context.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
+import com.tny.game.net.rpc.*;
+
+import java.util.concurrent.Executor;
 
 /**
  * <p>
@@ -28,9 +31,21 @@ public interface RpcContext {
     MessageSubject getMessageSubject();
 
     /**
+     * @return 请求模式
+     */
+    RpcInvocationMode getInvocationMode();
+
+    /**
      * @return 获取终端
      */
     <U> Endpoint<U> getEndpoint();
+
+    /**
+     * @return 当前执行器
+     */
+    default Executor getExecutor() {
+        return getEndpoint();
+    }
 
     /**
      * @return 附加属性

@@ -13,6 +13,8 @@ package com.tny.game.net.base;
 import com.tny.game.net.rpc.*;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Set;
+
 public interface NetBootstrapSetting {
 
     /**
@@ -53,6 +55,10 @@ public interface NetBootstrapSetting {
     String getCommandTaskProcessor();
 
     String getRpcForwarder();
+
+    Set<String> getReadIgnoreHeaders();
+
+    Set<String> getWriteIgnoreHeaders();
 
     default RpcServiceType getRpcServiceType() {
         String name = serviceName();

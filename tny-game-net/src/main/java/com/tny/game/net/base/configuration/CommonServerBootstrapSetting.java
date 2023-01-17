@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.base.configuration;
 
 import com.tny.game.net.base.*;
@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import java.net.InetSocketAddress;
+import java.util.*;
 
 public class CommonServerBootstrapSetting extends CommonNetBootstrapSetting implements ServerBootstrapSetting {
 
@@ -27,6 +28,10 @@ public class CommonServerBootstrapSetting extends CommonNetBootstrapSetting impl
     private String bindAddressValue;
 
     private String serveAddressValue;
+
+    private Set<String> readIgnoreHeaders = new HashSet<>();
+
+    private Set<String> writeIgnoreHeaders = new HashSet<>();
 
     public CommonServerBootstrapSetting() {
     }
@@ -71,6 +76,26 @@ public class CommonServerBootstrapSetting extends CommonNetBootstrapSetting impl
 
     public CommonServerBootstrapSetting setScheme(String scheme) {
         this.scheme = scheme;
+        return this;
+    }
+
+    @Override
+    public Set<String> getReadIgnoreHeaders() {
+        return readIgnoreHeaders;
+    }
+
+    @Override
+    public Set<String> getWriteIgnoreHeaders() {
+        return writeIgnoreHeaders;
+    }
+
+    public CommonServerBootstrapSetting setReadIgnoreHeaders(Set<String> readIgnoreHeaders) {
+        this.readIgnoreHeaders = readIgnoreHeaders;
+        return this;
+    }
+
+    public CommonServerBootstrapSetting setWriteIgnoreHeaders(Set<String> writeIgnoreHeaders) {
+        this.writeIgnoreHeaders = writeIgnoreHeaders;
         return this;
     }
 

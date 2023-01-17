@@ -462,7 +462,7 @@ public abstract class BaseNetEndpoint<UID> extends AbstractCommunicator<UID> imp
     protected void postClose() {
     }
 
-    private void checkOnlineCertificate(Certificate<UID> certificate) {
+    private void checkOnlineCertificate(Certificate<UID> certificate) throws AuthFailedException {
         Certificate<UID> currentCert = this.certificate;
         if (!certificate.isAuthenticated()) {
             throw new AuthFailedException(NetResultCode.NO_LOGIN);

@@ -77,7 +77,7 @@ public class RpcServiceSet implements RpcInvokeNodeSet, RpcForwardNodeSet {
     }
 
     @Override
-    public RpcAccess findForwardAccess(RpcServicerPoint servicer) {
+    public RpcAccess findForwardAccess(RpcAccessPoint servicer) {
         RpcServiceNode remoteNode = remoteNodeMap.get(servicer.getServerId());
         if (remoteNode == null) {
             return null;

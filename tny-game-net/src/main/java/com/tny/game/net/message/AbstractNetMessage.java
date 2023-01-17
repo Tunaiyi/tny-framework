@@ -97,6 +97,16 @@ public abstract class AbstractNetMessage extends AttributeHolder implements NetM
     }
 
     @Override
+    public void removeHeaders(Iterable<String> keys) {
+        head.removeHeaders(keys);
+    }
+
+    @Override
+    public void removeAllHeaders() {
+        head.removeAllHeaders();
+    }
+
+    @Override
     public boolean existBody() {
         return this.body != null;
     }

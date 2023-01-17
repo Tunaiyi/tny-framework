@@ -20,7 +20,7 @@ import com.tny.game.net.message.*;
 
 import java.util.Collection;
 
-import static com.tny.game.net.message.MessageAide.*;
+import static com.tny.game.net.message.MessageConstants.*;
 
 /**
  * 消息内容

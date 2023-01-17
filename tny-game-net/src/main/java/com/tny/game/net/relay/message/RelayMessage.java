@@ -148,6 +148,16 @@ public class RelayMessage implements NetMessage {
     }
 
     @Override
+    public void removeHeaders(Iterable<String> keys) {
+        message.removeHeaders(keys);
+    }
+
+    @Override
+    public void removeAllHeaders() {
+        message.removeAllHeaders();
+    }
+
+    @Override
     public boolean isOwn(Protocol protocol) {
         return message.isOwn(protocol);
     }

@@ -11,7 +11,6 @@
 package com.tny.game.net.netty4.apm.skywalking;
 
 import com.tny.game.common.context.*;
-import com.tny.game.common.url.*;
 import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
@@ -19,12 +18,16 @@ import com.tny.game.net.monitor.*;
 import com.tny.game.net.relay.link.*;
 import com.tny.game.net.rpc.*;
 import com.tny.game.net.transport.*;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.skywalking.apm.agent.core.context.*;
-import org.apache.skywalking.apm.agent.core.context.tag.*;
+import org.apache.skywalking.apm.agent.core.context.tag.StringTag;
 import org.apache.skywalking.apm.agent.core.context.trace.*;
 import org.apache.skywalking.apm.network.trace.component.OfficialComponent;
+import org.slf4j.*;
 
-import java.util.*;
+import java.util.Collection;
+
+import static com.tny.game.net.command.dispatcher.RpcInvocationContext.*;
 
 /**
  * <p>
@@ -32,160 +35,243 @@ import java.util.*;
  * @author kgtny
  * @date 2022/12/16 13:06
  **/
-public class SkywalkingRpcMonitorHandler implements RpcMonitorReceiveHandler, RpcMonitorBeforeInvokeHandler, RpcMonitorRelayHandler,
-        RpcMonitorAfterInvokeHandler {
+public class SkywalkingRpcMonitorHandler implements RpcMonitorReceiveHandler, RpcMonitorRelayHandler, RpcMonitorBeforeInvokeHandler,
+        RpcMonitorInvokeResultHandler {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SkywalkingRpcMonitorHandler.class);
 
     private static final StringTag ARGUMENTS = new StringTag(101, "tny-rpc.arguments");
 
-    private static final StringTag MESSAGER = new StringTag(103, "tny-rpc.messager");
+    private static final StringTag MESSAGER = new StringTag(102, "tny-rpc.messager");
 
-    private static final StringTag RPC_MODE = new StringTag(102, "tny-rpc.mode");
+    private static final StringTag RPC_MODE = new StringTag(103, "tny-rpc.mode");
 
-    private static final StringTag RPC_PROTOCOL_ID = new StringTag(104, "tny-rpc.protocol-id");
+    private static final StringTag TRACE_ID = new StringTag(104, "tny-rpc.trace-id");
 
     private static final StringTag RPC_PROTOCOL = new StringTag(105, "tny-rpc.protocol");
 
-    private static final OfficialComponent TNY_RPC = new OfficialComponent(166, "tny-rpc");
+    private static final StringTag RELAY_FROM_PROTOCOL = new StringTag(106, "tny-relay.from");
 
-    private static final AttrKey<ContextSnapshot> TRACING_SNAPSHOT = AttrKeys.key(SkywalkingRpcMonitorHandler.class, "TracingSnapshot");
+    private static final StringTag RELAY_TO_PROTOCOL = new StringTag(107, "tny-relay.to");
+
+    private static final StringTag RELAY_MODE_PROTOCOL = new StringTag(108, "tny-relay.mode");
+
+    private static final OfficialComponent TNY_RPC_SERVER = new OfficialComponent(166, "tny-rpc-server");
+
+    private static final OfficialComponent TNY_RPC_CLIENT = new OfficialComponent(167, "tny-rpc-client");
+
+    private static final AttrKey<ContextSnapshot> TRACING_SNAPSHOT = AttrKeys.key(SkywalkingRpcMonitorHandler.class, "TraceSnapshot");
+
+    private static final AttrKey<AbstractSpan> TRACING_NET_SPAN = AttrKeys.key(SkywalkingRpcMonitorHandler.class, "TraceNetSpan");
+
+    private static final AttrKey<AbstractSpan> TRACING_CALL_SPAN = AttrKeys.key(SkywalkingRpcMonitorHandler.class, "TraceCallSpan");
 
     @Override
     public void onReceive(RpcProviderContext rpcContext) {
-        var tunnel = rpcContext.netTunnel();
-        var networkContext = tunnel.getContext();
-        var accessMode = networkContext.getAccessMode();
-        AbstractSpan span;
-        if (Objects.requireNonNull(accessMode) == NetAccessMode.SERVER) {
-            var contextCarrier = new ContextCarrier();
+        if (rpcContext.getInvocationMode() == RpcInvocationMode.ENTER) {
             var message = rpcContext.netMessage();
-            var header = message.getHeader(MessageHeaderConstants.RPC_TRACING);
-            if (header != null) {
-                CarrierItem next = contextCarrier.items();
-                while (next.hasNext()) {
-                    next = next.next();
-                    next.setHeadValue(header.get(next.getHeadKey()));
-                }
-            }
-            span = ContextManager.createEntrySpan(getOperationName(message), contextCarrier);
+            var contextCarrier = loadCarrier(message);
+            AbstractSpan span = ContextManager.createEntrySpan(rpcOperationName(message), contextCarrier);
+            var tunnel = rpcContext.netTunnel();
             tagSpan(span, tunnel, message, true);
             var snapshot = ContextManager.capture();
-            rpcContext.attributes().setAttribute(TRACING_SNAPSHOT, snapshot);
+            var attributes = rpcContext.attributes();
+            attributes.setAttribute(TRACING_SNAPSHOT, snapshot);
+            attributes.setAttribute(TRACING_NET_SPAN, span.prepareForAsync());
+            ContextManager.stopSpan(span);
+            LOGGER.debug("SERVER start span {} {}", span.getOperationName(), span.getSpanId());
         }
     }
 
     @Override
     public void onBeforeInvoke(RpcContext rpcContext) {
-        restore(rpcContext);
-        var endpoint = (NetEndpoint<?>)rpcContext.getEndpoint();
-        var networkContext = endpoint.getContext();
-        var accessMode = networkContext.getAccessMode();
+        boolean restore = !ContextManager.isActive();
         AbstractSpan span;
-        if (Objects.requireNonNull(accessMode) == NetAccessMode.CLIENT) {
-            String peer = "";
-            if (endpoint instanceof Terminal) {
-                peer = peer(((Terminal<?>)endpoint).getUrl());
-            }
-            var contextCarrier = new ContextCarrier();
-            var message = rpcContext.getMessageSubject();
+        String operationName;
+        if (rpcContext.getInvocationMode() == RpcInvocationMode.EXIT) {
             var tracingHeader = new RpcTracingHeader();
-            span = ContextManager.createExitSpan(getOperationName(message), contextCarrier, peer);
+            var message = rpcContext.getMessageSubject();
+            var contextCarrier = loadCarrier(message);
+            operationName = rpcOperationName(rpcContext);
+            span = ContextManager.createExitSpan(operationName, contextCarrier, peer(rpcContext.getEndpoint()));
+            tagSpan(span, rpcContext.getEndpoint(), message, true);
+            if (restore) {
+                restore(rpcContext);
+            }
             CarrierItem next = contextCarrier.items();
             while (next.hasNext()) {
                 next = next.next();
                 tracingHeader.put(next.getHeadKey(), next.getHeadValue());
             }
             message.putHeader(tracingHeader);
-            tagClientSpan(span, endpoint, message, true);
-            var snapshot = ContextManager.capture();
-            rpcContext.attributes().setAttribute(TRACING_SNAPSHOT, snapshot);
+            LOGGER.debug("exit start span {} {}", span.getOperationName(), span.getSpanId());
+        } else {
+            operationName = callOperationName(rpcContext);
+            span = ContextManager.createLocalSpan(operationName);
+            tagSpan(span, rpcContext.getEndpoint(), rpcContext.getMessageSubject(), false);
+            if (restore) {
+                restore(rpcContext);
+            }
+            LOGGER.debug("call start span {} {}", span.getOperationName(), span.getSpanId());
+        }
+
+        var snapshot = ContextManager.capture();
+        span.prepareForAsync();
+        rpcContext.attributes().setAttribute(TRACING_CALL_SPAN, span);
+        rpcContext.attributes().setAttribute(TRACING_SNAPSHOT, snapshot);
+        ContextManager.stopSpan(span);
+    }
+
+    @Override
+    public void onInvokeResult(RpcContext rpcContext, MessageSubject result, Throwable exception) {
+        var callSpan = rpcContext.attributes().getAttribute(TRACING_CALL_SPAN);
+        if (callSpan != null) {
+            renewTagSpan(callSpan, rpcContext.getEndpoint());
+            if (exception != null) {
+                callSpan.log(exception);
+            }
+            callSpan.asyncFinish();
+        }
+        var netSpan = rpcContext.attributes().getAttribute(TRACING_NET_SPAN);
+        if (netSpan != null) {
+            renewTagSpan(netSpan, rpcContext.getEndpoint());
+            if (exception != null) {
+                netSpan.log(exception);
+            }
+            netSpan.asyncFinish();
+        }
+        if (ContextManager.isActive()) {
+            ContextManager.stopSpan();
         }
     }
 
     @Override
     public void onRelay(NetTunnel<?> from, NetRelayLink to, Message message) {
-        var endpoint = from.getEndpoint();
-        var networkContext = endpoint.getContext();
-        var accessMode = networkContext.getAccessMode();
-        AbstractSpan span;
-        if (Objects.requireNonNull(accessMode) == NetAccessMode.CLIENT) {
-            String peer = "";
-            if (endpoint instanceof Terminal) {
-                peer = peer(((Terminal<?>)endpoint).getUrl());
-            }
-            var contextCarrier = new ContextCarrier();
-            var tracingHeader = new RpcTracingHeader();
-            span = ContextManager.createExitSpan(getOperationName(message), contextCarrier, peer);
-            CarrierItem next = contextCarrier.items();
-            while (next.hasNext()) {
-                next = next.next();
-                tracingHeader.put(next.getHeadKey(), next.getHeadValue());
-            }
-            message.putHeader(tracingHeader);
-            tagClientSpan(span, endpoint, message, true);
+        var contextCarrier = new ContextCarrier();
+        var tracingHeader = new RpcTracingHeader();
+        AbstractSpan span = ContextManager.createEntrySpan(relayOperation(message), contextCarrier);
+        CarrierItem next = contextCarrier.items();
+        while (next.hasNext()) {
+            next = next.next();
+            tracingHeader.put(next.getHeadKey(), next.getHeadValue());
         }
+        message.putHeader(tracingHeader);
+        relayTagSpan(span, from, to, message, false);
+        LOGGER.debug("relay span {} {}", span.getOperationName(), span.getSpanId());
     }
 
     @Override
     public void onRelay(NetRelayLink from, NetTunnel<?> to, Message message) {
-
+        var contextCarrier = new ContextCarrier();
+        var tracingHeader = new RpcTracingHeader();
+        AbstractSpan span = ContextManager.createEntrySpan(relayOperation(message), contextCarrier);
+        CarrierItem next = contextCarrier.items();
+        while (next.hasNext()) {
+            next = next.next();
+            tracingHeader.put(next.getHeadKey(), next.getHeadValue());
+        }
+        message.putHeader(tracingHeader);
+        relayTagSpan(span, from, to, message, false);
+        LOGGER.debug("relay span {} {}", span.getOperationName(), span.getSpanId());
     }
 
-    @Override
-    public void onAfterInvoke(RpcContext rpcContext, MessageSubject result, Throwable exception) {
-        restore(rpcContext);
-        if (result != null && exception != null) {
-            AbstractSpan span = ContextManager.activeSpan();
-            span.log(exception);
+    private ContextCarrier loadCarrier(MessageSubject message) {
+        var contextCarrier = new ContextCarrier();
+        var header = message.getHeader(MessageHeaderConstants.RPC_TRACING);
+        if (header != null) {
+            CarrierItem next = contextCarrier.items();
+            while (next.hasNext()) {
+                next = next.next();
+                next.setHeadValue(header.get(next.getHeadKey()));
+            }
         }
-        ContextManager.stopSpan();
+        return contextCarrier;
     }
 
     private void restore(RpcContext rpcContext) {
-        if (!ContextManager.isActive()) {
-            var snapshot = rpcContext.attributes().getAttribute(TRACING_SNAPSHOT);
-            if (snapshot != null) {
-                ContextManager.continued(snapshot);
-            }
+        var snapshot = rpcContext.attributes().getAttribute(TRACING_SNAPSHOT);
+        if (snapshot != null) {
+            ContextManager.continued(snapshot);
         }
     }
 
     private void tagSpan(AbstractSpan span, Communicator<?> communicator, MessageSubject message, boolean collectArguments) {
-        span.setComponent(TNY_RPC);
+        tagSpan(span, communicator.getAccessMode(), getMessagerName(communicator), message, collectArguments);
+    }
+
+    private void tagSpan(AbstractSpan span, NetAccessMode accessMode, String messagerName, MessageSubject message,
+            boolean collectArguments) {
+        if (accessMode == NetAccessMode.SERVER) {
+            span.setComponent(TNY_RPC_SERVER);
+        } else {
+            span.setComponent(TNY_RPC_CLIENT);
+        }
         SpanLayer.asRPCFramework(span);
         var mode = message.getMode().name();
         var protocolId = String.valueOf(message.getProtocolId());
         span.tag(RPC_MODE, mode);
-        span.tag(RPC_PROTOCOL_ID, protocolId);
-        span.tag(RPC_PROTOCOL, protocolId + "-" + mode);
-        String messager = getMessagerName(communicator);
-        span.tag(MESSAGER, messager);
+        span.tag(RPC_PROTOCOL, protocolId);
+        span.tag(MESSAGER, messagerName);
+        span.tag(TRACE_ID, ContextManager.getGlobalTraceId());
         if (collectArguments) {
-            collectArguments(span, message, 16);
+            collectArguments(span, message, 1024);
         }
     }
 
-    private void tagClientSpan(AbstractSpan span, Communicator<?> communicator, MessageSubject message, boolean collectArguments) {
-        tagSpan(span, communicator, message, collectArguments);
-        span.tag(Tags.URL, generateURL(communicator, message));
+    private void relayTagSpan(AbstractSpan span, NetTunnel<?> from, NetRelayLink to, MessageSubject message, boolean collectArguments) {
+        tagSpan(span, to.getAccessMode(), to.getService() + to.getInstanceId(), message, collectArguments);
+        String fromMessager = getMessagerName(from);
+        span.tag(RELAY_FROM_PROTOCOL, fromMessager);
+        String toMessager = to.getId();
+        span.tag(RELAY_TO_PROTOCOL, toMessager);
+        span.tag(RELAY_MODE_PROTOCOL, "IN");
     }
 
-    private String getOperationName(MessageSubject message) {
-        var mode = message.getMode();
-        return mode + "@" + message.getProtocolId();
+    private void relayTagSpan(AbstractSpan span, NetRelayLink from, NetTunnel<?> to, MessageSubject message, boolean collectArguments) {
+        tagSpan(span, to, message, collectArguments);
+        String fromMessager = from.getId();
+        span.tag(RELAY_FROM_PROTOCOL, fromMessager);
+        String toMessager = getMessagerName(to);
+        span.tag(RELAY_TO_PROTOCOL, toMessager);
+        span.tag(RELAY_MODE_PROTOCOL, "OUT");
     }
 
-    private String peer(URL url) {
-        return url.getHost() + ":" + url.getPort();
+    private void renewTagSpan(AbstractSpan span, Communicator<?> communicator) {
+        String messager = getMessagerName(communicator);
+        span.tag(MESSAGER, messager);
     }
 
-    /**
-     * Format request url. e.g. tny://127.0.0.1:20880/1000/REQUEST(String)
-     *
-     * @return request url.
-     */
-    private String generateURL(Communicator<?> communicator, MessageSchema message) {
-        var address = communicator.getRemoteAddress();
-        return "tny://" + address.getHostString() + ":" + address.getPort() + "/" + message.getProtocolId() + "/" + message.getMode();
+    private String rpcOperationName(RpcContext context) {
+        return createOperationName("rpc", context);
+    }
+
+    private String callOperationName(RpcContext context) {
+        return createOperationName("call", context);
+    }
+
+    private String createOperationName(String action, RpcContext context) {
+        String operationName = null;
+        if (context instanceof RpcInvocationContext) {
+            operationName = action + ((RpcInvocationContext)context).getOperationName();
+        }
+        if (StringUtils.isBlank(operationName)) {
+            operationName = rpcOperationName(context.getMessageSubject());
+        }
+        return operationName;
+    }
+
+    private String rpcOperationName(MessageSubject message) {
+        return "tny://" + message.getProtocolId() + "/" + message.getMode().getMark();
+    }
+
+    private String peer(Endpoint<?> endpoint) {
+        var address = endpoint.getRemoteAddress();
+        return address.getHostString() + ":" + address.getPort();
+    }
+
+    private String peer(NetRelayLink link) {
+        var address = link.getRemoteAddress();
+        return address.getHostString() + ":" + address.getPort();
     }
 
     private void collectArguments(AbstractSpan span, MessageSubject message, int argumentsLengthThreshold) {

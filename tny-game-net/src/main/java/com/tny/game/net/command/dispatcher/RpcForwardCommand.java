@@ -17,6 +17,8 @@ import com.tny.game.net.rpc.*;
 import com.tny.game.net.transport.*;
 import org.slf4j.*;
 
+import static com.tny.game.net.command.dispatcher.RpcInvocationContext.*;
+
 /**
  * <p>
  *
@@ -56,12 +58,12 @@ public class RpcForwardCommand extends BaseCommand implements RpcCommand {
         var tunnel = rpcContext.<RpcServicer>netTunnel();
         var message = rpcContext.netMessage();
         var networkContext = rpcContext.networkContext();
-        rpcContext.prepare();
+        rpcContext.prepare(forwardOperation(message));
         RpcForwardHeader forwardHeader = message.getHeader(MessageHeaderConstants.RPC_FORWARD_HEADER);
         RpcForwardAccess toAccess = networkContext.getRpcForwarder().forward(message, forwardHeader);
         if (toAccess != null && toAccess.isActive()) {
             ForwardPoint fromPoint = new ForwardPoint(tunnel.getUserId());
-            RpcServicerPoint toPoint = toAccess.getForwardPoint();
+            RpcAccessPoint toPoint = toAccess.getForwardPoint();
             var content = MessageContents.copy(message)
                     .withHeader(RpcForwardHeaderBuilder.newBuilder()
                             .setFrom(fromPoint)
@@ -74,7 +76,7 @@ public class RpcForwardCommand extends BaseCommand implements RpcCommand {
                             .build());
             var endPoint = toAccess.getEndpoint();
             var forwardContext = RpcConsumerContext.create(endPoint, content, rpcContext.rpcMonitor());
-            forwardContext.prepare(); // TODO 是否在 RpcConsumerContext 处理逻辑??
+            forwardContext.prepare(towardOperation(content)); // TODO 是否在 RpcConsumerContext 处理逻辑??
             endPoint.send(content);
             forwardContext.complete();
             rpcContext.completeSilently();

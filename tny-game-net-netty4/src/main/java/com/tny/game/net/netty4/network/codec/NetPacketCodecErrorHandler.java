@@ -43,11 +43,8 @@ public interface NetPacketCodecErrorHandler {
         if (channel != null) {
             if (!close) {
                 ResultCode code = null;
-                if (exception instanceof ResultCodeRuntimeException) {
-                    code = ((ResultCodeRuntimeException)exception).getCode();
-                }
-                if (exception instanceof ResultCodeException) {
-                    code = ((ResultCodeException)exception).getCode();
+                if (exception instanceof ResultCodableException) {
+                    code = ((ResultCodableException)exception).getCode();
                 }
                 if (code != null && code.getLevel() == ResultLevel.ERROR) {
                     close = true;
