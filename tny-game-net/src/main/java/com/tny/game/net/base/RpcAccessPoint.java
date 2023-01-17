@@ -10,17 +10,30 @@
  */
 package com.tny.game.net.base;
 
+import com.tny.game.net.message.*;
+
+import javax.annotation.Nonnull;
+import java.util.Comparator;
+
 /**
- * Rpc 服务
+ * 服务者,接入的服务点
  * <p>
  *
  * @author Kun Yang
  * @date 2022/4/28 15:11
  **/
-public interface RpcServicer {
+public interface RpcAccessPoint extends RpcServicer, Messager, Comparable<RpcAccessPoint> {
 
-    RpcServiceType getServiceType();
+    Comparator<RpcAccessPoint> COMPARATOR = Comparator.comparing(RpcAccessPoint::getMessagerId);
 
-    int getServerId();
+    @Override
+    default MessagerType getMessagerType() {
+        return getServiceType();
+    }
+
+    @Override
+    default int compareTo(@Nonnull RpcAccessPoint o) {
+        return COMPARATOR.compare(this, o);
+    }
 
 }

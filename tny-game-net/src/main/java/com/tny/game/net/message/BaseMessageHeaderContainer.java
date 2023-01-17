@@ -125,4 +125,16 @@ public class BaseMessageHeaderContainer implements MessageHeaderContainer {
         return as(this.headers.remove(key.getKey()), key.getHeaderClass());
     }
 
+    @Override
+    public void removeHeaders(Iterable<String> keys) {
+        for (var key : keys) {
+            this.headers.remove(key);
+        }
+    }
+
+    @Override
+    public void removeAllHeaders() {
+        this.headers.clear();
+    }
+
 }

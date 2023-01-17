@@ -103,11 +103,8 @@ public abstract class NetPacketV1Codec implements AppPrepareStart {
                 close = true;
             } else {
                 ResultCode code = null;
-                if (exception instanceof ResultCodeRuntimeException) {
-                    code = ((ResultCodeRuntimeException)exception).getCode();
-                }
-                if (exception instanceof ResultCodeException) {
-                    code = ((ResultCodeException)exception).getCode();
+                if (exception instanceof ResultCodableException) {
+                    code = ((ResultCodableException)exception).getCode();
                 }
                 if (code != null && code.getLevel() == ResultLevel.ERROR) {
                     close = true;

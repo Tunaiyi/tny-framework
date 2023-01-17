@@ -72,6 +72,14 @@ public interface RpcProviderContext extends RpcInvocationContext {
     boolean completeSilently(Throwable error);
 
     /**
+     * 静默完成
+     *
+     * @param body 错误原因
+     * @return 是否完成成功
+     */
+    boolean completeSilently(ResultCode code, Object body);
+
+    /**
      * 完成并响应
      *
      * @param code 结果码

@@ -20,7 +20,7 @@ import com.tny.game.net.base.*;
  * @date Kun Yang
  * @date 2022/4/8 04:37
  **/
-public class AuthFailedException extends NetException {
+public class AuthFailedException extends NetCheckException {
 
     /**
      *

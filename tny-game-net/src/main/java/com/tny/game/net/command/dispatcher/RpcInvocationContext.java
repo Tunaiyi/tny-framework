@@ -10,6 +10,9 @@
  */
 package com.tny.game.net.command.dispatcher;
 
+import com.tny.game.net.message.*;
+import com.tny.game.net.transport.*;
+
 /**
  * <p>
  *
@@ -18,10 +21,36 @@ package com.tny.game.net.command.dispatcher;
  **/
 public interface RpcInvocationContext extends RpcContext {
 
+    static String forwardOperation(MessageSubject message) {
+        return "forward[" + message.getProtocolId() + "]" + message.getMode().getMark();
+    }
+
+    static String towardOperation(MessageContent content) {
+        return "toward[" + content.getProtocolId() + "]" + content.getMode().getMark();
+    }
+
+    static String relayOperation(MessageSubject message) {
+        return "relay[" + message.getProtocolId() + "]" + message.getMode().getMark();
+    }
+
+    static String rpcOperation(Class<?> operation, String method, MessageSubject message) {
+        return "[" + message.getProtocolId() + "@" + message.getMode().getMark() + "]" + operation.getSimpleName() + "." + method;
+    }
+
+    static String rpcOperation(String method, MessageSubject message) {
+        return "[" + message.getProtocolId() + "@" + message.getMode().getMark() + "]" + method;
+    }
+
+    static String errorOperation(MessageSubject message) {
+        return "Error@" + "[" + message.getProtocolId() + "]";
+    }
+
     /**
      * @return 准备
      */
-    boolean prepare();
+    boolean prepare(String operationName);
+
+    String getOperationName();
 
     /**
      * 失败并响应

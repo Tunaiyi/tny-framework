@@ -24,6 +24,7 @@ import org.slf4j.*;
 import java.util.concurrent.TimeUnit;
 
 import static com.tny.game.common.utils.ObjectAide.*;
+import static com.tny.game.net.command.dispatcher.RpcInvocationContext.*;
 
 /**
  * <p>
@@ -146,7 +147,7 @@ public class RpcRemoteInvoker {
         content.willRespondFuture(timeout)
                 .withHeaders(params.getAllHeaders());
         var invokeContext = RpcConsumerContext.create(endpoint, content, rpcMonitor);
-        invokeContext.prepare();
+        invokeContext.prepare(rpcOperation(method.getName(), content));
         endpoint.send(content);
         MessageRespondFuture respondFuture = content.getRespondFuture();
         if (this.method.isAsync()) {
@@ -184,7 +185,7 @@ public class RpcRemoteInvoker {
                 .withBody(invokeParams.getBody())
                 .withHeaders(invokeParams.getAllHeaders());
         var invokeContext = RpcConsumerContext.create(endpoint, content, rpcMonitor);
-        invokeContext.prepare();
+        invokeContext.prepare(rpcOperation(method.getName(), content));
         try {
             endpoint.send(content);
             invokeContext.complete();

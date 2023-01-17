@@ -21,7 +21,7 @@ import com.tny.game.net.base.*;
  * @date 2022/4/28 05:10
  **/
 @ProtobufClass
-public class ForwardPoint implements RpcServicerPoint {
+public class ForwardPoint implements RpcAccessPoint {
 
     @Protobuf(order = 1)
     private int serviceTypeId;
@@ -38,8 +38,9 @@ public class ForwardPoint implements RpcServicerPoint {
     public ForwardPoint(RpcServicer servicer) {
         this.serviceType = servicer.getServiceType();
         this.serviceTypeId = this.serviceType.id();
-        if (servicer instanceof RpcServicerPoint) {
-            this.accessId = new RpcAccessId(servicer.getMessagerId());
+        if (servicer instanceof RpcAccessPoint) {
+            var point = (RpcAccessPoint)servicer;
+            this.accessId = new RpcAccessId(point.getMessagerId());
         }
     }
 

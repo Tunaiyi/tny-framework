@@ -46,6 +46,8 @@ public final class MethodControllerHolder extends ControllerHolder {
      */
     private final String name;
 
+    private final String simpleName;
+
     /**
      * 控制器操作配置
      */
@@ -107,6 +109,7 @@ public final class MethodControllerHolder extends ControllerHolder {
             this.executor = executor;
             StringBuilder nameBuilder = new StringBuilder();
             nameBuilder.append(executor.getClass().getSimpleName()).append(".").append(method.getName());
+            simpleName = nameBuilder.toString();
             // 解析参数
             Class<?>[] parameterClasses = method.getJavaMethod().getParameterTypes();
             List<ControllerParamDescription> paramDescriptions = new ArrayList<>();
@@ -162,6 +165,10 @@ public final class MethodControllerHolder extends ControllerHolder {
         } catch (Exception e) {
             throw new IllegalArgumentException(format("{}.{} 方法解析失败", method.getDeclaringClass(), method.getName()), e);
         }
+    }
+
+    public String getSimpleName() {
+        return simpleName;
     }
 
     public MessageMode getMessageMode() {

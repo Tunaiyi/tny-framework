@@ -17,6 +17,7 @@ import com.tny.game.net.base.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
+import com.tny.game.net.rpc.*;
 import com.tny.game.net.transport.*;
 
 import java.util.concurrent.Executor;
@@ -57,6 +58,11 @@ class RpcProviderInvocationContext extends BaseRpcInvocationContext implements R
     @Override
     public MessageSubject getMessageSubject() {
         return message;
+    }
+
+    @Override
+    public RpcInvocationMode getInvocationMode() {
+        return RpcInvocationMode.ENTER;
     }
 
     @Override
@@ -137,6 +143,16 @@ class RpcProviderInvocationContext extends BaseRpcInvocationContext implements R
     }
 
     @Override
+    public boolean completeSilently(ResultCode code, Object body) {
+        if (tryCompleted(null)) {
+            silently = true;
+            onComplete(code, body);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public boolean complete() {
         return complete(ResultCode.SUCCESS);
     }
@@ -190,7 +206,7 @@ class RpcProviderInvocationContext extends BaseRpcInvocationContext implements R
         if (silently) {
             content = null;
         }
-        rpcMonitor.onAfterInvoke(this, content, cause);
+        rpcMonitor.onInvokeResult(this, content, cause);
         if (content != null) {
             RpcMessageAide.send(tunnel, content);
         }

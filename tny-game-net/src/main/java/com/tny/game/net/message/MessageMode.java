@@ -39,9 +39,12 @@ public enum MessageMode {
 
     private final byte option;
 
+    private String mark;
+
     MessageMode(MessageType type, byte option) {
         this.type = type;
         this.option = option;
+        this.mark = name().toLowerCase();
     }
 
     public MessageType getType() {
@@ -61,4 +64,7 @@ public enum MessageMode {
         return null;
     }
 
+    public String getMark() {
+        return mark;
+    }
 }

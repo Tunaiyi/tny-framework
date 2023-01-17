@@ -36,6 +36,8 @@ public class RpcMonitor {
 
     private final List<RpcMonitorAfterInvokeHandler> afterInvokeHandlers;
 
+    private final List<RpcMonitorInvokeResultHandler> invokeResultHandlers;
+
     private final List<RpcMonitorReceiveHandler> receiveHandlers;
 
     private final List<RpcMonitorRelayHandler> relayHandlers;
@@ -43,11 +45,12 @@ public class RpcMonitor {
     private final List<RpcMonitorSendHandler> sendHandlers;
 
     public RpcMonitor() {
-        beforeInvokeHandlers = null;
-        afterInvokeHandlers = null;
-        receiveHandlers = null;
-        relayHandlers = null;
-        sendHandlers = null;
+        beforeInvokeHandlers = List.of();
+        afterInvokeHandlers = List.of();
+        invokeResultHandlers = List.of();
+        receiveHandlers = List.of();
+        relayHandlers = List.of();
+        sendHandlers = List.of();
     }
 
     public RpcMonitor(
@@ -55,9 +58,11 @@ public class RpcMonitor {
             List<RpcMonitorSendHandler> sendHandlers,
             List<RpcMonitorRelayHandler> relayHandlers,
             List<RpcMonitorAfterInvokeHandler> afterInvokeHandlers,
-            List<RpcMonitorBeforeInvokeHandler> beforeInvokeHandlers) {
+            List<RpcMonitorBeforeInvokeHandler> beforeInvokeHandlers,
+            List<RpcMonitorInvokeResultHandler> invokeResultHandler) {
         this.beforeInvokeHandlers = beforeInvokeHandlers == null ? List.of() : List.copyOf(beforeInvokeHandlers);
         this.afterInvokeHandlers = afterInvokeHandlers == null ? List.of() : List.copyOf(afterInvokeHandlers);
+        this.invokeResultHandlers = invokeResultHandler == null ? List.of() : List.copyOf(invokeResultHandler);
         this.receiveHandlers = receiveHandlers == null ? List.of() : List.copyOf(receiveHandlers);
         this.relayHandlers = relayHandlers == null ? List.of() : List.copyOf(relayHandlers);
         this.sendHandlers = sendHandlers == null ? List.of() : List.copyOf(sendHandlers);
@@ -117,10 +122,20 @@ public class RpcMonitor {
         }
     }
 
-    void onAfterInvoke(RpcContext rpcContext, MessageSubject result, Throwable exception) {
+    void onAfterInvoke(RpcContext rpcContext, Throwable exception) {
         for (var handler : afterInvokeHandlers) {
             try {
-                handler.onAfterInvoke(rpcContext, result, exception);
+                handler.onAfterInvoke(rpcContext, exception);
+            } catch (Throwable e) {
+                LOGGER.error("", e);
+            }
+        }
+    }
+
+    void onInvokeResult(RpcContext rpcContext, MessageSubject result, Throwable exception) {
+        for (var handler : invokeResultHandlers) {
+            try {
+                handler.onInvokeResult(rpcContext, result, exception);
             } catch (Throwable e) {
                 LOGGER.error("", e);
             }

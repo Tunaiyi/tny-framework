@@ -11,6 +11,7 @@
 package com.tny.game.net.netty4.network;
 
 import com.tny.game.net.endpoint.*;
+import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.rpc.*;
 import com.tny.game.net.transport.*;
@@ -59,7 +60,7 @@ public abstract class NettyTunnelTest<E extends NetEndpoint<Long>, T extends Bas
     }
 
     @Test
-    void bind() {
+    void bind() throws AuthFailedException {
         NetTunnel<Long> tunnel;
         MockNetEndpoint endpoint;
         TunnelTestInstance<T, ME> object;

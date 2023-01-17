@@ -18,6 +18,8 @@ import com.tny.game.net.message.*;
 import com.tny.game.net.rpc.*;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.*;
+
 import static com.tny.game.common.utils.StringAide.*;
 import static com.tny.game.net.base.configuration.NetUnitNames.*;
 
@@ -54,6 +56,10 @@ public abstract class CommonNetBootstrapSetting implements NetBootstrapSetting {
     private String tunnelIdGenerator = defaultName(NetIdGenerator.class);
 
     private String rpcForwarder = defaultName(RpcForwarder.class);
+
+    private Set<String> readIgnoreHeaders = new HashSet<>();
+
+    private Set<String> writeIgnoreHeaders = new HashSet<>();
 
     protected CommonNetBootstrapSetting() {
     }
@@ -162,6 +168,26 @@ public abstract class CommonNetBootstrapSetting implements NetBootstrapSetting {
 
     public CommonNetBootstrapSetting setForwardable(boolean forwardable) {
         this.forwardable = forwardable;
+        return this;
+    }
+
+    @Override
+    public Set<String> getReadIgnoreHeaders() {
+        return readIgnoreHeaders;
+    }
+
+    @Override
+    public Set<String> getWriteIgnoreHeaders() {
+        return writeIgnoreHeaders;
+    }
+
+    public CommonNetBootstrapSetting setReadIgnoreHeaders(Set<String> readIgnoreHeaders) {
+        this.readIgnoreHeaders = readIgnoreHeaders;
+        return this;
+    }
+
+    public CommonNetBootstrapSetting setWriteIgnoreHeaders(Set<String> writeIgnoreHeaders) {
+        this.writeIgnoreHeaders = writeIgnoreHeaders;
         return this;
     }
 

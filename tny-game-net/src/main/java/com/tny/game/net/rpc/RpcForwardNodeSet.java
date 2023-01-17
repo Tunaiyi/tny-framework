@@ -39,6 +39,6 @@ public interface RpcForwardNodeSet {
      * @param servicer 服务者
      * @return 返回接入点
      */
-    RpcAccess findForwardAccess(RpcServicerPoint servicer);
+    RpcAccess findForwardAccess(RpcAccessPoint servicer);
 
 }

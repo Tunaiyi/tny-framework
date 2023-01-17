@@ -12,6 +12,7 @@ package com.tny.game.net.command.dispatcher;
 
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
+import com.tny.game.net.rpc.*;
 import com.tny.game.net.transport.*;
 
 import static com.tny.game.common.utils.ObjectAide.*;
@@ -39,6 +40,11 @@ class RpcConsumerInvocationContext extends BaseRpcInvocationContext implements R
     @Override
     public MessageSubject getMessageSubject() {
         return content;
+    }
+
+    @Override
+    public RpcInvocationMode getInvocationMode() {
+        return RpcInvocationMode.EXIT;
     }
 
     @Override
@@ -76,11 +82,11 @@ class RpcConsumerInvocationContext extends BaseRpcInvocationContext implements R
 
     @Override
     protected void onComplete() {
-        rpcMonitor.onAfterInvoke(this, content, getCause());
+        rpcMonitor.onInvokeResult(this, content, getCause());
     }
 
     private void onComplete(Message message) {
-        rpcMonitor.onAfterInvoke(this, message, getCause());
+        rpcMonitor.onInvokeResult(this, message, getCause());
     }
 
 }

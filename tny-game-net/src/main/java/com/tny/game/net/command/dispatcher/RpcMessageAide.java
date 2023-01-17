@@ -100,10 +100,24 @@ public class RpcMessageAide {
         return null;
     }
 
+    private static MessageContent putTransitiveHeaders(Message request, MessageContent content) {
+        var headers = request.getAllHeaders();
+        if (headers == null) {
+            return content;
+        }
+        for (MessageHeader<?> header : headers) {
+            if (header.isTransitive()) {
+                content.withHeader(header);
+            }
+        }
+        return content;
+    }
+
     private static MessageContent push(Message request, ResultCode code, Object body) {
         var messageForwardHeader = request.getHeader(MessageHeaderConstants.RPC_FORWARD_HEADER);
         var backForward = createBackForwardHeader(messageForwardHeader);
-        return MessageContents.push(request, code, body).withHeader(backForward);
+        return putTransitiveHeaders(request, MessageContents.push(request, code, body))
+                .withHeader(backForward);
     }
 
     private static MessageContent respond(Message request, ResultCode code, Object body) {
@@ -114,7 +128,7 @@ public class RpcMessageAide {
         }
         var forwardHeader = request.getHeader(MessageHeaderConstants.RPC_FORWARD_HEADER);
         var backForward = createBackForwardHeader(forwardHeader);
-        return MessageContents.respond(request, code, body, toMessage)
+        return putTransitiveHeaders(request, MessageContents.respond(request, code, body, toMessage))
                 .withHeader(backForward);
         //        return send(tunnel, content, backForward == null);
     }

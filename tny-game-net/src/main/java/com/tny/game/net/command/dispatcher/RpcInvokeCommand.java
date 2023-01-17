@@ -11,6 +11,7 @@
 package com.tny.game.net.command.dispatcher;
 
 import com.google.common.base.MoreObjects;
+import com.tny.game.common.exception.*;
 import com.tny.game.common.result.*;
 import com.tny.game.common.runtime.*;
 import com.tny.game.net.base.*;
@@ -68,6 +69,7 @@ public class RpcInvokeCommand extends RpcHandleCommand {
 
     @Override
     protected void onRun() throws Exception {
+        rpcContext.prepare(RpcInvocationContext.rpcOperation(handleContext.getName(), rpcContext.netMessage()));
         // 调用逻辑业务
         this.invoke();
     }
@@ -178,8 +180,6 @@ public class RpcInvokeCommand extends RpcHandleCommand {
         }
         var message = this.rpcContext.netMessage();
         var tunnel = this.rpcContext.netTunnel();
-        var rpcContext = this.handleContext.getRpcContext();
-        rpcContext.prepare();
         var relay = handleContext.isRelay();
         ResultCode code;
         boolean voidable = false;
@@ -232,6 +232,10 @@ public class RpcInvokeCommand extends RpcHandleCommand {
             RpcInvokeException dex = (RpcInvokeException)e;
             DISPATCHER_LOG.error(dex.getMessage(), dex);
             return RpcResults.fail(dex.getCode(), dex.getBody());
+        } else if (e instanceof ResultCodableException) {
+            ResultCodableException dex = (ResultCodableException)e;
+            DISPATCHER_LOG.error(dex.getMessage(), dex);
+            return RpcResults.fail(dex.getCode());
         } else if (e instanceof InvocationTargetException) {
             return this.exceptionResult(((InvocationTargetException)e).getTargetException());
         } else if (e instanceof ExecutionException) {

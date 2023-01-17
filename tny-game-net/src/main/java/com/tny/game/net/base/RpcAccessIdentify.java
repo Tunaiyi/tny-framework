@@ -11,7 +11,6 @@
 package com.tny.game.net.base;
 
 import com.tny.game.common.utils.*;
-import com.tny.game.net.message.*;
 
 import java.util.Objects;
 
@@ -21,7 +20,7 @@ import java.util.Objects;
  * @author Kun Yang
  * @date 2022/4/28 15:11
  **/
-public class RpcAccessIdentify implements RpcServicerPoint, Messager {
+public class RpcAccessIdentify implements RpcAccessPoint {
 
     private static final long RPC_MAX_INDEX = 0xFF;
 
