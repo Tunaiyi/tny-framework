@@ -18,6 +18,8 @@ import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 /**
  * <p>
  *
@@ -27,6 +29,8 @@ import com.tny.game.net.transport.*;
 abstract class CompletableRpcTransactionContext extends BaseRpcTransactionContext implements RpcEnterCompletable {
 
     protected final NetMessage message;
+
+    private final AtomicBoolean running = new AtomicBoolean();
 
     private boolean silently = false;
 
@@ -42,6 +46,11 @@ abstract class CompletableRpcTransactionContext extends BaseRpcTransactionContex
     @Override
     public MessageSubject getMessageSubject() {
         return message;
+    }
+
+    @Override
+    public String toString() {
+        return "RpcContext [" + this.message + "]";
     }
 
     @Override
@@ -149,10 +158,5 @@ abstract class CompletableRpcTransactionContext extends BaseRpcTransactionContex
     abstract void onComplete(MessageContent result, Throwable exception);
 
     abstract void onReturn(MessageContent content);
-
-    @Override
-    public String toString() {
-        return "RpcContext [" + this.message + "]";
-    }
 
 }

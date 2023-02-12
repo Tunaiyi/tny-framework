@@ -81,7 +81,7 @@ public class MessageCommandBox implements Executor {
     }
 
     private Command createCommand(RpcEnterContext rpcContext) {
-        var message = rpcContext.getMessage();
+        var message = rpcContext.netMessage();
         switch (message.getMode()) {
             case PUSH:
             case REQUEST:
