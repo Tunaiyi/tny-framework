@@ -106,4 +106,9 @@ public class RpcRemoteInstanceFactory {
         return this;
     }
 
+    public RpcRemoteInstanceFactory setRpcMonitor(RpcMonitor rpcMonitor) {
+        this.rpcMonitor = rpcMonitor;
+        return this;
+    }
+
 }

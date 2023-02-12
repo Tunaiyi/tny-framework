@@ -14,7 +14,7 @@ import com.tny.game.common.result.*;
 import com.tny.game.common.worker.command.*;
 import org.slf4j.*;
 
-import static com.tny.game.net.command.dispatcher.RpcInvocationContext.*;
+import static com.tny.game.net.command.dispatcher.RpcTransactionContext.*;
 
 /**
  * <p>
@@ -26,13 +26,13 @@ public class RpcRespondCommand extends BaseCommand implements RpcCommand {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(RpcRespondCommand.class);
 
-    private final RpcProviderContext rpcContext;
+    private final RpcEnterContext rpcContext;
 
     private final ResultCode code;
 
     private final Object body;
 
-    public RpcRespondCommand(RpcProviderContext rpcContext, ResultCode code, Object body) {
+    public RpcRespondCommand(RpcEnterContext rpcContext, ResultCode code, Object body) {
         this.rpcContext = rpcContext;
         this.code = code;
         this.body = body;
@@ -42,8 +42,8 @@ public class RpcRespondCommand extends BaseCommand implements RpcCommand {
     protected void action() throws Throwable {
         RpcContexts.setCurrent(rpcContext);
         try {
-            var message = rpcContext.netMessage();
-            rpcContext.prepare(errorOperation(message));
+            var message = rpcContext.getMessage();
+            rpcContext.invoke(errorOperation(message));
             rpcContext.complete(code, body);
         } catch (Throwable cause) {
             rpcContext.complete(cause);

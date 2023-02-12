@@ -8,20 +8,16 @@
  * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-package com.tny.game.net.rpc;
+package com.tny.game.net.message;
+
+import com.tny.game.net.transport.*;
 
 /**
  * <p>
  *
  * @author kgtny
- * @date 2023/1/16 16:42
+ * @date 2023/2/9 20:03
  **/
-public enum RpcInvocationMode {
-    ENTER,
-
-    EXIT,
-
-    //
-    ;
+public interface NetMessager extends Connection, Messager {
 
 }

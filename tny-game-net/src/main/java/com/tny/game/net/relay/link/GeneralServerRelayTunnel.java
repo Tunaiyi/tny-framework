@@ -50,9 +50,11 @@ public class GeneralServerRelayTunnel<UID> extends ServerTunnel<UID, NetSession<
     }
 
     @Override
-    public MessageWriteFuture relay(RpcProviderContext rpcContext, boolean needPromise) {
+    public MessageWriteFuture relay(RpcTransferContext rpcContext, boolean needPromise) {
         MessageWriteFuture promise = needPromise ? new MessageWriteFuture() : null;
-        this.write(rpcContext.netMessage(), promise);
+        rpcContext.transfer(transporter.getLink(), RpcTransactionContext.relayOperation(rpcContext.getMessage()));
+        this.write(rpcContext.getMessage(), promise);
+        rpcContext.completeSilently();
         return promise;
     }
 

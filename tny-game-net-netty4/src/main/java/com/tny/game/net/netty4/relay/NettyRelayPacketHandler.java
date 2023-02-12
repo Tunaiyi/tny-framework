@@ -13,13 +13,12 @@ package com.tny.game.net.netty4.relay;
 import com.tny.game.common.exception.*;
 import com.tny.game.common.result.*;
 import com.tny.game.common.runtime.*;
-import com.tny.game.net.monitor.*;
+import com.tny.game.net.base.*;
 import com.tny.game.net.netty4.network.*;
 import com.tny.game.net.relay.*;
 import com.tny.game.net.relay.link.*;
 import com.tny.game.net.relay.packet.*;
 import com.tny.game.net.relay.packet.arguments.*;
-import com.tny.game.net.rpc.*;
 import com.tny.game.net.transport.*;
 import io.netty.channel.*;
 import io.netty.channel.ChannelHandler.Sharable;
@@ -48,9 +47,12 @@ public class NettyRelayPacketHandler extends ChannelDuplexHandler {
 
     private final RelayMonitor relayMonitor;
 
-    public NettyRelayPacketHandler(NetAccessMode mode, RelayPacketProcessor relayPacketProcessor) {
+    private final NetBootstrapSetting bootstrapSetting;
+
+    public NettyRelayPacketHandler(NetBootstrapSetting bootstrapSetting, RelayPacketProcessor relayPacketProcessor) {
         this.relayPacketProcessor = relayPacketProcessor;
-        this.relayMonitor = new RelayMonitor(mode);
+        this.relayMonitor = new RelayMonitor();
+        this.bootstrapSetting = bootstrapSetting;
     }
 
     @Override

@@ -37,7 +37,7 @@ public class TunnelEventBuses extends BaseEventBuses<TunnelListener> {
     private final BindVoidEventBus<TunnelCloseListener, Tunnel> ON_CLOSE =
             EventBuses.of(TunnelCloseListener.class, TunnelCloseListener::onClose);
 
-    private final BindP1EventBus<TunnelReceiveListener, Tunnel, RpcProviderContext> ON_RECEIVE =
+    private final BindP1EventBus<TunnelReceiveListener, Tunnel, RpcEnterContext> ON_RECEIVE =
             EventBuses.of(TunnelReceiveListener.class, TunnelReceiveListener::onReceive);
 
     private final static TunnelEventBuses eventBuses = new TunnelEventBuses();
@@ -62,7 +62,7 @@ public class TunnelEventBuses extends BaseEventBuses<TunnelListener> {
         return this.ON_CLOSE;
     }
 
-    public BindP1EventBus<TunnelReceiveListener, Tunnel, RpcProviderContext> receiveEvent() {
+    public BindP1EventBus<TunnelReceiveListener, Tunnel, RpcEnterContext> receiveEvent() {
         return ON_RECEIVE;
     }
 

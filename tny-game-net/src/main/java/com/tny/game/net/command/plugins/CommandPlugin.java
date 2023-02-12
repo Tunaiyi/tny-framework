@@ -31,6 +31,6 @@ public interface CommandPlugin<UID, O> {
      * @param context      上下文
      * @throws Exception 异常
      */
-    void execute(Tunnel<UID> communicator, Message message, RpcHandleContext context, O attribute) throws Exception;
+    void execute(Tunnel<UID> communicator, Message message, RpcInvokeContext context, O attribute) throws Exception;
 
 }

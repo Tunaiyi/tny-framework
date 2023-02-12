@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author kgtny
  * @date 2022/12/20 14:43
  **/
-public abstract class BaseRpcInvocationContext implements RpcInvocationContext {
+public abstract class BaseRpcTransactionContext implements RpcTransactionContext {
 
     protected Throwable cause;
 
@@ -29,15 +29,18 @@ public abstract class BaseRpcInvocationContext implements RpcInvocationContext {
 
     private final AtomicBoolean completed = new AtomicBoolean();
 
-    private final AtomicBoolean prepared = new AtomicBoolean();
+    private final AtomicBoolean init = new AtomicBoolean();
 
     private String operationName;
 
-    protected BaseRpcInvocationContext() {
-        this(null);
+    private final boolean async;
+
+    protected BaseRpcTransactionContext(boolean async) {
+        this(async, null);
     }
 
-    protected BaseRpcInvocationContext(Attributes attributes) {
+    protected BaseRpcTransactionContext(boolean async, Attributes attributes) {
+        this.async = async;
         this.attributes = attributes == null ? ContextAttributes.create() : attributes;
     }
 
@@ -51,19 +54,28 @@ public abstract class BaseRpcInvocationContext implements RpcInvocationContext {
         return operationName;
     }
 
-    @Override
-    public boolean prepare(String operationName) {
-        if (prepared.get()) {
+    protected boolean prepare(String operationName) {
+        return prepare(operationName, null);
+    }
+
+    protected boolean prepare(String operationName, Runnable handle) {
+        if (!isValid()) {
+            return false;
+        }
+        if (init.get()) {
             return false;
         }
         if (StringUtils.isBlank(this.operationName)) {
             if (StringUtils.isNotBlank(operationName)) {
                 this.operationName = operationName;
             } else if (this.isError()) {
-                this.operationName = RpcInvocationContext.errorOperation(this.getMessageSubject());
+                this.operationName = RpcTransactionContext.errorOperation(this.getMessageSubject());
             }
         }
-        if (prepared.compareAndSet(false, true)) {
+        if (init.compareAndSet(false, true)) {
+            if (handle != null) {
+                handle.run();
+            }
             this.onPrepare();
             return true;
         }
@@ -84,6 +96,9 @@ public abstract class BaseRpcInvocationContext implements RpcInvocationContext {
     }
 
     protected boolean tryCompleted(Throwable error) {
+        if (!isValid()) {
+            return false;
+        }
         if (completed.compareAndSet(false, true)) {
             this.cause = error;
             this.prepare(null);
@@ -105,8 +120,18 @@ public abstract class BaseRpcInvocationContext implements RpcInvocationContext {
         return cause != null;
     }
 
+    @Override
+    public boolean isAsync() {
+        return async;
+    }
+
     protected abstract void onPrepare();
 
     protected abstract void onComplete();
+
+    @Override
+    public boolean isCompleted() {
+        return completed.get();
+    }
 
 }

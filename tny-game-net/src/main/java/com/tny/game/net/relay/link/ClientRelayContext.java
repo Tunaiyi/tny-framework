@@ -33,6 +33,11 @@ public interface ClientRelayContext {
     long getAppInstanceId();
 
     /**
+     * @return 获取当前服务实例 id
+     */
+    AppType getAppType();
+
+    /**
      * @return 分配 link id
      */
     String createLinkKey(String service);

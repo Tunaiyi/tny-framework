@@ -28,8 +28,6 @@ public class MessageCommandPromise {
 
     private final String name;
 
-    private boolean voidable = false;
-
     private Wait<Object> waiter;
 
     private Object result;
@@ -60,10 +58,6 @@ public class MessageCommandPromise {
         return this.result;
     }
 
-    public boolean isVoidable() {
-        return voidable;
-    }
-
     public Throwable getCause() {
         return this.cause;
     }
@@ -90,13 +84,6 @@ public class MessageCommandPromise {
                 }
             }
         }
-    }
-
-    public void setVoidResult() {
-        this.voidable = true;
-        this.waiter = null;
-        this.result = null;
-        this.done = true;
     }
 
     public void setResult(Object result) {

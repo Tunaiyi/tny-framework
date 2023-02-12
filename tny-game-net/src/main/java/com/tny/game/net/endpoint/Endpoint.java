@@ -10,6 +10,7 @@
  */
 package com.tny.game.net.endpoint;
 
+import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
 
@@ -21,7 +22,7 @@ import java.util.function.Predicate;
  * 终端, 代表通选两端
  * <p>
  */
-public interface Endpoint<UID> extends Communicator<UID>, Sender, Receiver, Executor {
+public interface Endpoint<UID> extends Communicator<UID>, MessageSender, Executor {
 
     /*
      * @return 终端ID

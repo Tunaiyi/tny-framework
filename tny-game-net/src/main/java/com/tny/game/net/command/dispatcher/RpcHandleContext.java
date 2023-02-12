@@ -10,199 +10,28 @@
  */
 package com.tny.game.net.command.dispatcher;
 
-import com.tny.game.common.result.*;
-import com.tny.game.net.annotation.*;
-import com.tny.game.net.base.*;
-import com.tny.game.net.exception.*;
-import com.tny.game.net.message.*;
-import com.tny.game.net.relay.link.*;
-import com.tny.game.net.transport.*;
-import org.slf4j.*;
+import com.tny.game.net.endpoint.*;
 
-import static com.tny.game.common.utils.ObjectAide.*;
+import java.util.concurrent.Executor;
 
 /**
  * <p>
- */
-public class RpcHandleContext {
-
-    public static final Logger LOGGER = LoggerFactory.getLogger(RpcHandleContext.class);
-
-    private final MessageCommandPromise promise;
-
-    private final RpcProviderContext rpcContext;
-
-    private final boolean relay;
-
-    private RelayTunnel<Object> relayTunnel;
-
-    private final RpcForwardHeader forward;
-
-    protected final MethodControllerHolder controller;
-
-    private final NetAppContext appContext;
-
-    private boolean intercept = false;
-
-    public RpcHandleContext(MethodControllerHolder controller, RpcProviderContext rpcContext, NetAppContext appContext) {
-        this.appContext = appContext;
-        this.controller = controller;
-        this.rpcContext = rpcContext;
-        this.promise = new MessageCommandPromise(getName());
-        var message = rpcContext.netMessage();
-        this.forward = message.getHeader(MessageHeaderConstants.RPC_FORWARD_HEADER);
-        this.relay = controller.getMethodAnnotation(RelayTo.class) != null;
-        if (relay) {
-            var tunnel = rpcContext.netTunnel();
-            if (tunnel instanceof RelayTunnel) {
-                relayTunnel = as(tunnel);
-            } else {
-                throw new RpcInvokeException(NetResultCode.SERVER_EXECUTE_EXCEPTION, "not relay tunnel");
-            }
-        }
-    }
+ *
+ * @author kgtny
+ * @date 2022/12/19 16:50
+ **/
+public interface RpcHandleContext extends RpcContext {
 
     /**
-     * @return 获取名字
+     * @return 获取终端
      */
-    public String getName() {
-        return this.controller.getSimpleName();
-    }
-
-    public String getAppType() {
-        return this.appContext.getAppType();
-    }
-
-    public String getScopeType() {
-        return this.appContext.getScopeType();
-    }
-
-    public Message getMessage() {
-        return rpcContext.netMessage();
-    }
-
-    public Tunnel<Object> getTunnel() {
-        return rpcContext.netTunnel();
-    }
-
-    public RpcProviderContext getRpcContext() {
-        return rpcContext;
-    }
-
-    public boolean isRelay() {
-        return relay;
-    }
-
-    public RpcForwardHeader getForward() {
-        return forward;
-    }
-
-    RelayTunnel<Object> relayTunnel() {
-        return relayTunnel;
-    }
-
-    MessagerType getMessagerType() {
-        var forward = this.forward;
-        if (forward != null) {
-            ForwardPoint servicer = forward.getFrom();
-            if (servicer != null) {
-                return servicer.getServiceType();
-            }
-        }
-        return this.getTunnel().getMessagerType();
-    }
+    <U> Endpoint<U> getEndpoint();
 
     /**
-     * @return 获取结果
+     * @return 当前执行器
      */
-    public Object getResult() {
-        return this.promise.getResult();
-    }
-
-    public MethodControllerHolder getController() {
-        return this.controller;
-    }
-
-    protected MessageCommandPromise getPromise() {
-        return this.promise;
-    }
-
-    /**
-     * 设置CommandResult,并中断执行
-     *
-     * @param result 运行结果
-     */
-    public void doneAndIntercept(RpcResult<?> result) {
-        if (!this.intercept) {
-            this.intercept = true;
-            this.setResult(result);
-        }
-    }
-
-    /**
-     * 设置结果码,并中断执行
-     *
-     * @param code 结果码
-     */
-
-    public void doneAndIntercept(ResultCode code) {
-        if (!this.intercept) {
-            this.intercept = true;
-            this.setResult(code);
-        }
-    }
-
-    /**
-     * 设置CommandResult,不中断执行
-     *
-     * @param result 运行结果
-     */
-
-    public void setResult(RpcResult<?> result) {
-        this.promise.setResult(result);
-    }
-
-    /**
-     * 设置结果码,不中断执行
-     *
-     * @param code 结果码
-     */
-    public void setResult(ResultCode code) {
-        this.promise.setResult(code);
-    }
-
-    /**
-     * 设置结果码与消息体,不中断执行
-     *
-     * @param code 结果码
-     * @param body 消息体
-     */
-    public void setResult(ResultCode code, Object body) {
-        this.promise.setResult(RpcResults.result(code, body));
-    }
-
-    /**
-     * 设置运行结果Object,不中断执行
-     *
-     * @param result 消息
-     */
-    public void setResult(Object result) {
-        this.promise.setResult(result);
-    }
-
-    /**
-     * 设置运行结果Object,不中断执行
-     */
-    public void setVoidResult() {
-        this.promise.setVoidResult();
-    }
-
-    public boolean isIntercept() {
-        return this.intercept;
-    }
-
-    public boolean isDone() {
-        return this.isIntercept() || this.getPromise().isDone();
+    default Executor getExecutor() {
+        return getEndpoint();
     }
 
 }

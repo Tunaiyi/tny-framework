@@ -91,7 +91,7 @@ public class RelayClientAutoConfiguration {
     }
 
     @Bean
-    public NettyMessageHandlerFactory relayNettyMessageHandlerFactory() {
+    public NettyMessageHandlerFactory relayMessageHandlerFactory() {
         return new NettyRelayMessageHandlerFactory();
     }
 

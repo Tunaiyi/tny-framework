@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.basics.configuration;
 
 /**
@@ -18,9 +18,11 @@ package com.tny.game.basics.configuration;
  */
 public class BasicsPropertiesConstants {
 
-    public static final String BASICS_PREFIX = "tny.basics";
+    //    public static final String BASICS_PREFIX = "tny.basics";
 
     public static final String BASICS_FEATURE_MANAGER = "tny.game.basics.feature-manager";
+
+    public static final String BASICS_ITEM_DEFAULT_MODEL = "tny.game.basics.item.default-item-model";
 
     public static final String BASICS_TIME_TASK = "tny.game.basics.time-task";
 

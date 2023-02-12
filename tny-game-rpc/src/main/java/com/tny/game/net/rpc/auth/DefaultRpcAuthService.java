@@ -72,10 +72,36 @@ public class DefaultRpcAuthService implements RpcAuthService {
         }
     }
 
+    public enum TestAppType implements AppType {
+
+        TEST(100, "test_rpc_service"),
+        TEST_2(200, "test_2_rpc_service"),
+        ;
+
+        private final int id;
+
+        private final String name;
+
+        TestAppType(int id, String name) {
+            this.id = id;
+            this.name = name;
+        }
+
+        @Override
+        public int id() {
+            return id;
+        }
+
+        @Override
+        public String getAppName() {
+            return name;
+        }
+    }
+
     public enum TestRpcServiceType implements RpcServiceType {
 
-        TEST_SERVICE(100, "test_rpc_service"),
-        TEST_2_SERVICE(200, "test_2_rpc_service"),
+        TEST_SERVICE(100, TestAppType.TEST, "test_rpc_service"),
+        TEST_2_SERVICE(200, TestAppType.TEST_2, "test_2_rpc_service"),
 
         //
         ;
@@ -84,9 +110,12 @@ public class DefaultRpcAuthService implements RpcAuthService {
 
         private final String service;
 
-        TestRpcServiceType(int id, String service) {
+        private final AppType appType;
+
+        TestRpcServiceType(int id, AppType appType, String service) {
             this.id = id;
             this.service = service;
+            this.appType = appType;
             this.register();
         }
 
@@ -99,6 +128,12 @@ public class DefaultRpcAuthService implements RpcAuthService {
         public String getService() {
             return service;
         }
+
+        @Override
+        public AppType getAppType() {
+            return appType;
+        }
+
     }
 
 }

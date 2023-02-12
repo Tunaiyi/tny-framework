@@ -10,9 +10,7 @@
  */
 package com.tny.game.net.relay.link;
 
-import com.tny.game.net.rpc.*;
-
-import java.net.InetSocketAddress;
+import com.tny.game.net.message.*;
 
 /**
  * Client -> Gateway -> GameServer
@@ -32,7 +30,7 @@ import java.net.InetSocketAddress;
  * @author : kgtny
  * @date : 2021/3/1 9:06 下午
  */
-public interface RelayLink {
+public interface RelayLink extends NetMessager {
 
     /**
      * @return 线路 唯一 Id
@@ -65,33 +63,8 @@ public interface RelayLink {
     RelayLinkStatus getStatus();
 
     /**
-     * @return 返回远程地址
-     */
-    InetSocketAddress getRemoteAddress();
-
-    /**
-     * @return 返回本地地址
-     */
-    InetSocketAddress getLocalAddress();
-
-    /**
-     * @return 接入模式
-     */
-    NetAccessMode getAccessMode();
-
-    /**
-     * 关闭
-     */
-    void close();
-
-    /**
      * 关闭
      */
     void disconnect();
-
-    /**
-     * 是否活跃
-     */
-    boolean isActive();
 
 }

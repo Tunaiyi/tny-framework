@@ -48,7 +48,7 @@ public class CommonSession<UID> extends BaseNetEndpoint<UID> implements NetSessi
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                .add("userGroup", this.getUserGroup())
+                .add("userGroup", this.getGroup())
                 .add("userId", this.getUserId())
                 .add("tunnel", this.tunnel())
                 .toString();

@@ -22,13 +22,11 @@ import com.tny.game.net.transport.*;
 import io.netty.channel.*;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.handler.timeout.*;
-import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.*;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.nio.channels.ClosedChannelException;
-import java.util.Collection;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 import static com.tny.game.net.base.NetLogger.*;
@@ -111,25 +109,15 @@ public class NettyMessageHandler extends ChannelDuplexHandler {
         if (object instanceof NetMessage) {
             try {
                 NetMessage message = as(object);
-                ignoreHeaders(message, bootstrapSetting.getReadIgnoreHeaders());
+                RpcMessageAide.ignoreHeaders(message, bootstrapSetting.getReadIgnoreHeaders());
                 NetTunnel<?> tunnel = channel.attr(NettyNetAttrKeys.TUNNEL).get();
-                var rpcContext = RpcProviderContext.create(tunnel, message);
+                var rpcContext = RpcTransactionContext.createEnter(tunnel, message, true);
                 rpcMonitor.onReceive(rpcContext);
                 if (tunnel != null) {
                     tunnel.receive(rpcContext);
                 }
             } catch (Throwable ex) {
                 LOGGER.error("#GameServerHandler#接受请求异常", ex);
-            }
-        }
-    }
-
-    private void ignoreHeaders(NetMessage message, Collection<String> ignoreSet) {
-        if (CollectionUtils.isNotEmpty(ignoreSet)) {
-            if (ignoreSet.contains("*")) {
-                message.removeAllHeaders();
-            } else {
-                message.removeHeaders(ignoreSet);
             }
         }
     }
@@ -142,7 +130,7 @@ public class NettyMessageHandler extends ChannelDuplexHandler {
             }
             if (msg instanceof NetMessage) {
                 var message = (NetMessage)msg;
-                ignoreHeaders(message, bootstrapSetting.getWriteIgnoreHeaders());
+                RpcMessageAide.ignoreHeaders(message, bootstrapSetting.getWriteIgnoreHeaders());
                 Channel channel = context.channel();
                 NetTunnel<?> tunnel = channel.attr(NettyNetAttrKeys.TUNNEL).get();
                 rpcMonitor.onSend(tunnel, message);

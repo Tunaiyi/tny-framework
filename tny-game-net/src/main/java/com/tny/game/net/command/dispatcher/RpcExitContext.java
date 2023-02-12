@@ -10,9 +10,7 @@
  */
 package com.tny.game.net.command.dispatcher;
 
-import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
-import com.tny.game.net.transport.*;
 
 /**
  * <p>
@@ -20,11 +18,7 @@ import com.tny.game.net.transport.*;
  * @author kgtny
  * @date 2022/12/19 17:22
  **/
-public interface RpcConsumerContext extends RpcInvocationContext {
-
-    static RpcConsumerContext create(Endpoint<?> endpoint, MessageContent content, RpcMonitor rpcMonitor) {
-        return new RpcConsumerInvocationContext(endpoint, content, rpcMonitor);
-    }
+public interface RpcExitContext extends RpcInvocationContext {
 
     boolean complete(Message message);
 

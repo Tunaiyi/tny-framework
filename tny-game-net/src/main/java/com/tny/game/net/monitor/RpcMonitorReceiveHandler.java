@@ -20,6 +20,6 @@ import com.tny.game.net.command.dispatcher.*;
  **/
 public interface RpcMonitorReceiveHandler {
 
-    void onReceive(RpcProviderContext rpcContext);
+    void onReceive(RpcTransactionContext rpcContext);
 
 }

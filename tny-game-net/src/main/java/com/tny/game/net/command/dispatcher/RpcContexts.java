@@ -24,11 +24,11 @@ import com.tny.game.net.endpoint.*;
  */
 public class RpcContexts {
 
-    private static final ThreadLocal<RpcProviderContext> LOCAL_CONTEXT = new ThreadLocal<>();
+    private static final ThreadLocal<RpcEnterContext> LOCAL_CONTEXT = new ThreadLocal<>();
 
-    private static final RpcProviderContext EMPTY = new RpcProviderInvocationContext(null, null, ContextAttributes.empty());
+    private static final RpcEnterContext EMPTY = new RpcEnterInvocationContext(null, null, false, ContextAttributes.empty());
 
-    private static RpcProviderContext empty() {
+    private static RpcEnterContext empty() {
         return EMPTY;
     }
 
@@ -37,11 +37,10 @@ public class RpcContexts {
      *
      * @return 获取当前线程正在执行的控制信息
      */
-    public static RpcContext current() {
+    public static RpcHandleContext current() {
         var info = LOCAL_CONTEXT.get();
         if (info == null) {
-            info = RpcContexts.empty();
-            LOCAL_CONTEXT.set(info);
+            return RpcContexts.empty();
         }
         return info;
     }
@@ -53,16 +52,18 @@ public class RpcContexts {
         return current().getEndpoint();
     }
 
-    static void setCurrent(RpcProviderContext context) {
-        RpcContext info = LOCAL_CONTEXT.get();
-        if (info == null || info.isEmpty()) {
+    static void setCurrent(RpcEnterContext context) {
+        var info = LOCAL_CONTEXT.get();
+        if (context.isValid() && (info == null || !info.isValid())) {
+            context.resume();
             LOCAL_CONTEXT.set(context);
         }
     }
 
     static void clear() {
-        RpcContext info = LOCAL_CONTEXT.get();
-        if (info != null && !info.isEmpty()) {
+        var info = LOCAL_CONTEXT.get();
+        if (info != null && info.isValid()) {
+            info.suspend();
             LOCAL_CONTEXT.set(RpcContexts.empty());
         }
     }

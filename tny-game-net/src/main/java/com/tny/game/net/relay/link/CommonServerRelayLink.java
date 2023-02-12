@@ -10,6 +10,7 @@
  */
 package com.tny.game.net.relay.link;
 
+import com.tny.game.net.base.*;
 import com.tny.game.net.relay.packet.*;
 import com.tny.game.net.relay.packet.arguments.*;
 import com.tny.game.net.rpc.*;
@@ -22,8 +23,8 @@ import com.tny.game.net.rpc.*;
  */
 public class CommonServerRelayLink extends BaseRelayLink implements ServerRelayLink {
 
-    public CommonServerRelayLink(RelayTransporter transporter, String service, long instanceId, String key) {
-        super(NetAccessMode.CLIENT, key, service, instanceId, transporter);
+    public CommonServerRelayLink(RelayTransporter transporter, RpcServiceType serviceType, String service, long instanceId, String key) {
+        super(NetAccessMode.SERVER, key, serviceType, service, instanceId, transporter);
     }
 
     @Override

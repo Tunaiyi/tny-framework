@@ -85,8 +85,8 @@ public class NetAutoConfiguration {
     }
 
     @Bean
-    public NettyMessageHandlerFactory defaultNettyMessageHandlerFactory() {
-        return new DefaultNettyMessageHandlerFactory();
+    public NettyMessageHandlerFactory defaultMessageHandlerFactory() {
+        return new DefaultMessageHandlerFactory();
     }
 
     @Bean
@@ -220,11 +220,14 @@ public class NetAutoConfiguration {
     public RpcMonitor rpcMonitor(
             List<RpcMonitorReceiveHandler> receiveHandlers,
             List<RpcMonitorSendHandler> sendHandlers,
-            List<RpcMonitorRelayHandler> relayHandlers,
-            List<RpcMonitorAfterInvokeHandler> afterInvokeHandlers,
+            List<RpcMonitorTransferHandler> relayHandlers,
+            List<RpcMonitorResumeExecuteHandler> resumeExecuteHandlers,
+            List<RpcMonitorSuspendExecuteHandler> suspendExecuteHandlers,
             List<RpcMonitorBeforeInvokeHandler> beforeInvokeHandlers,
-            List<RpcMonitorInvokeResultHandler> invokeResultHandlers) {
-        return new RpcMonitor(receiveHandlers, sendHandlers, relayHandlers, afterInvokeHandlers, beforeInvokeHandlers, invokeResultHandlers);
+            List<RpcMonitorAfterInvokeHandler> afterInvokeHandlers) {
+        return new RpcMonitor(receiveHandlers, sendHandlers, relayHandlers,
+                resumeExecuteHandlers, suspendExecuteHandlers,
+                beforeInvokeHandlers, afterInvokeHandlers);
     }
 
     @Bean

@@ -10,6 +10,8 @@
  */
 package com.tny.game.net.command.dispatcher;
 
+import org.slf4j.*;
+
 /**
  * <p>
  *
@@ -18,16 +20,14 @@ package com.tny.game.net.command.dispatcher;
  **/
 public abstract class RpcHandleCommand implements RpcCommand {
 
-    protected final RpcProviderContext rpcContext;
+    public static final Logger LOGGER = LoggerFactory.getLogger(RpcHandleCommand.class);
+
+    protected final RpcEnterContext rpcContext;
 
     private boolean start;
 
-    public RpcHandleCommand(RpcProviderContext rpcContext) {
+    public RpcHandleCommand(RpcEnterContext rpcContext) {
         this.rpcContext = rpcContext;
-    }
-
-    public RpcProviderContext getRpcContext() {
-        return rpcContext;
     }
 
     @Override
@@ -38,7 +38,6 @@ public abstract class RpcHandleCommand implements RpcCommand {
                 return;
             }
             RpcContexts.setCurrent(rpcContext);
-            this.onTickStart();
             if (!this.start) {
                 try {
                     // 调用逻辑业务
@@ -51,11 +50,12 @@ public abstract class RpcHandleCommand implements RpcCommand {
                 this.onTick();
             }
         } catch (Throwable e) {
+            LOGGER.error("{} execute exception", this.getName(), e);
             cause = e;
             this.onException(e);
         } finally {
             try {
-                onTickEnd(cause);
+                onEndTick(cause);
                 if (this.isDone()) {
                     onDone(cause);
                 }
@@ -65,7 +65,7 @@ public abstract class RpcHandleCommand implements RpcCommand {
         }
     }
 
-    protected abstract void onTickStart();
+    protected abstract void onStartTick();
 
     protected abstract void onRun() throws Exception;
 
@@ -73,7 +73,7 @@ public abstract class RpcHandleCommand implements RpcCommand {
 
     protected abstract void onTick();
 
-    protected abstract void onTickEnd(Throwable cause);
+    protected abstract void onEndTick(Throwable cause);
 
     protected abstract void onException(Throwable cause);
 

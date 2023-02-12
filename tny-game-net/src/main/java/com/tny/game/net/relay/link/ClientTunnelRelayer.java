@@ -46,12 +46,11 @@ public class ClientTunnelRelayer {
         return service;
     }
 
-    public MessageWriteFuture relay(ClientRelayTunnel<?> tunnel, RpcProviderContext rpcContext, MessageWriteFuture promise) {
+    public MessageWriteFuture relay(ClientRelayTunnel<?> tunnel, RpcTransferContext rpcContext, MessageWriteFuture promise) {
         ClientRelayLink link = allot(tunnel);
-        var message = rpcContext.netMessage();
+        var message = rpcContext.getMessage();
         if (link != null && link.isActive()) {
-            var rpcMonitor = rpcContext.rpcMonitor();
-            rpcMonitor.onRelay(tunnel, link, message);
+            rpcContext.transfer(link, RpcTransactionContext.relayOperation(message));
             var future = link.relay(tunnel, message, promise);
             rpcContext.completeSilently();
             return future;

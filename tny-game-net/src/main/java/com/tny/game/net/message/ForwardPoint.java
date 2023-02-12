@@ -75,7 +75,7 @@ public class ForwardPoint implements RpcAccessPoint {
         return accessId;
     }
 
-    public boolean isAccurately() {
+    public boolean isAppointed() {
         return this.accessId != null;
     }
 

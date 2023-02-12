@@ -43,7 +43,7 @@ public interface MessageDispatcher {
      * @param context rpc上下文
      * @return 分派的命令
      */
-    Command dispatch(RpcProviderContext context) throws RpcInvokeException;
+    Command dispatch(RpcEnterContext context) throws RpcInvokeException;
 
     /**
      * 添加请求派发错误监听器
