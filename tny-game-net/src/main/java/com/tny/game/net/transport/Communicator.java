@@ -20,20 +20,13 @@ import com.tny.game.net.message.*;
  * 具有用户标识, 有通讯状态的对象.
  * Created by Kun Yang on 2017/3/26.
  */
-public interface Communicator<UID> extends Connection, Messager {
+public interface Communicator<UID> extends NetMessager {
 
     /**
      * @return 用户ID
      */
     default UID getUserId() {
         return this.getCertificate().getUserId();
-    }
-
-    /**
-     * @return 用户组
-     */
-    default String getUserGroup() {
-        return this.getCertificate().getMessagerType().getGroup();
     }
 
     @Override

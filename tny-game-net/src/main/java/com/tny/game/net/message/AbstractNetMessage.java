@@ -77,7 +77,7 @@ public abstract class AbstractNetMessage extends AttributeHolder implements NetM
     }
 
     @Override
-    public <H extends MessageHeader<H>> MessageHeader<H> putHeaderIfAbsent(MessageHeader<?> header) {
+    public <H extends MessageHeader<H>> MessageHeader<H> putHeaderIfAbsent(MessageHeader<H> header) {
         return head.putHeaderIfAbsent(header);
     }
 

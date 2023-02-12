@@ -32,11 +32,11 @@ public class RpcServiceNode implements RpcInvokeNode, RpcForwardNode {
 
     private volatile List<RpcServiceAccess> orderAccessPoints = ImmutableList.of();
 
-    private final RpcServiceSet service;
+    private final RpcServiceNodeSet service;
 
     private ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
 
-    public RpcServiceNode(int serverId, RpcServiceSet service) {
+    public RpcServiceNode(int serverId, RpcServiceNodeSet service) {
         this.serverId = serverId;
         this.service = service;
     }
@@ -47,7 +47,7 @@ public class RpcServiceNode implements RpcInvokeNode, RpcForwardNode {
     }
 
     @Override
-    public RpcServiceType getServiceType() {
+    public MessagerType getServiceType() {
         return service.getServiceType();
     }
 

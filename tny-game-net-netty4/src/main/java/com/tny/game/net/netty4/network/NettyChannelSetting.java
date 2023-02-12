@@ -29,7 +29,7 @@ public class NettyChannelSetting {
 
     private NetPacketCodecSetting decoder;
 
-    private String messageHandlerFactory = defaultName(NettyMessageHandlerFactory.class);
+    private String messageHandlerFactory = lowerCamelName(DefaultMessageHandlerFactory.class);
 
     private String tunnelFactory = defaultName(NettyTunnelFactory.class);
 

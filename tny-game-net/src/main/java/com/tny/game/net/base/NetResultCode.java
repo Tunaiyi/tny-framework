@@ -16,9 +16,6 @@ public enum NetResultCode implements ResultCode {
 
     EMPTY(0, "无处理", ResultLevel.GENERAL),
 
-    //	/** 请求处理成功 100*/
-    //	SUCCESS(ResultCode.SUCCESS_CODE, "请求处理成功", ResultCodeType.GENERAL),
-
     /**
      * 服务端返回响应编码响应异常(不断开连接)
      */
@@ -90,11 +87,7 @@ public enum NetResultCode implements ResultCode {
      * 服务端执行业务异常
      */
     SERVER_EXECUTE_EXCEPTION(202, "服务端执行业务异常", ResultLevel.GENERAL),
-    /**
-     * 请求模块不存在
-     */
-    @Deprecated
-    SERVER_NO_SUCH_MODULE(204, "请求模块不存在", ResultLevel.WARN),
+
     /**
      * 请求操作不存在
      */

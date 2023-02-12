@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.net.base;
 
 import com.tny.game.common.enums.*;
@@ -24,12 +24,16 @@ public class RpcServiceTypes extends ClassImporter {
     public static final EnumerableSymbol<RpcServiceType, String> SERVICE_SYMBOL = EnumerableSymbol
             .symbolOf(RpcServiceType.class, "service", RpcServiceType::getService);
 
+    public static final EnumerableSymbol<RpcServiceType, AppType> APP_TYPE_SYMBOL = EnumerableSymbol
+            .symbolOf(RpcServiceType.class, "appType", RpcServiceType::getAppType);
+
     protected static EnumeratorHolder<RpcServiceType> holder = new EnumeratorHolder<RpcServiceType>() {
 
         @Override
         protected void postRegister(RpcServiceType object) {
             super.postRegister(object);
             putAndCheckSymbol(SERVICE_SYMBOL, object);
+            putAndCheckSymbol(APP_TYPE_SYMBOL, object);
         }
 
     };
@@ -42,15 +46,19 @@ public class RpcServiceTypes extends ClassImporter {
     }
 
     public static <T extends RpcServiceType> T check(String key) {
-        return holder.check(key, "获取 {} RpcAccessType 不存在", key);
+        return holder.check(key, "获取 {} RpcServiceType 不存在", key);
     }
 
     public static <T extends RpcServiceType> T check(int id) {
-        return holder.check(id, "获取 ID为 {} 的 RpcAccessType 不存在", id);
+        return holder.check(id, "获取 ID为 {} 的 RpcServiceType 不存在", id);
     }
 
     public static <T extends RpcServiceType> T checkService(String service) {
-        return holder.checkBySymbol(SERVICE_SYMBOL, service, "获取 service 为 {} 的 RpcAccessType 不存在", service);
+        return holder.checkBySymbol(SERVICE_SYMBOL, service, "获取 service 为 {} 的 RpcServiceType 不存在", service);
+    }
+
+    public static <T extends RpcServiceType> T checkAppType(AppType appType) {
+        return holder.checkBySymbol(APP_TYPE_SYMBOL, appType, "获取 appType 为 {} 的 RpcServiceType 不存在", appType);
     }
 
     public static <T extends RpcServiceType> T of(int id) {
@@ -63,6 +71,10 @@ public class RpcServiceTypes extends ClassImporter {
 
     public static <T extends RpcServiceType> T ofService(String service) {
         return holder.ofBySymbol(SERVICE_SYMBOL, service);
+    }
+
+    public static <T extends RpcServiceType> T ofAppType(AppType appType) {
+        return holder.ofBySymbol(APP_TYPE_SYMBOL, appType);
     }
 
     public static <T extends RpcServiceType> Optional<T> option(int id) {

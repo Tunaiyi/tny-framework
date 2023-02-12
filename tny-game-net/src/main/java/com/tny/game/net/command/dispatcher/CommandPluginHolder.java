@@ -67,7 +67,7 @@ public class CommandPluginHolder {
         }
     }
 
-    public void invokePlugin(Tunnel<?> tunnel, Message message, RpcHandleContext context) throws Exception {
+    public void invokePlugin(Tunnel<?> tunnel, Message message, RpcInvokeContext context) throws Exception {
         if (DISPATCHER_LOG.isDebugEnabled()) {
             DISPATCHER_LOG.debug("调用 {}.{} | 触发插件 {}", this.controller.getControllerClass(), this.controller.getName(), this.plugin.getClass());
         }

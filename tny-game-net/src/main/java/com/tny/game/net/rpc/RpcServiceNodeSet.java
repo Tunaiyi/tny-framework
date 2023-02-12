@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
  * @author : kgtny
  * @date : 2021/11/3 3:31 下午
  */
-public class RpcServiceSet implements RpcInvokeNodeSet, RpcForwardNodeSet {
+public class RpcServiceNodeSet implements RpcInvokeNodeSet, RpcForwardNodeSet {
 
     private final RpcServiceType serviceType;
 
@@ -35,7 +35,7 @@ public class RpcServiceSet implements RpcInvokeNodeSet, RpcForwardNodeSet {
 
     private final AtomicInteger version = new AtomicInteger(0);
 
-    public RpcServiceSet(RpcServiceType serviceType) {
+    public RpcServiceNodeSet(RpcServiceType serviceType) {
         this.serviceType = serviceType;
     }
 
@@ -77,12 +77,12 @@ public class RpcServiceSet implements RpcInvokeNodeSet, RpcForwardNodeSet {
     }
 
     @Override
-    public RpcAccess findForwardAccess(RpcAccessPoint servicer) {
-        RpcServiceNode remoteNode = remoteNodeMap.get(servicer.getServerId());
+    public RpcAccess findForwardAccess(RpcAccessPoint accessPoint) {
+        RpcServiceNode remoteNode = remoteNodeMap.get(accessPoint.getServerId());
         if (remoteNode == null) {
             return null;
         }
-        RpcServiceAccess access = remoteNode.getForwardAccess(servicer.getMessagerId());
+        RpcServiceAccess access = remoteNode.getForwardAccess(accessPoint.getMessagerId());
         if (access != null) {
             return access;
         }

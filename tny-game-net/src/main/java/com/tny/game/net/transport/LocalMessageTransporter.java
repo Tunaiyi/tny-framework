@@ -85,7 +85,7 @@ public class LocalMessageTransporter implements MessageTransporter {
     @Override
     public MessageWriteFuture write(Message message, MessageWriteFuture awaiter) throws NetException {
         if (this.tunnel != null) {
-            var context = RpcProviderContext.create(this.tunnel, as(message));
+            var context = RpcTransactionContext.createEnter(this.tunnel, as(message), true);
             this.tunnel.receive(context);
             if (awaiter != null) {
                 awaiter.complete(null);

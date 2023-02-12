@@ -58,14 +58,16 @@ public class NettyRelayMessageHandler extends NettyMessageHandler {
     private void relayMessage(ChannelHandlerContext context, RelayMessage message) {
         Channel channel = context.channel();
         NetTunnel<?> tunnel = channel.attr(NettyNetAttrKeys.TUNNEL).get();
-        var rpcContext = RpcProviderContext.create(tunnel, message);
+        var rpcContext = RpcTransactionContext.createRelay(tunnel, message, rpcMonitor, false);
         rpcMonitor.onReceive(rpcContext);
         if (tunnel instanceof NetRelayTunnel) {
             RelayTunnel<?> relayTunnel = as(tunnel);
             relayTunnel.relay(rpcContext, false);
         } else {
             message.release();
-            throw new RelayException(NetResultCode.SERVER_ERROR, "tunnel cannot relay");
+            var cause = new RelayException(NetResultCode.SERVER_ERROR, "tunnel cannot relay");
+            rpcContext.complete(cause);
+            throw cause;
         }
     }
 

@@ -24,7 +24,7 @@ import org.slf4j.*;
 import java.util.concurrent.TimeUnit;
 
 import static com.tny.game.common.utils.ObjectAide.*;
-import static com.tny.game.net.command.dispatcher.RpcInvocationContext.*;
+import static com.tny.game.net.command.dispatcher.RpcTransactionContext.*;
 
 /**
  * <p>
@@ -113,9 +113,9 @@ public class RpcRemoteInvoker {
         throw new RpcInvokeException(NetResultCode.REMOTE_EXCEPTION, "返回类型错误");
     }
 
-    private Object getReturnFuture(Endpoint<?> endpoint, RpcConsumerContext context, MessageRespondFuture future) {
+    private Object getReturnFuture(Endpoint<?> endpoint, RpcExitContext context, MessageRespondFuture future) {
         RpcPromise<Object> rpcFuture = null;
-        Object returnFuture = null;
+        Object returnFuture;
         if (this.method.getReturnClass().isAssignableFrom(MessageRespondFuture.class)) {
             returnFuture = future;
         } else {
@@ -127,7 +127,7 @@ public class RpcRemoteInvoker {
         return returnFuture;
     }
 
-    private void handleMessageResult(Endpoint<?> endpoint, RpcConsumerContext context, Message message, Throwable cause,
+    private void handleMessageResult(Endpoint<?> endpoint, RpcExitContext context, Message message, Throwable cause,
             RpcPromise<Object> rpcFuture) {
         if (cause != null) {
             if (rpcFuture != null) {
@@ -146,8 +146,8 @@ public class RpcRemoteInvoker {
         RequestContent content = MessageContents.request(protocol(), params.getParams());
         content.willRespondFuture(timeout)
                 .withHeaders(params.getAllHeaders());
-        var invokeContext = RpcConsumerContext.create(endpoint, content, rpcMonitor);
-        invokeContext.prepare(rpcOperation(method.getName(), content));
+        var invokeContext = RpcTransactionContext.createExit(endpoint, content, this.method.isAsync(), rpcMonitor);
+        invokeContext.invoke(rpcOperation(method.getName(), content));
         endpoint.send(content);
         MessageRespondFuture respondFuture = content.getRespondFuture();
         if (this.method.isAsync()) {
@@ -184,9 +184,10 @@ public class RpcRemoteInvoker {
         MessageContent content = MessageContents.push(protocol(), code)
                 .withBody(invokeParams.getBody())
                 .withHeaders(invokeParams.getAllHeaders());
-        var invokeContext = RpcConsumerContext.create(endpoint, content, rpcMonitor);
-        invokeContext.prepare(rpcOperation(method.getName(), content));
+        var invokeContext = RpcTransactionContext.createExit(endpoint, content, false, rpcMonitor);
+
         try {
+            invokeContext.invoke(rpcOperation(method.getName(), content));
             endpoint.send(content);
             invokeContext.complete();
             if (this.method.isAsync()) {

@@ -32,8 +32,8 @@ public class TaskReceiverSchedulerPlugin implements VoidCommandPlugin<Long> {
     }
 
     @Override
-    public void doExecute(Tunnel<Long> communicator, Message message, RpcHandleContext context) throws Exception {
-        TaskReceiverType type = properties.getPlugin().getReceiverType(communicator.getUserGroup());
+    public void doExecute(Tunnel<Long> communicator, Message message, RpcInvokeContext context) throws Exception {
+        TaskReceiverType type = properties.getPlugin().getReceiverType(communicator.getGroup());
         if (type != null) {
             try {
                 this.timeTaskService.checkTask(communicator.getUserId(), type);

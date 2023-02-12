@@ -16,7 +16,6 @@ import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.relay.link.*;
 import com.tny.game.net.relay.packet.*;
-import com.tny.game.net.transport.*;
 import org.slf4j.*;
 
 import java.util.EnumSet;
@@ -116,11 +115,11 @@ public class NetLogger {
 
     private static final String RELAY_SEND_LOGGER_NAME = "com.tny.game.net.relay.send.{}.{}";
 
-    private static Logger getMessageSendLogger(String service, Message message) {
+    private static Logger getMessageSendLogger(String service, MessageSubject message) {
         return NetLoggerGroup.ofRpc(service).forSendMessage(message.getMode());
     }
 
-    private static Logger getMessageReceiveLogger(String service, Message message) {
+    private static Logger getMessageReceiveLogger(String service, MessageSubject message) {
         return NetLoggerGroup.ofRpc(service).forReceiveMessage(message.getMode());
     }
 
@@ -132,17 +131,17 @@ public class NetLogger {
         return NetLoggerGroup.ofRelay(service).forReceiveMessage(packet.getType());
     }
 
-    public static void logSend(Tunnel<?> tunnel, Message message) {
-        Logger logger = getMessageSendLogger(tunnel.getUserGroup(), message);
+    public static void logSend(NetMessager messager, MessageSubject message) {
+        Logger logger = getMessageSendLogger(messager.getGroup(), message);
         if (logger != null && logger.isDebugEnabled()) {
-            logger.debug("# Tunnel {} [发送] =>> Message : {}", tunnel, message);
+            logger.debug("# {} [发送] =>> Message : {}", messager, message);
         }
     }
 
-    public static void logReceive(Tunnel<?> tunnel, Message message) {
-        Logger logger = getMessageReceiveLogger(tunnel.getUserGroup(), message);
+    public static void logReceive(NetMessager messager, MessageSubject message) {
+        Logger logger = getMessageReceiveLogger(messager.getGroup(), message);
         if (logger != null && logger.isDebugEnabled()) {
-            logger.debug("# Tunnel {} [接收] <<= Message : {}", tunnel, message);
+            logger.debug("# {} [接收] <<= Message : {}", messager, message);
         }
     }
 

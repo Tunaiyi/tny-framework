@@ -50,7 +50,7 @@ public class DefaultMessageDispatcherContext implements NetMessageDispatcherCont
     /**
      * 认证器列表
      */
-    private final Map<Object, AuthenticationValidator<?, ?>> authValidators = new CopyOnWriteMap<>();
+    private final Map<Object, AuthenticationValidator<?, ?>> authenticationValidators = new CopyOnWriteMap<>();
 
     /**
      * 派发错误监听器
@@ -75,7 +75,7 @@ public class DefaultMessageDispatcherContext implements NetMessageDispatcherCont
     public AuthenticationValidator<?, ?> getValidator(Class<? extends AuthenticationValidator<?, ?>> validatorClass) {
         AuthenticationValidator<Object, ?> validator = null;
         if (validatorClass != null) {
-            validator = as(this.authValidators.get(validatorClass));
+            validator = as(this.authenticationValidators.get(validatorClass));
             Asserts.checkNotNull(validator, "{} 认证器不存在", validatorClass);
         }
         return validator;
@@ -83,7 +83,7 @@ public class DefaultMessageDispatcherContext implements NetMessageDispatcherCont
 
     @Override
     public AuthenticationValidator<?, ?> getValidator(Object protocol) {
-        return ObjectAide.<AuthenticationValidator<Object, ?>>as(this.authValidators.getOrDefault(protocol, this.defaultValidator));
+        return ObjectAide.<AuthenticationValidator<Object, ?>>as(this.authenticationValidators.getOrDefault(protocol, this.defaultValidator));
     }
 
     @Override
@@ -127,11 +127,11 @@ public class DefaultMessageDispatcherContext implements NetMessageDispatcherCont
                 this.defaultValidator = provider;
             } else {
                 for (int value : protocol.protocol()) {
-                    putObject(this.authValidators, value, provider);
+                    putObject(this.authenticationValidators, value, provider);
                 }
             }
         }
-        putObject(this.authValidators, provider.getClass(), provider);
+        putObject(this.authenticationValidators, provider.getClass(), provider);
     }
 
     /**

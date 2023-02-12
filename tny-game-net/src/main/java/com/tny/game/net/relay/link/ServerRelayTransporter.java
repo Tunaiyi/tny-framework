@@ -20,6 +20,8 @@ import com.tny.game.net.transport.*;
  */
 public interface ServerRelayTransporter extends MessageTransporter {
 
+    ServerRelayLink getLink();
+
     /**
      * 切换 link
      *

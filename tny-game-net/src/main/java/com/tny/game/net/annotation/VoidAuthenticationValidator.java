@@ -26,7 +26,7 @@ public class VoidAuthenticationValidator<T> implements AuthenticationValidator<T
 
     @Override
     public Certificate<T> validate(Tunnel<T> communicator, Message message, CertificateFactory<T> factory)
-            throws RpcInvokeException, AuthFailedException {
+            throws AuthFailedException {
         throw new UnsupportedOperationException();
     }
 

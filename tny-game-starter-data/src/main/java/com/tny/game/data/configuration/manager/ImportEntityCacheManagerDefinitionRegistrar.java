@@ -18,6 +18,7 @@ import com.tny.game.data.*;
 import com.tny.game.data.cache.*;
 import com.tny.game.data.storage.*;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.*;
 import org.springframework.beans.factory.support.*;
 import org.springframework.core.type.AnnotationMetadata;
 
@@ -33,6 +34,8 @@ import static com.tny.game.common.utils.ObjectAide.*;
  * @date : 2021/9/17 5:42 下午
  */
 public class ImportEntityCacheManagerDefinitionRegistrar extends ImportConfigurationBeanDefinitionRegistrar {
+
+    public static final Logger LOGGER = LoggerFactory.getLogger(ImportEntityCacheManagerDefinitionRegistrar.class);
 
     private final static DynamicEntityCacheManagerFactory entityCacheManagerFactory = new DynamicEntityCacheManagerFactory();
 
@@ -72,9 +75,10 @@ public class ImportEntityCacheManagerDefinitionRegistrar extends ImportConfigura
 
             //			entityCacheManager.getClass()
 
-            System.out.println(entityCacheManager.getClass());
+            LOGGER.info("Load EntityCacheManager {}", entityCacheManager.getClass());
             for (Class<?> c : ReflectAide.getComponentType(entityCacheManager.getClass(), EntityCacheManager.class)) {
                 System.out.println("T " + c);
+                LOGGER.info("Load EntityCacheManager {} for {}", entityCacheManager.getClass(), c);
             }
 
             Class<EntityCacheManager<?, ?>> managerClass = as(entityCacheManager.getClass());

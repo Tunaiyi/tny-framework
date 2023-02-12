@@ -43,7 +43,7 @@ public class DefaultRpcForwarder implements RpcForwarder {
     public RpcForwardAccess forward(Message message, RpcForwardHeader forwardHeader) {
         ForwardPoint to = forwardHeader.getTo();
         RpcServiceType serviceType = to.getServiceType();
-        if (to.isAccurately()) {
+        if (to.isAppointed()) {
             RpcForwardNodeSet forwarderSet = forwardManager.findForwardNodeSet(serviceType);
             if (forwarderSet == null) {
                 return null;

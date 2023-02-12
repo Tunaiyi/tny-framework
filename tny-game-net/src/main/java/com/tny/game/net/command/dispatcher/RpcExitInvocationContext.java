@@ -15,26 +15,35 @@ import com.tny.game.net.message.*;
 import com.tny.game.net.rpc.*;
 import com.tny.game.net.transport.*;
 
-import static com.tny.game.common.utils.ObjectAide.*;
-
 /**
  * <p>
  *
  * @author kgtny
  * @date 2022/12/21 02:44
  **/
-class RpcConsumerInvocationContext extends BaseRpcInvocationContext implements RpcConsumerContext {
+class RpcExitInvocationContext extends BaseRpcTransactionContext implements RpcExitContext {
 
     private final MessageContent content;
 
-    private final RpcMonitor rpcMonitor;
-
     private final Endpoint<?> endpoint;
 
-    public RpcConsumerInvocationContext(Endpoint<?> endpoint, MessageContent content, RpcMonitor rpcMonitor) {
+    private final RpcMonitor rpcMonitor;
+
+    RpcExitInvocationContext(Endpoint<?> endpoint, MessageContent content, boolean async, RpcMonitor rpcMonitor) {
+        super(async);
         this.content = content;
         this.endpoint = endpoint;
         this.rpcMonitor = rpcMonitor;
+    }
+
+    @Override
+    public boolean invoke(String operationName) {
+        return prepare(operationName);
+    }
+
+    @Override
+    public RpcTransactionMode getMode() {
+        return RpcTransactionMode.EXIT;
     }
 
     @Override
@@ -43,18 +52,13 @@ class RpcConsumerInvocationContext extends BaseRpcInvocationContext implements R
     }
 
     @Override
-    public RpcInvocationMode getInvocationMode() {
-        return RpcInvocationMode.EXIT;
+    public boolean isValid() {
+        return true;
     }
 
     @Override
-    public <U> Endpoint<U> getEndpoint() {
-        return as(endpoint);
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return false;
+    public NetMessager getMessager() {
+        return endpoint;
     }
 
     @Override
@@ -82,11 +86,11 @@ class RpcConsumerInvocationContext extends BaseRpcInvocationContext implements R
 
     @Override
     protected void onComplete() {
-        rpcMonitor.onInvokeResult(this, content, getCause());
+        rpcMonitor.onAfterInvoke(this, content, getCause());
     }
 
     private void onComplete(Message message) {
-        rpcMonitor.onInvokeResult(this, message, getCause());
+        rpcMonitor.onAfterInvoke(this, message, getCause());
     }
 
 }

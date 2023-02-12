@@ -8,23 +8,18 @@
  * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-package com.tny.game.net.netty4.network;
-
-import com.tny.game.common.lifecycle.unit.annotation.*;
-import com.tny.game.net.base.*;
+package com.tny.game.net.netty4.apm.skywalking;
 
 /**
  * <p>
  *
  * @author kgtny
- * @date 2022/11/14 03:54
+ * @date 2023/2/11 16:38
  **/
-@Unit
-public class DefaultNettyMessageHandlerFactory implements NettyMessageHandlerFactory {
+public class SkywalkingPropertiesConstants {
 
-    @Override
-    public NettyMessageHandler create(NetworkContext context) {
-        return new NettyMessageHandler(context);
-    }
+    public static final String SKYWALKING_PREFIX = "tny.apm.skywalking";
+
+    public static final String SKYWALKING_ENABLE = "tny.apm.skywalking.enable";
 
 }

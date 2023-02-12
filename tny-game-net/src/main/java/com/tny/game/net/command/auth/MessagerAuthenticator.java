@@ -21,7 +21,7 @@ import com.tny.game.net.exception.*;
  **/
 public interface MessagerAuthenticator {
 
-    void authenticate(MessageDispatcherContext dispatcherContext, RpcProviderContext rpcContext,
+    void authenticate(MessageDispatcherContext dispatcherContext, RpcEnterContext rpcContext,
             Class<? extends AuthenticationValidator<?, ?>> validatorClass) throws AuthFailedException;
 
 }

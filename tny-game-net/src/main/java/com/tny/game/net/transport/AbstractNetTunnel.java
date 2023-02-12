@@ -124,11 +124,11 @@ public abstract class AbstractNetTunnel<UID, E extends NetEndpoint<UID>> extends
     }
 
     @Override
-    public boolean receive(RpcProviderContext context) {
+    public boolean receive(RpcEnterContext context) {
         return StampedLockAide.supplyInOptimisticReadLock(this.endpointLock, this::doReceive, context);
     }
 
-    private boolean doReceive(RpcProviderContext context) {
+    private boolean doReceive(RpcEnterContext context) {
         E endpoint = this.endpoint;
         while (true) {
             if (endpoint.isClosed()) {

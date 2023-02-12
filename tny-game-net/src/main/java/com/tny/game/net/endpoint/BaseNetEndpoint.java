@@ -156,13 +156,13 @@ public abstract class BaseNetEndpoint<UID> extends AbstractCommunicator<UID> imp
     }
 
     @Override
-    public boolean receive(RpcProviderContext rpcContext) {
+    public boolean receive(RpcEnterContext rpcContext) {
         RpcRejectReceiveException cause;
         var result = MessageHandleStrategy.HANDLE;
         try {
             MessageHandleFilter<UID> filter = this.getReceiveFilter();
             var tunnel = rpcContext.netTunnel();
-            var message = rpcContext.netMessage();
+            var message = rpcContext.getMessage();
             MessageRespondFuture future = this.pollFuture(message);
             if (future != null) {
                 this.commandBox.execute(new RespondFutureTask(rpcContext, future));
@@ -172,8 +172,9 @@ public abstract class BaseNetEndpoint<UID> extends AbstractCommunicator<UID> imp
             }
             if (result.isHandleable()) {
                 return this.commandBox.addCommand(rpcContext);
+            } else {
+                cause = new RpcRejectReceiveException(rejectMessage(true, filter, message, tunnel));
             }
-            cause = new RpcRejectReceiveException(rejectMessage(true, filter, message, tunnel));
         } catch (Throwable e) {
             LOGGER.error("", e);
             rpcContext.complete(e);
@@ -188,8 +189,8 @@ public abstract class BaseNetEndpoint<UID> extends AbstractCommunicator<UID> imp
     }
 
     private String rejectMessage(boolean receive, MessageHandleFilter<UID> filter, MessageSubject message, Tunnel<?> tunnel) {
-        return format("{} cannot receive {} from {} after being filtered by {}",
-                this, receive ? "receive" : "send", message, tunnel, filter.getClass());
+        return format("{} cannot {} {} from {} after being filtered by {}",
+                this, receive ? "receive" : "send", message, tunnel, filter);
     }
 
     @Override

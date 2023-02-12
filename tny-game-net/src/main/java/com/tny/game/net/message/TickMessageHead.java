@@ -99,7 +99,7 @@ public class TickMessageHead implements NetMessageHead {
     }
 
     @Override
-    public <H extends MessageHeader<H>> MessageHeader<H> putHeaderIfAbsent(MessageHeader<?> header) {
+    public <H extends MessageHeader<H>> MessageHeader<H> putHeaderIfAbsent(MessageHeader<H> header) {
         return null;
     }
 

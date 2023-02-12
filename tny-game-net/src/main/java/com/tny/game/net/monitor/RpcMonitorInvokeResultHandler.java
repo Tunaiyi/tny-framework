@@ -21,6 +21,6 @@ import com.tny.game.net.message.*;
  **/
 public interface RpcMonitorInvokeResultHandler {
 
-    void onInvokeResult(RpcContext rpcContext, MessageSubject result, Throwable exception);
+    void onInvokeResult(RpcHandleContext rpcContext, MessageSubject result, Throwable exception);
 
 }

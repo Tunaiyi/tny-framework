@@ -30,10 +30,12 @@ public class RelayPacketClientProcessor extends BaseRelayPacketProcessor {
 
     private final RpcMonitor rpcMonitor;
 
+    public final NetBootstrapSetting setting;
+
     public RelayPacketClientProcessor(ClientRelayExplorer remoteRelayExplorer, NetworkContext networkContext) {
         super(remoteRelayExplorer);
         this.remoteRelayExplorer = remoteRelayExplorer;
-        //        this.networkContext = networkContext;
+        this.setting = networkContext.getSetting();
         this.rpcMonitor = networkContext.getRpcMonitor();
     }
 
@@ -60,9 +62,15 @@ public class RelayPacketClientProcessor extends BaseRelayPacketProcessor {
             LOGGER.warn("{} 转发消息 {} 到 tunnel[{}], 未找到目标 tunnel", link, packet, arguments.getTunnelId());
             return;
         }
-        Message message = arguments.getMessage();
-        rpcMonitor.onRelay(link, tunnel, message);
-        tunnel.write(message, null);
+        NetMessage message = (NetMessage)arguments.getMessage();
+        if (message != null) {
+            RpcMessageAide.ignoreHeaders(message, setting.getWriteIgnoreHeaders());
+            var rpcContext = RpcTransactionContext.createRelay(link, message, rpcMonitor, false);
+            rpcMonitor.onReceive(rpcContext);
+            rpcContext.transfer(tunnel, RpcTransactionContext.relayOperation(message));
+            tunnel.write(message, null);
+            rpcContext.completeSilently();
+        }
     }
 
 }

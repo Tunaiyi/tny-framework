@@ -25,6 +25,6 @@ public interface Receiver {
      *
      * @param rpcContext 消息
      */
-    boolean receive(RpcProviderContext rpcContext);
+    boolean receive(RpcEnterContext rpcContext);
 
 }

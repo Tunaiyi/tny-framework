@@ -11,6 +11,7 @@
 package com.tny.game.net.netty4.relay;
 
 import com.tny.game.common.url.*;
+import com.tny.game.net.base.*;
 import com.tny.game.net.relay.link.*;
 
 /**
@@ -69,7 +70,7 @@ class NettyRelayLinkConnector implements RelayConnectCallback {
         this.times = 0;
         this.linkKey = relayContext.createLinkKey(username);
         this.link = new CommonClientRelayLink(this.linkKey, instance, transporter);
-        this.link.auth(username, relayContext.getAppInstanceId());
+        this.link.auth(RpcServiceTypes.checkAppType(relayContext.getAppType()), username, relayContext.getAppInstanceId());
         transporter.addCloseListener(this::onClose);
     }
 

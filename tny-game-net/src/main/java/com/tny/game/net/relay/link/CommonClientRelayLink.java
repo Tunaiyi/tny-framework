@@ -10,6 +10,7 @@
  */
 package com.tny.game.net.relay.link;
 
+import com.tny.game.net.base.*;
 import com.tny.game.net.relay.packet.*;
 import com.tny.game.net.relay.packet.arguments.*;
 import com.tny.game.net.rpc.*;
@@ -29,13 +30,13 @@ public class CommonClientRelayLink extends BaseRelayLink implements ClientRelayL
     private final NetRemoteServeInstance serveInstance;
 
     public CommonClientRelayLink(String key, NetRemoteServeInstance serveInstance, RelayTransporter transporter) {
-        super(NetAccessMode.SERVER, key, serveInstance.serviceName(), serveInstance.getId(), transporter);
+        super(NetAccessMode.CLIENT, key, serveInstance.serviceType(), serveInstance.serviceName(), serveInstance.getId(), transporter);
         this.serveInstance = serveInstance;
     }
 
     @Override
-    public void auth(String service, long serverId) {
-        this.write(LinkOpenPacket.FACTORY, new LinkOpenArguments(service, serverId, this.getKey()));
+    public void auth(RpcServiceType serviceType, String service, long serverId) {
+        this.write(LinkOpenPacket.FACTORY, new LinkOpenArguments(serviceType, service, serverId, this.getKey()));
     }
 
     @Override

@@ -77,6 +77,11 @@ public class DefaultServerRelayTransporter extends AttributeHolder implements Se
     }
 
     @Override
+    public ServerRelayLink getLink() {
+        return link;
+    }
+
+    @Override
     public void bind(NetTunnel<?> tunnel) {
         if (this.tunnel == null) {
             this.tunnel = (ServerRelayTunnel<?>)tunnel;
