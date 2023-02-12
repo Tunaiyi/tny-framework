@@ -12,6 +12,7 @@ package com.tny.game.net.command.dispatcher;
 
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
+import com.tny.game.net.rpc.*;
 import com.tny.game.net.transport.*;
 
 /**
@@ -21,25 +22,6 @@ import com.tny.game.net.transport.*;
  * @date 2022/12/20 14:32
  **/
 public interface RpcTransactionContext extends RpcContext {
-
-    /**
-     * @return 发送者
-     */
-    NetMessager getMessager();
-
-    boolean isCompleted();
-
-    static RpcExitContext createExit(Endpoint<?> endpoint, MessageContent content, boolean async, RpcMonitor rpcMonitor) {
-        return new RpcExitInvocationContext(endpoint, content, async, rpcMonitor);
-    }
-
-    static RpcEnterContext createEnter(NetTunnel<?> tunnel, NetMessage message, boolean async) {
-        return new RpcEnterInvocationContext(tunnel, message, async);
-    }
-
-    static RpcTransferContext createRelay(NetMessager from, NetMessage message, RpcMonitor rpcMonitor, boolean async) {
-        return new RpcRelayInvocationContext(from, message, rpcMonitor, async);
-    }
 
     static String forwardOperation(MessageSubject message) {
         return "forward[" + message.getProtocolId() + "]" + message.getMode().getMark();
@@ -64,6 +46,30 @@ public interface RpcTransactionContext extends RpcContext {
     static String errorOperation(MessageSubject message) {
         return "error" + "[" + message.getProtocolId() + "@" + message.getMode().getMark() + "]";
     }
+
+    static RpcExitContext createExit(Endpoint<?> endpoint, MessageContent content, boolean async, RpcMonitor rpcMonitor) {
+        return new RpcExitInvocationContext(endpoint, content, async, rpcMonitor);
+    }
+
+    static RpcEnterContext createEnter(NetTunnel<?> tunnel, NetMessage message, boolean async) {
+        return new RpcEnterInvocationContext(tunnel, message, async);
+    }
+
+    static RpcTransferContext createRelay(NetMessager from, NetMessage message, RpcMonitor rpcMonitor, boolean async) {
+        return new RpcRelayInvocationContext(from, message, rpcMonitor, async);
+    }
+
+    /**
+     * @return 请求模式
+     */
+    RpcTransactionMode getMode();
+
+    /**
+     * @return 发送者
+     */
+    NetMessager getMessager();
+
+    boolean isCompleted();
 
     /**
      * @return 操作名
