@@ -35,7 +35,7 @@ public class RpcNoopCommand extends BaseCommand implements RpcCommand {
     protected void action() throws Throwable {
         RpcContexts.setCurrent(rpcContext);
         try {
-            var message = rpcContext.netMessage();
+            var message = rpcContext.getMessage();
             rpcContext.invoke(returnOperation(message));
             rpcContext.completeSilently();
         } catch (Throwable cause) {
