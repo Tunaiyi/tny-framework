@@ -12,6 +12,7 @@ package com.tny.game.net.command.dispatcher;
 
 import com.tny.game.common.context.*;
 import com.tny.game.net.message.*;
+import com.tny.game.net.rpc.*;
 
 /**
  * <p>
@@ -25,6 +26,11 @@ public interface RpcContext {
      * @return 获取消息
      */
     MessageSubject getMessageSubject();
+
+    /**
+     * @return 请求模式
+     */
+    RpcInvocationMode getInvocationMode();
 
     /**
      * @return 附加属性
