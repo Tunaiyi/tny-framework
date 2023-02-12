@@ -21,6 +21,8 @@ public enum RpcInvocationMode {
 
     EXIT,
 
+    TRANSFER,
+
     //
     ;
 

@@ -20,6 +20,6 @@ import com.tny.game.net.command.dispatcher.*;
  **/
 public interface RpcMonitorBeforeInvokeHandler {
 
-    void onBeforeInvoke(RpcContext invokeContext);
+    void onBeforeInvoke(RpcTransactionContext invokeContext);
 
 }

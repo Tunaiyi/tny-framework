@@ -23,7 +23,7 @@ import java.util.*;
  * @date: 2018/8/31 下午10:23
  */
 
-public interface Message extends Serializable, MessageSubject, MessageHead {
+public interface Message extends MessageSubject, MessageHead, Serializable {
 
     /**
      * @return 获取消息 ID

@@ -8,23 +8,16 @@
  * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-package com.tny.game.net.netty4.network;
+package com.tny.game.net.message;
 
-import com.tny.game.common.lifecycle.unit.annotation.*;
-import com.tny.game.net.base.*;
+import com.tny.game.net.transport.*;
 
 /**
  * <p>
  *
  * @author kgtny
- * @date 2022/11/14 03:54
+ * @date 2023/2/9 20:03
  **/
-@Unit
-public class DefaultNettyMessageHandlerFactory implements NettyMessageHandlerFactory {
-
-    @Override
-    public NettyMessageHandler create(NetworkContext context) {
-        return new NettyMessageHandler(context);
-    }
+public interface NetMessager extends Connection, Messager {
 
 }

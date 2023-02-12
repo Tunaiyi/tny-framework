@@ -34,7 +34,7 @@ public class MessageTimeoutCheckerPlugin<UID> implements CommandPlugin<UID, Long
     }
 
     @Override
-    public void execute(Tunnel<UID> communicator, Message message, RpcHandleContext context, Long attribute) throws Exception {
+    public void execute(Tunnel<UID> communicator, Message message, RpcInvokeContext context, Long attribute) throws Exception {
         if (attribute <= 0) {
             return;
         }

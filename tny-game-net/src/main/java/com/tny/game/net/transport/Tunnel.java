@@ -34,13 +34,13 @@ public interface Tunnel<UID> extends Communicator<UID> {
     boolean isOpen();
 
     /**
-     * @return 获取 Tunnel 状态
-     */
-    TunnelStatus getStatus();
-
-    /**
      * @return 获取绑定中断
      */
     Endpoint<UID> getEndpoint();
+
+    /**
+     * @return 管道状态
+     */
+    TunnelStatus getStatus();
 
 }

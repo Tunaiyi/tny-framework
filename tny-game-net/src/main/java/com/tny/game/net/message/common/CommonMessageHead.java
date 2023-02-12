@@ -49,6 +49,7 @@ public class CommonMessageHead extends BaseMessageHeaderContainer implements Net
     public CommonMessageHead(long id, MessageSubject subject) {
         super(subject.getAllHeaderMap());
         this.id = id;
+        this.line = subject.getLine();
         this.mode = subject.getMode();
         this.protocol = subject.getProtocolId();
         this.code = subject.getCode();

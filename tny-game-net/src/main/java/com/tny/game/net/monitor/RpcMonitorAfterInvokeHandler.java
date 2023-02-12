@@ -11,6 +11,7 @@
 package com.tny.game.net.monitor;
 
 import com.tny.game.net.command.dispatcher.*;
+import com.tny.game.net.message.*;
 
 /**
  * <p>
@@ -20,6 +21,6 @@ import com.tny.game.net.command.dispatcher.*;
  **/
 public interface RpcMonitorAfterInvokeHandler {
 
-    void onAfterInvoke(RpcContext rpcContext, Throwable exception);
+    void onAfterInvoke(RpcTransactionContext rpcContext, MessageSubject result, Throwable exception);
 
 }

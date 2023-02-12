@@ -195,7 +195,7 @@ public class MockNetTunnel extends AttributeHolder implements NetTunnel<Long> {
     }
 
     @Override
-    public boolean receive(RpcProviderContext context) {
+    public boolean receive(RpcEnterContext context) {
         return this.endpoint.receive(context);
     }
 

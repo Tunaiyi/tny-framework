@@ -11,17 +11,14 @@
 package com.tny.game.net.command.dispatcher;
 
 import com.tny.game.common.context.*;
-import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.rpc.*;
-
-import java.util.concurrent.Executor;
 
 /**
  * <p>
  *
  * @author kgtny
- * @date 2022/12/19 16:50
+ * @date 2023/2/9 23:26
  **/
 public interface RpcContext {
 
@@ -36,25 +33,13 @@ public interface RpcContext {
     RpcInvocationMode getInvocationMode();
 
     /**
-     * @return 获取终端
-     */
-    <U> Endpoint<U> getEndpoint();
-
-    /**
-     * @return 当前执行器
-     */
-    default Executor getExecutor() {
-        return getEndpoint();
-    }
-
-    /**
      * @return 附加属性
      */
     Attributes attributes();
 
     /**
-     * @return 空
+     * @return 是否有效
      */
-    boolean isEmpty();
+    boolean isValid();
 
 }

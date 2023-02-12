@@ -8,12 +8,11 @@
  * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-package com.tny.game.net.monitor;
+package com.tny.game.net.relay;
 
 import com.tny.game.net.base.*;
 import com.tny.game.net.relay.link.*;
 import com.tny.game.net.relay.packet.*;
-import com.tny.game.net.rpc.*;
 
 /**
  * <p>
@@ -23,14 +22,7 @@ import com.tny.game.net.rpc.*;
  **/
 public class RelayMonitor {
 
-    private final NetAccessMode mode;
-
-    public RelayMonitor(NetAccessMode mode) {
-        this.mode = mode;
-    }
-
-    public NetAccessMode getMode() {
-        return mode;
+    public RelayMonitor() {
     }
 
     public void onReadPacket(NetRelayLink link, RelayPacket<?> packet) {

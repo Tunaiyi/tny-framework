@@ -11,13 +11,14 @@
 package com.tny.game.net.transport;
 
 import com.tny.game.net.base.*;
+import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
 
 /**
  * Created by Kun Yang on 2017/3/26.
  */
-public interface NetTunnel<UID> extends Tunnel<UID>, Transport, Receiver, Sender {
+public interface NetTunnel<UID> extends Tunnel<UID>, Transport, MessageSender, MessageReceiver {
 
     /**
      * 设置访问 Id

@@ -23,6 +23,7 @@ import com.tny.game.net.transport.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.concurrent.Future;
 
 import static com.tny.game.common.utils.StringAide.*;
 
@@ -87,6 +88,8 @@ public final class MethodControllerHolder extends ControllerHolder {
      * 控制器操作配置
      */
     private final RpcProfile rpcProfile;
+
+    private boolean voidable = false;
 
     /**
      * 构造方法
@@ -162,9 +165,17 @@ public final class MethodControllerHolder extends ControllerHolder {
             for (CommandPluginHolder plugin : this.getControllerAfterPlugins())
                 this.afterContext = this.putPlugin(this.afterContext, plugin);
             this.returnType = method.getReturnType();
+            if (returnType == void.class || returnType == Void.class
+                    || (Future.class.isAssignableFrom(returnType))) {
+                voidable = true;
+            }
         } catch (Exception e) {
             throw new IllegalArgumentException(format("{}.{} 方法解析失败", method.getDeclaringClass(), method.getName()), e);
         }
+    }
+
+    public boolean isVoidable() {
+        return voidable;
     }
 
     public String getSimpleName() {
@@ -179,7 +190,7 @@ public final class MethodControllerHolder extends ControllerHolder {
         return this.paramDescriptions;
     }
 
-    public int getParametersSize() {
+    public int getParameterSize() {
         return this.paramDescriptions.size();
     }
 
@@ -316,7 +327,7 @@ public final class MethodControllerHolder extends ControllerHolder {
 
     Object invoke(NetTunnel<?> tunnel, Message message) throws Exception {
         // 获取调用方法的参数类型
-        Object[] param = new Object[this.getParametersSize()];
+        Object[] param = new Object[this.getParameterSize()];
         Object body = message.bodyAs(Object.class);
         for (int index = 0; index < param.length; index++) {
             param[index] = this.getParameterValue(index, tunnel, message, body);
@@ -324,14 +335,14 @@ public final class MethodControllerHolder extends ControllerHolder {
         return this.invoke(param);
     }
 
-    void beforeInvoke(Tunnel<?> tunnel, Message message, RpcHandleContext context) {
+    void beforeInvoke(Tunnel<?> tunnel, Message message, RpcInvokeContext context) {
         if (this.beforeContext == null) {
             return;
         }
         this.beforeContext.execute(tunnel, message, context);
     }
 
-    void afterInvoke(Tunnel<?> tunnel, Message message, RpcHandleContext context) {
+    void afterInvoke(Tunnel<?> tunnel, Message message, RpcInvokeContext context) {
         if (this.afterContext == null) {
             return;
         }

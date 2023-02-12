@@ -14,15 +14,11 @@ import com.tny.game.common.context.*;
 import com.tny.game.common.exception.*;
 import com.tny.game.common.result.*;
 import com.tny.game.net.base.*;
-import com.tny.game.net.endpoint.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
-import com.tny.game.net.rpc.*;
 import com.tny.game.net.transport.*;
 
-import java.util.concurrent.Executor;
-
-import static com.tny.game.common.utils.ObjectAide.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * <p>
@@ -30,74 +26,26 @@ import static com.tny.game.common.utils.ObjectAide.*;
  * @author kgtny
  * @date 2022/12/19 01:40
  **/
-class RpcProviderInvocationContext extends BaseRpcInvocationContext implements RpcProviderContext {
+abstract class CompletableRpcTransactionContext extends BaseRpcTransactionContext implements RpcEnterCompletable {
 
-    private final NetMessage message;
+    protected final NetMessage message;
 
-    private final NetTunnel<Object> tunnel;
-
-    private final RpcMonitor rpcMonitor;
+    private final AtomicBoolean running = new AtomicBoolean();
 
     private boolean silently = false;
 
-    public RpcProviderInvocationContext(NetTunnel<?> tunnel, NetMessage message) {
-        this(tunnel, message, ContextAttributes.create());
+    CompletableRpcTransactionContext(NetMessage message, boolean async) {
+        this(message, async, ContextAttributes.create());
     }
 
-    protected RpcProviderInvocationContext(NetTunnel<?> tunnel, NetMessage message, Attributes attributes) {
-        super(attributes);
+    CompletableRpcTransactionContext(NetMessage message, boolean async, Attributes attributes) {
+        super(async, attributes);
         this.message = message;
-        this.tunnel = as(tunnel);
-        if (tunnel != null) {
-            this.rpcMonitor = tunnel.getContext().getRpcMonitor();
-        } else {
-            this.rpcMonitor = null;
-        }
     }
 
     @Override
     public MessageSubject getMessageSubject() {
         return message;
-    }
-
-    @Override
-    public RpcInvocationMode getInvocationMode() {
-        return RpcInvocationMode.ENTER;
-    }
-
-    @Override
-    public <U> Endpoint<U> getEndpoint() {
-        return as(this.tunnel.getEndpoint());
-    }
-
-    @Override
-    public Executor executor() {
-        return this.getEndpoint();
-    }
-
-    @Override
-    public NetMessage netMessage() {
-        return this.message;
-    }
-
-    @Override
-    public RpcMonitor rpcMonitor() {
-        return rpcMonitor;
-    }
-
-    @Override
-    public NetworkContext networkContext() {
-        return tunnel.getContext();
-    }
-
-    @Override
-    public <U> NetTunnel<U> netTunnel() {
-        return as(this.tunnel);
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return this.tunnel == null || this.message == null;
     }
 
     @Override
@@ -158,11 +106,6 @@ class RpcProviderInvocationContext extends BaseRpcInvocationContext implements R
     }
 
     @Override
-    protected void onPrepare() {
-        rpcMonitor.onBeforeInvoke(this);
-    }
-
-    @Override
     protected void onComplete() {
         if (silently) {
             this.onComplete(null);
@@ -191,11 +134,11 @@ class RpcProviderInvocationContext extends BaseRpcInvocationContext implements R
             case RESPONSE:
             case PUSH:
                 if (body != null) {
-                    content = RpcMessageAide.respondMessage(message, code, body);
+                    content = RpcMessageAide.toMessage(message, code, body);
                 }
                 break;
             case REQUEST:
-                content = RpcMessageAide.respondMessage(message, code, body);
+                content = RpcMessageAide.toMessage(message, code, body);
                 break;
         }
         this.onComplete(content);
@@ -206,10 +149,14 @@ class RpcProviderInvocationContext extends BaseRpcInvocationContext implements R
         if (silently) {
             content = null;
         }
-        rpcMonitor.onInvokeResult(this, content, cause);
+        this.onComplete(content, cause);
         if (content != null) {
-            RpcMessageAide.send(tunnel, content);
+            onReturn(content);
         }
     }
+
+    abstract void onComplete(MessageContent result, Throwable exception);
+
+    abstract void onReturn(MessageContent content);
 
 }

@@ -22,6 +22,6 @@ import com.tny.game.net.transport.*;
 @FunctionalInterface
 public interface TunnelReceiveListener<UID> extends TunnelListener {
 
-    void onReceive(Tunnel<UID> tunnel, RpcProviderContext rpcContext);
+    void onReceive(Tunnel<UID> tunnel, RpcEnterContext rpcContext);
 
 }

@@ -11,6 +11,7 @@
 package com.tny.game.net.relay.link;
 
 import com.tny.game.common.event.firer.*;
+import com.tny.game.net.base.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.relay.link.listener.*;
@@ -87,7 +88,10 @@ public abstract class BaseRelayLink implements NetRelayLink {
      */
     private final AtomicInteger packetIdCreator = new AtomicInteger();
 
-    public BaseRelayLink(NetAccessMode accessMode, String key, String service, long instanceId, RelayTransporter transporter) {
+    private final MessagerType messagerType;
+
+    public BaseRelayLink(NetAccessMode accessMode, String key, MessagerType messagerType, String service, long instanceId,
+            RelayTransporter transporter) {
         this.key = key;
         this.service = service;
         this.instanceId = instanceId;
@@ -95,6 +99,7 @@ public abstract class BaseRelayLink implements NetRelayLink {
         this.id = NetRelayLink.idOf(this);
         this.transporter = transporter;
         this.createAt = System.currentTimeMillis();
+        this.messagerType = messagerType;
         this.transporter.bind(this);
     }
 
@@ -106,6 +111,16 @@ public abstract class BaseRelayLink implements NetRelayLink {
     @Override
     public String getService() {
         return service;
+    }
+
+    @Override
+    public long getMessagerId() {
+        return instanceId;
+    }
+
+    @Override
+    public MessagerType getMessagerType() {
+        return messagerType;
     }
 
     @Override
@@ -271,13 +286,13 @@ public abstract class BaseRelayLink implements NetRelayLink {
     }
 
     @Override
-    public void close() {
+    public boolean close() {
         if (this.status.isCloseStatus()) {
-            return;
+            return false;
         }
         synchronized (this) {
             if (this.status.isCloseStatus()) {
-                return;
+                return false;
             }
             this.status = RelayLinkStatus.CLOSING;
             event.fire(RelayLinkListener::onClosing, this);
@@ -287,7 +302,13 @@ public abstract class BaseRelayLink implements NetRelayLink {
             event.fire(RelayLinkListener::onClosed, this);
             LOGGER.info("RelayLink [{}:{}] 转发链接关闭 ", this, this.status);
             this.onClosed();
+            return true;
         }
+    }
+
+    @Override
+    public boolean isClosed() {
+        return this.status.isCloseStatus();
     }
 
     protected void onClosed() {

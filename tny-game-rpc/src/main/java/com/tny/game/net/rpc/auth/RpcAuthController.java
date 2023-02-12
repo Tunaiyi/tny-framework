@@ -37,14 +37,14 @@ public class RpcAuthController {
     public RpcResult<String> authenticate(ServerBootstrapSetting setting, @UserId RpcAccessIdentify id) {
         RpcServiceType serviceType = RpcServiceTypes.checkService(setting.serviceName());
         String token = rpcAuthService.createToken(serviceType, id);
-        LOGGER.info("接受 << [{}] 认证成功", id);
+        LOGGER.info("Rpc执行 << [{}] 认证成功", id);
         return RpcResults.success(token);
     }
 
     @RpcResponse(RPC_AUTH_$_AUTHENTICATE)
     @AuthenticationRequired(validator = RpcTokenValidator.class)
     public void authenticated(@UserId RpcAccessIdentify id) {
-        LOGGER.info("连接 >> [{}] 认证完成", id);
+        LOGGER.info("Rpc响应 >> [{}] 认证完成", id);
     }
 
 }

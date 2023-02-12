@@ -61,11 +61,6 @@ public class ClientTunnel<UID, E extends NetTerminal<UID>, T extends MessageTran
     }
 
     @Override
-    public String toString() {
-        return "NettyClientTunnel{" + "channel=" + this.transporter + '}';
-    }
-
-    @Override
     protected boolean replaceEndpoint(NetEndpoint<UID> endpoint) {
         return this.endpoint == endpoint;
     }

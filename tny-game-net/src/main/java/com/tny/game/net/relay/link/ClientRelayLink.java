@@ -10,6 +10,8 @@
  */
 package com.tny.game.net.relay.link;
 
+import com.tny.game.net.base.*;
+
 /**
  * 本地转发连接
  * <p>
@@ -22,10 +24,11 @@ public interface ClientRelayLink extends NetRelayLink {
     /**
      * 连接认证
      *
-     * @param service    服务名
-     * @param instanceId 实例 id
+     * @param serviceType 服务类型
+     * @param service     服务名
+     * @param instanceId  实例 id
      */
-    void auth(String service, long instanceId);
+    void auth(RpcServiceType serviceType, String service, long instanceId);
 
     /**
      * 切换link

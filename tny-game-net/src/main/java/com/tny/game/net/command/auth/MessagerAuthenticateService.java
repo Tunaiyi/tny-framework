@@ -8,10 +8,11 @@
  * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-package com.tny.game.net.command.dispatcher;
+package com.tny.game.net.command.auth;
 
+import com.tny.game.net.base.*;
 import com.tny.game.net.command.*;
-import com.tny.game.net.command.auth.*;
+import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
@@ -33,7 +34,7 @@ public class MessagerAuthenticateService implements MessagerAuthenticator {
     }
 
     @Override
-    public void authenticate(MessageDispatcherContext dispatcherContext, RpcProviderContext context,
+    public void authenticate(MessageDispatcherContext dispatcherContext, RpcEnterContext context,
             Class<? extends AuthenticationValidator<?, ?>> validatorClass)
             throws AuthFailedException {
         var tunnel = context.netTunnel();
@@ -42,6 +43,9 @@ public class MessagerAuthenticateService implements MessagerAuthenticator {
         if (!tunnel.isAuthenticated()) {
             CertificateFactory<Object> certificateFactory = networkContext.getCertificateFactory();
             var validator = getValidator(message, dispatcherContext, validatorClass);
+            if (validator == null) {
+                throw new AuthFailedException(NetResultCode.SERVER_ERROR, "{} is null", validatorClass);
+            }
             Certificate<Object> certificate = validator.validate(tunnel, message, certificateFactory);
             // 是否需要做登录校验,判断是否已经登录
             if (certificate != null && certificate.isAuthenticated()) {
@@ -54,11 +58,7 @@ public class MessagerAuthenticateService implements MessagerAuthenticator {
 
     private AuthenticationValidator<Object, CertificateFactory<Object>> getValidator(Message message, MessageDispatcherContext dispatcherContext,
             Class<? extends AuthenticationValidator<?, ?>> validatorClass) {
-        AuthenticationValidator<Object, CertificateFactory<Object>> validator = as(dispatcherContext.getValidator(validatorClass));
-        if (validator != null) {
-            return validator;
-        }
-        return as(dispatcherContext.getValidator(message.getProtocolId()));
+        return as(dispatcherContext.getValidator(validatorClass));
     }
 
 }

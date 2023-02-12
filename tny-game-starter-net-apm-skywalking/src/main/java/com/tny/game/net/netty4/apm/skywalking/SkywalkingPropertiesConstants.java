@@ -8,24 +8,18 @@
  * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-package com.tny.game.net.command.dispatcher;
-
-import com.tny.game.net.endpoint.*;
-import com.tny.game.net.message.*;
-import com.tny.game.net.transport.*;
+package com.tny.game.net.netty4.apm.skywalking;
 
 /**
  * <p>
  *
  * @author kgtny
- * @date 2022/12/19 17:22
+ * @date 2023/2/11 16:38
  **/
-public interface RpcConsumerContext extends RpcInvocationContext {
+public class SkywalkingPropertiesConstants {
 
-    static RpcConsumerContext create(Endpoint<?> endpoint, MessageContent content, RpcMonitor rpcMonitor) {
-        return new RpcConsumerInvocationContext(endpoint, content, rpcMonitor);
-    }
+    public static final String SKYWALKING_PREFIX = "tny.apm.skywalking";
 
-    boolean complete(Message message);
+    public static final String SKYWALKING_ENABLE = "tny.apm.skywalking.enable";
 
 }

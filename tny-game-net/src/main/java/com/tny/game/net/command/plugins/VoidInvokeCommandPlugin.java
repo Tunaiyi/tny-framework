@@ -30,7 +30,7 @@ public interface VoidInvokeCommandPlugin<UID> extends CommandPlugin<UID, Void> {
      * @throws Exception 异常
      */
     @Override
-    default void execute(Tunnel<UID> communicator, Message message, RpcHandleContext context, Void attribute) throws Exception {
+    default void execute(Tunnel<UID> communicator, Message message, RpcInvokeContext context, Void attribute) throws Exception {
         this.doExecute(communicator, message, context);
     }
 
@@ -42,6 +42,6 @@ public interface VoidInvokeCommandPlugin<UID> extends CommandPlugin<UID, Void> {
      * @param context      上下文
      * @throws Exception 异常
      */
-    void doExecute(Tunnel<UID> communicator, Message message, RpcHandleContext context) throws Exception;
+    void doExecute(Tunnel<UID> communicator, Message message, RpcInvokeContext context) throws Exception;
 
 }

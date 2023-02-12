@@ -28,7 +28,7 @@ public interface NetEndpoint<UID> extends Endpoint<UID>, SentMessageHistory {
      * @param rpcContext 接受信息
      */
     @Override
-    boolean receive(RpcProviderContext rpcContext);
+    boolean receive(RpcEnterContext rpcContext);
 
     /**
      * 异步发送消息

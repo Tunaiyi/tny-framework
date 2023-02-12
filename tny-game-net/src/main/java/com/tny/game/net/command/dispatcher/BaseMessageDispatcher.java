@@ -58,7 +58,7 @@ public abstract class BaseMessageDispatcher implements MessageDispatcher {
     }
 
     @Override
-    public Command dispatch(RpcProviderContext rpcContext) throws RpcInvokeException {
+    public Command dispatch(RpcEnterContext rpcContext) throws RpcInvokeException {
         var forwardCommand = tryForward(rpcContext);
         if (forwardCommand != null) {
             return forwardCommand;
@@ -67,17 +67,18 @@ public abstract class BaseMessageDispatcher implements MessageDispatcher {
         // 获取方法持有器
         MethodControllerHolder controller = this.getController(message.getProtocolId(), message.getMode());
         if (controller != null) {
-            var handleContext = new RpcHandleContext(controller, rpcContext, this.context.getAppContext());
-            return new RpcInvokeCommand(this.context, rpcContext, handleContext, messagerAuthenticator);
+            var handleContext = new RpcInvokeContext(controller, rpcContext, this.context.getAppContext());
+            return new RpcInvokeCommand(this.context, handleContext, messagerAuthenticator);
         }
         if (message.getMode() == MessageMode.REQUEST) {
             LOGGER.warn("{} controller [{}] not exist", message.getMode(), message.getProtocolId());
             return new RpcRespondCommand(rpcContext, NetResultCode.SERVER_NO_SUCH_PROTOCOL, null);
+        } else {
+            return new RpcNoopCommand(rpcContext);
         }
-        return NoopRpcCommand.command();
     }
 
-    private RpcForwardCommand tryForward(RpcProviderContext rpcContext) {
+    private RpcForwardCommand tryForward(RpcEnterContext rpcContext) {
         var netContext = rpcContext.networkContext();
         NetBootstrapSetting setting = netContext.getSetting();
         if (!setting.isForwardable()) {
@@ -95,7 +96,7 @@ public abstract class BaseMessageDispatcher implements MessageDispatcher {
         RpcServiceType currentType = setting.getRpcServiceType();
         NetAppContext appContext = context.getAppContext();
         if (rpcServicer.getServiceType() == currentType &&
-                (!rpcServicer.isAccurately() || appContext != null && rpcServicer.getServerId() == appContext.getServerId())) {
+                (!rpcServicer.isAppointed() || appContext != null && rpcServicer.getServerId() == appContext.getServerId())) {
             return null;
         }
         return new RpcForwardCommand(rpcContext);
@@ -139,7 +140,7 @@ public abstract class BaseMessageDispatcher implements MessageDispatcher {
      *
      * @param object 控制器对象
      */
-    protected void addController(Object object) {
+    private void addController(Object object) {
         Map<Object, Map<MessageMode, MethodControllerHolder>> methodHolder = this.methodHolder;
         final ClassControllerHolder holder = new ClassControllerHolder(object, this.context, this.exprHolderFactory);
         for (MethodControllerHolder controller : holder.getMethodControllers()) {

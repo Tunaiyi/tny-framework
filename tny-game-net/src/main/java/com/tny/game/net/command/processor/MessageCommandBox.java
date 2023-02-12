@@ -73,14 +73,14 @@ public class MessageCommandBox implements Executor {
         StampedLockAide.supplyInOptimisticReadLock(this.queueLock, () -> this.doAddRunnable(runnable));
     }
 
-    public boolean addCommand(RpcProviderContext rpcContext) {
+    public boolean addCommand(RpcEnterContext rpcContext) {
         if (this.closed) {
             return false;
         }
         return StampedLockAide.supplyInOptimisticReadLock(this.queueLock, () -> this.doAddTask(rpcContext));
     }
 
-    private Command createCommand(RpcProviderContext rpcContext) {
+    private Command createCommand(RpcEnterContext rpcContext) {
         var message = rpcContext.netMessage();
         switch (message.getMode()) {
             case PUSH:
@@ -224,7 +224,7 @@ public class MessageCommandBox implements Executor {
         return null;
     }
 
-    private boolean doAddTask(RpcProviderContext rpcContext) {
+    private boolean doAddTask(RpcEnterContext rpcContext) {
         if (this.closed) {
             return false;
         }

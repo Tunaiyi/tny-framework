@@ -25,7 +25,7 @@ public class MessageSequenceCheckerPlugin implements VoidCommandPlugin<Object> {
     private static final AttrKey<Integer> CHECK_MESSAGE_ID = AttrKeys.key(MessageSequenceCheckerPlugin.class, "CHECK_MESSAGE_ID");
 
     @Override
-    public void doExecute(Tunnel<Object> communicator, Message message, RpcHandleContext context) {
+    public void doExecute(Tunnel<Object> communicator, Message message, RpcInvokeContext context) {
         if (!communicator.isAuthenticated()) {
             return;
         }

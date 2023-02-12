@@ -75,19 +75,19 @@ public interface MessageHeaderContainer {
     /**
      * 是否存在指定 key 的 Header
      *
+     * @param key 键值
+     * @return 否则返回 false
+     */
+    boolean existHeader(MessageHeaderKey<?> key);
+
+    /**
+     * 是否存在指定 key 的 Header
+     *
      * @param key         键值
      * @param headerClass 是否是指定类
      * @return 否则返回 false
      */
     boolean existHeader(String key, Class<? extends MessageHeader<?>> headerClass);
-
-    /**
-     * 是否存在指定 key 的 Header
-     *
-     * @param key 键值
-     * @return 否则返回 false
-     */
-    boolean existHeader(MessageHeaderKey<?> key);
 
     /**
      * @param header 头部信息
@@ -99,7 +99,7 @@ public interface MessageHeaderContainer {
      * @param header 头部信息
      * @return 返回 context 自身
      */
-    <H extends MessageHeader<H>> MessageHeader<H> putHeaderIfAbsent(MessageHeader<?> header);
+    <H extends MessageHeader<H>> MessageHeader<H> putHeaderIfAbsent(MessageHeader<H> header);
 
     /**
      * 删除 header

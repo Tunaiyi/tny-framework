@@ -25,4 +25,8 @@ public interface Messager {
 
     MessagerType getMessagerType();
 
+    default String getGroup() {
+        return getMessagerType().getGroup();
+    }
+
 }

@@ -160,7 +160,7 @@ public class NettyRelayServerGuide extends NettyBootstrap<NettyRelayServerBootst
             }
             this.bootstrap = new ServerBootstrap();
             RelayPacketProcessor relayPacketProcessor = new RelayPacketServerProcessor(this.localRelayExplorer, this.getContext());
-            NettyRelayPacketHandler relayMessageHandler = new NettyRelayPacketHandler(NetAccessMode.SERVER, relayPacketProcessor);
+            NettyRelayPacketHandler relayMessageHandler = new NettyRelayPacketHandler(setting, relayPacketProcessor);
             this.bootstrap.group(parentGroup, childGroup);
             this.bootstrap.channel(EPOLL ? EpollServerSocketChannel.class : NioServerSocketChannel.class);
             this.bootstrap.option(ChannelOption.SO_REUSEADDR, true);

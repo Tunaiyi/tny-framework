@@ -38,7 +38,9 @@ public class MessagerNodeSet implements RpcInvokeNodeSet, RpcInvokeNode {
     }
 
     void bind(EndpointKeeper<?, ? extends Endpoint<?>> keeper) {
-        this.keeper = as(keeper);
+        if (this.keeper == null) {
+            this.keeper = as(keeper);
+        }
     }
 
     public MessagerType getMessagerType() {
@@ -66,8 +68,8 @@ public class MessagerNodeSet implements RpcInvokeNodeSet, RpcInvokeNode {
     }
 
     @Override
-    public RpcServiceType getServiceType() {
-        return null;
+    public MessagerType getServiceType() {
+        return messagerType;
     }
 
     @Override

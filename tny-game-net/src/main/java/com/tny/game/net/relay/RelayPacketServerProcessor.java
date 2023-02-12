@@ -32,10 +32,13 @@ public class RelayPacketServerProcessor extends BaseRelayPacketProcessor {
 
     private final RpcMonitor rpcMonitor;
 
+    public final NetBootstrapSetting setting;
+
     public RelayPacketServerProcessor(ServerRelayExplorer serverRelayExplorer, NetworkContext networkContext) {
         super(serverRelayExplorer);
         this.serverRelayExplorer = serverRelayExplorer;
         this.networkContext = networkContext;
+        this.setting = networkContext.getSetting();
         this.rpcMonitor = networkContext.getRpcMonitor();
     }
 
@@ -55,15 +58,19 @@ public class RelayPacketServerProcessor extends BaseRelayPacketProcessor {
             LOGGER.warn("{} 转发消息 {} 到 tunnel[{}], message 为 null", link, packet, arguments.getTunnelId());
             return;
         }
-        var rpcContext = RpcProviderContext.create(tunnel, (NetMessage)message);
-        rpcMonitor.onReceive(rpcContext);
-        tunnel.receive(rpcContext);
+        if (message instanceof NetMessage) {
+            RpcMessageAide.ignoreHeaders((NetMessage)message, setting.getReadIgnoreHeaders());
+            var rpcContext = RpcTransactionContext.createEnter(tunnel, (NetMessage)message, true);
+            rpcMonitor.onReceive(rpcContext);
+            tunnel.receive(rpcContext);
+        }
     }
 
     @Override
     public void onLinkOpen(RelayTransporter transporter, LinkOpenPacket packet) {
         LinkOpenArguments arguments = packet.getArguments();
-        var link = serverRelayExplorer.acceptOpenLink(transporter, arguments.getService(), arguments.getInstance(), arguments.getKey());
+        var link = serverRelayExplorer.acceptOpenLink(transporter,
+                arguments.getServiceType(), arguments.getService(), arguments.getInstance(), arguments.getKey());
         LOGGER.info("#{} [ 接受连接 ]", link);
     }
 

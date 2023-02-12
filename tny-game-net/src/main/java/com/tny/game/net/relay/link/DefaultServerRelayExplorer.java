@@ -34,8 +34,8 @@ public class DefaultServerRelayExplorer extends BaseRelayExplorer<ServerRelayTun
     private final Map<String, ServerRelayLink> linkMap = new ConcurrentHashMap<>();
 
     @Override
-    public RelayLink acceptOpenLink(RelayTransporter transporter, String service, long instance, String key) {
-        CommonServerRelayLink link = new CommonServerRelayLink(transporter, service, instance, key);
+    public RelayLink acceptOpenLink(RelayTransporter transporter, RpcServiceType serviceType, String service, long instance, String key) {
+        CommonServerRelayLink link = new CommonServerRelayLink(transporter, serviceType, service, instance, key);
         ServerRelayLink relayLink = linkMap.putIfAbsent(link.getId(), link);
         if (relayLink != null && !relayLink.isCurrentTransporter(transporter)) {
             link.openOnFailure();

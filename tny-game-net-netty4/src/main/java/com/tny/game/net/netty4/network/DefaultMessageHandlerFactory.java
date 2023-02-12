@@ -8,22 +8,23 @@
  * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-package com.tny.game.net.monitor;
+package com.tny.game.net.netty4.network;
 
-import com.tny.game.net.message.*;
-import com.tny.game.net.relay.link.*;
-import com.tny.game.net.transport.*;
+import com.tny.game.common.lifecycle.unit.annotation.*;
+import com.tny.game.net.base.*;
 
 /**
  * <p>
  *
  * @author kgtny
- * @date 2022/12/16 12:45
+ * @date 2022/11/14 03:54
  **/
-public interface RpcMonitorRelayHandler {
+@Unit
+public class DefaultMessageHandlerFactory implements NettyMessageHandlerFactory {
 
-    void onRelay(NetRelayLink from, NetTunnel<?> to, Message message);
-
-    void onRelay(NetTunnel<?> from, NetRelayLink to, Message message);
+    @Override
+    public NettyMessageHandler create(NetworkContext context) {
+        return new NettyMessageHandler(context);
+    }
 
 }

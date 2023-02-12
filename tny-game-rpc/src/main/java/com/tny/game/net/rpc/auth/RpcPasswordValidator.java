@@ -49,12 +49,12 @@ public class RpcPasswordValidator implements AuthenticationValidator<RpcAccessId
             throw new AuthFailedException("Rpc登录参数错误");
         }
         MessageParamList paramList = paramListOptional.get();
-        long value = getIdParam(paramList);
+        long id = getIdParam(paramList);
         String password = getPasswordParam(paramList);
-        DoneResult<RpcAccessIdentify> result = rpcAuthService.authenticate(value, password);
+        DoneResult<RpcAccessIdentify> result = rpcAuthService.authenticate(id, password);
         if (result.isSuccess()) {
             RpcAccessIdentify identify = result.get();
-            return factory.certificate(idCreator.createId(), identify, value, identify.getServiceType(), Instant.now());
+            return factory.certificate(idCreator.createId(), identify, id, identify.getServiceType(), Instant.now());
         }
         throw new AuthFailedException(format("Rpc登录认证失败, Code : {} ; Message : {}", result.getCode(), result.getMessage()));
     }

@@ -28,7 +28,7 @@ public class PluginChain {
     }
 
     @SuppressWarnings("unchecked")
-    public void execute(Tunnel<?> tunnel, Message message, RpcHandleContext context) {
+    public void execute(Tunnel<?> tunnel, Message message, RpcInvokeContext context) {
         if (this.plugin == null || context.isIntercept()) {
             return;
         }

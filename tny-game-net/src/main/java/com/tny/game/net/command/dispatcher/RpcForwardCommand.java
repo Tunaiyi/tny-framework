@@ -17,7 +17,7 @@ import com.tny.game.net.rpc.*;
 import com.tny.game.net.transport.*;
 import org.slf4j.*;
 
-import static com.tny.game.net.command.dispatcher.RpcInvocationContext.*;
+import static com.tny.game.net.command.dispatcher.RpcTransactionContext.*;
 
 /**
  * <p>
@@ -29,9 +29,9 @@ public class RpcForwardCommand extends BaseCommand implements RpcCommand {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(RpcForwardCommand.class);
 
-    private final RpcProviderContext rpcContext;
+    private final RpcEnterContext rpcContext;
 
-    public RpcForwardCommand(RpcProviderContext rpcContext) {
+    public RpcForwardCommand(RpcEnterContext rpcContext) {
         this.rpcContext = rpcContext;
     }
 
@@ -58,10 +58,11 @@ public class RpcForwardCommand extends BaseCommand implements RpcCommand {
         var tunnel = rpcContext.<RpcServicer>netTunnel();
         var message = rpcContext.netMessage();
         var networkContext = rpcContext.networkContext();
-        rpcContext.prepare(forwardOperation(message));
         RpcForwardHeader forwardHeader = message.getHeader(MessageHeaderConstants.RPC_FORWARD_HEADER);
         RpcForwardAccess toAccess = networkContext.getRpcForwarder().forward(message, forwardHeader);
         if (toAccess != null && toAccess.isActive()) {
+            var endPoint = toAccess.getEndpoint();
+            rpcContext.transfer(endPoint, forwardOperation(message));
             ForwardPoint fromPoint = new ForwardPoint(tunnel.getUserId());
             RpcAccessPoint toPoint = toAccess.getForwardPoint();
             var content = MessageContents.copy(message)
@@ -74,11 +75,7 @@ public class RpcForwardCommand extends BaseCommand implements RpcCommand {
                     .withHeader(RpcOriginalMessageIdHeaderBuilder.newBuilder()
                             .setMessageId(message.getId())
                             .build());
-            var endPoint = toAccess.getEndpoint();
-            var forwardContext = RpcConsumerContext.create(endPoint, content, rpcContext.rpcMonitor());
-            forwardContext.prepare(towardOperation(content)); // TODO 是否在 RpcConsumerContext 处理逻辑??
             endPoint.send(content);
-            forwardContext.complete();
             rpcContext.completeSilently();
         } else {
             rpcContext.complete(NetResultCode.RPC_SERVICE_NOT_AVAILABLE);

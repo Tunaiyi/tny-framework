@@ -106,7 +106,7 @@ public class BaseMessageHeaderContainer implements MessageHeaderContainer {
     }
 
     @Override
-    public <H extends MessageHeader<H>> MessageHeader<H> putHeaderIfAbsent(MessageHeader<?> header) {
+    public <H extends MessageHeader<H>> MessageHeader<H> putHeaderIfAbsent(MessageHeader<H> header) {
         return as(this.headers.putIfAbsent(header.getKey(), header));
     }
 

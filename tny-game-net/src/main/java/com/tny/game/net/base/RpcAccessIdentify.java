@@ -22,21 +22,11 @@ import java.util.Objects;
  **/
 public class RpcAccessIdentify implements RpcAccessPoint {
 
-    private static final long RPC_MAX_INDEX = 0xFF;
+    private static final long RPC_SERVER_INDEX_SIZE = 10000;
 
-    private static final long RPC_MAX_INDEX_MASK = 0xFF;
+    private static final long RPC_SERVICE_ID_SIZE = 100000000000L;
 
-    private static final long RPC_SERVER_ID_INDEX = 0x7FFFFFFF;
-
-    private static final int RPC_SERVER_ID_INDEX_SHIFT_SIZE = 8;
-
-    private static final long RPC_SERVER_ID_INDEX_MASK = RPC_SERVER_ID_INDEX << RPC_SERVER_ID_INDEX_SHIFT_SIZE;
-
-    private static final long RPC_MAX_SERVER_TYPE = 0x7FFFF;
-
-    private static final int RPC_SERVICE_TYPE_MASK_SIZE = RPC_SERVER_ID_INDEX_SHIFT_SIZE + 32;
-
-    private static final long RPC_SERVICE_TYPE_MASK = RPC_MAX_SERVER_TYPE << RPC_SERVICE_TYPE_MASK_SIZE;
+    private static final long RPC_SERVICE_TYPE_SIZE = RPC_SERVER_INDEX_SIZE * RPC_SERVICE_ID_SIZE;
 
     private long id;
 
@@ -72,23 +62,23 @@ public class RpcAccessIdentify implements RpcAccessPoint {
     }
 
     public static long formatId(RpcServiceType serviceType, int serverId, int index) {
-        return ((long)serviceType.id() << RPC_SERVICE_TYPE_MASK_SIZE) | ((long)serverId << RPC_SERVER_ID_INDEX_SHIFT_SIZE) | index;
+        return ((long)serviceType.id() * RPC_SERVICE_TYPE_SIZE) + (serverId * RPC_SERVER_INDEX_SIZE) + index;
     }
 
     private static int parseIndex(long id) {
-        return (int)(id & RPC_MAX_INDEX_MASK);
+        return (int)(id % RPC_SERVER_INDEX_SIZE);
     }
 
     public static int parseServerId(long id) {
-        return (int)((id & RPC_SERVER_ID_INDEX_MASK) >> RPC_SERVER_ID_INDEX_SHIFT_SIZE);
+        return (int)(id % RPC_SERVICE_TYPE_SIZE / RPC_SERVER_INDEX_SIZE);
     }
 
     private static RpcServiceType parseServiceType(long id) {
-        return RpcServiceTypes.of((int)((id & RPC_SERVICE_TYPE_MASK) >>> RPC_SERVICE_TYPE_MASK_SIZE));
+        return RpcServiceTypes.of((int)(id / RPC_SERVICE_TYPE_SIZE));
     }
 
     private void checkIndex(int index) {
-        Asserts.checkArgument(index <= RPC_MAX_INDEX, "index {} 必须 <= {}", index, RPC_MAX_INDEX);
+        Asserts.checkArgument(index < RPC_SERVER_INDEX_SIZE, "index {} 必须 <= {}", index, RPC_SERVER_INDEX_SIZE);
     }
 
     @Override

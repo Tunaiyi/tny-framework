@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.data.mongodb;
 
 import com.mongodb.bulk.BulkWriteResult;
@@ -264,7 +264,7 @@ public class MongoClientStorageAccessor<K extends Comparable<?>, O> extends Mong
         if (CollectionUtils.isNotEmpty(operations)) {
             try {
                 BulkWriteResult result = collection().bulkWrite(operations);
-                LOGGER.error("同步统计: 插入数量 {}; 修改数量 {}; 删除数量 {}; ",
+                LOGGER.info("同步统计: 插入数量 {}; 修改数量 {}; 删除数量 {}; ",
                         result.getInsertedCount(), result.getModifiedCount(), result.getDeletedCount());
             } finally {
                 operations.clear();

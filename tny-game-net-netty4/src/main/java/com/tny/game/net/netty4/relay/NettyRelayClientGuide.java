@@ -128,7 +128,7 @@ public class NettyRelayClientGuide extends NettyBootstrap<NettyRelayClientBootst
             }
             this.bootstrap = new Bootstrap();
             RelayPacketProcessor relayPacketProcessor = new RelayPacketClientProcessor(this.localRelayExplorer, getContext());
-            NettyRelayPacketHandler relayMessageHandler = new NettyRelayPacketHandler(NetAccessMode.CLIENT, relayPacketProcessor);
+            NettyRelayPacketHandler relayMessageHandler = new NettyRelayPacketHandler(setting, relayPacketProcessor);
             this.bootstrap.group(workerGroup)
                     .channel(EPOLL ? EpollSocketChannel.class : NioSocketChannel.class)
                     .option(ChannelOption.SO_REUSEADDR, true)

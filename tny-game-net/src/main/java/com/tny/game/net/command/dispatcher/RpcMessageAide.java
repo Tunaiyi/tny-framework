@@ -13,7 +13,10 @@ package com.tny.game.net.command.dispatcher;
 import com.tny.game.common.result.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
+import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.*;
+
+import java.util.Collection;
 
 /**
  * <p>
@@ -63,7 +66,7 @@ public class RpcMessageAide {
      * @param body    消息体
      * @return 发送回执
      */
-    static MessageContent respondMessage(RpcProviderContext context, ResultCode code, Object body) {
+    static MessageContent toMessage(RpcEnterContext context, ResultCode code, Object body) {
         var request = context.netMessage();
         if (request.getMode() == MessageMode.REQUEST) {
             return respond(request, code, body);
@@ -80,7 +83,7 @@ public class RpcMessageAide {
      * @param body    消息体
      * @return 发送回执
      */
-    static MessageContent respondMessage(Message request, ResultCode code, Object body) {
+    static MessageContent toMessage(Message request, ResultCode code, Object body) {
         if (request.getMode() == MessageMode.REQUEST) {
             return respond(request, code, body);
         } else {
@@ -131,6 +134,16 @@ public class RpcMessageAide {
         return putTransitiveHeaders(request, MessageContents.respond(request, code, body, toMessage))
                 .withHeader(backForward);
         //        return send(tunnel, content, backForward == null);
+    }
+
+    public static void ignoreHeaders(NetMessage message, Collection<String> ignoreSet) {
+        if (CollectionUtils.isNotEmpty(ignoreSet)) {
+            if (ignoreSet.contains("*")) {
+                message.removeAllHeaders();
+            } else {
+                message.removeHeaders(ignoreSet);
+            }
+        }
     }
 
 }

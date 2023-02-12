@@ -33,6 +33,6 @@ public interface RelayTunnel<UID> extends Tunnel<UID> {
      * @param promise    发送应答对象
      * @return 返回等待对象
      */
-    MessageWriteFuture relay(RpcProviderContext rpcContext, boolean promise);
+    MessageWriteFuture relay(RpcTransferContext rpcContext, boolean promise);
 
 }

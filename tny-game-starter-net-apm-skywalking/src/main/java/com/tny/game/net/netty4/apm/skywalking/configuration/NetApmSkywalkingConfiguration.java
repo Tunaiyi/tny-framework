@@ -11,7 +11,11 @@
 package com.tny.game.net.netty4.apm.skywalking.configuration;
 
 import com.tny.game.net.netty4.apm.skywalking.*;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.*;
+
+import static com.tny.game.net.netty4.apm.skywalking.SkywalkingPropertiesConstants.*;
 
 /**
  * <p>
@@ -20,11 +24,15 @@ import org.springframework.context.annotation.*;
  * @date 2023/1/6 18:24
  */
 @Configuration(proxyBeanMethods = false)
+@EnableConfigurationProperties({
+        SkywalkingRpcMonitorProperties.class,
+})
 public class NetApmSkywalkingConfiguration {
 
     @Bean
-    public SkywalkingRpcMonitorHandler skywalkingRpcMonitorHandler() {
-        return new SkywalkingRpcMonitorHandler();
+    @ConditionalOnProperty(value = SKYWALKING_ENABLE, matchIfMissing = true, havingValue = "true")
+    public SkywalkingRpcMonitorHandler skywalkingRpcMonitorHandler(SkywalkingRpcMonitorProperties setting) {
+        return new SkywalkingRpcMonitorHandler(setting);
     }
 
 }

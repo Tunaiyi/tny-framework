@@ -73,8 +73,8 @@ public class RpcClientFactory implements Serve {
             RequestContent content = RpcAuthMessageContexts
                     .authRequest(id, setting.getPassword())
                     .willRespondFuture(setting.getAuthenticateTimeout());
-            var invokeContext = RpcConsumerContext.create(tunnel.getEndpoint(), content, tunnel.getContext().getRpcMonitor());
-            invokeContext.prepare(RpcInvocationContext.rpcOperation(RpcAuthController.class, "authenticate", content));
+            var invokeContext = RpcTransactionContext.createExit(tunnel.getEndpoint(), content, false, tunnel.getContext().getRpcMonitor());
+            invokeContext.invoke(RpcTransactionContext.rpcOperation(RpcAuthController.class, "authenticate", content));
             try {
                 tunnel.send(content);
                 Message message = content.respond().get(setting.getAuthenticateTimeout() + 500, TimeUnit.MILLISECONDS);

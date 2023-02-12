@@ -31,6 +31,6 @@ public interface AuthenticationValidator<UID, F extends CertificateFactory<UID>>
      * @return 带有验证结果的Session对象
      * @throws RpcInvokeException
      */
-    Certificate<UID> validate(Tunnel<UID> communicator, Message message, F factory) throws RpcInvokeException, AuthFailedException;
+    Certificate<UID> validate(Tunnel<UID> communicator, Message message, F factory) throws AuthFailedException;
 
 }

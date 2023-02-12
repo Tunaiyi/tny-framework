@@ -14,7 +14,6 @@ import com.tny.game.common.lifecycle.unit.annotation.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.monitor.*;
-import com.tny.game.net.relay.link.*;
 import com.tny.game.net.transport.*;
 import org.slf4j.*;
 
@@ -36,39 +35,64 @@ public class RpcMonitor {
 
     private final List<RpcMonitorAfterInvokeHandler> afterInvokeHandlers;
 
-    private final List<RpcMonitorInvokeResultHandler> invokeResultHandlers;
-
     private final List<RpcMonitorReceiveHandler> receiveHandlers;
 
-    private final List<RpcMonitorRelayHandler> relayHandlers;
+    private final List<RpcMonitorResumeExecuteHandler> resumeExecuteHandlers;
+
+    private final List<RpcMonitorSuspendExecuteHandler> suspendExecuteHandlers;
+
+    private final List<RpcMonitorTransferHandler> transferHandlers;
 
     private final List<RpcMonitorSendHandler> sendHandlers;
 
     public RpcMonitor() {
         beforeInvokeHandlers = List.of();
         afterInvokeHandlers = List.of();
-        invokeResultHandlers = List.of();
         receiveHandlers = List.of();
-        relayHandlers = List.of();
+        transferHandlers = List.of();
         sendHandlers = List.of();
+        resumeExecuteHandlers = List.of();
+        suspendExecuteHandlers = List.of();
     }
 
     public RpcMonitor(
             List<RpcMonitorReceiveHandler> receiveHandlers,
             List<RpcMonitorSendHandler> sendHandlers,
-            List<RpcMonitorRelayHandler> relayHandlers,
-            List<RpcMonitorAfterInvokeHandler> afterInvokeHandlers,
+            List<RpcMonitorTransferHandler> transferHandlers,
+            List<RpcMonitorResumeExecuteHandler> resumeExecuteHandlers,
+            List<RpcMonitorSuspendExecuteHandler> suspendExecuteHandlers,
             List<RpcMonitorBeforeInvokeHandler> beforeInvokeHandlers,
-            List<RpcMonitorInvokeResultHandler> invokeResultHandler) {
+            List<RpcMonitorAfterInvokeHandler> afterInvokeHandlers) {
         this.beforeInvokeHandlers = beforeInvokeHandlers == null ? List.of() : List.copyOf(beforeInvokeHandlers);
         this.afterInvokeHandlers = afterInvokeHandlers == null ? List.of() : List.copyOf(afterInvokeHandlers);
-        this.invokeResultHandlers = invokeResultHandler == null ? List.of() : List.copyOf(invokeResultHandler);
         this.receiveHandlers = receiveHandlers == null ? List.of() : List.copyOf(receiveHandlers);
-        this.relayHandlers = relayHandlers == null ? List.of() : List.copyOf(relayHandlers);
+        this.transferHandlers = transferHandlers == null ? List.of() : List.copyOf(transferHandlers);
         this.sendHandlers = sendHandlers == null ? List.of() : List.copyOf(sendHandlers);
+        this.resumeExecuteHandlers = resumeExecuteHandlers == null ? List.of() : List.copyOf(resumeExecuteHandlers);
+        this.suspendExecuteHandlers = suspendExecuteHandlers == null ? List.of() : List.copyOf(suspendExecuteHandlers);
     }
 
-    public void onReceive(RpcProviderContext rpcContext) {
+    public void onResume(RpcEnterContext rpcContext) {
+        for (var handler : resumeExecuteHandlers) {
+            try {
+                handler.onResume(rpcContext);
+            } catch (Throwable e) {
+                LOGGER.error("", e);
+            }
+        }
+    }
+
+    public void onSuspend(RpcEnterContext rpcContext) {
+        for (var handler : suspendExecuteHandlers) {
+            try {
+                handler.onSuspend(rpcContext);
+            } catch (Throwable e) {
+                LOGGER.error("", e);
+            }
+        }
+    }
+
+    public void onReceive(RpcEnterContext rpcContext) {
         var tunnel = rpcContext.netTunnel();
         var message = rpcContext.netMessage();
         for (var handler : receiveHandlers) {
@@ -79,6 +103,19 @@ public class RpcMonitor {
             }
         }
         NetLogger.logReceive(tunnel, message);
+    }
+
+    public void onReceive(RpcTransferContext rpcContext) {
+        var messager = rpcContext.getMessager();
+        var message = rpcContext.getMessageSubject();
+        for (var handler : receiveHandlers) {
+            try {
+                handler.onReceive(rpcContext);
+            } catch (Throwable e) {
+                LOGGER.error("", e);
+            }
+        }
+        NetLogger.logReceive(messager, message);
     }
 
     public void onSend(NetTunnel<?> tunnel, Message message) {
@@ -92,27 +129,7 @@ public class RpcMonitor {
         }
     }
 
-    public void onRelay(NetRelayLink from, NetTunnel<?> to, Message message) {
-        for (var handler : relayHandlers) {
-            try {
-                handler.onRelay(from, to, message);
-            } catch (Throwable e) {
-                LOGGER.error("", e);
-            }
-        }
-    }
-
-    public void onRelay(NetTunnel<?> from, NetRelayLink to, Message message) {
-        for (var handler : relayHandlers) {
-            try {
-                handler.onRelay(from, to, message);
-            } catch (Throwable e) {
-                LOGGER.error("", e);
-            }
-        }
-    }
-
-    void onBeforeInvoke(RpcContext rpcContext) {
+    void onBeforeInvoke(RpcTransactionContext rpcContext) {
         for (var handler : beforeInvokeHandlers) {
             try {
                 handler.onBeforeInvoke(rpcContext);
@@ -122,20 +139,30 @@ public class RpcMonitor {
         }
     }
 
-    void onAfterInvoke(RpcContext rpcContext, Throwable exception) {
+    void onAfterInvoke(RpcTransactionContext rpcContext, MessageSubject result, Throwable exception) {
         for (var handler : afterInvokeHandlers) {
             try {
-                handler.onAfterInvoke(rpcContext, exception);
+                handler.onAfterInvoke(rpcContext, result, exception);
             } catch (Throwable e) {
                 LOGGER.error("", e);
             }
         }
     }
 
-    void onInvokeResult(RpcContext rpcContext, MessageSubject result, Throwable exception) {
-        for (var handler : invokeResultHandlers) {
+    public void onTransfer(RpcTransferContext context) {
+        for (var handler : transferHandlers) {
             try {
-                handler.onInvokeResult(rpcContext, result, exception);
+                handler.onTransfer(context);
+            } catch (Throwable e) {
+                LOGGER.error("", e);
+            }
+        }
+    }
+
+    public void onTransfered(RpcTransferContext context, MessageSubject result, Throwable exception) {
+        for (var handler : transferHandlers) {
+            try {
+                handler.onTransfered(context, result, exception);
             } catch (Throwable e) {
                 LOGGER.error("", e);
             }

@@ -57,7 +57,7 @@ public abstract class CommunicatorTest<C extends Communicator<Long>> {
     @Test
     public void getUserType() {
         C loginCommunicator = createNetter(createLoginCert());
-        assertEquals(messagerType.getGroup(), loginCommunicator.getUserGroup());
+        assertEquals(messagerType.getGroup(), loginCommunicator.getGroup());
     }
 
     //	@Test

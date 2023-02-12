@@ -33,7 +33,7 @@ import static com.tny.game.common.utils.ObjectAide.*;
 @GlobalEventListener
 public class BaseRpcServicerManager implements RpcServicerManager, EndpointKeeperCreateListener<Object> {
 
-    private final Map<MessagerType, RpcServiceSet> serviceSetMap = new CopyOnWriteMap<>();
+    private final Map<MessagerType, RpcServiceNodeSet> serviceSetMap = new CopyOnWriteMap<>();
 
     private final Map<MessagerType, RpcInvokeNodeSet> invokeNodeSetMap = new ConcurrentHashMap<>();
 
@@ -81,8 +81,8 @@ public class BaseRpcServicerManager implements RpcServicerManager, EndpointKeepe
         return invokeNodeSetMap.get(messagerType);
     }
 
-    private RpcServiceSet doLoadRpcServiceSet(RpcServiceType type) {
-        RpcServiceSet exist = serviceSetMap.get(type);
+    private RpcServiceNodeSet doLoadRpcServiceSet(RpcServiceType type) {
+        RpcServiceNodeSet exist = serviceSetMap.get(type);
         if (exist != null) {
             return exist;
         }
@@ -93,7 +93,7 @@ public class BaseRpcServicerManager implements RpcServicerManager, EndpointKeepe
             if (exist != null) {
                 return exist;
             }
-            RpcServiceSet serviceSet = new RpcServiceSet(type);
+            RpcServiceNodeSet serviceSet = new RpcServiceNodeSet(type);
             this.serviceSetMap.put(type, serviceSet);
             this.invokeNodeSetMap.put(type, serviceSet);
             return serviceSet;
@@ -107,7 +107,7 @@ public class BaseRpcServicerManager implements RpcServicerManager, EndpointKeepe
         MessagerType messagerType = keeper.getMessagerType();
         if (messagerType instanceof RpcServiceType) {
             RpcServiceType serviceType = as(messagerType, RpcServiceType.class);
-            RpcServiceSet servicer = doLoadRpcServiceSet(serviceType);
+            RpcServiceNodeSet servicer = doLoadRpcServiceSet(serviceType);
             EndpointKeeper<RpcAccessIdentify, Endpoint<RpcAccessIdentify>> rpcKeeper = as(keeper);
             rpcKeeper.addListener(new EndpointKeeperListener<RpcAccessIdentify>() {
 
@@ -125,7 +125,11 @@ public class BaseRpcServicerManager implements RpcServicerManager, EndpointKeepe
 
             });
         } else {
-            doLoadInvokeNodeSet(messagerType, (s) -> s.bind(keeper));
+            var nodeSet = doLoadInvokeNodeSet(messagerType, null);
+            if (nodeSet instanceof MessagerNodeSet) {
+                var messagerSet = (MessagerNodeSet)nodeSet;
+                messagerSet.bind(keeper);
+            }
         }
 
     }

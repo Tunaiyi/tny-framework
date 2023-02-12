@@ -48,12 +48,17 @@ public class NettyClientRelayContext implements ClientRelayContext {
 
     @Override
     public String getAppServeName() {
-        return appContext.getAppType();
+        return RpcServiceTypes.checkAppType(appContext.appType()).getService();
     }
 
     @Override
     public long getAppInstanceId() {
         return appContext.getServerId();
+    }
+
+    @Override
+    public AppType getAppType() {
+        return appContext.appType();
     }
 
     @Override
