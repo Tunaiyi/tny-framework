@@ -14,13 +14,15 @@ import com.tny.game.net.base.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
 
+import java.util.concurrent.Executor;
+
 /**
  * <p>
  *
  * @author kgtny
  * @date 2022/12/13 03:52
  **/
-public interface RpcEnterContext extends RpcInvocationContext, RpcTransferContext, RpcHandleContext {
+public interface RpcEnterContext extends RpcInvocationContext, RpcTransferContext, RpcHandleContext, RpcEnterCompletable {
 
     //    /**
     //     * @return 准备
@@ -43,7 +45,7 @@ public interface RpcEnterContext extends RpcInvocationContext, RpcTransferContex
     boolean isRunning();
 
     /**
-     * @return 获取通道
+     * @return 获取消息
      */
     NetMessage netMessage();
 
@@ -61,5 +63,10 @@ public interface RpcEnterContext extends RpcInvocationContext, RpcTransferContex
      * @return rpc监控
      */
     NetworkContext networkContext();
+
+    /**
+     * @return 当前用户执行器
+     */
+    Executor executor();
 
 }
