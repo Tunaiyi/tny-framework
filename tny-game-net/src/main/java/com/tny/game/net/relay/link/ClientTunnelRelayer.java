@@ -48,7 +48,7 @@ public class ClientTunnelRelayer {
 
     public MessageWriteFuture relay(ClientRelayTunnel<?> tunnel, RpcTransferContext rpcContext, MessageWriteFuture promise) {
         ClientRelayLink link = allot(tunnel);
-        var message = rpcContext.netMessage();
+        var message = rpcContext.getMessage();
         if (link != null && link.isActive()) {
             rpcContext.transfer(link, RpcTransactionContext.relayOperation(message));
             var future = link.relay(tunnel, message, promise);

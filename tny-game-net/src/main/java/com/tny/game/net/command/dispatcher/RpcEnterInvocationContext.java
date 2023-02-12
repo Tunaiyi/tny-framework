@@ -17,7 +17,6 @@ import com.tny.game.net.message.*;
 import com.tny.game.net.rpc.*;
 import com.tny.game.net.transport.*;
 
-import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.tny.game.common.utils.ObjectAide.*;
@@ -55,28 +54,23 @@ class RpcEnterInvocationContext extends CompletableRpcTransactionContext impleme
     }
 
     @Override
-    public MessageSubject getMessageSubject() {
-        return message;
-    }
-
-    @Override
-    public RpcInvocationMode getInvocationMode() {
-        return RpcInvocationMode.ENTER;
-    }
-
-    @Override
-    public NetMessager getMessager() {
-        return this.tunnel;
-    }
-
-    @Override
     public <U> Endpoint<U> getEndpoint() {
         return as(this.tunnel.getEndpoint());
     }
 
     @Override
-    public Executor executor() {
-        return this.getEndpoint();
+    public MessageSubject getMessageSubject() {
+        return message;
+    }
+
+    @Override
+    public RpcTransactionMode getMode() {
+        return RpcTransactionMode.ENTER;
+    }
+
+    @Override
+    public NetMessager getMessager() {
+        return this.tunnel;
     }
 
     @Override
@@ -140,6 +134,11 @@ class RpcEnterInvocationContext extends CompletableRpcTransactionContext impleme
 
     @Override
     public NetMessage netMessage() {
+        return message;
+    }
+
+    @Override
+    public Message getMessage() {
         return this.message;
     }
 

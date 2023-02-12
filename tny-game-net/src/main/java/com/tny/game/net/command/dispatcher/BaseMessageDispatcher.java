@@ -63,7 +63,7 @@ public abstract class BaseMessageDispatcher implements MessageDispatcher {
         if (forwardCommand != null) {
             return forwardCommand;
         }
-        var message = rpcContext.netMessage();
+        var message = rpcContext.getMessage();
         // 获取方法持有器
         MethodControllerHolder controller = this.getController(message.getProtocolId(), message.getMode());
         if (controller != null) {
@@ -84,7 +84,7 @@ public abstract class BaseMessageDispatcher implements MessageDispatcher {
         if (!setting.isForwardable()) {
             return null;
         }
-        var message = rpcContext.netMessage();
+        var message = rpcContext.getMessage();
         RpcForwardHeader forwardHeader = message.getHeader(MessageHeaderConstants.RPC_FORWARD_HEADER);
         if (forwardHeader == null) {
             return null;

@@ -162,7 +162,7 @@ public abstract class BaseNetEndpoint<UID> extends AbstractCommunicator<UID> imp
         try {
             MessageHandleFilter<UID> filter = this.getReceiveFilter();
             var tunnel = rpcContext.netTunnel();
-            var message = rpcContext.netMessage();
+            var message = rpcContext.getMessage();
             MessageRespondFuture future = this.pollFuture(message);
             if (future != null) {
                 this.commandBox.execute(new RespondFutureTask(rpcContext, future));

@@ -38,7 +38,7 @@ public class MessagerAuthenticateService implements MessagerAuthenticator {
             Class<? extends AuthenticationValidator<?, ?>> validatorClass)
             throws AuthFailedException {
         var tunnel = context.netTunnel();
-        var message = context.netMessage();
+        var message = context.getMessage();
         var networkContext = context.networkContext();
         if (!tunnel.isAuthenticated()) {
             CertificateFactory<Object> certificateFactory = networkContext.getCertificateFactory();

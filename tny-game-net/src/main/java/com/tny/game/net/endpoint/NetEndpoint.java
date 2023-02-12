@@ -20,7 +20,7 @@ import com.tny.game.net.transport.*;
 /**
  * <p>
  */
-public interface NetEndpoint<UID> extends Endpoint<UID>, SentMessageHistory {
+public interface NetEndpoint<UID> extends Endpoint<UID>, MessageReceiver, SentMessageHistory {
 
     /**
      * 处理收到消息

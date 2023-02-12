@@ -30,7 +30,7 @@ public class RespondFutureTask implements Runnable {
     public void run() {
         RpcContexts.setCurrent(rpcContext);
         try {
-            this.future.complete(rpcContext.netMessage());
+            this.future.complete(rpcContext.getMessage());
         } finally {
             RpcContexts.clear();
         }

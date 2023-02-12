@@ -42,8 +42,8 @@ class RpcExitInvocationContext extends BaseRpcTransactionContext implements RpcE
     }
 
     @Override
-    public RpcInvocationMode getInvocationMode() {
-        return RpcInvocationMode.EXIT;
+    public RpcTransactionMode getMode() {
+        return RpcTransactionMode.EXIT;
     }
 
     @Override

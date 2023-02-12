@@ -56,7 +56,7 @@ public class RpcForwardCommand extends BaseCommand implements RpcCommand {
 
     private void forward() {
         var tunnel = rpcContext.<RpcServicer>netTunnel();
-        var message = rpcContext.netMessage();
+        var message = rpcContext.getMessage();
         var networkContext = rpcContext.networkContext();
         RpcForwardHeader forwardHeader = message.getHeader(MessageHeaderConstants.RPC_FORWARD_HEADER);
         RpcForwardAccess toAccess = networkContext.getRpcForwarder().forward(message, forwardHeader);

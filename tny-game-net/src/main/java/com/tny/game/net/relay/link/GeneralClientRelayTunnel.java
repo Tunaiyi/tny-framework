@@ -75,7 +75,7 @@ public class GeneralClientRelayTunnel<UID> extends ServerTunnel<UID, NetSession<
     @Override
     public MessageWriteFuture relay(RpcTransferContext rpcContext, boolean needPromise) {
         MessageWriteFuture promise = needPromise ? new MessageWriteFuture() : null;
-        var message = rpcContext.netMessage();
+        var message = rpcContext.getMessage();
         String service = relayMessageRouter.route(this, message);
         if (service == null) {
             service = "-None";

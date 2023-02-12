@@ -94,7 +94,7 @@ public class RpcMonitor {
 
     public void onReceive(RpcEnterContext rpcContext) {
         var tunnel = rpcContext.netTunnel();
-        var message = rpcContext.netMessage();
+        var message = rpcContext.getMessage();
         for (var handler : receiveHandlers) {
             try {
                 handler.onReceive(rpcContext);

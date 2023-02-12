@@ -88,7 +88,7 @@ public class SkywalkingRpcMonitorHandler implements RpcMonitorReceiveHandler, Rp
             attributes.setAttribute(TRACING_RPC_SPAN, rpcSpan.prepareForAsync());
         }
         LOGGER.info("onReceive span {} {} {} | TraceId {} | SegmentId {} | SpanId {}",
-                rpcContext.getInvocationMode(), rpcSpan.getOperationName(), rpcSpan.getSpanId(),
+                rpcContext.getMode(), rpcSpan.getOperationName(), rpcSpan.getSpanId(),
                 contextCarrier.getTraceId(), contextCarrier.getTraceSegmentId(), contextCarrier.getSpanId());
     }
 
@@ -117,14 +117,14 @@ public class SkywalkingRpcMonitorHandler implements RpcMonitorReceiveHandler, Rp
         //            return;
         //        }
         LOGGER.info("invoke span {} {} {}",
-                rpcContext.getInvocationMode(), span.getOperationName(), span.getSpanId());
+                rpcContext.getMode(), span.getOperationName(), span.getSpanId());
         if (rpcContext.isAsync()) {
-            if (rpcContext.getInvocationMode() == RpcInvocationMode.ENTER) {
+            if (rpcContext.getMode() == RpcTransactionMode.ENTER) {
                 var snapshot = ContextManager.capture();
                 rpcContext.attributes().setAttribute(TRACING_SNAPSHOT, snapshot);
             }
             rpcContext.attributes().setAttribute(TRACING_INVOKE_SPAN, span.prepareForAsync());
-            if (rpcContext.getInvocationMode() == RpcInvocationMode.EXIT) {
+            if (rpcContext.getMode() == RpcTransactionMode.EXIT) {
                 ContextManager.stopSpan(span);
             }
         }
@@ -149,7 +149,7 @@ public class SkywalkingRpcMonitorHandler implements RpcMonitorReceiveHandler, Rp
     private AbstractSpan traceOnBefore(RpcTransactionContext rpcContext) {
         AbstractSpan span;
         String operationName;
-        if (rpcContext.getInvocationMode() == RpcInvocationMode.EXIT) {
+        if (rpcContext.getMode() == RpcTransactionMode.EXIT) {
             var tracingHeader = new RpcTracingHeader();
             var message = rpcContext.getMessageSubject();
             var contextCarrier = new ContextCarrier();
@@ -186,7 +186,7 @@ public class SkywalkingRpcMonitorHandler implements RpcMonitorReceiveHandler, Rp
         var current = RpcContexts.current();
         boolean restore = false;
         ContextCarrier headerCarrier;
-        if (rpcContext.getInvocationMode() == RpcInvocationMode.ENTER) { // Forward 情况
+        if (rpcContext.getMode() == RpcTransactionMode.ENTER) { // Forward 情况
             var contextCarrier = new ContextCarrier();
             span = ContextManager.createExitSpan(operationName, contextCarrier, peer(rpcContext.getTo()));
             restore = restore((RpcTransactionContext)current);
@@ -247,7 +247,7 @@ public class SkywalkingRpcMonitorHandler implements RpcMonitorReceiveHandler, Rp
             if (cause != null) {
                 span.log(cause);
             }
-            LOGGER.info("stop {} span of {} {}", key.name(), rpcContext.getInvocationMode(), span.getOperationName());
+            LOGGER.info("stop {} span of {} {}", key.name(), rpcContext.getMode(), span.getOperationName());
             // renewTagSpan(span, rpcContext.getMessager());
             span.asyncFinish();
         }
@@ -289,12 +289,12 @@ public class SkywalkingRpcMonitorHandler implements RpcMonitorReceiveHandler, Rp
         if (snapshot != null) {
             AbstractSpan restoreSpan = span != null ? span : ContextManager.activeSpan();
             LOGGER.info("restore span {} {} {}",
-                    rpcContext.getInvocationMode(), restoreSpan.getOperationName(), restoreSpan.getSpanId());
+                    rpcContext.getMode(), restoreSpan.getOperationName(), restoreSpan.getSpanId());
             ContextManager.continued(snapshot);
             result = true;
         } else {
             LOGGER.info("restore no snapshot {} {} {}",
-                    rpcContext.getClass(), rpcContext.getInvocationMode(), rpcContext.getOperationName());
+                    rpcContext.getClass(), rpcContext.getMode(), rpcContext.getOperationName());
         }
         if (span != null) {
             ContextManager.stopSpan(span);
