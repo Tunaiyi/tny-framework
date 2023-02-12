@@ -16,11 +16,21 @@ package com.tny.game.net.rpc;
  * @author kgtny
  * @date 2023/1/16 16:42
  **/
-public enum RpcInvocationMode {
+public enum RpcTransactionMode {
+
+    /**
+     * 接入点(被请求)
+     */
     ENTER,
 
+    /**
+     * 退出点(请求)
+     */
     EXIT,
 
+    /**
+     * 转发
+     */
     TRANSFER,
 
     //
