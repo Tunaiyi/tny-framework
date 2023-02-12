@@ -33,7 +33,7 @@ public abstract class BaseRpcTransactionContext implements RpcTransactionContext
 
     private String operationName;
 
-    private volatile boolean async;
+    private final boolean async;
 
     protected BaseRpcTransactionContext(boolean async) {
         this(async, null);

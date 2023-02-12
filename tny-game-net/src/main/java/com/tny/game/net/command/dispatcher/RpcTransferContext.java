@@ -32,7 +32,7 @@ public interface RpcTransferContext extends RpcTransactionContext, RpcEnterCompl
     /**
      * @return 传送消息
      */
-    NetMessage netMessage();
+    Message getMessage();
 
     /**
      * @return 发送服务
