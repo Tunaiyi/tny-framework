@@ -42,8 +42,8 @@ class RpcRelayInvocationContext extends CompletableRpcTransactionContext impleme
     }
 
     @Override
-    public RpcInvocationMode getInvocationMode() {
-        return RpcInvocationMode.TRANSFER;
+    public RpcTransactionMode getMode() {
+        return RpcTransactionMode.TRANSFER;
     }
 
     @Override
@@ -79,7 +79,7 @@ class RpcRelayInvocationContext extends CompletableRpcTransactionContext impleme
     }
 
     @Override
-    public NetMessage netMessage() {
+    public NetMessage getMessage() {
         return message;
     }
 
