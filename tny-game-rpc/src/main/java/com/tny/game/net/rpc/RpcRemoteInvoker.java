@@ -185,9 +185,8 @@ public class RpcRemoteInvoker {
                 .withBody(invokeParams.getBody())
                 .withHeaders(invokeParams.getAllHeaders());
         var invokeContext = RpcTransactionContext.createExit(endpoint, content, false, rpcMonitor);
-
+        invokeContext.invoke(rpcOperation(method.getName(), content));
         try {
-            invokeContext.invoke(rpcOperation(method.getName(), content));
             endpoint.send(content);
             invokeContext.complete();
             if (this.method.isAsync()) {

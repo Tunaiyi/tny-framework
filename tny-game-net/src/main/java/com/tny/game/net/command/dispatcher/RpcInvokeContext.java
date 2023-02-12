@@ -40,7 +40,7 @@ public class RpcInvokeContext {
         this.controller = controller;
         this.rpcContext = rpcContext;
         this.promise = new MessageCommandPromise(getName());
-        var message = rpcContext.getMessage();
+        var message = rpcContext.netMessage();
         this.forward = message.getHeader(MessageHeaderConstants.RPC_FORWARD_HEADER);
     }
 
@@ -60,7 +60,7 @@ public class RpcInvokeContext {
     }
 
     public Message getMessage() {
-        return rpcContext.getMessage();
+        return rpcContext.netMessage();
     }
 
     public Tunnel<Object> getTunnel() {

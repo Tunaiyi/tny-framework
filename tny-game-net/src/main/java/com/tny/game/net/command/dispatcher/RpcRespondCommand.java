@@ -42,7 +42,7 @@ public class RpcRespondCommand extends BaseCommand implements RpcCommand {
     protected void action() throws Throwable {
         RpcContexts.setCurrent(rpcContext);
         try {
-            var message = rpcContext.getMessage();
+            var message = rpcContext.netMessage();
             rpcContext.invoke(errorOperation(message));
             rpcContext.complete(code, body);
         } catch (Throwable cause) {

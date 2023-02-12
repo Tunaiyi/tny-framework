@@ -75,7 +75,7 @@ public class MockNetEndpoint extends AttributeHolder implements NetEndpoint<Long
 
     @Override
     public boolean receive(RpcEnterContext context) {
-        this.receiveQueue.add(context.getMessage());
+        this.receiveQueue.add(context.netMessage());
         return true;
     }
 
