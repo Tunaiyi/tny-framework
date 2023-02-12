@@ -67,7 +67,7 @@ public class RpcMessageAide {
      * @return 发送回执
      */
     static MessageContent toMessage(RpcEnterContext context, ResultCode code, Object body) {
-        var request = context.netMessage();
+        var request = context.getMessage();
         if (request.getMode() == MessageMode.REQUEST) {
             return respond(request, code, body);
         } else {
