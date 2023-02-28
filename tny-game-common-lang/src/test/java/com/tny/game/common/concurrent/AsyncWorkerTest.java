@@ -13,7 +13,11 @@ package com.tny.game.common.concurrent;
 import com.tny.game.common.concurrent.worker.*;
 import org.junit.jupiter.api.*;
 
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import java.util.concurrent.*;
+
+import static com.tny.game.common.concurrent.worker.AbstractAsyncWorker.*;
 
 /**
  * <p>
@@ -21,9 +25,11 @@ import java.util.concurrent.*;
  * @author kgtny
  * @date 2022/9/27 16:15
  **/
-public class WorkerExecutorTest {
+public class AsyncWorkerTest {
 
-    private WorkerExecutor executor = new SingleWorkerExecutor(ForkJoinPools.commonPool(), true);
+    private final SerialAsyncWorker executor = AsyncWorker.createSerialWorker(ForkJoinPools.pool("AsyncWorkerTest"));
+    //    private final AsyncWorker executor = new AsyncSingleWorker(ForkJoinPools.commonPool());
+    //    private final AsyncWorker executor = new SingleWorkerExecutor(ForkJoinPools.commonPool());
 
     @Test
     void test() throws ExecutionException, InterruptedException {
@@ -33,7 +39,7 @@ public class WorkerExecutorTest {
                         debug("2 - 1");
                         return executor.await(() -> {
                                     debug("3 - 1");
-                                    return executor.delay(1000)
+                                    return executor.awaitDelay(1000)
                                             .whenComplete((v, c) -> {
                                                 executor.execute(() -> debug("4 - 1"));
                                                 debug("3 - 2");
@@ -42,7 +48,10 @@ public class WorkerExecutorTest {
                                                 var delay = CompletableFuture.delayedExecutor(1000, TimeUnit.MILLISECONDS);
                                                 return CompletableFuture.runAsync(() -> debug("5 - 1"), delay);
                                             })
-                                            .thenCompose((v) -> executor.run(() -> debug("6 - 1")));
+                                            .thenCompose((v) -> {
+                                                System.out.println("6 - 1 ====== " + Thread.currentThread());
+                                                return executor.run(() -> debug("6 - 1"));
+                                            });
                                 })
                                 .whenComplete((v, c) -> debug("2 - 2"));
                     })
@@ -52,7 +61,9 @@ public class WorkerExecutorTest {
 
     private static void debug(String message) {
         var thread = Thread.currentThread();
-        System.out.println(message + "|" + SerialWorkerExecutor.currentExecutor() + "|" + thread.getName() + "-" + thread.getId());
+        System.out.println(
+                DateTimeFormatter.ISO_INSTANT.format(Instant.now()) + " # " + message + "|" + currentExecutor() + "|" + thread.getName() + "-" +
+                        thread.getId());
     }
 
 }
