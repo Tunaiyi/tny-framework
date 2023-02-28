@@ -99,13 +99,11 @@ public class DisruptorEndpointCommandBoxProcessor extends EndpointCommandBoxProc
 
     @Override
     public void handle(TimerCommandBoxProcess driver) {
-        long sequence = this.boxProcessorBuffer.next();
-        try {
-            BufferItem<CommandBoxProcess> item = this.boxProcessorBuffer.get(sequence);
-            item.setItem(driver);
-        } finally {
-            this.boxProcessorBuffer.publish(sequence);
-        }
+        boxProcessorBuffer.publishEvent(this::publish, driver);
+    }
+
+    private void publish(BufferItem<CommandBoxProcess> item, long sequence, CommandBoxProcess driver) {
+        item.setItem(driver);
     }
 
     @Override

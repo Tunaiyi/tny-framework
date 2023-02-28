@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.basics.item;
 
 import com.tny.game.common.enums.*;
@@ -45,6 +45,16 @@ public interface ItemType extends IntEnumerable {
      * @return 返回 itemID
      */
     default long itemIdOf(int index) {
+        return Long.parseLong(this.getIdHead() + "" + index);
+    }
+
+    /**
+     * 创建 itemId
+     *
+     * @param index 索引
+     * @return 返回 itemID
+     */
+    default long itemIdOf(long index) {
         return Long.parseLong(this.getIdHead() + "" + index);
     }
 
