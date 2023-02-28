@@ -17,24 +17,9 @@ import java.util.function.Supplier;
  * <p>
  *
  * @author kgtny
- * @date 2022/7/27 20:39
+ * @date 2023/2/24 12:29
  **/
-public interface WorkerExecutor extends Executor {
-
-    Runnable NOOP = () -> {
-    };
-
-    <T> CompletableFuture<T> apply(Supplier<T> runnable);
-
-    <T> CompletableFuture<T> apply(Supplier<T> runnable, long timeout);
-
-    <T> CompletableFuture<T> apply(Supplier<T> runnable, long timeout, TimeUnit unit);
-
-    CompletableFuture<Void> run(Runnable runnable);
-
-    CompletableFuture<Void> run(Runnable runnable, long timeout);
-
-    CompletableFuture<Void> run(Runnable runnable, long timeout, TimeUnit unit);
+public interface SerialAsyncWorker extends AsyncWorker {
 
     /**
      * 阻塞等待 action 的 future 完成
@@ -121,69 +106,6 @@ public interface WorkerExecutor extends Executor {
      */
     default <T> CompletableFuture<T> awaitDelay(Supplier<T> supplier, int delayTime) {
         return this.awaitDelay(supplier, delayTime, TimeUnit.MILLISECONDS);
-    }
-
-    /**
-     * 非阻塞延迟执行
-     *
-     * @param delayTime 延迟时间
-     * @return 返回 future
-     */
-    default CompletableFuture<Void> delay(int delayTime) {
-        return delay(delayTime, TimeUnit.MILLISECONDS);
-    }
-
-    /**
-     * 非阻塞延迟执行
-     *
-     * @param delayTime 延迟时间
-     * @param timeUnit  延迟单位
-     * @return 返回 future
-     */
-    default CompletableFuture<Void> delay(int delayTime, TimeUnit timeUnit) {
-        return delay(NOOP, delayTime, timeUnit);
-    }
-
-    /**
-     * 非阻塞延迟执行
-     *
-     * @param runnable  执行任务
-     * @param delayTime 延迟时间
-     * @param timeUnit  延迟单位
-     * @return 返回 future
-     */
-    CompletableFuture<Void> delay(Runnable runnable, int delayTime, TimeUnit timeUnit);
-
-    /**
-     * 非阻塞延迟执行
-     *
-     * @param supplier  执行任务
-     * @param delayTime 延迟时间
-     * @param timeUnit  延迟单位
-     * @return 返回 future
-     */
-    <T> CompletableFuture<T> delay(Supplier<T> supplier, int delayTime, TimeUnit timeUnit);
-
-    /**
-     * 非阻塞延迟执行
-     *
-     * @param runnable  执行任务
-     * @param delayTime 延迟时间(ms)
-     * @return 返回 future
-     */
-    default CompletableFuture<Void> delay(Runnable runnable, int delayTime) {
-        return this.delay(runnable, delayTime, TimeUnit.MILLISECONDS);
-    }
-
-    /**
-     * 非阻塞延迟执行
-     *
-     * @param supplier  执行任务
-     * @param delayTime 延迟时间(ms)
-     * @return 返回 future
-     */
-    default <T> CompletableFuture<T> delay(Supplier<T> supplier, int delayTime) {
-        return this.delay(supplier, delayTime, TimeUnit.MILLISECONDS);
     }
 
 }

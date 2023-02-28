@@ -39,7 +39,7 @@ public enum MessageMode {
 
     private final byte option;
 
-    private String mark;
+    private final String mark;
 
     MessageMode(MessageType type, byte option) {
         this.type = type;

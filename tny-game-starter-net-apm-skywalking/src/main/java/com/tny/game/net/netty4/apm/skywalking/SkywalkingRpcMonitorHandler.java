@@ -362,7 +362,6 @@ public class SkywalkingRpcMonitorHandler implements RpcMonitorReceiveHandler, Rp
         span.tag(RPC_PROTOCOL, protocolId);
         if (contextCarrier != null) {
             span.tag(TRACE_ID, contextCarrier.getTraceId());
-
         }
     }
 
@@ -387,12 +386,12 @@ public class SkywalkingRpcMonitorHandler implements RpcMonitorReceiveHandler, Rp
     }
 
     private String createOperationName(String action, RpcTransactionContext context) {
-        String operationName;
-        operationName = action + context.getOperationName();
+        String operationName = context.getOperationName();
         if (StringUtils.isBlank(operationName)) {
-            operationName = rpcOperationName(context.getMessageSubject());
+            return rpcOperationName(context.getMessageSubject());
+        } else {
+            return action + context.getOperationName();
         }
-        return operationName;
     }
 
     private String peer(NetMessager messager) {
