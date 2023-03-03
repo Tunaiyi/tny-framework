@@ -78,33 +78,33 @@ class DefaultSerialAsyncWorker extends AbstractAsyncWorker implements SerialAsyn
                 .thenApply((v) -> supplier.get());
     }
 
-    @Override
-    public CompletableFuture<Void> delay(Runnable runnable, int delayTime, TimeUnit timeUnit) {
-        boolean inWorker = isInWorker();
-        if (inWorker) {
-            var delay = CompletableFuture.delayedExecutor(delayTime, timeUnit, this.masterExecutor);
-            var task = new SerialRunnableExecuteTask(runnable, 0, TimeUnit.MICROSECONDS);
-            delay.execute(() -> runOnWait(task));
-            return task.getFuture();
-        } else {
-            var delay = CompletableFuture.delayedExecutor(delayTime, timeUnit, this);
-            return CompletableFuture.runAsync(runnable, delay);
-        }
-    }
-
-    @Override
-    public <T> CompletableFuture<T> delay(Supplier<T> supplier, int delayTime, TimeUnit timeUnit) {
-        boolean inWorker = isInWorker();
-        if (inWorker) {
-            var delay = CompletableFuture.delayedExecutor(delayTime, timeUnit, this.masterExecutor);
-            var task = new SerialApplyExecuteTask<>(supplier, 0, TimeUnit.MICROSECONDS);
-            delay.execute(() -> runOnWait(task));
-            return task.getFuture();
-        } else {
-            var delay = CompletableFuture.delayedExecutor(delayTime, timeUnit, this);
-            return CompletableFuture.supplyAsync(supplier, delay);
-        }
-    }
+    //    @Override
+    //    public CompletableFuture<Void> delay(Runnable runnable, int delayTime, TimeUnit timeUnit) {
+    //        boolean inWorker = isInWorker();
+    //        if (inWorker) {
+    //            var delay = CompletableFuture.delayedExecutor(delayTime, timeUnit, this.masterExecutor);
+    //            var task = new SerialRunnableExecuteTask(runnable, 0, TimeUnit.MICROSECONDS);
+    //            delay.execute(() -> runOnWait(task));
+    //            return task.getFuture();
+    //        } else {
+    //            var delay = CompletableFuture.delayedExecutor(delayTime, timeUnit, this);
+    //            return CompletableFuture.runAsync(runnable, delay);
+    //        }
+    //    }
+    //
+    //    @Override
+    //    public <T> CompletableFuture<T> delay(Supplier<T> supplier, int delayTime, TimeUnit timeUnit) {
+    //        boolean inWorker = isInWorker();
+    //        if (inWorker) {
+    //            var delay = CompletableFuture.delayedExecutor(delayTime, timeUnit, this.masterExecutor);
+    //            var task = new SerialApplyExecuteTask<>(supplier, 0, TimeUnit.MICROSECONDS);
+    //            delay.execute(() -> runOnWait(task));
+    //            return task.getFuture();
+    //        } else {
+    //            var delay = CompletableFuture.delayedExecutor(delayTime, timeUnit, this);
+    //            return CompletableFuture.supplyAsync(supplier, delay);
+    //        }
+    //    }
 
     @Override
     public void execute(@Nonnull Runnable runnable) {
