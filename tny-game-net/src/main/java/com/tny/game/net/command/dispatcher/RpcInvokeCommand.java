@@ -75,7 +75,7 @@ public class RpcInvokeCommand extends RpcHandleCommand {
 
     @Override
     protected void onRun() throws Exception {
-        rpcContext.invoke(RpcTransactionContext.rpcOperation(invokeContext.getName(), rpcContext.netMessage()));
+        rpcContext.invoke(RpcTransactionContext.rpcOperation(invokeContext.getName(), rpcContext.getMessage()));
         // 调用逻辑业务
         this.invoke();
     }
@@ -110,7 +110,7 @@ public class RpcInvokeCommand extends RpcHandleCommand {
      * 执行 invoke
      */
     private void invoke() throws Exception {
-        var message = rpcContext.netMessage();
+        var message = rpcContext.getMessage();
         var tunnel = rpcContext.netTunnel();
         MethodControllerHolder controller = this.invokeContext.getController();
         if (controller == null) {
