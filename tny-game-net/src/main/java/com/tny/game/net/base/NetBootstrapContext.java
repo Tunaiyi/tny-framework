@@ -39,7 +39,7 @@ public class NetBootstrapContext implements NetworkContext {
 
     private final MessageDispatcher messageDispatcher;
 
-    private final CommandBoxProcessor commandTaskProcessor;
+    private final CommandExecutorFactory commandExecutorFactory;
 
     private final RpcForwarder rpcForwarder;
 
@@ -53,7 +53,7 @@ public class NetBootstrapContext implements NetworkContext {
         this.appContext = null;
         this.setting = null;
         this.messageDispatcher = null;
-        this.commandTaskProcessor = null;
+        this.commandExecutorFactory = null;
         this.rpcForwarder = null;
     }
 
@@ -61,7 +61,7 @@ public class NetBootstrapContext implements NetworkContext {
             NetAppContext appContext,
             NetBootstrapSetting setting,
             MessageDispatcher messageDispatcher,
-            CommandBoxProcessor commandTaskProcessor,
+            CommandExecutorFactory commandExecutorFactory,
             MessageFactory messageFactory,
             MessagerFactory messagerFactory,
             CertificateFactory<?> certificateFactory,
@@ -70,7 +70,7 @@ public class NetBootstrapContext implements NetworkContext {
         this.appContext = appContext;
         this.setting = setting;
         this.messageDispatcher = messageDispatcher;
-        this.commandTaskProcessor = commandTaskProcessor;
+        this.commandExecutorFactory = commandExecutorFactory;
         this.messageFactory = messageFactory;
         this.messagerFactory = messagerFactory;
         this.certificateFactory = certificateFactory;
@@ -104,8 +104,8 @@ public class NetBootstrapContext implements NetworkContext {
     }
 
     @Override
-    public CommandBoxProcessor getCommandTaskProcessor() {
-        return this.commandTaskProcessor;
+    public CommandExecutorFactory getCommandExecutorFactory() {
+        return this.commandExecutorFactory;
     }
 
     @Override

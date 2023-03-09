@@ -52,7 +52,7 @@ public interface NetBootstrapSetting {
 
     String getMessageDispatcher();
 
-    String getCommandTaskProcessor();
+    String getCommandExecutorFactory();
 
     String getRpcForwarder();
 

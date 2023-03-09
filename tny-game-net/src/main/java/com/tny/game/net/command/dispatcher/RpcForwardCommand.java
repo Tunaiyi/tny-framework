@@ -10,12 +10,14 @@
  */
 package com.tny.game.net.command.dispatcher;
 
-import com.tny.game.common.worker.command.*;
+import com.tny.game.common.concurrent.worker.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.rpc.*;
 import com.tny.game.net.transport.*;
 import org.slf4j.*;
+
+import java.util.concurrent.CompletableFuture;
 
 import static com.tny.game.net.command.dispatcher.RpcTransactionContext.*;
 
@@ -25,7 +27,7 @@ import static com.tny.game.net.command.dispatcher.RpcTransactionContext.*;
  * @author Kun Yang
  * @date 2022/5/3 03:42
  **/
-public class RpcForwardCommand extends BaseCommand implements RpcCommand {
+public class RpcForwardCommand implements RpcCommand {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(RpcForwardCommand.class);
 
@@ -36,13 +38,13 @@ public class RpcForwardCommand extends BaseCommand implements RpcCommand {
     }
 
     @Override
-    protected void action() throws Throwable {
+    public CompletableFuture<Object> execute(AsyncWorker worker) throws Throwable {
         Throwable exception = null;
         for (int time = 0; time < 5; time++) {
             try {
                 RpcContexts.setCurrent(rpcContext);
                 forward();
-                return;
+                return null;
             } catch (Throwable cause) {
                 LOGGER.error("forward exception", cause);
                 exception = cause;

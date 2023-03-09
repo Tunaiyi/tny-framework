@@ -10,9 +10,7 @@
  */
 package com.tny.game.net.command.dispatcher;
 
-import com.tny.game.common.concurrent.*;
-import com.tny.game.net.base.*;
-import com.tny.game.net.exception.*;
+import com.tny.game.common.utils.*;
 
 import java.util.concurrent.Future;
 
@@ -28,18 +26,27 @@ public class MessageCommandPromise {
 
     private final String name;
 
-    private Wait<Object> waiter;
+    private volatile Object result;
 
-    private Object result;
-
-    private Throwable cause;
+    private volatile Throwable cause;
 
     private long timeout = -1;
 
     private boolean done = false;
 
-    public MessageCommandPromise(String name) {
+    public MessageCommandPromise(String name, long timeout) {
         this.name = name;
+        if (timeout > 0) {
+            this.timeout = System.currentTimeMillis() + timeout;
+        }
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public boolean isTimeout() {
+        return System.currentTimeMillis() > this.timeout;
     }
 
     public boolean isSuccess() {
@@ -50,10 +57,6 @@ public class MessageCommandPromise {
         return this.done;
     }
 
-    public boolean isWaiting() {
-        return this.waiter != null;
-    }
-
     public Object getResult() {
         return this.result;
     }
@@ -62,44 +65,14 @@ public class MessageCommandPromise {
         return this.cause;
     }
 
-    void checkWait() {
-        if (this.waiter != null) { // 检测是否
-            if (this.waiter.isDone()) {
-                Wait<Object> waiter = this.waiter;
-                if (waiter.isSuccess()) {
-                    // 等待成功
-                    this.setResult(waiter.getResult());
-                } else {
-                    // 等待异常
-                    setResult(waiter.getCause());
-                }
-            } else {
-                if (this.timeout > 0 && System.currentTimeMillis() > this.timeout) {
-                    try {
-                        throw new RpcInvokeTimeoutException(NetResultCode.EXECUTE_TIMEOUT, "执行 {} 超时", this.name);
-                    } catch (Throwable e) {
-                        this.setResult(e);
-                    }
-
-                }
-            }
-        }
-    }
-
     public void setResult(Object result) {
         if (result instanceof Future) {
-            result = Wait.of(as(result));
-        }
-        if (result instanceof Wait) {
-            this.waiter = as(result);
-            this.timeout = System.currentTimeMillis() + 5000; // 超时
+            throw new IllegalArgumentException(StringAide.format("只支持 CompletionStage 的等待, 不支持 Future 类型分返回等待."));
         } else if (result instanceof Throwable) {
             this.cause = as(result);
-            this.waiter = null;
             this.done = true;
         } else {
             this.result = result;
-            this.waiter = null;
             this.done = true;
         }
     }

@@ -89,11 +89,13 @@ public class CommonServerBootstrapSetting extends CommonNetBootstrapSetting impl
         return writeIgnoreHeaders;
     }
 
+    @Override
     public CommonServerBootstrapSetting setReadIgnoreHeaders(Set<String> readIgnoreHeaders) {
         this.readIgnoreHeaders = readIgnoreHeaders;
         return this;
     }
 
+    @Override
     public CommonServerBootstrapSetting setWriteIgnoreHeaders(Set<String> writeIgnoreHeaders) {
         this.writeIgnoreHeaders = writeIgnoreHeaders;
         return this;

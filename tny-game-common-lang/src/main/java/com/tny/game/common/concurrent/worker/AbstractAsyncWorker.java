@@ -47,6 +47,8 @@ public abstract class AbstractAsyncWorker implements AsyncWorker {
 
     private ReadWriteLock lock;
 
+    private final boolean executeImmediatelyInWorker;
+
     protected volatile Thread currentThread;
 
     protected final Executor masterExecutor;
@@ -60,26 +62,47 @@ public abstract class AbstractAsyncWorker implements AsyncWorker {
         return EXECUTOR_THREAD_LOCAL.get();
     }
 
-    public AbstractAsyncWorker(Executor masterExecutor) {
-        this(masterExecutor, new ConcurrentLinkedQueue<>(), false);
+    public AbstractAsyncWorker(Executor masterExecutor, boolean executeImmediatelyInWorker) {
+        this(masterExecutor, new ConcurrentLinkedQueue<>(), executeImmediatelyInWorker, false);
     }
 
-    public AbstractAsyncWorker(Executor masterExecutor, Queue<ExecuteTask<?>> taskQueue, boolean unsafeQueue) {
+    public AbstractAsyncWorker(Executor masterExecutor, Queue<ExecuteTask<?>> taskQueue, boolean unsafeQueue, boolean executeImmediatelyInWorker) {
         this.masterExecutor = masterExecutor;
         this.taskQueue = taskQueue;
+        this.executeImmediatelyInWorker = executeImmediatelyInWorker;
         if (unsafeQueue) {
             this.lock = new ReentrantReadWriteLock();
         }
     }
 
     @Override
-    public <T> CompletableFuture<T> apply(Supplier<T> runnable) {
-        return apply(runnable, 0L);
+    public <T> CompletableFuture<T> apply(Supplier<T> supplier) {
+        return apply(supplier, 0L);
     }
 
     @Override
-    public <T> CompletableFuture<T> apply(Supplier<T> runnable, long timeout) {
-        return apply(runnable, timeout, TimeUnit.MILLISECONDS);
+    public <T> CompletableFuture<T> apply(Supplier<T> supplier, long timeout) {
+        return apply(supplier, timeout, TimeUnit.MILLISECONDS);
+    }
+
+    @Override
+    public <T> CompletableFuture<T> apply(Supplier<T> supplier, long timeout, TimeUnit unit) {
+        return doApply(supplier, timeout, unit, executeImmediatelyInWorker);
+    }
+
+    @Override
+    public <T> CompletableFuture<T> applyNext(Supplier<T> supplier) {
+        return applyNext(supplier, 0L);
+    }
+
+    @Override
+    public <T> CompletableFuture<T> applyNext(Supplier<T> supplier, long timeout) {
+        return applyNext(supplier, timeout, TimeUnit.MILLISECONDS);
+    }
+
+    @Override
+    public <T> CompletableFuture<T> applyNext(Supplier<T> supplier, long timeout, TimeUnit unit) {
+        return doApply(supplier, timeout, unit, false);
     }
 
     @Override
@@ -91,6 +114,30 @@ public abstract class AbstractAsyncWorker implements AsyncWorker {
     public CompletableFuture<Void> run(Runnable runnable, long timeout) {
         return run(runnable, timeout, TimeUnit.MILLISECONDS);
     }
+
+    @Override
+    public CompletableFuture<Void> run(Runnable runnable, long timeout, TimeUnit unit) {
+        return doRun(runnable, timeout, unit, executeImmediatelyInWorker);
+    }
+
+    @Override
+    public CompletableFuture<Void> runNext(Runnable runnable) {
+        return runNext(runnable, 0L);
+    }
+
+    @Override
+    public CompletableFuture<Void> runNext(Runnable runnable, long timeout) {
+        return runNext(runnable, timeout, TimeUnit.MILLISECONDS);
+    }
+
+    @Override
+    public CompletableFuture<Void> runNext(Runnable runnable, long timeout, TimeUnit unit) {
+        return doRun(runnable, timeout, unit, false);
+    }
+
+    protected abstract CompletableFuture<Void> doRun(Runnable runnable, long timeout, TimeUnit unit, boolean immediateInWorker);
+
+    protected abstract <T> CompletableFuture<T> doApply(Supplier<T> supplier, long timeout, TimeUnit unit, boolean immediateInWorker);
 
     @Override
     public CompletableFuture<Void> delay(Runnable runnable, int delayTime, TimeUnit timeUnit) {
@@ -109,7 +156,11 @@ public abstract class AbstractAsyncWorker implements AsyncWorker {
     }
 
     protected <T> CompletableFuture<T> addTask(ExecuteTask<T> task) {
-        if (isInWorker()) {
+        return addTask(task, executeImmediatelyInWorker);
+    }
+
+    protected <T> CompletableFuture<T> addTask(ExecuteTask<T> task, boolean executeImmediatelyInWorker) {
+        if (executeImmediatelyInWorker && isInWorker()) {
             try {
                 task.execute();
                 var future = task.getFuture();

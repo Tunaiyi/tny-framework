@@ -106,11 +106,6 @@ public class MockNetEndpoint extends AttributeHolder implements NetEndpoint<Long
     }
 
     @Override
-    public void takeOver(MessageCommandBox commandTaskBox) {
-
-    }
-
-    @Override
     public EndpointContext getContext() {
         return null;
     }

@@ -39,7 +39,7 @@ public class RpcInvokeContext {
         this.appContext = appContext;
         this.controller = controller;
         this.rpcContext = rpcContext;
-        this.promise = new MessageCommandPromise(getName());
+        this.promise = new MessageCommandPromise(getName(), 3000);
         var message = rpcContext.getMessage();
         this.forward = message.getHeader(MessageHeaderConstants.RPC_FORWARD_HEADER);
     }

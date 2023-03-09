@@ -13,6 +13,8 @@ package com.tny.game.net.command.dispatcher;
 import com.tny.game.common.context.*;
 import com.tny.game.net.endpoint.*;
 
+import java.util.concurrent.Executor;
+
 /**
  * @author KGTny
  * @ClassName: ControllerInfo
@@ -49,6 +51,13 @@ public class RpcContexts {
      * @return 获取当前线程正在执行的终端
      */
     public static <U> Endpoint<U> currentEndpoint() {
+        return current().getEndpoint();
+    }
+
+    /**
+     * @return 获取当前线程正在执行的终端
+     */
+    public static <U> Executor currentExecutor() {
         return current().getEndpoint();
     }
 

@@ -36,6 +36,6 @@ public interface EndpointContext {
     /**
      * @return 命令任务执行器
      */
-    CommandBoxProcessor getCommandTaskProcessor();
+    CommandExecutorFactory getCommandExecutorFactory();
 
 }

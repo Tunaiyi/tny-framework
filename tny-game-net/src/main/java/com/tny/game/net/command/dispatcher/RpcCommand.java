@@ -10,7 +10,9 @@
  */
 package com.tny.game.net.command.dispatcher;
 
-import com.tny.game.common.worker.command.*;
+import com.tny.game.common.concurrent.worker.*;
+
+import java.util.concurrent.CompletableFuture;
 
 /**
  * <p>
@@ -18,6 +20,15 @@ import com.tny.game.common.worker.command.*;
  * @author kgtny
  * @date 2022/12/14 14:26
  **/
-public interface RpcCommand extends Command {
+public interface RpcCommand {
+
+    /**
+     * 执行
+     */
+    CompletableFuture<Object> execute(AsyncWorker worker) throws Throwable;
+
+    default String getName() {
+        return getClass().getSimpleName();
+    }
 
 }

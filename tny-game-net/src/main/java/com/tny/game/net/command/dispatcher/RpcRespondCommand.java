@@ -10,9 +10,11 @@
  */
 package com.tny.game.net.command.dispatcher;
 
+import com.tny.game.common.concurrent.worker.*;
 import com.tny.game.common.result.*;
-import com.tny.game.common.worker.command.*;
 import org.slf4j.*;
+
+import java.util.concurrent.CompletableFuture;
 
 import static com.tny.game.net.command.dispatcher.RpcTransactionContext.*;
 
@@ -22,7 +24,7 @@ import static com.tny.game.net.command.dispatcher.RpcTransactionContext.*;
  * @author Kun Yang
  * @date 2022/5/3 03:42
  **/
-public class RpcRespondCommand extends BaseCommand implements RpcCommand {
+public class RpcRespondCommand implements RpcCommand {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(RpcRespondCommand.class);
 
@@ -39,7 +41,7 @@ public class RpcRespondCommand extends BaseCommand implements RpcCommand {
     }
 
     @Override
-    protected void action() throws Throwable {
+    public CompletableFuture<Object> execute(AsyncWorker worker) {
         RpcContexts.setCurrent(rpcContext);
         try {
             var message = rpcContext.getMessage();
@@ -50,6 +52,12 @@ public class RpcRespondCommand extends BaseCommand implements RpcCommand {
         } finally {
             RpcContexts.clear();
         }
+        return null;
+    }
+
+    @Override
+    public String getName() {
+        return getClass().getSimpleName();
     }
 
 }

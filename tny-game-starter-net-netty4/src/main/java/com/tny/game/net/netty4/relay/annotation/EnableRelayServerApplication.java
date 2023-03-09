@@ -34,7 +34,7 @@ import java.lang.annotation.*;
 })
 @Import({
         ImportRelayBootstrapDefinitionRegistrar.class,
-        ImportCommandTaskProcessorBeanDefinitionRegistrar.class,
+        ImportCommandExecutorFactoryBeanDefinitionRegistrar.class,
 })
 public @interface EnableRelayServerApplication {
 

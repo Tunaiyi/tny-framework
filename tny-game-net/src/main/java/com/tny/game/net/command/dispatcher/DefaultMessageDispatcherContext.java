@@ -164,27 +164,27 @@ public class DefaultMessageDispatcherContext implements NetMessageDispatcherCont
         this.commandListeners.clear();
     }
 
-    @Override
-    public void fireExecuteStart(RpcInvokeCommand command) {
-        for (MessageCommandListener listener : this.getCommandListener()) {
-            try {
-                listener.onExecuteStart(command);
-            } catch (Throwable e) {
-                LOGGER.error("on fireExecuteStart exception", e);
-            }
-        }
-    }
-
-    @Override
-    public void fireExecuteEnd(RpcInvokeCommand command, Throwable cause) {
-        for (MessageCommandListener listener : this.getCommandListener()) {
-            try {
-                listener.onExecuteEnd(command, cause);
-            } catch (Throwable e) {
-                LOGGER.error("on fireExecuteEnd exception", e);
-            }
-        }
-    }
+    //    @Override
+    //    public void fireExecuteStart(RpcInvokeCommand command) {
+    //        for (MessageCommandListener listener : this.getCommandListener()) {
+    //            try {
+    //                listener.onExecuteStart(command);
+    //            } catch (Throwable e) {
+    //                LOGGER.error("on fireExecuteStart exception", e);
+    //            }
+    //        }
+    //    }
+    //
+    //    @Override
+    //    public void fireExecuteEnd(RpcInvokeCommand command, Throwable cause) {
+    //        for (MessageCommandListener listener : this.getCommandListener()) {
+    //            try {
+    //                listener.onExecuteEnd(command, cause);
+    //            } catch (Throwable e) {
+    //                LOGGER.error("on fireExecuteEnd exception", e);
+    //            }
+    //        }
+    //    }
 
     @Override
     public void fireException(RpcInvokeCommand command, Throwable cause) {

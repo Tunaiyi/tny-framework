@@ -1,17 +1,34 @@
 group "com.tny.game"
 
 apply plugin: "java-gradle-plugin"
-apply plugin: "maven-publish"
 
 gradlePlugin {
     plugins {
         classesScanPlugin {
-            id = "tny.game.gradle"
+            id = "com.tny.game"
+            displayName = 'Tny Gradle Plagin'
+            description = 'Gradle Plagin For Tny Framework '
             implementationClass = 'com.tny.game.gradle.doc.plugin.TnyGamePlugin'
         }
     }
 }
+//pluginBundle {
+//    website = 'https://github.com/Tunaiyi/tny-framework'
+//    vcsUrl = 'https://github.com/Tunaiyi/tny-framework'
+//    tags = ['game', 'code', 'plugins']
+//}
 
+publishing {
+    repositories {
+        maven {
+            url = version.endsWith('SNAPSHOT') ? SNAPSHOT_REPOSITORY_URL : RELEASE_REPOSITORY_URL
+            credentials {
+                username = NEXUS_USERNAME
+                password = NEXUS_PASSWORD
+            }
+        }
+    }
+}
 //sourceSets {
 //    main {
 //        groovy.srcDirs += ["src/main/groovy"]
