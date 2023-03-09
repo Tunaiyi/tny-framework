@@ -10,20 +10,20 @@
  */
 package com.tny.game.net.command.processor;
 
+import com.tny.game.net.command.dispatcher.*;
+
+import java.util.concurrent.Executor;
+
 /**
  * <p>
  *
  * @author : kgtny
  * @date : 2022/1/12 2:37 AM
  */
-public interface CommandBoxProcessExecutor<T extends CommandBoxProcess> {
+public interface CommandExecutor extends Executor {
 
-    void handle(T driver);
+    void executeCommand(MessageCommandBox box, RpcCommand command);
 
-    void schedule(T driver);
-
-    int getBusSpinTimes();
-
-    int getYieldTimes();
+    void executeRunnable(MessageCommandBox box, Runnable runnable);
 
 }

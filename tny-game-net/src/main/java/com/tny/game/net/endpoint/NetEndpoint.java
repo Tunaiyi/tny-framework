@@ -62,6 +62,8 @@ public interface NetEndpoint<UID> extends Endpoint<UID>, MessageReceiver, SentMe
      */
     void onUnactivated(NetTunnel<UID> tunnel);
 
+    //    void takeOver(MessageCommandBox commandTaskBox);
+
     /**
      * @return 当前管道
      */
@@ -72,12 +74,12 @@ public interface NetEndpoint<UID> extends Endpoint<UID>, MessageReceiver, SentMe
      */
     MessageCommandBox getCommandBox();
 
-    /**
-     * 载入消息盒子
-     *
-     * @param commandTaskBox 消息
-     */
-    void takeOver(MessageCommandBox commandTaskBox);
+    //    /**
+    //     * 载入消息盒子
+    //     *
+    //     * @param commandTaskBox 消息
+    //     */
+    //    void takeOver(MessageCommandBox commandTaskBox);
 
     /**
      * @return 获取EndpointContext上下文

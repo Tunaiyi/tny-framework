@@ -11,6 +11,7 @@
 package com.tny.game.net.command.dispatcher;
 
 import com.google.common.base.MoreObjects;
+import com.tny.game.common.concurrent.worker.*;
 import com.tny.game.common.exception.*;
 import com.tny.game.common.result.*;
 import com.tny.game.common.runtime.*;
@@ -24,7 +25,7 @@ import com.tny.game.net.transport.*;
 import org.slf4j.*;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.*;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 import static com.tny.game.net.message.MessageMode.*;
@@ -69,34 +70,15 @@ public class RpcInvokeCommand extends RpcHandleCommand {
     }
 
     @Override
-    protected void onStartTick() {
-        this.fireExecuteStart();
-    }
-
-    @Override
-    protected void onRun() throws Exception {
-        rpcContext.invoke(RpcTransactionContext.rpcOperation(invokeContext.getName(), rpcContext.getMessage()));
+    protected void doExecute(AsyncWorker execute) throws Exception {
+        enterContext.invoke(RpcTransactionContext.rpcOperation(invokeContext.getName(), enterContext.getMessage()));
         // 调用逻辑业务
-        this.invoke();
+        this.invoke(execute);
     }
 
     @Override
     protected void onDone(Throwable cause) {
         this.handleResult();
-    }
-
-    @Override
-    protected void onTick() {
-        MessageCommandPromise promise = this.invokeContext.getPromise();
-        if (promise.isWaiting()) {
-            // 检测等待者是否完成
-            promise.checkWait();
-        }
-    }
-
-    @Override
-    protected void onEndTick(Throwable cause) {
-        this.fireExecuteEnd(cause);
     }
 
     @Override
@@ -109,9 +91,9 @@ public class RpcInvokeCommand extends RpcHandleCommand {
     /**
      * 执行 invoke
      */
-    private void invoke() throws Exception {
-        var message = rpcContext.getMessage();
-        var tunnel = rpcContext.netTunnel();
+    private void invoke(AsyncWorker execute) throws Exception {
+        var message = enterContext.getMessage();
+        var tunnel = enterContext.netTunnel();
         MethodControllerHolder controller = this.invokeContext.getController();
         if (controller == null) {
             MessageHead head = message.getHead();
@@ -122,7 +104,7 @@ public class RpcInvokeCommand extends RpcHandleCommand {
 
         //检测认证
         if (!tunnel.isAuthenticated() && controller.isHasAuthValidator()) {
-            messagerAuthenticator.authenticate(this.dispatcherContext, rpcContext, controller.getAuthValidator());
+            messagerAuthenticator.authenticate(this.dispatcherContext, enterContext, controller.getAuthValidator());
         }
 
         String appType = invokeContext.getAppType();
@@ -158,7 +140,19 @@ public class RpcInvokeCommand extends RpcHandleCommand {
 
         DISPATCHER_LOG.debug("Controller [{}] 执行业务", getName());
         Object result = controller.invoke(tunnel, message);
-        this.invokeContext.setResult(result);
+        if (result instanceof CompletionStage) {
+            CompletionStage<Object> stage = as(result);
+            future = stage.toCompletableFuture();
+            future.whenCompleteAsync((value, cause) -> {
+                if (cause != null) {
+                    this.invokeContext.setResult(cause);
+                } else {
+                    this.invokeContext.setResult(value);
+                }
+            }, execute);
+        } else {
+            this.invokeContext.setResult(result);
+        }
     }
 
     private void afterInvoke(Tunnel<Object> tunnel, Message message, Throwable cause) {
@@ -179,8 +173,8 @@ public class RpcInvokeCommand extends RpcHandleCommand {
         if (!promise.isDone()) {
             return;
         }
-        var message = this.rpcContext.netMessage();
-        var tunnel = this.rpcContext.netTunnel();
+        var message = this.enterContext.netMessage();
+        var tunnel = this.enterContext.netTunnel();
         ResultCode code;
         Object body = null;
         Throwable cause = promise.getCause();
@@ -217,9 +211,9 @@ public class RpcInvokeCommand extends RpcHandleCommand {
             }
         }
         if (content != null) {
-            rpcContext.complete(content, cause);
+            enterContext.complete(content, cause);
         } else {
-            rpcContext.completeSilently();
+            enterContext.completeSilently();
         }
     }
 
@@ -248,16 +242,8 @@ public class RpcInvokeCommand extends RpcHandleCommand {
         }
     }
 
-    private void fireExecuteStart() {
-        this.dispatcherContext.fireExecuteStart(this);
-    }
-
     private void fireException(Throwable cause) {
         this.dispatcherContext.fireException(this, cause);
-    }
-
-    private void fireExecuteEnd(Throwable cause) {
-        this.dispatcherContext.fireExecuteEnd(this, cause);
     }
 
     private void fireDone(Throwable cause) {

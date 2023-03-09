@@ -11,7 +11,6 @@
 package com.tny.game.net.command.dispatcher;
 
 import com.tny.game.common.concurrent.collection.*;
-import com.tny.game.common.worker.command.*;
 import com.tny.game.expr.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.command.auth.*;
@@ -58,7 +57,7 @@ public abstract class BaseMessageDispatcher implements MessageDispatcher {
     }
 
     @Override
-    public Command dispatch(RpcEnterContext rpcContext) throws RpcInvokeException {
+    public RpcCommand dispatch(RpcEnterContext rpcContext) throws RpcInvokeException {
         var forwardCommand = tryForward(rpcContext);
         if (forwardCommand != null) {
             return forwardCommand;

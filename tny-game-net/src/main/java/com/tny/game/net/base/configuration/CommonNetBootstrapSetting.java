@@ -45,7 +45,7 @@ public abstract class CommonNetBootstrapSetting implements NetBootstrapSetting {
      */
     private String messageDispatcher = defaultName(MessageDispatcher.class);
 
-    private String commandTaskProcessor = defaultName(CommandBoxProcessor.class);
+    private String commandExecutorFactory = defaultName(CommandExecutorFactory.class);
 
     private String messageFactory = defaultName(MessageFactory.class);
 
@@ -85,8 +85,8 @@ public abstract class CommonNetBootstrapSetting implements NetBootstrapSetting {
     }
 
     @Override
-    public String getCommandTaskProcessor() {
-        return this.commandTaskProcessor;
+    public String getCommandExecutorFactory() {
+        return this.commandExecutorFactory;
     }
 
     @Override
@@ -156,8 +156,8 @@ public abstract class CommonNetBootstrapSetting implements NetBootstrapSetting {
         return this;
     }
 
-    public CommonNetBootstrapSetting setCommandTaskProcessor(String commandTaskProcessor) {
-        this.commandTaskProcessor = commandTaskProcessor;
+    public CommonNetBootstrapSetting setCommandExecutorFactory(String commandExecutorFactory) {
+        this.commandExecutorFactory = commandExecutorFactory;
         return this;
     }
 

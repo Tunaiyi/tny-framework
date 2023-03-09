@@ -32,21 +32,21 @@ class DefaultSerialAsyncWorker extends AbstractAsyncWorker implements SerialAsyn
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultSerialAsyncWorker.class);
 
     public DefaultSerialAsyncWorker(Executor masterExecutor) {
-        super(masterExecutor);
+        super(masterExecutor, true);
     }
 
     public DefaultSerialAsyncWorker(Executor masterExecutor, Queue<ExecuteTask<?>> taskQueue, boolean unsafeQueue) {
-        super(masterExecutor, taskQueue, unsafeQueue);
+        super(masterExecutor, taskQueue, unsafeQueue, true);
     }
 
     @Override
-    public <T> CompletableFuture<T> apply(Supplier<T> runnable, long timeout, TimeUnit unit) {
-        return addTask(new SerialApplyExecuteTask<>(runnable, timeout, unit));
+    protected <T> CompletableFuture<T> doApply(Supplier<T> supplier, long timeout, TimeUnit unit, boolean immediateInWorker) {
+        return addTask(new SerialApplyExecuteTask<>(supplier, timeout, unit), immediateInWorker);
     }
 
     @Override
-    public CompletableFuture<Void> run(Runnable runnable, long timeout, TimeUnit unit) {
-        return addTask(new SerialRunnableExecuteTask(runnable, timeout, unit));
+    protected CompletableFuture<Void> doRun(Runnable runnable, long timeout, TimeUnit unit, boolean immediateInWorker) {
+        return addTask(new SerialRunnableExecuteTask(runnable, timeout, unit), immediateInWorker);
     }
 
     @Override
@@ -135,7 +135,7 @@ class DefaultSerialAsyncWorker extends AbstractAsyncWorker implements SerialAsyn
     @Override
     protected <T> void postAddTask(ExecuteTask<T> task) {
         if (this.status.get() == WAITING) {
-            LOGGER.warn("{} Worker 正在等待任务完成, 有可能会造成循环等待", this);
+            LOGGER.debug("{} Worker 正在等待任务完成, 有可能会造成循环等待", this);
         }
         this.tryLoop();
     }

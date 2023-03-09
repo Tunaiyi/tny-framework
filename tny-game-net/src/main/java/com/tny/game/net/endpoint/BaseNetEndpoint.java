@@ -81,7 +81,8 @@ public abstract class BaseNetEndpoint<UID> extends AbstractCommunicator<UID> imp
         this.state = EndpointStatus.INIT;
         this.context = context;
         this.certificate = certificate;
-        this.commandBox = new MessageCommandBox(context.getCommandTaskProcessor());
+        var commandExecutorFactory = context.getCommandExecutorFactory();
+        this.commandBox = new MessageCommandBox(commandExecutorFactory.create());
         if (sendMessageCachedSize > 0) {
             this.sentMessageQueue = new MessageQueue<>(sendMessageCachedSize);
         } else {
@@ -271,10 +272,10 @@ public abstract class BaseNetEndpoint<UID> extends AbstractCommunicator<UID> imp
         }
     }
 
-    @Override
-    public void takeOver(MessageCommandBox commandTaskBox) {
-        this.commandBox.takeOver(commandTaskBox);
-    }
+    //    @Override
+    //    public void takeOver(MessageCommandBox commandTaskBox) {
+    //        this.commandBox.takeOver(commandTaskBox);
+    //    }
 
     @Override
     public SendReceipt send(MessageContent content) {

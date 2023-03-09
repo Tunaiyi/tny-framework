@@ -33,9 +33,9 @@ public interface NetMessageDispatcherContext extends MessageDispatcherContext {
 
     void addAuthProvider(Collection<? extends AuthenticationValidator<?, ?>> providers);
 
-    void fireExecuteStart(RpcInvokeCommand command);
+    //    void fireExecuteStart(RpcInvokeCommand command);
 
-    void fireExecuteEnd(RpcInvokeCommand command, Throwable cause);
+    //    void fireExecuteEnd(RpcInvokeCommand command, Throwable cause);
 
     void fireException(RpcInvokeCommand command, Throwable cause);
 

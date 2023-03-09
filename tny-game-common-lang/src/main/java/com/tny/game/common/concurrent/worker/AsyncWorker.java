@@ -69,17 +69,29 @@ public interface AsyncWorker extends Executor {
     Runnable NOOP = () -> {
     };
 
-    <T> CompletableFuture<T> apply(Supplier<T> runnable);
+    <T> CompletableFuture<T> apply(Supplier<T> supplier);
 
-    <T> CompletableFuture<T> apply(Supplier<T> runnable, long timeout);
+    <T> CompletableFuture<T> apply(Supplier<T> supplier, long timeout);
 
-    <T> CompletableFuture<T> apply(Supplier<T> runnable, long timeout, TimeUnit unit);
+    <T> CompletableFuture<T> apply(Supplier<T> supplier, long timeout, TimeUnit unit);
 
     CompletableFuture<Void> run(Runnable runnable);
 
     CompletableFuture<Void> run(Runnable runnable, long timeout);
 
     CompletableFuture<Void> run(Runnable runnable, long timeout, TimeUnit unit);
+
+    <T> CompletableFuture<T> applyNext(Supplier<T> supplier);
+
+    <T> CompletableFuture<T> applyNext(Supplier<T> supplier, long timeout);
+
+    <T> CompletableFuture<T> applyNext(Supplier<T> supplier, long timeout, TimeUnit unit);
+
+    CompletableFuture<Void> runNext(Runnable runnable);
+
+    CompletableFuture<Void> runNext(Runnable runnable, long timeout);
+
+    CompletableFuture<Void> runNext(Runnable runnable, long timeout, TimeUnit unit);
 
     /**
      * 非阻塞延迟执行

@@ -32,7 +32,6 @@ import com.tny.game.net.netty4.configuration.channel.*;
 import com.tny.game.net.netty4.configuration.command.*;
 import com.tny.game.net.netty4.configuration.endpoint.*;
 import com.tny.game.net.netty4.configuration.filter.*;
-import com.tny.game.net.netty4.configuration.processor.disruptor.*;
 import com.tny.game.net.netty4.configuration.processor.forkjoin.*;
 import com.tny.game.net.netty4.network.*;
 import com.tny.game.net.netty4.network.codec.*;
@@ -55,8 +54,7 @@ import java.util.List;
         SpringNetAppProperties.class,
         SpringNetEndpointProperties.class,
         ReadIdlePipelineChainProperties.class,
-        DisruptorEndpointCommandTaskProcessorProperties.class,
-        ForkJoinEndpointCommandTaskProcessorProperties.class,})
+        SerialCommandExecutorProperties.class,})
 @Import({TextFilterAutoConfiguration.class})
 public class NetAutoConfiguration {
 

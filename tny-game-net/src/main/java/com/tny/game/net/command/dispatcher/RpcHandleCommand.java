@@ -10,7 +10,10 @@
  */
 package com.tny.game.net.command.dispatcher;
 
+import com.tny.game.common.concurrent.worker.*;
 import org.slf4j.*;
+
+import java.util.concurrent.CompletableFuture;
 
 /**
  * <p>
@@ -22,40 +25,45 @@ public abstract class RpcHandleCommand implements RpcCommand {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(RpcHandleCommand.class);
 
-    protected final RpcEnterContext rpcContext;
+    protected final RpcEnterContext enterContext;
+
+    protected CompletableFuture<Object> future;
 
     private boolean start;
 
     public RpcHandleCommand(RpcEnterContext rpcContext) {
-        this.rpcContext = rpcContext;
+        this.enterContext = rpcContext;
     }
 
     @Override
-    public void execute() {
+    public CompletableFuture<Object> execute(AsyncWorker execute) {
         Throwable cause = null;
         try {
             if (isDone()) {
-                return;
+                return CompletableFuture.completedFuture(null);
             }
-            RpcContexts.setCurrent(rpcContext);
+            RpcContexts.setCurrent(enterContext);
             if (!this.start) {
                 try {
                     // 调用逻辑业务
-                    this.onRun();
+                    this.doExecute(execute);
                 } finally {
                     this.start = true;
                 }
             }
-            if (!this.isDone()) {
-                this.onTick();
+            if (future != null && !future.isDone()) {
+                future.whenCompleteAsync(this::onDone, execute);
+            } else {
+                onDone(null);
             }
+            return future;
         } catch (Throwable e) {
             LOGGER.error("{} execute exception", this.getName(), e);
             cause = e;
             this.onException(e);
+            return future;
         } finally {
             try {
-                onEndTick(cause);
                 if (this.isDone()) {
                     onDone(cause);
                 }
@@ -65,15 +73,24 @@ public abstract class RpcHandleCommand implements RpcCommand {
         }
     }
 
-    protected abstract void onStartTick();
+    protected abstract boolean isDone();
 
-    protected abstract void onRun() throws Exception;
+    protected abstract void doExecute(AsyncWorker execute) throws Exception;
 
     protected abstract void onDone(Throwable cause);
 
-    protected abstract void onTick();
-
-    protected abstract void onEndTick(Throwable cause);
+    private void onDone(Object value, Throwable cause) {
+        RpcContexts.setCurrent(enterContext);
+        try {
+            if (cause != null) {
+                LOGGER.warn("execute {}", getName(), cause);
+                onException(cause);
+            }
+            this.onDone(cause);
+        } finally {
+            RpcContexts.clear();
+        }
+    }
 
     protected abstract void onException(Throwable cause);
 

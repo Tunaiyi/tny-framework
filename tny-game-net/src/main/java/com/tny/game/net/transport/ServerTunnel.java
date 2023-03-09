@@ -34,7 +34,7 @@ public class ServerTunnel<UID, E extends NetSession<UID>, T extends MessageTrans
         if (!certificate.isAuthenticated()) {
             MessageCommandBox commandTaskBox = this.endpoint.getCommandBox();
             this.endpoint = as(newEndpoint);
-            this.endpoint.takeOver(commandTaskBox);
+            //            this.endpoint.takeOver(commandTaskBox);
             return true;
         }
         return false;

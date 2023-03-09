@@ -32,21 +32,21 @@ class DefaultSingleAsyncWorker extends AbstractAsyncWorker {
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultSingleAsyncWorker.class);
 
     public DefaultSingleAsyncWorker(Executor masterExecutor) {
-        super(masterExecutor);
+        super(masterExecutor, false);
     }
 
     public DefaultSingleAsyncWorker(Executor masterExecutor, Queue<ExecuteTask<?>> taskQueue, boolean unsafeQueue) {
-        super(masterExecutor, taskQueue, unsafeQueue);
+        super(masterExecutor, taskQueue, unsafeQueue, false);
     }
 
     @Override
-    public <T> CompletableFuture<T> apply(Supplier<T> runnable, long timeout, TimeUnit unit) {
-        return addTask(new SingleApplyExecuteTask<>(runnable, timeout, unit));
+    protected CompletableFuture<Void> doRun(Runnable runnable, long timeout, TimeUnit unit, boolean immediateInWorker) {
+        return addTask(new SingleRunnableExecuteTask(runnable, timeout, unit), immediateInWorker);
     }
 
     @Override
-    public CompletableFuture<Void> run(Runnable runnable, long timeout, TimeUnit unit) {
-        return addTask(new SingleRunnableExecuteTask(runnable, timeout, unit));
+    protected <T> CompletableFuture<T> doApply(Supplier<T> supplier, long timeout, TimeUnit unit, boolean immediateInWorker) {
+        return addTask(new SingleApplyExecuteTask<>(supplier, timeout, unit), immediateInWorker);
     }
 
     @Override

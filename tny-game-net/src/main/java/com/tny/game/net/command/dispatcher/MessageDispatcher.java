@@ -11,7 +11,6 @@
 package com.tny.game.net.command.dispatcher;
 
 import com.tny.game.common.lifecycle.unit.annotation.*;
-import com.tny.game.common.worker.command.*;
 import com.tny.game.net.command.listener.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
@@ -43,7 +42,7 @@ public interface MessageDispatcher {
      * @param context rpc上下文
      * @return 分派的命令
      */
-    Command dispatch(RpcEnterContext context) throws RpcInvokeException;
+    RpcCommand dispatch(RpcEnterContext context) throws RpcInvokeException;
 
     /**
      * 添加请求派发错误监听器

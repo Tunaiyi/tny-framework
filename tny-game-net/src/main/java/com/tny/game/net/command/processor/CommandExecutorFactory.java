@@ -13,16 +13,14 @@ package com.tny.game.net.command.processor;
 import com.tny.game.common.lifecycle.unit.annotation.*;
 
 /**
- * @author KGTny
- */
+ * <p>
+ *
+ * @author kgtny
+ * @date 2023/3/9 02:05
+ **/
 @UnitInterface
-public interface CommandBoxProcessor {
+public interface CommandExecutorFactory {
 
-    /**
-     * 立即调度
-     *
-     * @param box 调度事件箱
-     */
-    void submit(MessageCommandBox box);
+    CommandExecutor create();
 
 }
