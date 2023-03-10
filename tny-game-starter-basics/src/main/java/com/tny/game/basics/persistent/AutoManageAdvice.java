@@ -4,17 +4,15 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.basics.persistent;
 
 import com.tny.game.basics.auto.*;
 import com.tny.game.basics.item.*;
 import com.tny.game.basics.persistent.annotation.*;
-import com.tny.game.boot.transaction.*;
-import com.tny.game.boot.transaction.listener.*;
 import com.tny.game.common.concurrent.collection.*;
 import com.tny.game.common.context.*;
 import com.tny.game.common.event.bus.annotation.*;
@@ -23,12 +21,11 @@ import org.slf4j.*;
 
 import java.lang.reflect.*;
 import java.util.*;
-import java.util.Map.Entry;
 
 import static com.tny.game.common.utils.StringAide.*;
 
 @GlobalEventListener
-public final class AutoManageAdvice implements TransactionListener, AfterReturningAdvice, ThrowsAdvice {
+public final class AutoManageAdvice implements AfterReturningAdvice, ThrowsAdvice {
 
     private final GameExplorer explorer;
 
@@ -76,92 +73,55 @@ public final class AutoManageAdvice implements TransactionListener, AfterReturni
     private void addModifyList(Method method, Object target, Object returnValue, Object[] args) {
         AutoManageMethod holder = this.methodHolder.getInstance(method);
         if (holder.isAutoHandle()) {
-            Transaction transaction = TransactionManager.currentTransaction();
-            if (transaction != null) {
-                Map<Object, Modify> modifyMap = loadOrCreate(transaction);
-                if (holder.isHandleInvoke()) {
-                    Modifiable modifiable = holder.getAutoInvoke();
-                    this.handleModifyList(target, modifyMap, modifiable.modify(), modifiable.immediately());
-                }
-                if (returnValue != null & holder.isHandleReturn()) {
-                    ModifiableReturn modifiableReturn = holder.getAutoReturn();
-                    this.handleModifyList(returnValue, modifyMap, modifiableReturn.modify(), modifiableReturn.immediately());
-                }
-                if (args == null || !holder.isHandleParams()) {
-                    return;
-                }
-                for (int index = 0; index < args.length; index++) {
-                    Object arg = args[index];
-                    ModifiableParam modifiableParam = holder.getAutoSaveParam(index);
-                    if (modifiableParam != null && arg != null) {
-                        this.handleModifyList(arg, modifyMap, modifiableParam.modify(), modifiableParam.immediately());
-                    }
+            if (holder.isHandleInvoke()) {
+                Modifiable modifiable = holder.getAutoInvoke();
+                this.handleModifyList(target, modifiable.modify(), modifiable.immediately());
+            }
+            if (returnValue != null & holder.isHandleReturn()) {
+                ModifiableReturn modifiableReturn = holder.getAutoReturn();
+                this.handleModifyList(returnValue, modifiableReturn.modify(), modifiableReturn.immediately());
+            }
+            if (args == null || !holder.isHandleParams()) {
+                return;
+            }
+            for (int index = 0; index < args.length; index++) {
+                Object arg = args[index];
+                ModifiableParam modifiableParam = holder.getAutoSaveParam(index);
+                if (modifiableParam != null && arg != null) {
+                    this.handleModifyList(arg, modifiableParam.modify(), modifiableParam.immediately());
                 }
             }
         }
     }
 
-    private boolean checkImmediately(Modify modify, boolean immediately) {
-        return immediately || modify.equals(Modify.DELETE) || modify.equals(Modify.INSERT);
-    }
+    //    private boolean checkImmediately(Modify modify, boolean immediately) {
+    //        return immediately || modify.equals(Modify.DELETE) || modify.equals(Modify.INSERT);
+    //    }
+    //
+    //    private Map<Object, Modify> loadOrCreate(Transaction transaction) {
+    //        Map<Object, Modify> modifyMap = transaction.attributes().getAttribute(MODIFY_MAP);
+    //        if (modifyMap == null) {
+    //            modifyMap = new HashMap<>();
+    //            transaction.attributes().setAttribute(MODIFY_MAP, modifyMap);
+    //        }
+    //        return modifyMap;
+    //    }
 
-    private Map<Object, Modify> loadOrCreate(Transaction transaction) {
-        Map<Object, Modify> modifyMap = transaction.attributes().getAttribute(MODIFY_MAP);
-        if (modifyMap == null) {
-            modifyMap = new HashMap<>();
-            transaction.attributes().setAttribute(MODIFY_MAP, modifyMap);
-        }
-        return modifyMap;
-    }
-
-    private void handleModifyList(Object object, Map<Object, Modify> modifyMap, Modify modify, boolean immediately) {
-        immediately = this.checkImmediately(modify, immediately);
+    private void handleModifyList(Object object, Modify modify, boolean immediately) {
         if (object instanceof Collection) {
             for (Object o : (Collection<?>)object) {
-                if (immediately) {
-                    modifyMap.remove(o);
-                    this.doFlush(o, modify);
-                } else {
-                    modifyMap.put(o, modify);
-                }
+                this.doFlush(o, modify);
             }
         } else if (object.getClass().isArray()) {
             int length = Array.getLength(object);
             for (int index = 0; index < length; index++) {
                 Object value = Array.get(object, index);
                 if (value != null) {
-                    if (immediately) {
-                        modifyMap.remove(value);
-                        this.doFlush(value, modify);
-                    } else {
-                        modifyMap.put(value, modify);
-                    }
+                    this.doFlush(value, modify);
                 }
             }
         } else {
-            if (immediately) {
-                modifyMap.remove(object);
-                this.doFlush(object, modify);
-            } else {
-                modifyMap.put(object, modify);
-            }
-        }
-    }
-
-    @Override
-    public void handleOpen(Transaction source) {
-    }
-
-    private void flush(Transaction transaction) {
-        Map<Object, Modify> opDBMap = transaction.attributes().removeAttribute(MODIFY_MAP);
-        if (opDBMap == null) {
-            return;
-        }
-        for (Entry<Object, Modify> object : opDBMap.entrySet()) {
-            this.doFlush(object.getKey(), object.getValue());
-        }
-        if (!opDBMap.isEmpty()) {
-            opDBMap.clear();
+            this.doFlush(object, modify);
         }
     }
 
@@ -178,7 +138,7 @@ public final class AutoManageAdvice implements TransactionListener, AfterReturni
                 if (managedBy == null) {
                     throw new NullPointerException(format("{} 类未标记 {} 注解", clazz, ManagedBy.class));
                 }
-                manager = (Manager<Object>)this.explorer.getManager(managedBy.manager());
+                manager = this.explorer.getManager(managedBy.manager());
                 if (manager == null) {
                     throw new NullPointerException(format("{} 类找不到 {} manager", clazz, managedBy.manager()));
                 }
@@ -202,26 +162,6 @@ public final class AutoManageAdvice implements TransactionListener, AfterReturni
             }
         } catch (Throwable e) {
             LOGGER.error("{}自动持久化异常", clazz, e);
-        }
-    }
-
-    @Override
-    public void handleClose(Transaction source) {
-        try {
-            this.flush(source);
-        } catch (Throwable e) {
-            LOGGER.error("{} handleClose 异常", source, e);
-        } finally {
-            source.attributes().removeAttribute(MODIFY_MAP);
-        }
-    }
-
-    @Override
-    public void handleRollback(Transaction source, Throwable cause) {
-        try {
-            this.flush(source);
-        } catch (Throwable e) {
-            LOGGER.error("{} handleRollback 异常", source, e);
         }
     }
 

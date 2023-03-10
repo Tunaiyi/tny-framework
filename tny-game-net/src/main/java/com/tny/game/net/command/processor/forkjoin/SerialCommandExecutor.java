@@ -52,6 +52,18 @@ public class SerialCommandExecutor implements CommandExecutor {
     public void executeCommand(MessageCommandBox box, RpcCommand command) {
         commandWorker.await(() -> {
             var future = execute(command);
+            if (LOG_NET.isDebugEnabled()) {
+                LOG_NET.debug("execute [{}] command | wait {}", command.getName(), future != null);
+                if (future != null) {
+                    future.whenComplete((value, cause) -> {
+                        if (cause != null) {
+                            LOG_NET.error("execute [{}] command failed", command.getName(), cause);
+                        } else {
+                            LOG_NET.debug("execute [{}] command complete : {}", command.getName(), value);
+                        }
+                    });
+                }
+            }
             return Objects.requireNonNullElseGet(future, () -> CompletableFuture.completedFuture(null));
         });
     }

@@ -165,11 +165,12 @@ public abstract class AbstractAsyncWorker implements AsyncWorker {
                 task.execute();
                 var future = task.getFuture();
                 if (future != null) {
-                    return task.getFuture().whenComplete((v, c) -> EXECUTOR_THREAD_LOCAL.set(this));
+                    return future.whenComplete((v, c) -> EXECUTOR_THREAD_LOCAL.set(this));
                 }
             } catch (Throwable e) {
                 LOGGER.error("", e);
             }
+            return null;
         }
         return this.addQueue(task);
     }
@@ -233,27 +234,10 @@ public abstract class AbstractAsyncWorker implements AsyncWorker {
 
         private final CompletableFuture<T> future = new CompletableFuture<>();
 
-        private volatile Timeout timeout;
+        private final Timeout timeout;
 
         protected AsyncExecuteTask(long timeout, TimeUnit unit) {
-            if (timeout > 0) {
-                this.timeout = this.startTimeout(unit.toMillis(timeout));
-            } else {
-                this.timeout = null;
-            }
-        }
-
-        protected void tryTimeout(long timeout, TimeUnit unit) {
-            if (this.timeout == null && timeout > 0) {
-                this.timeout = this.startTimeout(unit.toMillis(timeout));
-            }
-        }
-
-        protected abstract Object getRunner();
-
-        @Override
-        public CompletableFuture<T> getFuture() {
-            return future;
+            this.timeout = this.startTimeout(unit.toMillis(timeout));
         }
 
         protected Timeout startTimeout(long timeout) {
@@ -261,6 +245,13 @@ public abstract class AbstractAsyncWorker implements AsyncWorker {
                 return TIMER.newTimeout(this, timeout, TimeUnit.MILLISECONDS);
             }
             return null;
+        }
+
+        protected abstract Object getRunner();
+
+        @Override
+        public CompletableFuture<T> getFuture() {
+            return future;
         }
 
         protected void failed(Throwable cause) {
@@ -275,6 +266,7 @@ public abstract class AbstractAsyncWorker implements AsyncWorker {
                 this.timeout.cancel();
             }
             if (cause != null) {
+                LOGGER.error("", cause);
                 future.completeExceptionally(cause);
             } else {
                 future.complete(value);

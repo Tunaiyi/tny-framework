@@ -10,12 +10,15 @@
  */
 package com.tny.game.basics.item;
 
-/**
- * <p>
- *
- * @author : kgtny
- * @date : 2021/11/25 3:34 下午
- */
-public interface ItemManager<I extends Item<?>> extends Manager<I> {
+import static com.tny.game.common.utils.ObjectAide.*;
+
+public abstract class AsyncGameManager<O> extends AsyncQueryManager<O> {
+
+    protected final Class<O> entityClass;
+
+    protected AsyncGameManager(Class<? extends O> entityClass) {
+        super();
+        this.entityClass = as(entityClass);
+    }
 
 }

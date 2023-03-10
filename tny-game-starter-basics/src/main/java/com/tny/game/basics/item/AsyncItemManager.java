@@ -16,6 +16,6 @@ package com.tny.game.basics.item;
  * @author : kgtny
  * @date : 2021/11/25 3:34 下午
  */
-public interface ItemManager<I extends Item<?>> extends Manager<I> {
+public interface AsyncItemManager<I extends Item<?>> extends AsyncManager<I> {
 
 }
