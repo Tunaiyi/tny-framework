@@ -157,7 +157,7 @@ class DefaultSerialAsyncWorker extends AbstractAsyncWorker implements SerialAsyn
                         break;
                     }
                     var current = task.execute();
-                    if (current == null) {
+                    if (current == null || current.isDone()) {
                         continue;
                     }
                     status.set(WAITING);
@@ -191,8 +191,13 @@ class DefaultSerialAsyncWorker extends AbstractAsyncWorker implements SerialAsyn
 
         @Override
         public CompletableFuture<Void> execute() {
-            runnable.run();
-            return null;
+            try {
+                runnable.run();
+                return null;
+            } catch (Throwable e) {
+                LOGGER.error("", e);
+                throw e;
+            }
         }
 
         @Override
@@ -218,8 +223,13 @@ class DefaultSerialAsyncWorker extends AbstractAsyncWorker implements SerialAsyn
 
         @Override
         public CompletableFuture<Void> doExecute() {
-            this.action.run();
-            return CompletableFuture.completedFuture(null);
+            try {
+                this.action.run();
+                return CompletableFuture.completedFuture(null);
+            } catch (Throwable e) {
+                LOGGER.error("", e);
+                throw e;
+            }
         }
 
     }
@@ -240,8 +250,13 @@ class DefaultSerialAsyncWorker extends AbstractAsyncWorker implements SerialAsyn
 
         @Override
         public CompletableFuture<T> doExecute() {
-            var value = this.action.get();
-            return CompletableFuture.completedFuture(value);
+            try {
+                var value = this.action.get();
+                return CompletableFuture.completedFuture(value);
+            } catch (Throwable e) {
+                LOGGER.error("", e);
+                throw e;
+            }
         }
 
     }
@@ -262,7 +277,12 @@ class DefaultSerialAsyncWorker extends AbstractAsyncWorker implements SerialAsyn
 
         @Override
         public CompletableFuture<T> doExecute() {
-            return this.action.execute();
+            try {
+                return this.action.execute();
+            } catch (Throwable e) {
+                LOGGER.error("", e);
+                throw e;
+            }
         }
 
     }
@@ -285,20 +305,15 @@ class DefaultSerialAsyncWorker extends AbstractAsyncWorker implements SerialAsyn
                     this.complete(null, null);
                     return null;
                 }
-                if (!current.isDone()) {
-                    if (resumeLoop) {
-                        current.whenCompleteAsync((v, c) -> {
-                            complete(v, c);
-                            resumeLoop();
-                        });
-                    } else {
-                        current.whenComplete(this::complete);
-                    }
-                    return current;
+                if (resumeLoop) {
+                    current.whenCompleteAsync((v, c) -> {
+                        complete(v, c);
+                        resumeLoop();
+                    });
                 } else {
                     current.whenComplete(this::complete);
-                    return null;
                 }
+                return current;
             } catch (Throwable e) {
                 LOGGER.error("", e);
                 failed(e);

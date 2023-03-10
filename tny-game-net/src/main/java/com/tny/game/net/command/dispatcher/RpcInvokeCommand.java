@@ -77,7 +77,7 @@ public class RpcInvokeCommand extends RpcHandleCommand {
     }
 
     @Override
-    protected void onDone(Throwable cause) {
+    protected void doDone() {
         this.handleResult();
     }
 
@@ -149,6 +149,7 @@ public class RpcInvokeCommand extends RpcHandleCommand {
                 } else {
                     this.invokeContext.setResult(value);
                 }
+                this.onDone(cause);
             }, execute);
         } else {
             this.invokeContext.setResult(result);

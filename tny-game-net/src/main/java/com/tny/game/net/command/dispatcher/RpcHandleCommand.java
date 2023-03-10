@@ -51,16 +51,13 @@ public abstract class RpcHandleCommand implements RpcCommand {
                     this.start = true;
                 }
             }
-            if (future != null && !future.isDone()) {
-                future.whenCompleteAsync(this::onDone, execute);
-            } else {
-                onDone(null);
+            if (future == null) {
+                onDone();
             }
             return future;
         } catch (Throwable e) {
             LOGGER.error("{} execute exception", this.getName(), e);
             cause = e;
-            this.onException(e);
             return future;
         } finally {
             try {
@@ -77,16 +74,20 @@ public abstract class RpcHandleCommand implements RpcCommand {
 
     protected abstract void doExecute(AsyncWorker execute) throws Exception;
 
-    protected abstract void onDone(Throwable cause);
+    protected abstract void doDone();
 
-    private void onDone(Object value, Throwable cause) {
+    private void onDone() {
+        this.onDone(null);
+    }
+
+    protected void onDone(Throwable cause) {
         RpcContexts.setCurrent(enterContext);
         try {
             if (cause != null) {
-                LOGGER.warn("execute {}", getName(), cause);
+                LOGGER.error("execute {}", getName(), cause);
                 onException(cause);
             }
-            this.onDone(cause);
+            this.doDone();
         } finally {
             RpcContexts.clear();
         }
