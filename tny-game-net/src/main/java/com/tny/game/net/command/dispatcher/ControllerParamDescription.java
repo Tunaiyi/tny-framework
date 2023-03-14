@@ -275,7 +275,7 @@ class ControllerParamDescription {
         }
         if (require && value == null) {
             throw new RpcInvokeException(NetResultCode.SERVER_EXECUTE_EXCEPTION,
-                    format("{} 第 {} 个参数不可为 null", this.method, index));
+                    "{} 第 {} 个参数不可为 null", this.method, index);
         }
         if (value != null && !this.paramClass.isInstance(value)) {
             value = ObjectAide.convertTo(value, this.paramClass);

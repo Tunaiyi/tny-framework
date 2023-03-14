@@ -5,7 +5,6 @@ apply plugin: "maven-publish"
 dependencies {
     api project(":tny-game-common-lang")
     api project(":tny-game-common-reflect")
-    api libs.commons_lang3
     api libs.commons_io
     api libs.commons_codec
     api libs.commons_collections4

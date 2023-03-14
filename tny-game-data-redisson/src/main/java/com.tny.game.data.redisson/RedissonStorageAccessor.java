@@ -14,10 +14,11 @@ import com.tny.game.data.*;
 import com.tny.game.data.accessor.*;
 import com.tny.game.redisson.*;
 import org.redisson.api.*;
+import org.slf4j.*;
 
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * <p>
@@ -26,6 +27,8 @@ import java.util.concurrent.TimeUnit;
  * @date : 2021/9/27 12:15 下午
  */
 public class RedissonStorageAccessor<K extends Comparable<?>, O> implements StorageAccessor<K, O> {
+
+    public static final Logger LOGGER = LoggerFactory.getLogger(RedissonStorageAccessor.class);
 
     private final String dataSource;
 
@@ -92,7 +95,18 @@ public class RedissonStorageAccessor<K extends Comparable<?>, O> implements Stor
         }
         for (Entry<RFuture<Boolean>, O> entry : futures.entrySet()) {
             RFuture<Boolean> future = entry.getKey();
-            if (!future.awaitUninterruptibly(3000, TimeUnit.MILLISECONDS) || !future.getNow()) {
+            boolean failed = false;
+            boolean timeot = false;
+            Boolean result = null;
+            try {
+                result = future.get(3000, TimeUnit.MILLISECONDS);
+            } catch (TimeoutException e) {
+                timeot = true;
+            } catch (Exception e) {
+                failed = true;
+                LOGGER.error("insert objects exception", e);
+            }
+            if (timeot || failed || result != null && !result) {
                 failureList.add(entry.getValue());
             }
         }
@@ -119,7 +133,18 @@ public class RedissonStorageAccessor<K extends Comparable<?>, O> implements Stor
         }
         for (Entry<RFuture<Boolean>, O> entry : futures.entrySet()) {
             RFuture<Boolean> future = entry.getKey();
-            if (!future.awaitUninterruptibly(3000, TimeUnit.MILLISECONDS) || !future.getNow()) {
+            boolean failed = false;
+            boolean timeot = false;
+            Boolean result = null;
+            try {
+                result = future.get(3000, TimeUnit.MILLISECONDS);
+            } catch (TimeoutException e) {
+                timeot = true;
+            } catch (Exception e) {
+                failed = true;
+                LOGGER.error("save objects exception", e);
+            }
+            if (timeot || failed || result != null && !result) {
                 failureList.add(entry.getValue());
             }
         }
@@ -136,7 +161,19 @@ public class RedissonStorageAccessor<K extends Comparable<?>, O> implements Stor
         }
         for (Entry<RFuture<Boolean>, O> entry : futures.entrySet()) {
             RFuture<Boolean> future = entry.getKey();
-            if (!future.awaitUninterruptibly(3000, TimeUnit.MILLISECONDS) || !future.getNow()) {
+
+            boolean failed = false;
+            boolean timeot = false;
+            Boolean result = null;
+            try {
+                result = future.get(3000, TimeUnit.MILLISECONDS);
+            } catch (TimeoutException e) {
+                timeot = true;
+            } catch (Exception e) {
+                failed = true;
+                LOGGER.error("update objects exception", e);
+            }
+            if (timeot || failed || result != null && !result) {
                 failureList.add(entry.getValue());
             }
         }

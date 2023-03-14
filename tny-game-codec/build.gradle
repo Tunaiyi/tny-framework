@@ -8,7 +8,6 @@ dependencies {
 //    api libs.guava
     api libs.spring_core
 
-    api libs.commons_lang3
     api libs.commons_collections4
 
 //    api libs.google_finbugs

@@ -31,12 +31,12 @@ class DefaultSingleAsyncWorker extends AbstractAsyncWorker {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultSingleAsyncWorker.class);
 
-    public DefaultSingleAsyncWorker(Executor masterExecutor) {
-        super(masterExecutor, false);
+    public DefaultSingleAsyncWorker(String name, Executor masterExecutor) {
+        super(name, masterExecutor, false);
     }
 
-    public DefaultSingleAsyncWorker(Executor masterExecutor, Queue<ExecuteTask<?>> taskQueue, boolean unsafeQueue) {
-        super(masterExecutor, taskQueue, unsafeQueue, false);
+    public DefaultSingleAsyncWorker(String name, Executor masterExecutor, Queue<ExecuteTask<?>> taskQueue, boolean unsafeQueue) {
+        super(name, masterExecutor, taskQueue, unsafeQueue, false);
     }
 
     @Override
@@ -175,7 +175,7 @@ class DefaultSingleAsyncWorker extends AbstractAsyncWorker {
 
     }
 
-    private abstract static class SingleExecuteTask<T> extends AsyncExecuteTask<T> {
+    private abstract class SingleExecuteTask<T> extends AsyncExecuteTask<T> {
 
         protected SingleExecuteTask(long timeout, TimeUnit unit) {
             super(timeout, unit);

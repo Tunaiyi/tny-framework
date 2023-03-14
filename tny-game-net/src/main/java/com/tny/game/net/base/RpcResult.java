@@ -71,6 +71,15 @@ public interface RpcResult<T> extends RpcReturn<T> {
         return DoneResults.done(resultCode(), get());
     }
 
+    /**
+     * 转 void DoneResult
+     *
+     * @return
+     */
+    default DoneResult<Void> toVoidResult() {
+        return DoneResults.done(resultCode(), null);
+    }
+
     default <U> DoneResult<U> toDoneResult(Function<T, U> format) {
         if (resultCode().isSuccess()) {
             return DoneResults.success(format.apply(get()));

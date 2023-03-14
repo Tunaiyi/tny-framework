@@ -2,14 +2,7 @@ group "com.tny.game"
 
 apply plugin: "maven-publish"
 
-//sourceSets {
-//    main {
-//        groovy.srcDirs += ["src/main/groovy"]
-//    }
-//}
-
 dependencies {
-
 
 }
 

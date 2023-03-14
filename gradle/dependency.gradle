@@ -2,14 +2,12 @@ ext.vers = [
 
         jmock                               : "2.12.0",
         junit                               : "5.8.2",
-        junit_platform                      : "1.8.2",
+        junit_platform                      : "1.9.2",
         junirocketmqt5                      : "5.4.2",
         mockito                             : "3.9.0",
-        netty                               : "4.1.82.Final",
 
         spring                              : "5.3.5",
-        slf4j                               : "1.7.30",
-        log4j2                              : "2.14.1",
+        slf4j                               : "1.7.36",
 
         swagger_v3                          : "2.1.4",
         springfox                           : "2.9.2",
@@ -27,11 +25,9 @@ ext.vers = [
 
         httpclient                          : "4.5.12",
         aspectj                             : "1.9.7",
-        redisson                            : "3.16.0",
-        jackson                             : "2.13.2",
-//        tny_framework                       : "4.2.x-SNAPSHOT",
+        redisson                            : "3.20.0",
 
-        poi                                 : "4.1.2",
+        poi                                 : "5.2.3",
         jade                                : "1.6.x-SNAPSHOT",
         jjwt                                : "0.10.7",
 
@@ -39,7 +35,7 @@ ext.vers = [
 
         rocketmq                            : "4.6.0",
         rocketmq_boot                       : "2.1.1",
-        netty_tcnative_boringssl_static     : "2.0.38.Final",
+//        netty_tcnative_boringssl_static     : "2.0.38.Final",
 ]
 
 ext.libs = [
@@ -48,16 +44,15 @@ ext.libs = [
         slf4j_simple                             : "org.slf4j:slf4j-simple:${vers.slf4j}",
         log4j_over_slf4j                         : "org.slf4j:log4j-over-slf4j:${vers.slf4j}",
         jcl_over_slf4j                           : "org.slf4j:jcl-over-slf4j:${vers.slf4j}",
-
-        log4j_api                                : "org.apache.logging.log4j:log4j-api:${vers.log4j2}",
-        log4j_core                               : "org.apache.logging.log4j:log4j-core:${vers.log4j2}",
-        log4j_jul                                : "org.apache.logging.log4j:log4j-jul:${vers.log4j2}",
-        log4j_slf4j_impl                         : "org.apache.logging.log4j:log4j-slf4j-impl:${vers.log4j2}",
+        log4j_api                                : "org.apache.logging.log4j:log4j-api",
+        log4j_core                               : "org.apache.logging.log4j:log4j-core",
+        log4j_jul                                : "org.apache.logging.log4j:log4j-jul",
+        log4j_slf4j_impl                         : "org.apache.logging.log4j:log4j-slf4j-impl",
         log4j_web                                : "org.apache.logging.log4j:log4j-web",
 
 
-        javassist                                : "org.javassist:javassist:3.28.0-GA",
-        asm                                      : "org.ow2.asm:asm:5.0.4",
+        javassist                                : "org.javassist:javassist",
+        asm                                      : "org.ow2.asm:asm",
 
 
         disruptor                                : "com.lmax:disruptor:3.4.4",
@@ -66,7 +61,6 @@ ext.libs = [
 
         json_smart                               : "net.minidev:json-smart:2.3",
         lang_tag                                 : "com.nimbusds:lang-tag:1.4.4",
-        jackson_bom                              : "com.fasterxml.jackson:jackson-bom:${vers.jackson}",
         jackson_core                             : "com.fasterxml.jackson.core:jackson-core",
         jackson_databind                         : "com.fasterxml.jackson.core:jackson-databind",
         jackson_annotations                      : "com.fasterxml.jackson.core:jackson-annotations",
@@ -97,39 +91,51 @@ ext.libs = [
         fastjson                                 : "com.alibaba:fastjson:1.2.73",
         validation_api                           : "javax.validation:validation-api:2.0.1.Final",
 
-        netty                                    : "io.netty:netty-all:${vers.netty}",
-        netty_all                                : "io.netty:netty-all:${vers.netty}",
-        netty_common                             : "io.netty:netty-common:${vers.netty}",
-        netty_tcnative_boringssl_static          : "io.netty:netty-tcnative-boringssl-static:${vers.netty_tcnative_boringssl_static}",
+        netty_common                             : "io.netty:netty-common",
+        netty_handler                            : "io.netty:netty-handler",
+        netty_handler_proxy                      : "io.netty:netty-handler-proxy",
+        netty_transport                          : "io.netty:netty-transport",
+        netty_buffer                             : "io.netty:netty-buffer",
+        netty_codec                              : "io.netty:netty-codec",
+        netty_codec_dns                          : "io.netty:netty-codec-dns",
+        netty_codec_socks                        : "io.netty:netty-codec-socks",
+        netty_codec_http                         : "io.netty:netty-codec-http",
+        netty_codec_http2                        : "io.netty:netty-codec-http2",
+        netty_resolver                           : "io.netty:netty-resolver",
+        netty_resolver_dns                       : "io.netty:netty-resolver-dns",
+        netty_transport_classes_epoll            : "io.netty:netty-transport-classes-epoll",
+        netty_transport_native_unix_common       : "io.netty:netty-transport-native-unix-common",
+
+//        netty_tcnative_boringssl_static          : "io.netty:netty-tcnative-boringssl-static:${vers.netty_tcnative_boringssl_static}",
 
         orika                                    : "ma.glasnost.orika:orika-core:1.5.4",
         oshi_core                                : "com.github.oshi:oshi-core:5.2.2",
 
-
-        commons_codec                            : "commons-codec:commons-codec:1.14",
-        commons_io                               : "commons-io:commons-io:2.8.0",
-        commons_beanutils                        : "commons-beanutils:commons-beanutils:1.9.4",
-        commons_daemon                           : "commons-daemon:commons-daemon:1.2.3",
-        commons_lang                             : "commons-lang:commons-lang:2.6",
-        commons_collections                      : "commons-collections:commons-collections:3.2.2",
-        commons_configuration                    : "commons-configuration:commons-configuration:1.10",
-        commons_pool                             : "commons-pool:commons-pool:1.6",
-        commons_lang3                            : "org.apache.commons:commons-lang3:3.11",
-        commons_collections4                     : "org.apache.commons:commons-collections4:4.4",
-        commons_pool2                            : "org.apache.commons:commons-pool2:2.9.0",
-        commons_crypto                           : "org.apache.commons:commons-crypto:1.1.0",
-        commons_dbcp2                            : "org.apache.commons:commons-dbcp2:2.8.0",
+        commons_compress                         : 'org.apache.commons:commons-compress',
+        commons_codec                            : "commons-codec:commons-codec",
+        commons_io                               : "commons-io:commons-io",
+        commons_beanutils                        : "commons-beanutils:commons-beanutils",
+        commons_lang                             : "commons-lang:commons-lang",
+        commons_collections                      : "commons-collections:commons-collections",
+        commons_configuration                    : "commons-configuration:commons-configuration",
+        commons_pool                             : "commons-pool:commons-pool",
+        commons_lang3                            : "org.apache.commons:commons-lang3",
+        commons_math3                            : "org.apache.commons:commons-math3",
+        commons_collections4                     : "org.apache.commons:commons-collections4",
+        commons_pool2                            : "org.apache.commons:commons-pool2",
+        commons_crypto                           : "org.apache.commons:commons-crypto",
+        commons_dbcp2                            : "org.apache.commons:commons-dbcp2",
         httpclient                               : "org.apache.httpcomponents:httpclient",
-        okio                                     : "com.squareup.okio:okio:2.10.0",
-        okhttp                                   : "com.squareup.okhttp:okhttp:2.7.5",
-        okhttp3                                  : "com.squareup.okhttp3:okhttp:$vers.okhttp3",
+        okio                                     : "com.squareup.okio:okio",
+        okhttp                                   : "com.squareup.okhttp:okhttp",
+        okhttp3                                  : "com.squareup.okhttp3:okhttp",
         okhttp3_logging_interceptor              : "com.squareup.okhttp3:logging-interceptor:$vers.okhttp3",
         druid                                    : "com.alibaba:druid:1.2.6",
 
 
 
         zookeeper                                : "org.apache.zookeeper:zookeeper:3.4.14",
-        jetcd_core                               : 'io.etcd:jetcd-core:0.7.1',
+        jetcd_core                               : 'io.etcd:jetcd-core:0.7.5',
 
 
         quartz_scheduler                         : "org.quartz-scheduler:quartz:2.3.2",
@@ -138,15 +144,15 @@ ext.libs = [
         groovy_all                               : "org.codehaus.groovy:groovy-all:3.0.12",
         luaj                                     : "org.luaj:luaj-jse:3.0.1",
         mvel                                     : "org.mvel:mvel2:2.4.12.Final",
-        xstream                                  : "com.thoughtworks.xstream:xstream:1.4.11.1",
+        xstream                                  : "com.thoughtworks.xstream:xstream",
 
-        guava                                    : "com.google.guava:guava:31.1-jre",
+        guava                                    : "com.google.guava:guava",
         caffeine                                 : "com.github.ben-manes.caffeine:caffeine:3.1.1",
 
         google_api_client                        : "com.google.api-client:google-api-client:1.31.1",
         google_api_oauth2                        : "com.google.auth:google-auth-library-oauth2-http:0.22.0",
 
-        protobuf_java3                           : "com.google.protobuf:protobuf-java:3.15.8",
+        protobuf_java3                           : "com.google.protobuf:protobuf-java",
 
         joda_time                                : "joda-time:joda-time:2.10.2",
 
@@ -242,7 +248,7 @@ ext.libs = [
         skywalking_apm_toolkit_trace             : "org.apache.skywalking:apm-toolkit-trace:$vers.skywalking",
 
 
-        alibaba_nacos_client                     : "com.alibaba.nacos:nacos-client:2.0.0",
+        alibaba_nacos_client                     : "com.alibaba.nacos:nacos-client:2.2.1-RC",
 //        alibaba_cloud_dependencies               : "com.alibaba.cloud:spring-cloud-alibaba-dependencies:$vers.alibaba_cloud",
         alibaba_cloud_stream_binder_rocketmq     : "com.alibaba.cloud:spring-cloud-stream-binder-rocketmq",
 
@@ -264,8 +270,8 @@ ext.libs = [
 //        tny_suite                                : "com.tny.game:tny-game-suite:$vers.tny_framework",
 //        tny_protoex                              : "com.tny.game:tny-game-protoex:$vers.tny_framework",
 
-        protobuf_java                            : "com.google.protobuf:protobuf-java:3.8.0",
-        jprotobuf                                : "com.baidu:jprotobuf:2.4.15",
+        protobuf_java                            : "com.google.protobuf:protobuf-java",
+        jprotobuf                                : "com.baidu:jprotobuf:2.4.18",
         jprotobuf_precompile_plugin_gradle       : "gradle.plugin.com.baidu.jprotobuf:jprotobuf-precompile-plugin-gradle:1.1.1",
 
         swagger_models                           : "io.swagger.core.v3:swagger-models:$vers.swagger_v3",
@@ -293,7 +299,7 @@ ext.libs = [
         caffeine                                 : "com.github.ben-manes.caffeine:caffeine:2.8.8",
 
         jedis                                    : "redis.clients:jedis:3.6.0",
-        redisson                                 : "org.redisson:redisson:${vers.redisson}",
+        redisson                                 : "org.redisson:redisson",
         redisson_spring_data                     : "org.redisson:redisson-spring-data-23:${vers.redisson}",
         redisson_spring_boot_starter             : "org.redisson:redisson-spring-boot-starter:${vers.redisson}",
 
@@ -324,9 +330,9 @@ ext.libs = [
         mockito_junit_jupiter                    : 'org.mockito:mockito-junit-jupiter:3.11.2',
         google_finbugs                           : "com.google.code.findbugs:jsr305:3.0.2",
 
-        poi                                      : "org.apache.poi:poi:${vers.poi}",
-        poi_ooxml                                : "org.apache.poi:poi-ooxml:${vers.poi}",
-        poi_ooxml_schemas                        : "org.apache.poi:poi-ooxml-schemas:${vers.poi}",
+        poi                                      : "org.apache.poi:poi",
+        poi_ooxml                                : "org.apache.poi:poi-ooxml",
+        poi_ooxml_schemas                        : "org.apache.poi:poi-ooxml-schemas:4.1.2",
 
         tools_template                           : "com.funs.game:tools-template:0.0.1-SNAPSHOT",
 
