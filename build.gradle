@@ -57,7 +57,7 @@ configure(subprojects) {
             dependency "${libs.commons_collections4}:4.4"
             dependency "${libs.commons_configuration}:1.10"
             dependency "${libs.commons_lang}:2.6"
-            dependency "${libs.commons_lang3}:3.11"
+            dependency "${libs.commons_lang3}:3.12.0"
             dependency "${libs.commons_math3}:3.6.1"
             dependency "${libs.commons_compress}:1.22"
             dependency "${libs.commons_pool2}:2.9.0"
@@ -65,8 +65,8 @@ configure(subprojects) {
             dependency "${libs.commons_crypto}:1.1.0"
             dependency "${libs.commons_dbcp2}:2.8.0"
             dependency "${libs.guava}:31.1-jre"
-            dependency "${libs.javassist}:3.28.0-GA"
-            dependency "${libs.xstream}:1.4.19"
+            dependency "${libs.javassist}:3.29.2-GA"
+            dependency "${libs.xstream}:1.4.20"
 
 //            dependency "${libs.poi}:${vers.poi}"
 //            dependency "${libs.poi_ooxml}:${vers.poi}"
@@ -130,6 +130,7 @@ configure(javaProjects) {
 
     apply plugin: 'java'
     apply plugin: 'java-library'
+    apply plugin: 'maven-publish'
     apply from: "${rootDir}/gradle/publications.gradle"
     apply from: "${rootDir}/gradle/tny-module.gradle"
 
@@ -192,7 +193,6 @@ configure(javaProjects) {
         testImplementation libs.spring_test
         testImplementation libs.slf4j_simple
 
-//        testImplementation project(":tny-game-tester")
     }
 
 
