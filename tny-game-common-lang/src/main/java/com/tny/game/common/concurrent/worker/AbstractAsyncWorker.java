@@ -43,6 +43,8 @@ public abstract class AbstractAsyncWorker implements AsyncWorker {
 
     protected static final int CLOSE = 3;
 
+    private final String name;
+
     private final Queue<ExecuteTask<?>> taskQueue;
 
     private ReadWriteLock lock;
@@ -58,15 +60,23 @@ public abstract class AbstractAsyncWorker implements AsyncWorker {
     static {
         TIMER.start();
     }
-    public static AsyncWorker currentExecutor() {
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    public static AsyncWorker current() {
         return EXECUTOR_THREAD_LOCAL.get();
     }
 
-    public AbstractAsyncWorker(Executor masterExecutor, boolean executeImmediatelyInWorker) {
-        this(masterExecutor, new ConcurrentLinkedQueue<>(), executeImmediatelyInWorker, false);
+    public AbstractAsyncWorker(String name, Executor masterExecutor, boolean executeImmediatelyInWorker) {
+        this(name, masterExecutor, new ConcurrentLinkedQueue<>(), executeImmediatelyInWorker, false);
     }
 
-    public AbstractAsyncWorker(Executor masterExecutor, Queue<ExecuteTask<?>> taskQueue, boolean unsafeQueue, boolean executeImmediatelyInWorker) {
+    public AbstractAsyncWorker(String name, Executor masterExecutor, Queue<ExecuteTask<?>> taskQueue, boolean unsafeQueue,
+            boolean executeImmediatelyInWorker) {
+        this.name = name;
         this.masterExecutor = masterExecutor;
         this.taskQueue = taskQueue;
         this.executeImmediatelyInWorker = executeImmediatelyInWorker;
@@ -230,7 +240,14 @@ public abstract class AbstractAsyncWorker implements AsyncWorker {
         }
     }
 
-    protected abstract static class AsyncExecuteTask<T> implements ExecuteTask<T>, TimerTask {
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", AbstractAsyncWorker.class.getSimpleName() + "[", "]")
+                .add("name='" + name + "'")
+                .toString();
+    }
+
+    protected abstract class AsyncExecuteTask<T> implements ExecuteTask<T>, TimerTask {
 
         private final CompletableFuture<T> future = new CompletableFuture<>();
 
@@ -266,7 +283,8 @@ public abstract class AbstractAsyncWorker implements AsyncWorker {
                 this.timeout.cancel();
             }
             if (cause != null) {
-                LOGGER.error("", cause);
+                var worker = AbstractAsyncWorker.this;
+                LOGGER.error("execute exception on {} {} ", worker.getClass().getSimpleName(), worker.getName(), cause);
                 future.completeExceptionally(cause);
             } else {
                 future.complete(value);

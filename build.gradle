@@ -11,69 +11,91 @@ apply from: "${rootDir}/gradle/git.gradle"
 
 ext {
     moduleProjects = subprojects.findAll { it.name.startsWith("tny-game-") }
-    moduleProjects = moduleProjects - project(":tny-game-bom")
     javaProjects = moduleProjects - project(":tny-game-bom")
     javaProjects = javaProjects.findAll { !it.name.endsWith("-gradle") }
     gradleProjects = moduleProjects.findAll { it.name.endsWith("-gradle") }
 }
 
-configure(allprojects) {
+configure(subprojects) {
+
     apply plugin: "idea"
     apply plugin: 'maven-publish'
+
     apply plugin: "io.spring.dependency-management"
-
-    group 'com.tny.game'
-    version "${projectVersion}"
-
 
     dependencyManagement {
 
         imports {
-            mavenBom(libs.jackson_bom)
+            mavenBom("org.apache.logging.log4j:log4j-bom:${log4j2Version}")
             mavenBom("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
             mavenBom("org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}")
-            mavenBom "com.alibaba.cloud:spring-cloud-alibaba-dependencies:${alibabaCloudVersion}"
-            mavenBom("org.apache.logging.log4j:log4j-bom:${log4j2Version}")
-
+            mavenBom("com.alibaba.cloud:spring-cloud-alibaba-dependencies:${alibabaCloudVersion}")
+            mavenBom("com.google.protobuf:protobuf-bom:3.22.2")
+            mavenBom("com.fasterxml.jackson:jackson-bom:2.14.2")
         }
 
         dependencies {
-            dependency libs.commons_codec
-            dependency libs.commons_beanutils
-            dependency libs.commons_collections
-            dependency libs.commons_collections4
-            dependency libs.commons_configuration
-            dependency libs.commons_lang
-            dependency libs.commons_lang3
-            dependency libs.commons_pool2
-            dependency libs.javassist
-            dependency libs.guava
-            dependency libs.okio
-            dependency libs.okhttp
-            dependency libs.okhttp3
-            dependency libs.asm
+            dependency "${libs.netty_common}:${nettyVersion}"
+            dependency "${libs.netty_handler}:${nettyVersion}"
+            dependency "${libs.netty_handler_proxy}:${nettyVersion}"
+            dependency "${libs.netty_transport}:${nettyVersion}"
+            dependency "${libs.netty_buffer}:${nettyVersion}"
+            dependency "${libs.netty_codec}:${nettyVersion}"
+            dependency "${libs.netty_codec_dns}:${nettyVersion}"
+            dependency "${libs.netty_codec_socks}:${nettyVersion}"
+            dependency "${libs.netty_codec_http}:${nettyVersion}"
+            dependency "${libs.netty_codec_http2}:${nettyVersion}"
+            dependency "${libs.netty_resolver}:${nettyVersion}"
+            dependency "${libs.netty_resolver_dns}:${nettyVersion}"
+            dependency "${libs.netty_transport_classes_epoll}:${nettyVersion}"
+            dependency "${libs.netty_transport_native_unix_common}:${nettyVersion}"
+            dependency "${libs.redisson}:${vers.redisson}"
+            dependency "${libs.commons_io}:2.8.0"
+            dependency "${libs.commons_codec}:1.15"
+            dependency "${libs.commons_beanutils}:1.9.4"
+            dependency "${libs.commons_collections}:3.2.2"
+            dependency "${libs.commons_collections4}:4.4"
+            dependency "${libs.commons_configuration}:1.10"
+            dependency "${libs.commons_lang}:2.6"
+            dependency "${libs.commons_lang3}:3.11"
+            dependency "${libs.commons_math3}:3.6.1"
+            dependency "${libs.commons_compress}:1.22"
+            dependency "${libs.commons_pool2}:2.9.0"
+            dependency "${libs.commons_pool}:1.6"
+            dependency "${libs.commons_crypto}:1.1.0"
+            dependency "${libs.commons_dbcp2}:2.8.0"
+            dependency "${libs.guava}:31.1-jre"
+            dependency "${libs.javassist}:3.28.0-GA"
+            dependency "${libs.xstream}:1.4.19"
+
+//            dependency "${libs.poi}:${vers.poi}"
+//            dependency "${libs.poi_ooxml}:${vers.poi}"
+//            dependency "${libs.okio}:2.10.0"
+//            dependency "${libs.okhttp}:2.7.5"
+//            dependency "${libs.okhttp3}:${vers.okhttp3}"
+//            dependency "${libs.asm}:5.0.4"
         }
 
         generatedPomCustomization {
             enabled = false
         }
     }
+    group 'com.tny.game'
+    version "${projectVersion}"
 
     repositories {
         mavenLocal()
         maven { url "https://mirrors.cloud.tencent.com/nexus/repository/maven-public/" }
-        maven { url "https://maven.aliyun.com/repository/public" }
         maven { url "https://m2.tnydev.com/repository/maven-public/" }
+        maven { url "https://maven.aliyun.com/repository/public" }
     }
-
 
 }
 
+
 configure(gradleProjects) {
-    apply plugin: 'java'
     apply plugin: 'groovy'
-    apply plugin: 'java-library'
-    apply plugin: 'maven-publish'
+    apply plugin: 'java-gradle-plugin'
     apply from: "${rootDir}/gradle/publish.gradle"
 
     configurations {
@@ -88,9 +110,6 @@ configure(gradleProjects) {
     dependencies {
         api gradleApi()
         api localGroovy()
-//            compile 'com.intellij:forms_rt:7.0.3'
-//            compile 'org.hidetake:gradle-ssh-plugin:2.9.0'
-//            compile 'org.ajoberstar:grgit:2.2.0'
     }
 
     task sourcesJar(type: Jar, dependsOn: classes) {
@@ -111,11 +130,10 @@ configure(javaProjects) {
 
     apply plugin: 'java'
     apply plugin: 'java-library'
-    apply plugin: 'maven-publish'
     apply from: "${rootDir}/gradle/publications.gradle"
     apply from: "${rootDir}/gradle/tny-module.gradle"
 
-    ext.springBoot = name.endsWith("-demo") || name.endsWith("-suite") || name.contains("-starter-")
+//    ext.springBoot = name.endsWith("-demo") || name.endsWith("-suite") || name.contains("-starter-")
 
     sourceCompatibility = "${javaVersion}"
     targetCompatibility = "${javaVersion}"
@@ -166,13 +184,15 @@ configure(javaProjects) {
     dependencies {
 
         implementation libs.slf4j_api
+        implementation libs.commons_lang3
 
         testImplementation libs.mockito_junit_jupiter
         testImplementation libs.junit_jupiter
         testImplementation libs.jmock_junit5
         testImplementation libs.spring_test
         testImplementation libs.slf4j_simple
-        testImplementation project(":tny-game-tester")
+
+//        testImplementation project(":tny-game-tester")
     }
 
 
@@ -185,6 +205,5 @@ configure(javaProjects) {
             downloadSources = false
         }
     }
-
 
 }

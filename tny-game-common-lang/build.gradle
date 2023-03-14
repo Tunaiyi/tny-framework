@@ -4,9 +4,7 @@ apply plugin: "maven-publish"
 
 dependencies {
 
-//    api project(":tny-game-common")
     api libs.guava
-    api libs.commons_lang3
     api libs.commons_collections4
 
     api libs.netty_common

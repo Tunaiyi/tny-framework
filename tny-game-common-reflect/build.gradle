@@ -5,11 +5,6 @@ apply plugin: "maven-publish"
 dependencies {
 
     api project(":tny-game-common-lang")
-//    api libs.commons_lang3
-//    api libs.commons_io
-//    api libs.commons_codec
-//    api libs.commons_collections4
-//    api libs.guava
     api libs.cglib_nodep
     api libs.javassist
 

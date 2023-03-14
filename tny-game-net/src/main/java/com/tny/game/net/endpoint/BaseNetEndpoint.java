@@ -82,12 +82,12 @@ public abstract class BaseNetEndpoint<UID> extends AbstractCommunicator<UID> imp
         this.context = context;
         this.certificate = certificate;
         var commandExecutorFactory = context.getCommandExecutorFactory();
-        this.commandBox = new MessageCommandBox(commandExecutorFactory.create());
         if (sendMessageCachedSize > 0) {
             this.sentMessageQueue = new MessageQueue<>(sendMessageCachedSize);
         } else {
             this.sentMessageQueue = new MessageQueue<>(0);
         }
+        this.commandBox = new MessageCommandBox(commandExecutorFactory.create(this));
     }
 
     @Override

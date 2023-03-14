@@ -50,9 +50,9 @@ public class SkywalkingRpcMonitorHandler implements RpcMonitorReceiveHandler, Rp
 
     private static final StringTag RPC_PROTOCOL = new StringTag(105, "tny-rpc.protocol");
 
-    private static final OfficialComponent TNY_RPC_SERVER = new OfficialComponent(166, "tny-rpc-server");
+    private static final OfficialComponent TNY_RPC_SERVER = new OfficialComponent(165, "tny-rpc-server");
 
-    private static final OfficialComponent TNY_RPC_CLIENT = new OfficialComponent(167, "tny-rpc-client");
+    private static final OfficialComponent TNY_RPC_CLIENT = new OfficialComponent(165, "tny-rpc-client");
 
     private static final AttrKey<ContextSnapshot> TRACING_SNAPSHOT = AttrKeys.key(SkywalkingRpcMonitorHandler.class, "TraceSnapshot");
 

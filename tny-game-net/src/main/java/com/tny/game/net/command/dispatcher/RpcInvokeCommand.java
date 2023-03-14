@@ -144,6 +144,7 @@ public class RpcInvokeCommand extends RpcHandleCommand {
             CompletionStage<Object> stage = as(result);
             future = stage.toCompletableFuture();
             future.whenCompleteAsync((value, cause) -> {
+                DISPATCHER_LOG.info("{} {} whenComplete {} {}", AbstractAsyncWorker.current(), getName(), value, cause);
                 if (cause != null) {
                     this.invokeContext.setResult(cause);
                 } else {

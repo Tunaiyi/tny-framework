@@ -44,7 +44,7 @@ public class LocalMessageTransporter implements MessageTransporter {
 
     public LocalMessageTransporter(String ip, int port, Executor executor) {
         this.address = new InetSocketAddress(ip, port);
-        this.executor = AsyncWorker.createSerialWorker(executor);
+        this.executor = AsyncWorker.createSerialWorker("LocalMessageTransporter-" + ip + ":" + port, executor);
     }
 
     @Override

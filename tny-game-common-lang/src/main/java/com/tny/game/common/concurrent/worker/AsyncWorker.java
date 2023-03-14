@@ -28,30 +28,32 @@ public interface AsyncWorker extends Executor {
      * @param masterExecutor worker执行器
      * @return 返回创建 worker.
      */
-    static AsyncWorker createSingleWorker(Executor masterExecutor) {
-        return new DefaultSingleAsyncWorker(masterExecutor);
+    static AsyncWorker createSingleWorker(String name, Executor masterExecutor) {
+        return new DefaultSingleAsyncWorker(name, masterExecutor);
     }
 
     /**
      * 创建单线程异步Worker,
      *
+     * @param name              worker 名字
      * @param masterExecutor    worker执行器
      * @param taskQueue         任务队列
      * @param threadUnsafeQueue 是否是线程安全
      * @return 返回创建 worker.
      */
-    static AsyncWorker createSingleWorker(Executor masterExecutor, Queue<ExecuteTask<?>> taskQueue, boolean threadUnsafeQueue) {
-        return new DefaultSingleAsyncWorker(masterExecutor, taskQueue, threadUnsafeQueue);
+    static AsyncWorker createSingleWorker(String name, Executor masterExecutor, Queue<ExecuteTask<?>> taskQueue, boolean threadUnsafeQueue) {
+        return new DefaultSingleAsyncWorker(name, masterExecutor, taskQueue, threadUnsafeQueue);
     }
 
     /**
      * 创建单线程异步Worker,且串行完成任务.
      *
+     * @param name           worker 名字
      * @param masterExecutor worker执行器
      * @return 返回创建 worker.
      */
-    static SerialAsyncWorker createSerialWorker(Executor masterExecutor) {
-        return new DefaultSerialAsyncWorker(masterExecutor);
+    static SerialAsyncWorker createSerialWorker(String name, Executor masterExecutor) {
+        return new DefaultSerialAsyncWorker(name, masterExecutor);
     }
 
     /**
@@ -62,12 +64,14 @@ public interface AsyncWorker extends Executor {
      * @param threadUnsafeQueue 是否是线程安全
      * @return 返回创建 worker.
      */
-    static SerialAsyncWorker createSerialWorker(Executor masterExecutor, Queue<ExecuteTask<?>> taskQueue, boolean threadUnsafeQueue) {
-        return new DefaultSerialAsyncWorker(masterExecutor, taskQueue, threadUnsafeQueue);
+    static SerialAsyncWorker createSerialWorker(String name, Executor masterExecutor, Queue<ExecuteTask<?>> taskQueue, boolean threadUnsafeQueue) {
+        return new DefaultSerialAsyncWorker(name, masterExecutor, taskQueue, threadUnsafeQueue);
     }
 
     Runnable NOOP = () -> {
     };
+
+    String getName();
 
     <T> CompletableFuture<T> apply(Supplier<T> supplier);
 

@@ -27,7 +27,7 @@ import static com.tny.game.common.concurrent.worker.AbstractAsyncWorker.*;
  **/
 public class AsyncWorkerTest {
 
-    private final SerialAsyncWorker executor = AsyncWorker.createSerialWorker(ForkJoinPools.pool("AsyncWorkerTest"));
+    private final SerialAsyncWorker executor = AsyncWorker.createSerialWorker("AsyncWorkerTest", ForkJoinPools.pool("AsyncWorkerTest"));
     //    private final AsyncWorker executor = new AsyncSingleWorker(ForkJoinPools.commonPool());
     //    private final AsyncWorker executor = new SingleWorkerExecutor(ForkJoinPools.commonPool());
 
@@ -62,7 +62,7 @@ public class AsyncWorkerTest {
     private static void debug(String message) {
         var thread = Thread.currentThread();
         System.out.println(
-                DateTimeFormatter.ISO_INSTANT.format(Instant.now()) + " # " + message + "|" + currentExecutor() + "|" + thread.getName() + "-" +
+                DateTimeFormatter.ISO_INSTANT.format(Instant.now()) + " # " + message + "|" + current() + "|" + thread.getName() + "-" +
                         thread.getId());
     }
 

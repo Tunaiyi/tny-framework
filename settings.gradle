@@ -17,17 +17,15 @@ rootProject.name = 'tny-framework'
 
 include 'tny-game-bom'
 include 'tny-game-common-lang'
+include 'tny-game-common-reflect'
 include 'tny-game-common-digest'
 include 'tny-game-common-io'
+include 'tny-game-scanning'
+include 'tny-game-loader'
+
 include 'tny-game-common-lifecycle'
-include 'tny-game-common-reflect'
 include 'tny-game-common-scheduler'
 
-include 'tny-game-loader'
-include 'tny-game-scanning'
-
-include 'tny-game-boot'
-include 'tny-game-boot-log4j2'
 
 include 'tny-game-expr'
 include 'tny-game-expr-mvel'
@@ -36,11 +34,18 @@ include 'tny-game-expr-groovy'
 include 'tny-game-expr-graaljs'
 include 'tny-game-expr-luaj'
 
-//include 'tny-game-cache'
-//include 'tny-game-cache-memcached'
-//include 'tny-game-cache-mysql'
-//include 'tny-game-cache-redis'
-//include 'tny-game-cache-test'
+include 'tny-game-boot'
+include 'tny-game-boot-log4j2'
+
+////include 'tny-game-cache'
+////include 'tny-game-cache-memcached'
+////include 'tny-game-cache-mysql'
+////include 'tny-game-cache-redis'
+////include 'tny-game-cache-test'
+
+include 'tny-game-doc'
+include 'tny-game-doc-annotation'
+include 'tny-game-doc-gradle'
 
 include 'tny-game-codec'
 include 'tny-game-codec-jackson'
@@ -48,50 +53,49 @@ include 'tny-game-codec-jprotobuf'
 include 'tny-game-codec-protoex'
 include 'tny-game-starter-codec'
 
+include 'tny-game-oplog'
+include 'tny-game-basics'
+include 'tny-game-starter-basics'
+
 include 'tny-game-net'
 include 'tny-game-net-demo'
 include 'tny-game-net-test'
 
+include 'tny-game-protoex'
+include 'tny-game-protobuf'
+include 'tny-game-rpc'
 include 'tny-game-net-netty4'
 include 'tny-game-net-netty4-codec-jprotobuf'
 include 'tny-game-net-netty4-codec-protoex'
 include 'tny-game-starter-net-netty4'
 include 'tny-game-starter-net-apm-skywalking'
 
-include 'tny-game-doc'
-include 'tny-game-doc-annotation'
-include 'tny-game-doc-gradle'
 
-include 'tny-game-oplog-log4j'
-//include 'tny-game-oplog-log4j2kafka'
-
-include 'tny-game-protoex'
-include 'tny-game-rpc'
 include 'tny-game-actor'
-//include 'tny-game-asyndb'
-include 'tny-game-oplog'
-include 'tny-game-web'
-include 'tny-game-zookeeper'
-include 'tny-game-protobuf'
+include 'tny-game-oplog-log4j'
+////include 'tny-game-oplog-log4j2kafka'
+
+//include 'tny-game-web'
+////include 'tny-game-asyndb'
+////include 'tny-game-zookeeper'
 
 include 'tny-game-namnspace'
 include 'tny-game-namnspace-etcd'
 include 'tny-game-starter-namnspace'
-//include 'tny-game-suite'
+////include 'tny-game-suite'
+
+include 'tny-game-mongodb'
+include 'tny-game-starter-mongodb'
+
+
+include 'tny-game-redisson'
+include 'tny-game-starter-redisson'
 
 include 'tny-game-data'
 include 'tny-game-data-redisson'
 include 'tny-game-data-mongodb'
 include 'tny-game-starter-data'
 
-include 'tny-game-basics'
-include 'tny-game-starter-basics'
-
-include 'tny-game-redisson'
-include 'tny-game-starter-redisson'
-
-include 'tny-game-mongodb'
-include 'tny-game-starter-mongodb'
 
 include 'tny-game-tester'
 

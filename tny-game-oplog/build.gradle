@@ -6,7 +6,6 @@ dependencies {
 
     api project(":tny-game-basics")
     api project(":tny-game-protobuf")
-    api libs.commons_lang3
     api libs.spring_context_support
     api libs.jackson_core
     api libs.jackson_databind

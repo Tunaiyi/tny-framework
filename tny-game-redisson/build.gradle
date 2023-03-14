@@ -2,6 +2,7 @@ group "com.tny.game"
 
 apply plugin: "maven-publish"
 
+
 dependencies {
 
     api project(":tny-game-common-io")
@@ -11,6 +12,5 @@ dependencies {
 
     api libs.javassist
     api libs.redisson
-
 }
 

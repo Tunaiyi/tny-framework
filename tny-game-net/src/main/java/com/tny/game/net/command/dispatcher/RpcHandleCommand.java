@@ -84,7 +84,7 @@ public abstract class RpcHandleCommand implements RpcCommand {
         RpcContexts.setCurrent(enterContext);
         try {
             if (cause != null) {
-                LOGGER.error("execute {}", getName(), cause);
+                LOGGER.error("execute {} exception", getName(), cause);
                 onException(cause);
             }
             this.doDone();

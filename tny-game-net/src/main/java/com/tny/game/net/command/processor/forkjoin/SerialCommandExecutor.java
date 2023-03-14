@@ -18,6 +18,7 @@ import com.tny.game.net.command.processor.MessageCommandBox;
 import com.tny.game.net.command.processor.*;
 import org.slf4j.Logger;
 
+import javax.annotation.Nonnull;
 import java.util.Objects;
 import java.util.concurrent.*;
 
@@ -38,13 +39,13 @@ public class SerialCommandExecutor implements CommandExecutor {
 
     private final SerialAsyncWorker commandWorker;
 
-    public SerialCommandExecutor(Executor executor) {
-        this.executeWorker = AsyncWorker.createSingleWorker(executor);
-        this.commandWorker = AsyncWorker.createSerialWorker(executor);
+    public SerialCommandExecutor(String name, Executor executor) {
+        this.executeWorker = AsyncWorker.createSingleWorker("CommandExecutorWorker-" + name, executor);
+        this.commandWorker = AsyncWorker.createSerialWorker("SerialCommandWorker-" + name, this.executeWorker);
     }
 
     @Override
-    public void execute(Runnable runnable) {
+    public void execute(@Nonnull Runnable runnable) {
         executeWorker.execute(runnable);
     }
 

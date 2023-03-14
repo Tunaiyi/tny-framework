@@ -31,12 +31,12 @@ class DefaultSerialAsyncWorker extends AbstractAsyncWorker implements SerialAsyn
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultSerialAsyncWorker.class);
 
-    public DefaultSerialAsyncWorker(Executor masterExecutor) {
-        super(masterExecutor, true);
+    public DefaultSerialAsyncWorker(String name, Executor masterExecutor) {
+        super(name, masterExecutor, true);
     }
 
-    public DefaultSerialAsyncWorker(Executor masterExecutor, Queue<ExecuteTask<?>> taskQueue, boolean unsafeQueue) {
-        super(masterExecutor, taskQueue, unsafeQueue, true);
+    public DefaultSerialAsyncWorker(String name, Executor masterExecutor, Queue<ExecuteTask<?>> taskQueue, boolean unsafeQueue) {
+        super(name, masterExecutor, taskQueue, unsafeQueue, true);
     }
 
     @Override
@@ -306,7 +306,8 @@ class DefaultSerialAsyncWorker extends AbstractAsyncWorker implements SerialAsyn
                     return null;
                 }
                 if (resumeLoop) {
-                    current.whenCompleteAsync((v, c) -> {
+                    current.whenComplete((v, c) -> {
+                        EXECUTOR_THREAD_LOCAL.set(DefaultSerialAsyncWorker.this);
                         complete(v, c);
                         resumeLoop();
                     });
@@ -320,7 +321,6 @@ class DefaultSerialAsyncWorker extends AbstractAsyncWorker implements SerialAsyn
                 throw new WorkerExecuteException(format("{} execute future is null", getRunner()), e);
             } finally {
                 EXECUTOR_THREAD_LOCAL.remove();
-                System.out.println("clear currentThread " + currentThread);
                 currentThread = null;
             }
         }
