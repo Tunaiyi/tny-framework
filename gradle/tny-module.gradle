@@ -1,5 +1,7 @@
 apply plugin: 'maven-publish'
 
+apply from: "$rootDir/gradle/publish.gradle"
+
 jar {
     manifest.attributes["Implementation-Title"] = project.name
     manifest.attributes["Implementation-Version"] = project.version
@@ -10,6 +12,7 @@ jar {
 }
 
 publishing {
+
     publications {
         mavenJava(MavenPublication) {
             from components.java

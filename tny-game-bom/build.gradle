@@ -2,7 +2,7 @@ description = "Tny Game Framework Bom"
 
 apply plugin: 'java-platform'
 
-apply from: "$rootDir/gradle/publications.gradle"
+apply from: "${rootDir}/gradle/publications.gradle"
 
 dependencies {
     constraints {

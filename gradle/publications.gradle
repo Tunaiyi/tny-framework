@@ -1,7 +1,8 @@
 apply plugin: "maven-publish"
 
-apply from: "$rootDir/gradle/publish.gradle"
 apply from: "$rootDir/gradle/dependency.gradle"
+apply from: "$rootDir/gradle/publish.gradle"
+
 
 publishing {
 
@@ -22,11 +23,6 @@ publishing {
                         distribution = "repo"
                     }
                 }
-//                scm {
-//                    url = "https://github.com/spring-projects/spring-framework"
-//                    connection = "scm:git:git://github.com/spring-projects/spring-framework"
-//                    developerConnection = "scm:git:git://github.com/spring-projects/spring-framework"
-//                }
                 developers {
                     developer {
                         id = "yangkun"
@@ -34,27 +30,15 @@ publishing {
                         email = "yangkun311@163.com"
                     }
                 }
-//                issueManagement {
-//                    system = "GitHub"
-//                    url = "https://github.com/spring-projects/spring-framework/issues"
-//                }
             }
 
-//            versionMapping {
-//                usage('java-api') {
-//                    fromResolutionResult()
-//                }
-//                usage('java-runtime') {
-//                    fromResolutionResult()
-//                }
-//            }
         }
 
     }
 
     repositories {
         maven {
-            url = version.endsWith('SNAPSHOT') ? SNAPSHOT_REPOSITORY_URL : RELEASE_REPOSITORY_URL
+            url = version.endsWith('-SNAPSHOT') ? SNAPSHOT_REPOSITORY_URL : RELEASE_REPOSITORY_URL
             credentials {
                 username = NEXUS_USERNAME
                 password = NEXUS_PASSWORD
