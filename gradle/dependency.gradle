@@ -91,6 +91,7 @@ ext.libs = [
         fastjson                                 : "com.alibaba:fastjson:1.2.73",
         validation_api                           : "javax.validation:validation-api:2.0.1.Final",
 
+        netty                                    : "io.netty:netty-all",
         netty_common                             : "io.netty:netty-common",
         netty_handler                            : "io.netty:netty-handler",
         netty_handler_proxy                      : "io.netty:netty-handler-proxy",

@@ -41,7 +41,6 @@ public class FileIOAide {
             LOG.warn("#ConfigLoader#打开 {} 失败", path);
             return null;
         }
-        //		System.out.println(url.getPath());
         return new File(url.getPath());
     }
 

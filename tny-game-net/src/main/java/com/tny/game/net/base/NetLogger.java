@@ -16,10 +16,13 @@ import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.relay.link.*;
 import com.tny.game.net.relay.packet.*;
-import org.slf4j.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.EnumSet;
-import java.util.concurrent.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.function.Function;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 import static com.tny.game.common.utils.StringAide.*;
@@ -107,13 +110,13 @@ public class NetLogger {
 
     public static final String EXECUTOR = "com.tny.game.net.executor";
 
-    private static final String MESSAGE_RECEIVE_LOGGER_NAME = "com.tny.game.net.message.receive.{}.{}";
+    private static final String MESSAGE_RECEIVE_LOGGER_NAME = "com.tny.game.net.rpc.{}.receive.{}.{}";
 
-    private static final String MESSAGE_SEND_LOGGER_NAME = "com.tny.game.net.message.send.{}.{}";
+    private static final String MESSAGE_SEND_LOGGER_NAME = "com.tny.game.net.rpc.{}.send.{}.{}";
 
-    private static final String RELAY_RECEIVE_LOGGER_NAME = "com.tny.game.net.relay.receive.{}.{}";
+    private static final String RELAY_RECEIVE_LOGGER_NAME = "com.tny.game.net.relay.{}.receive.{}.{}";
 
-    private static final String RELAY_SEND_LOGGER_NAME = "com.tny.game.net.relay.send.{}.{}";
+    private static final String RELAY_SEND_LOGGER_NAME = "com.tny.game.net.relay.{}.send.{}.{}";
 
     private static Logger getMessageSendLogger(String service, MessageSubject message) {
         return NetLoggerGroup.ofRpc(service).forSendMessage(message.getMode());
@@ -177,23 +180,27 @@ public class NetLogger {
 
         private static NetLoggerGroup<MessageMode> ofRpc(String userType) {
             return as(NET_LOGGER_GROUP_MAP.computeIfAbsent("Rpc:" + userType,
-                    (k) -> new NetLoggerGroup<>(userType, MessageMode.class, MESSAGE_RECEIVE_LOGGER_NAME, MESSAGE_SEND_LOGGER_NAME)));
+                    (k) -> new NetLoggerGroup<>(userType, MessageMode.class, MessageMode::getWay, MESSAGE_RECEIVE_LOGGER_NAME,
+                            MESSAGE_SEND_LOGGER_NAME)));
         }
 
         private static NetLoggerGroup<RelayPacketType> ofRelay(String userType) {
             return as(NET_LOGGER_GROUP_MAP.computeIfAbsent("Relay:" + userType,
-                    (k) -> new NetLoggerGroup<>(userType, RelayPacketType.class, RELAY_RECEIVE_LOGGER_NAME, RELAY_SEND_LOGGER_NAME)));
+                    (k) -> new NetLoggerGroup<>(userType, RelayPacketType.class, RelayPacketType::getWay, RELAY_RECEIVE_LOGGER_NAME,
+                            RELAY_SEND_LOGGER_NAME)));
         }
 
-        private NetLoggerGroup(String service, Class<E> enumClass, String subReceiveLoggerKey, String subSendLoggerKey) {
+        private NetLoggerGroup(String service, Class<E> enumClass, Function<E, NetworkWay> wayFunction, String subReceiveLoggerKey,
+                String subSendLoggerKey) {
             var enumSet = EnumSet.allOf(enumClass);
             this.receiveLoggers = new Logger[enumSet.size()];
             this.sendLoggers = new Logger[enumSet.size()];
             for (E item : enumSet) {
+                var way = wayFunction.apply(item);
                 receiveLoggers[item.ordinal()] = LoggerFactory.getLogger(
-                        format(subReceiveLoggerKey, service.toLowerCase(), item.name().toLowerCase()));
+                        format(subReceiveLoggerKey, way.getValue(), service.toLowerCase(), item.name().toLowerCase()));
                 sendLoggers[item.ordinal()] = LoggerFactory.getLogger(
-                        format(subSendLoggerKey, service.toLowerCase(), item.name().toLowerCase()));
+                        format(subSendLoggerKey, way.getValue(), service.toLowerCase(), item.name().toLowerCase()));
             }
         }
 

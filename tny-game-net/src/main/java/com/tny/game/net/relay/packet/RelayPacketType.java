@@ -11,6 +11,7 @@
 package com.tny.game.net.relay.packet;
 
 import com.tny.game.common.enums.*;
+import com.tny.game.net.message.*;
 import com.tny.game.net.relay.*;
 import com.tny.game.net.relay.exception.*;
 import com.tny.game.net.relay.link.*;
@@ -31,56 +32,58 @@ public enum RelayPacketType implements ByteEnumerable {
     LINK_OPEN(RELAY_PACKET_TYPE_LINK_OPENING,
             LinkOpenPacket.class, LinkOpenArguments.class,
             LinkOpenPacket.FACTORY,
-            RelayPacketProcessor::onLinkOpen),
+            RelayPacketProcessor::onLinkOpen, NetworkWay.SYSTEM),
 
     LINK_OPENED(RELAY_PACKET_TYPE_LINK_OPENED,
             LinkOpenedPacket.class, LinkOpenedArguments.class,
             LinkOpenedPacket.FACTORY,
-            RelayPacketProcessor::onLinkOpened),
+            RelayPacketProcessor::onLinkOpened, NetworkWay.SYSTEM),
 
     LINK_CLOSE(RELAY_PACKET_TYPE_LINK_CLOSE,
             LinkClosePacket.class, LinkVoidArguments.class,
             LinkClosePacket.FACTORY,
-            RelayPacketProcessor::onLinkClose),
+            RelayPacketProcessor::onLinkClose, NetworkWay.SYSTEM),
 
     LINK_PING(RELAY_PACKET_TYPE_LINK_PING,
             LinkHeartBeatPacket.class, LinkVoidArguments.class,
             LinkHeartBeatPacket.PING_FACTORY,
-            RelayPacketProcessor::onLinkHeartBeat),
+            RelayPacketProcessor::onLinkHeartBeat, NetworkWay.HEARTBEAT),
 
     LINK_PONG(RELAY_PACKET_TYPE_LINK_PONG,
             LinkHeartBeatPacket.class, LinkVoidArguments.class,
             LinkHeartBeatPacket.PONG_FACTORY,
-            RelayPacketProcessor::onLinkHeartBeat),
+            RelayPacketProcessor::onLinkHeartBeat, NetworkWay.HEARTBEAT),
 
     TUNNEL_CONNECT(RELAY_PACKET_TYPE_TUNNEL_CONNECT,
             TunnelConnectPacket.class, TunnelConnectArguments.class,
             TunnelConnectPacket.FACTORY,
-            RelayPacketProcessor::onTunnelConnect),
+            RelayPacketProcessor::onTunnelConnect, NetworkWay.SYSTEM),
 
     TUNNEL_CONNECTED(RELAY_PACKET_TYPE_TUNNEL_CONNECTED,
             TunnelConnectedPacket.class, TunnelConnectedArguments.class,
             TunnelConnectedPacket.FACTORY,
-            RelayPacketProcessor::onTunnelConnected),
+            RelayPacketProcessor::onTunnelConnected, NetworkWay.SYSTEM),
 
     TUNNEL_DISCONNECT(RELAY_PACKET_TYPE_TUNNEL_DISCONNECT,
             TunnelDisconnectPacket.class, TunnelVoidArguments.class,
             TunnelDisconnectPacket.FACTORY,
-            RelayPacketProcessor::onTunnelDisconnect),
+            RelayPacketProcessor::onTunnelDisconnect, NetworkWay.SYSTEM),
 
     TUNNEL_SWITCH_LINK(RELAY_PACKET_TYPE_TUNNEL_SWITCH_LINK,
             TunnelSwitchLinkPacket.class, TunnelVoidArguments.class,
             TunnelSwitchLinkPacket.FACTORY,
-            RelayPacketProcessor::onTunnelSwitchLink),
+            RelayPacketProcessor::onTunnelSwitchLink, NetworkWay.SYSTEM),
 
     TUNNEL_RELAY(RELAY_PACKET_TYPE_TUNNEL_RELAY,
             TunnelRelayPacket.class, TunnelRelayArguments.class,
             TunnelRelayPacket.FACTORY,
-            RelayPacketProcessor::onTunnelRelay),
+            RelayPacketProcessor::onTunnelRelay, NetworkWay.MESSAGE),
     //
     ;
 
     private final byte id;
+
+    private NetworkWay way;
 
     private final Class<? extends RelayPacket<?>> packetClass;
 
@@ -93,25 +96,23 @@ public enum RelayPacketType implements ByteEnumerable {
     private final RelayPacketHandleByTransporterInvoker<RelayPacket<?>> handleByTransporter;
 
     <A extends RelayPacketArguments, P extends RelayPacket<A>> RelayPacketType(int id,
-            Class<P> packetClass, Class<A> classOfArguments,
-            RelayPacketFactory<P, A> packetFactory,
-            RelayPacketHandleByLinkInvoker<P> packetHandlerInvoker) {
-        this(id, packetClass, classOfArguments, packetFactory, packetHandlerInvoker, null);
+            Class<P> packetClass, Class<A> classOfArguments, RelayPacketFactory<P, A> packetFactory,
+            RelayPacketHandleByLinkInvoker<P> packetHandlerInvoker, NetworkWay way) {
+        this(id, packetClass, classOfArguments, packetFactory, packetHandlerInvoker, null, way);
     }
 
     <A extends RelayPacketArguments, P extends RelayPacket<A>> RelayPacketType(int id,
-            Class<P> packetClass, Class<A> classOfArguments,
-            RelayPacketFactory<P, A> packetFactory,
-            RelayPacketHandleByTransporterInvoker<P> transporterHandlerInvoker) {
-        this(id, packetClass, classOfArguments, packetFactory, null, transporterHandlerInvoker);
+            Class<P> packetClass, Class<A> classOfArguments, RelayPacketFactory<P, A> packetFactory,
+            RelayPacketHandleByTransporterInvoker<P> transporterHandlerInvoker, NetworkWay way) {
+        this(id, packetClass, classOfArguments, packetFactory, null, transporterHandlerInvoker, way);
     }
 
     <A extends RelayPacketArguments, P extends RelayPacket<A>> RelayPacketType(int id,
-            Class<P> packetClass, Class<A> classOfArguments,
-            RelayPacketFactory<P, A> packetFactory,
-            RelayPacketHandleByLinkInvoker<P> packetHandlerInvoker,
-            RelayPacketHandleByTransporterInvoker<?> transporterHandlerInvoker) {
+            Class<P> packetClass, Class<A> classOfArguments, RelayPacketFactory<P, A> packetFactory,
+            RelayPacketHandleByLinkInvoker<P> packetHandlerInvoker, RelayPacketHandleByTransporterInvoker<?> transporterHandlerInvoker,
+            NetworkWay way) {
         this.id = (byte)id;
+        this.way = way;
         this.packetClass = packetClass;
         this.classOfArguments = classOfArguments;
         this.packetFactory = as(packetFactory);
@@ -141,6 +142,11 @@ public enum RelayPacketType implements ByteEnumerable {
         }
     }
 
+    @Override
+    public byte id() {
+        return this.id;
+    }
+
     public boolean isHandleByLink() {
         return handleByLink != null;
     }
@@ -149,9 +155,8 @@ public enum RelayPacketType implements ByteEnumerable {
         return handleByTransporter != null;
     }
 
-    @Override
-    public byte id() {
-        return this.id;
+    public NetworkWay getWay() {
+        return way;
     }
 
     public Class<? extends RelayPacket<?>> getPacketClass() {

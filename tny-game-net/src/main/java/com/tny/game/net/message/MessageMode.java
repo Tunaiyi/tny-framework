@@ -15,40 +15,47 @@ public enum MessageMode {
     /**
      * 处理推送
      */
-    PUSH(MessageType.MESSAGE, CodecConstants.MESSAGE_HEAD_OPTION_MODE_VALUE_PUSH),
+    PUSH(MessageType.MESSAGE, CodecConstants.MESSAGE_HEAD_OPTION_MODE_VALUE_PUSH, NetworkWay.MESSAGE),
     /**
      * 处理请求
      */
-    REQUEST(MessageType.MESSAGE, CodecConstants.MESSAGE_HEAD_OPTION_MODE_VALUE_REQUEST),
+    REQUEST(MessageType.MESSAGE, CodecConstants.MESSAGE_HEAD_OPTION_MODE_VALUE_REQUEST, NetworkWay.MESSAGE),
     /**
      * 处理响应
      */
-    RESPONSE(MessageType.MESSAGE, CodecConstants.MESSAGE_HEAD_OPTION_MODE_VALUE_RESPONSE),
+    RESPONSE(MessageType.MESSAGE, CodecConstants.MESSAGE_HEAD_OPTION_MODE_VALUE_RESPONSE, NetworkWay.MESSAGE),
     /**
      * PING
      */
-    PING(MessageType.PING, CodecConstants.MESSAGE_HEAD_OPTION_MODE_VALUE_PING),
+    PING(MessageType.PING, CodecConstants.MESSAGE_HEAD_OPTION_MODE_VALUE_PING, NetworkWay.HEARTBEAT),
     /**
      * PONG
      */
-    PONG(MessageType.PONE, CodecConstants.MESSAGE_HEAD_OPTION_MODE_VALUE_PONG),
+    PONG(MessageType.PONE, CodecConstants.MESSAGE_HEAD_OPTION_MODE_VALUE_PONG, NetworkWay.HEARTBEAT),
     //
     ;
 
     private final MessageType type;
 
+    private final NetworkWay way;
+
     private final byte option;
 
     private final String mark;
 
-    MessageMode(MessageType type, byte option) {
+    MessageMode(MessageType type, byte option, NetworkWay way) {
         this.type = type;
         this.option = option;
+        this.way = way;
         this.mark = name().toLowerCase();
     }
 
     public MessageType getType() {
         return this.type;
+    }
+
+    public NetworkWay getWay() {
+        return way;
     }
 
     public byte getOption() {

@@ -256,8 +256,6 @@ public class InvokerFactory {
         }
         Attributes attributes = ContextAttributes.create();
         MethodInvoker invoker = InvokerFactory.newInvoker(target);
-        System.out.println(invoker.getClass());
-        System.out.println(invoker.invoke(attributes));
     }
 
 }

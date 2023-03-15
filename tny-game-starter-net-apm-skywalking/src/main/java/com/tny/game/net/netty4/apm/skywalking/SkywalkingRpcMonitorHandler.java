@@ -17,11 +17,16 @@ import com.tny.game.net.monitor.*;
 import com.tny.game.net.rpc.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.skywalking.apm.agent.core.conf.Config;
-import org.apache.skywalking.apm.agent.core.context.*;
+import org.apache.skywalking.apm.agent.core.context.CarrierItem;
+import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
+import org.apache.skywalking.apm.agent.core.context.ContextManager;
+import org.apache.skywalking.apm.agent.core.context.ContextSnapshot;
 import org.apache.skywalking.apm.agent.core.context.tag.StringTag;
-import org.apache.skywalking.apm.agent.core.context.trace.*;
+import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
+import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
 import org.apache.skywalking.apm.network.trace.component.OfficialComponent;
-import org.slf4j.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 
@@ -87,9 +92,11 @@ public class SkywalkingRpcMonitorHandler implements RpcMonitorReceiveHandler, Rp
         } else {
             attributes.setAttribute(TRACING_RPC_SPAN, rpcSpan.prepareForAsync());
         }
-        LOGGER.info("onReceive span {} {} {} | TraceId {} | SegmentId {} | SpanId {}",
-                rpcContext.getMode(), rpcSpan.getOperationName(), rpcSpan.getSpanId(),
-                contextCarrier.getTraceId(), contextCarrier.getTraceSegmentId(), contextCarrier.getSpanId());
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("onReceive span {} {} {} | TraceId {} | SegmentId {} | SpanId {}",
+                    rpcContext.getMode(), rpcSpan.getOperationName(), rpcSpan.getSpanId(),
+                    contextCarrier.getTraceId(), contextCarrier.getTraceSegmentId(), contextCarrier.getSpanId());
+        }
     }
 
     @Override
@@ -116,8 +123,10 @@ public class SkywalkingRpcMonitorHandler implements RpcMonitorReceiveHandler, Rp
         //        if (span == null) {
         //            return;
         //        }
-        LOGGER.info("invoke span {} {} {}",
-                rpcContext.getMode(), span.getOperationName(), span.getSpanId());
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("invoke span {} {} {}",
+                    rpcContext.getMode(), span.getOperationName(), span.getSpanId());
+        }
         if (rpcContext.isAsync()) {
             if (rpcContext.getMode() == RpcTransactionMode.ENTER) {
                 var snapshot = ContextManager.capture();
@@ -143,7 +152,9 @@ public class SkywalkingRpcMonitorHandler implements RpcMonitorReceiveHandler, Rp
             }
             ContextManager.stopSpan();
         }
-        LOGGER.info("invoke end span {}", rpcContext.getOperationName());
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("invoke end span {}", rpcContext.getOperationName());
+        }
     }
 
     private AbstractSpan traceOnBefore(RpcTransactionContext rpcContext) {
@@ -163,14 +174,18 @@ public class SkywalkingRpcMonitorHandler implements RpcMonitorReceiveHandler, Rp
             }
             message.putHeader(tracingHeader);
             tagSpanRemote(span, contextCarrier, rpcContext.getMessager(), message);
-            LOGGER.info("exit start span {} {}", span.getOperationName(), span.getSpanId());
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("exit start span {} {}", span.getOperationName(), span.getSpanId());
+            }
         } else {
             var message = rpcContext.getMessageSubject();
             operationName = localOperationName(rpcContext);
             span = ContextManager.createLocalSpan(operationName);
             restore(rpcContext);
             tagSpanLocal(span, loadCarrier(message), rpcContext.getMessager(), message);
-            LOGGER.info("enter start span {} {}", span.getOperationName(), span.getSpanId());
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("enter start span {} {}", span.getOperationName(), span.getSpanId());
+            }
         }
         return span;
     }
@@ -212,9 +227,11 @@ public class SkywalkingRpcMonitorHandler implements RpcMonitorReceiveHandler, Rp
         message.putHeader(tracingHeader);
         rpcContext.attributes().setAttribute(TRACING_TRANSFER_SPAN, span.prepareForAsync());
         ContextManager.stopSpan(span);
-        LOGGER.info("transfer start span {} {} | in command {} | restore {} | TraceId {} | SegmentId {} | SpanId {}",
-                span.getOperationName(), span.getSpanId(), current.isValid(), restore,
-                headerCarrier.getTraceId(), headerCarrier.getTraceSegmentId(), headerCarrier.getSpanId());
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("transfer start span {} {} | in command {} | restore {} | TraceId {} | SegmentId {} | SpanId {}",
+                    span.getOperationName(), span.getSpanId(), current.isValid(), restore,
+                    headerCarrier.getTraceId(), headerCarrier.getTraceSegmentId(), headerCarrier.getSpanId());
+        }
     }
 
     @Override
@@ -231,7 +248,9 @@ public class SkywalkingRpcMonitorHandler implements RpcMonitorReceiveHandler, Rp
             }
             ContextManager.stopSpan();
         }
-        LOGGER.info("transfer end span {} {}", rpcContext.getOperationName(), span == null ? null : span.getSpanId());
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("transfer end span {} {}", rpcContext.getOperationName(), span == null ? null : span.getSpanId());
+        }
     }
 
     @SuppressWarnings({"unchecked"})
@@ -247,7 +266,9 @@ public class SkywalkingRpcMonitorHandler implements RpcMonitorReceiveHandler, Rp
             if (cause != null) {
                 span.log(cause);
             }
-            LOGGER.info("stop {} span of {} {}", key.name(), rpcContext.getMode(), span.getOperationName());
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("stop {} span of {} {}", key.name(), rpcContext.getMode(), span.getOperationName());
+            }
             // renewTagSpan(span, rpcContext.getMessager());
             span.asyncFinish();
         }
@@ -263,7 +284,9 @@ public class SkywalkingRpcMonitorHandler implements RpcMonitorReceiveHandler, Rp
                 next.setHeadValue(header.get(next.getHeadKey()));
             }
         } else {
-            LOGGER.info("no {} header {}", MessageHeaderConstants.RPC_TRACING.getKey(), rpcOperationName(message));
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("no {} header {}", MessageHeaderConstants.RPC_TRACING.getKey(), rpcOperationName(message));
+            }
         }
         return contextCarrier;
     }
@@ -288,13 +311,17 @@ public class SkywalkingRpcMonitorHandler implements RpcMonitorReceiveHandler, Rp
         var snapshot = rpcContext.attributes().getAttribute(TRACING_SNAPSHOT);
         if (snapshot != null) {
             AbstractSpan restoreSpan = span != null ? span : ContextManager.activeSpan();
-            LOGGER.info("restore span {} {} {}",
-                    rpcContext.getMode(), restoreSpan.getOperationName(), restoreSpan.getSpanId());
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("restore span {} {} {}",
+                        rpcContext.getMode(), restoreSpan.getOperationName(), restoreSpan.getSpanId());
+            }
             ContextManager.continued(snapshot);
             result = true;
         } else {
-            LOGGER.info("restore no snapshot {} {} {}",
-                    rpcContext.getClass(), rpcContext.getMode(), rpcContext.getOperationName());
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("restore no snapshot {} {} {}",
+                        rpcContext.getClass(), rpcContext.getMode(), rpcContext.getOperationName());
+            }
         }
         if (span != null) {
             ContextManager.stopSpan(span);
