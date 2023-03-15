@@ -11,7 +11,8 @@
 package com.tny.game.net.command.dispatcher;
 
 import com.tny.game.common.concurrent.worker.*;
-import org.slf4j.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -50,9 +51,6 @@ public abstract class RpcHandleCommand implements RpcCommand {
                 } finally {
                     this.start = true;
                 }
-            }
-            if (future == null) {
-                onDone();
             }
             return future;
         } catch (Throwable e) {
