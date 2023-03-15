@@ -298,7 +298,6 @@ class DefaultSerialAsyncWorker extends AbstractAsyncWorker implements SerialAsyn
         public CompletableFuture<T> execute(boolean resumeLoop) {
             try {
                 currentThread = Thread.currentThread();
-                System.out.println("set currentThread " + currentThread);
                 EXECUTOR_THREAD_LOCAL.set(DefaultSerialAsyncWorker.this);
                 var current = doExecute();
                 if (current == null) {

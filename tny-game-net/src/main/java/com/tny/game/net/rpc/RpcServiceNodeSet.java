@@ -123,10 +123,5 @@ public class RpcServiceNodeSet implements RpcInvokeNodeSet, RpcForwardNodeSet {
         }
     }
 
-    public static void main(String[] args) {
-        for (int i = 0; i < 10; i++) {
-            System.out.println(System.nanoTime() * 100 + ThreadLocalRandom.current().nextInt(100));
-        }
-    }
 
 }

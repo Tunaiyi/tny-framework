@@ -484,21 +484,4 @@ public class HttpRest {
         return ip;
     }
 
-    public static void main(String[] args) throws Exception {
-        System.out.println(getLocalAddress());
-        HttpClientConfiguration clientConfiguration = new HttpClientConfiguration();
-        HttpRest client = new HttpRest();
-        client.setRestTemplate(clientConfiguration.restTemplate(clientConfiguration.requestFactory()));
-        client.getRestTemplate().setInterceptors(Collections.singletonList((request, body, execution) -> {
-            request.getHeaders().setDate(System.currentTimeMillis());
-            System.out.println(request.getHeaders().getDate());
-            System.out.println(request.getURI());
-            return execution.execute(request, body);
-        }));
-        System.out.println(
-                client.get("http://192.168.1.113:13600/api/data/{table}/{playerId}", ImmutableMap.of("table", "CPlayer", "playerId", "1000014548"),
-                        String.class));
-        System.out.println(client.post("http://192.168.1.153:13600/api/script", "System.out.println(\"OK\")", ImmutableMap.of(), String.class));
-    }
-
 }

@@ -1,7 +1,7 @@
 plugins {
     id 'org.ajoberstar.grgit' version '4.0.2' apply false
     id 'org.springframework.boot' version "${springBootVersion}" apply false
-    id 'io.spring.dependency-management' version '1.0.11.RELEASE' apply false
+    id "io.spring.dependency-management" version "1.1.0" apply false
     id "com.baidu.jprotobuf" version "1.2.1" apply false
     id "com.gradle.plugin-publish" version "0.16.0" apply false
 }
@@ -31,24 +31,25 @@ configure(subprojects) {
             mavenBom("org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}")
             mavenBom("com.alibaba.cloud:spring-cloud-alibaba-dependencies:${alibabaCloudVersion}")
             mavenBom("com.google.protobuf:protobuf-bom:3.22.2")
-            mavenBom("com.fasterxml.jackson:jackson-bom:2.14.2")
+//            mavenBom("com.fasterxml.jackson:jackson-bom:2.14.2")
         }
 
         dependencies {
-            dependency "${libs.netty_common}:${nettyVersion}"
-            dependency "${libs.netty_handler}:${nettyVersion}"
-            dependency "${libs.netty_handler_proxy}:${nettyVersion}"
-            dependency "${libs.netty_transport}:${nettyVersion}"
-            dependency "${libs.netty_buffer}:${nettyVersion}"
-            dependency "${libs.netty_codec}:${nettyVersion}"
-            dependency "${libs.netty_codec_dns}:${nettyVersion}"
-            dependency "${libs.netty_codec_socks}:${nettyVersion}"
-            dependency "${libs.netty_codec_http}:${nettyVersion}"
-            dependency "${libs.netty_codec_http2}:${nettyVersion}"
-            dependency "${libs.netty_resolver}:${nettyVersion}"
-            dependency "${libs.netty_resolver_dns}:${nettyVersion}"
-            dependency "${libs.netty_transport_classes_epoll}:${nettyVersion}"
-            dependency "${libs.netty_transport_native_unix_common}:${nettyVersion}"
+//            dependency "${libs.netty}:${nettyVersion}"
+//            dependency "${libs.netty_common}:${nettyVersion}"
+//            dependency "${libs.netty_handler}:${nettyVersion}"
+//            dependency "${libs.netty_handler_proxy}:${nettyVersion}"
+//            dependency "${libs.netty_transport}:${nettyVersion}"
+//            dependency "${libs.netty_buffer}:${nettyVersion}"
+//            dependency "${libs.netty_codec}:${nettyVersion}"
+//            dependency "${libs.netty_codec_dns}:${nettyVersion}"
+//            dependency "${libs.netty_codec_socks}:${nettyVersion}"
+//            dependency "${libs.netty_codec_http}:${nettyVersion}"
+//            dependency "${libs.netty_codec_http2}:${nettyVersion}"
+//            dependency "${libs.netty_resolver}:${nettyVersion}"
+//            dependency "${libs.netty_resolver_dns}:${nettyVersion}"
+//            dependency "${libs.netty_transport_classes_epoll}:${nettyVersion}"
+//            dependency "${libs.netty_transport_native_unix_common}:${nettyVersion}"
             dependency "${libs.redisson}:${vers.redisson}"
             dependency "${libs.commons_io}:2.8.0"
             dependency "${libs.commons_codec}:1.15"
@@ -183,6 +184,7 @@ configure(javaProjects) {
     }
 
     dependencies {
+
 
         implementation libs.slf4j_api
         implementation libs.commons_lang3
