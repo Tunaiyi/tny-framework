@@ -55,9 +55,17 @@ public class SkywalkingRpcMonitorHandler implements RpcMonitorReceiveHandler, Rp
 
     private static final StringTag RPC_PROTOCOL = new StringTag(105, "tny-rpc.protocol");
 
-    private static final OfficialComponent TNY_RPC_SERVER = new OfficialComponent(165, "tny-rpc-server");
+    private static final StringTag SEGMENT_ID = new StringTag(107, "tny-rpc.segment-id");
 
-    private static final OfficialComponent TNY_RPC_CLIENT = new OfficialComponent(165, "tny-rpc-client");
+    private static final StringTag SPAN_ID = new StringTag(108, "tny-rpc.span-id");
+
+    private static final StringTag START_TIME = new StringTag(108, "tny-rpc.start-time");
+
+    private static final StringTag END_TIME = new StringTag(108, "tny-rpc.end-time");
+
+    private static final OfficialComponent TNY_RPC_SERVER = new OfficialComponent(165, "tny-rpc-java-server");
+
+    private static final OfficialComponent TNY_RPC_CLIENT = new OfficialComponent(165, "tny-rpc-java-client");
 
     private static final AttrKey<ContextSnapshot> TRACING_SNAPSHOT = AttrKeys.key(SkywalkingRpcMonitorHandler.class, "TraceSnapshot");
 
@@ -166,7 +174,12 @@ public class SkywalkingRpcMonitorHandler implements RpcMonitorReceiveHandler, Rp
             var contextCarrier = new ContextCarrier();
             operationName = remoteOperationName(rpcContext);
             span = ContextManager.createExitSpan(operationName, contextCarrier, peer(rpcContext.getMessager()));
-            restore((RpcTransactionContext)RpcContexts.current());
+            var context = RpcContexts.current();
+            if (context != null) {
+                restore((RpcTransactionContext)context);
+            } else {
+                restore(rpcContext);
+            }
             CarrierItem next = contextCarrier.items();
             while (next.hasNext()) {
                 next = next.next();
@@ -175,7 +188,7 @@ public class SkywalkingRpcMonitorHandler implements RpcMonitorReceiveHandler, Rp
             message.putHeader(tracingHeader);
             tagSpanRemote(span, contextCarrier, rpcContext.getMessager(), message);
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("exit start span {} {}", span.getOperationName(), span.getSpanId());
+                LOGGER.debug("exit start span {} {} | {}", span.getOperationName(), span.getSpanId(), tracingHeader);
             }
         } else {
             var message = rpcContext.getMessageSubject();
@@ -204,7 +217,8 @@ public class SkywalkingRpcMonitorHandler implements RpcMonitorReceiveHandler, Rp
         if (rpcContext.getMode() == RpcTransactionMode.ENTER) { // Forward 情况
             var contextCarrier = new ContextCarrier();
             span = ContextManager.createExitSpan(operationName, contextCarrier, peer(rpcContext.getTo()));
-            restore = restore((RpcTransactionContext)current);
+            //            restore = restore((RpcTransactionContext)current);
+            restore = restore(rpcContext);
             tagSpanTransfer(span, contextCarrier, rpcContext.getFrom(), message, rpcContext.getTo());
             headerCarrier = loadCarrier(message);
         } else { // Relay 情况
@@ -228,9 +242,9 @@ public class SkywalkingRpcMonitorHandler implements RpcMonitorReceiveHandler, Rp
         rpcContext.attributes().setAttribute(TRACING_TRANSFER_SPAN, span.prepareForAsync());
         ContextManager.stopSpan(span);
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("transfer start span {} {} | in command {} | restore {} | TraceId {} | SegmentId {} | SpanId {}",
+            LOGGER.debug("transfer start span {} {} | in command {} | restore {} | TraceId {} | SegmentId {} | SpanId {} | {}",
                     span.getOperationName(), span.getSpanId(), current.isValid(), restore,
-                    headerCarrier.getTraceId(), headerCarrier.getTraceSegmentId(), headerCarrier.getSpanId());
+                    headerCarrier.getTraceId(), headerCarrier.getTraceSegmentId(), headerCarrier.getSpanId(), tracingHeader);
         }
     }
 
@@ -278,6 +292,7 @@ public class SkywalkingRpcMonitorHandler implements RpcMonitorReceiveHandler, Rp
         var contextCarrier = new ContextCarrier();
         var header = message.getHeader(MessageHeaderConstants.RPC_TRACING);
         if (header != null) {
+            LOGGER.debug("loadCarrier {} {} | {} ", message.getProtocolId(), message.getMode(), header);
             CarrierItem next = contextCarrier.items();
             while (next.hasNext()) {
                 next = next.next();
@@ -389,7 +404,8 @@ public class SkywalkingRpcMonitorHandler implements RpcMonitorReceiveHandler, Rp
         span.tag(RPC_PROTOCOL, protocolId);
         if (contextCarrier != null) {
             span.tag(TRACE_ID, contextCarrier.getTraceId());
-
+            span.tag(SEGMENT_ID, contextCarrier.getTraceSegmentId());
+            span.tag(SPAN_ID, String.valueOf(contextCarrier.getSpanId()));
         }
     }
 

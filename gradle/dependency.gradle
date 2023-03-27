@@ -104,8 +104,11 @@ ext.libs = [
         netty_codec_http2                        : "io.netty:netty-codec-http2",
         netty_resolver                           : "io.netty:netty-resolver",
         netty_resolver_dns                       : "io.netty:netty-resolver-dns",
+        netty_transport_native_kqueue            : "io.netty:netty-transport-native-kqueue",
+        netty_transport_native_epoll             : "io.netty:netty-transport-native-epoll",
+        netty_transport_native_epoll_x86         : "io.netty:netty-transport-native-epoll:$nettyVersion:linux-x86_64",
         netty_transport_classes_epoll            : "io.netty:netty-transport-classes-epoll",
-        netty_transport_native_unix_common       : "io.netty:netty-transport-native-unix-common",
+
 
 //        netty_tcnative_boringssl_static          : "io.netty:netty-tcnative-boringssl-static:${vers.netty_tcnative_boringssl_static}",
 

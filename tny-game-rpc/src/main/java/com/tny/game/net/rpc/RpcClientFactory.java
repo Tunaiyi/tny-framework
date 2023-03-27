@@ -79,7 +79,7 @@ public class RpcClientFactory implements Serve {
                 tunnel.send(content);
                 Message message = content.respond().get(setting.getAuthenticateTimeout() + 500, TimeUnit.MILLISECONDS);
                 invokeContext.complete(message);
-            } catch (RuntimeException error) {
+            } catch (Throwable error) {
                 invokeContext.complete(error);
                 throw error;
             }

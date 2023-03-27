@@ -4,17 +4,23 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.doc.holder;
 
 import com.tny.game.doc.*;
 import com.tny.game.doc.annotation.*;
+import org.apache.commons.lang3.reflect.TypeUtils;
+import org.springframework.core.ResolvableType;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.util.Objects;
 
 /**
  * <p>
@@ -39,11 +45,24 @@ public class FieldDescription implements DocFieldAccess {
         this.setDocField(docField, typeFormatter);
     }
 
-    protected FieldDescription setDocField(DocField docField, TypeFormatter typeFormatter) {
+    private void setDocField(DocField docField, TypeFormatter typeFormatter) {
         this.docField = docField;
         Type type = docField.getField().getGenericType();
-        this.docFieldClassName = typeFormatter.format(type);
-        return this;
+        if (type instanceof TypeVariable) {
+            ResolvableType resolvableFieldType = ResolvableType.forField(docField.getField(), docField.getOwnerClass());
+            this.docFieldClassName = typeFormatter.format(resolvableFieldType.resolve());
+        } else if (type instanceof ParameterizedType) {
+            ResolvableType resolvableFieldType = ResolvableType.forField(docField.getField(), docField.getOwnerClass());
+            var parameterizedTypes = new Type[resolvableFieldType.getGenerics().length];
+            int index = 0;
+            for (var generic : resolvableFieldType.getGenerics()) {
+                parameterizedTypes[index++] = generic.resolve();
+            }
+            var fieldType = TypeUtils.parameterize(Objects.requireNonNull(resolvableFieldType.resolve()), parameterizedTypes);
+            this.docFieldClassName = typeFormatter.format(fieldType);
+        } else {
+            this.docFieldClassName = typeFormatter.format(type);
+        }
     }
 
     public DocField getDocField() {

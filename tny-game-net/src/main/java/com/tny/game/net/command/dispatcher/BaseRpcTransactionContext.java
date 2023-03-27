@@ -13,7 +13,7 @@ package com.tny.game.net.command.dispatcher;
 import com.tny.game.common.context.*;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * <p>
@@ -23,13 +23,17 @@ import java.util.concurrent.atomic.AtomicBoolean;
  **/
 public abstract class BaseRpcTransactionContext implements RpcTransactionContext {
 
+    public static final int INIT = 0;
+
+    public static final int OPEN = 1;
+
+    public static final int CLOSE = 2;
+
     protected Throwable cause;
 
     private final Attributes attributes;
 
-    private final AtomicBoolean completed = new AtomicBoolean();
-
-    private final AtomicBoolean init = new AtomicBoolean();
+    private final AtomicInteger status = new AtomicInteger(INIT);
 
     private String operationName;
 
@@ -62,7 +66,7 @@ public abstract class BaseRpcTransactionContext implements RpcTransactionContext
         if (!isValid()) {
             return false;
         }
-        if (init.get()) {
+        if (status.get() != INIT) {
             return false;
         }
         if (StringUtils.isBlank(this.operationName)) {
@@ -72,7 +76,7 @@ public abstract class BaseRpcTransactionContext implements RpcTransactionContext
                 this.operationName = RpcTransactionContext.errorOperation(this.getMessageSubject());
             }
         }
-        if (init.compareAndSet(false, true)) {
+        if (status.compareAndSet(INIT, OPEN)) {
             if (handle != null) {
                 handle.run();
             }
@@ -99,9 +103,11 @@ public abstract class BaseRpcTransactionContext implements RpcTransactionContext
         if (!isValid()) {
             return false;
         }
-        if (completed.compareAndSet(false, true)) {
-            this.cause = error;
+        if (status.get() == INIT) {
             this.prepare(null);
+        }
+        if (status.compareAndSet(OPEN, CLOSE)) {
+            this.cause = error;
             return true;
         }
         return false;
@@ -131,7 +137,7 @@ public abstract class BaseRpcTransactionContext implements RpcTransactionContext
 
     @Override
     public boolean isCompleted() {
-        return completed.get();
+        return status.get() == CLOSE;
     }
 
 }
