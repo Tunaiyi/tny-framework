@@ -34,6 +34,7 @@ import static com.tny.game.net.message.MessageHeaderConstants.*;
 @ProtobufClass
 public class RpcTracingHeader extends MessageHeader<RpcTracingHeader> {
 
+    @Packed
     @Protobuf(order = 1, fieldType = FieldType.MAP)
     private Map<String, String> attributes = new HashMap<>();
 
@@ -150,6 +151,13 @@ public class RpcTracingHeader extends MessageHeader<RpcTracingHeader> {
 
     public String merge(String key, String value, BiFunction<? super String, ? super String, ? extends String> remappingFunction) {
         return attributes.merge(key, value, remappingFunction);
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", RpcTracingHeader.class.getSimpleName() + "[", "]")
+                .add("attributes=" + attributes)
+                .toString();
     }
 
 }

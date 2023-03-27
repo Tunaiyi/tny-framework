@@ -14,7 +14,8 @@ import com.tny.game.common.result.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
 import org.apache.commons.collections4.CollectionUtils;
-import org.slf4j.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 
@@ -124,16 +125,10 @@ public class RpcMessageAide {
     }
 
     private static MessageContent respond(Message request, ResultCode code, Object body) {
-        var idHeader = request.getHeader(MessageHeaderConstants.RPC_ORIGINAL_MESSAGE_ID);
-        var toMessage = request.getId();
-        if (idHeader != null) {
-            toMessage = idHeader.getMessageId();
-        }
         var forwardHeader = request.getHeader(MessageHeaderConstants.RPC_FORWARD_HEADER);
         var backForward = createBackForwardHeader(forwardHeader);
-        return putTransitiveHeaders(request, MessageContents.respond(request, code, body, toMessage))
+        return putTransitiveHeaders(request, MessageContents.respond(request, code, body, request.getOriginalId()))
                 .withHeader(backForward);
-        //        return send(tunnel, content, backForward == null);
     }
 
     public static void ignoreHeaders(NetMessage message, Collection<String> ignoreSet) {

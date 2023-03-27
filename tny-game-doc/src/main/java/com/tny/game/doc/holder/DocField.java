@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.doc.holder;
 
 import com.tny.game.doc.annotation.*;
@@ -26,14 +26,16 @@ public class DocField extends DocVar implements DocFieldAccess {
 
     private Object fieldId;
 
+    private Class<?> ownerClass;
+
     private Annotation fieldIdAnnotation;
 
     private DocField() {
         super();
     }
 
-    private DocField(Field field) {
-        this(field, null, null);
+    private DocField(Class<?> ownerClass, Field field) {
+        this(ownerClass, field, null, null);
     }
 
     /**
@@ -41,9 +43,10 @@ public class DocField extends DocVar implements DocFieldAccess {
      * @param fieldIdAnnotation 字段 id
      * @param fieldIdGetter     字段 id 获取器
      */
-    private <F extends Annotation> DocField(Field field, Class<F> fieldIdAnnotation, Function<F, Object> fieldIdGetter) {
+    private <F extends Annotation> DocField(Class<?> ownerClass, Field field, Class<F> fieldIdAnnotation, Function<F, Object> fieldIdGetter) {
         this.setVarDoc(field.getAnnotation(VarDoc.class), field.getType(), field.getGenericType());
         this.field = field;
+        this.ownerClass = ownerClass;
         this.name = field.getName();
         if (fieldIdAnnotation != null) {
             F idAnnotation = field.getAnnotation(fieldIdAnnotation);
@@ -54,26 +57,30 @@ public class DocField extends DocVar implements DocFieldAccess {
         }
     }
 
-    public static DocField create(Field field) {
+    public static DocField create(Class<?> ownerClass, Field field) {
         VarDoc varDoc = field.getAnnotation(VarDoc.class);
         if (varDoc == null) {
             return null;
         }
-        return new DocField(field);
+        return new DocField(ownerClass, field);
     }
 
-    public static <F extends Annotation> DocField create(Field field,
+    public static <F extends Annotation> DocField create(Class<?> ownerClass, Field field,
             Class<F> fieldIdAnnotation, Function<F, Object> fieldIdGetter) {
         VarDoc varDoc = field.getAnnotation(VarDoc.class);
         if (varDoc == null) {
             return null;
         }
-        return new DocField(field, fieldIdAnnotation, fieldIdGetter);
+        return new DocField(ownerClass, field, fieldIdAnnotation, fieldIdGetter);
     }
 
     @Override
     public Object getFieldId() {
         return fieldId;
+    }
+
+    public Class<?> getOwnerClass() {
+        return ownerClass;
     }
 
     @Override

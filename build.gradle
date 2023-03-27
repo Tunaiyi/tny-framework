@@ -194,6 +194,7 @@ configure(javaProjects) {
         testImplementation libs.jmock_junit5
         testImplementation libs.spring_test
         testImplementation libs.slf4j_simple
+        testImplementation project(":tny-game-tester")
 
     }
 

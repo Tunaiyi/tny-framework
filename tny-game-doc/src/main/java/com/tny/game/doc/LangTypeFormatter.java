@@ -4,17 +4,23 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.doc;
 
 import com.tny.game.common.enums.*;
 import com.tny.game.common.utils.*;
 
-import java.lang.reflect.*;
-import java.util.*;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * 语言转换器
@@ -123,6 +129,12 @@ public enum LangTypeFormatter implements TypeFormatter {
                 return "Dictionary<" +
                         cshapFormat(pType.getActualTypeArguments()[0], formatEnum) + ", " +
                         cshapFormat(pType.getActualTypeArguments()[0], formatEnum) + ">";
+            }
+        } else if (type instanceof TypeVariable) {
+            TypeVariable<?> pType = (TypeVariable<?>)type;
+            var gType = pType.getGenericDeclaration();
+            if (gType instanceof Type) {
+                return cshapFormat((Type)gType, formatEnum);
             }
         }
         throw new IllegalArgumentException(StringAide.format("{} 类型 无法进行map", type));

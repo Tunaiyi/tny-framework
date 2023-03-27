@@ -15,7 +15,8 @@ import com.tny.game.net.base.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.rpc.*;
 import com.tny.game.net.transport.*;
-import org.slf4j.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -63,8 +64,8 @@ public class RpcForwardCommand implements RpcCommand {
         RpcForwardHeader forwardHeader = message.getHeader(MessageHeaderConstants.RPC_FORWARD_HEADER);
         RpcForwardAccess toAccess = networkContext.getRpcForwarder().forward(message, forwardHeader);
         if (toAccess != null && toAccess.isActive()) {
-            var endPoint = toAccess.getEndpoint();
-            rpcContext.transfer(endPoint, forwardOperation(message));
+            var endpoint = toAccess.getEndpoint();
+            rpcContext.transfer(endpoint, forwardOperation(message));
             ForwardPoint fromPoint = new ForwardPoint(tunnel.getUserId());
             RpcAccessPoint toPoint = toAccess.getForwardPoint();
             var content = MessageContents.copy(message)
@@ -73,11 +74,13 @@ public class RpcForwardCommand implements RpcCommand {
                             .setSender(forwardHeader.getSender())
                             .setTo(toPoint)
                             .setReceiver(forwardHeader.getReceiver())
-                            .build())
-                    .withHeader(RpcOriginalMessageIdHeaderBuilder.newBuilder()
-                            .setMessageId(message.getId())
                             .build());
-            endPoint.send(content);
+            if (message.getMode() == MessageMode.REQUEST) {
+                content.withHeader(RpcOriginalMessageIdHeaderBuilder.newBuilder()
+                        .setMessageId(message.getId())
+                        .build());
+            }
+            endpoint.send(content);
             rpcContext.completeSilently();
         } else {
             rpcContext.complete(NetResultCode.RPC_SERVICE_NOT_AVAILABLE);

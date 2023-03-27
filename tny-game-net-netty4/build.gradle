@@ -4,7 +4,17 @@ apply plugin: "maven-publish"
 
 dependencies {
 
-    api libs.netty
+    api libs.netty_common
+    api libs.netty_handler
+    api libs.netty_transport
+    api libs.netty_buffer
+    api libs.netty_codec
+    api libs.netty_resolver
+    api libs.netty_resolver_dns
+    api libs.netty_transport_native_kqueue
+    api libs.netty_transport_native_epoll
+    api libs.netty_transport_native_epoll_x86
+//    api libs.netty
 //    api libs.netty_transport
 //    api libs.netty_transport_classes_epoll
     api libs.disruptor

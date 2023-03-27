@@ -13,7 +13,8 @@ package com.tny.game.net.message;
 import com.tny.game.common.context.*;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 消息接口
@@ -31,6 +32,17 @@ public interface Message extends MessageSubject, MessageHead, Serializable {
     @Override
     default long getId() {
         return this.getHead().getId();
+    }
+
+    /**
+     * @return 获取真实原始响应消息 id
+     */
+    default long getOriginalId() {
+        var idHeader = this.getHeader(MessageHeaderConstants.RPC_ORIGINAL_MESSAGE_ID);
+        if (idHeader != null) {
+            return idHeader.getMessageId();
+        }
+        return getId();
     }
 
     @Override

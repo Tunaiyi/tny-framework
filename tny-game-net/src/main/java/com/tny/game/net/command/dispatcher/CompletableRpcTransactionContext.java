@@ -140,10 +140,10 @@ abstract class CompletableRpcTransactionContext extends BaseRpcTransactionContex
         if (silently) {
             content = null;
         }
-        this.onComplete(content, cause);
         if (content != null) {
             onReturn(content);
         }
+        this.onComplete(content, cause);
     }
 
     abstract void onComplete(MessageContent result, Throwable exception);

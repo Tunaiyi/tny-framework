@@ -4,10 +4,10 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.doc.holder;
 
 import com.tny.game.common.utils.*;
@@ -15,7 +15,9 @@ import com.tny.game.doc.annotation.*;
 import org.apache.commons.lang3.EnumUtils;
 
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class EnumDocClass extends DocClass {
 
@@ -37,7 +39,7 @@ public class EnumDocClass extends DocClass {
         for (Enum<?> enumObject : EnumUtils.getEnumList(clazz)) {
             try {
                 Field enumField = clazz.getDeclaredField(enumObject.name());
-                DocField fieldDocHolder = DocField.create(enumField);
+                DocField fieldDocHolder = DocField.create(clazz, enumField);
                 if (fieldDocHolder != null) {
                     list.add(fieldDocHolder);
                 }

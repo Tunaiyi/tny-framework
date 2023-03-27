@@ -4,18 +4,22 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
 package com.tny.game.doc.enumeration;
 
 import com.tny.game.doc.*;
 import com.tny.game.doc.annotation.*;
 import com.tny.game.doc.holder.*;
 
-import java.lang.reflect.*;
-import java.util.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class EnumItemDescription extends FieldDescription {
 
@@ -23,7 +27,7 @@ public class EnumItemDescription extends FieldDescription {
 
     private final Map<String, EnumItemAttribute> attributes;
 
-    public EnumItemDescription(DocField docField, TypeFormatter typeFormatter) {
+    public EnumItemDescription(Class<?> implementClass, DocField docField, TypeFormatter typeFormatter) {
         super(docField);
         Field field = docField.getField();
         try {
@@ -35,7 +39,7 @@ public class EnumItemDescription extends FieldDescription {
                         enumField.setAccessible(true);
                         this.id = enumField.get(object).toString();
                     } else if (enumField.getAnnotation(VarDoc.class) != null) {
-                        DocField docVar = DocField.create(field);
+                        DocField docVar = DocField.create(implementClass, field);
                         enumField.setAccessible(true);
                         VarDoc varDoc = enumField.getAnnotation(VarDoc.class);
                         attributes.put(enumField.getName(),

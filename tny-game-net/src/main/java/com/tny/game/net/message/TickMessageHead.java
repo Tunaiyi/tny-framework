@@ -12,7 +12,9 @@ package com.tny.game.net.message;
 
 import com.tny.game.common.result.*;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Kun Yang on 2018/8/20.
