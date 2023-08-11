@@ -13,14 +13,8 @@ package com.tny.game.doc;
 import com.tny.game.common.enums.*;
 import com.tny.game.common.utils.*;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.lang.reflect.*;
+import java.util.*;
 
 /**
  * 语言转换器

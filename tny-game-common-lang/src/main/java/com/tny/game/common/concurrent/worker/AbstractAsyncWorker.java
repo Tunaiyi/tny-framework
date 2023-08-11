@@ -71,7 +71,7 @@ public abstract class AbstractAsyncWorker implements AsyncWorker {
     }
 
     public AbstractAsyncWorker(String name, Executor masterExecutor, boolean executeImmediatelyInWorker) {
-        this(name, masterExecutor, new ConcurrentLinkedQueue<>(), executeImmediatelyInWorker, false);
+        this(name, masterExecutor, new ConcurrentLinkedQueue<>(), false, executeImmediatelyInWorker);
     }
 
     public AbstractAsyncWorker(String name, Executor masterExecutor, Queue<ExecuteTask<?>> taskQueue, boolean unsafeQueue,

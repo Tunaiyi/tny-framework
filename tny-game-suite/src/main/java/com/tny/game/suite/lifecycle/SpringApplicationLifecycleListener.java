@@ -22,7 +22,7 @@
 //
 //    private ApplicationContext context;
 //
-//    @Resource
+//    @Autowired
 //    private NetAppContext appContext;
 //
 //    private final AtomicBoolean contextInit = new AtomicBoolean(false);

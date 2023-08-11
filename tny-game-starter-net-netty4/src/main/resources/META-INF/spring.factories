@@ -1,7 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.tny.game.net.netty4.cloud.nacos.configuration.NetNacosDiscoveryConfiguration,\
-  com.tny.game.net.netty4.cloud.configuration.NetDiscoveryConfiguration,\
-  com.tny.game.net.netty4.cloud.nacos.configuration.NetNacosListenerConfiguration,\
-  com.tny.game.net.netty4.cloud.nacos.configuration.NetNacosDiscoveryClientConfiguration,\
-  com.tny.game.net.netty4.rpc.configuration.RpcAutoConfiguration
-

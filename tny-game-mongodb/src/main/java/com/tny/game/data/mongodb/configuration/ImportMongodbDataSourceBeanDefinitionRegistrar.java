@@ -75,7 +75,7 @@ public class ImportMongodbDataSourceBeanDefinitionRegistrar extends ImportConfig
             MongoClientSettings clientSettings = MongoClientSettings.builder().build();
 
             MongoPropertiesClientSettingsBuilderCustomizer customizer =
-                    new MongoPropertiesClientSettingsBuilderCustomizer(properties, environment);
+                    new MongoPropertiesClientSettingsBuilderCustomizer(properties);
             List<MongoClientSettingsBuilderCustomizer> builderCustomizers = new ArrayList<>();
             builderCustomizers.add(customizer);
             builderCustomizers.addAll(customizers);

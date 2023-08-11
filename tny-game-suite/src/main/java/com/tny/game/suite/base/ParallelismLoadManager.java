@@ -23,7 +23,7 @@ public abstract class ParallelismLoadManager<O> extends GameCacheManager<O> {
 
     private boolean parallelism;
 
-    @Resource
+    @Autowired
     private GameCacheDAO cacheDAO;
 
     protected ParallelismLoadManager(Class<? extends O> entityClass, String tableHead) {

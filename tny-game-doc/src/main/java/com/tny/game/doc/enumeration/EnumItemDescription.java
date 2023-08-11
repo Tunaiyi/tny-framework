@@ -14,12 +14,8 @@ import com.tny.game.doc.*;
 import com.tny.game.doc.annotation.*;
 import com.tny.game.doc.holder.*;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.lang.reflect.*;
+import java.util.*;
 
 public class EnumItemDescription extends FieldDescription {
 

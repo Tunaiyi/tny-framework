@@ -25,7 +25,7 @@ public class OpLogMapperInitiator implements AppPrepareStart {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OpLogMapperInitiator.class);
 
-    @Resource
+    @Autowired
     private NetAppContext appContext;
 
     private Exception exception;

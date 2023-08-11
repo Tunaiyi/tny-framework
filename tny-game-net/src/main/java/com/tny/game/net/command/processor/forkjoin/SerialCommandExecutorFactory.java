@@ -28,6 +28,10 @@ public class SerialCommandExecutorFactory implements CommandExecutorFactory {
 
     private final SerialCommandExecutorSetting setting;
 
+    public SerialCommandExecutorFactory() {
+        this(new SerialCommandExecutorSetting());
+    }
+
     public SerialCommandExecutorFactory(SerialCommandExecutorSetting setting) {
         this.setting = setting;
         this.executorService = ForkJoinPools.pool(setting.getThreads(), getClass().getSimpleName(), true);

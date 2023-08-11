@@ -40,10 +40,10 @@ public class OperationLogger extends AbstractOpLogger implements AppPrepareStart
 
     private static OpLogger instance;
 
-    @Resource
+    @Autowired
     private OpLogFactory opLogFactory;
 
-    @Resource
+    @Autowired
     private UserOpLogFactory userOpLogFactory;
 
     private ApplicationContext applicationContext;

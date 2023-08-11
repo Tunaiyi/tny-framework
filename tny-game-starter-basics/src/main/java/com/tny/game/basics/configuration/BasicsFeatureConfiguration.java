@@ -16,7 +16,7 @@ import org.springframework.boot.autoconfigure.condition.*;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.*;
 
-import static com.tny.game.basics.configuration.BasicsPropertiesConstants.*;
+import static com.tny.game.basics.configuration.BasicsPropertyConstants.*;
 
 /**
  * Game Suite 的默认配置

@@ -14,7 +14,7 @@ import java.time.Instant;
 
 public class ServerAuthenticateValidator extends GameAuthenticateValidator<Integer> {
 
-    @Resource
+    @Autowired
     private ServerTicketMaker maker;
 
     @Override

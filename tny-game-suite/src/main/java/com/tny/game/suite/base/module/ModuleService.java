@@ -22,7 +22,7 @@ public abstract class ModuleService<DTO> implements AppPrepareStart, Application
 
     private final Map<Module, GameModuleHandler<?, ?>> handlerMap = new HashMap<>();
 
-    @Resource
+    @Autowired
     protected FeatureExplorerManager featureExplorerManager;
 
     private ApplicationContext applicationContext;

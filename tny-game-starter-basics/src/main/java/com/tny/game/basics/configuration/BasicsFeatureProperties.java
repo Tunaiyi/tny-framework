@@ -14,7 +14,7 @@ import com.tny.game.basics.develop.*;
 import com.tny.game.basics.item.mould.*;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import static com.tny.game.basics.configuration.BasicsPropertiesConstants.*;
+import static com.tny.game.basics.configuration.BasicsPropertyConstants.*;
 
 /**
  * <p>

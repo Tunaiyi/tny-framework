@@ -22,7 +22,7 @@ public class TaskReceiverSchedulerPlugin implements VoidCommandPlugin<Long> {
 
     private static final Logger TEST_LOGGER = LoggerFactory.getLogger("test");
 
-    @Resource
+    @Autowired
     private TimeTaskSchedulerService taskSchedulerService;
 
     @Override

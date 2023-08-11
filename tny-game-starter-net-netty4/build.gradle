@@ -14,7 +14,7 @@ dependencies {
     api project(":tny-game-net-netty4")
 
     api libs.spring_boot_autoconfigure
-    api libs.spring_cloud_starter_bootstrap
+//    api libs.spring_cloud_starter_bootstrap
 
     api project(":tny-game-starter-codec")
     api project(":tny-game-net-netty4-codec-protoex")

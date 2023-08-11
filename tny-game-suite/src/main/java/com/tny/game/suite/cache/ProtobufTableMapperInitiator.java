@@ -33,7 +33,7 @@ public class ProtobufTableMapperInitiator implements InitializingBean, AppPostSt
 
     private ApplicationContext context;
 
-    @Resource
+    @Autowired
     private NetAppContext appContext;
 
     private ForkJoinTask<?> task;

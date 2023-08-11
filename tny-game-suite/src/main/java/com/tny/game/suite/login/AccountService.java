@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class AccountService implements AppPrepareStart {
 
-    @Resource
+    @Autowired
     private AccountManager accountManager;
 
     private static final Logger LOGGER = LoggerFactory.getLogger("validator");

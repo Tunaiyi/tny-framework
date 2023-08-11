@@ -10,10 +10,10 @@ public class DBTimeTaskSchedulerService implements TimeTaskSchedulerService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DBTimeTaskSchedulerService.class);
 
-    @Resource
+    @Autowired
     private TimeTaskScheduler scheduler;
 
-    @Resource
+    @Autowired
     private SchedulerObjectManager schedulerObjectManager;
 
     private GameTaskReceiver taskReceiver;

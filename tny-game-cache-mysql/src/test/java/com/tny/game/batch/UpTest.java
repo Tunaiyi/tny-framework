@@ -13,7 +13,7 @@ import java.util.*;
 @ContextConfiguration(locations = {"classpath:/application.xml"})
 public class UpTest {
 
-    @Resource
+    @Autowired
     private UpObjectDAO dao;
 
     private static List<UpObject> objects = new ArrayList<>();

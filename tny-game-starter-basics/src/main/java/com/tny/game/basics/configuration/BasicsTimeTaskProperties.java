@@ -15,7 +15,7 @@ import org.springframework.boot.context.properties.*;
 
 import java.util.*;
 
-import static com.tny.game.basics.configuration.BasicsPropertiesConstants.*;
+import static com.tny.game.basics.configuration.BasicsPropertyConstants.*;
 
 /**
  * <p>
