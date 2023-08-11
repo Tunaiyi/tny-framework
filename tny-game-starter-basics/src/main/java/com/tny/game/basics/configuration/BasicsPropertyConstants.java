@@ -16,7 +16,7 @@ package com.tny.game.basics.configuration;
  * @author : kgtny
  * @date : 2021/9/23 9:05 下午
  */
-public class BasicsPropertiesConstants {
+public class BasicsPropertyConstants {
 
     //    public static final String BASICS_PREFIX = "tny.basics";
 

@@ -13,7 +13,7 @@ public abstract class GameCacheManager<O> extends GameManager<O> {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(GameCacheManager.class);
 
-    @Resource
+    @Autowired
     @Qualifier("asyncCache")
     protected AsyncCache cache;
 

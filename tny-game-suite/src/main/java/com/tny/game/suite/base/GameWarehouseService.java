@@ -22,7 +22,7 @@ public class GameWarehouseService implements WarehouseService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GameWarehouseService.class);
 
-    @Resource
+    @Autowired
     private GameWarehouseManager gameWarehouseManager;
 
     /**

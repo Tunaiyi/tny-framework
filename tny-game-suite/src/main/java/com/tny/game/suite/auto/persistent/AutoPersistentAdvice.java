@@ -28,7 +28,7 @@ import static com.tny.game.suite.SuiteProfiles.*;
 @Profile({AUTO, GAME, AUTO_PERSISTENT})
 public class AutoPersistentAdvice implements TransactionListener, AfterReturningAdvice, ThrowsAdvice {
 
-    @Resource
+    @Autowired
     private GameExplorer explorer;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AutoPersistentAdvice.class);

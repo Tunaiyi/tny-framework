@@ -1,6 +1,5 @@
 package com.tny.game.protobuf.format;
 
-
 import com.google.protobuf.*;
 
 import java.io.IOException;

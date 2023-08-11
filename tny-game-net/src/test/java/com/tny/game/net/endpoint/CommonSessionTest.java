@@ -13,6 +13,7 @@ package com.tny.game.net.endpoint;
 import com.tny.game.net.command.*;
 import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.command.processor.*;
+import com.tny.game.net.command.processor.forkjoin.*;
 import com.tny.game.net.rpc.*;
 
 /**
@@ -41,7 +42,7 @@ public class CommonSessionTest extends NetEndpointTest<CommonSession<Long>> {
 
             @Override
             public CommandExecutorFactory getCommandExecutorFactory() {
-                return null;
+                return new SerialCommandExecutorFactory(new SerialCommandExecutorSetting());
             }
         });
     }

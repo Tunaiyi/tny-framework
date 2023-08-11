@@ -15,11 +15,11 @@ import javax.annotation.Resource;
 @ContextConfiguration(locations = {"classpath:/application.xml"})
 public class MenCacheObjectTest {
 
-    @Resource()
+    @Autowired
     @Qualifier("cached")
     private DirectCache cache;
 
-    @Resource
+    @Autowired
     @Qualifier("client")
     private MemcachedClient client;
 

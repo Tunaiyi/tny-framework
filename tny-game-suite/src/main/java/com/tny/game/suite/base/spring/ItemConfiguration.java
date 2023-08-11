@@ -17,7 +17,7 @@ import static com.tny.game.suite.SuiteProfiles.*;
 @Profile({ITEM, GAME})
 public class ItemConfiguration {
 
-    @Resource
+    @Autowired
     private GameExplorer explorer;
 
     @Autowired(required = false)

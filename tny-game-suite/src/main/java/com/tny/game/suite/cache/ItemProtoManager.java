@@ -19,7 +19,7 @@ public class ItemProtoManager {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(ItemProtoManager.class);
 
-    @Resource
+    @Autowired
     private ItemFindDAO findDAO;
 
     public UidRange getUidRange(String table) {

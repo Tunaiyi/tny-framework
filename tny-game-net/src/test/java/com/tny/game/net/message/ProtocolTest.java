@@ -10,12 +10,10 @@
  */
 package com.tny.game.net.message;
 
-import org.junit.*;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.*;
-import org.junit.runner.*;
+import org.junit.jupiter.api.extension.*;
 import org.mockito.*;
-import org.mockito.junit.*;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -23,7 +21,7 @@ import static org.mockito.Mockito.*;
 /**
  * Created by Kun Yang on 2018/8/23.
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public abstract class ProtocolTest {
 
     @Mock
@@ -37,9 +35,6 @@ public abstract class ProtocolTest {
     protected ProtocolTest(int protocolId) {
         this.protocolId = protocolId;
     }
-
-    @Rule
-    public MockitoRule rule = MockitoJUnit.rule();
 
     @BeforeEach
     public void setUp() {
@@ -57,12 +52,10 @@ public abstract class ProtocolTest {
     @Test
     public void isOwn() {
         Protocol protocol = protocol();
-        when(this.message.getHead()).thenReturn(this.header);
         when(this.message.getProtocolId()).thenReturn(-1000);
         assertFalse(protocol.isOwn(this.message));
-        when(this.message.getHead()).thenReturn(this.header);
         when(this.message.getProtocolId()).thenReturn(protocol.getProtocolId());
-        assertTrue(protocol.isOwn((MessageSubject)this.message));
+        assertTrue(protocol.isOwn(this.message));
     }
 
     @Test

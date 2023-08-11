@@ -17,7 +17,7 @@ public class DBSchedulerStore implements SchedulerStore {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(DBSchedulerStore.class);
 
-    @Resource
+    @Autowired
     private SchedulerObjectManager schedulerObjectManager;
 
     private static String getKey(Object id) {

@@ -48,7 +48,7 @@ dependencies {
     api project(":tny-game-common-lang")
     api project(":tny-game-scanning")
     api libs.commons_io
-    api "org.springframework:spring-core:5.3.18"
+    api libs.spring_core
     api libs.jackson_core
     api libs.jackson_databind
     api libs.jackson_annotations

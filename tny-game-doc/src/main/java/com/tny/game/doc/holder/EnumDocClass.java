@@ -15,9 +15,7 @@ import com.tny.game.doc.annotation.*;
 import org.apache.commons.lang3.EnumUtils;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class EnumDocClass extends DocClass {
 

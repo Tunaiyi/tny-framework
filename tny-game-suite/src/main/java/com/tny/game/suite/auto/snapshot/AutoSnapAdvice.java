@@ -25,7 +25,7 @@ import static com.tny.game.suite.SuiteProfiles.*;
 @Profile({AUTO, GAME, AUTO_SNAP})
 public class AutoSnapAdvice implements TransactionListener, AfterReturningAdvice, BeforeAdvice, ThrowsAdvice {
 
-    @Resource
+    @Autowired
     private AutoSnapMethodFactory methodFactory;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AutoSnapAdvice.class);

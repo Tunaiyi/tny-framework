@@ -28,7 +28,6 @@ package com.tny.game.protobuf.format;
     OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-
 import com.google.protobuf.*;
 import com.google.protobuf.Descriptors.*;
 

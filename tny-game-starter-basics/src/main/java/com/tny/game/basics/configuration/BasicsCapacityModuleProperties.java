@@ -18,7 +18,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @author : kgtny
  * @date : 2021/11/15 10:23 下午
  */
-@ConfigurationProperties(BasicsPropertiesConstants.BASICS_CAPACITY_MODULE)
+@ConfigurationProperties(BasicsPropertyConstants.BASICS_CAPACITY_MODULE)
 public class BasicsCapacityModuleProperties {
 
     private boolean enable = false;

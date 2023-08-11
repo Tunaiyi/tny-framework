@@ -1,5 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.tny.game.codec.configuration.JacksonObjectCodecAutoConfiguration,\
-  com.tny.game.codec.configuration.JProtobufObjectCodecAutoConfiguration,\
-  com.tny.game.codec.configuration.TypeProtobufObjectCodecAutoConfiguration,\
-  com.tny.game.codec.configuration.ObjectCodecAutoConfiguration

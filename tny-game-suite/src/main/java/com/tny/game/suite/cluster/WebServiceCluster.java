@@ -9,7 +9,7 @@ import java.util.*;
 
 public abstract class WebServiceCluster extends ServiceCluster implements AppPostStart {
 
-    @Resource
+    @Autowired
     private ServletContext servletContext;
 
     public WebServiceCluster(String serverType, boolean watchSetting, String... monitorWebTypes) {

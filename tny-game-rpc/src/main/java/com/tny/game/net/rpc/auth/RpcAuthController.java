@@ -13,8 +13,7 @@ package com.tny.game.net.rpc.auth;
 import com.tny.game.net.annotation.*;
 import com.tny.game.net.base.*;
 import org.slf4j.*;
-
-import javax.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import static com.tny.game.net.rpc.auth.RpcProtocol.*;
 
@@ -29,7 +28,7 @@ public class RpcAuthController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RpcAuthController.class);
 
-    @Resource
+    @Autowired
     private RpcAuthService rpcAuthService;
 
     @RpcRequest(RPC_AUTH_$_AUTHENTICATE)

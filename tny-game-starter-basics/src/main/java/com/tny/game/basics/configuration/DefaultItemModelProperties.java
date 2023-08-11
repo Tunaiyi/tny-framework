@@ -12,7 +12,7 @@ package com.tny.game.basics.configuration;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import static com.tny.game.basics.configuration.BasicsPropertiesConstants.*;
+import static com.tny.game.basics.configuration.BasicsPropertyConstants.*;
 import static com.tny.game.basics.develop.ItemModelPaths.*;
 
 /**

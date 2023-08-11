@@ -15,11 +15,11 @@ import javax.annotation.Resource;
 @ContextConfiguration(locations = {"classpath:/application.xml"})
 public class DBCacheClientTest {
 
-    @Resource
+    @Autowired
     @Qualifier("dbclient")
     private CacheClient cacheClient;
 
-    @Resource
+    @Autowired
     private CacheDAO cacheDAO;
 
     private static ClientTestTask task;

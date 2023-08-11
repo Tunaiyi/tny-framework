@@ -14,10 +14,10 @@ import javax.annotation.Resource;
 @ContextConfiguration(locations = {"classpath:/application.xml"})
 public class DBCacheObjectTest {
 
-    @Resource()
+    @Autowired
     private DirectCache cache;
 
-    @Resource()
+    @Autowired
     private CacheDAO cacheDAO;
 
     private CacheTestTask task;

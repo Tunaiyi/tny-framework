@@ -168,7 +168,7 @@ public class TestMessages {
 
     public void receive(NetTunnel<?> receiver) {
         assertFalse(this.messages.isEmpty());
-        this.messages.forEach(p -> receiver.receive(RpcTransactionContext.createEnter(receiver, (NetMessage)p, true)));
+        this.messages.forEach(p -> receiver.receive(RpcTransactionContext.createEnter(receiver, p.getMessage(), true)));
     }
 
     public void send(Sender sender) {
