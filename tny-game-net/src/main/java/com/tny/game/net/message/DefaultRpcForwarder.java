@@ -50,7 +50,7 @@ public class DefaultRpcForwarder implements RpcForwarder {
             }
             RpcAccess access = forwarderSet.findForwardAccess(to);
             if (access != null) {
-                return (RpcServiceAccess)access;
+                return (RpcServiceAccess) access;
             }
         }
         RpcForwardStrategy strategy = strategyMap.get(serviceType);

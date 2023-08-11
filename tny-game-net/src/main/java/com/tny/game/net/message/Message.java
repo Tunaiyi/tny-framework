@@ -13,8 +13,7 @@ package com.tny.game.net.message;
 import com.tny.game.common.context.*;
 
 import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 消息接口

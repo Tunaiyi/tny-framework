@@ -148,7 +148,7 @@ public class BaseServeNode extends BaseNetAccessNode implements ServeNode {
             return false;
         }
 
-        BaseServeNode that = (BaseServeNode)o;
+        BaseServeNode that = (BaseServeNode) o;
 
         return new EqualsBuilder().append(getId(), that.getId()).append(getServeName(), that.getServeName()).isEquals();
     }

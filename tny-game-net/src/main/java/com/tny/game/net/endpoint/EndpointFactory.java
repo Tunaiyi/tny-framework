@@ -11,7 +11,7 @@
 package com.tny.game.net.endpoint;
 
 import com.tny.game.common.lifecycle.unit.annotation.*;
-import com.tny.game.net.command.*;
+import com.tny.game.net.transport.*;
 
 /**
  * <p>

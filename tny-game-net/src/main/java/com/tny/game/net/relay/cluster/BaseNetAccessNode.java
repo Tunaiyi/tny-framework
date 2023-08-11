@@ -124,8 +124,8 @@ public class BaseNetAccessNode implements NetAccessNode {
     protected BaseNetAccessNode setUrl(String value) {
         URL url = URL.valueOf(value);
         this.setScheme(url.getScheme())
-                .setHost(url.getHost())
-                .setPort(url.getPort());
+            .setHost(url.getHost())
+            .setPort(url.getPort());
         return this;
     }
 

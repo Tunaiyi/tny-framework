@@ -62,7 +62,7 @@ public class RelayPacketClientProcessor extends BaseRelayPacketProcessor {
             LOGGER.warn("{} 转发消息 {} 到 tunnel[{}], 未找到目标 tunnel", link, packet, arguments.getTunnelId());
             return;
         }
-        NetMessage message = (NetMessage)arguments.getMessage();
+        NetMessage message = (NetMessage) arguments.getMessage();
         if (message != null) {
             RpcMessageAide.ignoreHeaders(message, setting.getWriteIgnoreHeaders());
             var rpcContext = RpcTransactionContext.createRelay(link, message, rpcMonitor, false);

@@ -166,7 +166,7 @@ public final class MethodControllerHolder extends ControllerHolder {
                 this.afterContext = this.putPlugin(this.afterContext, plugin);
             this.returnType = method.getReturnType();
             if (returnType == void.class || returnType == Void.class
-                    || (Future.class.isAssignableFrom(returnType))) {
+                || (Future.class.isAssignableFrom(returnType))) {
                 voidable = true;
             }
         } catch (Exception e) {
@@ -246,8 +246,8 @@ public final class MethodControllerHolder extends ControllerHolder {
     }
 
     @Override
-    public boolean isUserGroup(MessagerType messagerType) {
-        return this.userGroups != null ? super.isUserGroup(messagerType) : this.classController.isUserGroup(messagerType);
+    public boolean isUserGroup(ContactType contactType) {
+        return this.userGroups != null ? super.isUserGroup(contactType) : this.classController.isUserGroup(contactType);
     }
 
     @Override
@@ -277,13 +277,13 @@ public final class MethodControllerHolder extends ControllerHolder {
     @Override
     protected List<CommandPluginHolder> getControllerBeforePlugins() {
         return this.beforePlugins != null && !this.beforePlugins.isEmpty() ? Collections.unmodifiableList(this.beforePlugins)
-                : this.classController.getControllerBeforePlugins();
+                                                                           : this.classController.getControllerBeforePlugins();
     }
 
     @Override
     protected List<CommandPluginHolder> getControllerAfterPlugins() {
         return this.afterPlugins != null && !this.afterPlugins.isEmpty() ? Collections.unmodifiableList(this.afterPlugins)
-                : this.classController.getControllerAfterPlugins();
+                                                                         : this.classController.getControllerAfterPlugins();
     }
 
     @Override
@@ -302,7 +302,7 @@ public final class MethodControllerHolder extends ControllerHolder {
         if (annotations == null) {
             return new ArrayList<>();
         }
-        return (List<A>)annotations;
+        return (List<A>) annotations;
     }
 
     public List<Annotation> getParamAnnotationsByIndex(int index) {

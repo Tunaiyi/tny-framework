@@ -10,7 +10,6 @@
 
 package com.tny.game.net.transport;
 
-import com.tny.game.net.command.*;
 import com.tny.game.net.message.*;
 import org.junit.jupiter.api.*;
 
@@ -22,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Created by Kun Yang on 2018/8/25.
  */
-public abstract class TunnelTest<T extends Tunnel<Long>> extends CommunicatorTest<T> {
+public abstract class TunnelTest<T extends Tunnel<Long>> extends ConnectorTest<T> {
 
     protected T createBindTunnel() {
         return this.createTunnel(createLoginCert());

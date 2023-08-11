@@ -42,12 +42,12 @@ public abstract class NettyChannelConnection extends AttributeHolder implements 
 
     @Override
     public InetSocketAddress getRemoteAddress() {
-        return (InetSocketAddress)this.channel.remoteAddress();
+        return (InetSocketAddress) this.channel.remoteAddress();
     }
 
     @Override
     public InetSocketAddress getLocalAddress() {
-        return (InetSocketAddress)this.channel.localAddress();
+        return (InetSocketAddress) this.channel.localAddress();
     }
 
     @Override
@@ -60,7 +60,6 @@ public abstract class NettyChannelConnection extends AttributeHolder implements 
         return close.get();
     }
 
-    @Override
     public NetAccessMode getAccessMode() {
         return accessMode;
     }

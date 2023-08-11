@@ -10,6 +10,7 @@
  */
 package com.tny.game.net.command.dispatcher;
 
+import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
 
 /**
@@ -18,6 +19,6 @@ import com.tny.game.net.transport.*;
  * @author kgtny
  * @date 2023/2/9 23:48
  **/
-public interface MessageReceiver extends Receiver {
+public interface MessageReceiver extends NetContact, Receiver {
 
 }

@@ -18,7 +18,7 @@ import org.slf4j.*;
 
 import java.time.ZonedDateTime;
 
-import static com.tny.game.net.base.MessagerType.*;
+import static com.tny.game.net.base.ContactType.*;
 
 /**
  * <p>

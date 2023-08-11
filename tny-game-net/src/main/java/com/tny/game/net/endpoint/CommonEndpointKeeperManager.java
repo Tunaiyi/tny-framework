@@ -36,7 +36,7 @@ import static com.tny.game.common.utils.StringAide.*;
 @Unit
 public class CommonEndpointKeeperManager implements EndpointKeeperManager, AppPrepareStart {
 
-    private static final MessagerType DEFAULT_KEY = new MessagerType() {
+    private static final ContactType DEFAULT_KEY = new ContactType() {
 
         @Override
         public String getGroup() {
@@ -55,11 +55,11 @@ public class CommonEndpointKeeperManager implements EndpointKeeperManager, AppPr
 
     };
 
-    private final Map<MessagerType, NetEndpointKeeper<?, ?>> endpointKeeperMap = new ConcurrentHashMap<>();
+    private final Map<ContactType, NetEndpointKeeper<?, ?>> endpointKeeperMap = new ConcurrentHashMap<>();
 
-    private Map<MessagerType, SessionKeeperSetting> sessionKeeperSettingMap = ImmutableMap.of();
+    private Map<ContactType, SessionKeeperSetting> sessionKeeperSettingMap = ImmutableMap.of();
 
-    private Map<MessagerType, TerminalKeeperSetting> terminalKeeperSettingMap = ImmutableMap.of();
+    private Map<ContactType, TerminalKeeperSetting> terminalKeeperSettingMap = ImmutableMap.of();
 
     private final Map<String, SessionKeeperFactory<?, SessionKeeperSetting>> sessionFactoryMap = new ConcurrentHashMap<>();
 
@@ -82,62 +82,62 @@ public class CommonEndpointKeeperManager implements EndpointKeeperManager, AppPr
             Map<String, ? extends SessionKeeperSetting> sessionKeeperSettingMap,
             Map<String, ? extends TerminalKeeperSetting> terminalKeeperSettingMap) {
         this();
-        Map<MessagerType, SessionKeeperSetting> sessionSettingMap = new HashMap<>();
-        Map<MessagerType, TerminalKeeperSetting> terminalSettingMap = new HashMap<>();
+        Map<ContactType, SessionKeeperSetting> sessionSettingMap = new HashMap<>();
+        Map<ContactType, TerminalKeeperSetting> terminalSettingMap = new HashMap<>();
         if (MapUtils.isNotEmpty(sessionKeeperSettingMap)) {
             sessionKeeperSettingMap.forEach((name, setting) -> sessionSettingMap
-                    .put(MessagerTypes.checkGroup(StringAide.ifBlank(setting.getMessagerType(), name)), setting));
+                    .put(ContactTypes.checkGroup(StringAide.ifBlank(setting.getContactType(), name)), setting));
         }
         if (MapUtils.isNotEmpty(terminalKeeperSettingMap)) {
             terminalKeeperSettingMap.forEach((name, setting) -> terminalSettingMap
-                    .put(MessagerTypes.checkGroup(StringAide.ifBlank(setting.getMessagerType(), name)), setting));
+                    .put(ContactTypes.checkGroup(StringAide.ifBlank(setting.getContactType(), name)), setting));
         }
         if (defaultSessionKeeperSetting != null) {
             sessionSettingMap.put(DEFAULT_KEY, defaultSessionKeeperSetting);
-            if (StringUtils.isNoneBlank(defaultSessionKeeperSetting.getMessagerType())) {
-                sessionSettingMap.put(MessagerTypes.checkGroup(defaultSessionKeeperSetting.getMessagerType()), defaultSessionKeeperSetting);
+            if (StringUtils.isNoneBlank(defaultSessionKeeperSetting.getContactType())) {
+                sessionSettingMap.put(ContactTypes.checkGroup(defaultSessionKeeperSetting.getContactType()), defaultSessionKeeperSetting);
             }
         }
         if (defaultTerminalKeeperSetting != null) {
             terminalSettingMap.put(DEFAULT_KEY, defaultTerminalKeeperSetting);
-            if (StringUtils.isNoneBlank(defaultTerminalKeeperSetting.getMessagerType())) {
-                terminalSettingMap.put(MessagerTypes.checkGroup(defaultTerminalKeeperSetting.getMessagerType()), defaultTerminalKeeperSetting);
+            if (StringUtils.isNoneBlank(defaultTerminalKeeperSetting.getContactType())) {
+                terminalSettingMap.put(ContactTypes.checkGroup(defaultTerminalKeeperSetting.getContactType()), defaultTerminalKeeperSetting);
             }
         }
         this.sessionKeeperSettingMap = ImmutableMap.copyOf(sessionSettingMap);
         this.terminalKeeperSettingMap = ImmutableMap.copyOf(terminalSettingMap);
     }
 
-    private NetEndpointKeeper<?, ?> create(MessagerType messagerType, NetAccessMode accessMode) {
+    private NetEndpointKeeper<?, ?> create(ContactType contactType, NetAccessMode accessMode) {
         if (accessMode == NetAccessMode.SERVER) {
-            SessionKeeperSetting setting = this.sessionKeeperSettingMap.get(messagerType);
+            SessionKeeperSetting setting = this.sessionKeeperSettingMap.get(contactType);
             if (setting == null) {
                 setting = this.sessionKeeperSettingMap.get(DEFAULT_KEY);
             }
-            return create(messagerType, accessMode, setting, this.sessionFactoryMap.get(setting.getKeeperFactory()));
+            return create(contactType, accessMode, setting, this.sessionFactoryMap.get(setting.getKeeperFactory()));
         } else {
-            TerminalKeeperSetting setting = this.terminalKeeperSettingMap.get(messagerType);
+            TerminalKeeperSetting setting = this.terminalKeeperSettingMap.get(contactType);
             if (setting == null) {
                 setting = this.terminalKeeperSettingMap.get(DEFAULT_KEY);
             }
-            return create(messagerType, accessMode, setting, this.terminalFactoryMap.get(setting.getKeeperFactory()));
+            return create(contactType, accessMode, setting, this.terminalFactoryMap.get(setting.getKeeperFactory()));
         }
     }
 
     private <E extends Endpoint<?>, EK extends NetEndpointKeeper<?, E>, S extends EndpointKeeperSetting> EK create(
-            MessagerType messagerType, NetAccessMode accessMode, S setting, EndpointKeeperFactory<?, EK, S> factory) {
-        Asserts.checkNotNull(factory, "can not found {}.{} session factory", accessMode, messagerType);
-        return factory.createKeeper(messagerType, setting);
+            ContactType contactType, NetAccessMode accessMode, S setting, EndpointKeeperFactory<?, EK, S> factory) {
+        Asserts.checkNotNull(factory, "can not found {}.{} session factory", accessMode, contactType);
+        return factory.createKeeper(contactType, setting);
     }
 
     @Override
-    public <UID, K extends EndpointKeeper<UID, ? extends Endpoint<UID>>> K loadEndpoint(MessagerType messagerType, NetAccessMode accessMode) {
-        EndpointKeeper<?, ?> keeper = this.endpointKeeperMap.get(messagerType);
+    public <UID, K extends EndpointKeeper<UID, ? extends Endpoint<UID>>> K loadEndpoint(ContactType contactType, NetAccessMode accessMode) {
+        EndpointKeeper<?, ?> keeper = this.endpointKeeperMap.get(contactType);
         if (keeper != null) {
             return as(keeper);
         }
-        NetEndpointKeeper<?, ?> newOne = create(messagerType, accessMode);
-        keeper = as(this.endpointKeeperMap.computeIfAbsent(messagerType, (k) -> newOne));
+        NetEndpointKeeper<?, ?> newOne = create(contactType, accessMode);
+        keeper = as(this.endpointKeeperMap.computeIfAbsent(contactType, (k) -> newOne));
         if (keeper == newOne) {
             ON_CREATE.notify(keeper);
         }
@@ -145,21 +145,21 @@ public class CommonEndpointKeeperManager implements EndpointKeeperManager, AppPr
     }
 
     @Override
-    public <UID, K extends EndpointKeeper<UID, ? extends Endpoint<UID>>> Optional<K> getKeeper(MessagerType userType) {
+    public <UID, K extends EndpointKeeper<UID, ? extends Endpoint<UID>>> Optional<K> getKeeper(ContactType userType) {
         return Optional.ofNullable(as(this.endpointKeeperMap.get(userType)));
     }
 
     @Override
-    public <UID, K extends SessionKeeper<UID>> Optional<K> getSessionKeeper(MessagerType userType) {
+    public <UID, K extends SessionKeeper<UID>> Optional<K> getSessionKeeper(ContactType userType) {
         return this.getKeeper(userType, SessionKeeper.class);
     }
 
     @Override
-    public <UID, K extends TerminalKeeper<UID>> Optional<K> getTerminalKeeper(MessagerType userType) {
+    public <UID, K extends TerminalKeeper<UID>> Optional<K> getTerminalKeeper(ContactType userType) {
         return this.getKeeper(userType, TerminalKeeper.class);
     }
 
-    private <K extends EndpointKeeper<?, ?>, EK extends K> Optional<EK> getKeeper(MessagerType userType, Class<K> keeperClass) {
+    private <K extends EndpointKeeper<?, ?>, EK extends K> Optional<EK> getKeeper(ContactType userType, Class<K> keeperClass) {
         EndpointKeeper<?, ?> keeper = this.endpointKeeperMap.get(userType);
         if (keeper == null) {
             return Optional.empty();
@@ -187,7 +187,7 @@ public class CommonEndpointKeeperManager implements EndpointKeeperManager, AppPr
         if (!endpoint.isAuthenticated()) {
             return;
         }
-        NetEndpointKeeper<?, ?> keeper = endpointKeeperMap.get(endpoint.getMessagerType());
+        NetEndpointKeeper<?, ?> keeper = endpointKeeperMap.get(endpoint.contactType());
         if (keeper != null) {
             keeper.notifyEndpointOnline(endpoint);
         }
@@ -197,7 +197,7 @@ public class CommonEndpointKeeperManager implements EndpointKeeperManager, AppPr
         if (!endpoint.isAuthenticated()) {
             return;
         }
-        NetEndpointKeeper<?, ?> keeper = endpointKeeperMap.get(endpoint.getMessagerType());
+        NetEndpointKeeper<?, ?> keeper = endpointKeeperMap.get(endpoint.contactType());
         if (keeper != null) {
             keeper.notifyEndpointOffline(endpoint);
         }
@@ -207,7 +207,7 @@ public class CommonEndpointKeeperManager implements EndpointKeeperManager, AppPr
         if (!endpoint.isAuthenticated()) {
             return;
         }
-        NetEndpointKeeper<?, ?> keeper = endpointKeeperMap.get(endpoint.getMessagerType());
+        NetEndpointKeeper<?, ?> keeper = endpointKeeperMap.get(endpoint.contactType());
         if (keeper != null) {
             keeper.notifyEndpointClose(endpoint);
         }

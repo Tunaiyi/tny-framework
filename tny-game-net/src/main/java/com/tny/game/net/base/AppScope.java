@@ -19,7 +19,7 @@ import com.tny.game.common.enums.*;
 public interface AppScope extends IntEnumerable {
 
     String getScopeName();
-    
+
     default void registerSelf() {
         AppScopes.register(this);
     }

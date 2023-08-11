@@ -16,7 +16,7 @@ package com.tny.game.net.base;
  * @author Kun Yang
  * @date 2022/4/28 05:11
  **/
-public interface RpcServiceType extends MessagerType {
+public interface RpcServiceType extends ContactType {
 
     String getService();
 

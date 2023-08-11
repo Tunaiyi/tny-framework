@@ -106,7 +106,7 @@ public class RpcMonitor {
     }
 
     public void onReceive(RpcTransferContext rpcContext) {
-        var messager = rpcContext.getMessager();
+        var contact = rpcContext.getContact();
         var message = rpcContext.getMessageSubject();
         for (var handler : receiveHandlers) {
             try {
@@ -115,7 +115,7 @@ public class RpcMonitor {
                 LOGGER.error("", e);
             }
         }
-        NetLogger.logReceive(messager, message);
+        NetLogger.logReceive(contact, message);
     }
 
     public void onSend(NetTunnel<?> tunnel, Message message) {

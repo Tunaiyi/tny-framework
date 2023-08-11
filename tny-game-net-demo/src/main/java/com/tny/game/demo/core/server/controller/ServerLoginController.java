@@ -13,7 +13,6 @@ package com.tny.game.demo.core.server.controller;
 import com.tny.game.demo.core.common.*;
 import com.tny.game.demo.core.common.dto.*;
 import com.tny.game.net.annotation.*;
-import com.tny.game.net.command.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.netty4.configuration.command.*;
 import com.tny.game.net.transport.*;
@@ -22,7 +21,7 @@ import java.time.ZonedDateTime;
 import java.util.concurrent.*;
 
 import static com.tny.game.common.utils.StringAide.*;
-import static com.tny.game.net.base.MessagerType.*;
+import static com.tny.game.net.base.ContactType.*;
 
 /**
  * <p>

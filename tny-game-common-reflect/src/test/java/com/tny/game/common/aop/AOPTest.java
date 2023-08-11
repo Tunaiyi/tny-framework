@@ -36,13 +36,8 @@ class AOPTest {
                     public void doBefore(Method method, Object[] args, Object target) throws Throwable {
                         System.out.println(target.getClass() + " -- before -- " + method);
                     }
-                }).setThrowsAdvice(new ThrowsAdvice() {
-
-                    @Override
-                    public void doAfterThrowing(Method method, Object[] args, Object target, Throwable cause) {
-                        System.out.println(target.getClass() + " -- afterThrowing -- " + method + "by cause - " + cause);
-                    }
-                }).build();
+                }).setThrowsAdvice(
+                        (method, args, target, cause) -> System.out.println(target.getClass() + " -- afterThrowing -- " + method + "by cause - " + cause)).build();
         playerProxy.callName();
         playerProxy.getName();
         playerProxy.friend(20, player, 100L);

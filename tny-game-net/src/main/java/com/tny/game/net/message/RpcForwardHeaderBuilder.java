@@ -38,7 +38,7 @@ public class RpcForwardHeaderBuilder extends MessageHeaderBuilder<RpcForwardHead
         return this;
     }
 
-    public RpcForwardHeaderBuilder setSender(Messager sender) {
+    public RpcForwardHeaderBuilder setSender(Contact sender) {
         header().setSender(sender);
         return this;
     }
@@ -48,7 +48,7 @@ public class RpcForwardHeaderBuilder extends MessageHeaderBuilder<RpcForwardHead
         return this;
     }
 
-    public RpcForwardHeaderBuilder setReceiver(Messager receiver) {
+    public RpcForwardHeaderBuilder setReceiver(Contact receiver) {
         header().setReceiver(receiver);
         return this;
     }

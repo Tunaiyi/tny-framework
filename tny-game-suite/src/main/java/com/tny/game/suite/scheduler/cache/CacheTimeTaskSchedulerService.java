@@ -11,10 +11,10 @@ public class CacheTimeTaskSchedulerService implements TimeTaskSchedulerService {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(CacheTimeTaskSchedulerService.class);
 
-    @Resource
+    @Autowired
     private TimeTaskScheduler scheduler;
 
-    @Resource
+    @Autowired
     private TaskReceiverManager taskReceiverManager;
 
     private long serverID;

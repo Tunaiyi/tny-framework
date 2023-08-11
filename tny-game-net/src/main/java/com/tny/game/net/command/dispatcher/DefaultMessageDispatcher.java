@@ -23,13 +23,13 @@ import com.tny.game.net.command.plugins.*;
 @Unit
 public class DefaultMessageDispatcher extends BaseMessageDispatcher implements AppPrepareStart {
 
-    public DefaultMessageDispatcher(NetAppContext appContext, MessagerAuthenticator messagerAuthenticator) {
-        super(appContext, messagerAuthenticator, new GroovyExprHolderFactory());
+    public DefaultMessageDispatcher(NetAppContext appContext, ContactAuthenticator contactAuthenticator) {
+        super(appContext, contactAuthenticator, new GroovyExprHolderFactory());
     }
 
-    public DefaultMessageDispatcher(NetAppContext appContext, MessagerAuthenticator messagerAuthenticator,
+    public DefaultMessageDispatcher(NetAppContext appContext, ContactAuthenticator contactAuthenticator,
             ExprHolderFactory exprHolderFactory) {
-        super(appContext, messagerAuthenticator, exprHolderFactory);
+        super(appContext, contactAuthenticator, exprHolderFactory);
     }
 
     @Override

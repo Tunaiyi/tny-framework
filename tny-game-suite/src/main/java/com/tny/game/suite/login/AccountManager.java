@@ -15,7 +15,7 @@ import static com.tny.game.suite.SuiteProfiles.*;
 @Profile({GAME})
 public class AccountManager {
 
-    @Resource
+    @Autowired
     private AccountDAO accountDAO;
 
     public Account getAccount(String account) {

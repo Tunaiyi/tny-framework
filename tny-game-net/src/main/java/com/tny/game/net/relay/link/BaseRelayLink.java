@@ -88,9 +88,9 @@ public abstract class BaseRelayLink implements NetRelayLink {
      */
     private final AtomicInteger packetIdCreator = new AtomicInteger();
 
-    private final MessagerType messagerType;
+    private final ContactType contactType;
 
-    public BaseRelayLink(NetAccessMode accessMode, String key, MessagerType messagerType, String service, long instanceId,
+    public BaseRelayLink(NetAccessMode accessMode, String key, ContactType contactType, String service, long instanceId,
             RelayTransporter transporter) {
         this.key = key;
         this.service = service;
@@ -99,7 +99,7 @@ public abstract class BaseRelayLink implements NetRelayLink {
         this.id = NetRelayLink.idOf(this);
         this.transporter = transporter;
         this.createAt = System.currentTimeMillis();
-        this.messagerType = messagerType;
+        this.contactType = contactType;
         this.transporter.bind(this);
     }
 
@@ -114,13 +114,13 @@ public abstract class BaseRelayLink implements NetRelayLink {
     }
 
     @Override
-    public long getMessagerId() {
+    public long contactId() {
         return instanceId;
     }
 
     @Override
-    public MessagerType getMessagerType() {
-        return messagerType;
+    public ContactType contactType() {
+        return contactType;
     }
 
     @Override
@@ -331,11 +331,11 @@ public abstract class BaseRelayLink implements NetRelayLink {
         if (!(o instanceof BaseRelayLink)) {
             return false;
         }
-        BaseRelayLink that = (BaseRelayLink)o;
+        BaseRelayLink that = (BaseRelayLink) o;
         return new EqualsBuilder().append(getInstanceId(), that.getInstanceId())
-                .append(getId(), that.getId())
-                .append(getService(), that.getService())
-                .isEquals();
+                                  .append(getId(), that.getId())
+                                  .append(getService(), that.getService())
+                                  .isEquals();
     }
 
     @Override

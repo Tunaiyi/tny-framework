@@ -21,7 +21,7 @@ import org.springframework.context.annotation.*;
  */
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(BasicsCapacityModuleProperties.class)
-@ConditionalOnProperty(name = BasicsPropertiesConstants.BASICS_CAPACITY_MODULE_ENABLE, havingValue = "true")
+@ConditionalOnProperty(name = BasicsPropertyConstants.BASICS_CAPACITY_MODULE_ENABLE, havingValue = "true")
 public class BasicsCapacityModuleConfiguration {
 
     @Bean

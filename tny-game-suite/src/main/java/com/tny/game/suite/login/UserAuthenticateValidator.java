@@ -23,10 +23,10 @@ public abstract class UserAuthenticateValidator extends GameAuthenticateValidato
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserAuthenticateValidator.class);
 
-    @Resource
+    @Autowired
     private AccountService accountService;
 
-    @Resource
+    @Autowired
     private GameTicketMaker ticketMaker;
 
     private static final ReferenceType<List<String>> BODY_CLASS = new ReferenceType<List<String>>() {

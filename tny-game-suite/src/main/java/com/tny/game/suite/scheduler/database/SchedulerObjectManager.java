@@ -19,13 +19,13 @@ public class SchedulerObjectManager {
 
     private final static Logger logger = LoggerFactory.getLogger(SchedulerObjectManager.class);
 
-    @Resource
+    @Autowired
     private SchedulerObjectDAO schedulerBackupDAO;
 
-    @Resource
+    @Autowired
     private CacheSchedulerBackupFormatter backupFormatter;
 
-    @Resource
+    @Autowired
     private TaskReceiverFormatter receiverFormatter;
 
     public void saveSchedulerBackup(CacheSchedulerBackup cacheSchedulerBackup) {

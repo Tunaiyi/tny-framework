@@ -13,14 +13,14 @@ package com.tny.game.boot.registrar;
 import com.tny.game.common.lifecycle.*;
 import com.tny.game.common.lifecycle.unit.*;
 import com.tny.game.common.lifecycle.unit.annotation.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
-import javax.annotation.Resource;
 import java.util.*;
 
 public class UnitLoadInitiator implements AppPrepareStart {
 
-    @Resource
+    @Autowired
     private ApplicationContext context;
 
     @Override

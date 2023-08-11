@@ -11,11 +11,11 @@
 package com.tny.game.net.base.configuration;
 
 import com.tny.game.net.base.*;
-import com.tny.game.net.command.*;
 import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.command.processor.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.rpc.*;
+import com.tny.game.net.transport.*;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
@@ -49,7 +49,7 @@ public abstract class CommonNetBootstrapSetting implements NetBootstrapSetting {
 
     private String messageFactory = defaultName(MessageFactory.class);
 
-    private String messagerFactory = defaultName(MessagerFactory.class);
+    private String contactFactory = defaultName(ContactFactory.class);
 
     private String certificateFactory = defaultName(CertificateFactory.class);
 
@@ -70,8 +70,8 @@ public abstract class CommonNetBootstrapSetting implements NetBootstrapSetting {
     }
 
     @Override
-    public String getMessagerFactory() {
-        return messagerFactory;
+    public String getContactFactory() {
+        return contactFactory;
     }
 
     @Override
@@ -136,8 +136,8 @@ public abstract class CommonNetBootstrapSetting implements NetBootstrapSetting {
         return this;
     }
 
-    public CommonNetBootstrapSetting setMessagerFactory(String messagerFactory) {
-        this.messagerFactory = messagerFactory;
+    public CommonNetBootstrapSetting setContactFactory(String contactFactory) {
+        this.contactFactory = contactFactory;
         return this;
     }
 

@@ -35,12 +35,12 @@ public class ForwardPoint implements RpcAccessPoint {
     public ForwardPoint() {
     }
 
-    public ForwardPoint(RpcServicer servicer) {
-        this.serviceType = servicer.getServiceType();
+    public ForwardPoint(RpcServicer service) {
+        this.serviceType = service.getServiceType();
         this.serviceTypeId = this.serviceType.id();
-        if (servicer instanceof RpcAccessPoint) {
-            var point = (RpcAccessPoint)servicer;
-            this.accessId = new RpcAccessId(point.getMessagerId());
+        if (service instanceof RpcAccessPoint) {
+            var point = (RpcAccessPoint) service;
+            this.accessId = new RpcAccessId(point.contactId());
         }
     }
 
@@ -80,7 +80,7 @@ public class ForwardPoint implements RpcAccessPoint {
     }
 
     @Override
-    public long getMessagerId() {
+    public long contactId() {
         return accessId == null ? -1 : accessId.getId();
     }
 

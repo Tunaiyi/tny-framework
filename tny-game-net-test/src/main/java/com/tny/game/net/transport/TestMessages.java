@@ -11,8 +11,6 @@
 package com.tny.game.net.transport;
 
 import com.tny.game.common.result.*;
-import com.tny.game.net.command.*;
-import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.message.common.*;
@@ -168,7 +166,7 @@ public class TestMessages {
 
     public void receive(NetTunnel<?> receiver) {
         assertFalse(this.messages.isEmpty());
-        this.messages.forEach(p -> receiver.receive(RpcTransactionContext.createEnter(receiver, (NetMessage)p, true)));
+        this.messages.forEach(p -> receiver.receive(p.getMessage()));
     }
 
     public void send(Sender sender) {

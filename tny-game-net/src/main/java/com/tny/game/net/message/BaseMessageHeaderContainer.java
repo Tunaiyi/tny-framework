@@ -56,9 +56,9 @@ public class BaseMessageHeaderContainer implements MessageHeaderContainer {
             return Collections.emptyList();
         }
         return headers.values().stream()
-                .filter(headerClass::isInstance)
-                .map((header) -> ObjectAide.as(header, headerClass))
-                .collect(Collectors.toList());
+                      .filter(headerClass::isInstance)
+                      .map((header) -> ObjectAide.as(header, headerClass))
+                      .collect(Collectors.toList());
     }
 
     @Override

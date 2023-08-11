@@ -24,10 +24,10 @@ public class CommonSessionKeeperFactory<UID> implements SessionKeeperFactory<UID
     }
 
     @Override
-    public NetEndpointKeeper<UID, Session<UID>> createKeeper(MessagerType messagerType, SessionKeeperSetting setting) {
+    public NetEndpointKeeper<UID, Session<UID>> createKeeper(ContactType contactType, SessionKeeperSetting setting) {
         SessionFactory<UID, NetSession<UID>, SessionSetting> sessionFactory = UnitLoader.getLoader(SessionFactory.class)
-                .checkUnit(setting.getSessionFactory());
-        return new CommonSessionKeeper<>(messagerType, sessionFactory, setting);
+                                                                                        .checkUnit(setting.getSessionFactory());
+        return new CommonSessionKeeper<>(contactType, sessionFactory, setting);
     }
 
 }

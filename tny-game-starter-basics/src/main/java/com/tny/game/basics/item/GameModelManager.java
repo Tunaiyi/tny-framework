@@ -13,18 +13,17 @@ package com.tny.game.basics.item;
 import com.tny.game.basics.item.behavior.*;
 import com.tny.game.basics.item.loader.*;
 import com.tny.game.basics.item.xml.*;
-
-import javax.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class GameModelManager<M extends Model> extends LoadableModelManager<M> {
 
     /**
      * 事物对象管理器
      */
-    @Resource
+    @Autowired
     protected ItemModelContext context;
 
-    @Resource
+    @Autowired
     protected ModelLoaderFactory modelLoaderFactory;
 
     @Override

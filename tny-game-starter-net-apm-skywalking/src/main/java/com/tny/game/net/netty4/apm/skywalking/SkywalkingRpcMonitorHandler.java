@@ -17,16 +17,11 @@ import com.tny.game.net.monitor.*;
 import com.tny.game.net.rpc.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.skywalking.apm.agent.core.conf.Config;
-import org.apache.skywalking.apm.agent.core.context.CarrierItem;
-import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
-import org.apache.skywalking.apm.agent.core.context.ContextManager;
-import org.apache.skywalking.apm.agent.core.context.ContextSnapshot;
+import org.apache.skywalking.apm.agent.core.context.*;
 import org.apache.skywalking.apm.agent.core.context.tag.StringTag;
-import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
-import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
+import org.apache.skywalking.apm.agent.core.context.trace.*;
 import org.apache.skywalking.apm.network.trace.component.OfficialComponent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 
 import java.util.Collection;
 
@@ -43,7 +38,7 @@ public class SkywalkingRpcMonitorHandler implements RpcMonitorReceiveHandler, Rp
 
     private static final StringTag ARGUMENTS = new StringTag(101, "tny-rpc.arguments");
 
-    private static final StringTag MESSAGER = new StringTag(102, "tny-rpc.messager");
+    private static final StringTag CONTACT = new StringTag(102, "tny-rpc.contact");
 
     private static final StringTag TARGET = new StringTag(102, "tny-rpc.target");
 
@@ -89,8 +84,8 @@ public class SkywalkingRpcMonitorHandler implements RpcMonitorReceiveHandler, Rp
         var message = rpcContext.getMessageSubject();
         var contextCarrier = loadCarrier(message);
         AbstractSpan rpcSpan = ContextManager.createEntrySpan(rpcOperationName(message), contextCarrier);
-        var messager = rpcContext.getMessager();
-        tagSpanService(rpcSpan, contextCarrier, messager, message);
+        var contact = rpcContext.getContact();
+        tagSpanService(rpcSpan, contextCarrier, contact, message);
         var snapshot = ContextManager.capture();
         var attributes = rpcContext.attributes();
         attributes.setAttribute(TRACING_SNAPSHOT, snapshot);
@@ -173,7 +168,7 @@ public class SkywalkingRpcMonitorHandler implements RpcMonitorReceiveHandler, Rp
             var message = rpcContext.getMessageSubject();
             var contextCarrier = new ContextCarrier();
             operationName = remoteOperationName(rpcContext);
-            span = ContextManager.createExitSpan(operationName, contextCarrier, peer(rpcContext.getMessager()));
+            span = ContextManager.createExitSpan(operationName, contextCarrier, peer(rpcContext.getContact()));
             var context = RpcContexts.current();
             if (context != null) {
                 restore((RpcTransactionContext)context);
@@ -186,7 +181,7 @@ public class SkywalkingRpcMonitorHandler implements RpcMonitorReceiveHandler, Rp
                 tracingHeader.put(next.getHeadKey(), next.getHeadValue());
             }
             message.putHeader(tracingHeader);
-            tagSpanRemote(span, contextCarrier, rpcContext.getMessager(), message);
+            tagSpanRemote(span, contextCarrier, rpcContext.getContact(), message);
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("exit start span {} {} | {}", span.getOperationName(), span.getSpanId(), tracingHeader);
             }
@@ -195,7 +190,7 @@ public class SkywalkingRpcMonitorHandler implements RpcMonitorReceiveHandler, Rp
             operationName = localOperationName(rpcContext);
             span = ContextManager.createLocalSpan(operationName);
             restore(rpcContext);
-            tagSpanLocal(span, loadCarrier(message), rpcContext.getMessager(), message);
+            tagSpanLocal(span, loadCarrier(message), rpcContext.getContact(), message);
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("enter start span {} {}", span.getOperationName(), span.getSpanId());
             }
@@ -283,7 +278,7 @@ public class SkywalkingRpcMonitorHandler implements RpcMonitorReceiveHandler, Rp
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("stop {} span of {} {}", key.name(), rpcContext.getMode(), span.getOperationName());
             }
-            // renewTagSpan(span, rpcContext.getMessager());
+            // renewTagSpan(span, rpcContext.getContact());
             span.asyncFinish();
         }
     }
@@ -320,7 +315,7 @@ public class SkywalkingRpcMonitorHandler implements RpcMonitorReceiveHandler, Rp
         AbstractSpan span = null;
         if (!ContextManager.isActive()) {
             span = ContextManager.createLocalSpan(operation);
-            tagSpanService(span, null, rpcContext.getMessager(), rpcContext.getMessageSubject());
+            tagSpanService(span, null, rpcContext.getContact(), rpcContext.getMessageSubject());
         }
         boolean result = false;
         var snapshot = rpcContext.attributes().getAttribute(TRACING_SNAPSHOT);
@@ -345,27 +340,27 @@ public class SkywalkingRpcMonitorHandler implements RpcMonitorReceiveHandler, Rp
     }
 
     private void tagSpanLocal(AbstractSpan span, ContextCarrier contextCarrier,
-            NetMessager messager, MessageSubject message) {
+            NetContact contact, MessageSubject message) {
         tagSpanCommon(span, contextCarrier, NetAccessMode.SERVER, message);
         tagSpanArguments(span, message);
         tagSpanForward(span, message);
-        tagSpanMessager(span, MESSAGER, messager);
+        tagSpanContact(span, CONTACT, contact);
     }
 
     private void tagSpanRemote(AbstractSpan span, ContextCarrier contextCarrier,
-            NetMessager messager, MessageSubject message) {
+            NetContact contact, MessageSubject message) {
         tagSpanCommon(span, contextCarrier, NetAccessMode.CLIENT, message);
         tagSpanArguments(span, message);
         tagSpanForward(span, message);
-        tagSpanMessager(span, TARGET, messager);
+        tagSpanContact(span, TARGET, contact);
     }
 
     private void tagSpanTransfer(AbstractSpan span, ContextCarrier contextCarrier,
-            NetMessager from, MessageSubject message, NetMessager to) {
+            NetContact from, MessageSubject message, NetContact to) {
         tagSpanCommon(span, contextCarrier, from.getAccessMode(), message);
         tagSpanForward(span, message);
-        tagSpanMessager(span, MESSAGER, from);
-        tagSpanMessager(span, TARGET, to);
+        tagSpanContact(span, CONTACT, from);
+        tagSpanContact(span, TARGET, to);
     }
 
     private void tagSpanForward(AbstractSpan span, MessageSubject message) {
@@ -377,7 +372,7 @@ public class SkywalkingRpcMonitorHandler implements RpcMonitorReceiveHandler, Rp
         if (forward == null) {
             return;
         }
-        tagSpanMessager(span, FORWARD, forward);
+        tagSpanContact(span, FORWARD, forward);
     }
 
     private void tagSpanArguments(AbstractSpan span, MessageSubject message) {
@@ -386,9 +381,9 @@ public class SkywalkingRpcMonitorHandler implements RpcMonitorReceiveHandler, Rp
         }
     }
 
-    private void tagSpanService(AbstractSpan span, ContextCarrier contextCarrier, NetMessager messager, MessageSubject subject) {
-        tagSpanCommon(span, contextCarrier, messager.getAccessMode(), subject);
-        tagSpanMessager(span, MESSAGER, messager);
+    private void tagSpanService(AbstractSpan span, ContextCarrier contextCarrier, NetContact contact, MessageSubject subject) {
+        tagSpanCommon(span, contextCarrier, contact.getAccessMode(), subject);
+        tagSpanContact(span, CONTACT, contact);
     }
 
     private void tagSpanCommon(AbstractSpan span, ContextCarrier contextCarrier, NetAccessMode accessMode, MessageSubject message) {
@@ -438,11 +433,11 @@ public class SkywalkingRpcMonitorHandler implements RpcMonitorReceiveHandler, Rp
         return operationName;
     }
 
-    private String peer(NetMessager messager) {
-        if (messager == null) {
+    private String peer(NetContact contact) {
+        if (contact == null) {
             return "NA:NA";
         }
-        var address = messager.getRemoteAddress();
+        var address = contact.getRemoteAddress();
         return address.getHostString() + ":" + address.getPort();
     }
 
@@ -467,15 +462,15 @@ public class SkywalkingRpcMonitorHandler implements RpcMonitorReceiveHandler, Rp
         }
     }
 
-    private void tagSpanMessager(AbstractSpan span, StringTag key, Messager messager) {
-        if (messager == null) {
+    private void tagSpanContact(AbstractSpan span, StringTag key, Contact contact) {
+        if (contact == null) {
             return;
         }
-        span.tag(key, getMessagerName(messager));
+        span.tag(key, getContactName(contact));
     }
 
-    private String getMessagerName(Messager messager) {
-        return messager.getMessagerType().getGroup() + "[" + messager.getMessagerId() + "]";
+    private String getContactName(Contact contact) {
+        return contact.contactType().getGroup() + "[" + contact.contactId() + "]";
     }
 
 }

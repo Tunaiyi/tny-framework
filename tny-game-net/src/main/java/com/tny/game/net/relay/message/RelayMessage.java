@@ -112,10 +112,10 @@ public class RelayMessage implements NetMessage {
         return message.bodyAs(clazz);
     }
 
-    @Override
-    public MessageType getType() {
-        return message.getType();
-    }
+    // @Override
+    // public MessageType getType() {
+    //     return message.getType();
+    // }
 
     @Override
     public void allotMessageId(long id) {

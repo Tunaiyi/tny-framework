@@ -39,7 +39,7 @@ public class RpcRemoteMethod {
     /**
      * 目标
      */
-    private final MessagerType serviceType;
+    private final ContactType serviceType;
 
     /**
      * 目标
@@ -158,7 +158,7 @@ public class RpcRemoteMethod {
         this.routerClass = as(options.router());
         var forward = StringUtils.isNoneBlank(rpcService.forwardService());
         this.mode = profile.getMode();
-        serviceType = MessagerTypes.checkGroup(rpcService.value());
+        serviceType = ContactTypes.checkGroup(rpcService.value());
         if (forward) {
             this.targetServiceType = RpcServiceTypes.checkService(rpcService.value());
             this.forwardServiceType = RpcServiceTypes.checkService(rpcService.forwardService());
@@ -234,7 +234,7 @@ public class RpcRemoteMethod {
         return invokeMode;
     }
 
-    public MessagerType getServiceType() {
+    public ContactType getServiceType() {
         return serviceType;
     }
 

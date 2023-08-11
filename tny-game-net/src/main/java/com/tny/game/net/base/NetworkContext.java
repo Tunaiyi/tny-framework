@@ -10,11 +10,11 @@
  */
 package com.tny.game.net.base;
 
-import com.tny.game.net.command.*;
 import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.rpc.*;
+import com.tny.game.net.transport.*;
 
 /**
  * 网络上下文对象
@@ -51,7 +51,7 @@ public interface NetworkContext extends EndpointContext {
     /**
      * @return 消息者工厂
      */
-    MessagerFactory getMessagerFactory();
+    ContactFactory getContactFactory();
 
     /**
      * @param <UID> id类型

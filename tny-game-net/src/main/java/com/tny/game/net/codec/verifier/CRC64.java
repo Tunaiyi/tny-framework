@@ -29,7 +29,7 @@ public class CRC64 {
         for (int i = 0; i < 256; i++) {
             part = i;
             for (int j = 0; j < 8; j++) {
-                long x = ((int)part & 1) != 0 ? POLY64REV : 0;
+                long x = ((int) part & 1) != 0 ? POLY64REV : 0;
                 part = (part >> 1) ^ x;
             }
             sCrcTable[i] = part;
@@ -48,8 +48,8 @@ public class CRC64 {
         byte[] result = new byte[in.length() * 2];// 一个字符占两个字节
         int output = 0;
         for (char ch : in.toCharArray()) {
-            result[output++] = (byte)(ch & 0xFF);// 取低8位
-            result[output++] = (byte)(ch >> 8);// 取高8位
+            result[output++] = (byte) (ch & 0xFF);// 取低8位
+            result[output++] = (byte) (ch >> 8);// 取高8位
         }
         return result;
     }
@@ -59,7 +59,7 @@ public class CRC64 {
         long crc = INITIALCRC;
         for (byte[] buffer : buffers) {
             for (int k = 0, n = buffer.length; k < n; ++k) {
-                crc = sCrcTable[(((int)crc) ^ buffer[k]) & 0xff] ^ (crc >> 8);
+                crc = sCrcTable[(((int) crc) ^ buffer[k]) & 0xff] ^ (crc >> 8);
             }
         }
         return crc;
@@ -70,7 +70,7 @@ public class CRC64 {
         long crc = INITIALCRC;
         for (ByteBuffer buffer : buffers) {
             for (int k = 0; buffer.hasRemaining(); ++k) {
-                crc = sCrcTable[(((int)crc) ^ buffer.get()) & 0xff] ^ (crc >> 8);
+                crc = sCrcTable[(((int) crc) ^ buffer.get()) & 0xff] ^ (crc >> 8);
             }
         }
         return crc;
@@ -84,7 +84,7 @@ public class CRC64 {
     // crc64算法
     public static long crc64Long(long crc, byte[] buffer, int from, int length) {
         for (int k = 0; k < length; ++k) {
-            crc = sCrcTable[(((int)crc) ^ buffer[k + from]) & 0xff] ^ (crc >> 8);
+            crc = sCrcTable[(((int) crc) ^ buffer[k + from]) & 0xff] ^ (crc >> 8);
         }
         return crc;
     }

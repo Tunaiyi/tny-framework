@@ -23,12 +23,12 @@ public interface MessageSchema extends Protocol {
      */
     long getToMessage();
 
-    /**
-     * @return 消息类型
-     */
-    default MessageType getType() {
-        return getMode().getType();
-    }
+    // /**
+    //  * @return 消息类型
+    //  */
+    // default MessageType getType() {
+    //     return getMode().getType();
+    // }
 
     /**
      * @return 获取消息模式

@@ -11,7 +11,7 @@ import javax.annotation.Resource;
  */
 public abstract class GameSaveByStorageManager<S extends Stuff<?>, O extends StuffOwner<?, S>> extends GameSaveByOtherManager<S, O> {
 
-    @Resource
+    @Autowired
     private GameWarehouseManager gameWarehouseManager;
 
     private ItemType ownItemType;

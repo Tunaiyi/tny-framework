@@ -14,7 +14,6 @@ import com.tny.game.common.context.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
-import com.tny.game.net.rpc.*;
 import com.tny.game.net.transport.*;
 
 import java.net.InetSocketAddress;
@@ -55,10 +54,10 @@ public class DefaultServerRelayTransporter extends AttributeHolder implements Se
         return tunnel.isClosed();
     }
 
-    @Override
-    public NetAccessMode getAccessMode() {
-        return tunnel.getAccessMode();
-    }
+    // @Override
+    // public NetAccessMode getAccessMode() {
+    //     return tunnel.getAccessMode();
+    // }
 
     @Override
     public boolean close() {
@@ -84,7 +83,7 @@ public class DefaultServerRelayTransporter extends AttributeHolder implements Se
     @Override
     public void bind(NetTunnel<?> tunnel) {
         if (this.tunnel == null) {
-            this.tunnel = (ServerRelayTunnel<?>)tunnel;
+            this.tunnel = (ServerRelayTunnel<?>) tunnel;
         }
     }
 

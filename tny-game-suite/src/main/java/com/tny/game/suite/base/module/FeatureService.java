@@ -20,13 +20,13 @@ public abstract class FeatureService<DTO> implements AppPrepareStart, Applicatio
 
     private static FeatureService<?> FUNC_SYS_SERVICE;
 
-    @Resource
+    @Autowired
     private FeatureExplorerManager featureExplorerManager;
 
-    @Resource
+    @Autowired
     private ModuleService<DTO> moduleService;
 
-    @Resource
+    @Autowired
     private FeatureModelManager<? extends FeatureModel> featureModelManager;
 
     private ApplicationContext applicationContext;

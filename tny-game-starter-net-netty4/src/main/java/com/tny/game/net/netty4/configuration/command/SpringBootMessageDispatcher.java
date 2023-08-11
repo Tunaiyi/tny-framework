@@ -16,18 +16,18 @@ import com.tny.game.net.annotation.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.command.auth.*;
 import com.tny.game.net.command.dispatcher.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
-import javax.annotation.Resource;
 import java.util.Map;
 
 public final class SpringBootMessageDispatcher extends DefaultMessageDispatcher implements AppPrepareStart {
 
-    @Resource
+    @Autowired
     private ApplicationContext applicationContext;
 
-    public SpringBootMessageDispatcher(NetAppContext appContext, MessagerAuthenticator messagerAuthenticator, ExprHolderFactory exprHolderFactory) {
-        super(appContext, messagerAuthenticator, exprHolderFactory);
+    public SpringBootMessageDispatcher(NetAppContext appContext, ContactAuthenticator contactAuthenticator, ExprHolderFactory exprHolderFactory) {
+        super(appContext, contactAuthenticator, exprHolderFactory);
     }
 
     @Override

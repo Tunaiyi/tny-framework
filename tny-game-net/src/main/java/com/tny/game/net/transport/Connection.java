@@ -10,27 +10,13 @@
  */
 package com.tny.game.net.transport;
 
-import com.tny.game.net.rpc.*;
-
-import java.net.InetSocketAddress;
-
 /**
  * <p>
  *
  * @author : kgtny
  * @date : 2021/5/21 3:59 下午
  */
-public interface Connection {
-
-    /**
-     * @return 远程地址
-     */
-    InetSocketAddress getRemoteAddress();
-
-    /**
-     * @return 本地地址
-     */
-    InetSocketAddress getLocalAddress();
+public interface Connection extends AddressPeer {
 
     /**
      * @return 是否活跃
@@ -46,10 +32,5 @@ public interface Connection {
      * 关闭断开连接
      */
     boolean close();
-
-    /**
-     * @return 接入模式
-     */
-    NetAccessMode getAccessMode();
 
 }

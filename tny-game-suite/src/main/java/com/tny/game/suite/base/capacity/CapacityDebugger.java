@@ -25,10 +25,10 @@ public class CapacityDebugger {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(CapacityDebugger.class);
 
-    @Resource
+    @Autowired
     private CapacityStorerManager capacityStorerManager;
 
-    @Resource
+    @Autowired
     private GameExplorer gameExplorer;
 
     private static final String INDENT = "    ";

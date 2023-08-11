@@ -111,7 +111,7 @@ public enum RelayPacketType implements ByteEnumerable {
             Class<P> packetClass, Class<A> classOfArguments, RelayPacketFactory<P, A> packetFactory,
             RelayPacketHandleByLinkInvoker<P> packetHandlerInvoker, RelayPacketHandleByTransporterInvoker<?> transporterHandlerInvoker,
             NetworkWay way) {
-        this.id = (byte)id;
+        this.id = (byte) id;
         this.way = way;
         this.packetClass = packetClass;
         this.classOfArguments = classOfArguments;

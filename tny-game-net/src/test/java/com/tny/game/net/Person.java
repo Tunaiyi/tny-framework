@@ -89,7 +89,7 @@ public class Person implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        Person other = (Person)obj;
+        Person other = (Person) obj;
         if (age != other.age) {
             return false;
         }
@@ -147,7 +147,7 @@ public class Person implements Serializable {
         public int hashCode() {
             final int prime = 31;
             int result = 1;
-            result = prime * result + (int)(number ^ (number >>> 32));
+            result = prime * result + (int) (number ^ (number >>> 32));
             result = prime * result + ((type == null) ? 0 : type.hashCode());
             return result;
         }
@@ -163,7 +163,7 @@ public class Person implements Serializable {
             if (getClass() != obj.getClass()) {
                 return false;
             }
-            PhoneNum other = (PhoneNum)obj;
+            PhoneNum other = (PhoneNum) obj;
             if (number != other.number) {
                 return false;
             }

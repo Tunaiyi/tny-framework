@@ -15,7 +15,7 @@ public abstract class GameModelManager<M extends Model> extends AbstractXMLModel
     /**
      * 事物对象管理器
      */
-    @Resource
+    @Autowired
     protected ItemModelContext context;
 
     @Override

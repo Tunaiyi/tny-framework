@@ -74,7 +74,7 @@ public class RpcRemoteInstanceFactory {
         if (StringUtils.isNoneBlank(rpcService.forwardService())) {
             toService = rpcService.forwardService();
         }
-        MessagerType toServiceType = MessagerTypes.checkGroup(toService);
+        ContactType toServiceType = ContactTypes.checkGroup(toService);
         RpcInvokeNodeSet remoterSet = rpcRemoterManager.loadInvokeNodeSet(toServiceType);
         RpcRemoteInstance instance = new RpcRemoteInstance(rpcClass, this.setting, remoterSet);
         Map<Method, RpcRemoteInvoker> invokerMap = new HashMap<>();

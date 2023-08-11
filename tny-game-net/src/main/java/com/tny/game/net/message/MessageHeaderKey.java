@@ -51,7 +51,7 @@ public class MessageHeaderKey<T extends MessageHeader<?>> {
         if (!(o instanceof MessageHeaderKey)) {
             return false;
         }
-        MessageHeaderKey<?> that = (MessageHeaderKey<?>)o;
+        MessageHeaderKey<?> that = (MessageHeaderKey<?>) o;
         return getKey().equals(that.getKey()) && getHeaderClass().equals(that.getHeaderClass());
     }
 

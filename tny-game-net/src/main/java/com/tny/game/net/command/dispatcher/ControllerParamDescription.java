@@ -108,14 +108,14 @@ class ControllerParamDescription {
                                 RpcCode.class, Integer.class, int.class, ResultCode.class));
                     }
                 } else if (annotationClass == RpcFrom.class) {
-                    if (Messager.class.isAssignableFrom(paramClass)) {
+                    if (Contact.class.isAssignableFrom(paramClass)) {
                         this.mode = SENDER;
                     }
                     if (RpcServicer.class.isAssignableFrom(paramClass)) {
                         this.mode = FROM_SERVICE;
                     }
                 } else if (annotationClass == RpcTo.class) {
-                    if (Messager.class.isAssignableFrom(paramClass)) {
+                    if (Contact.class.isAssignableFrom(paramClass)) {
                         this.mode = RECEIVER;
                     }
                     if (RpcServicer.class.isAssignableFrom(paramClass)) {
@@ -216,7 +216,7 @@ class ControllerParamDescription {
                 try {
                     if (body != null) {
                         if (body instanceof List) {
-                            value = ((List<?>)body).get(this.index);
+                            value = ((List<?>) body).get(this.index);
                         } else if (body.getClass().isArray()) {
                             value = Array.get(body, this.index);
                         } else {
@@ -256,8 +256,8 @@ class ControllerParamDescription {
                 }
                 RpcForwardHeader forwardHeader = head.getHeader(MessageHeaderConstants.RPC_FORWARD_HEADER);
                 if (forwardHeader != null) {
-                    ForwardMessager sender = forwardHeader.getSender();
-                    value = context.getMessagerFactory().createMessager(sender);
+                    ForwardContact sender = forwardHeader.getSender();
+                    value = context.getContactFactory().createContact(sender);
                 }
                 break;
             }
@@ -267,8 +267,8 @@ class ControllerParamDescription {
                 }
                 RpcForwardHeader forwardHeader = head.getHeader(MessageHeaderConstants.RPC_FORWARD_HEADER);
                 if (forwardHeader != null) {
-                    ForwardMessager receiver = forwardHeader.getReceiver();
-                    value = context.getMessagerFactory().createMessager(receiver);
+                    ForwardContact receiver = forwardHeader.getReceiver();
+                    value = context.getContactFactory().createContact(receiver);
                 }
                 break;
             }

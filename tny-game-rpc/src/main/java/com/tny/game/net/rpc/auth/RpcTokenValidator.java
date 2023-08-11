@@ -26,7 +26,7 @@ import static com.tny.game.common.utils.StringAide.*;
 /**
  * <p>
  */
-public class RpcTokenValidator implements AuthenticationValidator<RpcAccessIdentify, MessagerCertificateFactory<RpcAccessIdentify>> {
+public class RpcTokenValidator implements AuthenticationValidator<RpcAccessIdentify, ContactCertificateFactory<RpcAccessIdentify>> {
 
     private final RpcAuthService rpcAuthService;
 
@@ -39,7 +39,7 @@ public class RpcTokenValidator implements AuthenticationValidator<RpcAccessIdent
 
     @Override
     public Certificate<RpcAccessIdentify> validate(Tunnel<RpcAccessIdentify> communicator, Message message,
-            MessagerCertificateFactory<RpcAccessIdentify> factory)
+            ContactCertificateFactory<RpcAccessIdentify> factory)
             throws RpcInvokeException, AuthFailedException {
         String token = message.bodyAs(String.class);
         try {
@@ -47,8 +47,8 @@ public class RpcTokenValidator implements AuthenticationValidator<RpcAccessIdent
             if (result.isSuccess()) {
                 RpcAccessToken rpcToken = result.get();
                 return factory.certificate(idCreator.createId(),
-                        RpcAccessIdentify.parse(rpcToken.getMessagerId()),
-                        rpcToken.getMessagerId(), rpcToken.getServiceType(), Instant.now());
+                        RpcAccessIdentify.parse(rpcToken.contactId()),
+                        rpcToken.contactId(), rpcToken.getServiceType(), Instant.now());
             } else {
                 ResultCode resultCode = result.getCode();
                 throw new AuthFailedException(format("Rpc登录认证失败. {} : {}", resultCode, result.getMessage()));

@@ -84,11 +84,11 @@ public class BaseRelayExplorer<T extends NetRelayTunnel<?>> implements RelayExpl
                 return false;
             }
 
-            TunnelKey tunnelKey = (TunnelKey)o;
+            TunnelKey tunnelKey = (TunnelKey) o;
 
             return new EqualsBuilder().append(getInstanceId(), tunnelKey.getInstanceId())
-                    .append(getId(), tunnelKey.getId())
-                    .isEquals();
+                                      .append(getId(), tunnelKey.getId())
+                                      .isEquals();
         }
 
         @Override

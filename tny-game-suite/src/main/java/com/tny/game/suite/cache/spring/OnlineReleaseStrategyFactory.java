@@ -12,7 +12,7 @@ public class OnlineReleaseStrategyFactory implements ReleaseStrategyFactory {
 
     private long defaultLifeTime = 60 * 1000 * 3;
 
-    @Resource
+    @Autowired
     private EndpointKeeperManager endpointKeeperManager;
 
     private final String userType;

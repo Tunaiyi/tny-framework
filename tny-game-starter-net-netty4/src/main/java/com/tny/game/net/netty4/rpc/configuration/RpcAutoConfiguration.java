@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 @Configuration(proxyBeanMethods = false)
 @Import({
         ImportRpcServiceDefinitionRegistrar.class,
-        ImportRpcConnectorDefinitionRegistrar.class
+        ImportRpcClientDefinitionRegistrar.class
 })
 @EnableConfigurationProperties(RpcRemoteProperties.class)
 public class RpcAutoConfiguration {

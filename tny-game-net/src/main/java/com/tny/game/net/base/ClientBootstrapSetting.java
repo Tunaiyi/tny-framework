@@ -14,7 +14,7 @@ import com.tny.game.net.rpc.*;
 
 public interface ClientBootstrapSetting extends NetBootstrapSetting {
 
-    ClientConnectorSetting getConnector();
+    ClientSetting getConnector();
 
     @Override
     default NetAccessMode getAccessMode() {

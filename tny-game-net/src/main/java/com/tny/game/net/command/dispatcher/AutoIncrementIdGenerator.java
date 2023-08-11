@@ -43,7 +43,7 @@ public class AutoIncrementIdGenerator implements NetIdGenerator {
     @Override
     public long generate() {
         long id = Thread.currentThread().getId();
-        int index = (int)(id % idGenerators.length);
+        int index = (int) (id % idGenerators.length);
         AtomicLong generator = idGenerators[index];
         return generator.incrementAndGet() << bitSize | index;
     }

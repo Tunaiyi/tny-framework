@@ -20,10 +20,9 @@ import com.tny.game.net.annotation.*;
 import com.tny.game.net.base.*;
 import com.tny.game.net.netty4.configuration.command.*;
 import org.slf4j.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.annotation.Resource;
-
-import static com.tny.game.net.base.MessagerType.*;
+import static com.tny.game.net.base.ContactType.*;
 import static com.tny.game.net.message.MessageMode.*;
 
 /**
@@ -39,7 +38,7 @@ public class PlayerController implements AppPostStart {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PlayerController.class);
 
-    @Resource
+    @Autowired
     private EntityCacheManager<Long, DemoPlayer> entityCacheManager;
 
     @Rpc(CtrlerIds.PLAYER$GET)

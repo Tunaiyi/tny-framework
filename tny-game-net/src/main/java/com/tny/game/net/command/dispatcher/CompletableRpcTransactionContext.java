@@ -105,11 +105,11 @@ abstract class CompletableRpcTransactionContext extends BaseRpcTransactionContex
         Object body = null;
         ResultCode code = NetResultCode.SERVER_ERROR;
         if (cause instanceof NetException) {
-            var exception = (NetException)cause;
+            var exception = (NetException) cause;
             body = exception.getBody();
             code = exception.getCode();
         } else if (cause instanceof ResultCodableException) {
-            var exception = (ResultCodableException)cause;
+            var exception = (ResultCodableException) cause;
             code = exception.getCode();
         }
         this.onComplete(code, body);

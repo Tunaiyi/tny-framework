@@ -58,11 +58,11 @@ public class RelayPacketServerProcessor extends BaseRelayPacketProcessor {
             LOGGER.warn("{} 转发消息 {} 到 tunnel[{}], message 为 null", link, packet, arguments.getTunnelId());
             return;
         }
-        if (message instanceof NetMessage) {
-            RpcMessageAide.ignoreHeaders((NetMessage)message, setting.getReadIgnoreHeaders());
-            var rpcContext = RpcTransactionContext.createEnter(tunnel, (NetMessage)message, true);
-            rpcMonitor.onReceive(rpcContext);
-            tunnel.receive(rpcContext);
+        if (message instanceof NetMessage netMessage) {
+            RpcMessageAide.ignoreHeaders(netMessage, setting.getReadIgnoreHeaders());
+            // var rpcContext = RpcTransactionContext.createEnter(tunnel, (NetMessage)message, true);
+            // rpcMonitor.onReceive(rpcContext);
+            tunnel.receive(netMessage);
         }
     }
 

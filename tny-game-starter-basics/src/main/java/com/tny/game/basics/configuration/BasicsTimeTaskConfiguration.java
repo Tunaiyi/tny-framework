@@ -20,7 +20,7 @@ import org.springframework.context.annotation.*;
 
 import java.util.stream.Collectors;
 
-import static com.tny.game.basics.configuration.BasicsPropertiesConstants.*;
+import static com.tny.game.basics.configuration.BasicsPropertyConstants.*;
 
 /**
  * Game Suite 的默认配置

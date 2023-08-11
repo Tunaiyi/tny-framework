@@ -51,27 +51,27 @@ public class RelayCodecConstants {
     /**
      * 转播连接打开发起
      */
-    public static final byte RELAY_PACKET_TYPE_LINK_OPENING = (byte)1;
+    public static final byte RELAY_PACKET_TYPE_LINK_OPENING = (byte) 1;
 
     /**
      * 转播连接打开成功
      */
-    public static final byte RELAY_PACKET_TYPE_LINK_OPENED = (byte)2;
+    public static final byte RELAY_PACKET_TYPE_LINK_OPENED = (byte) 2;
 
     /**
      * 转播连接关闭
      */
-    public static final byte RELAY_PACKET_TYPE_LINK_CLOSE = (byte)3;
+    public static final byte RELAY_PACKET_TYPE_LINK_CLOSE = (byte) 3;
 
     /**
      * 转播连接ping
      */
-    public static final byte RELAY_PACKET_TYPE_LINK_PING = (byte)5;
+    public static final byte RELAY_PACKET_TYPE_LINK_PING = (byte) 5;
 
     /**
      * 转播连接ping
      */
-    public static final byte RELAY_PACKET_TYPE_LINK_PONG = (byte)6;
+    public static final byte RELAY_PACKET_TYPE_LINK_PONG = (byte) 6;
 
     /**
      * 转播数据包类型标识位
@@ -81,22 +81,22 @@ public class RelayCodecConstants {
     /**
      * 转播通道连接发起
      */
-    public static final byte RELAY_PACKET_TYPE_TUNNEL_CONNECT = RELAY_PACKET_FOR_TUNNEL | (byte)1;
+    public static final byte RELAY_PACKET_TYPE_TUNNEL_CONNECT = RELAY_PACKET_FOR_TUNNEL | (byte) 1;
 
     /**
      * 转播通道连接成功
      */
-    public static final byte RELAY_PACKET_TYPE_TUNNEL_CONNECTED = RELAY_PACKET_FOR_TUNNEL | (byte)2;
+    public static final byte RELAY_PACKET_TYPE_TUNNEL_CONNECTED = RELAY_PACKET_FOR_TUNNEL | (byte) 2;
 
     /**
      * 转播通道断开
      */
-    public static final byte RELAY_PACKET_TYPE_TUNNEL_DISCONNECT = RELAY_PACKET_FOR_TUNNEL | (byte)3;
+    public static final byte RELAY_PACKET_TYPE_TUNNEL_DISCONNECT = RELAY_PACKET_FOR_TUNNEL | (byte) 3;
 
     /**
      * 转播通道断开
      */
-    public static final byte RELAY_PACKET_TYPE_TUNNEL_SWITCH_LINK = RELAY_PACKET_FOR_TUNNEL | (byte)4;
+    public static final byte RELAY_PACKET_TYPE_TUNNEL_SWITCH_LINK = RELAY_PACKET_FOR_TUNNEL | (byte) 4;
 
     //	/**
     //	 * 转播通道连接确认
@@ -111,7 +111,7 @@ public class RelayCodecConstants {
     /**
      * 转播通道转发
      */
-    public static final byte RELAY_PACKET_TYPE_TUNNEL_RELAY = RELAY_PACKET_FOR_TUNNEL | (byte)5;
+    public static final byte RELAY_PACKET_TYPE_TUNNEL_RELAY = RELAY_PACKET_FOR_TUNNEL | (byte) 5;
 
     /**
      * 是否是文件头

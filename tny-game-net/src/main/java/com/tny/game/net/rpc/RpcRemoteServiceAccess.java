@@ -34,7 +34,7 @@ public class RpcRemoteServiceAccess implements RpcServiceAccess {
 
     @Override
     public long getAccessId() {
-        return endpoint.getMessagerId();
+        return endpoint.contactId();
     }
 
     @Override

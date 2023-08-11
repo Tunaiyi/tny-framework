@@ -26,7 +26,7 @@ public class SpringNettyRpcServerBootstrapSetting extends SpringNettyNetServerBo
 
     public SpringNettyRpcServerBootstrapSetting() {
         super();
-        this.setCertificateFactory(defaultName(MessagerCertificateFactory.class));
+        this.setCertificateFactory(defaultName(ContactCertificateFactory.class));
     }
 
 }

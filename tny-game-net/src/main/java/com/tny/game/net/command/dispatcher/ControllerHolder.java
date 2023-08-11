@@ -132,8 +132,8 @@ public abstract class ControllerHolder {
         return this.controllerClass;
     }
 
-    public boolean isUserGroup(MessagerType messagerType) {
-        return this.userGroups == null || this.userGroups.isEmpty() || this.userGroups.contains(messagerType.getGroup());
+    public boolean isUserGroup(ContactType contactType) {
+        return this.userGroups == null || this.userGroups.isEmpty() || this.userGroups.contains(contactType.getGroup());
     }
 
     public boolean isActiveByAppType(String appType) {

@@ -22,7 +22,7 @@ import com.tny.game.net.transport.*;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-import static com.tny.game.net.base.MessagerType.*;
+import static com.tny.game.net.base.ContactType.*;
 
 /**
  * <p>
@@ -44,7 +44,7 @@ public class ServerSpeakController {
 
     @Rpc(CtrlerIds.SPEAK$SAY_FOR_RPC)
     public SayContentDTO say(@UserId RpcAccessIdentify id, @RpcParam String message) {
-        return new SayContentDTO(id.getMessagerId(), "respond " + message);
+        return new SayContentDTO(id.contactId(), "respond " + message);
     }
 
     @Rpc(CtrlerIds.SPEAK$TEST)

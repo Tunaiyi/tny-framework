@@ -12,11 +12,11 @@ package com.tny.game.net.netty4.configuration.filter;
 
 import com.tny.game.common.io.word.*;
 import com.tny.game.net.command.plugins.filter.text.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.*;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.*;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -28,7 +28,7 @@ import java.util.List;
 @EnableConfigurationProperties(TextFilterProperties.class)
 public class TextFilterAutoConfiguration {
 
-    @Resource
+    @Autowired
     private TextFilterProperties textFilterProperties;
 
     @Bean

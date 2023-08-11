@@ -12,8 +12,8 @@ package com.tny.game.basics.item.capacity;
 
 import com.tny.game.basics.item.*;
 import org.slf4j.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.*;
 
@@ -29,10 +29,10 @@ public class CapacityDebugger {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CapacityDebugger.class);
 
-    @Resource
+    @Autowired
     private CapacityStorerManager<?> capacityStorerManager;
 
-    @Resource
+    @Autowired
     private GameExplorer gameExplorer;
 
     private static final String INDENT = "    ";

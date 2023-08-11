@@ -19,6 +19,6 @@ import com.tny.game.net.transport.*;
  * @author kgtny
  * @date 2023/2/9 23:47
  **/
-public interface MessageSender extends NetMessager, Sender {
+public interface MessageSender extends NetContact, Sender {
 
 }

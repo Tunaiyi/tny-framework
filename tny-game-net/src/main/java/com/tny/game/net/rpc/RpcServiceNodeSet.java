@@ -15,7 +15,7 @@ import com.tny.game.net.base.*;
 import com.tny.game.net.endpoint.*;
 
 import java.util.*;
-import java.util.concurrent.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -82,7 +82,7 @@ public class RpcServiceNodeSet implements RpcInvokeNodeSet, RpcForwardNodeSet {
         if (remoteNode == null) {
             return null;
         }
-        RpcServiceAccess access = remoteNode.getForwardAccess(accessPoint.getMessagerId());
+        RpcServiceAccess access = remoteNode.getForwardAccess(accessPoint.contactId());
         if (access != null) {
             return access;
         }

@@ -16,6 +16,8 @@ import com.tny.game.codec.typeprotobuf.*;
 import com.tny.game.codec.typeprotobuf.annotation.*;
 import com.tny.game.net.base.*;
 
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 import static com.tny.game.common.utils.ObjectAide.*;
 
 /**
@@ -41,7 +43,7 @@ public class RpcForwardHeader extends MessageHeader<RpcForwardHeader> {
      * 发送者
      */
     @Protobuf(order = 3)
-    private ForwardMessager sender;
+    private ForwardContact sender;
 
     /**
      * 目标服务
@@ -53,7 +55,7 @@ public class RpcForwardHeader extends MessageHeader<RpcForwardHeader> {
      * 目标接受者
      */
     @Protobuf(order = 5)
-    private ForwardMessager receiver;
+    private ForwardContact receiver;
 
     /**
      * 请求转发者
@@ -76,7 +78,7 @@ public class RpcForwardHeader extends MessageHeader<RpcForwardHeader> {
         return from;
     }
 
-    public ForwardMessager getSender() {
+    public ForwardContact getSender() {
         return sender;
     }
 
@@ -84,7 +86,7 @@ public class RpcForwardHeader extends MessageHeader<RpcForwardHeader> {
         return to;
     }
 
-    public ForwardMessager getReceiver() {
+    public ForwardContact getReceiver() {
         return receiver;
     }
 
@@ -107,22 +109,23 @@ public class RpcForwardHeader extends MessageHeader<RpcForwardHeader> {
     }
 
     protected RpcForwardHeader setFrom(RpcServicer fromService) {
+        var list = new ConcurrentLinkedQueue<RpcForwardHeader>();
         this.from = toForwardPoint(fromService);
         return this;
     }
 
-    protected RpcForwardHeader setSender(Messager sender) {
-        this.sender = toForwardMessager(sender);
+    protected RpcForwardHeader setSender(Contact sender) {
+        this.sender = toForwardContact(sender);
         return this;
     }
 
-    protected RpcForwardHeader setTo(RpcServicer toServicer) {
-        this.to = toForwardPoint(toServicer);
+    protected RpcForwardHeader setTo(RpcServicer toService) {
+        this.to = toForwardPoint(toService);
         return this;
     }
 
-    protected RpcForwardHeader setReceiver(Messager receiver) {
-        this.receiver = toForwardMessager(receiver);
+    protected RpcForwardHeader setReceiver(Contact receiver) {
+        this.receiver = toForwardContact(receiver);
         return this;
     }
 
@@ -147,14 +150,14 @@ public class RpcForwardHeader extends MessageHeader<RpcForwardHeader> {
         }
     }
 
-    private ForwardMessager toForwardMessager(Messager messager) {
-        if (messager == null) {
+    private ForwardContact toForwardContact(Contact contact) {
+        if (contact == null) {
             return null;
         }
-        if (messager instanceof ForwardMessager) {
-            return as(messager);
+        if (contact instanceof ForwardContact) {
+            return as(contact);
         } else {
-            return new ForwardMessager(messager);
+            return new ForwardContact(contact);
         }
     }
 

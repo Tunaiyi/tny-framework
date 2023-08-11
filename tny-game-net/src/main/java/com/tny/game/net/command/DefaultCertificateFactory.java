@@ -12,6 +12,7 @@ package com.tny.game.net.command;
 
 import com.tny.game.common.lifecycle.unit.annotation.*;
 import com.tny.game.net.base.*;
+import com.tny.game.net.transport.*;
 
 import java.time.Instant;
 
@@ -30,13 +31,13 @@ public class DefaultCertificateFactory<UID> implements CertificateFactory<UID> {
     }
 
     @Override
-    public Certificate<UID> certificate(long id, UID userId, long messagerId, MessagerType messagerType, Instant authenticateAt) {
-        return Certificates.createAuthenticated(id, userId, messagerId, messagerType, authenticateAt, false);
+    public Certificate<UID> certificate(long id, UID userId, long contactId, ContactType contactType, Instant authenticateAt) {
+        return Certificates.createAuthenticated(id, userId, contactId, contactType, authenticateAt, false);
     }
 
     @Override
-    public Certificate<UID> renewCertificate(long id, UID userId, long messagerId, MessagerType messagerType, Instant authenticateAt) {
-        return Certificates.createAuthenticated(id, userId, messagerId, messagerType, authenticateAt, true);
+    public Certificate<UID> renewCertificate(long id, UID userId, long contactId, ContactType contactType, Instant authenticateAt) {
+        return Certificates.createAuthenticated(id, userId, contactId, contactType, authenticateAt, true);
     }
 
 }

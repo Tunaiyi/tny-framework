@@ -154,8 +154,8 @@ public abstract class BaseRemoteServeCluster implements NetRemoteServeCluster {
     private void doRefreshInstances() {
         this.instances = ImmutableList.sortedCopyOf(instanceMap.values());
         this.healthyInstances = ImmutableList.copyOf(instances.stream()
-                .filter(NetRemoteServeInstance::isHealthy)
-                .collect(Collectors.toList()));
+                                                              .filter(NetRemoteServeInstance::isHealthy)
+                                                              .collect(Collectors.toList()));
     }
 
     @Override
@@ -178,7 +178,7 @@ public abstract class BaseRemoteServeCluster implements NetRemoteServeCluster {
             return false;
         }
 
-        BaseRemoteServeCluster that = (BaseRemoteServeCluster)o;
+        BaseRemoteServeCluster that = (BaseRemoteServeCluster) o;
 
         return new EqualsBuilder().append(getServeName(), that.getServeName()).isEquals();
     }

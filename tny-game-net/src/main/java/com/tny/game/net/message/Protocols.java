@@ -60,7 +60,7 @@ public class Protocols {
             if (getClass() != obj.getClass()) {
                 return false;
             }
-            Protocol other = (Protocol)obj;
+            Protocol other = (Protocol) obj;
             return this.id == other.getProtocolId();
         }
 

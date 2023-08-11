@@ -14,10 +14,10 @@ import javax.annotation.Resource;
 @ContextConfiguration(locations = {"classpath:/application.xml"})
 public class ZAsyncCacheObjectTest {
 
-    @Resource()
+    @Autowired
     private AsyncCache cache;
 
-    @Resource()
+    @Autowired
     private AverageRateSyncDBExecutor syncDBExecutor;
 
     private CacheTestTask task;

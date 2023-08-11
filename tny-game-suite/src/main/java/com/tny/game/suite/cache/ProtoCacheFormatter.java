@@ -18,7 +18,7 @@ public abstract class ProtoCacheFormatter<I, P extends Message> extends CacheFor
 
     private static final Logger LOG = LoggerFactory.getLogger(SuiteLog.FORMATTER);
 
-    @Resource
+    @Autowired
     protected GameExplorer godExplorer;
 
     @Override

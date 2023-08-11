@@ -44,8 +44,8 @@ public class BaseEventBuses<L> {
             for (Field field : this.getClass().getDeclaredFields()) {
                 field.setAccessible(true);
                 if (BindEventBus.class.isAssignableFrom(field.getType())) {
-                    ExeAide.callUnchecked(() -> (BindEventBus)field.get(this))
-                            .ifPresent(eventBus -> events.add(as(eventBus)));
+                    ExeAide.callUnchecked(() -> (BindEventBus) field.get(this))
+                           .ifPresent(eventBus -> events.add(as(eventBus)));
                 }
             }
             this.eventBuses = ImmutableList.copyOf(events);

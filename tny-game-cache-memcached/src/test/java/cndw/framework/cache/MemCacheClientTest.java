@@ -14,7 +14,7 @@ import javax.annotation.Resource;
 @ContextConfiguration(locations = {"classpath:/application.xml"})
 public class MemCacheClientTest {
 
-    @Resource
+    @Autowired
     @Qualifier("client")
     private MemcachedClient client;
 

@@ -14,7 +14,7 @@ import static com.tny.game.suite.SuiteProfiles.*;
 @Profile({SCHEDULER_CACHE, GAME})
 public class CacheSchedulerStore implements SchedulerStore {
 
-    @Resource
+    @Autowired
     protected AsyncCache cache;
 
     private static String getKey(Object id) {

@@ -28,7 +28,7 @@ public class SpringNettyNetClientBootstrapSetting extends NettyNetClientBootstra
     private SpringNettyChannelSetting channel;
 
     @NestedConfigurationProperty
-    private ClientConnectorSetting connector;
+    private ClientSetting connector;
 
     public SpringNettyNetClientBootstrapSetting() {
         super(new SpringNettyChannelSetting());
@@ -44,12 +44,12 @@ public class SpringNettyNetClientBootstrapSetting extends NettyNetClientBootstra
     }
 
     @Override
-    public ClientConnectorSetting getConnector() {
+    public ClientSetting getConnector() {
         return super.getConnector();
     }
 
     @Override
-    public NettyNetClientBootstrapSetting setConnector(ClientConnectorSetting connector) {
+    public NettyNetClientBootstrapSetting setConnector(ClientSetting connector) {
         super.setConnector(connector);
         return this;
     }

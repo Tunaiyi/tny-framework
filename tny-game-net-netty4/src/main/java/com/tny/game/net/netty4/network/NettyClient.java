@@ -14,7 +14,6 @@ import com.google.common.base.MoreObjects;
 import com.tny.game.common.concurrent.*;
 import com.tny.game.common.url.*;
 import com.tny.game.net.base.*;
-import com.tny.game.net.command.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.rpc.*;
@@ -43,12 +42,12 @@ public class NettyClient<UID> extends BaseNetEndpoint<UID> implements NettyTermi
 
     private final PostConnect<UID> postConnect;
 
-    private volatile TunnelConnector connector;
+    private volatile TunnelConnection connection;
 
     private final NetIdGenerator idGenerator;
 
-    public NettyClient(NettyClientGuide guide, NetIdGenerator idGenerator, URL url, PostConnect<UID> postConnect,
-            Certificate<UID> certificate, NetworkContext context) {
+    public NettyClient(NettyClientGuide guide, NetIdGenerator idGenerator, URL url,
+            PostConnect<UID> postConnect, Certificate<UID> certificate, NetworkContext context) {
         super(certificate, context, 0);
         this.url = url;
         this.idGenerator = idGenerator;
@@ -73,19 +72,19 @@ public class NettyClient<UID> extends BaseNetEndpoint<UID> implements NettyTermi
 
     @Override
     public boolean isAutoReconnect() {
-        ClientConnectorSetting setting = guide.getSetting().getConnector();
+        ClientSetting setting = guide.getSetting().getConnector();
         return this.url.getParameter(AUTO_RECONNECT_PARAM, setting.isAutoReconnect());
     }
 
     @Override
     public int getConnectRetryTimes() {
-        ClientConnectorSetting setting = guide.getSetting().getConnector();
+        ClientSetting setting = guide.getSetting().getConnector();
         return this.url.getParameter(RETRY_TIMES_URL_PARAM, setting.getRetryTimes());
     }
 
     @Override
     public List<Long> getConnectRetryIntervals() {
-        ClientConnectorSetting setting = guide.getSetting().getConnector();
+        ClientSetting setting = guide.getSetting().getConnector();
         String intervals = this.url.getParameter(RETRY_INTERVAL_URL_PARAM, "");
         if (StringUtils.isEmpty(intervals)) {
             return setting.getRetryIntervals();
@@ -115,7 +114,7 @@ public class NettyClient<UID> extends BaseNetEndpoint<UID> implements NettyTermi
             }
             this.tunnel = newTunnel = new GeneralClientTunnel<>(this.idGenerator.generate(), this.guide.getContext());
             newTunnel.bind(this);
-            this.connector = new TunnelConnector(newTunnel, this, EXECUTOR_SERVICE);
+            this.connection = new TunnelConnection(newTunnel, this, EXECUTOR_SERVICE);
         }
     }
 
@@ -139,17 +138,17 @@ public class NettyClient<UID> extends BaseNetEndpoint<UID> implements NettyTermi
     }
 
     private void doConnect(ConnectCallback callback) {
-        this.connector.connect(callback);
+        this.connection.connect(callback);
     }
 
     @Override
     public void reconnect() {
-        this.connector.reconnect();
+        this.connection.reconnect();
     }
 
     @Override
     protected void prepareClose() {
-        TunnelConnector connector = this.connector;
+        TunnelConnection connector = this.connection;
         if (connector != null) {
             connector.shutdown();
         }
@@ -205,9 +204,9 @@ public class NettyClient<UID> extends BaseNetEndpoint<UID> implements NettyTermi
 
     @Override
     protected void postClose() {
-        TunnelConnector connector = this.connector;
+        TunnelConnection connector = this.connection;
         connector.shutdown();
-        this.connector = null;
+        this.connection = null;
     }
 
     @Override

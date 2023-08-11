@@ -16,6 +16,7 @@ import com.tny.game.net.command.processor.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.message.common.*;
 import com.tny.game.net.rpc.*;
+import com.tny.game.net.transport.*;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 
@@ -33,7 +34,7 @@ public class NetBootstrapContext implements NetworkContext {
 
     private final MessageFactory messageFactory;
 
-    private final MessagerFactory messagerFactory;
+    private final ContactFactory contactFactory;
 
     private final CertificateFactory<?> certificateFactory;
 
@@ -47,7 +48,7 @@ public class NetBootstrapContext implements NetworkContext {
 
     public NetBootstrapContext() {
         this.messageFactory = new CommonMessageFactory();
-        this.messagerFactory = new DefaultMessagerFactory();
+        this.contactFactory = new DefaultContactFactory();
         this.certificateFactory = new DefaultCertificateFactory<>();
         this.rpcMonitor = new RpcMonitor();
         this.appContext = null;
@@ -63,7 +64,7 @@ public class NetBootstrapContext implements NetworkContext {
             MessageDispatcher messageDispatcher,
             CommandExecutorFactory commandExecutorFactory,
             MessageFactory messageFactory,
-            MessagerFactory messagerFactory,
+            ContactFactory contactFactory,
             CertificateFactory<?> certificateFactory,
             RpcForwarder rpcForwarder,
             RpcMonitor rpcMonitor) {
@@ -72,7 +73,7 @@ public class NetBootstrapContext implements NetworkContext {
         this.messageDispatcher = messageDispatcher;
         this.commandExecutorFactory = commandExecutorFactory;
         this.messageFactory = messageFactory;
-        this.messagerFactory = messagerFactory;
+        this.contactFactory = contactFactory;
         this.certificateFactory = certificateFactory;
         this.rpcForwarder = rpcForwarder;
         this.rpcMonitor = rpcMonitor;
@@ -89,8 +90,8 @@ public class NetBootstrapContext implements NetworkContext {
     }
 
     @Override
-    public MessagerFactory getMessagerFactory() {
-        return this.messagerFactory;
+    public ContactFactory getContactFactory() {
+        return this.contactFactory;
     }
 
     @Override

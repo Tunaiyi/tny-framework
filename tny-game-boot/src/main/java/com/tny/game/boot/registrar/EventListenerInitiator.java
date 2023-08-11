@@ -14,15 +14,15 @@ import com.tny.game.boot.event.annotation.*;
 import com.tny.game.common.event.bus.*;
 import com.tny.game.common.event.bus.annotation.*;
 import com.tny.game.common.lifecycle.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
-import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class EventListenerInitiator implements AppPrepareStart {
 
-    @Resource
+    @Autowired
     private ApplicationContext context;
 
     private static class GlobalListener {

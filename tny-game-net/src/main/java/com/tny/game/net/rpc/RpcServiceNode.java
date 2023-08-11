@@ -47,7 +47,7 @@ public class RpcServiceNode implements RpcInvokeNode, RpcForwardNode {
     }
 
     @Override
-    public MessagerType getServiceType() {
+    public ContactType getServiceType() {
         return service.getServiceType();
     }
 
@@ -115,7 +115,7 @@ public class RpcServiceNode implements RpcInvokeNode, RpcForwardNode {
         try {
             boolean activate = this.remoteServiceAccessMap.isEmpty();
             RpcAccessIdentify nodeId = endpoint.getUserId();
-            this.remoteServiceAccessMap.put(nodeId.getMessagerId(), new RpcRemoteServiceAccess(endpoint));
+            this.remoteServiceAccessMap.put(nodeId.contactId(), new RpcRemoteServiceAccess(endpoint));
             this.orderAccessPoints = ImmutableList.sortedCopyOf(
                     Comparator.comparing(RpcAccess::getAccessId),
                     remoteServiceAccessMap.values());
@@ -132,14 +132,14 @@ public class RpcServiceNode implements RpcInvokeNode, RpcForwardNode {
         try {
             RpcAccessIdentify nodeId = endpoint.getUserId();
             boolean activate = this.remoteServiceAccessMap.isEmpty();
-            RpcRemoteServiceAccess accessPoint = this.remoteServiceAccessMap.get(nodeId.getMessagerId());
+            RpcRemoteServiceAccess accessPoint = this.remoteServiceAccessMap.get(nodeId.contactId());
             if (accessPoint == null) {
                 return;
             }
             if (accessPoint.getEndpoint() != endpoint) {
                 return;
             }
-            if (this.remoteServiceAccessMap.remove(nodeId.getMessagerId(), accessPoint)) {
+            if (this.remoteServiceAccessMap.remove(nodeId.contactId(), accessPoint)) {
                 this.orderAccessPoints = ImmutableList.sortedCopyOf(
                         Comparator.comparing(RpcAccess::getAccessId),
                         remoteServiceAccessMap.values());

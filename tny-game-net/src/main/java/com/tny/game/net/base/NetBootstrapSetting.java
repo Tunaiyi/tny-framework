@@ -46,7 +46,7 @@ public interface NetBootstrapSetting {
 
     String getMessageFactory();
 
-    String getMessagerFactory();
+    String getContactFactory();
 
     String getCertificateFactory();
 

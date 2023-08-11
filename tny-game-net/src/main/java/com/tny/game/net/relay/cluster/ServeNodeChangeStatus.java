@@ -31,8 +31,8 @@ public enum ServeNodeChangeStatus {
         @Override
         public boolean isChange(RemoteServeNode oldOne, RemoteServeNode newOne) {
             return !Objects.equals(oldOne.getScheme(), newOne.getScheme()) ||
-                    !Objects.equals(oldOne.getHost(), newOne.getHost()) ||
-                    !Objects.equals(oldOne.getPort(), newOne.getPort());
+                   !Objects.equals(oldOne.getHost(), newOne.getHost()) ||
+                   !Objects.equals(oldOne.getPort(), newOne.getPort());
         }
     },
 
@@ -40,7 +40,7 @@ public enum ServeNodeChangeStatus {
         @Override
         public boolean isChange(RemoteServeNode oldOne, RemoteServeNode newOne) {
             return !Objects.equals(oldOne.isHealthy(), newOne.isHealthy()) ||
-                    !Objects.equals(oldOne.getMetadata(), newOne.getMetadata());
+                   !Objects.equals(oldOne.getMetadata(), newOne.getMetadata());
         }
     };
 
