@@ -19,6 +19,6 @@ import com.tny.game.net.base.*;
 @UnitInterface
 public interface EndpointKeeperFactory<UID, E extends NetEndpointKeeper<UID, ?>, S extends EndpointKeeperSetting> {
 
-    E createKeeper(MessagerType messagerType, S setting);
+    E createKeeper(ContactType contactType, S setting);
 
 }

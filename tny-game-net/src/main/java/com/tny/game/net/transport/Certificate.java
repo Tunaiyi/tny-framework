@@ -8,7 +8,7 @@
  * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-package com.tny.game.net.command;
+package com.tny.game.net.transport;
 
 import com.tny.game.net.message.*;
 
@@ -16,7 +16,7 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.util.*;
 
-public interface Certificate<UID> extends Messager, Serializable {
+public interface Certificate<UID> extends Contact, Serializable {
 
     /**
      * @return 获取凭证号
@@ -103,7 +103,7 @@ public interface Certificate<UID> extends Messager, Serializable {
             return true;
         }
         return Objects.equals(getUserId(), other.getUserId()) &&
-                Objects.equals(getMessagerType(), other.getMessagerType());
+               Objects.equals(contactType(), other.contactType());
     }
 
     /**
@@ -117,8 +117,8 @@ public interface Certificate<UID> extends Messager, Serializable {
             return true;
         }
         return getId() == other.getId() &&
-                Objects.equals(getUserId(), other.getUserId()) &&
-                Objects.equals(getMessagerType(), other.getMessagerType());
+               Objects.equals(getUserId(), other.getUserId()) &&
+               Objects.equals(contactType(), other.contactType());
     }
 
 }

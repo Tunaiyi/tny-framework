@@ -11,7 +11,6 @@
 package com.tny.game.net.endpoint;
 
 import com.google.common.base.MoreObjects;
-import com.tny.game.net.command.*;
 import com.tny.game.net.transport.*;
 
 /**
@@ -48,10 +47,10 @@ public class CommonSession<UID> extends BaseNetEndpoint<UID> implements NetSessi
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                .add("userGroup", this.getGroup())
-                .add("userId", this.getUserId())
-                .add("tunnel", this.tunnel())
-                .toString();
+                          .add("userGroup", this.getGroup())
+                          .add("userId", this.getUserId())
+                          .add("tunnel", this.tunnel())
+                          .toString();
     }
 
 }

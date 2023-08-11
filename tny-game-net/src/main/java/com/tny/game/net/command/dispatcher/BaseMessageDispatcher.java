@@ -45,15 +45,15 @@ public abstract class BaseMessageDispatcher implements MessageDispatcher {
 
     private final ExprHolderFactory exprHolderFactory;
 
-    private final MessagerAuthenticator messagerAuthenticator;
+    private final ContactAuthenticator contactAuthenticator;
 
     protected final NetMessageDispatcherContext context;
 
-    protected BaseMessageDispatcher(NetAppContext appContext, MessagerAuthenticator messagerAuthenticator,
+    protected BaseMessageDispatcher(NetAppContext appContext, ContactAuthenticator contactAuthenticator,
             ExprHolderFactory exprHolderFactory) {
         this.context = new DefaultMessageDispatcherContext(appContext);
         this.exprHolderFactory = exprHolderFactory;
-        this.messagerAuthenticator = messagerAuthenticator;
+        this.contactAuthenticator = contactAuthenticator;
     }
 
     @Override
@@ -67,7 +67,7 @@ public abstract class BaseMessageDispatcher implements MessageDispatcher {
         MethodControllerHolder controller = this.getController(message.getProtocolId(), message.getMode());
         if (controller != null) {
             var handleContext = new RpcInvokeContext(controller, rpcContext, this.context.getAppContext());
-            return new RpcInvokeCommand(this.context, handleContext, messagerAuthenticator);
+            return new RpcInvokeCommand(this.context, handleContext, contactAuthenticator);
         }
         if (message.getMode() == MessageMode.REQUEST) {
             LOGGER.warn("{} controller [{}] not exist", message.getMode(), message.getProtocolId());
@@ -95,7 +95,7 @@ public abstract class BaseMessageDispatcher implements MessageDispatcher {
         RpcServiceType currentType = setting.getRpcServiceType();
         NetAppContext appContext = context.getAppContext();
         if (rpcServicer.getServiceType() == currentType &&
-                (!rpcServicer.isAppointed() || appContext != null && rpcServicer.getServerId() == appContext.getServerId())) {
+            (!rpcServicer.isAppointed() || appContext != null && rpcServicer.getServerId() == appContext.getServerId())) {
             return null;
         }
         return new RpcForwardCommand(rpcContext);

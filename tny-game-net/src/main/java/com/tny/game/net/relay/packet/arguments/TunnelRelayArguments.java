@@ -36,7 +36,7 @@ public class TunnelRelayArguments extends BaseTunnelPacketArguments {
     public void release() {
         Object body = message.getBody();
         if (body instanceof OctetMessageBody) {
-            ((OctetMessageBody)body).release();
+            ((OctetMessageBody) body).release();
         }
     }
 

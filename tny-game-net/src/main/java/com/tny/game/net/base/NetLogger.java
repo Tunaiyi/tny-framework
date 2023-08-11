@@ -132,17 +132,17 @@ public class NetLogger {
         return NetLoggerGroup.ofRelay(service).forReceiveMessage(packet.getType());
     }
 
-    public static void logSend(NetMessager messager, MessageSubject message) {
-        Logger logger = getMessageSendLogger(messager.getGroup(), message);
+    public static void logSend(NetContact contact, MessageSubject message) {
+        Logger logger = getMessageSendLogger(contact.getGroup(), message);
         if (logger != null && logger.isDebugEnabled()) {
-            logger.debug("# {} [发送] =>> Message : {}", messager, message);
+            logger.debug("# {} [发送] =>> Message : {}", contact, message);
         }
     }
 
-    public static void logReceive(NetMessager messager, MessageSubject message) {
-        Logger logger = getMessageReceiveLogger(messager.getGroup(), message);
+    public static void logReceive(NetContact contact, MessageSubject message) {
+        Logger logger = getMessageReceiveLogger(contact.getGroup(), message);
         if (logger != null && logger.isDebugEnabled()) {
-            logger.debug("# {} [接收] <<= Message : {}", messager, message);
+            logger.debug("# {} [接收] <<= Message : {}", contact, message);
         }
     }
 
@@ -164,7 +164,7 @@ public class NetLogger {
         var arguments = packet.getArguments();
         Logger logger = getRelayPacketSendLogger(arguments.getService(), packet);
         if (logger != null && logger.isDebugEnabled()) {
-            logger.debug("RelayLink({})[{}]{} # [接收] << LinkPacket : {}", transporter.getAccessMode(), "NEW-LINK", transporter, packet);
+            logger.debug("RelayLink[{}]{} # [接收] << LinkPacket : {}", "NEW-LINK", transporter, packet);
         }
     }
 

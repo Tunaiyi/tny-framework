@@ -20,21 +20,21 @@ import com.tny.game.net.endpoint.*;
  * @author Kun Yang
  * @date 2022/5/25 19:15
  **/
-public class RpcMessagerAccess implements RpcAccess {
+public class RpcEndpointAccess implements RpcAccess {
 
-    private static final AttrKey<RpcMessagerAccess> REMOTER_ACCESS = AttrKeys.key(RpcMessagerAccess.class, "REMOTER_ACCESS");
+    private static final AttrKey<RpcEndpointAccess> REMOTER_ACCESS = AttrKeys.key(RpcEndpointAccess.class, "REMOTER_ACCESS");
 
     private final Endpoint<?> endpoint;
 
-    public static RpcMessagerAccess of(Endpoint<?> endpoint) {
-        RpcMessagerAccess access = endpoint.attributes().getAttribute(REMOTER_ACCESS);
+    public static RpcAccess of(Endpoint<?> endpoint) {
+        RpcEndpointAccess access = endpoint.attributes().getAttribute(REMOTER_ACCESS);
         if (access != null) {
             return access;
         }
-        return endpoint.attributes().computeIfAbsent(REMOTER_ACCESS, () -> new RpcMessagerAccess(endpoint));
+        return endpoint.attributes().computeIfAbsent(REMOTER_ACCESS, () -> new RpcEndpointAccess(endpoint));
     }
 
-    private RpcMessagerAccess(Endpoint<?> endpoint) {
+    private RpcEndpointAccess(Endpoint<?> endpoint) {
         this.endpoint = endpoint;
     }
 
@@ -50,7 +50,7 @@ public class RpcMessagerAccess implements RpcAccess {
 
     @Override
     public long getAccessId() {
-        return endpoint.getMessagerId();
+        return endpoint.contactId();
     }
 
 }

@@ -26,8 +26,8 @@ public final class SpringBootMessageDispatcher extends DefaultMessageDispatcher 
     @Autowired
     private ApplicationContext applicationContext;
 
-    public SpringBootMessageDispatcher(NetAppContext appContext, MessagerAuthenticator messagerAuthenticator, ExprHolderFactory exprHolderFactory) {
-        super(appContext, messagerAuthenticator, exprHolderFactory);
+    public SpringBootMessageDispatcher(NetAppContext appContext, ContactAuthenticator contactAuthenticator, ExprHolderFactory exprHolderFactory) {
+        super(appContext, contactAuthenticator, exprHolderFactory);
     }
 
     @Override

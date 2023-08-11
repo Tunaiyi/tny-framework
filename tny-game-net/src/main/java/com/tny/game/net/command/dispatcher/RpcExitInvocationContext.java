@@ -57,7 +57,7 @@ class RpcExitInvocationContext extends BaseRpcTransactionContext implements RpcE
     }
 
     @Override
-    public NetMessager getMessager() {
+    public NetContact getContact() {
         return endpoint;
     }
 

@@ -32,7 +32,8 @@ import static com.tny.game.net.relay.cluster.ServeClusterFilterStatus.*;
  * @author : kgtny
  * @date : 2021/8/25 9:00 下午
  */
-public abstract class BaseClientRelayExplorer<T extends NetRemoteServeCluster> extends BaseRelayExplorer<ClientRelayTunnel<?>> implements NetClientRelayExplorer {
+public abstract class BaseClientRelayExplorer<T extends NetRemoteServeCluster> extends BaseRelayExplorer<ClientRelayTunnel<?>>
+        implements NetClientRelayExplorer {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(BaseClientRelayExplorer.class);
 

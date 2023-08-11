@@ -22,7 +22,7 @@ import com.tny.game.net.netty4.configuration.command.*;
 import org.slf4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static com.tny.game.net.base.MessagerType.*;
+import static com.tny.game.net.base.ContactType.*;
 import static com.tny.game.net.message.MessageMode.*;
 
 /**

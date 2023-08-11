@@ -36,7 +36,7 @@ public class MessageParamList extends AbstractList<Object> {
             return Optional.of(new MessageParamList(as(body, Object[].class)));
         }
         if (body instanceof List) {
-            return Optional.of(new MessageParamList((List<?>)body));
+            return Optional.of(new MessageParamList((List<?>) body));
         }
         return Optional.empty();
     }

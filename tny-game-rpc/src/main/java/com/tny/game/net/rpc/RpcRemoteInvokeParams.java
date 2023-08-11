@@ -34,11 +34,11 @@ public class RpcRemoteInvokeParams {
 
     private RpcServicer from;
 
-    private Messager sender;
+    private Contact sender;
 
     private RpcServicer to;
 
-    private Messager receiver;
+    private Contact receiver;
 
     private Object routeValue;
 
@@ -92,11 +92,11 @@ public class RpcRemoteInvokeParams {
         return params[0];
     }
 
-    public Messager getSender() {
+    public Contact getSender() {
         return sender;
     }
 
-    public Messager getReceiver() {
+    public Contact getReceiver() {
         return receiver;
     }
 
@@ -118,7 +118,7 @@ public class RpcRemoteInvokeParams {
         return this;
     }
 
-    RpcRemoteInvokeParams setSender(Messager sender) {
+    RpcRemoteInvokeParams setSender(Contact sender) {
         this.sender = sender;
         return this;
     }
@@ -133,7 +133,7 @@ public class RpcRemoteInvokeParams {
         return this;
     }
 
-    RpcRemoteInvokeParams setReceiver(Messager receiver) {
+    RpcRemoteInvokeParams setReceiver(Contact receiver) {
         this.receiver = receiver;
         return this;
     }

@@ -12,7 +12,6 @@ package com.tny.game.net.transport;
 
 import com.tny.game.common.context.*;
 import com.tny.game.net.base.*;
-import com.tny.game.net.command.*;
 import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.exception.*;
@@ -99,6 +98,7 @@ public class MockNetTunnel extends AttributeHolder implements NetTunnel<Long> {
     public NetEndpoint<Long> getEndpoint() {
         return this.endpoint;
     }
+
 
     @Override
     public void setAccessId(long accessId) {
@@ -194,9 +194,14 @@ public class MockNetTunnel extends AttributeHolder implements NetTunnel<Long> {
         return true;
     }
 
-    @Override
     public boolean receive(RpcEnterContext context) {
         return this.endpoint.receive(context);
+    }
+
+    @Override
+    public boolean receive(NetMessage message) {
+        var rpcContext = RpcTransactionContext.createEnter(this, message, true);
+        return this.endpoint.receive(rpcContext);
     }
 
     @Override

@@ -60,8 +60,8 @@ public class CommandPluginHolder {
             this.attributes = null;
         } else if (StringUtils.startsWith(attributes, EXPR_PREFIX)) {
             this.attributes = exprHolderFactory.create(attributes.substring(1))
-                    .createExpr()
-                    .execute(plugin.getAttributesClass());
+                                               .createExpr()
+                                               .execute(plugin.getAttributesClass());
         } else {
             this.attributes = attributes;
         }

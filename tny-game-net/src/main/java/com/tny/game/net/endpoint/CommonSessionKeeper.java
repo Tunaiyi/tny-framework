@@ -12,7 +12,6 @@ package com.tny.game.net.endpoint;
 
 import com.tny.game.common.concurrent.lock.locker.*;
 import com.tny.game.net.base.*;
-import com.tny.game.net.command.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.transport.*;
 import org.slf4j.*;
@@ -26,9 +25,9 @@ public class CommonSessionKeeper<UID> extends AbstractSessionKeeper<UID> impleme
 
     private static final MapObjectLocker<Object> locker = new MapObjectLocker<>();
 
-    public CommonSessionKeeper(MessagerType messagerType, SessionFactory<UID, ? extends NetSession<UID>, ? extends SessionSetting> factory,
+    public CommonSessionKeeper(ContactType contactType, SessionFactory<UID, ? extends NetSession<UID>, ? extends SessionSetting> factory,
             SessionKeeperSetting setting) {
-        super(messagerType, factory, setting);
+        super(contactType, factory, setting);
     }
 
     @Override
@@ -36,9 +35,9 @@ public class CommonSessionKeeper<UID> extends AbstractSessionKeeper<UID> impleme
         if (!certificate.isAuthenticated()) {
             throw new AuthFailedException(NetResultCode.AUTH_FAIL_ERROR, "cert {} is unauthentic", certificate);
         }
-        if (!this.getMessagerType().equals(certificate.getMessagerType())) {
+        if (!this.getContactType().equals(certificate.contactType())) {
             throw new AuthFailedException(NetResultCode.AUTH_FAIL_ERROR,
-                    "cert {} userType is {}, not {}", certificate, certificate.getMessagerType(), this.getMessagerType());
+                    "cert {} userType is {}, not {}", certificate, certificate.contactType(), this.getContactType());
         }
         UID uid = certificate.getUserId();
         Lock lock = locker.lock(uid);

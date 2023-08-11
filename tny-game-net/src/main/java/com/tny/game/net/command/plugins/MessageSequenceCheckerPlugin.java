@@ -31,9 +31,9 @@ public class MessageSequenceCheckerPlugin implements VoidCommandPlugin<Object> {
         }
         Endpoint<Object> endpoint = null;
         if (communicator instanceof Endpoint) {
-            endpoint = (Endpoint<Object>)communicator;
+            endpoint = (Endpoint<Object>) communicator;
         } else if (communicator instanceof Tunnel) {
-            endpoint = ((Tunnel<Object>)communicator).getEndpoint();
+            endpoint = ((Tunnel<Object>) communicator).getEndpoint();
         }
         Integer lastHandledId = endpoint.attributes().getAttribute(CHECK_MESSAGE_ID, 0);
         MessageHead head = message.getHead();

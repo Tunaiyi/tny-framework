@@ -11,7 +11,6 @@
 package com.tny.game.net.endpoint;
 
 import com.tny.game.net.base.*;
-import com.tny.game.net.command.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.rpc.*;
 import com.tny.game.net.transport.*;
@@ -25,8 +24,8 @@ import static com.tny.game.common.utils.ObjectAide.*;
  */
 public class CommonTerminalKeeper<UID> extends AbstractEndpointKeeper<UID, Terminal<UID>, Terminal<UID>> implements TerminalKeeper<UID> {
 
-    protected CommonTerminalKeeper(MessagerType messagerType) {
-        super(messagerType);
+    protected CommonTerminalKeeper(ContactType contactType) {
+        super(contactType);
     }
 
     @Override

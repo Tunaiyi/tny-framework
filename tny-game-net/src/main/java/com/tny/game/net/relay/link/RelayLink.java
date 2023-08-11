@@ -11,6 +11,7 @@
 package com.tny.game.net.relay.link;
 
 import com.tny.game.net.message.*;
+import com.tny.game.net.transport.*;
 
 /**
  * Client -> Gateway -> GameServer
@@ -30,7 +31,7 @@ import com.tny.game.net.message.*;
  * @author : kgtny
  * @date : 2021/3/1 9:06 下午
  */
-public interface RelayLink extends NetMessager {
+public interface RelayLink extends Connection, NetContact {
 
     /**
      * @return 线路 唯一 Id

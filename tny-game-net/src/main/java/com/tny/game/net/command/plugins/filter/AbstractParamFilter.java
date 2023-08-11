@@ -46,7 +46,7 @@ public abstract class AbstractParamFilter<UID, A extends Annotation, P> implemen
         Object body = message.bodyAs(Object.class);
         for (A an : annotations) {
             if (an != null) {
-                P param = (P)holder.getParameterValue(index, as(communicator), message, body);
+                P param = (P) holder.getParameterValue(index, as(communicator), message, body);
                 ResultCode result = this.doFilter(holder, communicator, message, index, an, param);
                 if (result != NetResultCode.SUCCESS) {
                     return result;

@@ -24,11 +24,11 @@ public class EndpointRouter implements RpcRouter {
 
     @Override
     public RpcAccess route(RpcInvokeNodeSet serviceSet, RpcRemoteMethod invoker, RpcRemoteInvokeParams invokeParams) {
-        Messager messager = invokeParams.getReceiver();
-        if (messager == null) {
+        Contact contact = invokeParams.getReceiver();
+        if (contact == null) {
             throw new NullPointerException(format("invoke {} Receiver is null", invoker));
         }
-        return serviceSet.findInvokeAccess(0, messager.getMessagerId());
+        return serviceSet.findInvokeAccess(0, contact.contactId());
     }
 
 }

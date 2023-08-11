@@ -34,11 +34,11 @@ public final class RpcControllerLoader {
     @ClassSelectorProvider
     public static ClassSelector controllerSelector() {
         return ClassSelector.create()
-                .addFilter(AnnotationClassFilter.ofInclude(RpcController.class))
-                .setHandler((classes) -> classes.stream()
-                        .filter((c) -> !c.isInterface() && !Modifier.isAbstract(c.getModifiers()))
-                        .forEach(CLASSES::add)
-                );
+                            .addFilter(AnnotationClassFilter.ofInclude(RpcController.class))
+                            .setHandler((classes) -> classes.stream()
+                                                            .filter((c) -> !c.isInterface() && !Modifier.isAbstract(c.getModifiers()))
+                                                            .forEach(CLASSES::add)
+                            );
     }
 
     public static Set<Class<?>> getControllerClasses() {

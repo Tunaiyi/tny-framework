@@ -13,7 +13,6 @@ package com.tny.game.net.netty4.network;
 import com.tny.game.common.url.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.net.base.*;
-import com.tny.game.net.command.*;
 import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.message.common.*;
 import com.tny.game.net.transport.*;
@@ -55,7 +54,7 @@ public class NettyClientTunnelTest extends NettyTunnelTest<MockNettyClient, Test
 
     private TestGeneralClientTunnel newTunnel(boolean open, MockNettyClient client) {
         TestGeneralClientTunnel tunnel = new TestGeneralClientTunnel(ID_GENERATOR.generate(),
-                new NetBootstrapContext(null, null, null, null, new CommonMessageFactory(), new DefaultMessagerFactory(), null, null,
+                new NetBootstrapContext(null, null, null, null, new CommonMessageFactory(), new DefaultContactFactory(), null, null,
                         new RpcMonitor()));
         tunnel.setEndpoint(client);
         if (open) {

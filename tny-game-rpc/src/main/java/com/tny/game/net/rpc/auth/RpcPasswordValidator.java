@@ -29,7 +29,7 @@ import static com.tny.game.net.rpc.auth.RpcAuthMessageContexts.*;
 /**
  * <p>
  */
-public class RpcPasswordValidator implements AuthenticationValidator<RpcAccessIdentify, MessagerCertificateFactory<RpcAccessIdentify>> {
+public class RpcPasswordValidator implements AuthenticationValidator<RpcAccessIdentify, ContactCertificateFactory<RpcAccessIdentify>> {
 
     private final RpcAuthService rpcAuthService;
 
@@ -42,7 +42,7 @@ public class RpcPasswordValidator implements AuthenticationValidator<RpcAccessId
 
     @Override
     public Certificate<RpcAccessIdentify> validate(Tunnel<RpcAccessIdentify> communicator, Message message,
-            MessagerCertificateFactory<RpcAccessIdentify> factory)
+            ContactCertificateFactory<RpcAccessIdentify> factory)
             throws RpcInvokeException, AuthFailedException {
         Optional<MessageParamList> paramListOptional = MessageParamList.of(message.bodyAs(List.class));
         if (!paramListOptional.isPresent()) {

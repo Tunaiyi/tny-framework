@@ -11,7 +11,6 @@
 package com.tny.game.net.netty4.network;
 
 import com.tny.game.common.url.*;
-import com.tny.game.net.command.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.rpc.*;
 import com.tny.game.net.transport.*;

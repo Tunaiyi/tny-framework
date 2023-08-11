@@ -11,7 +11,6 @@
 package com.tny.game.net.endpoint;
 
 import com.tny.game.net.base.*;
-import com.tny.game.net.command.*;
 import com.tny.game.net.endpoint.listener.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.transport.*;
@@ -30,13 +29,13 @@ public interface EndpointKeeper<UID, E extends Endpoint<UID>> {
     /**
      * @return 获取用户类型
      */
-    MessagerType getMessagerType();
+    ContactType getContactType();
 
     /**
      * @return 用户组类型
      */
     default String getUserGroup() {
-        return this.getMessagerType().getGroup();
+        return this.getContactType().getGroup();
     }
 
     /**

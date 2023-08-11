@@ -132,7 +132,7 @@ public class CommonMessageHead extends BaseMessageHeaderContainer implements Net
         if (!(o instanceof CommonMessageHead)) {
             return false;
         }
-        CommonMessageHead that = (CommonMessageHead)o;
+        CommonMessageHead that = (CommonMessageHead) o;
         return new EqualsBuilder()
                 .append(getId(), that.getId())
                 .append(this.protocol, that.protocol)

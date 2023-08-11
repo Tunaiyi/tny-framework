@@ -10,7 +10,6 @@
  */
 package com.tny.game.net.endpoint;
 
-import com.tny.game.net.command.*;
 import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.command.processor.MessageCommandBox;
 import com.tny.game.net.exception.*;
@@ -21,14 +20,6 @@ import com.tny.game.net.transport.*;
  * <p>
  */
 public interface NetEndpoint<UID> extends Endpoint<UID>, MessageReceiver, SentMessageHistory {
-
-    /**
-     * 处理收到消息
-     *
-     * @param rpcContext 接受信息
-     */
-    @Override
-    boolean receive(RpcEnterContext rpcContext);
 
     /**
      * 异步发送消息

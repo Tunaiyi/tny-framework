@@ -22,12 +22,12 @@ import java.util.Comparator;
  * @author Kun Yang
  * @date 2022/4/28 15:11
  **/
-public interface RpcAccessPoint extends RpcServicer, Messager, Comparable<RpcAccessPoint> {
+public interface RpcAccessPoint extends RpcServicer, Contact, Comparable<RpcAccessPoint> {
 
-    Comparator<RpcAccessPoint> COMPARATOR = Comparator.comparing(RpcAccessPoint::getMessagerId);
+    Comparator<RpcAccessPoint> COMPARATOR = Comparator.comparing(RpcAccessPoint::contactId);
 
     @Override
-    default MessagerType getMessagerType() {
+    default ContactType contactType() {
         return getServiceType();
     }
 

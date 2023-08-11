@@ -48,8 +48,8 @@ public class MessageQueue<UID> {
         long stamp = lock.readLock();
         try {
             return this.sentMessageQueue.stream()
-                    .filter(filter)
-                    .collect(Collectors.toList());
+                                        .filter(filter)
+                                        .collect(Collectors.toList());
         } finally {
             lock.unlockRead(stamp);
         }

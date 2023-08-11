@@ -68,16 +68,16 @@ public class RpcForwardCommand implements RpcCommand {
             ForwardPoint fromPoint = new ForwardPoint(tunnel.getUserId());
             RpcAccessPoint toPoint = toAccess.getForwardPoint();
             var content = MessageContents.copy(message)
-                    .withHeader(RpcForwardHeaderBuilder.newBuilder()
-                            .setFrom(fromPoint)
-                            .setSender(forwardHeader.getSender())
-                            .setTo(toPoint)
-                            .setReceiver(forwardHeader.getReceiver())
-                            .build());
+                                         .withHeader(RpcForwardHeaderBuilder.newBuilder()
+                                                                            .setFrom(fromPoint)
+                                                                            .setSender(forwardHeader.getSender())
+                                                                            .setTo(toPoint)
+                                                                            .setReceiver(forwardHeader.getReceiver())
+                                                                            .build());
             if (message.getMode() == MessageMode.REQUEST) {
                 content.withHeader(RpcOriginalMessageIdHeaderBuilder.newBuilder()
-                        .setMessageId(message.getId())
-                        .build());
+                                                                    .setMessageId(message.getId())
+                                                                    .build());
             }
             endpoint.send(content);
             rpcContext.completeSilently();

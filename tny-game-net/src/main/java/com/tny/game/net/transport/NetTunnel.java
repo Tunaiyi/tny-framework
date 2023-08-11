@@ -18,7 +18,14 @@ import com.tny.game.net.message.*;
 /**
  * Created by Kun Yang on 2017/3/26.
  */
-public interface NetTunnel<UID> extends Tunnel<UID>, Transport, MessageSender, MessageReceiver {
+public interface NetTunnel<UID> extends Tunnel<UID>, Transport, MessageSender {
+
+    /**
+     * 接受消息
+     *
+     * @param message 消息
+     */
+    boolean receive(NetMessage message);
 
     /**
      * 设置访问 Id

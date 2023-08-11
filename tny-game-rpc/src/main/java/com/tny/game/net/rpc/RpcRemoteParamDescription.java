@@ -74,14 +74,14 @@ class RpcRemoteParamDescription {
                 } else if (annotationClass == RpcRouteParam.class) {
                     this.route = true;
                 } else if (annotationClass == RpcFrom.class) {
-                    if (Messager.class.isAssignableFrom(paramClass)) {
+                    if (Contact.class.isAssignableFrom(paramClass)) {
                         this.mode = SENDER;
                     }
                     if (RpcServicer.class.isAssignableFrom(paramClass)) {
                         this.mode = FROM_SERVICE;
                     }
                 } else if (annotationClass == RpcTo.class) {
-                    if (Messager.class.isAssignableFrom(paramClass)) {
+                    if (Contact.class.isAssignableFrom(paramClass)) {
                         this.mode = RECEIVER;
                     }
                     if (RpcServicer.class.isAssignableFrom(paramClass)) {

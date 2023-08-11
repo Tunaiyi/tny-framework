@@ -23,7 +23,7 @@ import static com.tny.game.net.utils.NetConfigs.*;
  * @author : kgtny
  * @date : 2021/11/8 4:52 下午
  */
-public class ClientConnectorSetting {
+public class ClientSetting {
 
     private int retryTimes = NetConfigs.RETRY_TIMES_DEFAULT_VALUE;
 
@@ -55,27 +55,27 @@ public class ClientConnectorSetting {
         return asyncConnect;
     }
 
-    public ClientConnectorSetting setRetryTimes(int retryTimes) {
+    public ClientSetting setRetryTimes(int retryTimes) {
         this.retryTimes = retryTimes;
         return this;
     }
 
-    public ClientConnectorSetting setRetryIntervals(List<Long> retryIntervals) {
+    public ClientSetting setRetryIntervals(List<Long> retryIntervals) {
         this.retryIntervals = ImmutableList.copyOf(retryIntervals);
         return this;
     }
 
-    public ClientConnectorSetting setConnectTimeout(long connectTimeout) {
+    public ClientSetting setConnectTimeout(long connectTimeout) {
         this.connectTimeout = connectTimeout;
         return this;
     }
 
-    public ClientConnectorSetting setAsyncConnect(boolean asyncConnect) {
+    public ClientSetting setAsyncConnect(boolean asyncConnect) {
         this.asyncConnect = asyncConnect;
         return this;
     }
 
-    public ClientConnectorSetting setAutoReconnect(boolean autoReconnect) {
+    public ClientSetting setAutoReconnect(boolean autoReconnect) {
         this.autoReconnect = autoReconnect;
         return this;
     }

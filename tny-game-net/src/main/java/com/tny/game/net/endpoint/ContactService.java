@@ -19,37 +19,37 @@ import com.tny.game.net.transport.*;
 import java.util.*;
 import java.util.stream.Stream;
 
-public class MessagerService {
+public class ContactService {
 
     private final EndpointKeeperManager endpointKeeperManager;
 
-    public MessagerService(EndpointKeeperManager endpointKeeperManager) {
+    public ContactService(EndpointKeeperManager endpointKeeperManager) {
         this.endpointKeeperManager = endpointKeeperManager;
     }
 
     /**
-     * 获取messagerType用户类型中与指定uid对应的Endpoint <br>
+     * 获取contactType用户类型中与指定uid对应的Endpoint <br>
      *
-     * @param messagerType 用户类型
+     * @param contactType 用户类型
      * @param uid          用户ID
      * @return 返回获取的session, 无session返回null
      */
-    public <UID> Optional<Endpoint<UID>> getEndpoint(MessagerType messagerType, UID uid) {
-        Optional<EndpointKeeper<UID, Endpoint<UID>>> endpointKeeperOpt = this.endpointKeeperManager.getKeeper(messagerType);
+    public <UID> Optional<Endpoint<UID>> getEndpoint(ContactType contactType, UID uid) {
+        Optional<EndpointKeeper<UID, Endpoint<UID>>> endpointKeeperOpt = this.endpointKeeperManager.getKeeper(contactType);
         return endpointKeeperOpt.map(k -> k.getEndpoint(uid));
     }
 
     /**
      * 推送消息给用户
      *
-     * @param messagerType 用户类型
+     * @param contactType 用户类型
      * @param uid          用户ID
      * @param protocol     协议
      * @param resultCode   结果码
      * @param body         消息体
      */
-    public void pushByUid(MessagerType messagerType, Object uid, Protocol protocol, ResultCode resultCode, Object body) {
-        Optional<EndpointKeeper<Object, Endpoint<Object>>> keeperOpt = this.endpointKeeperManager.getKeeper(messagerType);
+    public void pushByUid(ContactType contactType, Object uid, Protocol protocol, ResultCode resultCode, Object body) {
+        Optional<EndpointKeeper<Object, Endpoint<Object>>> keeperOpt = this.endpointKeeperManager.getKeeper(contactType);
         keeperOpt.ifPresent(k -> k.send2User(uid, toPush(protocol, resultCode, body)));
     }
 
@@ -61,57 +61,57 @@ public class MessagerService {
     /**
      * 推送消息给用户
      *
-     * @param messagerType 用户类型
+     * @param contactType 用户类型
      * @param uid          用户ID
      * @param protocol     协议
      * @param body         消息体
      */
-    public void pushByUid(MessagerType messagerType, Object uid, Protocol protocol, Object body) {
-        this.pushByUid(messagerType, uid, protocol, NetResultCode.SUCCESS, body);
+    public void pushByUid(ContactType contactType, Object uid, Protocol protocol, Object body) {
+        this.pushByUid(contactType, uid, protocol, NetResultCode.SUCCESS, body);
     }
 
     /**
      * 推送消息给用户
      *
-     * @param messagerType 用户类型
+     * @param contactType 用户类型
      * @param uid          用户ID
      * @param protocol     协议
      */
-    public void pushByUid(MessagerType messagerType, Object uid, Protocol protocol, RpcResult<?> message) {
-        this.pushByUid(messagerType, uid, protocol, message.resultCode(), message.getBody());
+    public void pushByUid(ContactType contactType, Object uid, Protocol protocol, RpcResult<?> message) {
+        this.pushByUid(contactType, uid, protocol, message.resultCode(), message.getBody());
     }
 
     /**
      * 推送消息给用户
      *
-     * @param messagerType 用户类型
+     * @param contactType 用户类型
      * @param uid          用户ID
      * @param resultCode   结果码
      * @param body         消息体
      */
-    public void pushByUid(MessagerType messagerType, Object uid, ResultCode resultCode, Object body) {
-        this.pushByUid(messagerType, uid, Protocols.PUSH, resultCode, body);
+    public void pushByUid(ContactType contactType, Object uid, ResultCode resultCode, Object body) {
+        this.pushByUid(contactType, uid, Protocols.PUSH, resultCode, body);
     }
 
     /**
      * 推送消息给用户
      *
-     * @param messagerType 用户类型
+     * @param contactType 用户类型
      * @param uid          用户ID
      * @param body         消息体
      */
-    public void pushByUid(MessagerType messagerType, Object uid, Object body) {
-        this.pushByUid(messagerType, uid, Protocols.PUSH, NetResultCode.SUCCESS, body);
+    public void pushByUid(ContactType contactType, Object uid, Object body) {
+        this.pushByUid(contactType, uid, Protocols.PUSH, NetResultCode.SUCCESS, body);
     }
 
     /**
      * 推送消息给用户
      *
-     * @param messagerType 用户类型
+     * @param contactType 用户类型
      * @param uid          用户ID
      */
-    public void pushByUid(MessagerType messagerType, Object uid, RpcResult<?> message) {
-        this.pushByUid(messagerType, uid, Protocols.PUSH, message.resultCode(), message.getBody());
+    public void pushByUid(ContactType contactType, Object uid, RpcResult<?> message) {
+        this.pushByUid(contactType, uid, Protocols.PUSH, message.resultCode(), message.getBody());
     }
 
     /**
@@ -122,9 +122,9 @@ public class MessagerService {
      * @param resultCode 结果码
      * @param body       消息体
      */
-    public void push2User(Messager user, Protocol protocol, ResultCode resultCode, Object body) {
-        Optional<EndpointKeeper<Object, Endpoint<Object>>> keeperOpt = this.endpointKeeperManager.getKeeper(user.getMessagerType());
-        keeperOpt.ifPresent(k -> k.send2User(user.getMessagerId(), toPush(protocol, resultCode, body)));
+    public void push2User(Contact user, Protocol protocol, ResultCode resultCode, Object body) {
+        Optional<EndpointKeeper<Object, Endpoint<Object>>> keeperOpt = this.endpointKeeperManager.getKeeper(user.contactType());
+        keeperOpt.ifPresent(k -> k.send2User(user.contactId(), toPush(protocol, resultCode, body)));
     }
 
     /**
@@ -134,7 +134,7 @@ public class MessagerService {
      * @param protocol 协议
      * @param body     消息体
      */
-    public void push2User(Messager user, Protocol protocol, Object body) {
+    public void push2User(Contact user, Protocol protocol, Object body) {
         this.push2User(user, protocol, NetResultCode.SUCCESS, body);
     }
 
@@ -144,7 +144,7 @@ public class MessagerService {
      * @param user     可标识用户的对象
      * @param protocol 协议
      */
-    public void push2User(Messager user, Protocol protocol, RpcResult<?> message) {
+    public void push2User(Contact user, Protocol protocol, RpcResult<?> message) {
         this.push2User(user, protocol, message.resultCode(), message.getBody());
     }
 
@@ -155,7 +155,7 @@ public class MessagerService {
      * @param resultCode 结果码
      * @param body       消息体
      */
-    public void push2User(Messager user, ResultCode resultCode, Object body) {
+    public void push2User(Contact user, ResultCode resultCode, Object body) {
         this.push2User(user, Protocols.PUSH, resultCode, body);
     }
 
@@ -165,7 +165,7 @@ public class MessagerService {
      * @param user 可标识用户的对象
      * @param body 消息体
      */
-    public void push2User(Messager user, Object body) {
+    public void push2User(Contact user, Object body) {
         this.push2User(user, Protocols.PUSH, NetResultCode.SUCCESS, body);
     }
 
@@ -174,7 +174,7 @@ public class MessagerService {
      *
      * @param user 可标识用户的对象
      */
-    public void push2User(Messager user, RpcResult<?> message) {
+    public void push2User(Contact user, RpcResult<?> message) {
         this.push2User(user, Protocols.PUSH, message.resultCode(), message.getBody());
     }
 
@@ -186,7 +186,7 @@ public class MessagerService {
      * @param resultCode 结果码
      * @param body       消息体
      */
-    public void push2Users(Stream<? extends Messager> users, Protocol protocol, ResultCode resultCode, Object body) {
+    public void push2Users(Stream<? extends Contact> users, Protocol protocol, ResultCode resultCode, Object body) {
         users.forEach(user -> this.push2User(user, toPush(protocol, resultCode, body)));
     }
 
@@ -197,7 +197,7 @@ public class MessagerService {
      * @param protocol 协议
      * @param body     消息体
      */
-    public void push2Users(Stream<? extends Messager> users, Protocol protocol, Object body) {
+    public void push2Users(Stream<? extends Contact> users, Protocol protocol, Object body) {
         this.push2Users(users, protocol, NetResultCode.SUCCESS, body);
     }
 
@@ -207,7 +207,7 @@ public class MessagerService {
      * @param users    用户流
      * @param protocol 协议
      */
-    public void push2Users(Stream<? extends Messager> users, Protocol protocol, RpcResult<?> message) {
+    public void push2Users(Stream<? extends Contact> users, Protocol protocol, RpcResult<?> message) {
         this.push2Users(users, protocol, message.resultCode(), message.getBody());
     }
 
@@ -218,7 +218,7 @@ public class MessagerService {
      * @param resultCode 结果码
      * @param body       消息体
      */
-    public void push2Users(Stream<? extends Messager> users, ResultCode resultCode, Object body) {
+    public void push2Users(Stream<? extends Contact> users, ResultCode resultCode, Object body) {
         this.push2Users(users, Protocols.PUSH, resultCode, body);
     }
 
@@ -228,7 +228,7 @@ public class MessagerService {
      * @param users 用户流
      * @param body  消息体
      */
-    public void push2Users(Stream<? extends Messager> users, Object body) {
+    public void push2Users(Stream<? extends Contact> users, Object body) {
         this.push2Users(users, Protocols.PUSH, NetResultCode.SUCCESS, body);
     }
 
@@ -237,88 +237,88 @@ public class MessagerService {
      *
      * @param users 用户流
      */
-    public void push2Users(Stream<? extends Messager> users, RpcResult<?> message) {
+    public void push2Users(Stream<? extends Contact> users, RpcResult<?> message) {
         this.push2Users(users, Protocols.PUSH, message.resultCode(), message.getBody());
     }
 
     /**
      * 推送消息给所有在线
      *
-     * @param messagerType 用户类型
+     * @param contactType 用户类型
      * @param protocol     协议
      * @param resultCode   结果码
      * @param body         消息体
      */
-    public void push2Online(MessagerType messagerType, Protocol protocol, ResultCode resultCode, Object body) {
-        Optional<EndpointKeeper<Object, Endpoint<Object>>> keeperOpt = this.endpointKeeperManager.getKeeper(messagerType);
+    public void push2Online(ContactType contactType, Protocol protocol, ResultCode resultCode, Object body) {
+        Optional<EndpointKeeper<Object, Endpoint<Object>>> keeperOpt = this.endpointKeeperManager.getKeeper(contactType);
         keeperOpt.ifPresent(k -> k.send2AllOnline(toPush(protocol, resultCode, body)));
     }
 
     /**
      * 推送消息给所有在线
      *
-     * @param messagerType 用户类型
+     * @param contactType 用户类型
      * @param protocol     协议
      * @param body         消息体
      */
-    public void push2Online(MessagerType messagerType, Protocol protocol, Object body) {
-        this.push2Online(messagerType, protocol, NetResultCode.SUCCESS, body);
+    public void push2Online(ContactType contactType, Protocol protocol, Object body) {
+        this.push2Online(contactType, protocol, NetResultCode.SUCCESS, body);
     }
 
     /**
      * 推送消息给所有在线
      *
-     * @param messagerType 用户类型
+     * @param contactType 用户类型
      * @param protocol     协议
      */
-    public void push2Online(MessagerType messagerType, Protocol protocol, RpcResult<?> message) {
-        this.push2Online(messagerType, protocol, message.resultCode(), message.getBody());
+    public void push2Online(ContactType contactType, Protocol protocol, RpcResult<?> message) {
+        this.push2Online(contactType, protocol, message.resultCode(), message.getBody());
     }
 
     /**
      * 推送消息给所有在线
      *
-     * @param messagerType 用户类型
+     * @param contactType 用户类型
      * @param resultCode   结果码
      * @param body         消息体
      */
-    public void push2Online(MessagerType messagerType, ResultCode resultCode, Object body) {
-        this.push2Online(messagerType, Protocols.PUSH, resultCode, body);
+    public void push2Online(ContactType contactType, ResultCode resultCode, Object body) {
+        this.push2Online(contactType, Protocols.PUSH, resultCode, body);
     }
 
     /**
      * 推送消息给所有在线
      *
-     * @param messagerType 用户类型
+     * @param contactType 用户类型
      * @param body         消息体
      */
-    public void push2Online(MessagerType messagerType, Object body) {
-        this.push2Online(messagerType, Protocols.PUSH, NetResultCode.SUCCESS, body);
+    public void push2Online(ContactType contactType, Object body) {
+        this.push2Online(contactType, Protocols.PUSH, NetResultCode.SUCCESS, body);
     }
 
     /**
      * 推送消息给所有在线
      *
-     * @param messagerType 用户类型
+     * @param contactType 用户类型
      */
-    public void push2Online(MessagerType messagerType, RpcResult<?> message) {
-        this.push2Online(messagerType, Protocols.PUSH, message.resultCode(), message.getBody());
+    public void push2Online(ContactType contactType, RpcResult<?> message) {
+        this.push2Online(contactType, Protocols.PUSH, message.resultCode(), message.getBody());
     }
 
     /**
-     * @param messagerType 玩家ID
+     * @param contactType 玩家ID
      * @return 默认用户类型session数量
      */
-    public int getEndpointSize(MessagerType messagerType) {
-        Optional<EndpointKeeper<Object, Endpoint<Object>>> keeperOpt = this.endpointKeeperManager.getKeeper(messagerType);
+    public int getEndpointSize(ContactType contactType) {
+        Optional<EndpointKeeper<Object, Endpoint<Object>>> keeperOpt = this.endpointKeeperManager.getKeeper(contactType);
         return keeperOpt.map(EndpointKeeper::size).orElse(0);
     }
 
     /**
      * @return 获取所有默认组用户session
      */
-    public <UID> Set<Endpoint<UID>> getAllEndpoint(MessagerType messagerType) {
-        Optional<EndpointKeeper<UID, Endpoint<UID>>> keeperOpt = this.endpointKeeperManager.getKeeper(messagerType);
+    public <UID> Set<Endpoint<UID>> getAllEndpoint(ContactType contactType) {
+        Optional<EndpointKeeper<UID, Endpoint<UID>>> keeperOpt = this.endpointKeeperManager.getKeeper(contactType);
         Collection<Endpoint<UID>> endpoints = keeperOpt.map(k -> k.getAllEndpoints().values()).orElseGet(ImmutableList::of);
         return new HashSet<>(endpoints);
     }
@@ -326,10 +326,10 @@ public class MessagerService {
     /**
      * 将指定用户类型所有session下线
      *
-     * @param messagerType 用户类型
+     * @param contactType 用户类型
      */
-    public void offlineAll(MessagerType messagerType) {
-        Optional<SessionKeeper<Object>> keeperOpt = this.endpointKeeperManager.getSessionKeeper(messagerType);
+    public void offlineAll(ContactType contactType) {
+        Optional<SessionKeeper<Object>> keeperOpt = this.endpointKeeperManager.getSessionKeeper(contactType);
         keeperOpt.ifPresent(SessionKeeper::offlineAll);
     }
 
@@ -338,20 +338,20 @@ public class MessagerService {
      *
      * @param playerId 指定玩家ID
      */
-    public void offline(MessagerType messagerType, Object playerId) {
-        Optional<SessionKeeper<Object>> keeperOpt = this.endpointKeeperManager.getSessionKeeper(messagerType);
+    public void offline(ContactType contactType, Object playerId) {
+        Optional<SessionKeeper<Object>> keeperOpt = this.endpointKeeperManager.getSessionKeeper(contactType);
         keeperOpt.ifPresent(k -> k.offline(playerId));
     }
 
     /**
      * 指定用户 playerId 是否在线
      *
-     * @param messagerType 玩家ID
+     * @param contactType 玩家ID
      * @param playerId     玩家ID
      * @return true 表示在线, 否则表示是下线
      */
-    public boolean isOnline(MessagerType messagerType, long playerId) {
-        Optional<SessionKeeper<Object>> keeperOpt = this.endpointKeeperManager.getSessionKeeper(messagerType);
+    public boolean isOnline(ContactType contactType, long playerId) {
+        Optional<SessionKeeper<Object>> keeperOpt = this.endpointKeeperManager.getSessionKeeper(contactType);
         return keeperOpt.map(k -> k.isOnline(playerId)).orElse(false);
     }
 

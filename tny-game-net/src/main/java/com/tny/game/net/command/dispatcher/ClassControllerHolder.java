@@ -47,8 +47,8 @@ public final class ClassControllerHolder extends ControllerHolder {
     }
 
     private static final MethodFilter FILTER = method -> !OBJECT_METHOD_LIST.contains(method) &&
-            Modifier.isPublic(method.getModifiers()) &&
-            !Modifier.isStatic(method.getModifiers());
+                                                         Modifier.isPublic(method.getModifiers()) &&
+                                                         !Modifier.isStatic(method.getModifiers());
 
     private List<MethodControllerHolder> initMethodHolder(final Object executor, final MessageDispatcherContext context,
             RpcController controller, ExprHolderFactory exprHolderFactory) {

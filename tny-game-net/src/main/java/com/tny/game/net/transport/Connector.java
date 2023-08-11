@@ -12,7 +12,6 @@ package com.tny.game.net.transport;
 
 import com.tny.game.common.context.*;
 import com.tny.game.net.base.*;
-import com.tny.game.net.command.*;
 import com.tny.game.net.message.*;
 
 /**
@@ -20,23 +19,23 @@ import com.tny.game.net.message.*;
  * 具有用户标识, 有通讯状态的对象.
  * Created by Kun Yang on 2017/3/26.
  */
-public interface Communicator<UID> extends NetMessager {
+public interface Connector<UID> extends NetContact {
+
+    @Override
+    default ContactType contactType() {
+        return this.getCertificate().contactType();
+    }
+
+    @Override
+    default long contactId() {
+        return this.getCertificate().contactId();
+    }
 
     /**
      * @return 用户ID
      */
     default UID getUserId() {
         return this.getCertificate().getUserId();
-    }
-
-    @Override
-    default MessagerType getMessagerType() {
-        return this.getCertificate().getMessagerType();
-    }
-
-    @Override
-    default long getMessagerId() {
-        return this.getCertificate().getMessagerId();
     }
 
     /**

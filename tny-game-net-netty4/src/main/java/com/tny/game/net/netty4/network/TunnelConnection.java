@@ -31,9 +31,9 @@ import static com.tny.game.net.utils.NetConfigs.*;
  * @author : kgtny
  * @date : 2021/5/15 6:10 下午
  */
-class TunnelConnector {
+class TunnelConnection {
 
-    public static final Logger LOGGER = LoggerFactory.getLogger(TunnelConnector.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(TunnelConnection.class);
 
     private int times;
 
@@ -53,7 +53,7 @@ class TunnelConnector {
 
     private volatile ScheduledFuture<Void> future;
 
-    TunnelConnector(NetTunnel<?> tunnel, NettyClient<?> client, TunnelConnectExecutor executor) {
+    TunnelConnection(NetTunnel<?> tunnel, NettyClient<?> client, TunnelConnectExecutor executor) {
         this.times = 0;
         this.executor = executor;
         this.client = client;

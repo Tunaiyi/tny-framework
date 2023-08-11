@@ -8,18 +8,35 @@
  * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-package com.tny.game.net.command;
+package com.tny.game.net.base;
 
 import com.tny.game.common.lifecycle.unit.annotation.*;
 import com.tny.game.net.message.*;
 
+import static com.tny.game.common.utils.ObjectAide.*;
+
 /**
+ * 默认Contact工厂
  * <p>
  *
- * @author : kgtny
- * @date : 2021/5/6 10:29 上午
- */
+ * @author Kun Yang
+ * @date 2022/5/22 05:16
+ **/
 @Unit
-public class DefaultMessagerCertificateFactory<UID extends Messager> extends DefaultCertificateFactory<UID> implements MessagerCertificateFactory<UID> {
+public class DefaultContactFactory implements ContactFactory {
+
+    @Override
+    public <M extends Contact> M createContact(ContactType type, long contactId) {
+        return as(new DefaultContact(type, contactId));
+    }
+
+    @Override
+    public <M extends Contact> M createContact(ForwardContact contact) {
+        return as(contact);
+    }
+
+    private record DefaultContact(ContactType contactType, long contactId) implements Contact {
+
+    }
 
 }

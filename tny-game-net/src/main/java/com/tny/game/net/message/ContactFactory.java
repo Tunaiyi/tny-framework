@@ -10,23 +10,34 @@
  */
 package com.tny.game.net.message;
 
+import com.tny.game.common.lifecycle.unit.annotation.*;
 import com.tny.game.net.base.*;
 
 /**
- * 通讯者(消息发送接受者)
+ * 消息者工厂
  * <p>
  *
  * @author Kun Yang
- * @date 2022/4/21 04:17
+ * @date 2022/5/21 04:19
  **/
-public interface Messager {
+@UnitInterface
+public interface ContactFactory {
 
-    long getMessagerId();
+    /**
+     * 创建 Contact
+     *
+     * @param type       消息者类型
+     * @param contactId 消息者id
+     * @return 返回创建的 Contact
+     */
+    <C extends Contact> C createContact(ContactType type, long contactId);
 
-    MessagerType getMessagerType();
-
-    default String getGroup() {
-        return getMessagerType().getGroup();
-    }
+    /**
+     * 创建 Contact
+     *
+     * @param contact 转发消息者
+     * @return 返回创建的 Contact
+     */
+    <C extends Contact> C createContact(ForwardContact contact);
 
 }

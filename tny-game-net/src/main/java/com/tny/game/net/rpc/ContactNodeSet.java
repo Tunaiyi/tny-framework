@@ -24,16 +24,16 @@ import static com.tny.game.common.utils.ObjectAide.*;
  * @author Kun Yang
  * @date 2022/5/25 19:15
  **/
-public class MessagerNodeSet implements RpcInvokeNodeSet, RpcInvokeNode {
+public class ContactNodeSet implements RpcInvokeNodeSet, RpcInvokeNode {
 
-    private final MessagerType messagerType;
+    private final ContactType contactType;
 
     private EndpointKeeper<Object, Endpoint<Object>> keeper;
 
-    private final List<MessagerNodeSet> remoterList;
+    private final List<ContactNodeSet> remoterList;
 
-    public MessagerNodeSet(MessagerType messagerType) {
-        this.messagerType = messagerType;
+    public ContactNodeSet(ContactType contactType) {
+        this.contactType = contactType;
         this.remoterList = Collections.singletonList(this);
     }
 
@@ -43,8 +43,8 @@ public class MessagerNodeSet implements RpcInvokeNodeSet, RpcInvokeNode {
         }
     }
 
-    public MessagerType getMessagerType() {
-        return messagerType;
+    public ContactType getContactType() {
+        return contactType;
     }
 
     @Override
@@ -68,8 +68,8 @@ public class MessagerNodeSet implements RpcInvokeNodeSet, RpcInvokeNode {
     }
 
     @Override
-    public MessagerType getServiceType() {
-        return messagerType;
+    public ContactType getServiceType() {
+        return contactType;
     }
 
     @Override
@@ -81,7 +81,7 @@ public class MessagerNodeSet implements RpcInvokeNodeSet, RpcInvokeNode {
     public RpcAccess getAccess(long accessId) {
         Endpoint<?> endpoint = keeper.getEndpoint(accessId);
         if (endpoint != null) {
-            return RpcMessagerAccess.of(endpoint);
+            return RpcEndpointAccess.of(endpoint);
         }
         return null;
     }

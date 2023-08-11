@@ -55,7 +55,7 @@ public interface RpcTransactionContext extends RpcContext {
         return new RpcEnterInvocationContext(tunnel, message, async);
     }
 
-    static RpcTransferContext createRelay(NetMessager from, NetMessage message, RpcMonitor rpcMonitor, boolean async) {
+    static RpcTransferContext createRelay(NetContact from, NetMessage message, RpcMonitor rpcMonitor, boolean async) {
         return new RpcRelayInvocationContext(from, message, rpcMonitor, async);
     }
 
@@ -67,7 +67,7 @@ public interface RpcTransactionContext extends RpcContext {
     /**
      * @return 发送者
      */
-    NetMessager getMessager();
+    NetContact getContact();
 
     boolean isCompleted();
 

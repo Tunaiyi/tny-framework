@@ -21,41 +21,41 @@ import com.tny.game.net.base.*;
  * @date 2022/4/28 05:09
  **/
 @ProtobufClass
-public class ForwardMessager implements Messager {
+public class ForwardContact implements Contact {
 
     @Protobuf(order = 1)
-    private long messagerId;
+    private long contactId;
 
     @Protobuf(order = 2)
-    private int messagerTypeId;
+    private int contactTypeId;
 
     @Ignore
-    private MessagerType messagerType;
+    private ContactType contactType;
 
-    public ForwardMessager() {
+    public ForwardContact() {
     }
 
-    public ForwardMessager(Messager messager) {
-        this.messagerId = messager.getMessagerId();
-        this.messagerType = messager.getMessagerType();
-        this.messagerTypeId = this.messagerType.id();
-    }
-
-    @Override
-    public long getMessagerId() {
-        return messagerId;
-    }
-
-    public int getMessagerTypeId() {
-        return messagerTypeId;
+    public ForwardContact(Contact contact) {
+        this.contactId = contact.contactId();
+        this.contactType = contact.contactType();
+        this.contactTypeId = this.contactType.id();
     }
 
     @Override
-    public MessagerType getMessagerType() {
-        if (messagerType == null) {
-            messagerType = MessagerTypes.of(messagerTypeId);
+    public long contactId() {
+        return contactId;
+    }
+
+    public int getContactTypeId() {
+        return contactTypeId;
+    }
+
+    @Override
+    public ContactType contactType() {
+        if (contactType == null) {
+            contactType = ContactTypes.of(contactTypeId);
         }
-        return messagerType;
+        return contactType;
     }
 
 }

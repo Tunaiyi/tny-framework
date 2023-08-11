@@ -11,11 +11,9 @@
 package com.tny.game.net.transport;
 
 import com.tny.game.common.concurrent.worker.*;
-import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
-import com.tny.game.net.rpc.*;
 import org.slf4j.*;
 
 import java.net.InetSocketAddress;
@@ -73,11 +71,6 @@ public class LocalMessageTransporter implements MessageTransporter {
     }
 
     @Override
-    public NetAccessMode getAccessMode() {
-        return NetAccessMode.SERVER;
-    }
-
-    @Override
     public void bind(NetTunnel<?> tunnel) {
         this.tunnel = tunnel;
     }
@@ -85,8 +78,8 @@ public class LocalMessageTransporter implements MessageTransporter {
     @Override
     public MessageWriteFuture write(Message message, MessageWriteFuture awaiter) throws NetException {
         if (this.tunnel != null) {
-            var context = RpcTransactionContext.createEnter(this.tunnel, as(message), true);
-            this.tunnel.receive(context);
+            // var context = RpcTransactionContext.createEnter(this.tunnel, as(message), true);
+            this.tunnel.receive(as(message));
             if (awaiter != null) {
                 awaiter.complete(null);
             }

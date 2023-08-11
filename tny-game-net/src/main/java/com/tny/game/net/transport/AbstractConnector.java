@@ -18,9 +18,9 @@ import com.tny.game.common.context.*;
  * @author: Kun Yang
  * @date: 2018-09-18 11:50
  */
-public abstract class AbstractCommunicator<UID> extends AttributeHolder implements Communicator<UID> {
+public abstract class AbstractConnector<UID> extends AttributeHolder implements Connector<UID> {
 
-    protected AbstractCommunicator() {
+    protected AbstractConnector() {
     }
 
 }

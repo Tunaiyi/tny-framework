@@ -11,7 +11,6 @@
 package com.tny.game.net.endpoint;
 
 import com.tny.game.common.context.*;
-import com.tny.game.net.command.*;
 import com.tny.game.net.transport.*;
 import org.junit.jupiter.api.*;
 
@@ -23,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Created by Kun Yang on 2018/8/25.
  */
-public abstract class EndpointTest<E extends NetEndpoint<Long>> extends CommunicatorTest<E> {
+public abstract class EndpointTest<E extends NetEndpoint<Long>> extends ConnectorTest<E> {
 
     protected abstract EndpointTestInstance<E> create(Certificate<Long> certificate);
 

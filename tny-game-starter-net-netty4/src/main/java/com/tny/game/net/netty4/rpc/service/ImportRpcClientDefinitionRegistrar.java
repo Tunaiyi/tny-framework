@@ -24,9 +24,9 @@ import javax.annotation.Nonnull;
 /**
  * <p>
  */
-public class ImportRpcConnectorDefinitionRegistrar extends ImportConfigurationBeanDefinitionRegistrar {
+public class ImportRpcClientDefinitionRegistrar extends ImportConfigurationBeanDefinitionRegistrar {
 
-    public static final Logger LOGGER = LoggerFactory.getLogger(ImportRpcConnectorDefinitionRegistrar.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(ImportRpcClientDefinitionRegistrar.class);
 
     @Override
     public void registerBeanDefinitions(@Nonnull AnnotationMetadata importingClassMetadata, @Nonnull BeanDefinitionRegistry registry) {

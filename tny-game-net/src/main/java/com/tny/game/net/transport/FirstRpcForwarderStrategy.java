@@ -24,9 +24,9 @@ public class FirstRpcForwarderStrategy implements RpcForwardStrategy {
     @Override
     public RpcForwardAccess forward(RpcForwardNodeSet forwarderSet, Message message, RpcForwardHeader forwardHeader) {
         return forwarderSet.getOrderForwarderNodes().stream()
-                .findFirst()
-                .flatMap(node -> node.getOrderForwardAccess().stream().findFirst())
-                .orElse(null);
+                           .findFirst()
+                           .flatMap(node -> node.getOrderForwardAccess().stream().findFirst())
+                           .orElse(null);
     }
 
 }

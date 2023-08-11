@@ -20,8 +20,8 @@ import com.tny.game.net.base.*;
 public class CommonTerminalKeeperFactory<UID> implements TerminalKeeperFactory<UID, TerminalKeeperSetting> {
 
     @Override
-    public NetEndpointKeeper<UID, Terminal<UID>> createKeeper(MessagerType messagerType, TerminalKeeperSetting setting) {
-        return new CommonTerminalKeeper<>(messagerType);
+    public NetEndpointKeeper<UID, Terminal<UID>> createKeeper(ContactType contactType, TerminalKeeperSetting setting) {
+        return new CommonTerminalKeeper<>(contactType);
     }
 
 }

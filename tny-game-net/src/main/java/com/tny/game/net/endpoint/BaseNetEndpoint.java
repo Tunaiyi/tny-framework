@@ -12,7 +12,6 @@ package com.tny.game.net.endpoint;
 
 import com.tny.game.common.utils.*;
 import com.tny.game.net.base.*;
-import com.tny.game.net.command.*;
 import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.command.processor.MessageCommandBox;
 import com.tny.game.net.exception.*;
@@ -34,7 +33,7 @@ import static com.tny.game.net.endpoint.EndpointEventBuses.*;
 /**
  * <p>
  */
-public abstract class BaseNetEndpoint<UID> extends AbstractCommunicator<UID> implements NetEndpoint<UID> {
+public abstract class BaseNetEndpoint<UID> extends AbstractConnector<UID> implements NetEndpoint<UID> {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(BaseNetEndpoint.class);
 
@@ -306,7 +305,7 @@ public abstract class BaseNetEndpoint<UID> extends AbstractCommunicator<UID> imp
     public NetMessage createMessage(MessageFactory messageFactory, MessageContent context) {
         NetMessage message = messageFactory.create(allocateMessageId(), context);
         if (context instanceof RequestContent) {
-            this.putFuture(message.getId(), ((RequestContent)context).getRespondFuture());
+            this.putFuture(message.getId(), ((RequestContent) context).getRespondFuture());
         }
         this.sentMessageQueue.addMessage(message);
         return message;

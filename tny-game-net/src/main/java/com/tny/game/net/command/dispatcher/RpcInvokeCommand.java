@@ -43,17 +43,17 @@ public class RpcInvokeCommand extends RpcHandleCommand {
 
     private final NetMessageDispatcherContext dispatcherContext;
 
-    private final MessagerAuthenticator messagerAuthenticator;
+    private final ContactAuthenticator contactAuthenticator;
 
     private final boolean relay;
 
     private ProcessTracer tracer;
 
     protected RpcInvokeCommand(NetMessageDispatcherContext dispatcherContext, RpcInvokeContext invokeContext,
-            MessagerAuthenticator messagerAuthenticator) {
+            ContactAuthenticator contactAuthenticator) {
         super(invokeContext.getRpcContext());
         this.dispatcherContext = dispatcherContext;
-        this.messagerAuthenticator = messagerAuthenticator;
+        this.contactAuthenticator = contactAuthenticator;
         this.invokeContext = invokeContext;
         var controller = invokeContext.getController();
         this.relay = controller.getMethodAnnotation(RelayTo.class) != null;
@@ -104,7 +104,7 @@ public class RpcInvokeCommand extends RpcHandleCommand {
 
         //检测认证
         if (!tunnel.isAuthenticated() && controller.isHasAuthValidator()) {
-            messagerAuthenticator.authenticate(this.dispatcherContext, enterContext, controller.getAuthValidator());
+            contactAuthenticator.authenticate(this.dispatcherContext, enterContext, controller.getAuthValidator());
         }
 
         String appType = invokeContext.getAppType();
@@ -126,7 +126,7 @@ public class RpcInvokeCommand extends RpcHandleCommand {
             return;
         }
         DISPATCHER_LOG.debug("Controller [{}] 检测用户组调用权限", this.getName());
-        if (!controller.isUserGroup(invokeContext.getMessagerType())) {
+        if (!controller.isUserGroup(invokeContext.getContactType())) {
             DISPATCHER_LOG.error("Controller [{}] , 用户组 [{}] 无法调用此协议", this.getName(), tunnel.getGroup());
             this.invokeContext.doneAndIntercept(NetResultCode.NO_PERMISSIONS);
             return;
@@ -187,7 +187,7 @@ public class RpcInvokeCommand extends RpcHandleCommand {
                 code = commandResult.resultCode();
                 body = commandResult.getBody();
             } else if (result instanceof ResultCode) {
-                code = (ResultCode)result;
+                code = (ResultCode) result;
             } else {
                 code = ResultCode.SUCCESS;
                 body = result;
@@ -204,7 +204,7 @@ public class RpcInvokeCommand extends RpcHandleCommand {
         }
         if (relay && code.isSuccess()) { // 如果是协议需要继续转发, 成功时候继续转发
             if (tunnel instanceof RelayTunnel) {
-                var relayTunnel = (RelayTunnel<?>)tunnel;
+                var relayTunnel = (RelayTunnel<?>) tunnel;
                 var monitor = invokeContext.getRpcContext().rpcMonitor();
                 var rpcContext = RpcTransactionContext.createRelay(tunnel, message, monitor, false);
                 relayTunnel.relay(rpcContext, false);
@@ -227,15 +227,15 @@ public class RpcInvokeCommand extends RpcHandleCommand {
      */
     private RpcResult<?> resultOfException(Throwable e) {
         if (e instanceof RpcInvokeException) {
-            RpcInvokeException dex = (RpcInvokeException)e;
+            RpcInvokeException dex = (RpcInvokeException) e;
             DISPATCHER_LOG.error(dex.getMessage(), dex);
             return RpcResults.fail(dex.getCode(), dex.getBody());
         } else if (e instanceof ResultCodableException) {
-            ResultCodableException dex = (ResultCodableException)e;
+            ResultCodableException dex = (ResultCodableException) e;
             DISPATCHER_LOG.error(dex.getMessage(), dex);
             return RpcResults.fail(dex.getCode());
         } else if (e instanceof InvocationTargetException) {
-            return this.resultOfException(((InvocationTargetException)e).getTargetException());
+            return this.resultOfException(((InvocationTargetException) e).getTargetException());
         } else if (e instanceof ExecutionException) {
             return this.resultOfException(e.getCause());
         } else {

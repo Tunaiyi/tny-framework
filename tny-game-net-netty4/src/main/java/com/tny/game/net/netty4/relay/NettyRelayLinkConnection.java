@@ -20,7 +20,7 @@ import com.tny.game.net.relay.link.*;
  * @author : kgtny
  * @date : 2021/8/30 9:09 下午
  */
-class NettyRelayLinkConnector implements RelayConnectCallback {
+class NettyRelayLinkConnection implements RelayConnectCallback {
 
     private String linkKey;
 
@@ -30,7 +30,7 @@ class NettyRelayLinkConnector implements RelayConnectCallback {
 
     private final NettyServeInstanceConnectMonitor connector;
 
-    private volatile RelayConnectorStatus status = RelayConnectorStatus.INIT;
+    private volatile RelayConnectionStatus status = RelayConnectionStatus.INIT;
 
     private volatile ClientRelayLink link;
 
@@ -40,7 +40,7 @@ class NettyRelayLinkConnector implements RelayConnectCallback {
 
     private final static long[] delayTimeList = {1, 2, 2, 3, 3, 3, 5, 5, 5, 5, 10, 10, 10, 10, 10, 15};
 
-    NettyRelayLinkConnector(ClientRelayContext relayContext, NetRemoteServeInstance instance, NettyServeInstanceConnectMonitor connector) {
+    NettyRelayLinkConnection(ClientRelayContext relayContext, NetRemoteServeInstance instance, NettyServeInstanceConnectMonitor connector) {
         this.relayContext = relayContext;
         this.instance = instance;
         this.connector = connector;
@@ -56,17 +56,17 @@ class NettyRelayLinkConnector implements RelayConnectCallback {
             return;
         }
         if (link == null || !link.isActive()) {
-            status = RelayConnectorStatus.CONNECTING;
+            status = RelayConnectionStatus.CONNECTING;
             connector.connect(this);
         }
     }
 
     private void onConnected(RelayTransporter transporter) {
-        if (status != RelayConnectorStatus.CONNECTING) {
+        if (status != RelayConnectionStatus.CONNECTING) {
             transporter.close();
             return;
         }
-        this.status = RelayConnectorStatus.OPEN;
+        this.status = RelayConnectionStatus.OPEN;
         this.times = 0;
         this.linkKey = relayContext.createLinkKey(username);
         this.link = new CommonClientRelayLink(this.linkKey, instance, transporter);
@@ -82,19 +82,19 @@ class NettyRelayLinkConnector implements RelayConnectCallback {
     }
 
     private void onClose(RelayTransporter transporter) {
-        if (status != RelayConnectorStatus.CLOSE) {
-            this.status = RelayConnectorStatus.DISCONNECT;
+        if (status != RelayConnectionStatus.CLOSE) {
+            this.status = RelayConnectionStatus.DISCONNECT;
             onReconnected();
         }
     }
 
     public synchronized void close() {
-        status = RelayConnectorStatus.CLOSE;
+        status = RelayConnectionStatus.CLOSE;
     }
 
     @Override
     public void complete(boolean result, URL url, RelayTransporter transporter, Throwable cause) {
-        if (this.status == RelayConnectorStatus.CLOSE) {
+        if (this.status == RelayConnectionStatus.CLOSE) {
             NettyRemoteServeInstance.LOGGER.warn("Server [{}-{}-{}] Connector is closed",
                     instance.getServeName(), instance.getId(), this.linkKey);
             transporter.close();
@@ -105,7 +105,7 @@ class NettyRelayLinkConnector implements RelayConnectCallback {
                     instance.getServeName(), instance.getId(), this.linkKey, url, times);
             onConnected(transporter);
         } else {
-            this.status = RelayConnectorStatus.DISCONNECT;
+            this.status = RelayConnectionStatus.DISCONNECT;
             NettyRemoteServeInstance.LOGGER.warn("Server [{}-{}-{}] connect to {} failed {} times",
                     instance.getServeName(), instance.getId(), this.linkKey, url, times, cause.getCause());
             onReconnected();

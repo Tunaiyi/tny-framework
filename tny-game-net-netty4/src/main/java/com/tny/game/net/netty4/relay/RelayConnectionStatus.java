@@ -8,46 +8,51 @@
  * See the Mulan PSL v2 for more details.
  */
 
-package com.tny.game.net.base;
+package com.tny.game.net.netty4.relay;
 
 /**
- * 默认用户类型
  * <p>
  *
- * @author Kun Yang
- * @date 2022/5/6 15:18
- **/
-public enum NetMessagerType implements MessagerType {
+ * @author : kgtny
+ * @date : 2021/8/30 9:10 下午
+ */
+enum RelayConnectionStatus {
 
     /**
-     * 匿名
+     * 初始化
      */
-    ANONYMITY(0, ANONYMITY_USER_TYPE),
+    INIT(true),
 
     /**
-     * 默认用户
+     * 连接中
      */
-    DEFAULT_USER(1, DEFAULT_USER_TYPE),
+    CONNECTING(false),
+
+    /**
+     * 打开
+     */
+    OPEN(false),
+
+    /**
+     * 失败
+     */
+    DISCONNECT(true),
+
+    /**
+     * 关闭
+     */
+    CLOSE(false),
+
     //
-
     ;
 
-    private final int id;
+    private final boolean canConnect;
 
-    private final String group;
-
-    NetMessagerType(int id, String group) {
-        this.id = id;
-        this.group = group;
+    RelayConnectionStatus(boolean canConnect) {
+        this.canConnect = canConnect;
     }
 
-    @Override
-    public int id() {
-        return id;
-    }
-
-    @Override
-    public String getGroup() {
-        return group;
+    boolean isCanConnect() {
+        return canConnect;
     }
 }

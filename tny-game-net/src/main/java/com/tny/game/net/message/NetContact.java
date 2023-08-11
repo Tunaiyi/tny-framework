@@ -8,20 +8,22 @@
  * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-package com.tny.game.net.command.auth;
+package com.tny.game.net.message;
 
-import com.tny.game.net.command.dispatcher.*;
-import com.tny.game.net.exception.*;
+import com.tny.game.net.rpc.*;
+import com.tny.game.net.transport.*;
 
 /**
  * <p>
  *
  * @author kgtny
- * @date 2022/12/12 14:29
+ * @date 2023/2/9 20:03
  **/
-public interface MessagerAuthenticator {
+public interface NetContact extends AddressPeer, Contact {
 
-    void authenticate(MessageDispatcherContext dispatcherContext, RpcEnterContext rpcContext,
-            Class<? extends AuthenticationValidator<?, ?>> validatorClass) throws AuthFailedException;
+    /**
+     * @return 接入模式
+     */
+    NetAccessMode getAccessMode();
 
 }

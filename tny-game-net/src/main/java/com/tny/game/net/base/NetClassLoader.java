@@ -37,8 +37,8 @@ public class NetClassLoader {
     }
 
     @ClassSelectorProvider
-    static ClassSelector messagerTypesSelector() {
-        return createSelector(MessagerType.class, MessagerTypes::register);
+    static ClassSelector contactTypesSelector() {
+        return createSelector(ContactType.class, ContactTypes::register);
     }
 
     @ClassSelectorProvider

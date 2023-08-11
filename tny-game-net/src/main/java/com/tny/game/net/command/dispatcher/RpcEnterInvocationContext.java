@@ -35,7 +35,7 @@ class RpcEnterInvocationContext extends CompletableRpcTransactionContext impleme
 
     private final AtomicBoolean running = new AtomicBoolean();
 
-    private NetMessager to;
+    private NetContact to;
 
     private boolean forward;
 
@@ -69,7 +69,7 @@ class RpcEnterInvocationContext extends CompletableRpcTransactionContext impleme
     }
 
     @Override
-    public NetMessager getMessager() {
+    public NetContact getContact() {
         return this.tunnel;
     }
 
@@ -79,7 +79,7 @@ class RpcEnterInvocationContext extends CompletableRpcTransactionContext impleme
     }
 
     @Override
-    public boolean transfer(NetMessager to, String operationName) {
+    public boolean transfer(NetContact to, String operationName) {
         return prepare(operationName, () -> {
             this.to = to;
             this.forward = true;
@@ -143,12 +143,12 @@ class RpcEnterInvocationContext extends CompletableRpcTransactionContext impleme
     }
 
     @Override
-    public NetMessager getFrom() {
+    public NetContact getFrom() {
         return tunnel;
     }
 
     @Override
-    public NetMessager getTo() {
+    public NetContact getTo() {
         return to;
     }
 

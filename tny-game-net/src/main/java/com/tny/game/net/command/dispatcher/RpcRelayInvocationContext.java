@@ -24,18 +24,18 @@ class RpcRelayInvocationContext extends CompletableRpcTransactionContext impleme
 
     private final MessageSender sender;
 
-    private final NetMessager from;
+    private final NetContact from;
 
-    private NetMessager to;
+    private NetContact to;
 
     private final RpcMonitor rpcMonitor;
 
-    RpcRelayInvocationContext(NetMessager from, NetMessage message, RpcMonitor rpcMonitor, boolean async) {
+    RpcRelayInvocationContext(NetContact from, NetMessage message, RpcMonitor rpcMonitor, boolean async) {
         super(message, async);
         this.rpcMonitor = rpcMonitor;
         this.from = from;
         if (from instanceof MessageSender) {
-            this.sender = (MessageSender)from;
+            this.sender = (MessageSender) from;
         } else {
             this.sender = null;
         }
@@ -47,12 +47,12 @@ class RpcRelayInvocationContext extends CompletableRpcTransactionContext impleme
     }
 
     @Override
-    public NetMessager getMessager() {
+    public NetContact getContact() {
         return from;
     }
 
     @Override
-    public boolean transfer(NetMessager to, String operationName) {
+    public boolean transfer(NetContact to, String operationName) {
         return prepare(operationName, () -> this.to = to);
     }
 
@@ -84,12 +84,12 @@ class RpcRelayInvocationContext extends CompletableRpcTransactionContext impleme
     }
 
     @Override
-    public NetMessager getFrom() {
+    public NetContact getFrom() {
         return from;
     }
 
     @Override
-    public NetMessager getTo() {
+    public NetContact getTo() {
         return to;
     }
 

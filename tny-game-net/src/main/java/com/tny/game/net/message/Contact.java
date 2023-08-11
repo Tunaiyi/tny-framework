@@ -10,14 +10,23 @@
  */
 package com.tny.game.net.message;
 
-import com.tny.game.net.transport.*;
+import com.tny.game.net.base.*;
 
 /**
+ * 通讯者(消息发送接受者)
  * <p>
  *
- * @author kgtny
- * @date 2023/2/9 20:03
+ * @author Kun Yang
+ * @date 2022/4/21 04:17
  **/
-public interface NetMessager extends Connection, Messager {
+public interface Contact {
+
+    long contactId();
+
+    ContactType contactType();
+
+    default String getGroup() {
+        return contactType().getGroup();
+    }
 
 }

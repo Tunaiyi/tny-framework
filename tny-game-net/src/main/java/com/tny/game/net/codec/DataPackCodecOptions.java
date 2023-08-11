@@ -60,7 +60,7 @@ public class DataPackCodecOptions {
         if (ArrayUtils.isEmpty(this.securityKeys)) {
             return "";
         }
-        return this.securityKeys[(int)(value % this.securityKeys.length)];
+        return this.securityKeys[(int) (value % this.securityKeys.length)];
     }
 
     public long getSkipNumberStep() {

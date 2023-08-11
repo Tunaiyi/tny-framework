@@ -61,7 +61,7 @@ public class MessageContents {
     public static MessageContent push(Protocol protocol, Object body) {
         DefaultMessageContent context = new DefaultMessageContent();
         context.init(MessageMode.PUSH, protocol, ResultCode.SUCCESS)
-                .withBody(body);
+               .withBody(body);
         return context;
     }
 
@@ -76,7 +76,7 @@ public class MessageContents {
     public static MessageContent push(Protocol protocol, ResultCode code, Object body) {
         DefaultMessageContent context = new DefaultMessageContent();
         context.init(MessageMode.PUSH, protocol, code)
-                .withBody(body);
+               .withBody(body);
         return context;
     }
 
@@ -90,7 +90,7 @@ public class MessageContents {
     public static RequestContent request(Protocol protocol, Object... requestParams) {
         DefaultMessageContent context = new DefaultMessageContent();
         context.init(MessageMode.REQUEST, protocol, ResultCode.SUCCESS)
-                .withBody(new MessageParamList(requestParams));
+               .withBody(new MessageParamList(requestParams));
         return context;
     }
 
@@ -130,7 +130,7 @@ public class MessageContents {
     public static MessageContent respond(Protocol protocol, Object body, long toMessage) {
         DefaultMessageContent context = new DefaultMessageContent();
         context.init(MessageMode.RESPONSE, protocol, ResultCode.SUCCESS, toMessage)
-                .withBody(body);
+               .withBody(body);
         return context;
     }
 
@@ -146,7 +146,7 @@ public class MessageContents {
     public static MessageContent respond(Protocol protocol, ResultCode code, Object body, long toMessage) {
         DefaultMessageContent context = new DefaultMessageContent();
         context.init(MessageMode.RESPONSE, protocol, code, toMessage)
-                .withBody(body);
+               .withBody(body);
         return context;
     }
 
@@ -166,8 +166,8 @@ public class MessageContents {
     public static MessageContent copy(Message message) {
         DefaultMessageContent context = new DefaultMessageContent();
         return context.init(message.getMode(), message.getHead(), ResultCodes.of(message.getCode()), message.getToMessage())
-                .withBody(message.getBody())
-                .withHeaders(message.getAllHeaders());
+                      .withBody(message.getBody())
+                      .withHeaders(message.getAllHeaders());
     }
 
     private static class DefaultMessageContent extends RequestContent {
@@ -360,14 +360,14 @@ public class MessageContents {
         @Override
         public String toString() {
             return MoreObjects.toStringHelper(this)
-                    .add("protocol", this.protocol)
-                    .add("mode", this.mode)
-                    .add("toMessage", this.toMessage)
-                    .add("code", this.code)
-                    .add("body", this.body)
-                    .add("respondFuture", this.respondFuture != null)
-                    .add("writeFuture", this.writeFuture != null)
-                    .toString();
+                              .add("protocol", this.protocol)
+                              .add("mode", this.mode)
+                              .add("toMessage", this.toMessage)
+                              .add("code", this.code)
+                              .add("body", this.body)
+                              .add("respondFuture", this.respondFuture != null)
+                              .add("writeFuture", this.writeFuture != null)
+                              .toString();
         }
 
     }

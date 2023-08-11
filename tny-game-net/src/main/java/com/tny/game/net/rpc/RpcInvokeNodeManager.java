@@ -20,8 +20,8 @@ import com.tny.game.net.base.*;
  */
 public interface RpcInvokeNodeManager {
 
-    RpcInvokeNodeSet loadInvokeNodeSet(MessagerType serviceType);
+    RpcInvokeNodeSet loadInvokeNodeSet(ContactType serviceType);
 
-    RpcInvokeNodeSet findInvokeNodeSet(MessagerType serviceType);
+    RpcInvokeNodeSet findInvokeNodeSet(ContactType serviceType);
 
 }

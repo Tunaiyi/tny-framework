@@ -81,7 +81,7 @@ public class NettyMessageHandler extends ChannelDuplexHandler {
                 LOGGER.warn("[Tunnel]  ## 通道 {} ==> {} 断开链接 # cause {} 读取数据超时, message: {}",
                         channel.remoteAddress(), channel.localAddress(), ReadTimeoutException.class, cause.getMessage());
             } else if (cause instanceof ResultCodableException) {
-                handleResultCodeException(channel, ((ResultCodableException)cause).getCode(), cause);
+                handleResultCodeException(channel, ((ResultCodableException) cause).getCode(), cause);
             }
         } else {
             LOGGER.error(this.getClass().getName() + ".exceptionCaught() 截获异常", cause);
@@ -111,10 +111,10 @@ public class NettyMessageHandler extends ChannelDuplexHandler {
                 NetMessage message = as(object);
                 RpcMessageAide.ignoreHeaders(message, bootstrapSetting.getReadIgnoreHeaders());
                 NetTunnel<?> tunnel = channel.attr(NettyNetAttrKeys.TUNNEL).get();
-                var rpcContext = RpcTransactionContext.createEnter(tunnel, message, true);
-                rpcMonitor.onReceive(rpcContext);
                 if (tunnel != null) {
-                    tunnel.receive(rpcContext);
+                    tunnel.receive(message);
+                } else {
+                    // TODO rpcMonitor 处理无 tunnel 情况
                 }
             } catch (Throwable ex) {
                 LOGGER.error("#GameServerHandler#接受请求异常", ex);
@@ -126,10 +126,10 @@ public class NettyMessageHandler extends ChannelDuplexHandler {
     public void write(ChannelHandlerContext context, Object msg, ChannelPromise promise) {
         try (ProcessTracer ignored = MESSAGE_ENCODE_WATCHER.trace()) {
             if (msg instanceof NettyMessageBearer) {
-                msg = ((NettyMessageBearer)msg).message();
+                msg = ((NettyMessageBearer) msg).message();
             }
             if (msg instanceof NetMessage) {
-                var message = (NetMessage)msg;
+                var message = (NetMessage) msg;
                 RpcMessageAide.ignoreHeaders(message, bootstrapSetting.getWriteIgnoreHeaders());
                 Channel channel = context.channel();
                 NetTunnel<?> tunnel = channel.attr(NettyNetAttrKeys.TUNNEL).get();
@@ -158,7 +158,7 @@ public class NettyMessageHandler extends ChannelDuplexHandler {
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         if (evt instanceof IdleStateEvent) {
-            IdleStateEvent event = (IdleStateEvent)evt;
+            IdleStateEvent event = (IdleStateEvent) evt;
             Channel channel = ctx.channel();
             Tunnel<?> tunnel = channel.attr(NettyNetAttrKeys.TUNNEL).get();
             if (tunnel != null) {

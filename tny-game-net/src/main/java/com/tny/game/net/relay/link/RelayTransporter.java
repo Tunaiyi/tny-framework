@@ -26,6 +26,11 @@ import java.util.function.Consumer;
  */
 public interface RelayTransporter extends Connection {
 
+    // /**
+    //  * @return 接入模式
+    //  */
+    // NetAccessMode getAccessMode();
+    //
     /**
      * @param onClose 注册关闭监听器
      */

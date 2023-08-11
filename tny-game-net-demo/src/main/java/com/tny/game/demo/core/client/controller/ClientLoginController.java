@@ -18,7 +18,7 @@ import com.tny.game.net.netty4.configuration.command.*;
 import com.tny.game.net.transport.*;
 import org.slf4j.*;
 
-import static com.tny.game.net.base.MessagerType.*;
+import static com.tny.game.net.base.ContactType.*;
 
 /**
  * <p>

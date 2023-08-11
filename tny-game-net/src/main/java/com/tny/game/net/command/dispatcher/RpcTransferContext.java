@@ -27,7 +27,7 @@ public interface RpcTransferContext extends RpcTransactionContext, RpcEnterCompl
      * @param operationName 操作
      * @return 返回是否成功
      */
-    boolean transfer(NetMessager to, String operationName);
+    boolean transfer(NetContact to, String operationName);
 
     /**
      * @return 传送消息
@@ -37,11 +37,11 @@ public interface RpcTransferContext extends RpcTransactionContext, RpcEnterCompl
     /**
      * @return 发送服务
      */
-    NetMessager getFrom();
+    NetContact getFrom();
 
     /**
      * @return 目标服务
      */
-    NetMessager getTo();
+    NetContact getTo();
 
 }

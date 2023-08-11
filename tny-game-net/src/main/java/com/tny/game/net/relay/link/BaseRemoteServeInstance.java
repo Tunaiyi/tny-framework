@@ -194,9 +194,9 @@ public class BaseRemoteServeInstance implements NetRemoteServeInstance {
 
     private synchronized void refreshActiveLinks() {
         this.activeRelayLinks = ImmutableList.sortedCopyOf(Comparator.comparing(ClientRelayLink::getId), relayLinkMap.values()
-                .stream()
-                .filter(RelayLink::isActive)
-                .collect(Collectors.toList()));
+                                                                                                                     .stream()
+                                                                                                                     .filter(RelayLink::isActive)
+                                                                                                                     .collect(Collectors.toList()));
         cluster.refreshInstances();
     }
 
@@ -217,7 +217,7 @@ public class BaseRemoteServeInstance implements NetRemoteServeInstance {
             return;
         }
         if (current.isActive() && !this.activeRelayLinks.contains(current) ||
-                !current.isActive() && this.activeRelayLinks.contains(current)) {
+            !current.isActive() && this.activeRelayLinks.contains(current)) {
             this.refreshActiveLinks();
         }
     }
@@ -251,7 +251,7 @@ public class BaseRemoteServeInstance implements NetRemoteServeInstance {
             return false;
         }
 
-        BaseRemoteServeInstance that = (BaseRemoteServeInstance)o;
+        BaseRemoteServeInstance that = (BaseRemoteServeInstance) o;
 
         return new EqualsBuilder().append(getId(), that.getId()).append(cluster, that.cluster).isEquals();
     }

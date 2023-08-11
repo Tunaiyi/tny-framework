@@ -12,7 +12,6 @@ package com.tny.game.net.transport;
 
 import com.tny.game.common.concurrent.utils.*;
 import com.tny.game.net.base.*;
-import com.tny.game.net.command.*;
 import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
@@ -29,7 +28,7 @@ import static com.tny.game.net.transport.listener.TunnelEventBuses.*;
  * 抽象通道
  * Created by Kun Yang on 2017/3/26.
  */
-public abstract class AbstractNetTunnel<UID, E extends NetEndpoint<UID>> extends AbstractCommunicator<UID> implements NetTunnel<UID> {
+public abstract class AbstractNetTunnel<UID, E extends NetEndpoint<UID>> extends AbstractConnector<UID> implements NetTunnel<UID> {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(AbstractNetTunnel.class);
 
@@ -124,17 +123,20 @@ public abstract class AbstractNetTunnel<UID, E extends NetEndpoint<UID>> extends
     }
 
     @Override
-    public boolean receive(RpcEnterContext context) {
-        return StampedLockAide.supplyInOptimisticReadLock(this.endpointLock, this::doReceive, context);
+    public boolean receive(NetMessage message) {
+        return StampedLockAide.supplyInOptimisticReadLock(this.endpointLock, this::doReceive, message);
     }
 
-    private boolean doReceive(RpcEnterContext context) {
+    private boolean doReceive(NetMessage message) {
         E endpoint = this.endpoint;
+        var rpcContext = RpcTransactionContext.createEnter(this, message, true);
+        var rpcMonitor = this.context.getRpcMonitor();
+        rpcMonitor.onReceive(rpcContext);
         while (true) {
             if (endpoint.isClosed()) {
                 return false;
             }
-            if (endpoint.receive(context)) {
+            if (endpoint.receive(rpcContext)) {
                 return true;
             }
         }
@@ -279,7 +281,7 @@ public abstract class AbstractNetTunnel<UID, E extends NetEndpoint<UID>> extends
         if (!(o instanceof AbstractNetTunnel)) {
             return false;
         }
-        AbstractNetTunnel<?, ?> that = (AbstractNetTunnel<?, ?>)o;
+        AbstractNetTunnel<?, ?> that = (AbstractNetTunnel<?, ?>) o;
         return this.id == that.id;
     }
 

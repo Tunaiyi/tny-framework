@@ -29,6 +29,6 @@ public interface RpcNode {
     /**
      * @return 服务类型
      */
-    MessagerType getServiceType();
+    ContactType getServiceType();
 
 }

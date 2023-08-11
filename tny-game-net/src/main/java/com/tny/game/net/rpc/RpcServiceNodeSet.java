@@ -82,7 +82,7 @@ public class RpcServiceNodeSet implements RpcInvokeNodeSet, RpcForwardNodeSet {
         if (remoteNode == null) {
             return null;
         }
-        RpcServiceAccess access = remoteNode.getForwardAccess(accessPoint.getMessagerId());
+        RpcServiceAccess access = remoteNode.getForwardAccess(accessPoint.contactId());
         if (access != null) {
             return access;
         }

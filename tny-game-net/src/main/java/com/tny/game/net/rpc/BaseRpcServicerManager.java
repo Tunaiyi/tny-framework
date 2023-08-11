@@ -33,15 +33,15 @@ import static com.tny.game.common.utils.ObjectAide.*;
 @GlobalEventListener
 public class BaseRpcServicerManager implements RpcServicerManager, EndpointKeeperCreateListener<Object> {
 
-    private final Map<MessagerType, RpcServiceNodeSet> serviceSetMap = new CopyOnWriteMap<>();
+    private final Map<ContactType, RpcServiceNodeSet> serviceSetMap = new CopyOnWriteMap<>();
 
-    private final Map<MessagerType, RpcInvokeNodeSet> invokeNodeSetMap = new ConcurrentHashMap<>();
+    private final Map<ContactType, RpcInvokeNodeSet> invokeNodeSetMap = new ConcurrentHashMap<>();
 
     private static final HashLock<Lock> lockPool = HashLock.common();
 
     @Override
     public RpcForwardNodeSet loadForwardNodeSet(RpcServiceType type) {
-        return (RpcForwardNodeSet)loadInvokeNodeSet(type);
+        return (RpcForwardNodeSet) loadInvokeNodeSet(type);
     }
 
     @Override
@@ -50,35 +50,35 @@ public class BaseRpcServicerManager implements RpcServicerManager, EndpointKeepe
     }
 
     @Override
-    public RpcInvokeNodeSet loadInvokeNodeSet(MessagerType serviceType) {
+    public RpcInvokeNodeSet loadInvokeNodeSet(ContactType serviceType) {
         return doLoadInvokeNodeSet(serviceType, null);
     }
 
-    private RpcInvokeNodeSet doLoadInvokeNodeSet(MessagerType messagerType, Consumer<MessagerNodeSet> consumer) {
-        if (messagerType instanceof RpcServiceType) {
-            return doLoadRpcServiceSet((RpcServiceType)messagerType);
+    private RpcInvokeNodeSet doLoadInvokeNodeSet(ContactType contactType, Consumer<ContactNodeSet> consumer) {
+        if (contactType instanceof RpcServiceType) {
+            return doLoadRpcServiceSet((RpcServiceType) contactType);
         } else {
-            return doLoadRpcServiceSet(messagerType, consumer);
+            return doLoadRpcServiceSet(contactType, consumer);
         }
     }
 
     @Override
-    public RpcInvokeNodeSet findInvokeNodeSet(MessagerType serviceType) {
+    public RpcInvokeNodeSet findInvokeNodeSet(ContactType serviceType) {
         return serviceSetMap.get(serviceType);
     }
 
-    private RpcInvokeNodeSet doLoadRpcServiceSet(MessagerType messagerType, Consumer<MessagerNodeSet> consumer) {
-        var nodeSet = invokeNodeSetMap.get(messagerType);
+    private RpcInvokeNodeSet doLoadRpcServiceSet(ContactType contactType, Consumer<ContactNodeSet> consumer) {
+        var nodeSet = invokeNodeSetMap.get(contactType);
         if (nodeSet != null) {
             return nodeSet;
         }
-        MessagerNodeSet newSet = new MessagerNodeSet(messagerType);
-        if (invokeNodeSetMap.putIfAbsent(messagerType, newSet) == null) {
+        ContactNodeSet newSet = new ContactNodeSet(contactType);
+        if (invokeNodeSetMap.putIfAbsent(contactType, newSet) == null) {
             if (consumer != null) {
                 consumer.accept(newSet);
             }
         }
-        return invokeNodeSetMap.get(messagerType);
+        return invokeNodeSetMap.get(contactType);
     }
 
     private RpcServiceNodeSet doLoadRpcServiceSet(RpcServiceType type) {
@@ -104,31 +104,30 @@ public class BaseRpcServicerManager implements RpcServicerManager, EndpointKeepe
 
     @Override
     public void onCreate(EndpointKeeper<Object, Endpoint<Object>> keeper) {
-        MessagerType messagerType = keeper.getMessagerType();
-        if (messagerType instanceof RpcServiceType) {
-            RpcServiceType serviceType = as(messagerType, RpcServiceType.class);
-            RpcServiceNodeSet servicer = doLoadRpcServiceSet(serviceType);
+        ContactType contactType = keeper.getContactType();
+        if (contactType instanceof RpcServiceType) {
+            RpcServiceType serviceType = as(contactType, RpcServiceType.class);
+            RpcServiceNodeSet nodeSet = doLoadRpcServiceSet(serviceType);
             EndpointKeeper<RpcAccessIdentify, Endpoint<RpcAccessIdentify>> rpcKeeper = as(keeper);
-            rpcKeeper.addListener(new EndpointKeeperListener<RpcAccessIdentify>() {
+            rpcKeeper.addListener(new EndpointKeeperListener<>() {
 
                 @Override
                 public void onAddEndpoint(EndpointKeeper<RpcAccessIdentify, Endpoint<RpcAccessIdentify>> keeper,
                         Endpoint<RpcAccessIdentify> endpoint) {
-                    servicer.addEndpoint(endpoint);
+                    nodeSet.addEndpoint(endpoint);
                 }
 
                 @Override
                 public void onRemoveEndpoint(EndpointKeeper<RpcAccessIdentify, Endpoint<RpcAccessIdentify>> keeper,
                         Endpoint<RpcAccessIdentify> endpoint) {
-                    servicer.removeEndpoint(endpoint);
+                    nodeSet.removeEndpoint(endpoint);
                 }
 
             });
         } else {
-            var nodeSet = doLoadInvokeNodeSet(messagerType, null);
-            if (nodeSet instanceof MessagerNodeSet) {
-                var messagerSet = (MessagerNodeSet)nodeSet;
-                messagerSet.bind(keeper);
+            var nodeSet = doLoadInvokeNodeSet(contactType, null);
+            if (nodeSet instanceof ContactNodeSet contactNodeSet) {
+                contactNodeSet.bind(keeper);
             }
         }
 

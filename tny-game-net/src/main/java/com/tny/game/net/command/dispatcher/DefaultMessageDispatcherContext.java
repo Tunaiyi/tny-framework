@@ -99,7 +99,7 @@ public class DefaultMessageDispatcherContext implements NetMessageDispatcherCont
     @Override
     public void addControllerPlugin(Collection<? extends CommandPlugin<?, ?>> plugins) {
         this.pluginMap.putAll(plugins.stream()
-                .collect(CollectorsAide.toMap(CommandPlugin::getClass)));
+                                     .collect(CollectorsAide.toMap(CommandPlugin::getClass)));
     }
 
     /**

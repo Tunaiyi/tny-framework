@@ -8,29 +8,19 @@
  * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-package com.tny.game.net.transport;
+package com.tny.game.net.command;
+
+import com.tny.game.common.lifecycle.unit.annotation.*;
+import com.tny.game.net.message.*;
 
 /**
  * <p>
  *
  * @author : kgtny
- * @date : 2021/5/21 3:59 下午
+ * @date : 2021/5/6 10:29 上午
  */
-public interface Connection extends AddressPeer {
-
-    /**
-     * @return 是否活跃
-     */
-    boolean isActive();
-
-    /**
-     * @return 是否关闭终端
-     */
-    boolean isClosed();
-
-    /**
-     * 关闭断开连接
-     */
-    boolean close();
+@Unit
+public class DefaultContactCertificateFactory<UID extends Contact> extends DefaultCertificateFactory<UID>
+        implements ContactCertificateFactory<UID> {
 
 }

@@ -19,7 +19,7 @@ import com.tny.game.common.enums.*;
  * @author Kun Yang
  * @date 2022/4/21 04:20
  **/
-public interface MessagerType extends IntEnumerable {
+public interface ContactType extends IntEnumerable {
 
     String DEFAULT_USER_TYPE = "_user";
 

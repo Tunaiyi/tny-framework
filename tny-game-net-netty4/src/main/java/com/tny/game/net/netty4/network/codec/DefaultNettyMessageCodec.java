@@ -57,7 +57,6 @@ public class DefaultNettyMessageCodec implements NettyMessageCodec {
         int code = NettyVarIntCoder.readVarInt32(buffer);
         long toMessage = NettyVarIntCoder.readVarInt64(buffer);
         long time = NettyVarIntCoder.readVarInt64(buffer);
-        RpcForwardHeader forwardHeader = null;
         int line = (byte)(option & MESSAGE_HEAD_OPTION_LINE_MASK);
         line = line >> MESSAGE_HEAD_OPTION_LINE_SHIFT;
         Map<String, MessageHeader<?>> headerMap = Collections.emptyMap();
@@ -79,10 +78,7 @@ public class DefaultNettyMessageCodec implements NettyMessageCodec {
 
     @Override
     public void encode(NetMessage message, ByteBuf buffer) throws Exception {
-        if (message.getType() != MESSAGE) {
-            return;
-        }
-        //		ProtoExOutputStream stream = new ProtoExOutputStream(1024, 2 * 1024);
+        // TODO NetMessage 区分 TickMessage 与 ContentMessage！！
         NettyVarIntCoder.writeVarInt64(message.getId(), buffer);
         MessageHead head = message.getHead();
         MessageMode mode = head.getMode();
@@ -110,7 +106,7 @@ public class DefaultNettyMessageCodec implements NettyMessageCodec {
         }
     }
 
-    private <T> Map<String, MessageHeader<?>> readHeaders(ByteBuf buffer) {
+    private Map<String, MessageHeader<?>> readHeaders(ByteBuf buffer) {
         Map<String, MessageHeader<?>> headerMap = new HashMap<>();
         int size = NettyVarIntCoder.readVarInt32(buffer);
         for (int index = 0; index < size; index++) {
@@ -126,7 +122,7 @@ public class DefaultNettyMessageCodec implements NettyMessageCodec {
         return headerMap;
     }
 
-    private <T> Object readBody(ByteBuf buffer, boolean relay) throws Exception {
+    private Object readBody(ByteBuf buffer, boolean relay) throws Exception {
         Object body;
         int length = NettyVarIntCoder.readVarInt32(buffer);
         ByteBuf bodyBuff = buffer.alloc().heapBuffer(length);
@@ -144,7 +140,7 @@ public class DefaultNettyMessageCodec implements NettyMessageCodec {
         return body;
     }
 
-    private <T> void writeHeaders(ByteBuf buffer, List<MessageHeader<?>> headers) throws Exception {
+    private void writeHeaders(ByteBuf buffer, List<MessageHeader<?>> headers) {
         NettyVarIntCoder.writeVarInt32(headers.size(), buffer);
         for (MessageHeader<?> header : headers) {
             try {
@@ -155,7 +151,7 @@ public class DefaultNettyMessageCodec implements NettyMessageCodec {
         }
     }
 
-    private <T> void writeBody(ByteBuf buffer, Object object) throws Exception {
+    private void writeBody(ByteBuf buffer, Object object) throws Exception {
         OctetMessageBody releaseBody = null;
         try {
             if (object instanceof byte[]) {
@@ -165,8 +161,7 @@ public class DefaultNettyMessageCodec implements NettyMessageCodec {
                 releaseBody = arrayMessageBody;
                 byte[] data = arrayMessageBody.getBody();
                 write(buffer, data);
-            } else if (object instanceof ByteBufMessageBody) {
-                ByteBufMessageBody messageBody = (ByteBufMessageBody)object;
+            } else if (object instanceof ByteBufMessageBody messageBody) {
                 releaseBody = messageBody;
                 ByteBuf data = messageBody.getBody();
                 if (data == null) {

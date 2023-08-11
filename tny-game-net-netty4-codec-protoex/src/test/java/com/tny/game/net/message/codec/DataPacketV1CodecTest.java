@@ -65,7 +65,7 @@ public class DataPacketV1CodecTest {
         EmbeddedChannel channel = new EmbeddedChannel();
         when(this.ctx.channel()).thenReturn(channel);
         NetTunnel<?> tunnel = mockAs(NetTunnel.class);
-        when(tunnel.getGroup()).thenReturn(MessagerType.DEFAULT_USER_TYPE);
+        when(tunnel.getGroup()).thenReturn(ContactType.DEFAULT_USER_TYPE);
         when(tunnel.getAccessId()).thenReturn(2018L);
         when(tunnel.getMessageFactory()).thenReturn(this.factory);
         channel.attr(NettyNetAttrKeys.TUNNEL).set(tunnel);

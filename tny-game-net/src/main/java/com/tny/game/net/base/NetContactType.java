@@ -8,50 +8,46 @@
  * See the Mulan PSL v2 for more details.
  */
 
-package com.tny.game.net.command;
+package com.tny.game.net.base;
 
-import com.tny.game.common.enums.*;
-
-public enum CertificateStatus implements IntEnumerable {
-
-    /**
-     * 无效的
-     */
-    INVALID(0, false),
-
-    /**
-     * 未认证
-     */
-    UNAUTHENTICATED(1, false),
+/**
+ * 默认用户类型
+ * <p>
+ *
+ * @author Kun Yang
+ * @date 2022/5/6 15:18
+ **/
+public enum NetContactType implements ContactType {
 
     /**
-     * 已认证
+     * 匿名
      */
-    AUTHENTICATED(2, true),
+    ANONYMITY(0, ANONYMITY_USER_TYPE),
 
     /**
-     * 续约认证
+     * 默认用户
      */
-    RENEW(3, true),
-
+    DEFAULT_USER(1, DEFAULT_USER_TYPE),
     //
+
     ;
 
-    private final Integer id;
+    private final int id;
 
-    private final boolean authenticated;
+    private final String group;
 
-    CertificateStatus(Integer id, boolean authenticated) {
+    NetContactType(int id, String group) {
         this.id = id;
-        this.authenticated = authenticated;
+        this.group = group;
     }
 
     @Override
     public int id() {
-        return this.id;
+        return id;
     }
 
-    public boolean isAuthenticated() {
-        return this.authenticated;
+    @Override
+    public String getGroup() {
+        return group;
     }
 }

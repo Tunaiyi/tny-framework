@@ -11,11 +11,11 @@
 package com.tny.game.net.command.auth;
 
 import com.tny.game.net.base.*;
-import com.tny.game.net.command.*;
 import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
+import com.tny.game.net.transport.*;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 
@@ -25,11 +25,11 @@ import static com.tny.game.common.utils.ObjectAide.*;
  * @author kgtny
  * @date 2022/12/12 14:29
  **/
-public class MessagerAuthenticateService implements MessagerAuthenticator {
+public class ContactAuthenticateService implements ContactAuthenticator {
 
     private final EndpointKeeperManager endpointKeeperManager;
 
-    public MessagerAuthenticateService(EndpointKeeperManager endpointKeeperManager) {
+    public ContactAuthenticateService(EndpointKeeperManager endpointKeeperManager) {
         this.endpointKeeperManager = endpointKeeperManager;
     }
 
@@ -50,7 +50,7 @@ public class MessagerAuthenticateService implements MessagerAuthenticator {
             // 是否需要做登录校验,判断是否已经登录
             if (certificate != null && certificate.isAuthenticated()) {
                 EndpointKeeper<Object, Endpoint<Object>> endpointKeeper = this.endpointKeeperManager
-                        .loadEndpoint(certificate.getMessagerType(), tunnel.getAccessMode());
+                        .loadEndpoint(certificate.contactType(), tunnel.getAccessMode());
                 endpointKeeper.online(certificate, tunnel);
             }
         }

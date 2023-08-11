@@ -64,8 +64,8 @@ public class NetAutoConfiguration {
     }
 
     @Bean
-    public CertificateFactory<?> defaultMessagerCertificateFactory() {
-        return new DefaultMessagerCertificateFactory<>();
+    public CertificateFactory<?> defaultContactCertificateFactory() {
+        return new DefaultContactCertificateFactory<>();
     }
 
     @Bean
@@ -76,10 +76,10 @@ public class NetAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnMissingBean(MessagerService.class)
+    @ConditionalOnMissingBean(ContactService.class)
     @ConditionalOnBean(EndpointKeeperManager.class)
-    public MessagerService messagerService(EndpointKeeperManager endpointKeeperManager) {
-        return new MessagerService(endpointKeeperManager);
+    public ContactService contactService(EndpointKeeperManager endpointKeeperManager) {
+        return new ContactService(endpointKeeperManager);
     }
 
     @Bean
@@ -93,9 +93,9 @@ public class NetAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnMissingBean(MessagerFactory.class)
-    public MessagerFactory defaultMessagerFactory() {
-        return new DefaultMessagerFactory();
+    @ConditionalOnMissingBean(ContactFactory.class)
+    public ContactFactory defaultContactFactory() {
+        return new DefaultContactFactory();
     }
 
     @Bean
@@ -126,15 +126,15 @@ public class NetAutoConfiguration {
 
     @Bean
     @ConditionalOnBean({EndpointKeeperManager.class})
-    public MessagerAuthenticateService authenticationService(EndpointKeeperManager endpointKeeperManager) {
-        return new MessagerAuthenticateService(endpointKeeperManager);
+    public ContactAuthenticateService authenticationService(EndpointKeeperManager endpointKeeperManager) {
+        return new ContactAuthenticateService(endpointKeeperManager);
     }
 
     @Bean
-    @ConditionalOnBean({EndpointKeeperManager.class, MessagerAuthenticator.class, NetAppContext.class})
-    public MessageDispatcher defaultMessageDispatcher(NetAppContext appContext, MessagerAuthenticator messagerAuthenticator,
+    @ConditionalOnBean({EndpointKeeperManager.class, ContactAuthenticator.class, NetAppContext.class})
+    public MessageDispatcher defaultMessageDispatcher(NetAppContext appContext, ContactAuthenticator contactAuthenticator,
             ExprHolderFactory exprHolderFactory) {
-        return new SpringBootMessageDispatcher(appContext, messagerAuthenticator, exprHolderFactory);
+        return new SpringBootMessageDispatcher(appContext, contactAuthenticator, exprHolderFactory);
     }
 
     @Bean

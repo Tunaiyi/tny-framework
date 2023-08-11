@@ -62,19 +62,19 @@ public class RpcAccessIdentify implements RpcAccessPoint {
     }
 
     public static long formatId(RpcServiceType serviceType, int serverId, int index) {
-        return ((long)serviceType.id() * RPC_SERVICE_TYPE_SIZE) + (serverId * RPC_SERVER_INDEX_SIZE) + index;
+        return ((long) serviceType.id() * RPC_SERVICE_TYPE_SIZE) + (serverId * RPC_SERVER_INDEX_SIZE) + index;
     }
 
     private static int parseIndex(long id) {
-        return (int)(id % RPC_SERVER_INDEX_SIZE);
+        return (int) (id % RPC_SERVER_INDEX_SIZE);
     }
 
     public static int parseServerId(long id) {
-        return (int)(id % RPC_SERVICE_TYPE_SIZE / RPC_SERVER_INDEX_SIZE);
+        return (int) (id % RPC_SERVICE_TYPE_SIZE / RPC_SERVER_INDEX_SIZE);
     }
 
     private static RpcServiceType parseServiceType(long id) {
-        return RpcServiceTypes.of((int)(id / RPC_SERVICE_TYPE_SIZE));
+        return RpcServiceTypes.of((int) (id / RPC_SERVICE_TYPE_SIZE));
     }
 
     private void checkIndex(int index) {
@@ -87,7 +87,7 @@ public class RpcAccessIdentify implements RpcAccessPoint {
     }
 
     @Override
-    public MessagerType getMessagerType() {
+    public ContactType contactType() {
         return serviceType;
     }
 
@@ -97,7 +97,7 @@ public class RpcAccessIdentify implements RpcAccessPoint {
     }
 
     @Override
-    public long getMessagerId() {
+    public long contactId() {
         return id;
     }
 
@@ -125,10 +125,10 @@ public class RpcAccessIdentify implements RpcAccessPoint {
     @Override
     public String toString() {
         return "RpcAccessIdentify{" + "id=" + id +
-                ", serviceType=" + serviceType +
-                ", serverId=" + serverId +
-                ", index=" + parseIndex(id) +
-                '}';
+               ", serviceType=" + serviceType +
+               ", serverId=" + serverId +
+               ", index=" + parseIndex(id) +
+               '}';
     }
 
     @Override
@@ -139,13 +139,13 @@ public class RpcAccessIdentify implements RpcAccessPoint {
         if (!(o instanceof RpcAccessIdentify)) {
             return false;
         }
-        RpcAccessIdentify identify = (RpcAccessIdentify)o;
-        return getMessagerId() == identify.getMessagerId();
+        RpcAccessIdentify identify = (RpcAccessIdentify) o;
+        return contactId() == identify.contactId();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getMessagerId());
+        return Objects.hash(contactId());
     }
 
 }

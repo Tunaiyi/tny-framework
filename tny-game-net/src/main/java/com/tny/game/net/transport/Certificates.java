@@ -8,7 +8,7 @@
  * See the Mulan PSL v2 for more details.
  */
 
-package com.tny.game.net.command;
+package com.tny.game.net.transport;
 
 import com.google.common.base.MoreObjects;
 import com.tny.game.common.utils.*;
@@ -18,47 +18,47 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.util.*;
 
-import static com.tny.game.net.command.CertificateStatus.*;
+import static com.tny.game.net.transport.CertificateStatus.*;
 
 public final class Certificates {
 
-    private static final long ANONYMITY_MESSAGER_ID = -1L;
+    private static final long ANONYMITY_CONTACT_ID = -1L;
 
-    public static boolean isAnonymity(int messageId) {
-        return messageId < 0;
+    public static boolean isAnonymity(int contactId) {
+        return contactId < 0;
     }
 
-    public static boolean isAuthenticated(int messageId) {
-        return messageId > 0;
+    public static boolean isAuthenticated(int contactId) {
+        return contactId > 0;
     }
 
-    public static <UID> CommonCertificate<UID> createAuthenticated(long id, UID userID, long messagerId, MessagerType messagerType) {
+    public static <UID> Certificate<UID> createAuthenticated(long id, UID userID, long contactId, ContactType contactType) {
         Asserts.checkArgument(id > 0, "loginId must > 0");
-        return createAuthenticated(id, userID, messagerId, messagerType, Instant.now());
+        return createAuthenticated(id, userID, contactId, contactType, Instant.now());
     }
 
-    public static <UID> CommonCertificate<UID> createAuthenticated(long id, UID userID, long messagerId, MessagerType messagerType,
+    public static <UID> Certificate<UID> createAuthenticated(long id, UID userID, long contactId, ContactType contactType,
             Instant authenticateAt) {
         Asserts.checkArgument(id > 0, "loginId must > 0");
-        return new CommonCertificate<>(id, userID, messagerId, messagerType, AUTHENTICATED, authenticateAt);
+        return new DefaultCertificate<>(id, userID, contactId, contactType, AUTHENTICATED, authenticateAt);
     }
 
-    public static <UID> CommonCertificate<UID> createAuthenticated(long id, UID userID, long messagerId, MessagerType messagerType,
+    public static <UID> Certificate<UID> createAuthenticated(long id, UID userID, long contactId, ContactType contactType,
             Instant authenticateAt,
             boolean renew) {
         Asserts.checkArgument(id > 0, "loginId must > 0");
-        return new CommonCertificate<>(id, userID, messagerId, messagerType, renew ? RENEW : AUTHENTICATED, authenticateAt);
+        return new DefaultCertificate<>(id, userID, contactId, contactType, renew ? RENEW : AUTHENTICATED, authenticateAt);
     }
 
-    public static <UID> CommonCertificate<UID> createUnauthenticated() {
+    public static <UID> Certificate<UID> createUnauthenticated() {
         return createUnauthenticated(null);
     }
 
-    public static <UID> CommonCertificate<UID> createUnauthenticated(UID anonymityUserId) {
-        return new CommonCertificate<>(-1, anonymityUserId, ANONYMITY_MESSAGER_ID, NetMessagerType.ANONYMITY, UNAUTHENTICATED, null);
+    public static <UID> Certificate<UID> createUnauthenticated(UID anonymityUserId) {
+        return new DefaultCertificate<>(-1, anonymityUserId, ANONYMITY_CONTACT_ID, NetContactType.ANONYMITY, UNAUTHENTICATED, null);
     }
 
-    private static class CommonCertificate<UID> implements Certificate<UID>, Serializable {
+    private static class DefaultCertificate<UID> implements Certificate<UID>, Serializable {
 
         /**
          *
@@ -67,25 +67,25 @@ public final class Certificates {
 
         private final long id;
 
-        private final long messagerId;
+        private final long contactId;
 
         private final CertificateStatus status;
 
         private final UID userId;
 
-        private final MessagerType messagerType;
+        private final ContactType contactType;
 
         private final Instant createAt;
 
         private final Instant authenticateAt;
 
-        private CommonCertificate(long id, UID userId, long messagerId, MessagerType messagerType, CertificateStatus status, Instant authenticateAt) {
+        private DefaultCertificate(long id, UID userId, long contactId, ContactType contactType, CertificateStatus status, Instant authenticateAt) {
             super();
             this.id = id;
-            this.messagerId = messagerId;
+            this.contactId = contactId;
             this.status = status;
             this.userId = userId;
-            this.messagerType = messagerType;
+            this.contactType = contactType;
             this.createAt = Instant.now();
             if (authenticateAt == null) {
                 authenticateAt = this.createAt;
@@ -103,21 +103,21 @@ public final class Certificates {
             return this.status.isAuthenticated();
         }
 
-        public boolean isSameUser(CommonCertificate<UID> other) {
+        public boolean isSameUser(DefaultCertificate<UID> other) {
             if (this == other) {
                 return true;
             }
             return Objects.equals(getUserId(), other.getUserId()) &&
-                    Objects.equals(getMessagerId(), other.getMessagerId());
+                   Objects.equals(contactId(), other.contactId());
         }
 
-        public boolean isSameCertificate(CommonCertificate<UID> other) {
+        public boolean isSameCertificate(DefaultCertificate<UID> other) {
             if (this == other) {
                 return true;
             }
             return getId() == other.getId() &&
-                    Objects.equals(getMessagerId(), other.getMessagerId()) &&
-                    Objects.equals(getMessagerType(), other.getMessagerType());
+                   Objects.equals(contactId(), other.contactId()) &&
+                   Objects.equals(contactType(), other.contactType());
         }
 
         @Override
@@ -126,13 +126,13 @@ public final class Certificates {
         }
 
         @Override
-        public long getMessagerId() {
-            return messagerId;
+        public long contactId() {
+            return contactId;
         }
 
         @Override
-        public MessagerType getMessagerType() {
-            return this.messagerType;
+        public ContactType contactType() {
+            return this.contactType;
         }
 
         @Override
@@ -155,13 +155,13 @@ public final class Certificates {
             if (this == o) {
                 return true;
             }
-            if (!(o instanceof CommonCertificate)) {
+            if (!(o instanceof DefaultCertificate)) {
                 return false;
             }
-            CommonCertificate<?> that = (CommonCertificate<?>)o;
+            DefaultCertificate<?> that = (DefaultCertificate<?>) o;
             return getId() == that.getId() &&
-                    isAuthenticated() == that.isAuthenticated() &&
-                    Objects.equals(getUserId(), that.getUserId());
+                   isAuthenticated() == that.isAuthenticated() &&
+                   Objects.equals(getUserId(), that.getUserId());
         }
 
         @Override
@@ -172,10 +172,10 @@ public final class Certificates {
         @Override
         public String toString() {
             return MoreObjects.toStringHelper(this)
-                    .add("userId", this.userId)
-                    .add("messagerType", this.messagerType)
-                    .add("id", this.id)
-                    .toString();
+                              .add("userId", this.userId)
+                              .add("contactType", this.contactType)
+                              .add("id", this.id)
+                              .toString();
         }
 
     }
