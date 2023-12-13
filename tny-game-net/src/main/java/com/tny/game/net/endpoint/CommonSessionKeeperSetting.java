@@ -36,7 +36,7 @@ public class CommonSessionKeeperSetting implements SessionKeeperSetting {
     }
 
     @Override
-    public String getMessagerType() {
+    public String getContactType() {
         return this.name;
     }
 

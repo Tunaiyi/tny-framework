@@ -71,7 +71,7 @@ public class RpcInvokeContext {
         return rpcContext;
     }
 
-    ContactType getMessagerType() {
+    ContactType getContactType() {
         var forward = this.forward;
         if (forward != null) {
             ForwardPoint servicer = forward.getFrom();

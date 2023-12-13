@@ -257,7 +257,7 @@ class ControllerParamDescription {
                 RpcForwardHeader forwardHeader = head.getHeader(MessageHeaderConstants.RPC_FORWARD_HEADER);
                 if (forwardHeader != null) {
                     ForwardContact sender = forwardHeader.getSender();
-                    value = context.getMessagerFactory().createContact(sender);
+                    value = context.getContactFactory().createContact(sender);
                 }
                 break;
             }
@@ -268,7 +268,7 @@ class ControllerParamDescription {
                 RpcForwardHeader forwardHeader = head.getHeader(MessageHeaderConstants.RPC_FORWARD_HEADER);
                 if (forwardHeader != null) {
                     ForwardContact receiver = forwardHeader.getReceiver();
-                    value = context.getMessagerFactory().createContact(receiver);
+                    value = context.getContactFactory().createContact(receiver);
                 }
                 break;
             }
