@@ -51,7 +51,7 @@ public interface NetworkContext extends EndpointContext {
     /**
      * @return 消息者工厂
      */
-    ContactFactory getContactFactory();
+    ContactFactory getMessagerFactory();
 
     /**
      * @param <UID> id类型

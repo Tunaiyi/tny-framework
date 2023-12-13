@@ -18,7 +18,7 @@ package com.tny.game.net.endpoint;
  */
 public interface EndpointKeeperSetting {
 
-    String getContactType();
+    String getMessagerType();
 
     String getKeeperFactory();
 

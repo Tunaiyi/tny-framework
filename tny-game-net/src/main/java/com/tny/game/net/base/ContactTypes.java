@@ -41,15 +41,15 @@ public class ContactTypes extends ClassImporter {
     }
 
     public static <T extends ContactType> T check(String key) {
-        return holder.check(key, "获取 {} ContactType 不存在", key);
+        return holder.check(key, "获取 {} MessagerType 不存在", key);
     }
 
     public static <T extends ContactType> T check(int id) {
-        return holder.check(id, "获取 ID为 {} 的 ContactType 不存在", id);
+        return holder.check(id, "获取 ID为 {} 的 MessagerType 不存在", id);
     }
 
     public static <T extends ContactType> T checkGroup(String group) {
-        return holder.checkBySymbol(GROUP_SYMBOL, group, "获取 {} ContactType 不存在", group);
+        return holder.checkBySymbol(GROUP_SYMBOL, group, "获取 {} MessagerType 不存在", group);
     }
 
     public static <T extends ContactType> T of(int id) {
