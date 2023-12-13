@@ -25,7 +25,7 @@ public interface RpcEnterContext extends RpcInvocationContext, RpcTransferContex
     //    /**
     //     * @return 准备
     //     */
-    //    boolean forward(NetContact to, String operationName);
+    //    boolean forward(NetMessager to, String operationName);
 
     /**
      * 恢复

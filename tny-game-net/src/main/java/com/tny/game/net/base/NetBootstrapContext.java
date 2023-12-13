@@ -90,7 +90,7 @@ public class NetBootstrapContext implements NetworkContext {
     }
 
     @Override
-    public ContactFactory getContactFactory() {
+    public ContactFactory getMessagerFactory() {
         return this.contactFactory;
     }
 

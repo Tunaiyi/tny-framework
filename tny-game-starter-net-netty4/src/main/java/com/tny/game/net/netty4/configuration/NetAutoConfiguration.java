@@ -64,7 +64,7 @@ public class NetAutoConfiguration {
     }
 
     @Bean
-    public CertificateFactory<?> defaultContactCertificateFactory() {
+    public CertificateFactory<?> defaultMessagerCertificateFactory() {
         return new DefaultContactCertificateFactory<>();
     }
 
@@ -94,7 +94,7 @@ public class NetAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(ContactFactory.class)
-    public ContactFactory defaultContactFactory() {
+    public ContactFactory defaultMessagerFactory() {
         return new DefaultContactFactory();
     }
 

@@ -86,22 +86,22 @@ public class CommonEndpointKeeperManager implements EndpointKeeperManager, AppPr
         Map<ContactType, TerminalKeeperSetting> terminalSettingMap = new HashMap<>();
         if (MapUtils.isNotEmpty(sessionKeeperSettingMap)) {
             sessionKeeperSettingMap.forEach((name, setting) -> sessionSettingMap
-                    .put(ContactTypes.checkGroup(StringAide.ifBlank(setting.getContactType(), name)), setting));
+                    .put(ContactTypes.checkGroup(StringAide.ifBlank(setting.getMessagerType(), name)), setting));
         }
         if (MapUtils.isNotEmpty(terminalKeeperSettingMap)) {
             terminalKeeperSettingMap.forEach((name, setting) -> terminalSettingMap
-                    .put(ContactTypes.checkGroup(StringAide.ifBlank(setting.getContactType(), name)), setting));
+                    .put(ContactTypes.checkGroup(StringAide.ifBlank(setting.getMessagerType(), name)), setting));
         }
         if (defaultSessionKeeperSetting != null) {
             sessionSettingMap.put(DEFAULT_KEY, defaultSessionKeeperSetting);
-            if (StringUtils.isNoneBlank(defaultSessionKeeperSetting.getContactType())) {
-                sessionSettingMap.put(ContactTypes.checkGroup(defaultSessionKeeperSetting.getContactType()), defaultSessionKeeperSetting);
+            if (StringUtils.isNoneBlank(defaultSessionKeeperSetting.getMessagerType())) {
+                sessionSettingMap.put(ContactTypes.checkGroup(defaultSessionKeeperSetting.getMessagerType()), defaultSessionKeeperSetting);
             }
         }
         if (defaultTerminalKeeperSetting != null) {
             terminalSettingMap.put(DEFAULT_KEY, defaultTerminalKeeperSetting);
-            if (StringUtils.isNoneBlank(defaultTerminalKeeperSetting.getContactType())) {
-                terminalSettingMap.put(ContactTypes.checkGroup(defaultTerminalKeeperSetting.getContactType()), defaultTerminalKeeperSetting);
+            if (StringUtils.isNoneBlank(defaultTerminalKeeperSetting.getMessagerType())) {
+                terminalSettingMap.put(ContactTypes.checkGroup(defaultTerminalKeeperSetting.getMessagerType()), defaultTerminalKeeperSetting);
             }
         }
         this.sessionKeeperSettingMap = ImmutableMap.copyOf(sessionSettingMap);
