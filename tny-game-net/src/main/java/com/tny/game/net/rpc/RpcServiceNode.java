@@ -114,7 +114,7 @@ public class RpcServiceNode implements RpcInvokeNode, RpcForwardNode {
         writeLock();
         try {
             boolean activate = this.remoteServiceAccessMap.isEmpty();
-            RpcAccessIdentify nodeId = endpoint.getUserId();
+            RpcAccessIdentify nodeId = endpoint.getIdentify();
             this.remoteServiceAccessMap.put(nodeId.contactId(), new RpcRemoteServiceAccess(endpoint));
             this.orderAccessPoints = ImmutableList.sortedCopyOf(
                     Comparator.comparing(RpcAccess::getAccessId),
@@ -130,7 +130,7 @@ public class RpcServiceNode implements RpcInvokeNode, RpcForwardNode {
     protected void removeEndpoint(Endpoint<RpcAccessIdentify> endpoint) {
         writeLock();
         try {
-            RpcAccessIdentify nodeId = endpoint.getUserId();
+            RpcAccessIdentify nodeId = endpoint.getIdentify();
             boolean activate = this.remoteServiceAccessMap.isEmpty();
             RpcRemoteServiceAccess accessPoint = this.remoteServiceAccessMap.get(nodeId.contactId());
             if (accessPoint == null) {

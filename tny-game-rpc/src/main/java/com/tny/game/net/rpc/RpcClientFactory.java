@@ -66,8 +66,8 @@ public class RpcClientFactory implements Serve {
 
     private <ID> PostConnect<ID> postConnect(int index) {
         return (tunnel) -> {
-            String user = StringAide.ifBlank(setting.getUsername(), appContext.getAppType());
-            RpcServiceType serviceType = RpcServiceTypes.checkService(user);
+            String username = StringAide.ifBlank(setting.getUsername(), appContext.getService());
+            RpcServiceType serviceType = RpcServiceTypes.checkService(username);
             int serverId = appContext.getServerId();
             long id = RpcAccessIdentify.formatId(serviceType, serverId, index);
             RequestContent content = RpcAuthMessageContexts

@@ -39,7 +39,7 @@ public class ImportCommandExecutorFactoryBeanDefinitionRegistrar extends ImportC
         }
         String beanName = getBeanName(name, CommandExecutorFactory.class);
         registry.registerBeanDefinition(beanName,
-                BeanDefinitionBuilder.genericBeanDefinition(SerialCommandExecutorFactory.class)
+                BeanDefinitionBuilder.genericBeanDefinition(DefaultCommandExecutorFactory.class)
                         .addConstructorArgValue(setting)
                         .getBeanDefinition());
         return false;

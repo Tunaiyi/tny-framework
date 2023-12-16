@@ -32,11 +32,11 @@ public class CommonTerminalKeeper<UID> extends AbstractEndpointKeeper<UID, Termi
     public Optional<Terminal<UID>> online(Certificate<UID> certificate, NetTunnel<UID> tunnel) throws AuthFailedException {
         if (tunnel.getAccessMode() == NetAccessMode.CLIENT) {
             NetEndpoint<UID> endpoint = tunnel.getEndpoint();
-            if (endpoint instanceof Client) {
+            if (endpoint instanceof Terminal) {
                 endpoint.online(certificate, tunnel);
-                Terminal<UID> client = as(endpoint);
-                this.replaceEndpoint(client.getUserId(), client);
-                return Optional.of(client);
+                Terminal<UID> terminal = as(endpoint);
+                this.replaceEndpoint(terminal.getIdentify(), terminal);
+                return Optional.of(terminal);
             }
         }
         return Optional.empty();

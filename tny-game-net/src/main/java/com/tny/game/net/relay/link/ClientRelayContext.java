@@ -23,19 +23,14 @@ import com.tny.game.net.relay.link.route.*;
 public interface ClientRelayContext {
 
     /**
-     * @return 获取前服务ServeName
+     * @return 获取当前服务实例 id
      */
-    String getAppServeName();
+    long getInstanceId();
 
     /**
      * @return 获取当前服务实例 id
      */
-    long getAppInstanceId();
-
-    /**
-     * @return 获取当前服务实例 id
-     */
-    AppType getAppType();
+    String getService();
 
     /**
      * @return 分配 link id

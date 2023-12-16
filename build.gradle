@@ -57,7 +57,6 @@ configure(subprojects) {
             dependency "${libs.javassist}:3.29.2-GA"
             dependency "${libs.xstream}:1.4.20"
         }
-
         generatedPomCustomization {
             enabled = false
         }
@@ -132,8 +131,9 @@ configure(javaProjects) {
         all {
             resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
             resolutionStrategy.cacheDynamicVersionsFor 0, 'seconds'
+            exclude module: 'spring-boot-starter-logging'//排除对默认logging的依赖
+            exclude module: 'log4j-to-slf4j'//排除对默认logging的依赖
         }
-        compile.exclude module: 'spring-boot-starter-logging'//排除对默认logging的依赖
     }
 
     compileJava.dependsOn(processResources)

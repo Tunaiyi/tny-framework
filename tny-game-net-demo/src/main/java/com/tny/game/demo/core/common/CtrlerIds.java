@@ -29,6 +29,7 @@ public interface CtrlerIds {
     int SPEAK$TEST = 200_06;
 
     int SPEAK$SAY_FOR_RPC = 200_07;
+    int SPEAK$SAY_FOR_CONTENT = 200_08;
 
     int PLAYER = 201;
     int PLAYER$GET = 201_00;

@@ -168,8 +168,8 @@ public class MockNetTunnel extends AttributeHolder implements NetTunnel<Long> {
     }
 
     @Override
-    public Long getUserId() {
-        return this.endpoint.getUserId();
+    public Long getIdentify() {
+        return this.endpoint.getIdentify();
     }
 
     @Override

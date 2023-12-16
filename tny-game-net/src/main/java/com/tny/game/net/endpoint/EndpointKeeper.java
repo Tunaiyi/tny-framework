@@ -21,10 +21,10 @@ import java.util.stream.Stream;
 /**
  * 终端持有器
  *
- * @param <UID>
+ * @param <I>
  * @param <E>
  */
-public interface EndpointKeeper<UID, E extends Endpoint<UID>> {
+public interface EndpointKeeper<I, E extends Endpoint<I>> {
 
     /**
      * @return 获取用户类型
@@ -34,50 +34,50 @@ public interface EndpointKeeper<UID, E extends Endpoint<UID>> {
     /**
      * @return 用户组类型
      */
-    default String getUserGroup() {
+    default String getContactGroup() {
         return this.getContactType().getGroup();
     }
 
     /**
      * <p>
      * <p>
-     * 获取指定userId对应的Session <br>
+     * 获取指定identify对应的Session <br>
      *
-     * @param userId 指定的Key
+     * @param identify 指定的Key
      * @return 返回获取的session, 无session返回null
      */
-    E getEndpoint(UID userId);
+    E getEndpoint(I identify);
 
     /**
      * 获取所有的sessions
      *
      * @return 返回sessions map
      */
-    Map<UID, E> getAllEndpoints();
+    Map<I, E> getAllEndpoints();
 
     /**
      * 发信息给用户 <br>
      *
-     * @param userId  用户ID
+     * @param identify  用户ID
      * @param context 消息内容
      */
-    void send2User(UID userId, MessageContent context);
+    void send2User(I identify, MessageContent context);
 
     /**
      * 发信息给用户集合 <br>
      *
-     * @param userIds 用户ID列表
+     * @param identifys 用户ID列表
      * @param context 消息内容
      */
-    void send2Users(Collection<UID> userIds, MessageContent context);
+    void send2Users(Collection<I> identifys, MessageContent context);
 
     /**
      * 发信息给用户集合 <br>
      *
-     * @param userIdsStream 用户ID流
+     * @param identifysStream 用户ID流
      * @param context       消息内容
      */
-    void send2Users(Stream<UID> userIdsStream, MessageContent context);
+    void send2Users(Stream<I> identifysStream, MessageContent context);
 
     /**
      * 发送给所有在线的用户 <br>
@@ -85,20 +85,20 @@ public interface EndpointKeeper<UID, E extends Endpoint<UID>> {
     void send2AllOnline(MessageContent context);
 
     /**
-     * 使指定userId的session关闭
+     * 使指定identify的session关闭
      *
-     * @param userId 指定userId
+     * @param identify 指定identify
      * @return 返回下线session
      */
-    E close(UID userId);
+    E close(I identify);
 
     /**
-     * 使指定userId的endpoint下线
+     * 使指定identify的endpoint下线
      *
-     * @param userId 指定userId
+     * @param identify 指定identify
      * @return 返回下线endpoint
      */
-    E offline(UID userId);
+    E offline(I identify);
 
     /**
      * 使所有endpoint下线
@@ -120,21 +120,21 @@ public interface EndpointKeeper<UID, E extends Endpoint<UID>> {
      *
      * @param listener 监听器
      */
-    void addListener(EndpointKeeperListener<UID> listener);
+    void addListener(EndpointKeeperListener<I> listener);
 
     /**
      * 添加监听器列表
      *
      * @param listeners 监听器列表
      */
-    void addListener(Collection<EndpointKeeperListener<UID>> listeners);
+    void addListener(Collection<EndpointKeeperListener<I>> listeners);
 
     /**
      * 移除监听器
      *
      * @param listener 监听器
      */
-    void removeListener(EndpointKeeperListener<UID> listener);
+    void removeListener(EndpointKeeperListener<I> listener);
 
     /**
      * 计算在线人数
@@ -148,16 +148,16 @@ public interface EndpointKeeper<UID, E extends Endpoint<UID>> {
      * @param tunnel 注册tunnel
      * @throws AuthFailedException 认证异常
      */
-    Optional<E> online(Certificate<UID> certificate, NetTunnel<UID> tunnel) throws AuthFailedException;
+    Optional<E> online(Certificate<I> certificate, NetTunnel<I> tunnel) throws AuthFailedException;
 
     /**
      * <p>
      * <p>
-     * 获取指定userId对应的Session <br>
+     * 获取指定identify对应的Session <br>
      *
-     * @param userId 指定的Key
+     * @param identify 指定的Key
      * @return 返回获取的endpoint, 无endpoint返回null
      */
-    boolean isOnline(UID userId);
+    boolean isOnline(I identify);
 
 }

@@ -126,7 +126,7 @@ public class RpcInvokeCommand extends RpcHandleCommand {
             return;
         }
         DISPATCHER_LOG.debug("Controller [{}] 检测用户组调用权限", this.getName());
-        if (!controller.isUserGroup(invokeContext.getContactType())) {
+        if (!controller.isContactGroup(invokeContext.getContactType())) {
             DISPATCHER_LOG.error("Controller [{}] , 用户组 [{}] 无法调用此协议", this.getName(), tunnel.getGroup());
             this.invokeContext.doneAndIntercept(NetResultCode.NO_PERMISSIONS);
             return;

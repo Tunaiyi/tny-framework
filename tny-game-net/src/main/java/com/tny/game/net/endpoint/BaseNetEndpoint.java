@@ -76,7 +76,7 @@ public abstract class BaseNetEndpoint<UID> extends AbstractConnector<UID> implem
     private volatile MessageHandleFilter<UID> sendFilter = MessageHandleFilter.allHandleFilter();
 
     protected BaseNetEndpoint(Certificate<UID> certificate, EndpointContext context, int sendMessageCachedSize) {
-        this.id = NetAide.newEndpointId();
+        this.id = ConnectIdFactory.newEndpointId();
         this.state = EndpointStatus.INIT;
         this.context = context;
         this.certificate = certificate;

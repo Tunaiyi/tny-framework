@@ -19,7 +19,7 @@ import com.tny.game.net.message.*;
  * 具有用户标识, 有通讯状态的对象.
  * Created by Kun Yang on 2017/3/26.
  */
-public interface Connector<UID> extends NetContact {
+public interface Connector<I> extends NetContact {
 
     @Override
     default ContactType contactType() {
@@ -34,14 +34,14 @@ public interface Connector<UID> extends NetContact {
     /**
      * @return 用户ID
      */
-    default UID getUserId() {
-        return this.getCertificate().getUserId();
+    default I getIdentify() {
+        return this.getCertificate().getIdentify();
     }
 
     /**
      * @return 登陆凭证
      */
-    Certificate<UID> getCertificate();
+    Certificate<I> getCertificate();
 
     /**
      * @return 是否登陆认证

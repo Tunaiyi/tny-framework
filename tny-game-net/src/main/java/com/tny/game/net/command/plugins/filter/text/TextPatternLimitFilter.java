@@ -55,7 +55,7 @@ public class TextPatternLimitFilter extends AbstractParamFilter<Object, PatternM
         if (!this.getPattern(annotation.value()).matcher(param).matches()) {
             MessageHead head = message.getHead();
             LOGGER.warn("{} 玩家请求 协议[{}] 第{}个参数 [{}] 的字符串无法匹配正则表达式{}",
-                    communicator.getUserId(), head.getId(),
+                    communicator.getIdentify(), head.getId(),
                     index, param, annotation.value());
             return code(NetResultCode.SERVER_ILLEGAL_PARAMETERS, annotation.illegalCode());
         }

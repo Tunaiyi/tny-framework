@@ -49,7 +49,7 @@ public abstract class MessageTest {
     //    }
 
     //    @Test
-    //    public void getUserGroup() throws Exception {
+    //    public void getContactGroup() throws Exception {
     //        assertEquals(Certificates.DEFAULT_USER_TYPE, this.message.getUserType());
     //        assertEquals(Certificates.ANONYMITY_USER_TYPE, this.unloginMessage.getUserType());
     //        assertEquals(Certificates.ANONYMITY_USER_TYPE, this.unloginNullMessage.getUserType());

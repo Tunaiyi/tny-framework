@@ -44,7 +44,7 @@ class NettyRelayLinkConnection implements RelayConnectCallback {
         this.relayContext = relayContext;
         this.instance = instance;
         this.connector = connector;
-        this.username = instance.username(relayContext.getAppServeName());
+        this.username = instance.username(relayContext.getService());
     }
 
     public URL getUrl() {
@@ -70,7 +70,7 @@ class NettyRelayLinkConnection implements RelayConnectCallback {
         this.times = 0;
         this.linkKey = relayContext.createLinkKey(username);
         this.link = new CommonClientRelayLink(this.linkKey, instance, transporter);
-        this.link.auth(RpcServiceTypes.checkAppType(relayContext.getAppType()), username, relayContext.getAppInstanceId());
+        this.link.auth(RpcServiceTypes.checkService(username), username, relayContext.getInstanceId());
         transporter.addCloseListener(this::onClose);
     }
 

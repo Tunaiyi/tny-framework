@@ -246,8 +246,8 @@ public final class MethodControllerHolder extends ControllerHolder {
     }
 
     @Override
-    public boolean isUserGroup(ContactType contactType) {
-        return this.userGroups != null ? super.isUserGroup(contactType) : this.classController.isUserGroup(contactType);
+    public boolean isContactGroup(ContactType contactType) {
+        return this.contactGroups != null ? super.isContactGroup(contactType) : this.classController.isContactGroup(contactType);
     }
 
     @Override

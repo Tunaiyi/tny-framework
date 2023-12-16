@@ -42,7 +42,7 @@ public class CommonSessionTest extends NetEndpointTest<CommonSession<Long>> {
 
             @Override
             public CommandExecutorFactory getCommandExecutorFactory() {
-                return new SerialCommandExecutorFactory(new SerialCommandExecutorSetting());
+                return new DefaultCommandExecutorFactory(new SerialCommandExecutorSetting());
             }
         });
     }

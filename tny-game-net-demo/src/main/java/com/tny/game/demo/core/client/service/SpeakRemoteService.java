@@ -36,4 +36,7 @@ public interface SpeakRemoteService {
     @RpcRequest(value = CtrlerIds.SPEAK$SAY_FOR_RPC)
     RpcFuture<SayContentDTO> asyncSay(String message);
 
+    @RpcRequest(value = CtrlerIds.SPEAK$SAY_FOR_CONTENT)
+    SayContentDTO sayForContent(SayContentDTO content);
+
 }

@@ -25,6 +25,8 @@ public class DefaultNetAppContext implements NetAppContext {
 
     private String scopeType = "online";
 
+    private String service = "";
+
     private String locale = "zh-CN";
 
     private List<String> scanPackages = ImmutableList.of();
@@ -61,6 +63,11 @@ public class DefaultNetAppContext implements NetAppContext {
     }
 
     @Override
+    public String getService() {
+        return service;
+    }
+
+    @Override
     public Attributes attributes() {
         return this.attributes;
     }
@@ -71,33 +78,27 @@ public class DefaultNetAppContext implements NetAppContext {
     }
 
     protected DefaultNetAppContext setName(String name) {
-        this.name = name;
-        return this;
+        this.name = name; return this;
     }
 
     protected DefaultNetAppContext setAppType(String appType) {
-        this.appType = appType;
-        return this;
+        this.appType = appType; return this;
     }
 
     protected DefaultNetAppContext setScopeType(String scopeType) {
-        this.scopeType = scopeType;
-        return this;
+        this.scopeType = scopeType; return this;
     }
 
     protected DefaultNetAppContext setScanPackages(Collection<String> scanPackages) {
-        this.scanPackages = ImmutableList.copyOf(scanPackages);
-        return this;
+        this.scanPackages = ImmutableList.copyOf(scanPackages); return this;
     }
 
     protected DefaultNetAppContext setLocale(String locale) {
-        this.locale = locale;
-        return this;
+        this.locale = locale; return this;
     }
 
     protected DefaultNetAppContext setServerId(int serverId) {
-        this.serverId = serverId;
-        return this;
+        this.serverId = serverId; return this;
     }
 
 }

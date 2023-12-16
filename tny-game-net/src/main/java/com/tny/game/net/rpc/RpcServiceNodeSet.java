@@ -110,7 +110,7 @@ public class RpcServiceNodeSet implements RpcInvokeNodeSet, RpcForwardNodeSet {
     }
 
     private RpcServiceNode loadOrCreate(Endpoint<RpcAccessIdentify> endpoint) {
-        RpcAccessIdentify nodeId = endpoint.getUserId();
+        RpcAccessIdentify nodeId = endpoint.getIdentify();
         return remoteNodeMap.computeIfAbsent(nodeId.getServerId(), (serverId) -> new RpcServiceNode(serverId, this));
     }
 
