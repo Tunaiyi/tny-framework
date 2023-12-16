@@ -13,6 +13,7 @@ package com.tny.game.net.relay.link;
 import com.google.common.collect.ImmutableList;
 import com.tny.game.common.collection.map.access.*;
 import com.tny.game.common.concurrent.utils.*;
+import com.tny.game.net.base.*;
 import com.tny.game.net.relay.cluster.*;
 import org.apache.commons.lang3.builder.*;
 import org.slf4j.*;
@@ -50,6 +51,8 @@ public class BaseRemoteServeInstance implements NetRemoteServeInstance {
 
     private boolean healthy;
 
+    private final RpcServiceType serviceType;
+
     private ObjectMap metadata = new ObjectMap();
 
     private final AtomicBoolean close = new AtomicBoolean(false);
@@ -67,6 +70,7 @@ public class BaseRemoteServeInstance implements NetRemoteServeInstance {
         this.scopeType = node.getScopeType();
         this.healthy = node.isHealthy();
         this.cluster = cluster;
+        this.serviceType = RpcServiceTypes.checkService(cluster.serviceName());
     }
 
     @Override
@@ -97,6 +101,11 @@ public class BaseRemoteServeInstance implements NetRemoteServeInstance {
     @Override
     public String getScopeType() {
         return scopeType;
+    }
+
+    @Override
+    public RpcServiceType serviceType() {
+        return serviceType;
     }
 
     @Override

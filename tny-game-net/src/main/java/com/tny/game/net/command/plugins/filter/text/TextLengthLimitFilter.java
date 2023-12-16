@@ -42,7 +42,7 @@ public class TextLengthLimitFilter extends AbstractParamFilter<Object, TextLengt
         if (length < annotation.low() || annotation.high() < length) {
             MessageHead head = message.getHead();
             LOGGER.warn("{} 玩家请求 协议[{}] 第{}个参数 [{}] 的字符串长度超过 {} - {} 范围",
-                    communicator.getUserId(), head.getId(),
+                    communicator.getIdentify(), head.getId(),
                     index, param, annotation.low(), annotation.high());
             return code(NetResultCode.SERVER_ILLEGAL_PARAMETERS, annotation.illegalCode());
         }

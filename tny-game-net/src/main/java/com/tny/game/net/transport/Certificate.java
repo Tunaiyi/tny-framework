@@ -26,7 +26,7 @@ public interface Certificate<UID> extends Contact, Serializable {
     /**
      * @return 用户 ID
      */
-    UID getUserId();
+    UID getIdentify();
 
     /**
      * @return 是否已认证
@@ -102,7 +102,7 @@ public interface Certificate<UID> extends Contact, Serializable {
         if (this == other) {
             return true;
         }
-        return Objects.equals(getUserId(), other.getUserId()) &&
+        return Objects.equals(getIdentify(), other.getIdentify()) &&
                Objects.equals(contactType(), other.contactType());
     }
 
@@ -117,7 +117,7 @@ public interface Certificate<UID> extends Contact, Serializable {
             return true;
         }
         return getId() == other.getId() &&
-               Objects.equals(getUserId(), other.getUserId()) &&
+               Objects.equals(getIdentify(), other.getIdentify()) &&
                Objects.equals(contactType(), other.contactType());
     }
 

@@ -21,13 +21,13 @@ import java.util.*;
  */
 public class RpcServiceTypes extends ClassImporter {
 
-    public static final EnumerableSymbol<RpcServiceType, String> SERVICE_SYMBOL = EnumerableSymbol
-            .symbolOf(RpcServiceType.class, "service", RpcServiceType::getService);
+    public static final EnumerableSymbol<RpcServiceType, String> SERVICE_SYMBOL = EnumerableSymbol.symbolOf(RpcServiceType.class, "service",
+            RpcServiceType::getService);
 
-    public static final EnumerableSymbol<RpcServiceType, AppType> APP_TYPE_SYMBOL = EnumerableSymbol
-            .symbolOf(RpcServiceType.class, "appType", RpcServiceType::getAppType);
+    public static final EnumerableSymbol<RpcServiceType, AppType> APP_TYPE_SYMBOL = EnumerableSymbol.symbolOf(RpcServiceType.class, "appType",
+            RpcServiceType::getAppType);
 
-    protected static EnumeratorHolder<RpcServiceType> holder = new EnumeratorHolder<RpcServiceType>() {
+    protected static EnumeratorHolder<RpcServiceType> holder = new EnumeratorHolder<>() {
 
         @Override
         protected void postRegister(RpcServiceType object) {
@@ -57,9 +57,6 @@ public class RpcServiceTypes extends ClassImporter {
         return holder.checkBySymbol(SERVICE_SYMBOL, service, "获取 service 为 {} 的 RpcServiceType 不存在", service);
     }
 
-    public static <T extends RpcServiceType> T checkAppType(AppType appType) {
-        return holder.checkBySymbol(APP_TYPE_SYMBOL, appType, "获取 appType 为 {} 的 RpcServiceType 不存在", appType);
-    }
 
     public static <T extends RpcServiceType> T of(int id) {
         return holder.of(id);
@@ -73,9 +70,6 @@ public class RpcServiceTypes extends ClassImporter {
         return holder.ofBySymbol(SERVICE_SYMBOL, service);
     }
 
-    public static <T extends RpcServiceType> T ofAppType(AppType appType) {
-        return holder.ofBySymbol(APP_TYPE_SYMBOL, appType);
-    }
 
     public static <T extends RpcServiceType> Optional<T> option(int id) {
         return holder.option(id);

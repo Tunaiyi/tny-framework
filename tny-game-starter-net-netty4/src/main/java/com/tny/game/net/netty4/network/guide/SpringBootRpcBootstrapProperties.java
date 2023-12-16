@@ -59,7 +59,7 @@ public class SpringBootRpcBootstrapProperties implements SpringBootNetBootstrapS
 
     public SpringBootRpcBootstrapProperties setClient(SpringNettyRpcClientBootstrapSetting client) {
         this.client = client;
-        this.client.setName("default");
+        this.client.setName("rpc");
         return this;
     }
 

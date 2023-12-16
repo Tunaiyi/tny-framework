@@ -69,21 +69,21 @@ public abstract class AbstractSessionKeeper<UID> extends AbstractEndpointKeeper<
                     try {
                         NetSession<UID> closeSession = null;
                         if (session.isClosed()) {
-                            LOG.info("移除已关闭的 OfflineSession userId : {}", session.getUserId());
+                            LOG.info("移除已关闭的 OfflineSession identify : {}", session.getIdentify());
                             closeSession = session;
                         } else if (session.isOffline() && session.getOfflineTime() + this.setting.getOfflineCloseDelay() < now) {
-                            LOG.info("移除下线超时的 OfflineSession userId : {}", session.getUserId());
+                            LOG.info("移除下线超时的 OfflineSession identify : {}", session.getIdentify());
                             session.closeWhen(EndpointStatus.OFFLINE);
                             if (session.isClosed()) {
                                 closeSession = session;
                             }
                         }
                         if (closeSession != null) {
-                            this.removeEndpoint(closeSession.getUserId(), closeSession);
+                            this.removeEndpoint(closeSession.getIdentify(), closeSession);
                             closeSessions.add(closeSession);
                         }
                     } catch (Throwable e) {
-                        LOG.error("clear {} invalided session exception", session.getUserId(), e);
+                        LOG.error("clear {} invalided session exception", session.getIdentify(), e);
                     }
                 }
         );
@@ -98,9 +98,9 @@ public abstract class AbstractSessionKeeper<UID> extends AbstractEndpointKeeper<
                 }
                 try {
                     boolean result = session.closeWhen(EndpointStatus.OFFLINE);
-                    LOG.info("关闭第{}个 超过{}数量的OfflineSession {} : 结果 {}", i, size, session.getUserId(), result);
+                    LOG.info("关闭第{}个 超过{}数量的OfflineSession {} : 结果 {}", i, size, session.getIdentify(), result);
                 } catch (Throwable e) {
-                    LOG.error("clear {} overmuch offline session exception", session.getUserId(), e);
+                    LOG.error("clear {} overmuch offline session exception", session.getIdentify(), e);
                 }
             }
         }

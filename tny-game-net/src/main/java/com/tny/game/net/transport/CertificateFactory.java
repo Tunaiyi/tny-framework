@@ -22,12 +22,12 @@ import java.time.Instant;
  * @date : 2021/4/30 5:57 下午
  */
 @UnitInterface
-public interface CertificateFactory<UID> {
+public interface CertificateFactory<I> {
 
-    Certificate<UID> anonymous();
+    Certificate<I> anonymous();
 
-    Certificate<UID> certificate(long id, UID userId, long contactId, ContactType contactType, Instant authenticateAt);
+    Certificate<I> certificate(long id, I identify, long contactId, ContactType contactType, Instant authenticateAt);
 
-    Certificate<UID> renewCertificate(long id, UID userId, long contactId, ContactType contactType, Instant authenticateAt);
+    Certificate<I> renewCertificate(long id, I identify, long contactId, ContactType contactType, Instant authenticateAt);
 
 }

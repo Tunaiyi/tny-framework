@@ -52,13 +52,13 @@ public class ClientLoginController {
     @RpcPush(CtrlerIds.SPEAK$PUSH)
     @BeforePlugin(SpringBootParamFilterPlugin.class)
     public void pushMessage(Tunnel<Long> tunnel, @RpcBody String message) {
-        LOGGER.info("User {} [accessId {}]receive push message {}", tunnel.getUserId(), tunnel.getAccessId(), message);
+        LOGGER.info("User {} [accessId {}]receive push message {}", tunnel.getIdentify(), tunnel.getAccessId(), message);
     }
 
     @Rpc(CtrlerIds.SPEAK$PING)
     @BeforePlugin(SpringBootParamFilterPlugin.class)
     public void pingMessage(Tunnel<Long> tunnel, @RpcBody String message) {
-        LOGGER.info("User {} [accessId {}] receive : {}", tunnel.getUserId(), tunnel.getAccessId(), message);
+        LOGGER.info("User {} [accessId {}] receive : {}", tunnel.getIdentify(), tunnel.getAccessId(), message);
     }
 
 }

@@ -43,8 +43,8 @@ public abstract class BaseClientRelayExplorer<T extends NetRemoteServeCluster> e
 
     private final ClientRelayContext context;
 
-    public BaseClientRelayExplorer(ClientRelayContext RemoteRelayContext) {
-        this.context = RemoteRelayContext;
+    public BaseClientRelayExplorer(ClientRelayContext context) {
+        this.context = context;
     }
 
     protected BaseClientRelayExplorer<T> initClusters(Collection<T> clusters) {
@@ -66,7 +66,7 @@ public abstract class BaseClientRelayExplorer<T extends NetRemoteServeCluster> e
     @Override
     public <D> DoneResult<ClientRelayTunnel<D>> createTunnel(long id, MessageTransporter transport, NetworkContext context) {
         RelayMessageRouter relayMessageRouter = this.context.getRelayMessageRouter();
-        GeneralClientRelayTunnel<D> tunnel = new GeneralClientRelayTunnel<>(this.context.getAppInstanceId(), id, transport, context,
+        GeneralClientRelayTunnel<D> tunnel = new GeneralClientRelayTunnel<>(this.context.getInstanceId(), id, transport, context,
                 relayMessageRouter);
         Map<String, ClientTunnelRelayer> relayer = preassignRelayer(tunnel);
         tunnel.initRelayers(relayer);
@@ -91,7 +91,7 @@ public abstract class BaseClientRelayExplorer<T extends NetRemoteServeCluster> e
         }
     }
 
-    // 预分配 link, 但集群
+    // 预分配 link, 单集群
     private Map<String, ClientTunnelRelayer> preassignForSingleCluster(ClientRelayTunnel<?> tunnel) {
         for (NetRemoteServeCluster cluster : clusters) {
             ClientTunnelRelayer relayer = assignRelayer(tunnel, cluster);
@@ -102,9 +102,9 @@ public abstract class BaseClientRelayExplorer<T extends NetRemoteServeCluster> e
         return ImmutableMap.of();
     }
 
-    // 预分配 link, 但多集群
+    // 预分配 link, 多集群
     private Map<String, ClientTunnelRelayer> preassignForMultipleCluster(ClientRelayTunnel<?> tunnel) {
-        Map<String, ClientTunnelRelayer> relayerMap = ImmutableMap.of();
+        Map<String, ClientTunnelRelayer> relayerMap = new HashMap<>();
         for (NetRemoteServeCluster cluster : clusters) {
             ClientTunnelRelayer relayer = assignRelayer(tunnel, cluster);
             if (relayer != null) {

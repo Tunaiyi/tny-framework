@@ -29,7 +29,7 @@ public class RpcRemoteServiceAccess implements RpcServiceAccess {
 
     public RpcRemoteServiceAccess(Endpoint<RpcAccessIdentify> endpoint) {
         this.endpoint = endpoint;
-        this.forwardPoint = new ForwardPoint(endpoint.getUserId());
+        this.forwardPoint = new ForwardPoint(endpoint.getIdentify());
     }
 
     @Override
@@ -44,7 +44,7 @@ public class RpcRemoteServiceAccess implements RpcServiceAccess {
 
     @Override
     public RpcAccessIdentify getIdentify() {
-        return endpoint.getUserId();
+        return endpoint.getIdentify();
     }
 
     @Override

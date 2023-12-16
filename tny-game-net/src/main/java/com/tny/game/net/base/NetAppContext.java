@@ -15,6 +15,8 @@ import com.tny.game.common.lifecycle.unit.annotation.*;
 
 import java.util.List;
 
+import static com.tny.game.common.utils.StringAide.*;
+
 @UnitInterface
 public interface NetAppContext {
 
@@ -22,6 +24,11 @@ public interface NetAppContext {
      * @return 应用名字
      */
     String getName();
+
+    /**
+     * @return 获取服务名
+     */
+    String getService();
 
     /**
      * @return 应用类型标识
@@ -45,6 +52,13 @@ public interface NetAppContext {
      */
     default AppScope scopeType() {
         return AppScopes.ofScopeName(this.getScopeType());
+    }
+
+    /**
+     * @return 获取服务名(获取服务名 未设置则返回ServeName)
+     */
+    default String serviceName() {
+        return ifBlank(this.getService(), this.getAppType());
     }
 
     /**

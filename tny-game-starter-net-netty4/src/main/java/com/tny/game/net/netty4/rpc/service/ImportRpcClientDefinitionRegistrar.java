@@ -49,7 +49,7 @@ public class ImportRpcClientDefinitionRegistrar extends ImportConfigurationBeanD
         if (serviceSetting.isHasGuide()) {
             builder.addPropertyReference("clientGuide", serviceSetting.getGuide());
         } else {
-            builder.addAutowiredProperty("clientGuide");
+            builder.addPropertyReference("clientGuide", "rpcClientGuide");
         }
         registry.registerBeanDefinition(beanName, builder.getBeanDefinition());
     }

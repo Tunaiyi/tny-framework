@@ -36,7 +36,7 @@ public class TaskReceiverSchedulerPlugin implements VoidCommandPlugin<Long> {
         TaskReceiverType type = properties.getPlugin().getReceiverType(communicator.getGroup());
         if (type != null) {
             try {
-                this.timeTaskService.checkTask(communicator.getUserId(), type);
+                this.timeTaskService.checkTask(communicator.getIdentify(), type);
             } catch (Exception e) {
                 LOGGER.error("", e);
             }

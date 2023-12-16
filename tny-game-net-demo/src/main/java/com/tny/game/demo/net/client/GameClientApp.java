@@ -23,6 +23,7 @@ import com.tny.game.net.netty4.configuration.application.*;
 import com.tny.game.net.netty4.network.annotation.*;
 import com.tny.game.net.rpc.*;
 import com.tny.game.net.transport.*;
+import org.redisson.spring.starter.RedissonAutoConfiguration;
 import org.slf4j.*;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -43,7 +44,7 @@ import static com.tny.game.common.utils.StringAide.*;
 @SpringBootApplication(scanBasePackages = {
         "com.tny.game.demo.net.client",
         "com.tny.game.demo.core.common",
-        "com.tny.game.demo.core.client"})
+        "com.tny.game.demo.core.client"}, exclude = {RedissonAutoConfiguration.class})
 public class GameClientApp {
 
     private static final ScheduledExecutorService SERVICE = Executors.newScheduledThreadPool(1);
@@ -59,7 +60,7 @@ public class GameClientApp {
             ApplicationLauncherContext.register(GameClientApp.class);
             ApplicationContext applicationContext = SpringApplication.run(GameClientApp.class, args);
             NetApplication application = applicationContext.getBean(NetApplication.class);
-            ClientGuide clientGuide = applicationContext.getBean(ClientGuide.class);
+            ClientGuide clientGuide = applicationContext.getBean("defaultClientGuide", ClientGuide.class);
             long userId = 1000;
             AtomicInteger times = new AtomicInteger();
             Client<Long> client = clientGuide.client(URL.valueOf("protoex://127.0.0.1:18800"),
@@ -69,7 +70,7 @@ public class GameClientApp {
                         System.out.println("!!@   [发送] 请求 = " + message);
                         SendReceipt context = tunnel
                                 .send(MessageContents.request(Protocols.protocol(CtrlerIds.LOGIN$LOGIN), 888888L, userId)
-                                        .willRespondFuture(3000000L));
+                                                     .willRespondFuture(3000000L));
                         try {
                             Message response = context.respond().get(300000L, TimeUnit.MILLISECONDS);
                             System.out.println("!!@   [响应] 请求 = " + response.bodyAs(Object.class));
@@ -153,6 +154,12 @@ public class GameClientApp {
                                 LOGGER.info("Sync Call : Body [ {} ]", body);
                                 break;
                             }
+                            case "cnt": {
+                                SayContentDTO content = new SayContentDTO(123, message);
+                                SayContentDTO body = speakService.sayForContent(content);
+                                LOGGER.info("Sync Call : Content [ {} ]", body);
+                                break;
+                            }
                             case "a": {
                                 RpcFuture<SayContentDTO> future = speakService.asyncSay(message);
                                 RpcResult<SayContentDTO> result = future.get();
@@ -175,7 +182,8 @@ public class GameClientApp {
 
             });
         } catch (Throwable e) {
-            LOGGER.error("{} start exception", GameClientApp.class.getSimpleName(), e);
+            e.printStackTrace();
+            // LOGGER.error("{} start exception", GameClientApp.class.getSimpleName(), e);
             System.exit(1);
         }
     }
@@ -212,8 +220,8 @@ public class GameClientApp {
     private static void test(Client<Long> client, String content, boolean wait) {
         ThreadLocalRandom random = ThreadLocalRandom.current();
         RequestContent messageContent = MessageContents.request(Protocols.protocol(CtrlerIds.SPEAK$TEST),
-                (byte)random.nextInt(Byte.MIN_VALUE, Byte.MAX_VALUE),
-                (short)random.nextInt(Short.MIN_VALUE, Short.MAX_VALUE),
+                (byte) random.nextInt(Byte.MIN_VALUE, Byte.MAX_VALUE),
+                (short) random.nextInt(Short.MIN_VALUE, Short.MAX_VALUE),
                 random.nextInt(Integer.MIN_VALUE, Integer.MAX_VALUE),
                 random.nextLong(Long.MIN_VALUE, Long.MAX_VALUE),
                 random.nextFloat(),

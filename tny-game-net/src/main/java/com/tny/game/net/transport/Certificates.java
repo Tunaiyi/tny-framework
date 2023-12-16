@@ -58,7 +58,7 @@ public final class Certificates {
         return new DefaultCertificate<>(-1, anonymityUserId, ANONYMITY_CONTACT_ID, NetContactType.ANONYMITY, UNAUTHENTICATED, null);
     }
 
-    private static class DefaultCertificate<UID> implements Certificate<UID>, Serializable {
+    private static class DefaultCertificate<I> implements Certificate<I>, Serializable {
 
         /**
          *
@@ -71,7 +71,7 @@ public final class Certificates {
 
         private final CertificateStatus status;
 
-        private final UID userId;
+        private final I identify;
 
         private final ContactType contactType;
 
@@ -79,12 +79,12 @@ public final class Certificates {
 
         private final Instant authenticateAt;
 
-        private DefaultCertificate(long id, UID userId, long contactId, ContactType contactType, CertificateStatus status, Instant authenticateAt) {
+        private DefaultCertificate(long id, I identify, long contactId, ContactType contactType, CertificateStatus status, Instant authenticateAt) {
             super();
             this.id = id;
             this.contactId = contactId;
             this.status = status;
-            this.userId = userId;
+            this.identify = identify;
             this.contactType = contactType;
             this.createAt = Instant.now();
             if (authenticateAt == null) {
@@ -103,15 +103,15 @@ public final class Certificates {
             return this.status.isAuthenticated();
         }
 
-        public boolean isSameUser(DefaultCertificate<UID> other) {
+        public boolean isSameUser(DefaultCertificate<I> other) {
             if (this == other) {
                 return true;
             }
-            return Objects.equals(getUserId(), other.getUserId()) &&
+            return Objects.equals(getIdentify(), other.getIdentify()) &&
                    Objects.equals(contactId(), other.contactId());
         }
 
-        public boolean isSameCertificate(DefaultCertificate<UID> other) {
+        public boolean isSameCertificate(DefaultCertificate<I> other) {
             if (this == other) {
                 return true;
             }
@@ -121,8 +121,8 @@ public final class Certificates {
         }
 
         @Override
-        public UID getUserId() {
-            return this.userId;
+        public I getIdentify() {
+            return this.identify;
         }
 
         @Override
@@ -161,18 +161,18 @@ public final class Certificates {
             DefaultCertificate<?> that = (DefaultCertificate<?>) o;
             return getId() == that.getId() &&
                    isAuthenticated() == that.isAuthenticated() &&
-                   Objects.equals(getUserId(), that.getUserId());
+                   Objects.equals(getIdentify(), that.getIdentify());
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(getId(), isAuthenticated(), getUserId());
+            return Objects.hash(getId(), isAuthenticated(), getIdentify());
         }
 
         @Override
         public String toString() {
             return MoreObjects.toStringHelper(this)
-                              .add("userId", this.userId)
+                              .add("identify", this.identify)
                               .add("contactType", this.contactType)
                               .add("id", this.id)
                               .toString();

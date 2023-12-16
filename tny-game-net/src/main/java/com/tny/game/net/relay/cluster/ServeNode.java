@@ -50,12 +50,12 @@ public interface ServeNode extends NetAccessNode, Serve, Comparable<ServeNode> {
     default AppScope scopeType() {
         return AppScopes.ofScopeName(this.getScopeType());
     }
-
     /**
      * @return 服务类型
      */
+
     default RpcServiceType serviceType() {
-        return RpcServiceTypes.checkAppType(appType());
+        return RpcServiceTypes.checkService(serviceName());
     }
 
     @Override

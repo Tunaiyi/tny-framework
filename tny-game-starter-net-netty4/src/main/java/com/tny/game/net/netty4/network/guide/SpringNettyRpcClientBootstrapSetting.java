@@ -24,6 +24,7 @@ public class SpringNettyRpcClientBootstrapSetting extends SpringNettyNetClientBo
 
     public SpringNettyRpcClientBootstrapSetting() {
         super();
+        this.setName("rpc");
         this.setCertificateFactory(defaultName(ContactCertificateFactory.class));
     }
 

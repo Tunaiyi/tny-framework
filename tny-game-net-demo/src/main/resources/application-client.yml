@@ -32,20 +32,36 @@ tny:
                 - opqrstuvwxyz
           connector:
             retry-intervals: [ 3000, 5000, 7000, 8000, 9000 ,10000 ]
+      rpc:
+        # Rpc连接客户端 配置
+        client:
+          channel:
+            encoder:
+              message-body-codec: typeProtobufMessageBodyCodec
+            decoder:
+              message-body-codec: typeProtobufMessageBodyCodec
+          connector:
+            retry-intervals: [ 1000, 3000, 5000, 7000, 8000, 9000 , 10000 ]
     command:
-      processor:
-        disruptor:
+      executor:
+        serial:
           setting:
             enable: true
-            wait-strategy: blocking
             threads: 4
+#    command:
+#      processor:
+#        disruptor:
+#          setting:
+#            enable: true
+#            wait-strategy: blocking
+#            threads: 4
     rpc:
       client:
         services:
           - service: game-service
             discovery: false
             host: 127.0.0.1
-            port: 16800
+            port: 17800
             username: game-client
 
   data:

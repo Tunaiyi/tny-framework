@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * Created by Kun Yang on 2017/3/24.
  */
-public class NetAide {
+public class ConnectIdFactory {
 
     private static final AtomicLong TUNNEL_ID_CREATOR = new AtomicLong(0);
 

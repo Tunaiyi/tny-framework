@@ -38,37 +38,28 @@ public class NettyClientRelayContext implements ClientRelayContext {
     private final AtomicLong indexCounter = new AtomicLong();
 
     public NettyClientRelayContext(NetAppContext appContext, RelayMessageRouter relayMessageRouter, ServeClusterFilter serveClusterFilter) {
-        this.setAppContext(appContext);
-        this.relayMessageRouter = relayMessageRouter;
-        this.serveClusterFilter = serveClusterFilter;
-        long launchAt = System.nanoTime();
-        String value = String.valueOf(launchAt);
-        this.launchNum = value.substring(value.length() - 12);
+        this.setAppContext(appContext); this.relayMessageRouter = relayMessageRouter; this.serveClusterFilter = serveClusterFilter;
+        long launchAt = System.nanoTime(); String value = String.valueOf(launchAt); this.launchNum = value.substring(value.length() - 12);
     }
 
     @Override
-    public String getAppServeName() {
-        return RpcServiceTypes.checkAppType(appContext.appType()).getService();
+    public String getService() {
+        return RpcServiceTypes.checkService(appContext.serviceName()).getService();
     }
 
+
     @Override
-    public long getAppInstanceId() {
+    public long getInstanceId() {
         return appContext.getServerId();
     }
 
-    @Override
-    public AppType getAppType() {
-        return appContext.appType();
-    }
 
     @Override
     public String createLinkKey(String service) {
-        String launchId = service + "." + this.getAppInstanceId() + "." + launchNum + "." +
-                ThreadLocalRandom.current().nextInt(100000000, 1000000000);
+        String launchId = service + "." + this.getInstanceId() + "." + launchNum + "." + ThreadLocalRandom.current().nextInt(100000000, 1000000000);
         UUID uuid = UUID.nameUUIDFromBytes((launchId + "#" + indexCounter.incrementAndGet()).getBytes(StandardCharsets.UTF_8));
         String head = Long.toUnsignedString(uuid.getMostSignificantBits(), 32);
-        String tail = Long.toUnsignedString(uuid.getLeastSignificantBits(), 32);
-        return head + "-" + tail;
+        String tail = Long.toUnsignedString(uuid.getLeastSignificantBits(), 32); return head + "-" + tail;
     }
 
     @Override
@@ -87,18 +78,15 @@ public class NettyClientRelayContext implements ClientRelayContext {
     }
 
     public NettyClientRelayContext setAppContext(NetAppContext appContext) {
-        this.appContext = appContext;
-        return this;
+        this.appContext = appContext; return this;
     }
 
     public NettyClientRelayContext setRelayMessageRouter(RelayMessageRouter relayMessageRouter) {
-        this.relayMessageRouter = relayMessageRouter;
-        return this;
+        this.relayMessageRouter = relayMessageRouter; return this;
     }
 
     public NettyClientRelayContext setServeClusterFilter(ServeClusterFilter serveClusterFilter) {
-        this.serveClusterFilter = serveClusterFilter;
-        return this;
+        this.serveClusterFilter = serveClusterFilter; return this;
     }
 
 }

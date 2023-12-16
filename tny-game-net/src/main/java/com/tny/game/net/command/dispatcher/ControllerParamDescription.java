@@ -196,7 +196,7 @@ class ControllerParamDescription {
                 value = body;
                 break;
             case USER_ID:
-                value = tunnel.getUserId();
+                value = tunnel.getIdentify();
                 break;
             case HEADER:
                 if (StringUtils.isNoneBlank(headerKey)) {

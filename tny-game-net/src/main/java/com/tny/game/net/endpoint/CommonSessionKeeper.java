@@ -39,7 +39,7 @@ public class CommonSessionKeeper<UID> extends AbstractSessionKeeper<UID> impleme
             throw new AuthFailedException(NetResultCode.AUTH_FAIL_ERROR,
                     "cert {} userType is {}, not {}", certificate, certificate.contactType(), this.getContactType());
         }
-        UID uid = certificate.getUserId();
+        UID uid = certificate.getIdentify();
         Lock lock = locker.lock(uid);
         try {
             if (certificate.getStatus() == CertificateStatus.AUTHENTICATED) { // 登录创建 Session
@@ -53,7 +53,7 @@ public class CommonSessionKeeper<UID> extends AbstractSessionKeeper<UID> impleme
     }
 
     private Session<UID> doNewSession(Certificate<UID> certificate, NetTunnel<UID> newTunnel) throws AuthFailedException {
-        NetSession<UID> oldSession = findEndpoint(certificate.getUserId());
+        NetSession<UID> oldSession = findEndpoint(certificate.getIdentify());
         if (oldSession != null) { // 如果旧 session 存在
             Certificate<UID> oldCert = oldSession.getCertificate();
             // 判断新授权是否比原有授权时间早, 如果是则无法登录
@@ -71,15 +71,15 @@ public class CommonSessionKeeper<UID> extends AbstractSessionKeeper<UID> impleme
             }
         }
         session.online(certificate, newTunnel);
-        replaceEndpoint(session.getUserId(), session);
+        replaceEndpoint(session.getIdentify(), session);
         this.monitorEndpoint();
         return session;
     }
 
     private Session<UID> doAcceptTunnel(Certificate<UID> certificate, NetTunnel<UID> newTunnel) throws AuthFailedException {
-        NetSession<UID> existSession = this.findEndpoint(certificate.getUserId());
+        NetSession<UID> existSession = this.findEndpoint(certificate.getIdentify());
         if (existSession == null) { // 旧 session 失效
-            LOG.warn("旧session {} 已经丢失", newTunnel.getUserId());
+            LOG.warn("旧session {} 已经丢失", newTunnel.getIdentify());
             throw new AuthFailedException(NetResultCode.SESSION_LOSS_ERROR);
         }
         if (existSession.isClosed()) { // 旧 session 已经关闭(失效)

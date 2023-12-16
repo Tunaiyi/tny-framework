@@ -50,7 +50,7 @@ public abstract class ConnectorTest<C extends Connector<Long>> {
     @Test
     public void getUserId() {
         C loginCommunicator = createNetter(createLoginCert());
-        assertEquals(uid, loginCommunicator.getUserId());
+        assertEquals(uid, loginCommunicator.getIdentify());
     }
 
     @Test

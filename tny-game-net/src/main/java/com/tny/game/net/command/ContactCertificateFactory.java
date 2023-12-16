@@ -24,14 +24,14 @@ import java.time.Instant;
  * @date : 2021/4/30 5:57 下午
  */
 @UnitInterface
-public interface ContactCertificateFactory<UID extends Contact> extends CertificateFactory<UID> {
+public interface ContactCertificateFactory<C extends Contact> extends CertificateFactory<C> {
 
-    default Certificate<UID> certificate(long id, UID userId, ContactType contactType, Instant authenticateAt) {
-        return certificate(id, userId, userId.contactId(), contactType, authenticateAt);
+    default Certificate<C> certificate(long id, C identify, ContactType contactType, Instant authenticateAt) {
+        return certificate(id, identify, identify.contactId(), contactType, authenticateAt);
     }
 
-    default Certificate<UID> renewCertificate(long id, UID userId, ContactType contactType, Instant authenticateAt) {
-        return renewCertificate(id, userId, userId.contactId(), contactType, authenticateAt);
+    default Certificate<C> renewCertificate(long id, C identify, ContactType contactType, Instant authenticateAt) {
+        return renewCertificate(id, identify, identify.contactId(), contactType, authenticateAt);
     }
 
 }

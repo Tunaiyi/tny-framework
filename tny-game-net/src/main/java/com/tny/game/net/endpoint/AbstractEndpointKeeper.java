@@ -23,7 +23,7 @@ import java.util.stream.Stream;
 import static com.tny.game.common.utils.ObjectAide.*;
 
 @SuppressWarnings("unchecked")
-public abstract class AbstractEndpointKeeper<UID, E extends Endpoint<UID>, NE extends E> implements NetEndpointKeeper<UID, E> {
+public abstract class AbstractEndpointKeeper<I, E extends Endpoint<I>, NE extends E> implements NetEndpointKeeper<I, E> {
 
     private static final Logger LOG = LoggerFactory.getLogger(NetLogger.SESSION);
 
@@ -38,7 +38,7 @@ public abstract class AbstractEndpointKeeper<UID, E extends Endpoint<UID>, NE ex
     /* 所有 endpoint */
     private final ContactType contactType;
 
-    private final Map<UID, NE> endpointMap = new ConcurrentHashMap<>();
+    private final Map<I, NE> endpointMap = new ConcurrentHashMap<>();
 
     protected AbstractEndpointKeeper(ContactType contactType) {
         this.contactType = contactType;
@@ -78,7 +78,7 @@ public abstract class AbstractEndpointKeeper<UID, E extends Endpoint<UID>, NE ex
             return;
         }
         NE netSession = as(endpoint);
-        if (this.removeEndpoint(netSession.getUserId(), netSession)) {
+        if (this.removeEndpoint(netSession.getIdentify(), netSession)) {
             onEndpointClose((E) endpoint);
         }
     }
@@ -89,17 +89,17 @@ public abstract class AbstractEndpointKeeper<UID, E extends Endpoint<UID>, NE ex
     }
 
     @Override
-    public E getEndpoint(UID userId) {
-        return this.endpointMap.get(userId);
+    public E getEndpoint(I identify) {
+        return this.endpointMap.get(identify);
     }
 
     @Override
-    public Map<UID, E> getAllEndpoints() {
+    public Map<I, E> getAllEndpoints() {
         return Collections.unmodifiableMap(this.endpointMap);
     }
 
     @Override
-    public void send2User(UID userId, MessageContent context) {
+    public void send2User(I userId, MessageContent context) {
         E endpoint = this.getEndpoint(userId);
         if (endpoint != null) {
             endpoint.send(context);
@@ -107,12 +107,12 @@ public abstract class AbstractEndpointKeeper<UID, E extends Endpoint<UID>, NE ex
     }
 
     @Override
-    public void send2Users(Collection<UID> userIds, MessageContent context) {
+    public void send2Users(Collection<I> userIds, MessageContent context) {
         this.doSendMultiId(userIds.stream(), context);
     }
 
     @Override
-    public void send2Users(Stream<UID> userIdsStream, MessageContent context) {
+    public void send2Users(Stream<I> userIdsStream, MessageContent context) {
         this.doSendMultiId(userIdsStream, context);
     }
 
@@ -128,7 +128,7 @@ public abstract class AbstractEndpointKeeper<UID, E extends Endpoint<UID>, NE ex
     }
 
     @Override
-    public E close(UID userId) {
+    public E close(I userId) {
         E endpoint = this.endpointMap.get(userId);
         if (endpoint != null) {
             endpoint.close();
@@ -142,7 +142,7 @@ public abstract class AbstractEndpointKeeper<UID, E extends Endpoint<UID>, NE ex
     }
 
     @Override
-    public E offline(UID userId) {
+    public E offline(I userId) {
         E endpoint = this.endpointMap.get(userId);
         if (endpoint != null) {
             endpoint.offline();
@@ -156,7 +156,7 @@ public abstract class AbstractEndpointKeeper<UID, E extends Endpoint<UID>, NE ex
     }
 
     @Override
-    public boolean isOnline(UID userId) {
+    public boolean isOnline(I userId) {
         E endpoint = this.getEndpoint(userId);
         return endpoint != null && endpoint.isOnline();
     }
@@ -172,20 +172,20 @@ public abstract class AbstractEndpointKeeper<UID, E extends Endpoint<UID>, NE ex
         return online;
     }
 
-    protected NE findEndpoint(UID uid) {
-        return this.endpointMap.get(uid);
+    protected NE findEndpoint(I i) {
+        return this.endpointMap.get(i);
     }
 
-    protected boolean removeEndpoint(UID uid, NE existOne) {
-        if (this.endpointMap.remove(uid, existOne)) {
+    protected boolean removeEndpoint(I i, NE existOne) {
+        if (this.endpointMap.remove(i, existOne)) {
             onRemoveSession.notify(this, existOne);
             return true;
         }
         return false;
     }
 
-    protected NE replaceEndpoint(UID uid, NE newOne) {
-        NE oldOne = this.endpointMap.put(uid, newOne);
+    protected NE replaceEndpoint(I i, NE newOne) {
+        NE oldOne = this.endpointMap.put(i, newOne);
         if (oldOne != null && oldOne != newOne) {
             oldOne.close();
             onRemoveSession.notify(this, oldOne);
@@ -195,13 +195,13 @@ public abstract class AbstractEndpointKeeper<UID, E extends Endpoint<UID>, NE ex
     }
 
     @Override
-    public void addListener(EndpointKeeperListener<UID> listener) {
+    public void addListener(EndpointKeeperListener<I> listener) {
         onAddSession.addListener(listener);
         onRemoveSession.addListener(listener);
     }
 
     @Override
-    public void addListener(Collection<EndpointKeeperListener<UID>> listeners) {
+    public void addListener(Collection<EndpointKeeperListener<I>> listeners) {
         listeners.forEach(l -> {
             onAddSession.addListener(l);
             onRemoveSession.addListener(l);
@@ -209,12 +209,12 @@ public abstract class AbstractEndpointKeeper<UID, E extends Endpoint<UID>, NE ex
     }
 
     @Override
-    public void removeListener(EndpointKeeperListener<UID> listener) {
+    public void removeListener(EndpointKeeperListener<I> listener) {
         onAddSession.removeListener(listener);
         onRemoveSession.removeListener(listener);
     }
 
-    private void doSendMultiId(Stream<UID> userIds, MessageContent context) {
+    private void doSendMultiId(Stream<I> userIds, MessageContent context) {
         userIds.forEach(userId -> {
             E endpoint = this.getEndpoint(userId);
             if (endpoint != null) {

@@ -42,7 +42,7 @@ public class TextCheckFilter<UID> extends AbstractParamFilter<UID, TextCheck, St
         int size = param.length();
         if (size < annotation.lowLength() || annotation.highLength() < size) {
             LOGGER.warn("{} 玩家请求 协议[{}] 第{}个参数 [{}] 超出 {} - {} 范围",
-                    communicator.getUserId(), message.getProtocolId(),
+                    communicator.getIdentify(), message.getProtocolId(),
                     index, size, annotation.lowLength(), annotation.highLength());
             return code(this.lengthIllegalCode, annotation.lengthIllegalCode(), annotation.illegalCode());
         }

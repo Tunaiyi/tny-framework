@@ -49,7 +49,7 @@ public abstract class ControllerHolder {
     /**
      * 用户组名称列表
      */
-    protected final List<String> userGroups;
+    protected final List<String> contactGroups;
 
     /**
      * 应用类型
@@ -70,9 +70,9 @@ public abstract class ControllerHolder {
         this.controllerClass = executor.getClass();
         this.auth = auth;
         if (this.auth != null && this.auth.enable()) {
-            this.userGroups = ImmutableList.copyOf(this.auth.value());
+            this.contactGroups = ImmutableList.copyOf(this.auth.value());
         } else {
-            this.userGroups = null;
+            this.contactGroups = null;
         }
         if (appProfile != null) {
             this.appTypes = ImmutableList.copyOf(appProfile.value());
@@ -132,8 +132,8 @@ public abstract class ControllerHolder {
         return this.controllerClass;
     }
 
-    public boolean isUserGroup(ContactType contactType) {
-        return this.userGroups == null || this.userGroups.isEmpty() || this.userGroups.contains(contactType.getGroup());
+    public boolean isContactGroup(ContactType contactType) {
+        return this.contactGroups == null || this.contactGroups.isEmpty() || this.contactGroups.contains(contactType.getGroup());
     }
 
     public boolean isActiveByAppType(String appType) {

@@ -23,21 +23,21 @@ import java.time.Instant;
  * @date : 2021/5/6 10:29 上午
  */
 @Unit
-public class DefaultCertificateFactory<UID> implements CertificateFactory<UID> {
+public class DefaultCertificateFactory<I> implements CertificateFactory<I> {
 
     @Override
-    public Certificate<UID> anonymous() {
+    public Certificate<I> anonymous() {
         return Certificates.createUnauthenticated();
     }
 
     @Override
-    public Certificate<UID> certificate(long id, UID userId, long contactId, ContactType contactType, Instant authenticateAt) {
-        return Certificates.createAuthenticated(id, userId, contactId, contactType, authenticateAt, false);
+    public Certificate<I> certificate(long id, I identify, long contactId, ContactType contactType, Instant authenticateAt) {
+        return Certificates.createAuthenticated(id, identify, contactId, contactType, authenticateAt, false);
     }
 
     @Override
-    public Certificate<UID> renewCertificate(long id, UID userId, long contactId, ContactType contactType, Instant authenticateAt) {
-        return Certificates.createAuthenticated(id, userId, contactId, contactType, authenticateAt, true);
+    public Certificate<I> renewCertificate(long id, I identify, long contactId, ContactType contactType, Instant authenticateAt) {
+        return Certificates.createAuthenticated(id, identify, contactId, contactType, authenticateAt, true);
     }
 
 }

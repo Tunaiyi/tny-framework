@@ -22,22 +22,22 @@ import java.util.concurrent.ExecutorService;
  * @author kgtny
  * @date 2023/3/9 02:08
  **/
-public class SerialCommandExecutorFactory implements CommandExecutorFactory {
+public class DefaultCommandExecutorFactory implements CommandExecutorFactory {
 
     private final ExecutorService executorService;
 
     private final SerialCommandExecutorSetting setting;
 
-    public SerialCommandExecutorFactory() {
+    public DefaultCommandExecutorFactory() {
         this(new SerialCommandExecutorSetting());
     }
 
-    public SerialCommandExecutorFactory(SerialCommandExecutorSetting setting) {
+    public DefaultCommandExecutorFactory(SerialCommandExecutorSetting setting) {
         this.setting = setting;
         this.executorService = ForkJoinPools.pool(setting.getThreads(), getClass().getSimpleName(), true);
     }
 
-    public SerialCommandExecutorFactory(SerialCommandExecutorSetting setting, ExecutorService executorService) {
+    public DefaultCommandExecutorFactory(SerialCommandExecutorSetting setting, ExecutorService executorService) {
         this.executorService = executorService;
         this.setting = setting;
     }
