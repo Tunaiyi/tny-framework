@@ -21,7 +21,7 @@ import com.tny.game.net.transport.*;
  * @author KGTny
  */
 @UnitInterface
-public interface AuthenticationValidator<UID, F extends CertificateFactory<UID>> {
+public interface AuthenticationValidator {
 
     /**
      * 验证Session登录, 返回带有验证结果的Session对象
@@ -30,6 +30,6 @@ public interface AuthenticationValidator<UID, F extends CertificateFactory<UID>>
      * @return 带有验证结果的Session对象
      * @throws RpcInvokeException
      */
-    Certificate<UID> validate(Tunnel<UID> communicator, Message message, F factory) throws AuthFailedException;
+    Certificate validate(Tunnel tunnel, Message message) throws AuthFailedException;
 
 }

@@ -55,17 +55,17 @@ public class CommonEndpointKeeperManager implements EndpointKeeperManager, AppPr
 
     };
 
-    private final Map<ContactType, NetEndpointKeeper<?, ?>> endpointKeeperMap = new ConcurrentHashMap<>();
+    private final Map<ContactType, NetEndpointKeeper<?>> endpointKeeperMap = new ConcurrentHashMap<>();
 
     private Map<ContactType, SessionKeeperSetting> sessionKeeperSettingMap = ImmutableMap.of();
 
     private Map<ContactType, TerminalKeeperSetting> terminalKeeperSettingMap = ImmutableMap.of();
 
-    private final Map<String, SessionKeeperFactory<?, SessionKeeperSetting>> sessionFactoryMap = new ConcurrentHashMap<>();
+    private final Map<String, SessionKeeperFactory<SessionKeeperSetting>> sessionFactoryMap = new ConcurrentHashMap<>();
 
-    private final Map<String, TerminalKeeperFactory<?, TerminalKeeperSetting>> terminalFactoryMap = new ConcurrentHashMap<>();
+    private final Map<String, TerminalKeeperFactory<TerminalKeeperSetting>> terminalFactoryMap = new ConcurrentHashMap<>();
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings({"rawtypes"})
     private static final BindVoidEventBus<EndpointKeeperCreateListener, EndpointKeeper> ON_CREATE =
             EventBuses.of(EndpointKeeperCreateListener.class, EndpointKeeperCreateListener::onCreate);
 
@@ -108,7 +108,7 @@ public class CommonEndpointKeeperManager implements EndpointKeeperManager, AppPr
         this.terminalKeeperSettingMap = ImmutableMap.copyOf(terminalSettingMap);
     }
 
-    private NetEndpointKeeper<?, ?> create(ContactType contactType, NetAccessMode accessMode) {
+    private NetEndpointKeeper<?> create(ContactType contactType, NetAccessMode accessMode) {
         if (accessMode == NetAccessMode.SERVER) {
             SessionKeeperSetting setting = this.sessionKeeperSettingMap.get(contactType);
             if (setting == null) {
@@ -124,19 +124,19 @@ public class CommonEndpointKeeperManager implements EndpointKeeperManager, AppPr
         }
     }
 
-    private <E extends Endpoint<?>, EK extends NetEndpointKeeper<?, E>, S extends EndpointKeeperSetting> EK create(
-            ContactType contactType, NetAccessMode accessMode, S setting, EndpointKeeperFactory<?, EK, S> factory) {
+    private <E extends Endpoint, EK extends NetEndpointKeeper<E>, S extends EndpointKeeperSetting> EK create(
+            ContactType contactType, NetAccessMode accessMode, S setting, EndpointKeeperFactory<EK, S> factory) {
         Asserts.checkNotNull(factory, "can not found {}.{} session factory", accessMode, contactType);
         return factory.createKeeper(contactType, setting);
     }
 
     @Override
-    public <UID, K extends EndpointKeeper<UID, ? extends Endpoint<UID>>> K loadEndpoint(ContactType contactType, NetAccessMode accessMode) {
-        EndpointKeeper<?, ?> keeper = this.endpointKeeperMap.get(contactType);
+    public <K extends EndpointKeeper<? extends Endpoint>> K loadEndpoint(ContactType contactType, NetAccessMode accessMode) {
+        EndpointKeeper<?> keeper = this.endpointKeeperMap.get(contactType);
         if (keeper != null) {
             return as(keeper);
         }
-        NetEndpointKeeper<?, ?> newOne = create(contactType, accessMode);
+        NetEndpointKeeper<?> newOne = create(contactType, accessMode);
         keeper = as(this.endpointKeeperMap.computeIfAbsent(contactType, (k) -> newOne));
         if (keeper == newOne) {
             ON_CREATE.notify(keeper);
@@ -145,22 +145,22 @@ public class CommonEndpointKeeperManager implements EndpointKeeperManager, AppPr
     }
 
     @Override
-    public <UID, K extends EndpointKeeper<UID, ? extends Endpoint<UID>>> Optional<K> getKeeper(ContactType userType) {
+    public <K extends EndpointKeeper<? extends Endpoint>> Optional<K> getKeeper(ContactType userType) {
         return Optional.ofNullable(as(this.endpointKeeperMap.get(userType)));
     }
 
     @Override
-    public <UID, K extends SessionKeeper<UID>> Optional<K> getSessionKeeper(ContactType userType) {
+    public <K extends SessionKeeper> Optional<K> getSessionKeeper(ContactType userType) {
         return this.getKeeper(userType, SessionKeeper.class);
     }
 
     @Override
-    public <UID, K extends TerminalKeeper<UID>> Optional<K> getTerminalKeeper(ContactType userType) {
+    public <K extends TerminalKeeper> Optional<K> getTerminalKeeper(ContactType userType) {
         return this.getKeeper(userType, TerminalKeeper.class);
     }
 
-    private <K extends EndpointKeeper<?, ?>, EK extends K> Optional<EK> getKeeper(ContactType userType, Class<K> keeperClass) {
-        EndpointKeeper<?, ?> keeper = this.endpointKeeperMap.get(userType);
+    private <K extends EndpointKeeper<?>, EK extends K> Optional<EK> getKeeper(ContactType userType, Class<K> keeperClass) {
+        EndpointKeeper<?> keeper = this.endpointKeeperMap.get(userType);
         if (keeper == null) {
             return Optional.empty();
         }
@@ -183,31 +183,31 @@ public class CommonEndpointKeeperManager implements EndpointKeeperManager, AppPr
                 f -> UnitLoader.getLoader(TerminalKeeperFactory.class).checkUnit(f)));
     }
 
-    private void notifyEndpointOnline(Endpoint<?> endpoint) {
+    private void notifyEndpointOnline(Endpoint endpoint) {
         if (!endpoint.isAuthenticated()) {
             return;
         }
-        NetEndpointKeeper<?, ?> keeper = endpointKeeperMap.get(endpoint.contactType());
+        NetEndpointKeeper<?> keeper = endpointKeeperMap.get(endpoint.getContactType());
         if (keeper != null) {
             keeper.notifyEndpointOnline(endpoint);
         }
     }
 
-    private void notifyEndpointOffline(Endpoint<?> endpoint) {
+    private void notifyEndpointOffline(Endpoint endpoint) {
         if (!endpoint.isAuthenticated()) {
             return;
         }
-        NetEndpointKeeper<?, ?> keeper = endpointKeeperMap.get(endpoint.contactType());
+        NetEndpointKeeper<?> keeper = endpointKeeperMap.get(endpoint.getContactType());
         if (keeper != null) {
             keeper.notifyEndpointOffline(endpoint);
         }
     }
 
-    private void notifyEndpointClose(Endpoint<?> endpoint) {
+    private void notifyEndpointClose(Endpoint endpoint) {
         if (!endpoint.isAuthenticated()) {
             return;
         }
-        NetEndpointKeeper<?, ?> keeper = endpointKeeperMap.get(endpoint.contactType());
+        NetEndpointKeeper<?> keeper = endpointKeeperMap.get(endpoint.getContactType());
         if (keeper != null) {
             keeper.notifyEndpointClose(endpoint);
         }

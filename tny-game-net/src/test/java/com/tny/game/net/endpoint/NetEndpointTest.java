@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Created by Kun Yang on 2018/8/12.
  */
-public abstract class NetEndpointTest<E extends NetEndpoint<Long>> extends EndpointTest<E> {
+public abstract class NetEndpointTest<E extends NetEndpoint> extends EndpointTest<E> {
 
     private static final int CACHE_MESSAGE_SIZE = 10;
 
@@ -42,7 +42,7 @@ public abstract class NetEndpointTest<E extends NetEndpoint<Long>> extends Endpo
     }
 
     @Override
-    protected EndpointTestInstance<E> create(Certificate<Long> certificate) {
+    protected EndpointTestInstance<E> create(Certificate certificate) {
         E endpoint = newEndpoint(new CommonSessionSetting().setSendMessageCachedSize(CACHE_MESSAGE_SIZE));
         MockNetTunnel tunnel = mockTunnel(endpoint);
         if (certificate.isAuthenticated()) {
@@ -58,7 +58,7 @@ public abstract class NetEndpointTest<E extends NetEndpoint<Long>> extends Endpo
     protected abstract E newEndpoint(CommonSessionSetting S);
 
     @Override
-    public E createNetter(Certificate<Long> certificate) {
+    public E createNetter(Certificate certificate) {
         return create(certificate).getEndpoint();
     }
 
@@ -78,7 +78,7 @@ public abstract class NetEndpointTest<E extends NetEndpoint<Long>> extends Endpo
 
     @Test
     void offline() {
-        NetEndpoint<Long> loginEndpoint = create().getEndpoint();
+        NetEndpoint loginEndpoint = create().getEndpoint();
         assertFalse(loginEndpoint.isOffline());
         loginEndpoint.offline();
         assertTrue(loginEndpoint.isOffline());
@@ -86,7 +86,7 @@ public abstract class NetEndpointTest<E extends NetEndpoint<Long>> extends Endpo
 
     @Test
     void onUnactivated() {
-        Certificate<Long> certificate = createLoginCert();
+        Certificate certificate = createLoginCert();
         EndpointTestInstance<E> object = create(certificate);
         E loginEndpoint = object.getEndpoint();
         MockNetTunnel loginTunnel = object.getTunnel();
@@ -118,16 +118,16 @@ public abstract class NetEndpointTest<E extends NetEndpoint<Long>> extends Endpo
         TestMessages messages;
 
         object = create();
-        NetEndpoint<Long> e0 = object.getEndpoint();
-        NetTunnel<Long> t0 = object.getTunnel();
+        NetEndpoint e0 = object.getEndpoint();
+        NetTunnel t0 = object.getTunnel();
         messages = createMessages(e0);
         messages.messagesForEach(m -> assertEquals(0, e0.getSentMessages(sm -> sm.getId() == m.getId()).size()));
         messages.contextsForEach(c -> e0.createMessage(t0.getMessageFactory(), c));
         messages.messagesForEach(m -> assertEquals(1, e0.getSentMessages(sm -> sm.getId() == m.getId()).size()));
 
         object = create();
-        NetEndpoint<Long> e1 = object.getEndpoint();
-        NetTunnel<Long> t1 = object.getTunnel();
+        NetEndpoint e1 = object.getEndpoint();
+        NetTunnel t1 = object.getTunnel();
         messages = createMessages(e1);
         // List<>messages.getMessages();
 
@@ -144,8 +144,8 @@ public abstract class NetEndpointTest<E extends NetEndpoint<Long>> extends Endpo
         assertEquals(2, sentMessages.size());
 
         object = create();
-        NetEndpoint<Long> e2 = object.getEndpoint();
-        NetTunnel<Long> t2 = object.getTunnel();
+        NetEndpoint e2 = object.getEndpoint();
+        NetTunnel t2 = object.getTunnel();
         int messageSize = 13;
         messages = new TestMessages(e2);
         for (int index = 1; index <= messageSize; index++) {
@@ -170,7 +170,7 @@ public abstract class NetEndpointTest<E extends NetEndpoint<Long>> extends Endpo
     //    @Test
     //    public void receive() {
     //        TestMessages messages;
-    //        NetEndpoint<Long> endpoint;
+    //        NetEndpoint endpoint;
     //        EndpointTestInstance<E> object;
     //
     //        // 接收 receive message
@@ -214,7 +214,7 @@ public abstract class NetEndpointTest<E extends NetEndpoint<Long>> extends Endpo
     //        handler = object.getHandler();
     //        endpoint.setReceiveFilter((e, m) -> MessageHandleStrategy.THROW);
     //        messages = createMessages(endpoint);
-    //        NetEndpoint<Long> e1 = endpoint;
+    //        NetEndpoint e1 = endpoint;
     //        TestMessages ms1 = messages;
     //        TestAide.assertRunWithException(() -> ms1.receive(e1));
     //        assertEquals(handler.getInputTimes(), 0);
@@ -224,7 +224,7 @@ public abstract class NetEndpointTest<E extends NetEndpoint<Long>> extends Endpo
     //    @Test
     //    public void send() {
     //        TestMessages messages;
-    //        NetEndpoint<Long> endpoint;
+    //        NetEndpoint endpoint;
     //        EndpointTestInstance<E> object;
     //        MockEndpointEventsBoxHandler<E> handler;
     //
@@ -278,7 +278,7 @@ public abstract class NetEndpointTest<E extends NetEndpoint<Long>> extends Endpo
     //        handler = object.getHandler();
     //        endpoint.setSendFilter((e, m) -> MessageHandleStrategy.THROW);
     //        messages = createMessages(endpoint);
-    //        NetEndpoint<Long> e1 = endpoint;
+    //        NetEndpoint e1 = endpoint;
     //        TestMessages ms1 = messages;
     //        TestAide.assertRunWithException(() -> ms1.send(e1));
     //        assertEquals(handler.getOutputTimes(), 0);
@@ -287,7 +287,7 @@ public abstract class NetEndpointTest<E extends NetEndpoint<Long>> extends Endpo
     //    @Override
     //    @Test
     //    public void resend() {
-    //        NetEndpoint<Long> endpoint;
+    //        NetEndpoint endpoint;
     //        EndpointTestInstance<E> object;
     //        MockEndpointEventsBoxHandler<E> handler;
     //
@@ -315,8 +315,8 @@ public abstract class NetEndpointTest<E extends NetEndpoint<Long>> extends Endpo
     void online() {
         MockNetTunnel loginTunnel;
         MockNetTunnel otherTunnel;
-        Certificate<Long> newCertificate;
-        Certificate<Long> certificate = createLoginCert();
+        Certificate newCertificate;
+        Certificate certificate = createLoginCert();
         EndpointTestInstance<E> object;
         E loginEndpoint;
 
@@ -407,14 +407,14 @@ public abstract class NetEndpointTest<E extends NetEndpoint<Long>> extends Endpo
         assertAcceptTunnelException(loginEndpoint, newCertificate, loginTunnel);
     }
 
-    private void assertAcceptTunnelOk(NetEndpoint<Long> endpoint, Certificate<Long> certificate, NetTunnel<Long> tunnel) {
+    private void assertAcceptTunnelOk(NetEndpoint endpoint, Certificate certificate, NetTunnel tunnel) {
         TestAide.assertRunComplete("assertLoginOk", () -> {
             endpoint.online(certificate, tunnel);
             assertTrue(endpoint.isAuthenticated());
         });
     }
 
-    private void assertAcceptTunnelException(NetEndpoint<Long> endpoint, Certificate<Long> certificate, NetTunnel<Long> tunnel) {
+    private void assertAcceptTunnelException(NetEndpoint endpoint, Certificate certificate, NetTunnel tunnel) {
         TestAide.assertRunWithException("assertLoginException", () -> endpoint.online(certificate, tunnel), AuthFailedException.class);
     }
 

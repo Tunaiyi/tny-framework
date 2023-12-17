@@ -21,7 +21,16 @@ import com.tny.game.net.base.*;
  * @date : 2021/8/25 7:31 下午
  */
 @UnitInterface
-public interface ServerRelayExplorer extends RelayExplorer<ServerRelayTunnel<?>> {
+public interface ServerRelayExplorer extends RelayExplorer {
+
+    /**
+     * 获取指定的 tunnel
+     *
+     * @param instanceId 创建 tunnel 的服务实例 id
+     * @param tunnelId   管道 id
+     */
+    @Override
+    ServerRelayTunnel getTunnel(long instanceId, long tunnelId);
 
     /**
      * 接收打开的 link

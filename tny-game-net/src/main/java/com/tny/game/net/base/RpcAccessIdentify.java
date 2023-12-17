@@ -81,13 +81,17 @@ public class RpcAccessIdentify implements RpcAccessPoint {
         Asserts.checkArgument(index < RPC_SERVER_INDEX_SIZE, "index {} 必须 <= {}", index, RPC_SERVER_INDEX_SIZE);
     }
 
+    public long getId() {
+        return id;
+    }
+
     @Override
     public RpcServiceType getServiceType() {
         return serviceType;
     }
 
     @Override
-    public ContactType contactType() {
+    public ContactType getContactType() {
         return serviceType;
     }
 
@@ -97,7 +101,7 @@ public class RpcAccessIdentify implements RpcAccessPoint {
     }
 
     @Override
-    public long contactId() {
+    public long getContactId() {
         return id;
     }
 
@@ -140,12 +144,12 @@ public class RpcAccessIdentify implements RpcAccessPoint {
             return false;
         }
         RpcAccessIdentify identify = (RpcAccessIdentify) o;
-        return contactId() == identify.contactId();
+        return getContactId() == identify.getContactId();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(contactId());
+        return Objects.hash(getContactId());
     }
 
 }

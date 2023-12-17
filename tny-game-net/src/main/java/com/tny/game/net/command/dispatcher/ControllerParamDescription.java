@@ -96,8 +96,10 @@ class ControllerParamDescription {
                         this.index = indexCreator.peek();
                     }
                     this.mode = PARAM;
-                } else if (annotationClass == UserId.class) {
-                    this.mode = USER_ID;
+                } else if (annotationClass == Identify.class) {
+                    this.mode = IDENTIFY;
+                } else if (annotationClass == IdentifyToken.class) {
+                    this.mode = IDENTIFY_TOKEN;
                 } else if (annotationClass == RpcCode.class) {
                     if (paramClass == Integer.class || paramClass == int.class) {
                         this.mode = CODE_NUM;
@@ -145,12 +147,12 @@ class ControllerParamDescription {
         return annotationHolder.getAnnotations();
     }
 
-    Object getValue(NetTunnel<?> tunnel, Message message, Object body) throws RpcInvokeException {
+    Object getValue(NetTunnel tunnel, Message message, Object body) throws RpcInvokeException {
         boolean require = this.require;
         if (body == null) {
             body = message.bodyAs(Object.class);
         }
-        NetEndpoint<?> endpoint = tunnel.getEndpoint();
+        NetEndpoint endpoint = tunnel.getEndpoint();
         NetworkContext context = tunnel.getContext();
         MessageHead head = message.getHead();
         Object value = null;
@@ -186,17 +188,16 @@ class ControllerParamDescription {
                 }
                 break;
             case SETTING:
-                if (tunnel != null) {
-                    value = context.getSetting();
-                } else {
-                    throw new NullPointerException(format("tunnel is null"));
-                }
+                value = context.getSetting();
                 break;
             case BODY:
                 value = body;
                 break;
-            case USER_ID:
+            case IDENTIFY:
                 value = tunnel.getIdentify();
+                break;
+            case IDENTIFY_TOKEN:
+                value = tunnel.getIdentifyToken();
                 break;
             case HEADER:
                 if (StringUtils.isNoneBlank(headerKey)) {

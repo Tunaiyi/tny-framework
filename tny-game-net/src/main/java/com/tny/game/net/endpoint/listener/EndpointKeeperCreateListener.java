@@ -12,8 +12,8 @@ package com.tny.game.net.endpoint.listener;
 
 import com.tny.game.net.endpoint.*;
 
-public interface EndpointKeeperCreateListener<UID> {
+public interface EndpointKeeperCreateListener {
 
-    void onCreate(EndpointKeeper<UID, Endpoint<UID>> keeper);
+    void onCreate(EndpointKeeper<Endpoint> keeper);
 
 }

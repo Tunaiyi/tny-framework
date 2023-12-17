@@ -21,7 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author : kgtny
  * @date : 2021/9/4 3:39 下午
  */
-public class BaseRelayExplorer<T extends NetRelayTunnel<?>> implements RelayExplorer<T> {
+public class BaseRelayExplorer<T extends NetRelayTunnel> implements RelayExplorer {
 
     private final Map<TunnelKey, T> tunnelMap = new ConcurrentHashMap<>();
 
@@ -47,31 +47,14 @@ public class BaseRelayExplorer<T extends NetRelayTunnel<?>> implements RelayExpl
         }
     }
 
-    private static class TunnelKey {
+    private record TunnelKey(long instanceId, long id) {
 
-        private final long instanceId;
-
-        private final long id;
-
-        public static TunnelKey of(RelayTunnel<?> tunnel) {
+        public static TunnelKey of(RelayTunnel tunnel) {
             return new TunnelKey(tunnel.getInstanceId(), tunnel.getId());
         }
 
         public static TunnelKey of(long partition, long id) {
             return new TunnelKey(partition, id);
-        }
-
-        private TunnelKey(long instanceId, long id) {
-            this.instanceId = instanceId;
-            this.id = id;
-        }
-
-        private long getInstanceId() {
-            return instanceId;
-        }
-
-        private long getId() {
-            return id;
         }
 
         @Override
@@ -80,20 +63,18 @@ public class BaseRelayExplorer<T extends NetRelayTunnel<?>> implements RelayExpl
                 return true;
             }
 
-            if (!(o instanceof TunnelKey)) {
+            if (!(o instanceof TunnelKey tunnelKey)) {
                 return false;
             }
 
-            TunnelKey tunnelKey = (TunnelKey) o;
-
-            return new EqualsBuilder().append(getInstanceId(), tunnelKey.getInstanceId())
-                                      .append(getId(), tunnelKey.getId())
+            return new EqualsBuilder().append(instanceId(), tunnelKey.instanceId())
+                                      .append(id(), tunnelKey.id())
                                       .isEquals();
         }
 
         @Override
         public int hashCode() {
-            return new HashCodeBuilder(17, 37).append(getInstanceId()).append(getId()).toHashCode();
+            return new HashCodeBuilder(17, 37).append(instanceId()).append(id()).toHashCode();
         }
 
     }

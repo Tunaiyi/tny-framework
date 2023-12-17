@@ -19,18 +19,18 @@ import java.util.concurrent.*;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 
-public abstract class AbstractSessionKeeper<UID> extends AbstractEndpointKeeper<UID, Session<UID>, NetSession<UID>> {
+public abstract class AbstractSessionKeeper extends AbstractEndpointKeeper<Session, NetSession> {
 
     private static final Logger LOG = LoggerFactory.getLogger(NetLogger.SESSION);
 
     protected SessionKeeperSetting setting;
 
     /* 离线session */
-    private final Queue<NetSession<UID>> offlineSessionQueue = new ConcurrentLinkedQueue<>();
+    private final Queue<NetSession> offlineSessionQueue = new ConcurrentLinkedQueue<>();
 
-    protected SessionFactory<UID, NetSession<UID>, SessionSetting> factory;
+    protected SessionFactory<NetSession, SessionSetting> factory;
 
-    public AbstractSessionKeeper(ContactType contactType, SessionFactory<UID, ? extends NetSession<UID>, ? extends SessionSetting> factory,
+    public AbstractSessionKeeper(ContactType contactType, SessionFactory<? extends NetSession, ? extends SessionSetting> factory,
             SessionKeeperSetting setting) {
         super(contactType);
         this.setting = setting;
@@ -42,20 +42,20 @@ public abstract class AbstractSessionKeeper<UID> extends AbstractEndpointKeeper<
     }
 
     @Override
-    protected void onEndpointOnline(Session<UID> session) {
-        this.offlineSessionQueue.remove(session);
+    protected void onEndpointOnline(Session session) {
+        this.offlineSessionQueue.remove((NetSession) session);
     }
 
     @Override
-    protected void onEndpointOffline(Session<UID> session) {
+    protected void onEndpointOffline(Session session) {
         if (session.isAuthenticated() && session.isOffline()) {
             this.offlineSessionQueue.add(as(session));
         }
     }
 
     @Override
-    protected void onEndpointClose(Session<UID> session) {
-        this.offlineSessionQueue.remove(session);
+    protected void onEndpointClose(Session session) {
+        this.offlineSessionQueue.remove((NetSession) session);
     }
 
     /**
@@ -64,10 +64,10 @@ public abstract class AbstractSessionKeeper<UID> extends AbstractEndpointKeeper<
     private void clearInvalidedSession() {
         long now = System.currentTimeMillis();
         // int size = this.offlineSessions.size() - offlineSessionMaxSize;
-        Set<NetSession<UID>> closeSessions = new HashSet<>();
+        Set<NetSession> closeSessions = new HashSet<>();
         this.offlineSessionQueue.forEach(session -> {
                     try {
-                        NetSession<UID> closeSession = null;
+                        NetSession closeSession = null;
                         if (session.isClosed()) {
                             LOG.info("移除已关闭的 OfflineSession identify : {}", session.getIdentify());
                             closeSession = session;
@@ -92,7 +92,7 @@ public abstract class AbstractSessionKeeper<UID> extends AbstractEndpointKeeper<
         if (maxSize > 0) {
             int size = this.offlineSessionQueue.size() - maxSize;
             for (int i = 0; i < size; i++) {
-                NetSession<UID> session = this.offlineSessionQueue.poll();
+                NetSession session = this.offlineSessionQueue.poll();
                 if (session == null) {
                     continue;
                 }

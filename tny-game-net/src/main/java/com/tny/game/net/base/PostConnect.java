@@ -15,11 +15,11 @@ import com.tny.game.net.transport.*;
 /**
  * <p>
  *
- * @author: Kun Yang
- * @date: 2018-11-01 10:04
+ * @author Kun Yang
+ * @date 2018-11-01 10:04
  */
-public interface PostConnect<UID> {
+public interface PostConnect {
 
-    boolean onConnected(NetTunnel<UID> tunnel) throws Exception;
+    boolean onConnected(NetTunnel tunnel) throws Exception;
 
 }

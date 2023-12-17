@@ -40,8 +40,8 @@ public class TextFilterAutoConfiguration {
 
     @Bean
     @ConditionalOnBean(WordsFilter.class)
-    public TextCheckFilter<?> textCheckFilter(List<WordsFilter> wordsFilters) {
-        return new TextCheckFilter<>();
+    public TextCheckFilter textCheckFilter(List<WordsFilter> wordsFilters) {
+        return new TextCheckFilter();
     }
 
 }

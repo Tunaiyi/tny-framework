@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Created by Kun Yang on 2018/8/25.
  */
-public abstract class NettyTunnelTest<E extends NetEndpoint<Long>, T extends BaseNetTunnel<Long, E, ?>, ME extends MockNetEndpoint>
+public abstract class NettyTunnelTest<E extends NetEndpoint, T extends BaseNetTunnel<E, ?>, ME extends MockNetEndpoint>
         extends NetTunnelTest<T, ME> {
 
     protected EmbeddedChannel mockChannel() {
@@ -61,7 +61,7 @@ public abstract class NettyTunnelTest<E extends NetEndpoint<Long>, T extends Bas
 
     @Test
     void bind() throws AuthFailedException {
-        NetTunnel<Long> tunnel;
+        NetTunnel tunnel;
         MockNetEndpoint endpoint;
         TunnelTestInstance<T, ME> object;
         // 正常绑定
@@ -371,7 +371,7 @@ public abstract class NettyTunnelTest<E extends NetEndpoint<Long>, T extends Bas
         EmbeddedChannel channel = embeddedChannel(tunnel);
         assertEquals(times, channel.outboundMessages().size());
         for (Object value : channel.outboundMessages()) {
-            assertTrue(value instanceof TickMessage);
+            assertInstanceOf(TickMessage.class, value);
             assertEquals(mode, Objects.requireNonNull(as(value, TickMessage.class)).getMode());
         }
     }

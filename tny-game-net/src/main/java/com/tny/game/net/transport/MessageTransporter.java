@@ -17,8 +17,8 @@ import com.tny.game.net.message.*;
 /**
  * <p>
  *
- * @author: Kun Yang
- * @date: 2018-10-11 17:45
+ * @author Kun Yang
+ * @date 2018-10-11 17:45
  */
 public interface MessageTransporter extends Connection {
 
@@ -27,7 +27,7 @@ public interface MessageTransporter extends Connection {
      *
      * @param tunnel 通道通道
      */
-    void bind(NetTunnel<?> tunnel);
+    void bind(NetTunnel tunnel);
 
     /**
      * 发送消息

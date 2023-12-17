@@ -13,8 +13,8 @@ package com.tny.game.net.endpoint.listener;
 import com.tny.game.net.endpoint.*;
 
 @FunctionalInterface
-public interface EndpointOfflineListener<UID> extends EndpointListener {
+public interface EndpointOfflineListener extends EndpointListener {
 
-    void onOffline(Endpoint<UID> endpoint);
+    void onOffline(Endpoint endpoint);
 
 }

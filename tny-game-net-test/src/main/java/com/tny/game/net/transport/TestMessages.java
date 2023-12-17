@@ -27,13 +27,13 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class TestMessages {
 
-    private List<TestMessagePack> messages = new ArrayList<>();
+    private final List<TestMessagePack> messages = new ArrayList<>();
 
-    private MessageFactory messageBuilderFactory = new CommonMessageFactory();
+    private final MessageFactory messageBuilderFactory = new CommonMessageFactory();
 
-    private Certificate<Long> certificate;
+    private final Certificate certificate;
 
-    private AtomicInteger idCreator;
+    private final AtomicInteger idCreator;
 
     private int pingSize = 0;
 
@@ -47,14 +47,14 @@ public class TestMessages {
 
     private int responseSize = 0;
 
-    private int protocol = 1000;
+    private final int protocol = 1000;
 
-    public TestMessages(NetTunnel<Long> tunnel) {
+    public TestMessages(NetTunnel tunnel) {
         this.certificate = tunnel.getCertificate();
         this.idCreator = new AtomicInteger(0);
     }
 
-    public TestMessages(NetEndpoint<Long> endpoint) {
+    public TestMessages(NetEndpoint endpoint) {
         this.certificate = endpoint.getCertificate();
         this.idCreator = new AtomicInteger(0);
     }
@@ -65,10 +65,7 @@ public class TestMessages {
 
     public List<? extends Message> getMessages(MessageMode... modes) {
         List<MessageMode> messageModes = Arrays.asList(modes);
-        return this.messages.stream()
-                .map(TestMessagePack::getMessage)
-                .filter(m -> messageModes.contains(m.getMode()))
-                .collect(Collectors.toList());
+        return this.messages.stream().map(TestMessagePack::getMessage).filter(m -> messageModes.contains(m.getMode())).collect(Collectors.toList());
     }
 
     public List<MessageSubject> getSubject() {
@@ -164,7 +161,7 @@ public class TestMessages {
         return this.responseSize;
     }
 
-    public void receive(NetTunnel<?> receiver) {
+    public void receive(NetTunnel receiver) {
         assertFalse(this.messages.isEmpty());
         this.messages.forEach(p -> receiver.receive(p.getMessage()));
     }
@@ -196,17 +193,17 @@ public class TestMessages {
         final Consumer<MessageWriteFuture> consumer = check;
         this.messages.forEach(p -> consumer.accept(transport.write(p.getMessage(), null)));
     }
-    // public void sendSync(Sender<Long> sender, long timeout) {
+    // public void sendSync(Sender sender, long timeout) {
     //     assertFalse(this.messages.isEmpty());
     //     this.messages.forEach(p -> sender.sendSync(p.getContext(), timeout));
     // }
 
-    // public void sendSuccess(NetTunnel<Long> tunnel) {
+    // public void sendSuccess(NetTunnel tunnel) {
     //     this.forEach((c, m) -> {
-    //         MessageSendFuture<Long> sendFuture = c.getSendFuture();
+    //         MessageSendFuture sendFuture = c.getSendFuture();
     //         if (sendFuture != null)
     //             sendFuture.complete(m);
-    //         RespondFuture<Long> respondFuture = c.getRespondFuture();
+    //         RespondFuture respondFuture = c.getRespondFuture();
     //         if (respondFuture != null)
     //             tunnel.registerFuture(m.getId(), respondFuture);
     //     });
@@ -217,10 +214,10 @@ public class TestMessages {
     //         MessageContext context = p.getContext();
     //         if (context == null)
     //             return;
-    //         MessageSendFuture<Long> future = context.getSendFuture();
+    //         MessageSendFuture future = context.getSendFuture();
     //         if (future != null)
     //             future.completeExceptionally(cause);
-    //         RespondFuture<Long> respondFuture = context.getRespondFuture();
+    //         RespondFuture respondFuture = context.getRespondFuture();
     //         if (respondFuture != null)
     //             respondFuture.completeExceptionally(cause);
     //     });
@@ -242,22 +239,17 @@ public class TestMessages {
         this.messages.stream().map(TestMessagePack::getRequestContext).forEach(action);
     }
 
-    public static TestMessages createMessages(NetTunnel<Long> tunnel) {
+    public static TestMessages createMessages(NetTunnel tunnel) {
         return createMessages(new TestMessages(tunnel));
     }
 
-    public static TestMessages createMessages(NetEndpoint<Long> endpoint) {
+    public static TestMessages createMessages(NetEndpoint endpoint) {
         return createMessages(new TestMessages(endpoint));
     }
 
     private static TestMessages createMessages(TestMessages messages) {
-        return messages.addPush("push 1")
-                .addResponse("request 2", 1)
-                .addResponse("request 3", 1)
-                .addResponse("request 4", 1)
-                .addResponse("request 5", 1)
-                .addResponse("request 6", 1)
-                .addRequest("request 7");
+        return messages.addPush("push 1").addResponse("request 2", 1).addResponse("request 3", 1).addResponse("request 4", 1)
+                       .addResponse("request 5", 1).addResponse("request 6", 1).addRequest("request 7");
     }
 
 }

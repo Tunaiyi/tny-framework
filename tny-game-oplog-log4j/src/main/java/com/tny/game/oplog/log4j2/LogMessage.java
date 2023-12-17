@@ -49,18 +49,8 @@ public class LogMessage extends MapMessage {
     }
 
     @Override
-    public String getFormat() {
-        return Strings.EMPTY;
-    }
-
-    @Override
     public Object[] getParameters() {
         return new Object[0];
-    }
-
-    @Override
-    public Throwable getThrowable() {
-        return null;
     }
 
 }

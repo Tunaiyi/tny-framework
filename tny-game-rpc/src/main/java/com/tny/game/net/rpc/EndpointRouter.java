@@ -28,7 +28,7 @@ public class EndpointRouter implements RpcRouter {
         if (contact == null) {
             throw new NullPointerException(format("invoke {} Receiver is null", invoker));
         }
-        return serviceSet.findInvokeAccess(0, contact.contactId());
+        return serviceSet.findInvokeAccess(0, contact.getContactId());
     }
 
 }

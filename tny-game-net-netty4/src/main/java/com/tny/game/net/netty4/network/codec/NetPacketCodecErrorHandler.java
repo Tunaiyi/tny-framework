@@ -34,7 +34,7 @@ public interface NetPacketCodecErrorHandler {
     }
 
     default void handleOnError(String action, Logger logger, ChannelHandlerContext ctx, Throwable exception, boolean close) {
-        Tunnel<?> tunnel = null;
+        Tunnel tunnel = null;
         Channel channel = null;
         if (ctx != null) {
             channel = ctx.channel();
@@ -44,7 +44,7 @@ public interface NetPacketCodecErrorHandler {
             if (!close) {
                 ResultCode code = null;
                 if (exception instanceof ResultCodableException) {
-                    code = ((ResultCodableException)exception).getCode();
+                    code = ((ResultCodableException) exception).getCode();
                 }
                 if (code != null && code.getLevel() == ResultLevel.ERROR) {
                     close = true;

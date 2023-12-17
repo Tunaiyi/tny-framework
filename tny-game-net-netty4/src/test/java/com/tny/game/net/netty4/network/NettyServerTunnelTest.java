@@ -11,7 +11,6 @@
 package com.tny.game.net.netty4.network;
 
 import com.tny.game.net.base.*;
-import com.tny.game.net.command.*;
 import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.command.processor.forkjoin.*;
 import com.tny.game.net.endpoint.*;
@@ -23,12 +22,12 @@ import io.netty.channel.embedded.EmbeddedChannel;
 /**
  * Created by Kun Yang on 2018/8/25.
  */
-public class NettyServerTunnelTest extends NettyTunnelTest<NetSession<Long>, TestGeneralServerTunnel, MockNetEndpoint> {
+public class NettyServerTunnelTest extends NettyTunnelTest<NetSession, TestGeneralServerTunnel, MockNetEndpoint> {
 
     public static final NetIdGenerator ID_GENERATOR = new AutoIncrementIdGenerator();
 
     @Override
-    protected TunnelTestInstance<TestGeneralServerTunnel, MockNetEndpoint> create(Certificate<Long> certificate, boolean open) {
+    protected TunnelTestInstance<TestGeneralServerTunnel, MockNetEndpoint> create(Certificate certificate, boolean open) {
         MockNetEndpoint endpoint = createEndpoint(certificate);
         TestGeneralServerTunnel tunnel = this.newTunnel(open);
         tunnel.bind(endpoint);
@@ -39,15 +38,15 @@ public class NettyServerTunnelTest extends NettyTunnelTest<NetSession<Long>, Tes
     }
 
     @Override
-    protected MockNetEndpoint createEndpoint(Certificate<Long> certificate) {
+    protected MockNetEndpoint createEndpoint(Certificate certificate) {
         return new MockNetEndpoint(certificate, NetAccessMode.SERVER);
     }
 
     private TestGeneralServerTunnel newTunnel(boolean open) {
         TestGeneralServerTunnel tunnel = new TestGeneralServerTunnel(ID_GENERATOR.generate(),
                 new NettyChannelMessageTransporter(NetAccessMode.SERVER, mockChannel()),
-                new NetBootstrapContext(null, null, null, new DefaultCommandExecutorFactory(), new CommonMessageFactory(), new DefaultContactFactory(),
-                        new DefaultCertificateFactory<Long>(), null, new RpcMonitor()));
+                new NetBootstrapContext(null, null, null, new DefaultCommandExecutorFactory(), new CommonMessageFactory(),
+                        new DefaultContactFactory(), null, new RpcMonitor()));
         if (open) {
             tunnel.open();
         }
@@ -56,7 +55,7 @@ public class NettyServerTunnelTest extends NettyTunnelTest<NetSession<Long>, Tes
 
     @Override
     protected EmbeddedChannel embeddedChannel(TestGeneralServerTunnel tunnel) {
-        return (EmbeddedChannel)((NettyChannelMessageTransporter)tunnel.getTransporter()).getChannel();
+        return (EmbeddedChannel) ((NettyChannelMessageTransporter) tunnel.getTransporter()).getChannel();
     }
 
 }

@@ -18,14 +18,14 @@ import com.tny.game.net.transport.*;
  * <p>
  * Created by Kun Yang on 2017/2/17.
  */
-public class CommonSession<UID> extends BaseNetEndpoint<UID> implements NetSession<UID> {
+public class CommonSession extends BaseNetEndpoint implements NetSession {
 
-    public CommonSession(SessionSetting setting, Certificate<UID> certificate, EndpointContext endpointContext) {
+    public CommonSession(SessionSetting setting, Certificate certificate, EndpointContext endpointContext) {
         super(certificate, endpointContext, setting.getSendMessageCachedSize());
     }
 
     @Override
-    public void onUnactivated(NetTunnel<UID> tunnel) {
+    public void onUnactivated(NetTunnel tunnel) {
         if (isOffline()) {
             return;
         }
@@ -33,7 +33,7 @@ public class CommonSession<UID> extends BaseNetEndpoint<UID> implements NetSessi
             if (isOffline()) {
                 return;
             }
-            Tunnel<UID> currentTunnel = this.tunnel();
+            Tunnel currentTunnel = this.tunnel();
             if (currentTunnel.isActive()) {
                 return;
             }

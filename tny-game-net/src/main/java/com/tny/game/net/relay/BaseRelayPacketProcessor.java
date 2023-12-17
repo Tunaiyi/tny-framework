@@ -26,9 +26,9 @@ public abstract class BaseRelayPacketProcessor implements RelayPacketProcessor {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(RelayPacketProcessor.class);
 
-    private final RelayExplorer<? extends RelayTunnel<?>> relayLinkExplorer;
+    private final RelayExplorer relayLinkExplorer;
 
-    protected BaseRelayPacketProcessor(RelayExplorer<? extends RelayTunnel<?>> relayLinkExplorer) {
+    protected BaseRelayPacketProcessor(RelayExplorer relayLinkExplorer) {
         this.relayLinkExplorer = relayLinkExplorer;
     }
 

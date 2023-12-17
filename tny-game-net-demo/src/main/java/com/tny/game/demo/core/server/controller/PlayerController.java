@@ -28,8 +28,8 @@ import static com.tny.game.net.message.MessageMode.*;
 /**
  * <p>
  *
- * @author: Kun Yang
- * @date: 2018-10-31 16:46
+ * @author Kun Yang
+ * @date 2018-10-31 16:46
  */
 @AuthenticationRequired(DEFAULT_USER_TYPE)
 @BeforePlugin(SpringBootParamFilterPlugin.class)

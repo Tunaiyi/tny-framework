@@ -20,15 +20,15 @@ import com.tny.game.net.rpc.*;
  * @author kgtny
  * @date 2022/12/21 17:39
  **/
-public class LocalTunnel<UID> extends BaseNetTunnel<UID, NetSession<UID>, LocalMessageTransporter> {
+public class LocalTunnel extends BaseNetTunnel<NetSession, LocalMessageTransporter> {
 
-    public LocalTunnel(long id, NetSession<UID> session, LocalMessageTransporter transporter, NetAccessMode accessMode, NetworkContext context) {
+    public LocalTunnel(long id, NetSession session, LocalMessageTransporter transporter, NetAccessMode accessMode, NetworkContext context) {
         super(id, transporter, accessMode, context);
         this.bind(session);
     }
 
     @Override
-    protected boolean replaceEndpoint(NetEndpoint<UID> endpoint) {
+    protected boolean replaceEndpoint(NetEndpoint endpoint) {
         return false;
     }
 

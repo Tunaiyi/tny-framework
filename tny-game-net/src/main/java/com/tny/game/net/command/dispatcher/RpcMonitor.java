@@ -118,7 +118,7 @@ public class RpcMonitor {
         NetLogger.logReceive(contact, message);
     }
 
-    public void onSend(NetTunnel<?> tunnel, Message message) {
+    public void onSend(NetTunnel tunnel, Message message) {
         NetLogger.logSend(tunnel, message);
         for (var handler : sendHandlers) {
             try {

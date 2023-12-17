@@ -25,7 +25,7 @@ public interface RpcForwardAccess extends RpcAccess {
     /**
      * @return 服务 id
      */
-    RpcAccessIdentify getIdentify();
+    RpcAccessIdentify getRpcIdentify();
 
     /**
      * @return 获取转发服务者

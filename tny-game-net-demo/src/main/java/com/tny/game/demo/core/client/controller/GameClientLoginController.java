@@ -13,8 +13,8 @@ package com.tny.game.demo.core.client.controller;
 /**
  * <p>
  *
- * @author: Kun Yang
- * @date: 2018-10-31 16:46
+ * @author Kun Yang
+ * @date 2018-10-31 16:46
  */
 //@RpcController
 //@AuthenticationRequired(Certificates.DEFAULT_USER_TYPE)

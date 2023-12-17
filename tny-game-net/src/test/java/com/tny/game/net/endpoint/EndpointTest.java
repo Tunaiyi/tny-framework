@@ -22,9 +22,9 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Created by Kun Yang on 2018/8/25.
  */
-public abstract class EndpointTest<E extends NetEndpoint<Long>> extends ConnectorTest<E> {
+public abstract class EndpointTest<E extends NetEndpoint> extends ConnectorTest<E> {
 
-    protected abstract EndpointTestInstance<E> create(Certificate<Long> certificate);
+    protected abstract EndpointTestInstance<E> create(Certificate certificate);
 
     protected EndpointTestInstance<E> create() {
         return create(createLoginCert());

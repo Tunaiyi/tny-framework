@@ -23,28 +23,28 @@ import com.tny.game.net.message.*;
  **/
 public class RpcRemoteServiceAccess implements RpcServiceAccess {
 
-    private final Endpoint<RpcAccessIdentify> endpoint;
+    private final Endpoint endpoint;
 
     private final ForwardPoint forwardPoint;
 
-    public RpcRemoteServiceAccess(Endpoint<RpcAccessIdentify> endpoint) {
+    public RpcRemoteServiceAccess(Endpoint endpoint) {
         this.endpoint = endpoint;
-        this.forwardPoint = new ForwardPoint(endpoint.getIdentify());
+        this.forwardPoint = new ForwardPoint(endpoint.getIdentifyToken(RpcAccessIdentify.class));
     }
 
     @Override
     public long getAccessId() {
-        return endpoint.contactId();
+        return endpoint.getContactId();
     }
 
     @Override
-    public Endpoint<RpcAccessIdentify> getEndpoint() {
+    public Endpoint getEndpoint() {
         return endpoint;
     }
 
     @Override
-    public RpcAccessIdentify getIdentify() {
-        return endpoint.getIdentify();
+    public RpcAccessIdentify getRpcIdentify() {
+        return endpoint.getIdentifyToken(RpcAccessIdentify.class);
     }
 
     @Override

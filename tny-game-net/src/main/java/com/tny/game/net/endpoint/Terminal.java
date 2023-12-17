@@ -17,7 +17,7 @@ import com.tny.game.common.url.*;
  *
  * @author KGTny
  */
-public interface Terminal<UID> extends Endpoint<UID> {
+public interface Terminal extends Endpoint {
 
     /**
      * @return 获取客户端 url

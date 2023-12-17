@@ -26,9 +26,9 @@ import io.netty.channel.Channel;
 public class ServerTunnelFactory implements NettyTunnelFactory {
 
     @Override
-    public <T> NetTunnel<T> create(long id, Channel channel, NetworkContext context) {
+    public NetTunnel create(long id, Channel channel, NetworkContext context) {
         MessageTransporter transport = new NettyChannelMessageTransporter(NetAccessMode.SERVER, channel);
-        return new GeneralServerTunnel<>(id, transport, context); // 创建 Tunnel 已经transport.bind
+        return new GeneralServerTunnel(id, transport, context); // 创建 Tunnel 已经transport.bind
     }
 
 }

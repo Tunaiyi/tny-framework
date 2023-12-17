@@ -27,7 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @date : 2021/8/25 9:00 下午
  */
 @Unit
-public class DefaultServerRelayExplorer extends BaseRelayExplorer<ServerRelayTunnel<?>> implements ServerRelayExplorer {
+public class DefaultServerRelayExplorer extends BaseRelayExplorer<ServerRelayTunnel> implements ServerRelayExplorer {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(DefaultServerRelayExplorer.class);
 
@@ -54,7 +54,7 @@ public class DefaultServerRelayExplorer extends BaseRelayExplorer<ServerRelayTun
             return;
         }
         ServerRelayTransporter transporter = new DefaultServerRelayTransporter(relayLink);
-        ServerRelayTunnel<?> replayTunnel = new GeneralServerRelayTunnel<>(
+        ServerRelayTunnel replayTunnel = new GeneralServerRelayTunnel(
                 instanceId, tunnelId, transporter, new InetSocketAddress(host, port), networkContext);
         putTunnel(replayTunnel);
         relayLink.openTunnel(replayTunnel);
@@ -63,7 +63,7 @@ public class DefaultServerRelayExplorer extends BaseRelayExplorer<ServerRelayTun
 
     @Override
     public void switchTunnelLink(NetRelayLink link, long instanceId, long tunnelId) {
-        ServerRelayTunnel<?> tunnel = this.getTunnel(instanceId, tunnelId);
+        ServerRelayTunnel tunnel = this.getTunnel(instanceId, tunnelId);
         if (tunnel == null) {
             link.write(TunnelConnectedPacket.FACTORY, TunnelConnectedArguments.failure(instanceId, tunnelId));
             LOGGER.warn("switchTunnelLink tunnel[{}-{}] 不存在", instanceId, tunnelId);

@@ -122,10 +122,9 @@ public abstract class ActorURL {
         if (o == null) {
             return false;
         }
-        if (!(o instanceof ActorURL)) {
+        if (!(o instanceof ActorURL actorPath)) {
             return false;
         }
-        ActorURL actorPath = (ActorURL)o;
         if (!getName().equals(actorPath.getName())) {
             return false;
         }

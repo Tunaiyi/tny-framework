@@ -26,7 +26,7 @@ public class FirstRelayMessageRouter implements RelayMessageRouter {
     }
 
     @Override
-    public String route(ClientRelayTunnel<?> tunnel, MessageSchema schema) {
+    public String route(ClientRelayTunnel tunnel, MessageSchema schema) {
         for (String key : tunnel.getLinkKeys()) {
             return key;
         }

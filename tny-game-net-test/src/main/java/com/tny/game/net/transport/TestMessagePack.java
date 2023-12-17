@@ -15,8 +15,8 @@ import com.tny.game.net.message.*;
 /**
  * <p>
  *
- * @author: Kun Yang
- * @date: 2018-09-27 14:42
+ * @author Kun Yang
+ * @date 2018-09-27 14:42
  */
 public class TestMessagePack {
 

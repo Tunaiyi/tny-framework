@@ -20,7 +20,6 @@ import static com.tny.game.common.utils.ObjectAide.*;
 /**
  * <p>
  */
-@SuppressWarnings({"unchecked", "rawtypes"})
 public class ClientEventBuses extends BaseEventBuses<ClientListener> {
 
     private final BindP1EventBus<ClientActivateListener, Client, Tunnel> ON_ACTIVATE =
@@ -44,19 +43,19 @@ public class ClientEventBuses extends BaseEventBuses<ClientListener> {
         return eventBuses;
     }
 
-    public <T> BindP1EventBus<ClientActivateListener<T>, Client<T>, Tunnel<T>> activateEvent() {
+    public BindP1EventBus<ClientActivateListener, Client, Tunnel> activateEvent() {
         return as(this.ON_ACTIVATE);
     }
 
-    public <T> BindP1EventBus<ClientUnactivatedListener<T>, Client<T>, Tunnel<T>> unactivatedEvent() {
+    public BindP1EventBus<ClientUnactivatedListener, Client, Tunnel> unactivatedEvent() {
         return as(this.ON_UNACTIVATED);
     }
 
-    public <T> BindVoidEventBus<ClientOpenListener<T>, Client<T>> openEvent() {
+    public BindVoidEventBus<ClientOpenListener, Client> openEvent() {
         return as(this.ON_OPEN);
     }
 
-    public <T> BindVoidEventBus<ClientCloseListener<T>, Client<T>> closeEvent() {
+    public BindVoidEventBus<ClientCloseListener, Client> closeEvent() {
         return as(this.ON_CLOSE);
     }
 

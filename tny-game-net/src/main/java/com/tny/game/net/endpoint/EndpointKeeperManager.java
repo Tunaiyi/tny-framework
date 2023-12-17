@@ -23,12 +23,12 @@ import java.util.Optional;
 @UnitInterface
 public interface EndpointKeeperManager {
 
-    <UID, K extends EndpointKeeper<UID, ? extends Endpoint<UID>>> K loadEndpoint(ContactType userType, NetAccessMode accessMode);
+    <K extends EndpointKeeper<? extends Endpoint>> K loadEndpoint(ContactType userType, NetAccessMode accessMode);
 
-    <UID, K extends EndpointKeeper<UID, ? extends Endpoint<UID>>> Optional<K> getKeeper(ContactType userType);
+    <K extends EndpointKeeper<? extends Endpoint>> Optional<K> getKeeper(ContactType userType);
 
-    <UID, K extends SessionKeeper<UID>> Optional<K> getSessionKeeper(ContactType userType);
+    <K extends SessionKeeper> Optional<K> getSessionKeeper(ContactType userType);
 
-    <UID, K extends TerminalKeeper<UID>> Optional<K> getTerminalKeeper(ContactType userType);
+    <K extends TerminalKeeper> Optional<K> getTerminalKeeper(ContactType userType);
 
 }

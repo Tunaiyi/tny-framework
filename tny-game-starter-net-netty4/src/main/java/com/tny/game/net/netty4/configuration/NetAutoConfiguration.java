@@ -16,7 +16,6 @@ import com.tny.game.net.base.*;
 import com.tny.game.net.codec.*;
 import com.tny.game.net.codec.cryptoloy.*;
 import com.tny.game.net.codec.verifier.*;
-import com.tny.game.net.command.*;
 import com.tny.game.net.command.auth.*;
 import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.command.plugins.*;
@@ -58,15 +57,6 @@ import java.util.List;
 @Import({TextFilterAutoConfiguration.class})
 public class NetAutoConfiguration {
 
-    @Bean
-    public CertificateFactory<?> defaultCertificateFactory() {
-        return new DefaultCertificateFactory<>();
-    }
-
-    @Bean
-    public CertificateFactory<?> defaultContactCertificateFactory() {
-        return new DefaultContactCertificateFactory<>();
-    }
 
     @Bean
     @ConditionalOnMissingBean(EndpointKeeperManager.class)
@@ -99,18 +89,18 @@ public class NetAutoConfiguration {
     }
 
     @Bean
-    public SessionFactory<?, ?, ?> defaultSessionFactory() {
-        return new CommonSessionFactory<>();
+    public SessionFactory<?, ?> defaultSessionFactory() {
+        return new CommonSessionFactory();
     }
 
     @Bean
-    public SessionKeeperFactory<?, ?> defaultSessionKeeperFactory() {
-        return new CommonSessionKeeperFactory<>();
+    public SessionKeeperFactory<?> defaultSessionKeeperFactory() {
+        return new CommonSessionKeeperFactory();
     }
 
     @Bean
-    public TerminalKeeperFactory<?, ?> defaultTerminalKeeperFactory() {
-        return new CommonTerminalKeeperFactory<>();
+    public TerminalKeeperFactory<?> defaultTerminalKeeperFactory() {
+        return new CommonTerminalKeeperFactory();
     }
 
     @Bean
@@ -153,8 +143,8 @@ public class NetAutoConfiguration {
     }
 
     @Bean
-    public ParamFilterPlugin<?> paramFilterPlugin() {
-        return new SpringBootParamFilterPlugin<>();
+    public ParamFilterPlugin paramFilterPlugin() {
+        return new SpringBootParamFilterPlugin();
     }
 
     @Bean

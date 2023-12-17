@@ -14,7 +14,6 @@ import com.tny.game.net.base.*;
 import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.exception.*;
-import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
 
 import static com.tny.game.common.utils.ObjectAide.*;
@@ -35,29 +34,28 @@ public class ContactAuthenticateService implements ContactAuthenticator {
 
     @Override
     public void authenticate(MessageDispatcherContext dispatcherContext, RpcEnterContext context,
-            Class<? extends AuthenticationValidator<?, ?>> validatorClass)
+            Class<? extends AuthenticationValidator> validatorClass)
             throws AuthFailedException {
         var tunnel = context.netTunnel();
         var message = context.getMessage();
         var networkContext = context.networkContext();
         if (!tunnel.isAuthenticated()) {
-            CertificateFactory<Object> certificateFactory = networkContext.getCertificateFactory();
-            var validator = getValidator(message, dispatcherContext, validatorClass);
+            var validator = getValidator(dispatcherContext, validatorClass);
             if (validator == null) {
                 throw new AuthFailedException(NetResultCode.SERVER_ERROR, "{} is null", validatorClass);
             }
-            Certificate<Object> certificate = validator.validate(tunnel, message, certificateFactory);
+            Certificate certificate = validator.validate(tunnel, message);
             // 是否需要做登录校验,判断是否已经登录
             if (certificate != null && certificate.isAuthenticated()) {
-                EndpointKeeper<Object, Endpoint<Object>> endpointKeeper = this.endpointKeeperManager
-                        .loadEndpoint(certificate.contactType(), tunnel.getAccessMode());
+                EndpointKeeper<Endpoint> endpointKeeper = this.endpointKeeperManager
+                        .loadEndpoint(certificate.getContactType(), tunnel.getAccessMode());
                 endpointKeeper.online(certificate, tunnel);
             }
         }
     }
 
-    private AuthenticationValidator<Object, CertificateFactory<Object>> getValidator(Message message, MessageDispatcherContext dispatcherContext,
-            Class<? extends AuthenticationValidator<?, ?>> validatorClass) {
+    private AuthenticationValidator getValidator(MessageDispatcherContext dispatcherContext,
+            Class<? extends AuthenticationValidator> validatorClass) {
         return as(dispatcherContext.getValidator(validatorClass));
     }
 

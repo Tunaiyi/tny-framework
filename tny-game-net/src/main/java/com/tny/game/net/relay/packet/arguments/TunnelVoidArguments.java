@@ -24,7 +24,7 @@ public class TunnelVoidArguments extends BaseTunnelPacketArguments {
         super(arguments.getInstanceId(), arguments.getTunnelId());
     }
 
-    public TunnelVoidArguments(RelayTunnel<?> tunnel) {
+    public TunnelVoidArguments(RelayTunnel tunnel) {
         super(tunnel.getInstanceId(), tunnel.getId());
     }
 

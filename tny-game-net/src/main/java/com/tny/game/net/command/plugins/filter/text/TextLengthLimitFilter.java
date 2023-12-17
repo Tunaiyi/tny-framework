@@ -20,7 +20,7 @@ import com.tny.game.net.transport.*;
 
 import static com.tny.game.net.command.plugins.filter.FilterCode.*;
 
-public class TextLengthLimitFilter extends AbstractParamFilter<Object, TextLength, String> {
+public class TextLengthLimitFilter extends AbstractParamFilter<TextLength, String> {
 
     private final static TextLengthLimitFilter INSTANCE = new TextLengthLimitFilter();
 
@@ -33,7 +33,7 @@ public class TextLengthLimitFilter extends AbstractParamFilter<Object, TextLengt
     }
 
     @Override
-    protected ResultCode doFilter(MethodControllerHolder holder, Tunnel<Object> communicator, Message message, int index, TextLength annotation,
+    protected ResultCode doFilter(MethodControllerHolder holder, Tunnel tunnel, Message message, int index, TextLength annotation,
             String param) {
         if (param == null) {
             return code(NetResultCode.SERVER_ILLEGAL_PARAMETERS, annotation.illegalCode());
@@ -41,9 +41,8 @@ public class TextLengthLimitFilter extends AbstractParamFilter<Object, TextLengt
         int length = param.length();
         if (length < annotation.low() || annotation.high() < length) {
             MessageHead head = message.getHead();
-            LOGGER.warn("{} 玩家请求 协议[{}] 第{}个参数 [{}] 的字符串长度超过 {} - {} 范围",
-                    communicator.getIdentify(), head.getId(),
-                    index, param, annotation.low(), annotation.high());
+            LOGGER.warn("{} 玩家请求 协议[{}] 第{}个参数 [{}] 的字符串长度超过 {} - {} 范围", tunnel.getIdentify(), head.getId(), index, param,
+                    annotation.low(), annotation.high());
             return code(NetResultCode.SERVER_ILLEGAL_PARAMETERS, annotation.illegalCode());
         }
         return ResultCode.SUCCESS;

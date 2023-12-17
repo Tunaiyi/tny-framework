@@ -15,7 +15,7 @@ import com.tny.game.net.transport.*;
 /**
  * <p>
  */
-public class EndpointTestInstance<E extends NetEndpoint<Long>> {
+public class EndpointTestInstance<E extends NetEndpoint> {
 
     private E endpoint;
 

@@ -24,7 +24,7 @@ import java.util.List;
 
 import static com.tny.game.net.command.plugins.filter.FilterCode.*;
 
-public class TextCheckFilter<UID> extends AbstractParamFilter<UID, TextCheck, String> {
+public class TextCheckFilter extends AbstractParamFilter<TextCheck, String> {
 
     private List<WordsFilter> wordsFilters;
 
@@ -37,12 +37,12 @@ public class TextCheckFilter<UID> extends AbstractParamFilter<UID, TextCheck, St
     }
 
     @Override
-    protected ResultCode doFilter(MethodControllerHolder holder, Tunnel<UID> communicator, Message message, int index, TextCheck annotation,
+    protected ResultCode doFilter(MethodControllerHolder holder, Tunnel tunnel, Message message, int index, TextCheck annotation,
             String param) {
         int size = param.length();
         if (size < annotation.lowLength() || annotation.highLength() < size) {
             LOGGER.warn("{} 玩家请求 协议[{}] 第{}个参数 [{}] 超出 {} - {} 范围",
-                    communicator.getIdentify(), message.getProtocolId(),
+                    tunnel.getIdentify(), message.getProtocolId(),
                     index, size, annotation.lowLength(), annotation.highLength());
             return code(this.lengthIllegalCode, annotation.lengthIllegalCode(), annotation.illegalCode());
         }
@@ -54,17 +54,17 @@ public class TextCheckFilter<UID> extends AbstractParamFilter<UID, TextCheck, St
         return ResultCode.SUCCESS;
     }
 
-    public TextCheckFilter<UID> setWordsFilters(List<WordsFilter> wordsFilters) {
+    public TextCheckFilter setWordsFilters(List<WordsFilter> wordsFilters) {
         this.wordsFilters = ImmutableList.copyOf(wordsFilters);
         return this;
     }
 
-    public TextCheckFilter<UID> setLengthIllegalCode(ResultCode lengthIllegalCode) {
+    public TextCheckFilter setLengthIllegalCode(ResultCode lengthIllegalCode) {
         this.lengthIllegalCode = lengthIllegalCode;
         return this;
     }
 
-    public TextCheckFilter<UID> setContentIllegalCode(ResultCode contentIllegalCode) {
+    public TextCheckFilter setContentIllegalCode(ResultCode contentIllegalCode) {
         this.contentIllegalCode = contentIllegalCode;
         return this;
     }

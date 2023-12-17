@@ -46,7 +46,7 @@ public class ClientTunnelRelayer {
         return service;
     }
 
-    public MessageWriteFuture relay(ClientRelayTunnel<?> tunnel, RpcTransferContext rpcContext, MessageWriteFuture promise) {
+    public MessageWriteFuture relay(ClientRelayTunnel tunnel, RpcTransferContext rpcContext, MessageWriteFuture promise) {
         ClientRelayLink link = allot(tunnel);
         var message = rpcContext.getMessage();
         if (link != null && link.isActive()) {
@@ -65,7 +65,7 @@ public class ClientTunnelRelayer {
         return promise;
     }
 
-    public ClientRelayLink allot(ClientRelayTunnel<?> tunnel) {
+    public ClientRelayLink allot(ClientRelayTunnel tunnel) {
         ClientRelayLink link = tunnel.getLink(service);
         if (link != null && link.isActive()) {
             return link;

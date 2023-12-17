@@ -16,15 +16,15 @@ package com.tny.game.net.endpoint;
  * @author : kgtny
  * @date : 2022/1/16 11:40 PM
  */
-public interface NetEndpointKeeper<UID, E extends Endpoint<UID>> extends EndpointKeeper<UID, E> {
+public interface NetEndpointKeeper<E extends Endpoint> extends EndpointKeeper<E> {
 
-    default void notifyEndpointOnline(Endpoint<?> endpoint) {
+    default void notifyEndpointOnline(Endpoint endpoint) {
     }
 
-    default void notifyEndpointOffline(Endpoint<?> endpoint) {
+    default void notifyEndpointOffline(Endpoint endpoint) {
     }
 
-    default void notifyEndpointClose(Endpoint<?> endpoint) {
+    default void notifyEndpointClose(Endpoint endpoint) {
     }
 
 }

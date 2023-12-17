@@ -16,7 +16,7 @@ import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
 
 @UnitInterface
-public interface CommandPlugin<UID, O> {
+public interface CommandPlugin<O> {
 
     /**
      * @return 获取参数类型
@@ -26,11 +26,11 @@ public interface CommandPlugin<UID, O> {
     /**
      * 请求过滤
      *
-     * @param communicator 通道
+     * @param tunnel 通道
      * @param message      消息
      * @param context      上下文
      * @throws Exception 异常
      */
-    void execute(Tunnel<UID> communicator, Message message, RpcInvokeContext context, O attribute) throws Exception;
+    void execute(Tunnel tunnel, Message message, RpcInvokeContext context, O attribute) throws Exception;
 
 }

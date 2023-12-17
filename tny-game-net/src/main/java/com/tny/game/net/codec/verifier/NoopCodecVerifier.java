@@ -15,8 +15,8 @@ import com.tny.game.net.codec.*;
 /**
  * <p>
  *
- * @author: Kun Yang
- * @date: 2018-10-18 14:47
+ * @author Kun Yang
+ * @date 2018-10-18 14:47
  */
 public class NoopCodecVerifier implements CodecVerifier {
 

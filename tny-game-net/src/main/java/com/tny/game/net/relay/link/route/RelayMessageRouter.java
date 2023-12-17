@@ -29,6 +29,6 @@ public interface RelayMessageRouter {
      * @param schema 消息
      * @return 返回转发的连接
      */
-    String route(ClientRelayTunnel<?> tunnel, MessageSchema schema);
+    String route(ClientRelayTunnel tunnel, MessageSchema schema);
 
 }

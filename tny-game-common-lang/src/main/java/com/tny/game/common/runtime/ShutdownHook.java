@@ -17,8 +17,8 @@ import java.util.*;
 /**
  * <p>
  *
- * @author: Kun Yang
- * @date: 2018-10-08 14:09
+ * @author Kun Yang
+ * @date 2018-10-08 14:09
  */
 public class ShutdownHook extends Thread {
 

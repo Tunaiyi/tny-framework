@@ -18,8 +18,8 @@ import java.util.concurrent.*;
 /**
  * <p>
  *
- * @author: Kun Yang
- * @date: 2018-10-24 19:07
+ * @author Kun Yang
+ * @date 2018-10-24 19:07
  */
 public class ForkJoinTest {
 

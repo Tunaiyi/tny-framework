@@ -17,8 +17,8 @@ import java.util.concurrent.CompletableFuture;
 /**
  * <p>
  *
- * @author: Kun Yang
- * @date: 2019-03-15 21:13
+ * @author Kun Yang
+ * @date 2019-03-15 21:13
  */
 
 public class MessageWriteFuture extends CompletableFuture<Void> implements CompletionStageFuture<Void> {

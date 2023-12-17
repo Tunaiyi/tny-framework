@@ -65,7 +65,7 @@ public class RpcForwardCommand implements RpcCommand {
         if (toAccess != null && toAccess.isActive()) {
             var endpoint = toAccess.getEndpoint();
             rpcContext.transfer(endpoint, forwardOperation(message));
-            ForwardPoint fromPoint = new ForwardPoint(tunnel.getIdentify());
+            ForwardPoint fromPoint = new ForwardPoint(tunnel.getIdentifyToken(RpcAccessIdentify.class));
             RpcAccessPoint toPoint = toAccess.getForwardPoint();
             var content = MessageContents.copy(message)
                                          .withHeader(RpcForwardHeaderBuilder.newBuilder()

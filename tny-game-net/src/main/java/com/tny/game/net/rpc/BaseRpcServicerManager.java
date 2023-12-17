@@ -31,7 +31,7 @@ import static com.tny.game.common.utils.ObjectAide.*;
  * @date : 2021/11/3 6:11 下午
  */
 @GlobalEventListener
-public class BaseRpcServicerManager implements RpcServicerManager, EndpointKeeperCreateListener<Object> {
+public class BaseRpcServicerManager implements RpcServicerManager, EndpointKeeperCreateListener {
 
     private final Map<ContactType, RpcServiceNodeSet> serviceSetMap = new CopyOnWriteMap<>();
 
@@ -103,23 +103,21 @@ public class BaseRpcServicerManager implements RpcServicerManager, EndpointKeepe
     }
 
     @Override
-    public void onCreate(EndpointKeeper<Object, Endpoint<Object>> keeper) {
+    public void onCreate(EndpointKeeper<Endpoint> keeper) {
         ContactType contactType = keeper.getContactType();
         if (contactType instanceof RpcServiceType) {
             RpcServiceType serviceType = as(contactType, RpcServiceType.class);
             RpcServiceNodeSet nodeSet = doLoadRpcServiceSet(serviceType);
-            EndpointKeeper<RpcAccessIdentify, Endpoint<RpcAccessIdentify>> rpcKeeper = as(keeper);
-            rpcKeeper.addListener(new EndpointKeeperListener<>() {
+            EndpointKeeper<Endpoint> rpcKeeper = as(keeper);
+            rpcKeeper.addListener(new EndpointKeeperListener() {
 
                 @Override
-                public void onAddEndpoint(EndpointKeeper<RpcAccessIdentify, Endpoint<RpcAccessIdentify>> keeper,
-                        Endpoint<RpcAccessIdentify> endpoint) {
+                public void onAddEndpoint(EndpointKeeper<Endpoint> keeper, Endpoint endpoint) {
                     nodeSet.addEndpoint(endpoint);
                 }
 
                 @Override
-                public void onRemoveEndpoint(EndpointKeeper<RpcAccessIdentify, Endpoint<RpcAccessIdentify>> keeper,
-                        Endpoint<RpcAccessIdentify> endpoint) {
+                public void onRemoveEndpoint(EndpointKeeper<Endpoint> keeper, Endpoint endpoint) {
                     nodeSet.removeEndpoint(endpoint);
                 }
 

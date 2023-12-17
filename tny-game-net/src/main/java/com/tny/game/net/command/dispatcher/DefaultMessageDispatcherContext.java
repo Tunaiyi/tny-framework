@@ -40,17 +40,17 @@ public class DefaultMessageDispatcherContext implements NetMessageDispatcherCont
     /**
      * 所有协议身法验证器
      */
-    private AuthenticationValidator<?, ?> defaultValidator;
+    private AuthenticationValidator defaultValidator;
 
     /**
      * 插件管理器
      */
-    private final Map<Class<?>, CommandPlugin<?, ?>> pluginMap = new CopyOnWriteMap<>();
+    private final Map<Class<?>, CommandPlugin<?>> pluginMap = new CopyOnWriteMap<>();
 
     /**
      * 认证器列表
      */
-    private final Map<Object, AuthenticationValidator<?, ?>> authenticationValidators = new CopyOnWriteMap<>();
+    private final Map<Object, AuthenticationValidator> authenticationValidators = new CopyOnWriteMap<>();
 
     /**
      * 派发错误监听器
@@ -67,13 +67,13 @@ public class DefaultMessageDispatcherContext implements NetMessageDispatcherCont
     }
 
     @Override
-    public CommandPlugin<?, ?> getPlugin(Class<? extends CommandPlugin<?, ?>> pluginClass) {
+    public CommandPlugin<?> getPlugin(Class<? extends CommandPlugin<?>> pluginClass) {
         return this.pluginMap.get(pluginClass);
     }
 
     @Override
-    public AuthenticationValidator<?, ?> getValidator(Class<? extends AuthenticationValidator<?, ?>> validatorClass) {
-        AuthenticationValidator<Object, ?> validator = null;
+    public AuthenticationValidator getValidator(Class<? extends AuthenticationValidator> validatorClass) {
+        AuthenticationValidator validator = null;
         if (validatorClass != null) {
             validator = as(this.authenticationValidators.get(validatorClass));
             Asserts.checkNotNull(validator, "{} 认证器不存在", validatorClass);
@@ -82,8 +82,8 @@ public class DefaultMessageDispatcherContext implements NetMessageDispatcherCont
     }
 
     @Override
-    public AuthenticationValidator<?, ?> getValidator(Object protocol) {
-        return ObjectAide.<AuthenticationValidator<Object, ?>>as(this.authenticationValidators.getOrDefault(protocol, this.defaultValidator));
+    public AuthenticationValidator getValidator(Object protocol) {
+        return this.authenticationValidators.getOrDefault(protocol, this.defaultValidator);
     }
 
     @Override
@@ -97,7 +97,7 @@ public class DefaultMessageDispatcherContext implements NetMessageDispatcherCont
      * @param plugins 插件列表
      */
     @Override
-    public void addControllerPlugin(Collection<? extends CommandPlugin<?, ?>> plugins) {
+    public void addControllerPlugin(Collection<? extends CommandPlugin<?>> plugins) {
         this.pluginMap.putAll(plugins.stream()
                                      .collect(CollectorsAide.toMap(CommandPlugin::getClass)));
     }
@@ -108,7 +108,7 @@ public class DefaultMessageDispatcherContext implements NetMessageDispatcherCont
      * @param plugin 插件
      */
     @Override
-    public void addControllerPlugin(CommandPlugin<?, ?> plugin) {
+    public void addControllerPlugin(CommandPlugin<?> plugin) {
         this.pluginMap.put(plugin.getClass(), plugin);
     }
 
@@ -118,7 +118,7 @@ public class DefaultMessageDispatcherContext implements NetMessageDispatcherCont
      * @param provider 身份校验器
      */
     @Override
-    public void addAuthProvider(AuthenticationValidator<?, ?> provider) {
+    public void addAuthProvider(AuthenticationValidator provider) {
         Class<?> providerClass = provider.getClass();
         AuthProtocol protocol = providerClass.getAnnotation(AuthProtocol.class);
         if (protocol != null) {
@@ -140,7 +140,7 @@ public class DefaultMessageDispatcherContext implements NetMessageDispatcherCont
      * @param providers 身份校验器列表
      */
     @Override
-    public void addAuthProvider(Collection<? extends AuthenticationValidator<?, ?>> providers) {
+    public void addAuthProvider(Collection<? extends AuthenticationValidator> providers) {
         providers.forEach(this::addAuthProvider);
     }
 

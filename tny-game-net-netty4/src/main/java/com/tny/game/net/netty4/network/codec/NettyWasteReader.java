@@ -16,8 +16,8 @@ import io.netty.buffer.ByteBuf;
 /**
  * <p>
  *
- * @author: Kun Yang
- * @date: 2018-10-17 11:09
+ * @author Kun Yang
+ * @date 2018-10-17 11:09
  */
 public class NettyWasteReader extends NettyBytesWaster {
 

@@ -21,11 +21,10 @@ import com.tny.game.net.transport.*;
  * @author : kgtny
  * @date : 2020/9/1 10:02 下午
  */
-public class VoidAuthenticationValidator<T> implements AuthenticationValidator<T, CertificateFactory<T>> {
+public class VoidAuthenticationValidator implements AuthenticationValidator {
 
     @Override
-    public Certificate<T> validate(Tunnel<T> communicator, Message message, CertificateFactory<T> factory)
-            throws AuthFailedException {
+    public Certificate validate(Tunnel tunnel, Message message) throws AuthFailedException {
         throw new UnsupportedOperationException();
     }
 

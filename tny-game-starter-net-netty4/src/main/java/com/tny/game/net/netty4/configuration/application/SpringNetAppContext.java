@@ -18,8 +18,8 @@ import java.util.*;
 /**
  * <p>
  *
- * @author: Kun Yang
- * @date: 2018-10-31 10:52
+ * @author Kun Yang
+ * @date 2018-10-31 10:52
  */
 public class SpringNetAppContext extends DefaultNetAppContext {
 

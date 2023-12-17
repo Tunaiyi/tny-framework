@@ -114,12 +114,12 @@ public abstract class BaseRelayLink implements NetRelayLink {
     }
 
     @Override
-    public long contactId() {
+    public long getContactId() {
         return instanceId;
     }
 
     @Override
-    public ContactType contactType() {
+    public ContactType getContactType() {
         return contactType;
     }
 
@@ -189,12 +189,12 @@ public abstract class BaseRelayLink implements NetRelayLink {
     }
 
     @Override
-    public MessageWriteFuture relay(RelayTunnel<?> from, Message message, MessageWriteFuture awaiter) {
+    public MessageWriteFuture relay(RelayTunnel from, Message message, MessageWriteFuture awaiter) {
         return this.transporter.write(new TunnelRelayPacket(createPacketId(), from.getInstanceId(), from.getId(), message), awaiter);
     }
 
     @Override
-    public MessageWriteFuture relay(RelayTunnel<?> from, MessageAllocator allocator, MessageFactory factory, MessageContent content) {
+    public MessageWriteFuture relay(RelayTunnel from, MessageAllocator allocator, MessageFactory factory, MessageContent content) {
         return this.transporter.write(
                 () -> new TunnelRelayPacket(createPacketId(), from.getInstanceId(), from.getId(), allocator.allocate(factory, content)),
                 content.getWriteFuture());
@@ -315,7 +315,7 @@ public abstract class BaseRelayLink implements NetRelayLink {
     }
 
     @Override
-    public void closeTunnel(RelayTunnel<?> tunnel) {
+    public void closeTunnel(RelayTunnel tunnel) {
         this.write(TunnelDisconnectPacket.FACTORY, new TunnelVoidArguments(tunnel));
     }
 

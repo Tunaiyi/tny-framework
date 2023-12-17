@@ -10,20 +10,20 @@
  */
 package com.tny.game.net.endpoint;
 
-import com.tny.game.net.command.*;
 import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.command.processor.*;
 import com.tny.game.net.command.processor.forkjoin.*;
 import com.tny.game.net.rpc.*;
+import com.tny.game.net.transport.*;
 
 /**
  * Created by Kun Yang on 2018/8/12.
  */
-public class CommonSessionTest extends NetEndpointTest<CommonSession<Long>> {
+public class CommonSessionTest extends NetEndpointTest<CommonSession> {
 
     @Override
-    protected CommonSession<Long> newEndpoint(CommonSessionSetting setting) {
-        return new CommonSession<>(setting, new DefaultCertificateFactory<Long>().anonymous(), new EndpointContext() {
+    protected CommonSession newEndpoint(CommonSessionSetting setting) {
+        return new CommonSession(setting, Certificates.anonymous(), new EndpointContext() {
 
             //			@Override
             //			public <T> CertificateFactory<T> getCertificateFactory() {
@@ -64,8 +64,8 @@ public class CommonSessionTest extends NetEndpointTest<CommonSession<Long>> {
 
     // @Test
     // public void closeParallel() {
-    //     NetTunnel<Long> loginTunnel = mockTunnel(createLoginCert());
-    //     CommonSession<Long> session = create(loginTunnel);
+    //     NetTunnel loginTunnel = mockTunnel(createLoginCert());
+    //     CommonSession session = create(loginTunnel);
     //     TestAide.parallelTask(
     //             TestTask.runnableTask("closeParallelChangeStatue", 30, () -> {
     //                 session.offline();
@@ -81,19 +81,19 @@ public class CommonSessionTest extends NetEndpointTest<CommonSession<Long>> {
     //     assertEquals(1, session.getCloseTimes());
     // }
     //
-    // protected static class CommonSession<Long> extends CommonSession<Long><Long> {
+    // protected static class CommonSession extends CommonSession {
     //
     //     private LongAdder acceptTime = new LongAdder();
     //     private LongAdder offlineTimes = new LongAdder();
     //     private LongAdder closeTimes = new LongAdder();
     //
-    //     public CommonSession<Long>(MockEndpointEventHandler<? extends NetEndpoint<Long>> eventHandler, int cacheSentMessageSize) {
+    //     public CommonSession(MockEndpointEventHandler<? extends NetEndpoint> eventHandler, int cacheSentMessageSize) {
     //         super(eventHandler, eventHandler, cacheSentMessageSize);
     //     }
     //
     //
     //     @Override
-    //     protected boolean acceptTunnel(NetTunnel<Long> newTunnel) throws AuthFailedException {
+    //     protected boolean acceptTunnel(NetTunnel newTunnel) throws AuthFailedException {
     //         acceptTime.increment();
     //         return super.acceptTunnel(newTunnel);
     //     }

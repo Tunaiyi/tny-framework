@@ -36,13 +36,13 @@ public class ForwardContact implements Contact {
     }
 
     public ForwardContact(Contact contact) {
-        this.contactId = contact.contactId();
-        this.contactType = contact.contactType();
+        this.contactId = contact.getContactId();
+        this.contactType = contact.getContactType();
         this.contactTypeId = this.contactType.id();
     }
 
     @Override
-    public long contactId() {
+    public long getContactId() {
         return contactId;
     }
 
@@ -51,7 +51,7 @@ public class ForwardContact implements Contact {
     }
 
     @Override
-    public ContactType contactType() {
+    public ContactType getContactType() {
         if (contactType == null) {
             contactType = ContactTypes.of(contactTypeId);
         }

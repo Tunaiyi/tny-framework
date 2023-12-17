@@ -45,13 +45,13 @@ public class NettyClientGuide extends NettyBootstrap<NettyNetClientBootstrapSett
 
     private Bootstrap bootstrap = null;
 
-    private final Set<Client<?>> clients = new ConcurrentHashSet<>();
+    private final Set<Client> clients = new ConcurrentHashSet<>();
 
     private final AtomicBoolean closed = new AtomicBoolean(false);
 
-    private final ClientCloseListener<Object> closeListener = this.clients::remove;
+    private final ClientCloseListener closeListener = this.clients::remove;
 
-    private final ClientOpenListener<Object> openListener = this.clients::add;
+    private final ClientOpenListener openListener = this.clients::add;
 
     public NettyClientGuide(NetAppContext appContext, NettyNetClientBootstrapSetting clientSetting) {
         super(appContext, clientSetting);
@@ -70,10 +70,9 @@ public class NettyClientGuide extends NettyBootstrap<NettyNetClientBootstrapSett
     }
 
     @Override
-    public <UID> Client<UID> client(URL url, PostConnect<UID> connect) {
+    public Client client(URL url, PostConnect connect) {
         NetworkContext context = this.getContext();
-        CertificateFactory<UID> certificateFactory = context.getCertificateFactory();
-        return new NettyClient<>(this, this.idGenerator, url, connect, certificateFactory.anonymous(), context);
+        return new NettyClient(this, this.idGenerator, url, connect, Certificates.anonymous(), context);
     }
 
     private Bootstrap getBootstrap() {
@@ -87,26 +86,26 @@ public class NettyClientGuide extends NettyBootstrap<NettyNetClientBootstrapSett
             this.bootstrap = new Bootstrap();
             NettyMessageHandler messageHandler = new NettyMessageHandler(this.getContext());
             this.bootstrap.group(workerGroup)
-                    .channel(EPOLL ? EpollSocketChannel.class : NioSocketChannel.class)
-                    .option(ChannelOption.SO_REUSEADDR, true)
-                    .option(ChannelOption.TCP_NODELAY, true)
-                    .option(ChannelOption.SO_KEEPALIVE, true)
-                    .handler(new ChannelInitializer<>() {
+                          .channel(EPOLL ? EpollSocketChannel.class : NioSocketChannel.class)
+                          .option(ChannelOption.SO_REUSEADDR, true)
+                          .option(ChannelOption.TCP_NODELAY, true)
+                          .option(ChannelOption.SO_KEEPALIVE, true)
+                          .handler(new ChannelInitializer<>() {
 
-                        @Override
-                        protected void initChannel(@Nonnull Channel channel) throws Exception {
-                            try {
-                                if (NettyClientGuide.this.channelMaker != null) {
-                                    NettyClientGuide.this.channelMaker.initChannel(channel);
-                                }
-                                channel.pipeline().addLast("nettyMessageHandler", messageHandler);
-                            } catch (Throwable e) {
-                                LOGGER.info("init {} channel exception", channel, e);
-                                throw e;
-                            }
-                        }
+                              @Override
+                              protected void initChannel(@Nonnull Channel channel) throws Exception {
+                                  try {
+                                      if (NettyClientGuide.this.channelMaker != null) {
+                                          NettyClientGuide.this.channelMaker.initChannel(channel);
+                                      }
+                                      channel.pipeline().addLast("nettyMessageHandler", messageHandler);
+                                  } catch (Throwable e) {
+                                      LOGGER.info("init {} channel exception", channel, e);
+                                      throw e;
+                                  }
+                              }
 
-                    });
+                          });
             return this.bootstrap;
         }
 

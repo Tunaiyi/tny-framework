@@ -53,11 +53,6 @@ public abstract class ContainerCapacitySupplierItem<IM extends CapacitySupplierI
     }
 
     @Override
-    public CapacitySupplierType getSupplierType() {
-        return model.getSupplierType();
-    }
-
-    @Override
     protected void refresh() {
         this.container().refresh(this);
     }

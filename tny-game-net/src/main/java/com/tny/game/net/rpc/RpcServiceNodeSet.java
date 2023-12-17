@@ -82,20 +82,20 @@ public class RpcServiceNodeSet implements RpcInvokeNodeSet, RpcForwardNodeSet {
         if (remoteNode == null) {
             return null;
         }
-        RpcServiceAccess access = remoteNode.getForwardAccess(accessPoint.contactId());
+        RpcServiceAccess access = remoteNode.getForwardAccess(accessPoint.getContactId());
         if (access != null) {
             return access;
         }
         return remoteNode.anyGet();
     }
 
-    protected void addEndpoint(Endpoint<RpcAccessIdentify> endpoint) {
+    protected void addEndpoint(Endpoint endpoint) {
         RpcServiceNode node = loadOrCreate(endpoint);
         node.addEndpoint(endpoint);
         refreshNodes(node);
     }
 
-    protected void removeEndpoint(Endpoint<RpcAccessIdentify> endpoint) {
+    protected void removeEndpoint(Endpoint endpoint) {
         RpcServiceNode node = loadOrCreate(endpoint);
         node.removeEndpoint(endpoint);
         refreshNodes(node);
@@ -109,8 +109,12 @@ public class RpcServiceNodeSet implements RpcInvokeNodeSet, RpcForwardNodeSet {
         refreshNodes(rpcNode);
     }
 
-    private RpcServiceNode loadOrCreate(Endpoint<RpcAccessIdentify> endpoint) {
-        RpcAccessIdentify nodeId = endpoint.getIdentify();
+    private RpcServiceNode loadOrCreate(Endpoint endpoint) {
+        var opt = endpoint.identifyToken(RpcAccessIdentify.class);
+        if (opt.isEmpty()) {
+            throw new NullPointerException("RpcAccessIdentify token is null");
+        }
+        RpcAccessIdentify nodeId = opt.get();
         return remoteNodeMap.computeIfAbsent(nodeId.getServerId(), (serverId) -> new RpcServiceNode(serverId, this));
     }
 

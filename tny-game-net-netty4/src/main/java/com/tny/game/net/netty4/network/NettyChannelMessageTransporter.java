@@ -21,8 +21,6 @@ import com.tny.game.net.transport.*;
 import io.netty.channel.*;
 import org.slf4j.*;
 
-import java.rmi.server.UID;
-
 import static com.tny.game.common.utils.ObjectAide.*;
 import static com.tny.game.net.netty4.network.NettyNetAttrKeys.*;
 
@@ -55,36 +53,35 @@ public class NettyChannelMessageTransporter extends NettyChannelConnection imple
     public MessageWriteFuture write(MessageAllocator maker, MessageFactory factory, MessageContent context) throws NetException {
         MessageWriteFuture awaiter = context.getWriteFuture();
         ProcessTracer tracer = NetLogger.NET_TRACE_OUTPUT_WRITE_TO_ENCODE_WATCHER.trace();
-        this.channel.eventLoop()
-                .execute(() -> {
-                    Message message = null;
-                    try {
-                        message = maker.allocate(factory, context);
-                    } catch (Throwable e) {
-                        LOGGER.error("", e);
-                        if (awaiter != null) {
-                            awaiter.completeExceptionally(e);
-                        }
-                    }
-                    if (message != null) {
-                        ChannelPromise channelPromise = createChannelPromise(awaiter);
-                        this.channel.writeAndFlush(message, channelPromise);
-                    }
-                    tracer.done();
-                });
+        this.channel.eventLoop().execute(() -> {
+            Message message = null;
+            try {
+                message = maker.allocate(factory, context);
+            } catch (Throwable e) {
+                LOGGER.error("", e);
+                if (awaiter != null) {
+                    awaiter.completeExceptionally(e);
+                }
+            }
+            if (message != null) {
+                ChannelPromise channelPromise = createChannelPromise(awaiter);
+                this.channel.writeAndFlush(message, channelPromise);
+            }
+            tracer.done();
+        });
         return awaiter;
     }
 
     @Override
     protected void doClose() {
-        NetTunnel<UID> tunnel = as(this.channel.attr(TUNNEL).getAndSet(null));
+        NetTunnel tunnel = as(this.channel.attr(TUNNEL).getAndSet(null));
         if (tunnel != null && (tunnel.isOpen() || tunnel.isActive())) {
             tunnel.disconnect();
         }
     }
 
     @Override
-    public void bind(NetTunnel<?> tunnel) {
+    public void bind(NetTunnel tunnel) {
         this.channel.attr(TUNNEL).set(tunnel);
     }
 

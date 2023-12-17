@@ -93,25 +93,24 @@ public abstract class AbstractExpr implements Expr, ExprHolder {
             if (clazz == null) {
                 return (T)object;
             }
-            if (object instanceof Number) {
-                final Number number = (Number)object;
+            if (object instanceof Number value) {
                 if (Long.class == clazz || long.class == clazz) {
-                    object = number.longValue();
+                    object = value.longValue();
                 }
                 if (Integer.class == clazz || int.class == clazz) {
-                    object = number.intValue();
+                    object = value.intValue();
                 }
                 if (Double.class == clazz || double.class == clazz) {
-                    object = number.doubleValue();
+                    object = value.doubleValue();
                 }
                 if (Float.class == clazz || float.class == clazz) {
-                    object = number.floatValue();
+                    object = value.floatValue();
                 }
                 if (Byte.class == clazz || byte.class == clazz) {
-                    object = number.byteValue();
+                    object = value.byteValue();
                 }
                 if (Boolean.class == clazz || boolean.class == clazz) {
-                    object = number.intValue() > 0;
+                    object = value.intValue() > 0;
                 }
             }
             if (Boolean.class == clazz || boolean.class == clazz) {

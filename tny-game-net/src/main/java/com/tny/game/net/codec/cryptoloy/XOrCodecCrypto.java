@@ -17,8 +17,8 @@ import com.tny.game.net.codec.*;
 /**
  * <p>
  *
- * @author: Kun Yang
- * @date: 2018-10-18 14:58
+ * @author Kun Yang
+ * @date 2018-10-18 14:58
  */
 @Unit
 public class XOrCodecCrypto implements CodecCrypto {

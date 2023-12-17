@@ -15,7 +15,6 @@ import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.command.processor.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.rpc.*;
-import com.tny.game.net.transport.*;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
@@ -51,8 +50,6 @@ public abstract class CommonNetBootstrapSetting implements NetBootstrapSetting {
 
     private String contactFactory = defaultName(ContactFactory.class);
 
-    private String certificateFactory = defaultName(CertificateFactory.class);
-
     private String tunnelIdGenerator = defaultName(NetIdGenerator.class);
 
     private String rpcForwarder = defaultName(RpcForwarder.class);
@@ -72,11 +69,6 @@ public abstract class CommonNetBootstrapSetting implements NetBootstrapSetting {
     @Override
     public String getContactFactory() {
         return contactFactory;
-    }
-
-    @Override
-    public String getCertificateFactory() {
-        return this.certificateFactory;
     }
 
     @Override
@@ -141,10 +133,6 @@ public abstract class CommonNetBootstrapSetting implements NetBootstrapSetting {
         return this;
     }
 
-    public CommonNetBootstrapSetting setCertificateFactory(String certificateFactory) {
-        this.certificateFactory = certificateFactory;
-        return this;
-    }
 
     public CommonNetBootstrapSetting setMessageDispatcher(String messageDispatcher) {
         this.messageDispatcher = messageDispatcher;

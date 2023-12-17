@@ -15,8 +15,8 @@ import com.tny.game.net.codec.*;
 /**
  * <p>
  *
- * @author: Kun Yang
- * @date: 2018-10-17 11:09
+ * @author Kun Yang
+ * @date 2018-10-17 11:09
  */
 public abstract class NettyBytesWaster {
 

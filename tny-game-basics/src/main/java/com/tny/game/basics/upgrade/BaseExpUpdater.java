@@ -55,11 +55,6 @@ public abstract class BaseExpUpdater<I extends Item<?>, EM extends ExpModel> ext
     }
 
     @Override
-    public int getLevel() {
-        return level;
-    }
-
-    @Override
     public long getExp() {
         return exp;
     }

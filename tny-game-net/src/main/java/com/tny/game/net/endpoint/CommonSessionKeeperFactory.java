@@ -18,16 +18,16 @@ import com.tny.game.net.base.*;
  * <p>
  */
 @Unit
-public class CommonSessionKeeperFactory<UID> implements SessionKeeperFactory<UID, SessionKeeperSetting> {
+public class CommonSessionKeeperFactory implements SessionKeeperFactory<SessionKeeperSetting> {
 
     public CommonSessionKeeperFactory() {
     }
 
-    @Override
-    public NetEndpointKeeper<UID, Session<UID>> createKeeper(ContactType contactType, SessionKeeperSetting setting) {
-        SessionFactory<UID, NetSession<UID>, SessionSetting> sessionFactory = UnitLoader.getLoader(SessionFactory.class)
-                                                                                        .checkUnit(setting.getSessionFactory());
-        return new CommonSessionKeeper<>(contactType, sessionFactory, setting);
-    }
 
+    @Override
+    public NetEndpointKeeper<Session> createKeeper(ContactType contactType, SessionKeeperSetting setting) {
+        SessionFactory<NetSession, SessionSetting> sessionFactory = UnitLoader.getLoader(SessionFactory.class)
+                                                                              .checkUnit(setting.getSessionFactory());
+        return new CommonSessionKeeper(contactType, sessionFactory, setting);
+    }
 }

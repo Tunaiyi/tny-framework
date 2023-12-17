@@ -29,6 +29,6 @@ public interface RelayLinkAllotStrategy {
      * @param instance 目标服务实例
      * @return 返回分配的转发目标连接
      */
-    ClientRelayLink allot(Tunnel<?> tunnel, RemoteServeInstance instance);
+    ClientRelayLink allot(Tunnel tunnel, RemoteServeInstance instance);
 
 }

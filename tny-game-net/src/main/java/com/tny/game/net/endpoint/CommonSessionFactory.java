@@ -15,14 +15,14 @@ import com.tny.game.net.transport.*;
 /**
  * <p>
  */
-public class CommonSessionFactory<UID> implements SessionFactory<UID, CommonSession<UID>, SessionSetting> {
+public class CommonSessionFactory implements SessionFactory<CommonSession, SessionSetting> {
 
     public CommonSessionFactory() {
     }
 
     @Override
-    public CommonSession<UID> create(SessionSetting setting, EndpointContext endpointContext, CertificateFactory<UID> certificateFactory) {
-        return new CommonSession<>(setting, certificateFactory.anonymous(), endpointContext);
+    public CommonSession create(SessionSetting setting, EndpointContext endpointContext) {
+        return new CommonSession(setting, Certificates.anonymous(), endpointContext);
     }
 
 }

@@ -13,8 +13,8 @@ package com.tny.game.net.message;
 /**
  * <p>
  *
- * @author: Kun Yang
- * @date: 2019-03-22 17:27
+ * @author Kun Yang
+ * @date 2019-03-22 17:27
  */
 public enum MessageType {
 

@@ -16,8 +16,8 @@ import com.tny.game.net.message.*;
 /**
  * <p>
  *
- * @author: Kun Yang
- * @date: 2019-03-23 23:26
+ * @author Kun Yang
+ * @date 2019-03-23 23:26
  */
 @UnitInterface
 @FunctionalInterface

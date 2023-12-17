@@ -110,15 +110,13 @@ public class RpcServiceNode implements RpcInvokeNode, RpcForwardNode {
         return !orderAccessPoints.isEmpty();
     }
 
-    protected void addEndpoint(Endpoint<RpcAccessIdentify> endpoint) {
+    protected void addEndpoint(Endpoint endpoint) {
         writeLock();
         try {
             boolean activate = this.remoteServiceAccessMap.isEmpty();
-            RpcAccessIdentify nodeId = endpoint.getIdentify();
-            this.remoteServiceAccessMap.put(nodeId.contactId(), new RpcRemoteServiceAccess(endpoint));
-            this.orderAccessPoints = ImmutableList.sortedCopyOf(
-                    Comparator.comparing(RpcAccess::getAccessId),
-                    remoteServiceAccessMap.values());
+            RpcAccessIdentify nodeId = endpoint.getIdentifyToken(RpcAccessIdentify.class);
+            this.remoteServiceAccessMap.put(nodeId.getContactId(), new RpcRemoteServiceAccess(endpoint));
+            this.orderAccessPoints = ImmutableList.sortedCopyOf(Comparator.comparing(RpcAccess::getAccessId), remoteServiceAccessMap.values());
             if (!activate && !this.remoteServiceAccessMap.isEmpty()) {
                 service.onNodeActivate(this);
             }
@@ -127,22 +125,20 @@ public class RpcServiceNode implements RpcInvokeNode, RpcForwardNode {
         }
     }
 
-    protected void removeEndpoint(Endpoint<RpcAccessIdentify> endpoint) {
+    protected void removeEndpoint(Endpoint endpoint) {
         writeLock();
         try {
-            RpcAccessIdentify nodeId = endpoint.getIdentify();
+            RpcAccessIdentify nodeId = endpoint.getIdentifyToken(RpcAccessIdentify.class);
             boolean activate = this.remoteServiceAccessMap.isEmpty();
-            RpcRemoteServiceAccess accessPoint = this.remoteServiceAccessMap.get(nodeId.contactId());
+            RpcRemoteServiceAccess accessPoint = this.remoteServiceAccessMap.get(nodeId.getContactId());
             if (accessPoint == null) {
                 return;
             }
             if (accessPoint.getEndpoint() != endpoint) {
                 return;
             }
-            if (this.remoteServiceAccessMap.remove(nodeId.contactId(), accessPoint)) {
-                this.orderAccessPoints = ImmutableList.sortedCopyOf(
-                        Comparator.comparing(RpcAccess::getAccessId),
-                        remoteServiceAccessMap.values());
+            if (this.remoteServiceAccessMap.remove(nodeId.getContactId(), accessPoint)) {
+                this.orderAccessPoints = ImmutableList.sortedCopyOf(Comparator.comparing(RpcAccess::getAccessId), remoteServiceAccessMap.values());
                 if (activate && this.remoteServiceAccessMap.isEmpty()) {
                     service.onNodeUnactivated(this);
                 }

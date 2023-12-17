@@ -19,7 +19,7 @@ import java.util.Set;
  * @author : kgtny
  * @date : 2021/8/20 4:47 下午
  */
-public interface ClientRelayTunnel<UID> extends NetRelayTunnel<UID> {
+public interface ClientRelayTunnel extends NetRelayTunnel {
 
     /**
      * 绑定转发连接

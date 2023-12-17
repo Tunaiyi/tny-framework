@@ -55,9 +55,4 @@ public class RpcRespondCommand implements RpcCommand {
         return null;
     }
 
-    @Override
-    public String getName() {
-        return getClass().getSimpleName();
-    }
-
 }

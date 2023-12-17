@@ -19,8 +19,8 @@ import java.util.*;
  * 消息接口
  * <p>
  *
- * @author: Kun Yang
- * @date: 2018/8/31 下午10:23
+ * @author Kun Yang
+ * @date 2018/8/31 下午10:23
  */
 
 public interface Message extends MessageSubject, MessageHead, Serializable {

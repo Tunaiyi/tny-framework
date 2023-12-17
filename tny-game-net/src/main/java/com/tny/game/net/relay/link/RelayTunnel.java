@@ -19,7 +19,7 @@ import com.tny.game.net.transport.*;
  * @author : kgtny
  * @date : 2021/8/31 2:37 下午
  */
-public interface RelayTunnel<UID> extends Tunnel<UID> {
+public interface RelayTunnel extends Tunnel {
 
     /**
      * @return 服务实例 id

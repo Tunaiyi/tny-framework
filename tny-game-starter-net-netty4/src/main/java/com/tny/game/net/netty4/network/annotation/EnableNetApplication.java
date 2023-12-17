@@ -21,8 +21,8 @@ import java.lang.annotation.*;
 /**
  * <p>
  *
- * @author: Kun Yang
- * @date: 2018-10-31 14:15
+ * @author Kun Yang
+ * @date 2018-10-31 14:15
  */
 @Documented
 @Target(ElementType.TYPE)

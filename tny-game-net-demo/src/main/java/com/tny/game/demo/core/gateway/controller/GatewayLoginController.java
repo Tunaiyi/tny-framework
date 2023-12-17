@@ -23,8 +23,8 @@ import static com.tny.game.net.base.ContactType.*;
 /**
  * <p>
  *
- * @author: Kun Yang
- * @date: 2018-10-31 16:46
+ * @author Kun Yang
+ * @date 2018-10-31 16:46
  */
 @RpcController
 @AuthenticationRequired(DEFAULT_USER_TYPE)
@@ -37,7 +37,7 @@ public class GatewayLoginController {
     @Rpc(CtrlerIds.LOGIN$LOGIN)
     @BeforePlugin(SpringBootParamFilterPlugin.class)
     @AuthenticationRequired(value = DEFAULT_USER_TYPE, validator = DemoAuthenticationValidator.class)
-    public void login(Endpoint<Long> endpoint, @RpcParam long sessionId, @RpcParam long userId) {
+    public void login(Endpoint endpoint, @RpcParam long sessionId, @RpcParam long userId) {
         LOGGER.info("{} - {} 登录成功 at {}", userId, sessionId, ZonedDateTime.now());
     }
 

@@ -25,11 +25,11 @@ class RpcExitInvocationContext extends BaseRpcTransactionContext implements RpcE
 
     private final MessageContent content;
 
-    private final Endpoint<?> endpoint;
+    private final Endpoint endpoint;
 
     private final RpcMonitor rpcMonitor;
 
-    RpcExitInvocationContext(Endpoint<?> endpoint, MessageContent content, boolean async, RpcMonitor rpcMonitor) {
+    RpcExitInvocationContext(Endpoint endpoint, MessageContent content, boolean async, RpcMonitor rpcMonitor) {
         super(async);
         this.content = content;
         this.endpoint = endpoint;

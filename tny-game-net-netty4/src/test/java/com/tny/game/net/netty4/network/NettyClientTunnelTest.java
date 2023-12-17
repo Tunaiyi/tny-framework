@@ -38,7 +38,7 @@ public class NettyClientTunnelTest extends NettyTunnelTest<MockNettyClient, Test
                     CONNECT_TIMEOUT, SEND_TIMEOUT, LOGIN_TIMEOUT, RESEND_TIMES));
 
     @Override
-    protected TunnelTestInstance<TestGeneralClientTunnel, MockNettyClient> create(Certificate<Long> certificate, boolean open) {
+    protected TunnelTestInstance<TestGeneralClientTunnel, MockNettyClient> create(Certificate certificate, boolean open) {
         MockNettyClient client = this.createEndpoint(certificate);
         TestGeneralClientTunnel tunnel = this.newTunnel(open, client);
         if (certificate.isAuthenticated()) {
@@ -48,13 +48,13 @@ public class NettyClientTunnelTest extends NettyTunnelTest<MockNettyClient, Test
     }
 
     @Override
-    protected MockNettyClient createEndpoint(Certificate<Long> certificate) {
+    protected MockNettyClient createEndpoint(Certificate certificate) {
         return new MockNettyClient(this.url, certificate);
     }
 
     private TestGeneralClientTunnel newTunnel(boolean open, MockNettyClient client) {
         TestGeneralClientTunnel tunnel = new TestGeneralClientTunnel(ID_GENERATOR.generate(),
-                new NetBootstrapContext(null, null, null, null, new CommonMessageFactory(), new DefaultContactFactory(), null, null,
+                new NetBootstrapContext(null, null, null, null, new CommonMessageFactory(), new DefaultContactFactory(), null,
                         new RpcMonitor()));
         tunnel.setEndpoint(client);
         if (open) {
@@ -65,38 +65,38 @@ public class NettyClientTunnelTest extends NettyTunnelTest<MockNettyClient, Test
 
     @Override
     protected EmbeddedChannel embeddedChannel(TestGeneralClientTunnel tunnel) {
-        return (EmbeddedChannel)((NettyChannelMessageTransporter)tunnel.getTransporter()).getChannel();
+        return (EmbeddedChannel) ((NettyChannelMessageTransporter) tunnel.getTransporter()).getChannel();
     }
     // @Override
-    // protected NettyClientTunnel<Long> createUnloginTunnel(SessionFactory<Long> sessionFactory, MessageBuilderFactory<Long>
+    // protected NettyClientTunnel createUnloginTunnel(SessionFactory sessionFactory, MessageBuilderFactory
     // messageBuilderFactory) {
     //     return createUnloginTunnel(sessionFactory, messageBuilderFactory, (r, t) -> {
-    //         CommonStageableFuture<Message<Long>> future = new CommonStageableFuture<>();
-    //         MessageContext<Long> content = mockAs(MessageContext.class);
+    //         CommonStageableFuture<Message> future = new CommonStageableFuture<>();
+    //         MessageContext content = mockAs(MessageContext.class);
     //         when(content.willResponseFuture(anyLong())).thenReturn(future);
     //         return content;
     //     });
     // }
     //
-    // protected NettyClientTunnel<Long> createLoginTunnel(BiFunction<Boolean, Tunnel<Long>, MessageContext<Long>> loginContentCreator) {
-    //     NettyClientTunnel<Long> tunnel = createLoginTunnel();
+    // protected NettyClientTunnel createLoginTunnel(BiFunction<Boolean, Tunnel, MessageContext> loginContentCreator) {
+    //     NettyClientTunnel tunnel = createLoginTunnel();
     //     tunnel.setLoginContentCreator(loginContentCreator);
     //     mockBindLoginSession(tunnel);
     //     return tunnel;
     // }
     //
-    // protected NettyClientTunnel<Long> createUnloginTunnel(BiFunction<Boolean, Tunnel<Long>, MessageContext<Long>> loginContentCreator) {
-    //     NetSession<Long> session = mockAs(NetSession.class);
-    //     SessionFactory<Long> sessionFactory = mockAs(SessionFactory.class);
-    //     MessageBuilderFactory<Long> messageBuilderFactory = mockAs(MessageBuilderFactory.class);
+    // protected NettyClientTunnel createUnloginTunnel(BiFunction<Boolean, Tunnel, MessageContext> loginContentCreator) {
+    //     NetSession session = mockAs(NetSession.class);
+    //     SessionFactory sessionFactory = mockAs(SessionFactory.class);
+    //     MessageBuilderFactory messageBuilderFactory = mockAs(MessageBuilderFactory.class);
     //     when(sessionFactory.createSession(as(any(NetTunnel.class)))).thenReturn(session);
     //     return createUnloginTunnel(sessionFactory, messageBuilderFactory, loginContentCreator);
     // }
     //
-    // protected NettyClientTunnel<Long> createUnloginTunnel(SessionFactory<Long> sessionFactory, MessageBuilderFactory<Long> messageBuilderFactory,
-    // BiFunction<Boolean, Tunnel<Long>, MessageContext<Long>> loginContentCreator) {
+    // protected NettyClientTunnel createUnloginTunnel(SessionFactory sessionFactory, MessageBuilderFactory messageBuilderFactory,
+    // BiFunction<Boolean, Tunnel, MessageContext> loginContentCreator) {
     //     Channel channel = mock(Channel.class);
-    //     NettyClientTunnel<Long> tunnel = new NettyClientTunnel<Long>(url, channel, config, sessionFactory, messageBuilderFactory,
+    //     NettyClientTunnel tunnel = new NettyClientTunnel(url, channel, config, sessionFactory, messageBuilderFactory,
     //     loginContentCreator);
     //     when(channel.isActive()).thenReturn(true);
     //     when(channel.remoteAddress()).thenReturn(new InetSocketAddress("127.0.0.1", 1000));
@@ -130,7 +130,7 @@ public class NettyClientTunnelTest extends NettyTunnelTest<MockNettyClient, Test
     // }
     // @Test
     // public void resetChannel() {
-    //     NettyClientTunnel<Long> tunnel = createUnloginTunnel();
+    //     NettyClientTunnel tunnel = createUnloginTunnel();
     //     Channel channel = mockTunnelChannel(tunnel);
     //     Channel newChannel = mock(Channel.class);
     //
@@ -145,11 +145,11 @@ public class NettyClientTunnelTest extends NettyTunnelTest<MockNettyClient, Test
     // }
     // @Test
     // public void login() throws InterruptedException, ExecutionException, TimeoutException, TunnelWriteException {
-    //     MessageContext<Long> content = mockAs(MessageContext.class);
-    //     CommonStageableFuture<Message<Long>> future;
-    //     NettyClientTunnel<Long> tunnel;
-    //     Message<Long> message;
-    //     BiFunction<Boolean, Tunnel<Long>, MessageContext<Long>> loginContentCreator = (r, t) -> content;
+    //     MessageContext content = mockAs(MessageContext.class);
+    //     CommonStageableFuture<Message> future;
+    //     NettyClientTunnel tunnel;
+    //     Message message;
+    //     BiFunction<Boolean, Tunnel, MessageContext> loginContentCreator = (r, t) -> content;
     //
     //     // 正常登录
     //     future = mockAs(CommonStageableFuture.class);
@@ -169,7 +169,7 @@ public class NettyClientTunnelTest extends NettyTunnelTest<MockNettyClient, Test
     //     when(future.get(anyLong(), eq(TimeUnit.MILLISECONDS))).thenReturn(message);
     //     when(future.get()).thenReturn(message);
     //     when(message.getCode()).thenReturn(ResultCode.FAILURE_CODE);
-    //     NettyClientTunnel<Long> loginFailTunnel = createUnloginTunnel(loginContentCreator);
+    //     NettyClientTunnel loginFailTunnel = createUnloginTunnel(loginContentCreator);
     //     assertRunWithException("login exception", loginFailTunnel::login, TunnelWriteException.class);
     //
     //     // forkjoin 登录
@@ -180,7 +180,7 @@ public class NettyClientTunnelTest extends NettyTunnelTest<MockNettyClient, Test
     //     when(future.get(anyLong(), eq(TimeUnit.MILLISECONDS))).thenReturn(message);
     //     when(future.get()).thenReturn(message);
     //     when(message.getCode()).thenReturn(ResultCode.FAILURE_CODE);
-    //     NettyClientTunnel<Long> forkjoinTunnel = createUnloginTunnel(loginContentCreator);
+    //     NettyClientTunnel forkjoinTunnel = createUnloginTunnel(loginContentCreator);
     //     runParallel("forkjoinTunnel.login", forkjoinTunnel::login);
     //
     // }

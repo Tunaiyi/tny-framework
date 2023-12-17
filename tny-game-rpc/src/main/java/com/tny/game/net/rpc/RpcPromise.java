@@ -31,7 +31,7 @@ public class RpcPromise<T> extends CompleteStageFuture<RpcResult<T>> implements 
 
     private Message message;
 
-    private Endpoint<?> endpoint;
+    private Endpoint endpoint;
 
     public RpcPromise() {
     }
@@ -52,7 +52,7 @@ public class RpcPromise<T> extends CompleteStageFuture<RpcResult<T>> implements 
     }
 
     @Override
-    public Endpoint<?> endpoint() {
+    public Endpoint endpoint() {
         return endpoint;
     }
 
@@ -66,7 +66,7 @@ public class RpcPromise<T> extends CompleteStageFuture<RpcResult<T>> implements 
         return result().isFailure();
     }
 
-    public boolean complete(Endpoint<?> endpoint, Message message, RpcResult<T> value) {
+    public boolean complete(Endpoint endpoint, Message message, RpcResult<T> value) {
         this.message = message;
         this.endpoint = endpoint;
         return super.complete(value);

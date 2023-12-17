@@ -17,11 +17,11 @@ import com.tny.game.net.base.*;
  * <p>
  */
 @Unit
-public class CommonTerminalKeeperFactory<UID> implements TerminalKeeperFactory<UID, TerminalKeeperSetting> {
+public class CommonTerminalKeeperFactory implements TerminalKeeperFactory<TerminalKeeperSetting> {
 
     @Override
-    public NetEndpointKeeper<UID, Terminal<UID>> createKeeper(ContactType contactType, TerminalKeeperSetting setting) {
-        return new CommonTerminalKeeper<>(contactType);
+    public NetEndpointKeeper<Terminal> createKeeper(ContactType contactType, TerminalKeeperSetting setting) {
+        return new CommonTerminalKeeper(contactType);
     }
 
 }

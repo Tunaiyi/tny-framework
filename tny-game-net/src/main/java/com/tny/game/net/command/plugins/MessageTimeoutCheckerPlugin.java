@@ -20,11 +20,11 @@ import org.slf4j.*;
  * 检查消息超时Plugin
  * 参数 为超时时间ms:
  *
- * @3000 3秒
+ * 3000 3秒
  * <p>
  * Created by Kun Yang on 2017/3/4.
  */
-public class MessageTimeoutCheckerPlugin<UID> implements CommandPlugin<UID, Long> {
+public class MessageTimeoutCheckerPlugin implements CommandPlugin<Long> {
 
     private static final Logger DISPATCHER_LOG = LoggerFactory.getLogger(NetLogger.DISPATCHER);
 
@@ -34,7 +34,7 @@ public class MessageTimeoutCheckerPlugin<UID> implements CommandPlugin<UID, Long
     }
 
     @Override
-    public void execute(Tunnel<UID> communicator, Message message, RpcInvokeContext context, Long attribute) throws Exception {
+    public void execute(Tunnel tunnel, Message message, RpcInvokeContext context, Long attribute) throws Exception {
         if (attribute <= 0) {
             return;
         }

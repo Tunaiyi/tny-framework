@@ -72,16 +72,6 @@ public class EtcdHashingSubscriber<T> extends EtcdHashing<T> implements HashingS
     }
 
     @Override
-    public ObjectMimeType<T> getMineType() {
-        return mineType;
-    }
-
-    @Override
-    public String getPath() {
-        return path;
-    }
-
-    @Override
     public CompletableFuture<Void> subscribeAll() {
         var checked = checkClose();
         if (checked.isPresent()) {

@@ -29,7 +29,7 @@ public class FixedRelayMessageRouter implements RelayMessageRouter {
     }
 
     @Override
-    public String route(ClientRelayTunnel<?> tunnel, MessageSchema schema) {
+    public String route(ClientRelayTunnel tunnel, MessageSchema schema) {
         return service;
     }
 

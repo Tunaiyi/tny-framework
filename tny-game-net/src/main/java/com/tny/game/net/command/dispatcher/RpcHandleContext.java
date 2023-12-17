@@ -25,7 +25,7 @@ public interface RpcHandleContext extends RpcContext {
     /**
      * @return 获取终端
      */
-    <U> Endpoint<U> getEndpoint();
+    Endpoint getEndpoint();
 
     /**
      * @return 当前执行器

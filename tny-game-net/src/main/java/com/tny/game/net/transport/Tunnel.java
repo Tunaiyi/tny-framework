@@ -16,7 +16,7 @@ import com.tny.game.net.endpoint.*;
  * 通道
  * Created by Kun Yang on 2017/3/26.
  */
-public interface Tunnel<UID> extends Connector<UID>, Connection {
+public interface Tunnel extends Connector, Connection {
 
     /**
      * @return 通道 Id
@@ -36,7 +36,7 @@ public interface Tunnel<UID> extends Connector<UID>, Connection {
     /**
      * @return 获取绑定中断
      */
-    Endpoint<UID> getEndpoint();
+    Endpoint getEndpoint();
 
     /**
      * @return 管道状态

@@ -24,7 +24,7 @@ import java.util.stream.Stream;
  * @param <I>
  * @param <E>
  */
-public interface EndpointKeeper<I, E extends Endpoint<I>> {
+public interface EndpointKeeper<E extends Endpoint> {
 
     /**
      * @return 获取用户类型
@@ -46,38 +46,38 @@ public interface EndpointKeeper<I, E extends Endpoint<I>> {
      * @param identify 指定的Key
      * @return 返回获取的session, 无session返回null
      */
-    E getEndpoint(I identify);
+    E getEndpoint(long identify);
 
     /**
      * 获取所有的sessions
      *
      * @return 返回sessions map
      */
-    Map<I, E> getAllEndpoints();
+    Map<Long, E> getAllEndpoints();
 
     /**
      * 发信息给用户 <br>
      *
-     * @param identify  用户ID
-     * @param context 消息内容
+     * @param identify 用户ID
+     * @param context  消息内容
      */
-    void send2User(I identify, MessageContent context);
+    void send2User(long identify, MessageContent context);
 
     /**
      * 发信息给用户集合 <br>
      *
      * @param identifys 用户ID列表
-     * @param context 消息内容
+     * @param context   消息内容
      */
-    void send2Users(Collection<I> identifys, MessageContent context);
+    void send2Users(Collection<Long> identifys, MessageContent context);
 
     /**
      * 发信息给用户集合 <br>
      *
      * @param identifysStream 用户ID流
-     * @param context       消息内容
+     * @param context         消息内容
      */
-    void send2Users(Stream<I> identifysStream, MessageContent context);
+    void send2Users(Stream<Long> identifysStream, MessageContent context);
 
     /**
      * 发送给所有在线的用户 <br>
@@ -90,7 +90,7 @@ public interface EndpointKeeper<I, E extends Endpoint<I>> {
      * @param identify 指定identify
      * @return 返回下线session
      */
-    E close(I identify);
+    E close(long identify);
 
     /**
      * 使指定identify的endpoint下线
@@ -98,7 +98,7 @@ public interface EndpointKeeper<I, E extends Endpoint<I>> {
      * @param identify 指定identify
      * @return 返回下线endpoint
      */
-    E offline(I identify);
+    E offline(long identify);
 
     /**
      * 使所有endpoint下线
@@ -120,21 +120,21 @@ public interface EndpointKeeper<I, E extends Endpoint<I>> {
      *
      * @param listener 监听器
      */
-    void addListener(EndpointKeeperListener<I> listener);
+    void addListener(EndpointKeeperListener listener);
 
     /**
      * 添加监听器列表
      *
      * @param listeners 监听器列表
      */
-    void addListener(Collection<EndpointKeeperListener<I>> listeners);
+    void addListener(Collection<EndpointKeeperListener> listeners);
 
     /**
      * 移除监听器
      *
      * @param listener 监听器
      */
-    void removeListener(EndpointKeeperListener<I> listener);
+    void removeListener(EndpointKeeperListener listener);
 
     /**
      * 计算在线人数
@@ -148,7 +148,7 @@ public interface EndpointKeeper<I, E extends Endpoint<I>> {
      * @param tunnel 注册tunnel
      * @throws AuthFailedException 认证异常
      */
-    Optional<E> online(Certificate<I> certificate, NetTunnel<I> tunnel) throws AuthFailedException;
+    Optional<E> online(Certificate certificate, NetTunnel tunnel) throws AuthFailedException;
 
     /**
      * <p>
@@ -158,6 +158,6 @@ public interface EndpointKeeper<I, E extends Endpoint<I>> {
      * @param identify 指定的Key
      * @return 返回获取的endpoint, 无endpoint返回null
      */
-    boolean isOnline(I identify);
+    boolean isOnline(long identify);
 
 }

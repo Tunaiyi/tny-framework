@@ -18,7 +18,7 @@ import com.tny.game.net.message.*;
 /**
  * Created by Kun Yang on 2017/3/26.
  */
-public interface NetTunnel<UID> extends Tunnel<UID>, Transport, MessageSender {
+public interface NetTunnel extends Tunnel, Transport, MessageSender {
 
     /**
      * 接受消息
@@ -65,7 +65,7 @@ public interface NetTunnel<UID> extends Tunnel<UID>, Transport, MessageSender {
      * @param endpoint 终端
      * @return 返回是否绑定成功
      */
-    boolean bind(NetEndpoint<UID> endpoint);
+    boolean bind(NetEndpoint endpoint);
 
     /**
      * @return message factory
@@ -83,7 +83,7 @@ public interface NetTunnel<UID> extends Tunnel<UID>, Transport, MessageSender {
      * @return 获取绑定中断
      */
     @Override
-    NetEndpoint<UID> getEndpoint();
+    NetEndpoint getEndpoint();
 
 }
 

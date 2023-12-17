@@ -121,9 +121,4 @@ public class EtcdHashingPublisher<K, T> extends EtcdHashing<T> implements Hashin
         return Math.abs(valueHasher.hash(value, 0, maxSlots));
     }
 
-    @Override
-    protected long getMaxSlots() {
-        return maxSlots;
-    }
-
 }

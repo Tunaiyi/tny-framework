@@ -27,7 +27,7 @@ public class TunnelConnectArguments extends BaseTunnelPacketArguments {
 
     private final int port;
 
-    public TunnelConnectArguments(RelayTunnel<?> tunnel, byte[] ip, int port) {
+    public TunnelConnectArguments(RelayTunnel tunnel, byte[] ip, int port) {
         this(tunnel.getInstanceId(), tunnel.getId(), ip, port);
     }
 

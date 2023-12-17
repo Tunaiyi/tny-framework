@@ -13,8 +13,8 @@ package com.tny.game.net.transport;
 /**
  * <p>
  *
- * @author: Kun Yang
- * @date: 2019-03-24 03:11
+ * @author Kun Yang
+ * @date 2019-03-24 03:11
  */
 public enum MessageHandleStrategy {
 

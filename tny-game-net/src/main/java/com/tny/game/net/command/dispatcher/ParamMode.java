@@ -29,7 +29,9 @@ public enum ParamMode {
 
     SETTING,
 
-    USER_ID,
+    IDENTIFY,
+
+    IDENTIFY_TOKEN,
 
     PARAM,
 

@@ -34,9 +34,9 @@ public class ClientRelayTunnelFactory implements NettyTunnelFactory {
     }
 
     @Override
-    public <T> NetTunnel<T> create(long id, Channel channel, NetworkContext context) {
+    public NetTunnel create(long id, Channel channel, NetworkContext context) {
         MessageTransporter transport = new NettyChannelMessageTransporter(NetAccessMode.SERVER, channel);
-        DoneResult<ClientRelayTunnel<T>> result = remoteRelayExplorer.createTunnel(id, transport, context);
+        DoneResult<ClientRelayTunnel> result = remoteRelayExplorer.createTunnel(id, transport, context);
         if (result.isFailure()) {
             throw new TunnelException(result.getCode());
         }

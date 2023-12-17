@@ -15,8 +15,8 @@ import com.tny.game.net.transport.*;
 /**
  * <p>
  *
- * @author: Kun Yang
- * @date: 2018-10-11 17:45
+ * @author Kun Yang
+ * @date 2018-10-11 17:45
  */
 public interface ServerRelayTransporter extends MessageTransporter {
 

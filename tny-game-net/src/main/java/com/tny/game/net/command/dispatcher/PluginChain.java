@@ -20,15 +20,14 @@ public class PluginChain {
 
     private PluginChain next;
 
-    private CommandPluginHolder plugin;
+    private final CommandPluginHolder plugin;
 
     public PluginChain(CommandPluginHolder plugin) {
         this.plugin = plugin;
         this.next = null;
     }
 
-    @SuppressWarnings("unchecked")
-    public void execute(Tunnel<?> tunnel, Message message, RpcInvokeContext context) {
+    public void execute(Tunnel tunnel, Message message, RpcInvokeContext context) {
         if (this.plugin == null || context.isIntercept()) {
             return;
         }

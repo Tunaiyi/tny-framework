@@ -18,7 +18,6 @@ import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
 import org.springframework.stereotype.Component;
 
-import java.time.Instant;
 import java.util.List;
 
 import static com.tny.game.common.utils.ObjectAide.*;
@@ -27,28 +26,27 @@ import static com.tny.game.common.utils.ObjectAide.*;
  * <p>
  */
 @Component
-public class DemoAuthenticationValidator implements AuthenticationValidator<Long, CertificateFactory<Long>> {
+public class DemoAuthenticationValidator implements AuthenticationValidator {
 
     public DemoAuthenticationValidator() {
         System.out.println("DemoAuthenticateValidator");
     }
 
     @Override
-    public Certificate<Long> validate(Tunnel<Long> communicator, Message message, CertificateFactory<Long> factory)
+    public Certificate validate(Tunnel tunnel, Message message)
             throws RpcInvokeException, AuthFailedException {
         Object value = message.bodyAs(Object.class);
         if (value instanceof List) {
             List<Object> paramList = as(value);
-            return factory.certificate(as(paramList.get(0)), as(paramList.get(1)), as(paramList.get(1)), NetContactType.DEFAULT_USER,
-                    Instant.now());
+            return Certificates.createAuthenticated(as(paramList.get(0)), as(paramList.get(1)), as(paramList.get(1)), NetContactType.DEFAULT_USER);
         }
         if (value instanceof LoginDTO) {
             LoginDTO dto = as(value);
-            return factory.certificate(dto.getCertId(), dto.getUserId(), dto.getUserId(), NetContactType.DEFAULT_USER, Instant.now());
+            return Certificates.createAuthenticated(dto.getCertId(), dto.getUserId(), dto.getUserId(), NetContactType.DEFAULT_USER);
         }
         if (value instanceof LoginResultDTO) {
             LoginResultDTO dto = as(value);
-            return factory.certificate(System.currentTimeMillis(), dto.getUserId(), dto.getUserId(), NetContactType.DEFAULT_USER, Instant.now());
+            return Certificates.createAuthenticated(System.currentTimeMillis(), dto.getUserId(), dto.getUserId(), NetContactType.DEFAULT_USER);
         }
         System.out.println(value);
         throw new AuthFailedException("登录失败");

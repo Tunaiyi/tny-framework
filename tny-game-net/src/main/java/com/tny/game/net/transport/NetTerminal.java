@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Created by Kun Yang on 2018/8/28.
  */
-public interface NetTerminal<UID> extends NetEndpoint<UID>, Terminal<UID> {
+public interface NetTerminal extends NetEndpoint, Terminal {
 
     long getConnectTimeout();
 
@@ -31,6 +31,6 @@ public interface NetTerminal<UID> extends NetEndpoint<UID>, Terminal<UID> {
 
     void reconnect();
 
-    void onConnected(NetTunnel<UID> tunnel);
+    void onConnected(NetTunnel tunnel);
 
 }

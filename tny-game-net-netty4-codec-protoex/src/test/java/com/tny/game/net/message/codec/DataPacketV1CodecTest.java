@@ -33,14 +33,14 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * <p>
  *
- * @author: Kun Yang
- * @date: 2018-11-01 14:10
+ * @author Kun Yang
+ * @date 2018-11-01 14:10
  */
 public class DataPacketV1CodecTest {
 
     private ChannelHandlerContext ctx;
 
-    private CommonMessageFactory factory = new CommonMessageFactory();
+    private final CommonMessageFactory factory = new CommonMessageFactory();
 
     private NetPacketV1Decoder decoder;
 
@@ -64,7 +64,7 @@ public class DataPacketV1CodecTest {
         this.ctx = mockAs(ChannelHandlerContext.class);
         EmbeddedChannel channel = new EmbeddedChannel();
         when(this.ctx.channel()).thenReturn(channel);
-        NetTunnel<?> tunnel = mockAs(NetTunnel.class);
+        NetTunnel tunnel = mockAs(NetTunnel.class);
         when(tunnel.getGroup()).thenReturn(ContactType.DEFAULT_USER_TYPE);
         when(tunnel.getAccessId()).thenReturn(2018L);
         when(tunnel.getMessageFactory()).thenReturn(this.factory);

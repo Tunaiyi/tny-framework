@@ -19,7 +19,7 @@ import com.tny.game.net.transport.*;
 /**
  * <p>
  */
-public interface NetEndpoint<UID> extends Endpoint<UID>, MessageReceiver, SentMessageHistory {
+public interface NetEndpoint extends Endpoint, MessageReceiver, SentMessageHistory {
 
     /**
      * 异步发送消息
@@ -28,7 +28,7 @@ public interface NetEndpoint<UID> extends Endpoint<UID>, MessageReceiver, SentMe
      * @param content 发送消息上下文
      * @return 返回发送上下文
      */
-    SendReceipt send(NetTunnel<UID> tunnel, MessageContent content);
+    SendReceipt send(NetTunnel tunnel, MessageContent content);
 
     /**
      * 分配生成消息
@@ -44,21 +44,21 @@ public interface NetEndpoint<UID> extends Endpoint<UID>, MessageReceiver, SentMe
      *
      * @param tunnel 指定认证
      */
-    void online(Certificate<UID> certificate, NetTunnel<UID> tunnel) throws AuthFailedException;
+    void online(Certificate certificate, NetTunnel tunnel) throws AuthFailedException;
 
     /**
      * 通道销毁
      *
      * @param tunnel 销毁通道
      */
-    void onUnactivated(NetTunnel<UID> tunnel);
+    void onUnactivated(NetTunnel tunnel);
 
     //    void takeOver(MessageCommandBox commandTaskBox);
 
     /**
      * @return 当前管道
      */
-    NetTunnel<UID> tunnel();
+    NetTunnel tunnel();
 
     /**
      * @return 消息盒子

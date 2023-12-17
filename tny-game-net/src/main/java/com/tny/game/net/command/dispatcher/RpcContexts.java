@@ -50,14 +50,14 @@ public class RpcContexts {
     /**
      * @return 获取当前线程正在执行的终端
      */
-    public static <U> Endpoint<U> currentEndpoint() {
+    public static Endpoint currentEndpoint() {
         return current().getEndpoint();
     }
 
     /**
      * @return 获取当前线程正在执行的终端
      */
-    public static <U> Executor currentExecutor() {
+    public static Executor currentExecutor() {
         return current().getEndpoint();
     }
 

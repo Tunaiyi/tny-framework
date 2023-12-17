@@ -45,7 +45,7 @@ public class NetPacketV1Encoder extends NetPacketV1Codec implements NetPacketEnc
         }
         // 获取打包器
         DataPackageContext packageContext = channel.attr(NettyNetAttrKeys.WRITE_PACKAGER).get();
-        NetTunnel<?> tunnel;
+        NetTunnel tunnel;
         if (packageContext == null) {
             tunnel = channel.attr(NettyNetAttrKeys.TUNNEL).get();
             packageContext = new DataPackageContext(tunnel.getAccessId(), config);
@@ -99,8 +99,8 @@ public class NetPacketV1Encoder extends NetPacketV1Codec implements NetPacketEnc
                 // TODO 是否需要重新创建 buffer
                 this.crypto.encrypt(packager, bodyBuffer.array(), bodyBuffer.arrayOffset(), bodyBuffer.readableBytes());
                 if (logger.isDebugEnabled()) {
-                    CodecLogger.logBinary(logger, "sendMessage body decryption |  body  {} ",
-                            bodyBuffer.array(), bodyBuffer.arrayOffset(), bodyBuffer.readableBytes());
+                    CodecLogger.logBinary(logger, "sendMessage body decryption |  body  {} ", bodyBuffer.array(), bodyBuffer.arrayOffset(),
+                            bodyBuffer.readableBytes());
                 }
             }
             // 包体长度

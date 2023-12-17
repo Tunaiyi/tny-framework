@@ -20,8 +20,8 @@ import static com.tny.game.net.rpc.auth.RpcProtocol.*;
 /**
  * <p>
  *
- * @author: Kun Yang
- * @date: 2018-10-31 16:46
+ * @author Kun Yang
+ * @date 2018-10-31 16:46
  */
 @RpcController
 public class RpcAuthController {
@@ -33,7 +33,7 @@ public class RpcAuthController {
 
     @RpcRequest(RPC_AUTH_$_AUTHENTICATE)
     @AuthenticationRequired(validator = RpcPasswordValidator.class)
-    public RpcResult<String> authenticate(ServerBootstrapSetting setting, @UserId RpcAccessIdentify id) {
+    public RpcResult<String> authenticate(ServerBootstrapSetting setting, @IdentifyToken RpcAccessIdentify id) {
         RpcServiceType serviceType = RpcServiceTypes.checkService(setting.serviceName());
         String token = rpcAuthService.createToken(serviceType, id);
         LOGGER.info("Rpc执行 << [{}] 认证成功", id);
@@ -42,7 +42,7 @@ public class RpcAuthController {
 
     @RpcResponse(RPC_AUTH_$_AUTHENTICATE)
     @AuthenticationRequired(validator = RpcTokenValidator.class)
-    public void authenticated(@UserId RpcAccessIdentify id) {
+    public void authenticated(@IdentifyToken RpcAccessIdentify id) {
         LOGGER.info("Rpc响应 >> [{}] 认证完成", id);
     }
 

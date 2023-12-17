@@ -57,6 +57,6 @@ public interface RemoteServeCluster extends ServeCluster {
      * @param tunnel 指定 tunnel
      * @return 返回分配的 link
      */
-    ClientRelayLink allotLink(Tunnel<?> tunnel);
+    ClientRelayLink allotLink(Tunnel tunnel);
 
 }

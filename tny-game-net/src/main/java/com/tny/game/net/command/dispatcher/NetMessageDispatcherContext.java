@@ -19,19 +19,19 @@ import java.util.Collection;
 /**
  * <p>
  *
- * @author: Kun Yang
- * @date: 2018-09-30 18:03
+ * @author Kun Yang
+ * @date 2018-09-30 18:03
  */
 @UnitInterface
 public interface NetMessageDispatcherContext extends MessageDispatcherContext {
 
-    void addControllerPlugin(CommandPlugin<?, ?> plugin);
+    void addControllerPlugin(CommandPlugin<?> plugin);
 
-    void addControllerPlugin(Collection<? extends CommandPlugin<?, ?>> plugins);
+    void addControllerPlugin(Collection<? extends CommandPlugin<?>> plugins);
 
-    void addAuthProvider(AuthenticationValidator<?, ?> provider);
+    void addAuthProvider(AuthenticationValidator provider);
 
-    void addAuthProvider(Collection<? extends AuthenticationValidator<?, ?>> providers);
+    void addAuthProvider(Collection<? extends AuthenticationValidator> providers);
 
     //    void fireExecuteStart(RpcInvokeCommand command);
 

@@ -22,7 +22,8 @@ import static com.tny.game.net.transport.CertificateStatus.*;
 
 public final class Certificates {
 
-    private static final long ANONYMITY_CONTACT_ID = -1L;
+    private static final Certificate ANONYMOUS = new DefaultCertificate(Certificate.ANONYMITY_ID, Certificate.ANONYMITY_IDENTIFY,
+            Certificate.ANONYMITY_CONTACT_ID, NetContactType.ANONYMITY, UNAUTHENTICATED, null, null);
 
     public static boolean isAnonymity(int contactId) {
         return contactId < 0;
@@ -32,33 +33,37 @@ public final class Certificates {
         return contactId > 0;
     }
 
-    public static <UID> Certificate<UID> createAuthenticated(long id, UID userID, long contactId, ContactType contactType) {
-        Asserts.checkArgument(id > 0, "loginId must > 0");
-        return createAuthenticated(id, userID, contactId, contactType, Instant.now());
+    public static Certificate createAuthenticated(long id, long identify, long contactId, ContactType contactType) {
+        return createAuthenticated(id, identify, contactId, contactType, AUTHENTICATED, Instant.now(), null);
     }
 
-    public static <UID> Certificate<UID> createAuthenticated(long id, UID userID, long contactId, ContactType contactType,
-            Instant authenticateAt) {
-        Asserts.checkArgument(id > 0, "loginId must > 0");
-        return new DefaultCertificate<>(id, userID, contactId, contactType, AUTHENTICATED, authenticateAt);
+    public static Certificate createAuthenticated(long id, long identify, long contactId, ContactType contactType, Object identifyToken) {
+        return createAuthenticated(id, identify, contactId, contactType, AUTHENTICATED, Instant.now(), identifyToken);
     }
 
-    public static <UID> Certificate<UID> createAuthenticated(long id, UID userID, long contactId, ContactType contactType,
-            Instant authenticateAt,
-            boolean renew) {
-        Asserts.checkArgument(id > 0, "loginId must > 0");
-        return new DefaultCertificate<>(id, userID, contactId, contactType, renew ? RENEW : AUTHENTICATED, authenticateAt);
+    public static Certificate renewAuthenticated(long id, long identify, long contactId, ContactType contactType, Instant authenticateAt) {
+        return renewAuthenticated(id, identify, contactId, contactType, authenticateAt, null);
     }
 
-    public static <UID> Certificate<UID> createUnauthenticated() {
-        return createUnauthenticated(null);
+    public static Certificate renewAuthenticated(long id, long identify, long contactId, ContactType contactType, Instant authenticateAt,
+            Object identifyToken) {
+        return new DefaultCertificate(id, identify, contactId, contactType, RENEW, authenticateAt, identifyToken);
     }
 
-    public static <UID> Certificate<UID> createUnauthenticated(UID anonymityUserId) {
-        return new DefaultCertificate<>(-1, anonymityUserId, ANONYMITY_CONTACT_ID, NetContactType.ANONYMITY, UNAUTHENTICATED, null);
+    private static Certificate createAuthenticated(long id, long identify, long contactId, ContactType contactType, CertificateStatus status,
+            Instant authenticateAt, Object identifyToken) {
+        Asserts.checkArgument(id > 0, "id must > 0");
+        Asserts.checkArgument(identify > 0, "identify must > 0");
+        Asserts.checkArgument(contactId > 0, "contactId must > 0");
+        return new DefaultCertificate(id, identify, contactId, contactType, status, authenticateAt, identifyToken);
     }
 
-    private static class DefaultCertificate<I> implements Certificate<I>, Serializable {
+
+    public static Certificate anonymous() {
+        return ANONYMOUS;
+    }
+
+    private static class DefaultCertificate implements Certificate, Serializable {
 
         /**
          *
@@ -71,7 +76,9 @@ public final class Certificates {
 
         private final CertificateStatus status;
 
-        private final I identify;
+        private final long identify;
+
+        private final Object identifyToken;
 
         private final ContactType contactType;
 
@@ -79,18 +86,12 @@ public final class Certificates {
 
         private final Instant authenticateAt;
 
-        private DefaultCertificate(long id, I identify, long contactId, ContactType contactType, CertificateStatus status, Instant authenticateAt) {
-            super();
-            this.id = id;
-            this.contactId = contactId;
-            this.status = status;
-            this.identify = identify;
-            this.contactType = contactType;
-            this.createAt = Instant.now();
-            if (authenticateAt == null) {
+        private DefaultCertificate(long id, long identify, long contactId, ContactType contactType, CertificateStatus status, Instant authenticateAt,
+                Object identifyToken) {
+            super(); this.id = id; this.contactId = contactId; this.identifyToken = identifyToken; this.status = status; this.identify = identify;
+            this.contactType = contactType; this.createAt = Instant.now(); if (authenticateAt == null) {
                 authenticateAt = this.createAt;
-            }
-            this.authenticateAt = authenticateAt;
+            } this.authenticateAt = authenticateAt;
         }
 
         @Override
@@ -103,35 +104,24 @@ public final class Certificates {
             return this.status.isAuthenticated();
         }
 
-        public boolean isSameUser(DefaultCertificate<I> other) {
-            if (this == other) {
-                return true;
-            }
-            return Objects.equals(getIdentify(), other.getIdentify()) &&
-                   Objects.equals(contactId(), other.contactId());
-        }
-
-        public boolean isSameCertificate(DefaultCertificate<I> other) {
-            if (this == other) {
-                return true;
-            }
-            return getId() == other.getId() &&
-                   Objects.equals(contactId(), other.contactId()) &&
-                   Objects.equals(contactType(), other.contactType());
-        }
 
         @Override
-        public I getIdentify() {
+        public long getIdentify() {
             return this.identify;
         }
 
         @Override
-        public long contactId() {
+        public Object getIdentifyToken() {
+            return identifyToken;
+        }
+
+        @Override
+        public long getContactId() {
             return contactId;
         }
 
         @Override
-        public ContactType contactType() {
+        public ContactType getContactType() {
             return this.contactType;
         }
 
@@ -154,14 +144,10 @@ public final class Certificates {
         public boolean equals(Object o) {
             if (this == o) {
                 return true;
-            }
-            if (!(o instanceof DefaultCertificate)) {
+            } if (!(o instanceof DefaultCertificate that)) {
                 return false;
             }
-            DefaultCertificate<?> that = (DefaultCertificate<?>) o;
-            return getId() == that.getId() &&
-                   isAuthenticated() == that.isAuthenticated() &&
-                   Objects.equals(getIdentify(), that.getIdentify());
+            return getId() == that.getId() && isAuthenticated() == that.isAuthenticated() && Objects.equals(getIdentify(), that.getIdentify());
         }
 
         @Override
@@ -171,11 +157,7 @@ public final class Certificates {
 
         @Override
         public String toString() {
-            return MoreObjects.toStringHelper(this)
-                              .add("identify", this.identify)
-                              .add("contactType", this.contactType)
-                              .add("id", this.id)
-                              .toString();
+            return MoreObjects.toStringHelper(this).add("identify", this.identify).add("contactType", this.contactType).add("id", this.id).toString();
         }
 
     }

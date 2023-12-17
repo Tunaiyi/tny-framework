@@ -24,9 +24,9 @@ public class RpcEndpointAccess implements RpcAccess {
 
     private static final AttrKey<RpcEndpointAccess> REMOTER_ACCESS = AttrKeys.key(RpcEndpointAccess.class, "REMOTER_ACCESS");
 
-    private final Endpoint<?> endpoint;
+    private final Endpoint endpoint;
 
-    public static RpcAccess of(Endpoint<?> endpoint) {
+    public static RpcAccess of(Endpoint endpoint) {
         RpcEndpointAccess access = endpoint.attributes().getAttribute(REMOTER_ACCESS);
         if (access != null) {
             return access;
@@ -34,7 +34,7 @@ public class RpcEndpointAccess implements RpcAccess {
         return endpoint.attributes().computeIfAbsent(REMOTER_ACCESS, () -> new RpcEndpointAccess(endpoint));
     }
 
-    private RpcEndpointAccess(Endpoint<?> endpoint) {
+    private RpcEndpointAccess(Endpoint endpoint) {
         this.endpoint = endpoint;
     }
 
@@ -44,13 +44,13 @@ public class RpcEndpointAccess implements RpcAccess {
     }
 
     @Override
-    public Endpoint<?> getEndpoint() {
+    public Endpoint getEndpoint() {
         return endpoint;
     }
 
     @Override
     public long getAccessId() {
-        return endpoint.contactId();
+        return endpoint.getContactId();
     }
 
 }

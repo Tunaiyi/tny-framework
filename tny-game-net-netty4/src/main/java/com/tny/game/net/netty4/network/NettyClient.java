@@ -31,7 +31,7 @@ import static com.tny.game.net.utils.NetConfigs.*;
 /**
  * Created by Kun Yang on 2018/8/28.
  */
-public class NettyClient<UID> extends BaseNetEndpoint<UID> implements NettyTerminal<UID>, Client<UID> {
+public class NettyClient extends BaseNetEndpoint implements NettyTerminal, Client {
 
     private static final TunnelConnectExecutor EXECUTOR_SERVICE = new ScheduledTunnelConnectExecutor(
             Executors.newScheduledThreadPool(1, new CoreThreadFactory("NettyClientConnect")));
@@ -40,14 +40,14 @@ public class NettyClient<UID> extends BaseNetEndpoint<UID> implements NettyTermi
 
     private final NettyClientGuide guide;
 
-    private final PostConnect<UID> postConnect;
+    private final PostConnect postConnect;
 
     private volatile TunnelConnection connection;
 
     private final NetIdGenerator idGenerator;
 
     public NettyClient(NettyClientGuide guide, NetIdGenerator idGenerator, URL url,
-            PostConnect<UID> postConnect, Certificate<UID> certificate, NetworkContext context) {
+            PostConnect postConnect, Certificate certificate, NetworkContext context) {
         super(certificate, context, 0);
         this.url = url;
         this.idGenerator = idGenerator;
@@ -91,12 +91,12 @@ public class NettyClient<UID> extends BaseNetEndpoint<UID> implements NettyTermi
         }
         String[] data = StringUtils.split(intervals, ",");
         return Stream.of(data)
-                .map(Long::parseLong)
-                .filter(i -> i > 0)
-                .collect(Collectors.toList());
+                     .map(Long::parseLong)
+                     .filter(i -> i > 0)
+                     .collect(Collectors.toList());
     }
 
-    private ClientConnectFuture<UID> checkPreOpen() {
+    private ClientConnectFuture checkPreOpen() {
         if (this.isClosed()) {
             return ClientConnectPromise.closed(this.getUrl());
         }
@@ -104,7 +104,7 @@ public class NettyClient<UID> extends BaseNetEndpoint<UID> implements NettyTermi
     }
 
     private void initTunnel() {
-        NetTunnel<UID> newTunnel;
+        NetTunnel newTunnel;
         if (this.tunnel != null) {
             return;
         }
@@ -119,16 +119,16 @@ public class NettyClient<UID> extends BaseNetEndpoint<UID> implements NettyTermi
     }
 
     @Override
-    public ClientConnectFuture<UID> open() {
-        ClientConnectFuture<UID> future = checkPreOpen();
+    public ClientConnectFuture open() {
+        ClientConnectFuture future = checkPreOpen();
         if (future != null) {
             return future;
         }
         initTunnel();
-        ClientConnectPromise<UID> connectFuture = new ClientConnectPromise<>();
+        ClientConnectPromise connectFuture = new ClientConnectPromise();
         this.doConnect((status, tunnel, cause) -> {
             if (status.isSuccess()) {
-                buses().<UID>openEvent().notify(this);
+                buses().openEvent().notify(this);
                 connectFuture.complete(this);
             } else {
                 connectFuture.completeExceptionally(cause);
@@ -161,7 +161,7 @@ public class NettyClient<UID> extends BaseNetEndpoint<UID> implements NettyTermi
     }
 
     @Override
-    public void onConnected(NetTunnel<UID> tunnel) {
+    public void onConnected(NetTunnel tunnel) {
         if (this.tunnel == tunnel) {
             if (this.isClosed()) {
                 tunnel.close();
@@ -172,7 +172,7 @@ public class NettyClient<UID> extends BaseNetEndpoint<UID> implements NettyTermi
                     tunnel.disconnect();
                     throw new TunnelException("{} tunnel post connect failed", tunnel);
                 }
-                buses().<UID>activateEvent().notify(this, this.tunnel);
+                buses().activateEvent().notify(this, this.tunnel);
             } catch (TunnelException e) {
                 throw e;
             } catch (Exception e) {
@@ -182,8 +182,8 @@ public class NettyClient<UID> extends BaseNetEndpoint<UID> implements NettyTermi
     }
 
     @Override
-    public void onUnactivated(NetTunnel<UID> tunnel) {
-        buses().<UID>unactivatedEvent().notify(this, tunnel);
+    public void onUnactivated(NetTunnel tunnel) {
+        buses().unactivatedEvent().notify(this, tunnel);
         if (isOffline()) {
             this.reconnect();
             return;
@@ -193,7 +193,7 @@ public class NettyClient<UID> extends BaseNetEndpoint<UID> implements NettyTermi
                 this.reconnect();
                 return;
             }
-            Tunnel<UID> currentTunnel = this.tunnel();
+            Tunnel currentTunnel = this.tunnel();
             if (currentTunnel.isClosed()) {
                 return;
             }
@@ -212,8 +212,8 @@ public class NettyClient<UID> extends BaseNetEndpoint<UID> implements NettyTermi
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                .add("url", this.url)
-                .toString();
+                          .add("url", this.url)
+                          .toString();
     }
 
 }
