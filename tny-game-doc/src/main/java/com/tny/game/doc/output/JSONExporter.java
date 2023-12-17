@@ -27,8 +27,8 @@ class JSONExporter implements Exporter {
     JSONExporter() {
         objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
         objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY)
-                .setVisibility(PropertyAccessor.GETTER, JsonAutoDetect.Visibility.NONE)
-                .setVisibility(PropertyAccessor.IS_GETTER, JsonAutoDetect.Visibility.NONE);
+                    .setVisibility(PropertyAccessor.GETTER, JsonAutoDetect.Visibility.NONE)
+                    .setVisibility(PropertyAccessor.IS_GETTER, JsonAutoDetect.Visibility.NONE);
     }
 
     @Override
@@ -38,11 +38,6 @@ class JSONExporter implements Exporter {
         } catch (JsonProcessingException e) {
             throw new IllegalStateException(e);
         }
-    }
-
-    @Override
-    public String getHead() {
-        return "";
     }
 
 }

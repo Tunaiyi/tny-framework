@@ -13,8 +13,8 @@ package com.tny.game.net.endpoint.listener;
 import com.tny.game.net.endpoint.*;
 
 @FunctionalInterface
-public interface EndpointCloseListener<UID> extends EndpointListener {
+public interface EndpointCloseListener extends EndpointListener {
 
-    void onClose(Endpoint<UID> endpoint);
+    void onClose(Endpoint endpoint);
 
 }

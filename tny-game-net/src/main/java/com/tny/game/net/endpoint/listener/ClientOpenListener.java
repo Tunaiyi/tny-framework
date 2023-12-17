@@ -13,8 +13,8 @@ package com.tny.game.net.endpoint.listener;
 import com.tny.game.net.endpoint.*;
 
 @FunctionalInterface
-public interface ClientOpenListener<UID> extends ClientListener {
+public interface ClientOpenListener extends ClientListener {
 
-    void onOpen(Client<UID> client);
+    void onOpen(Client client);
 
 }

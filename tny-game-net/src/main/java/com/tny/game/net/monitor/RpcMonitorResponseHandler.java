@@ -21,6 +21,6 @@ import com.tny.game.net.transport.*;
  **/
 public interface RpcMonitorResponseHandler {
 
-    void onRespond(NetTunnel<?> tunnel, Message message);
+    void onRespond(NetTunnel tunnel, Message message);
 
 }

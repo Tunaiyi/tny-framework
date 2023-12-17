@@ -27,8 +27,8 @@ import static com.tny.game.net.base.ContactType.*;
 /**
  * <p>
  *
- * @author: Kun Yang
- * @date: 2018-10-31 16:46
+ * @author Kun Yang
+ * @date 2018-10-31 16:46
  */
 @RpcController
 @AuthenticationRequired({DEFAULT_USER_TYPE, "game-client"})
@@ -36,19 +36,19 @@ import static com.tny.game.net.base.ContactType.*;
 public class ServerSpeakController {
 
     @Rpc(CtrlerIds.SPEAK$SAY)
-    public SayContentDTO say(Endpoint<Long> endpoint, @RpcParam String message) {
+    public SayContentDTO say(Endpoint endpoint, @RpcParam String message) {
         endpoint.send(MessageContents
                 .push(Protocols.protocol(CtrlerIds.SPEAK$PUSH), "因为 [" + message + "] 推条信息给你! " + ThreadLocalRandom.current().nextInt(3000)));
         return new SayContentDTO(endpoint.getId(), "respond " + message);
     }
 
     @Rpc(CtrlerIds.SPEAK$SAY_FOR_RPC)
-    public SayContentDTO say(@UserId RpcAccessIdentify id, @RpcParam String message) {
-        return new SayContentDTO(id.contactId(), "respond " + message);
+    public SayContentDTO say(@Identify RpcAccessIdentify id, @RpcParam String message) {
+        return new SayContentDTO(id.getContactId(), "respond " + message);
     }
 
     @Rpc(CtrlerIds.SPEAK$TEST)
-    public SayContentDTO test(Endpoint<Long> endpoint,
+    public SayContentDTO test(Endpoint endpoint,
             @RpcParam byte byteValue,
             @RpcParam short shortValue,
             @RpcParam int intValue,
@@ -71,7 +71,7 @@ public class ServerSpeakController {
     }
 
     @Rpc(CtrlerIds.SPEAK$DELAY_SAY)
-    public Wait<SayContentDTO> delaySay(Endpoint<Long> endpoint, @RpcParam String message, @RpcParam long delay) {
+    public Wait<SayContentDTO> delaySay(Endpoint endpoint, @RpcParam String message, @RpcParam long delay) {
         long timeout = System.currentTimeMillis() + delay;
         return new Wait<SayContentDTO>() {
 

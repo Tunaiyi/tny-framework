@@ -35,14 +35,14 @@ public interface ClientRelayLink extends NetRelayLink {
      *
      * @param tunnel tunnel
      */
-    void switchTunnel(ClientRelayTunnel<?> tunnel);
+    void switchTunnel(ClientRelayTunnel tunnel);
 
     /**
      * 断开link 与 tunnel的关联
      *
      * @param tunnel tunnel
      */
-    void delinkTunnel(RelayTunnel<?> tunnel);
+    void delinkTunnel(RelayTunnel tunnel);
 
     //	/**
     //	 * 绑定客户端传到
@@ -50,13 +50,13 @@ public interface ClientRelayLink extends NetRelayLink {
     //	 * @param tunnel 客户端管道
     //	 * @return 成功返回true 失败返回 false
     //	 */
-    //	boolean registerTunnel(RelayTunnel<?> tunnel);
+    //	boolean registerTunnel(RelayTunnel tunnel);
     //
     //	/**
     //	 * 反注册 tunnel
     //	 *
     //	 * @param tunnel 移除的tunnel
     //	 */
-    //	void unregisterTunnel(RelayTunnel<?> tunnel);
+    //	void unregisterTunnel(RelayTunnel tunnel);
 
 }

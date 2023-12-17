@@ -37,6 +37,15 @@ public class DefaultContactFactory implements ContactFactory {
 
     private record DefaultContact(ContactType contactType, long contactId) implements Contact {
 
+        @Override
+        public long getContactId() {
+            return contactId;
+        }
+
+        @Override
+        public ContactType getContactType() {
+            return contactType;
+        }
     }
 
 }

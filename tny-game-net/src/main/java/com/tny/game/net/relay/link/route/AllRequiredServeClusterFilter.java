@@ -23,7 +23,7 @@ import com.tny.game.net.transport.*;
 public class AllRequiredServeClusterFilter implements ServeClusterFilter {
 
     @Override
-    public ServeClusterFilterStatus filter(Tunnel<?> tunnel, RemoteServeCluster cluster) {
+    public ServeClusterFilterStatus filter(Tunnel tunnel, RemoteServeCluster cluster) {
         return ServeClusterFilterStatus.REQUIRED;
     }
 

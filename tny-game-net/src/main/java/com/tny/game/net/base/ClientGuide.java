@@ -33,13 +33,13 @@ public interface ClientGuide {
      * @param postConnect 连接后处理
      * @return 返回客户端
      */
-    <UID> Client<UID> client(URL url, PostConnect<UID> postConnect);
+    Client client(URL url, PostConnect postConnect);
 
     /**
-     * @param url   url
-     * @param <UID> * @return
+     * @param url url
+     * @param *   @return
      */
-    default <UID> Client<UID> client(URL url) {
+    default Client client(URL url) {
         return client(url, null);
     }
 

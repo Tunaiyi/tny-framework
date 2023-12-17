@@ -25,7 +25,7 @@ import java.util.List;
  * @date : 2021/8/25 7:31 下午
  */
 @UnitInterface
-public interface ClientRelayExplorer extends RelayExplorer<ClientRelayTunnel<?>> {
+public interface ClientRelayExplorer extends RelayExplorer {
 
     /**
      * 获取指定 id 的集群
@@ -41,6 +41,15 @@ public interface ClientRelayExplorer extends RelayExplorer<ClientRelayTunnel<?>>
     List<RemoteServeCluster> getClusters();
 
     /**
+     * 获取指定的 tunnel
+     *
+     * @param instanceId 创建 tunnel 的服务实例 id
+     * @param tunnelId   管道 id
+     */
+    @Override
+    ClientRelayTunnel getTunnel(long instanceId, long tunnelId);
+
+    /**
      * 创建可转发的本地管道, 并且关联转发的目标服务
      *
      * @param id        管道id
@@ -48,7 +57,7 @@ public interface ClientRelayExplorer extends RelayExplorer<ClientRelayTunnel<?>>
      * @param context   网络上下文
      * @return 返回创建的管道
      */
-    <D> DoneResult<ClientRelayTunnel<D>> createTunnel(long id, MessageTransporter transport, NetworkContext context);
+    DoneResult<ClientRelayTunnel> createTunnel(long id, MessageTransporter transport, NetworkContext context);
 
     /**
      * 为通讯管道分配指定的集群转发连接
@@ -57,6 +66,6 @@ public interface ClientRelayExplorer extends RelayExplorer<ClientRelayTunnel<?>>
      * @param cluster 集群 id
      * @return 返回分配的连接
      */
-    <D> ClientRelayLink allotLink(ClientRelayTunnel<D> tunnel, String cluster);
+    ClientRelayLink allotLink(ClientRelayTunnel tunnel, String cluster);
 
 }

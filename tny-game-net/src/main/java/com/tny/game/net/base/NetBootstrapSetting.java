@@ -48,8 +48,6 @@ public interface NetBootstrapSetting {
 
     String getContactFactory();
 
-    String getCertificateFactory();
-
     String getMessageDispatcher();
 
     String getCommandExecutorFactory();

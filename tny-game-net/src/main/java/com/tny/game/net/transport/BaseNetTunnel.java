@@ -21,15 +21,13 @@ import java.net.InetSocketAddress;
 /**
  * Created by Kun Yang on 2017/3/28.
  */
-public abstract class BaseNetTunnel<UID, E extends NetEndpoint<UID>, T extends MessageTransporter> extends AbstractNetTunnel<UID, E> {
+public abstract class BaseNetTunnel<E extends NetEndpoint, T extends MessageTransporter> extends AbstractNetTunnel<E> {
 
     protected volatile T transporter;
 
     protected BaseNetTunnel(long id, T transporter, NetAccessMode accessMode, NetworkContext context) {
-        super(id, accessMode, context);
-        if (transporter != null) {
-            this.transporter = transporter;
-            this.transporter.bind(this);
+        super(id, accessMode, context); if (transporter != null) {
+            this.transporter = transporter; this.transporter.bind(this);
         }
     }
 
@@ -49,25 +47,21 @@ public abstract class BaseNetTunnel<UID, E extends NetEndpoint<UID>, T extends M
 
     @Override
     public boolean isActive() {
-        T transporter = this.transporter;
-        return this.getStatus() == TunnelStatus.OPEN && transporter != null && transporter.isActive();
+        T transporter = this.transporter; return this.getStatus() == TunnelStatus.OPEN && transporter != null && transporter.isActive();
     }
 
     @Override
     public MessageWriteFuture write(Message message, MessageWriteFuture awaiter) throws NetException {
         if (this.checkAvailable(awaiter)) {
             return this.transporter.write(message, awaiter);
-        }
-        return awaiter;
+        } return awaiter;
     }
 
     @Override
     public MessageWriteFuture write(MessageAllocator allocator, MessageContent context) throws NetException {
-        MessageWriteFuture promise = context.getWriteFuture();
-        if (this.checkAvailable(promise)) {
+        MessageWriteFuture promise = context.getWriteFuture(); if (this.checkAvailable(promise)) {
             return this.transporter.write(allocator, this.getMessageFactory(), context);
-        }
-        return promise;
+        } return promise;
     }
 
     @Override
@@ -91,8 +85,7 @@ public abstract class BaseNetTunnel<UID, E extends NetEndpoint<UID>, T extends M
 
     @Override
     protected void doDisconnect() {
-        T transporter = this.transporter;
-        if (transporter != null && transporter.isActive()) {
+        T transporter = this.transporter; if (transporter != null && transporter.isActive()) {
             try {
                 transporter.close();
             } catch (Throwable e) {
@@ -103,13 +96,10 @@ public abstract class BaseNetTunnel<UID, E extends NetEndpoint<UID>, T extends M
 
     private boolean checkAvailable(MessageWriteFuture awaiter) {
         if (!this.isActive()) {
-            this.onWriteUnavailable();
-            if (awaiter != null) {
+            this.onWriteUnavailable(); if (awaiter != null) {
                 awaiter.completeExceptionally(new TunnelDisconnectedException("{} is disconnect", this));
-            }
-            return false;
-        }
-        return true;
+            } return false;
+        } return true;
     }
 
     //	protected AbstractTunnel<UID, E> setNetTransport(T transport) {

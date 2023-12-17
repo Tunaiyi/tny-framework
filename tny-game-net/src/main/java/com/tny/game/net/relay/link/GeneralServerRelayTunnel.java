@@ -23,7 +23,7 @@ import java.net.InetSocketAddress;
  * @author : kgtny
  * @date : 2021/3/3 12:02 下午
  */
-public class GeneralServerRelayTunnel<UID> extends ServerTunnel<UID, NetSession<UID>, MessageTransporter> implements ServerRelayTunnel<UID> {
+public class GeneralServerRelayTunnel extends ServerTunnel<NetSession, MessageTransporter> implements ServerRelayTunnel {
 
     private final long instanceId;
 

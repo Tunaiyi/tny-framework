@@ -34,23 +34,23 @@ public class CommandPluginHolder {
 
     private static final Logger DISPATCHER_LOG = LoggerFactory.getLogger(NetLogger.DISPATCHER);
 
-    private final CommandPlugin<Object, Object> plugin;
+    private final CommandPlugin<Object> plugin;
 
     private final ControllerHolder controller;
 
     private final Object attributes;
 
-    public CommandPluginHolder(ControllerHolder controller, CommandPlugin<?, ?> plugin, BeforePlugin annotation,
+    public CommandPluginHolder(ControllerHolder controller, CommandPlugin<?> plugin, BeforePlugin annotation,
             ExprHolderFactory exprHolderFactory) {
         this(controller, plugin, annotation.attribute(), exprHolderFactory);
     }
 
-    public CommandPluginHolder(ControllerHolder controller, CommandPlugin<?, ?> plugin, AfterPlugin annotation,
+    public CommandPluginHolder(ControllerHolder controller, CommandPlugin<?> plugin, AfterPlugin annotation,
             ExprHolderFactory exprHolderFactory) {
         this(controller, plugin, annotation.attribute(), exprHolderFactory);
     }
 
-    private CommandPluginHolder(ControllerHolder controller, CommandPlugin<?, ?> plugin, String attributes, ExprHolderFactory exprHolderFactory) {
+    private CommandPluginHolder(ControllerHolder controller, CommandPlugin<?> plugin, String attributes, ExprHolderFactory exprHolderFactory) {
         this.plugin = as(plugin);
         this.controller = controller;
         if (exprHolderFactory == null) {
@@ -67,7 +67,7 @@ public class CommandPluginHolder {
         }
     }
 
-    public void invokePlugin(Tunnel<?> tunnel, Message message, RpcInvokeContext context) throws Exception {
+    public void invokePlugin(Tunnel tunnel, Message message, RpcInvokeContext context) throws Exception {
         if (DISPATCHER_LOG.isDebugEnabled()) {
             DISPATCHER_LOG.debug("调用 {}.{} | 触发插件 {}", this.controller.getControllerClass(), this.controller.getName(), this.plugin.getClass());
         }

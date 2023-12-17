@@ -33,12 +33,12 @@ public class CommonServerRelayLink extends BaseRelayLink implements ServerRelayL
     }
 
     @Override
-    public void openTunnel(RelayTunnel<?> tunnel) {
+    public void openTunnel(RelayTunnel tunnel) {
         this.write(TunnelConnectedPacket.FACTORY, TunnelConnectedArguments.success(tunnel));
     }
 
     @Override
-    public void closeTunnel(RelayTunnel<?> tunnel) {
+    public void closeTunnel(RelayTunnel tunnel) {
         super.closeTunnel(tunnel);
     }
 

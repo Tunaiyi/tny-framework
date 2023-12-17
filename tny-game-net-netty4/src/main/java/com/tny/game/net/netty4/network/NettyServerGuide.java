@@ -49,8 +49,8 @@ public class NettyServerGuide extends NettyBootstrap<NettyNetServerBootstrapSett
     /**
      * 服务器关闭监听器
      */
-    private final BindVoidEventBus<ServerClosedListener, ServerGuide> onClose = EventBuses.of(
-            ServerClosedListener.class, ServerClosedListener::onClosed);
+    private final BindVoidEventBus<ServerClosedListener, ServerGuide> onClose = EventBuses.of(ServerClosedListener.class,
+            ServerClosedListener::onClosed);
 
     public NettyServerGuide(NetAppContext appContext, NettyNetServerBootstrapSetting setting) {
         super(appContext, setting);
@@ -161,7 +161,7 @@ public class NettyServerGuide extends NettyBootstrap<NettyNetServerBootstrapSett
             this.bootstrap = new ServerBootstrap();
             NettyChannelSetting channelSetting = setting.getChannel();
             NettyMessageHandlerFactory nettyMessageHandlerFactory = UnitLoader.getLoader(NettyMessageHandlerFactory.class)
-                    .checkUnit(channelSetting.getMessageHandlerFactory());
+                                                                              .checkUnit(channelSetting.getMessageHandlerFactory());
             NettyTunnelFactory tunnelFactory = UnitLoader.getLoader(NettyTunnelFactory.class).checkUnit(channelSetting.getTunnelFactory());
             var messageHandler = nettyMessageHandlerFactory.create(this.getContext());
             this.bootstrap.group(parentGroup, childGroup);
@@ -180,7 +180,7 @@ public class NettyServerGuide extends NettyBootstrap<NettyNetServerBootstrapSett
                         }
                         channel.pipeline().addLast("nettyMessageHandler", messageHandler);
                         NetworkContext context = NettyServerGuide.this.getContext();
-                        NetTunnel<Object> tunnel = tunnelFactory.create(idGenerator.generate(), channel, context); // 创建 Tunnel 已经transport.bind
+                        NetTunnel tunnel = tunnelFactory.create(idGenerator.generate(), channel, context); // 创建 Tunnel 已经transport.bind
                         tunnel.open();
                     } catch (Throwable e) {
                         LOGGER.info("init {} channel exception", channel, e);

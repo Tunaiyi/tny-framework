@@ -64,11 +64,6 @@ public class EtcdNamespaceExplorer extends EtcdObject implements NamespaceExplor
     private final LesseeListener lesseeListener = new LesseeListener() {
 
         @Override
-        public void onRenew(Lessee source) {
-
-        }
-
-        @Override
         public void onError(Lessee source, Throwable cause) {
             handLessee(source.getName());
         }
@@ -78,10 +73,6 @@ public class EtcdNamespaceExplorer extends EtcdObject implements NamespaceExplor
             handLessee(source.getName());
         }
 
-        @Override
-        public void onResume(Lessee source) {
-
-        }
     };
 
     public EtcdNamespaceExplorer(Client client, ObjectCodecAdapter objectCodecAdapter, Charset charset) {

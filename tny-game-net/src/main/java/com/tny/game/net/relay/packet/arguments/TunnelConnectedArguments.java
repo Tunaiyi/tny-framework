@@ -22,11 +22,11 @@ public class TunnelConnectedArguments extends BaseTunnelPacketArguments {
 
     private final boolean result;
 
-    public static TunnelConnectedArguments success(RelayTunnel<?> tunnel) {
+    public static TunnelConnectedArguments success(RelayTunnel tunnel) {
         return new TunnelConnectedArguments(tunnel.getInstanceId(), tunnel.getId(), true);
     }
 
-    public static TunnelConnectedArguments failure(RelayTunnel<?> tunnel) {
+    public static TunnelConnectedArguments failure(RelayTunnel tunnel) {
         return new TunnelConnectedArguments(tunnel.getInstanceId(), tunnel.getId(), false);
     }
 

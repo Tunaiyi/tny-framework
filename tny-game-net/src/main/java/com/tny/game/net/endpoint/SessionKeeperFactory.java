@@ -16,7 +16,7 @@ import com.tny.game.common.lifecycle.unit.annotation.*;
  * <p>
  */
 @UnitInterface
-public interface SessionKeeperFactory<UID, S extends SessionKeeperSetting>
-        extends EndpointKeeperFactory<UID, NetEndpointKeeper<UID, Session<UID>>, S> {
+public interface SessionKeeperFactory<S extends SessionKeeperSetting>
+        extends EndpointKeeperFactory<NetEndpointKeeper<Session>, S> {
 
 }

@@ -19,7 +19,7 @@ import com.tny.game.net.transport.*;
  * @author : kgtny
  * @date : 2021/5/19 4:30 下午
  */
-public class TestGeneralServerTunnel extends GeneralServerTunnel<Long> {
+public class TestGeneralServerTunnel extends GeneralServerTunnel {
 
     public TestGeneralServerTunnel(long id, MessageTransporter transport, NetBootstrapContext bootstrapContext) {
         super(id, transport, bootstrapContext);

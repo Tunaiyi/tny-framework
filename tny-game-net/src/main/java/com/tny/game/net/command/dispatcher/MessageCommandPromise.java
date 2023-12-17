@@ -19,8 +19,8 @@ import static com.tny.game.common.utils.ObjectAide.*;
 /**
  * <p>
  *
- * @author: Kun Yang
- * @date: 2019-01-23 15:37
+ * @author Kun Yang
+ * @date 2019-01-23 15:37
  */
 public class MessageCommandPromise {
 

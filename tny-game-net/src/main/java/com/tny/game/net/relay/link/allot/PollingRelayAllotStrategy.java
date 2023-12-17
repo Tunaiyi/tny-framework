@@ -41,12 +41,12 @@ public class PollingRelayAllotStrategy implements RelayLinkAllotStrategy, ServeI
     }
 
     @Override
-    public ClientRelayLink allot(Tunnel<?> tunnel, RemoteServeInstance instance) {
+    public ClientRelayLink allot(Tunnel tunnel, RemoteServeInstance instance) {
         return random(instance.getActiveRelayLinks(), linkCounter);
     }
 
     @Override
-    public RemoteServeInstance allot(Tunnel<?> tunnel, NetRemoteServeCluster cluster) {
+    public RemoteServeInstance allot(Tunnel tunnel, NetRemoteServeCluster cluster) {
         return random(cluster.getHealthyLocalInstances(), instanceCounter);
     }
 

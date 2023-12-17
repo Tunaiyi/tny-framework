@@ -22,19 +22,19 @@ import static com.tny.game.common.utils.ObjectAide.*;
 /**
  * <p>
  */
-public class CommonTerminalKeeper<UID> extends AbstractEndpointKeeper<UID, Terminal<UID>, Terminal<UID>> implements TerminalKeeper<UID> {
+public class CommonTerminalKeeper extends AbstractEndpointKeeper<Terminal, Terminal> implements TerminalKeeper {
 
     protected CommonTerminalKeeper(ContactType contactType) {
         super(contactType);
     }
 
     @Override
-    public Optional<Terminal<UID>> online(Certificate<UID> certificate, NetTunnel<UID> tunnel) throws AuthFailedException {
+    public Optional<Terminal> online(Certificate certificate, NetTunnel tunnel) throws AuthFailedException {
         if (tunnel.getAccessMode() == NetAccessMode.CLIENT) {
-            NetEndpoint<UID> endpoint = tunnel.getEndpoint();
+            NetEndpoint endpoint = tunnel.getEndpoint();
             if (endpoint instanceof Terminal) {
                 endpoint.online(certificate, tunnel);
-                Terminal<UID> terminal = as(endpoint);
+                Terminal terminal = as(endpoint);
                 this.replaceEndpoint(terminal.getIdentify(), terminal);
                 return Optional.of(terminal);
             }

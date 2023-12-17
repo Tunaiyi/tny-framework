@@ -118,11 +118,9 @@ public class AnyId implements Comparable<AnyId> {
             return true;
         }
 
-        if (!(o instanceof AnyId)) {
+        if (!(o instanceof AnyId itemKey)) {
             return false;
         }
-
-        AnyId itemKey = (AnyId)o;
 
         return new EqualsBuilder().append(getPlayerId(), itemKey.getPlayerId())
                 .append(getId(), itemKey.getId())

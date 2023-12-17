@@ -20,7 +20,7 @@ import static com.tny.game.common.utils.ObjectAide.*;
 /**
  * Created by Kun Yang on 2017/9/11.
  */
-public class ClientTunnel<UID, E extends NetTerminal<UID>, T extends MessageTransporter> extends BaseNetTunnel<UID, E, T> {
+public class ClientTunnel<E extends NetTerminal, T extends MessageTransporter> extends BaseNetTunnel<E, T> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ClientTunnel.class);
 
@@ -61,7 +61,7 @@ public class ClientTunnel<UID, E extends NetTerminal<UID>, T extends MessageTran
     }
 
     @Override
-    protected boolean replaceEndpoint(NetEndpoint<UID> endpoint) {
+    protected boolean replaceEndpoint(NetEndpoint endpoint) {
         return this.endpoint == endpoint;
     }
 

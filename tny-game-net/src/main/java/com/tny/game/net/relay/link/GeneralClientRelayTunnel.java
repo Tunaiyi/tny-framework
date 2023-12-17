@@ -28,7 +28,7 @@ import java.util.*;
  * @author : kgtny
  * @date : 2021/8/16 8:00 下午
  */
-public class GeneralClientRelayTunnel<UID> extends ServerTunnel<UID, NetSession<UID>, MessageTransporter> implements ClientRelayTunnel<UID> {
+public class GeneralClientRelayTunnel extends ServerTunnel<NetSession, MessageTransporter> implements ClientRelayTunnel {
 
     /**
      * 当前服务器的服务实例 id
@@ -57,7 +57,7 @@ public class GeneralClientRelayTunnel<UID> extends ServerTunnel<UID, NetSession<
         this.relayMessageRouter = relayMessageRouter;
     }
 
-    public GeneralClientRelayTunnel<UID> initRelayers(Map<String, ClientTunnelRelayer> relayerMap) {
+    public GeneralClientRelayTunnel initRelayers(Map<String, ClientTunnelRelayer> relayerMap) {
         this.relayerMap = ImmutableMap.copyOf(relayerMap);
         return this;
     }

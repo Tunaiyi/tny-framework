@@ -63,7 +63,7 @@ public class RpcInvokeContext {
         return rpcContext.getMessage();
     }
 
-    public Tunnel<Object> getTunnel() {
+    public Tunnel getTunnel() {
         return rpcContext.netTunnel();
     }
 
@@ -79,7 +79,7 @@ public class RpcInvokeContext {
                 return servicer.getServiceType();
             }
         }
-        return this.getTunnel().contactType();
+        return this.getTunnel().getContactType();
     }
 
     /**

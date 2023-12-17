@@ -15,12 +15,12 @@ import com.tny.game.net.transport.*;
 /**
  * <p>
  *
- * @author: Kun Yang
- * @date: 2018-10-08 16:03
+ * @author Kun Yang
+ * @date 2018-10-08 16:03
  */
 @FunctionalInterface
-public interface TunnelUnactivatedListener<UID> extends TunnelListener {
+public interface TunnelUnactivatedListener extends TunnelListener {
 
-    void onUnactivated(Tunnel<UID> tunnel);
+    void onUnactivated(Tunnel tunnel);
 
 }

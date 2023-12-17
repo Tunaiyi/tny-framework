@@ -29,7 +29,7 @@ import static com.tny.game.common.utils.ObjectAide.*;
  **/
 class RpcEnterInvocationContext extends CompletableRpcTransactionContext implements RpcEnterContext {
 
-    private final NetTunnel<Object> tunnel;
+    private final NetTunnel tunnel;
 
     private final RpcMonitor rpcMonitor;
 
@@ -39,11 +39,11 @@ class RpcEnterInvocationContext extends CompletableRpcTransactionContext impleme
 
     private boolean forward;
 
-    RpcEnterInvocationContext(NetTunnel<?> tunnel, NetMessage message, boolean async) {
+    RpcEnterInvocationContext(NetTunnel tunnel, NetMessage message, boolean async) {
         this(tunnel, message, async, ContextAttributes.create());
     }
 
-    RpcEnterInvocationContext(NetTunnel<?> tunnel, NetMessage message, boolean async, Attributes attributes) {
+    RpcEnterInvocationContext(NetTunnel tunnel, NetMessage message, boolean async, Attributes attributes) {
         super(message, async, attributes);
         this.tunnel = as(tunnel);
         if (tunnel != null) {
@@ -54,14 +54,10 @@ class RpcEnterInvocationContext extends CompletableRpcTransactionContext impleme
     }
 
     @Override
-    public <U> Endpoint<U> getEndpoint() {
+    public Endpoint getEndpoint() {
         return as(this.tunnel.getEndpoint());
     }
 
-    @Override
-    public MessageSubject getMessageSubject() {
-        return message;
-    }
 
     @Override
     public RpcTransactionMode getMode() {
@@ -163,7 +159,7 @@ class RpcEnterInvocationContext extends CompletableRpcTransactionContext impleme
     }
 
     @Override
-    public <U> NetTunnel<U> netTunnel() {
+    public NetTunnel netTunnel() {
         return as(this.tunnel);
     }
 

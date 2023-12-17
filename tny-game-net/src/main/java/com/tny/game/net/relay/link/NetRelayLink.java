@@ -38,12 +38,12 @@ public interface NetRelayLink extends RelayLink, EventSourceObject<RelayLinkList
     /**
      * @param tunnel 关闭管道
      */
-    void closeTunnel(RelayTunnel<?> tunnel);
+    void closeTunnel(RelayTunnel tunnel);
 
     /**
      * @param tunnel 打开管道
      */
-    void openTunnel(RelayTunnel<?> tunnel);
+    void openTunnel(RelayTunnel tunnel);
 
     /**
      * 判断指定的 transporter 是否是当前通道的 transporter
@@ -83,7 +83,7 @@ public interface NetRelayLink extends RelayLink, EventSourceObject<RelayLinkList
      * @param awaiter 发送应答对象
      * @return 返回转发应答对象
      */
-    MessageWriteFuture relay(RelayTunnel<?> from, Message message, MessageWriteFuture awaiter);
+    MessageWriteFuture relay(RelayTunnel from, Message message, MessageWriteFuture awaiter);
 
     /**
      * 转发消息到目标服务器
@@ -94,7 +94,7 @@ public interface NetRelayLink extends RelayLink, EventSourceObject<RelayLinkList
      * @param context   消息上下文
      * @return 返回转发应答对象
      */
-    MessageWriteFuture relay(RelayTunnel<?> from, MessageAllocator allocator, MessageFactory factory, MessageContent context);
+    MessageWriteFuture relay(RelayTunnel from, MessageAllocator allocator, MessageFactory factory, MessageContent context);
 
     /**
      * 开启

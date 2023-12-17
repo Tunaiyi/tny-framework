@@ -18,7 +18,7 @@ import com.tny.game.net.transport.*;
 
 import java.lang.annotation.Annotation;
 
-public interface ParamFilter<UID> {
+public interface ParamFilter {
 
     /**
      * 获取绑定的注解
@@ -36,6 +36,6 @@ public interface ParamFilter<UID> {
      * @return 返回CoreResponseCode.SUCCESS(100, " 请求处理成功 ")这继续执行下面的逻辑
      * 否则返回响应ResponseCode到客户端,并停止执行接下去的逻辑
      */
-    ResultCode filter(MethodControllerHolder holder, Tunnel<UID> tunnel, Message message) throws RpcInvokeException;
+    ResultCode filter(MethodControllerHolder holder, Tunnel tunnel, Message message) throws RpcInvokeException;
 
 }

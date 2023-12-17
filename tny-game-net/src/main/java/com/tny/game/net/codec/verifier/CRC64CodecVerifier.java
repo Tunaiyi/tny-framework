@@ -23,8 +23,8 @@ import static com.tny.game.common.digest.binary.BytesAide.*;
 /**
  * <p>
  *
- * @author: Kun Yang
- * @date: 2018-10-18 15:17
+ * @author Kun Yang
+ * @date 2018-10-18 15:17
  */
 @Unit
 public class CRC64CodecVerifier implements CodecVerifier {

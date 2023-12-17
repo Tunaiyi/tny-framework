@@ -18,8 +18,8 @@ import java.util.concurrent.ThreadLocalRandom;
 /**
  * <p>
  *
- * @author: Kun Yang
- * @date: 2018-10-17 11:09
+ * @author Kun Yang
+ * @date 2018-10-17 11:09
  */
 public class NettyWasteWriter extends NettyBytesWaster {
 

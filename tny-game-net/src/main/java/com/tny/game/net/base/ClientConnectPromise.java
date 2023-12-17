@@ -21,22 +21,22 @@ import com.tny.game.net.exception.*;
  * @author : kgtny
  * @date : 2021/11/8 2:43 下午
  */
-public class ClientConnectPromise<UID> extends CompleteStageFuture<Client<UID>> implements ClientConnectFuture<UID> {
+public class ClientConnectPromise extends CompleteStageFuture<Client> implements ClientConnectFuture {
 
-    public static <UID> ClientConnectPromise<UID> connected(URL url) {
-        ClientConnectPromise<UID> future = new ClientConnectPromise<>();
+    public static ClientConnectPromise connected(URL url) {
+        ClientConnectPromise future = new ClientConnectPromise();
         future.completeExceptionally(new TunnelConnectException("client {} connected", url));
         return future;
     }
 
-    public static <UID> ClientConnectPromise<UID> closed(URL url) {
-        ClientConnectPromise<UID> future = new ClientConnectPromise<>();
+    public static ClientConnectPromise closed(URL url) {
+        ClientConnectPromise future = new ClientConnectPromise();
         future.completeExceptionally(new EndpointClosedException("client {} close", url));
         return future;
     }
 
-    public static <UID> ClientConnectPromise<UID> success(Client<UID> client) {
-        ClientConnectPromise<UID> future = new ClientConnectPromise<>();
+    public static ClientConnectPromise success(Client client) {
+        ClientConnectPromise future = new ClientConnectPromise();
         future.complete(client);
         return future;
     }

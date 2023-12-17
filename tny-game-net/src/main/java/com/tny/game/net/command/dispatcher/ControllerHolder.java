@@ -104,7 +104,7 @@ public abstract class ControllerHolder {
         List<CommandPluginHolder> plugins = new ArrayList<>(Arrays.asList(defaultHolders));
         for (A pluginAnnotation : pluginAnnotations) {
             Class<? extends CommandPlugin> pluginClass = pluginClassGetter.apply(pluginAnnotation);
-            final CommandPlugin<?, ?> plugin = context.getPlugin(as(pluginClass));
+            final CommandPlugin<?> plugin = context.getPlugin(as(pluginClass));
             Asserts.checkNotNull(plugin, "{} plugin is null", pluginClass);
             plugins.add(holderFactory.create(this, plugin, pluginAnnotation, exprHolderFactory));
         }
@@ -113,7 +113,7 @@ public abstract class ControllerHolder {
 
     private interface ControllerPluginHolderConstructor<T> {
 
-        CommandPluginHolder create(ControllerHolder controller, CommandPlugin<?, ?> plugin, T annotation, ExprHolderFactory exprHolderFactory);
+        CommandPluginHolder create(ControllerHolder controller, CommandPlugin<?> plugin, T annotation, ExprHolderFactory exprHolderFactory);
 
     }
 
@@ -121,7 +121,7 @@ public abstract class ControllerHolder {
         return this.auth != null && this.auth.enable();
     }
 
-    public Class<? extends AuthenticationValidator<?, ?>> getAuthValidator() {
+    public Class<? extends AuthenticationValidator> getAuthValidator() {
         if (this.auth != null && this.auth.enable() && this.auth.validator() != AuthenticationValidator.class) {
             return as(this.auth.validator());
         }

@@ -91,7 +91,7 @@ public abstract class NetPacketV1Codec implements AppPrepareStart {
     }
 
     private void handleOnError(ChannelHandlerContext ctx, Throwable exception, String action) {
-        Tunnel<?> tunnel = null;
+        Tunnel tunnel = null;
         Channel channel = null;
         if (ctx != null) {
             channel = ctx.channel();
@@ -104,7 +104,7 @@ public abstract class NetPacketV1Codec implements AppPrepareStart {
             } else {
                 ResultCode code = null;
                 if (exception instanceof ResultCodableException) {
-                    code = ((ResultCodableException)exception).getCode();
+                    code = ((ResultCodableException) exception).getCode();
                 }
                 if (code != null && code.getLevel() == ResultLevel.ERROR) {
                     close = true;

@@ -15,15 +15,15 @@ import com.tny.game.net.transport.*;
 /**
  * <p>
  */
-public class AnonymityEndpoint<UID> extends BaseNetEndpoint<UID> implements NetSession<UID> {
+public class AnonymityEndpoint extends BaseNetEndpoint implements NetSession {
 
-    public AnonymityEndpoint(CertificateFactory<UID> certificateFactory, EndpointContext endpointContext, NetTunnel<UID> tunnel) {
-        super(certificateFactory.anonymous(), endpointContext, 0);
+    public AnonymityEndpoint(EndpointContext endpointContext, NetTunnel tunnel) {
+        super(Certificates.anonymous(), endpointContext, 0);
         this.tunnel = tunnel;
     }
 
     @Override
-    public void onUnactivated(NetTunnel<UID> tunnel) {
+    public void onUnactivated(NetTunnel tunnel) {
         this.close();
     }
 

@@ -17,7 +17,7 @@ package com.tny.game.net.relay.link;
  * @author : kgtny
  * @date : 2021/8/25 7:31 下午
  */
-public interface RelayExplorer<T extends RelayTunnel<?>> {
+public interface RelayExplorer {
 
     /**
      * 获取指定的 tunnel
@@ -25,7 +25,7 @@ public interface RelayExplorer<T extends RelayTunnel<?>> {
      * @param instanceId 创建 tunnel 的服务实例 id
      * @param tunnelId   管道 id
      */
-    T getTunnel(long instanceId, long tunnelId);
+    RelayTunnel getTunnel(long instanceId, long tunnelId);
 
     /**
      * 关闭指定的 tunnel

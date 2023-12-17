@@ -15,9 +15,9 @@ import com.tny.game.net.base.*;
 /**
  * <p>
  */
-public interface Client<UID> extends Terminal<UID> {
+public interface Client extends Terminal {
 
-    ClientConnectFuture<UID> open();
+    ClientConnectFuture open();
 
     void reconnect();
 

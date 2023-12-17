@@ -20,16 +20,16 @@ import static com.tny.game.common.utils.ObjectAide.*;
 /**
  * Created by Kun Yang on 2017/9/11.
  */
-public class ServerTunnel<UID, E extends NetSession<UID>, T extends MessageTransporter> extends BaseNetTunnel<UID, E, T> {
+public class ServerTunnel<E extends NetSession, T extends MessageTransporter> extends BaseNetTunnel<E, T> {
 
     public ServerTunnel(long id, T transporter, NetworkContext context) {
         super(id, transporter, NetAccessMode.SERVER, context);
-        this.bind(new AnonymityEndpoint<>(context.getCertificateFactory(), context, this));
+        this.bind(new AnonymityEndpoint(context, this));
     }
 
     @Override
-    protected boolean replaceEndpoint(NetEndpoint<UID> newEndpoint) {
-        Certificate<UID> certificate = this.getCertificate();
+    protected boolean replaceEndpoint(NetEndpoint newEndpoint) {
+        Certificate certificate = this.getCertificate();
         if (!certificate.isAuthenticated()) {
             MessageCommandBox commandTaskBox = this.endpoint.getCommandBox();
             this.endpoint = as(newEndpoint);

@@ -92,11 +92,6 @@ public class RuntimeMessageSchema<T> extends BaseProtoExSchema<T> {
     }
 
     @Override
-    public int getProtoExId() {
-        return this.protoExID;
-    }
-
-    @Override
     public void writeMessage(ProtoExOutputStream outputStream, T value, FieldOptions<?> options) {
         if (value == null) {
             return;

@@ -12,12 +12,12 @@ package com.tny.game.net.endpoint.listener;
 
 import com.tny.game.net.endpoint.*;
 
-public interface EndpointKeeperListener<UID> {
+public interface EndpointKeeperListener {
 
-    default void onAddEndpoint(EndpointKeeper<UID, Endpoint<UID>> keeper, Endpoint<UID> endpoint) {
+    default void onAddEndpoint(EndpointKeeper<Endpoint> keeper, Endpoint endpoint) {
     }
 
-    default void onRemoveEndpoint(EndpointKeeper<UID, Endpoint<UID>> keeper, Endpoint<UID> endpoint) {
+    default void onRemoveEndpoint(EndpointKeeper<Endpoint> keeper, Endpoint endpoint) {
     }
 
 }

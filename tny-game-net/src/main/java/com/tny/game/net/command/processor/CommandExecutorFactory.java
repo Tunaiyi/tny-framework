@@ -22,6 +22,6 @@ import com.tny.game.net.endpoint.*;
 @UnitInterface
 public interface CommandExecutorFactory {
 
-    CommandExecutor create(Endpoint<?> endpoint);
+    CommandExecutor create(Endpoint endpoint);
 
 }

@@ -26,7 +26,7 @@ import java.net.InetSocketAddress;
  */
 public class DefaultServerRelayTransporter extends AttributeHolder implements ServerRelayTransporter {
 
-    private ServerRelayTunnel<?> tunnel;
+    private ServerRelayTunnel tunnel;
 
     private volatile ServerRelayLink link;
 
@@ -81,9 +81,9 @@ public class DefaultServerRelayTransporter extends AttributeHolder implements Se
     }
 
     @Override
-    public void bind(NetTunnel<?> tunnel) {
+    public void bind(NetTunnel tunnel) {
         if (this.tunnel == null) {
-            this.tunnel = (ServerRelayTunnel<?>) tunnel;
+            this.tunnel = (ServerRelayTunnel) tunnel;
         }
     }
 

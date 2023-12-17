@@ -15,10 +15,10 @@ import com.tny.game.common.context.*;
 /**
  * <p>
  *
- * @author: Kun Yang
- * @date: 2018-09-18 11:50
+ * @author Kun Yang
+ * @date 2018-09-18 11:50
  */
-public abstract class AbstractConnector<UID> extends AttributeHolder implements Connector<UID> {
+public abstract class AbstractConnector extends AttributeHolder implements Connector {
 
     protected AbstractConnector() {
     }

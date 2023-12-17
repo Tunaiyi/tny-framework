@@ -16,12 +16,11 @@ import com.tny.game.net.transport.*;
 /**
  * <p>
  *
- * @author: Kun Yang
- * @date: 2018-10-08 16:03
+ * @author Kun Yang
+ * @date 2018-10-08 16:03
  */
 @FunctionalInterface
-public interface TunnelReceiveListener<UID> extends TunnelListener {
+public interface TunnelReceiveListener extends TunnelListener {
 
-    void onReceive(Tunnel<UID> tunnel, RpcEnterContext rpcContext);
-
+    void onReceive(Tunnel tunnel, RpcEnterContext rpcContext);
 }

@@ -77,7 +77,7 @@ public class NettyRelayPacketHandler extends ChannelDuplexHandler {
                 RelayPacketType packetType = packet.getType();
                 if (packetType == RelayPacketType.LINK_OPEN) { // transporter 处理
                     RelayTransporter transporter = channel.attr(NettyRelayAttrKeys.RELAY_TRANSPORTER).get();
-                    var openPacket = (LinkOpenPacket)packet;
+                    var openPacket = (LinkOpenPacket) packet;
                     this.relayMonitor.onLinkOpen(transporter, openPacket);
                     this.relayPacketProcessor.onLinkOpen(transporter, openPacket);
                 } else {
@@ -90,11 +90,11 @@ public class NettyRelayPacketHandler extends ChannelDuplexHandler {
             } catch (ResultCodeRuntimeException ex) {
                 if (ex.getCode().getLevel() == ResultLevel.ERROR) {
                     channel.close();
-                    LOGGER.warn("[RelayLink] 读取消息 ## 通道 {} ==> {} 时断开链接 # RelayLink 为空",
-                            channel.localAddress(), channel.remoteAddress(), ex);
+                    LOGGER.warn("[RelayLink] 读取消息 ## 通道 {} ==> {} 时断开链接 # RelayLink 为空", channel.localAddress(), channel.remoteAddress(),
+                            ex);
                 } else {
-                    LOGGER.warn("[RelayLink] 读取消息 ## 通道 {} ==> {} 接受转发包{}异常",
-                            channel.localAddress(), channel.remoteAddress(), packet, ex);
+                    LOGGER.warn("[RelayLink] 读取消息 ## 通道 {} ==> {} 接受转发包{}异常", channel.localAddress(), channel.remoteAddress(), packet,
+                            ex);
                 }
             } catch (Throwable ex) {
                 release(packet);
@@ -110,10 +110,10 @@ public class NettyRelayPacketHandler extends ChannelDuplexHandler {
         try (ProcessTracer ignored = MESSAGE_ENCODE_WATCHER.trace()) {
             RelayPacket<?> packet = null;
             if (msg instanceof RelayPacketMaker) {
-                packet = ((RelayPacketMaker)msg).make();
+                packet = ((RelayPacketMaker) msg).make();
             }
             if (msg instanceof RelayPacket) {
-                packet = (RelayPacket<?>)msg;
+                packet = (RelayPacket<?>) msg;
             }
             if (packet != null) {
                 var channel = ctx.channel();
@@ -145,11 +145,11 @@ public class NettyRelayPacketHandler extends ChannelDuplexHandler {
             } else if (cause instanceof IOException) {
                 LOGGER.warn("[RelayLink] 发生异常 # {} # {}", IOException.class, cause.getMessage());
             } else if (cause instanceof WriteTimeoutException) {
-                LOGGER.warn("[RelayLink] 发生异常 ## 通道 {} ==> {} 断开链接 # cause {} 写出数据超时, message: {}",
-                        channel.localAddress(), channel.remoteAddress(), WriteTimeoutException.class, cause.getMessage());
+                LOGGER.warn("[RelayLink] 发生异常 ## 通道 {} ==> {} 断开链接 # cause {} 写出数据超时, message: {}", channel.localAddress(),
+                        channel.remoteAddress(), WriteTimeoutException.class, cause.getMessage());
             } else if (cause instanceof ReadTimeoutException) {
-                LOGGER.warn("[RelayLink] 发生异常 ## 通道 {} ==> {} 断开链接 # cause {} 读取数据超时, message: {}",
-                        channel.localAddress(), channel.remoteAddress(), ReadTimeoutException.class, cause.getMessage());
+                LOGGER.warn("[RelayLink] 发生异常 ## 通道 {} ==> {} 断开链接 # cause {} 读取数据超时, message: {}", channel.localAddress(),
+                        channel.remoteAddress(), ReadTimeoutException.class, cause.getMessage());
             } else {
                 LOGGER.error(this.getClass().getName() + ".exceptionCaught() 截获异常", cause);
             }
@@ -172,10 +172,9 @@ public class NettyRelayPacketHandler extends ChannelDuplexHandler {
 
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-        if (evt instanceof IdleStateEvent) {
-            IdleStateEvent event = (IdleStateEvent)evt;
+        if (evt instanceof IdleStateEvent event) {
             Channel channel = ctx.channel();
-            Tunnel<?> tunnel = channel.attr(NettyNetAttrKeys.TUNNEL).get();
+            Tunnel tunnel = channel.attr(NettyNetAttrKeys.TUNNEL).get();
             if (tunnel != null) {
                 String op = "空闲超时";
                 switch (event.state()) {

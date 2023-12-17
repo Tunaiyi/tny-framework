@@ -46,7 +46,7 @@ public class RelayPacketServerProcessor extends BaseRelayPacketProcessor {
     public void onTunnelRelay(NetRelayLink link, TunnelRelayPacket packet) {
         checkLink(link, packet);
         TunnelRelayArguments arguments = packet.getArguments();
-        ServerRelayTunnel<?> tunnel = serverRelayExplorer.getTunnel(arguments.getInstanceId(), arguments.getTunnelId());
+        ServerRelayTunnel tunnel = serverRelayExplorer.getTunnel(arguments.getInstanceId(), arguments.getTunnelId());
         if (tunnel == null) {
             RelayPacket.release(packet);
             link.write(TunnelDisconnectPacket.FACTORY, new TunnelVoidArguments(arguments));

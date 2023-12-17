@@ -71,7 +71,7 @@ public class RpcServeNodeWatchService implements AppPrepareStart, AppClosed {
 
         private final RpcClientFactory clientCreator;
 
-        private Client<?> client;
+        private Client client;
 
         private RpcClient(int index, RpcClientFactory clientCreator) {
             this.index = index;
@@ -81,7 +81,7 @@ public class RpcServeNodeWatchService implements AppPrepareStart, AppClosed {
         void connect(URL url) {
             if (client == null) {
                 client = clientCreator.create(index, url);
-                ClientConnectFuture<?> future = client.open();
+                ClientConnectFuture future = client.open();
                 future.handle((cl, cause) -> {
                     if (cause != null) {
                         LOGGER.warn("Rpc [{}] Client {} connect failed", clientCreator.serviceName(), url, cause);

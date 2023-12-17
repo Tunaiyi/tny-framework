@@ -24,6 +24,6 @@ public interface ConnectCallback {
     ConnectCallback NOOP = (s, t, c) -> {
     };
 
-    void onConnect(ConnectCallbackStatus status, NetTunnel<?> tunnel, Throwable e);
+    void onConnect(ConnectCallbackStatus status, NetTunnel tunnel, Throwable e);
 
 }

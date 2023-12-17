@@ -75,11 +75,7 @@ public abstract class BaseRemoteServeCluster implements NetRemoteServeCluster {
         return as(healthyInstances);
     }
 
-    public BaseRemoteServeCluster(
-            String serveName,
-            String service,
-            String username,
-            ServeInstanceAllotStrategy instanceAllotStrategy,
+    public BaseRemoteServeCluster(String serveName, String service, String username, ServeInstanceAllotStrategy instanceAllotStrategy,
             RelayLinkAllotStrategy relayLinkAllotStrategy) {
         this.serveName = serveName;
         this.username = username;
@@ -109,7 +105,7 @@ public abstract class BaseRemoteServeCluster implements NetRemoteServeCluster {
     }
 
     @Override
-    public ClientRelayLink allotLink(Tunnel<?> tunnel) {
+    public ClientRelayLink allotLink(Tunnel tunnel) {
         RemoteServeInstance instance = instanceAllotStrategy.allot(tunnel, this);
         if (instance == null) {
             return null;
@@ -153,9 +149,7 @@ public abstract class BaseRemoteServeCluster implements NetRemoteServeCluster {
 
     private void doRefreshInstances() {
         this.instances = ImmutableList.sortedCopyOf(instanceMap.values());
-        this.healthyInstances = ImmutableList.copyOf(instances.stream()
-                                                              .filter(NetRemoteServeInstance::isHealthy)
-                                                              .collect(Collectors.toList()));
+        this.healthyInstances = ImmutableList.copyOf(instances.stream().filter(NetRemoteServeInstance::isHealthy).collect(Collectors.toList()));
     }
 
     @Override

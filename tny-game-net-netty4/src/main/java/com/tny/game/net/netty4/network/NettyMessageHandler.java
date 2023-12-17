@@ -75,11 +75,11 @@ public class NettyMessageHandler extends ChannelDuplexHandler {
             } else if (cause instanceof IOException) {
                 LOGGER.warn("[Tunnel] # {} # {}", IOException.class, cause.getMessage(), cause);
             } else if (cause instanceof WriteTimeoutException) {
-                LOGGER.warn("[Tunnel]  ## 通道 {} ==> {} 断开链接 # cause {} 写出数据超时, message: {}",
-                        channel.remoteAddress(), channel.localAddress(), WriteTimeoutException.class, cause.getMessage());
+                LOGGER.warn("[Tunnel]  ## 通道 {} ==> {} 断开链接 # cause {} 写出数据超时, message: {}", channel.remoteAddress(),
+                        channel.localAddress(), WriteTimeoutException.class, cause.getMessage());
             } else if (cause instanceof ReadTimeoutException) {
-                LOGGER.warn("[Tunnel]  ## 通道 {} ==> {} 断开链接 # cause {} 读取数据超时, message: {}",
-                        channel.remoteAddress(), channel.localAddress(), ReadTimeoutException.class, cause.getMessage());
+                LOGGER.warn("[Tunnel]  ## 通道 {} ==> {} 断开链接 # cause {} 读取数据超时, message: {}", channel.remoteAddress(),
+                        channel.localAddress(), ReadTimeoutException.class, cause.getMessage());
             } else if (cause instanceof ResultCodableException) {
                 handleResultCodeException(channel, ((ResultCodableException) cause).getCode(), cause);
             }
@@ -91,15 +91,15 @@ public class NettyMessageHandler extends ChannelDuplexHandler {
 
     private void handleResultCodeException(Channel channel, ResultCode code, Throwable cause) {
         if (code.getLevel() == ResultLevel.ERROR) {
-            LOGGER.error("[Tunnel]  ## 通道 {} ==> {} 断开链接 # cause {}({})[{}], message:{}",
-                    channel.remoteAddress(), channel.localAddress(), code, code.getCode(), code.getMessage(), cause.getMessage(), cause);
-            NetTunnel<?> tunnel = channel.attr(NettyNetAttrKeys.TUNNEL).getAndSet(null);
+            LOGGER.error("[Tunnel]  ## 通道 {} ==> {} 断开链接 # cause {}({})[{}], message:{}", channel.remoteAddress(), channel.localAddress(), code,
+                    code.getCode(), code.getMessage(), cause.getMessage(), cause);
+            NetTunnel tunnel = channel.attr(NettyNetAttrKeys.TUNNEL).getAndSet(null);
             if (tunnel != null) {
                 RpcMessageAide.send(tunnel, MessageContents.push(PUSH, code), true);
             }
         } else {
-            LOGGER.error("[Tunnel]  ## 通道 {} ==> {} 异常 # cause {}({})[{}], message:{}",
-                    channel.remoteAddress(), channel.localAddress(), code, code.getCode(), code.getMessage(), cause.getMessage(), cause);
+            LOGGER.error("[Tunnel]  ## 通道 {} ==> {} 异常 # cause {}({})[{}], message:{}", channel.remoteAddress(), channel.localAddress(), code,
+                    code.getCode(), code.getMessage(), cause.getMessage(), cause);
         }
     }
 
@@ -110,7 +110,7 @@ public class NettyMessageHandler extends ChannelDuplexHandler {
             try {
                 NetMessage message = as(object);
                 RpcMessageAide.ignoreHeaders(message, bootstrapSetting.getReadIgnoreHeaders());
-                NetTunnel<?> tunnel = channel.attr(NettyNetAttrKeys.TUNNEL).get();
+                NetTunnel tunnel = channel.attr(NettyNetAttrKeys.TUNNEL).get();
                 if (tunnel != null) {
                     tunnel.receive(message);
                 } else {
@@ -128,11 +128,10 @@ public class NettyMessageHandler extends ChannelDuplexHandler {
             if (msg instanceof NettyMessageBearer) {
                 msg = ((NettyMessageBearer) msg).message();
             }
-            if (msg instanceof NetMessage) {
-                var message = (NetMessage) msg;
+            if (msg instanceof NetMessage message) {
                 RpcMessageAide.ignoreHeaders(message, bootstrapSetting.getWriteIgnoreHeaders());
                 Channel channel = context.channel();
-                NetTunnel<?> tunnel = channel.attr(NettyNetAttrKeys.TUNNEL).get();
+                NetTunnel tunnel = channel.attr(NettyNetAttrKeys.TUNNEL).get();
                 rpcMonitor.onSend(tunnel, message);
 
             }
@@ -143,7 +142,7 @@ public class NettyMessageHandler extends ChannelDuplexHandler {
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         Channel channel = ctx.channel();
-        NetTunnel<?> tunnel = channel.attr(NettyNetAttrKeys.TUNNEL).getAndSet(null);
+        NetTunnel tunnel = channel.attr(NettyNetAttrKeys.TUNNEL).getAndSet(null);
         if (tunnel != null) {
             LOGGER.info("[Tunnel] 断开链接 ## 通道 {} 断开链接", channel);
             if (tunnel.getAccessMode() == NetAccessMode.SERVER) {
@@ -157,10 +156,9 @@ public class NettyMessageHandler extends ChannelDuplexHandler {
 
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-        if (evt instanceof IdleStateEvent) {
-            IdleStateEvent event = (IdleStateEvent) evt;
+        if (evt instanceof IdleStateEvent event) {
             Channel channel = ctx.channel();
-            Tunnel<?> tunnel = channel.attr(NettyNetAttrKeys.TUNNEL).get();
+            Tunnel tunnel = channel.attr(NettyNetAttrKeys.TUNNEL).get();
             if (tunnel != null) {
                 String op = "空闲超时";
                 switch (event.state()) {

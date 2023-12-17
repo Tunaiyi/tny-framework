@@ -22,8 +22,8 @@ import static com.tny.game.common.utils.ObjectAide.*;
 /**
  * <p>
  *
- * @author: Kun Yang
- * @date: 2018-11-06 15:44
+ * @author Kun Yang
+ * @date 2018-11-06 15:44
  */
 public class BaseEventBuses<L> {
 

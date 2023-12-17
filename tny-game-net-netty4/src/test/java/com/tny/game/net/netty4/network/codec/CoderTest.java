@@ -57,7 +57,7 @@ public class CoderTest {
         packetV1Encoder.setMessageCodec(codec);
         CommonMessageFactory messageFactory = new CommonMessageFactory();
         ChannelHandlerContext ctx = mockAs(ChannelHandlerContext.class);
-        NetTunnel<?> tunnel = mockAs(NetTunnel.class);
+        NetTunnel tunnel = mockAs(NetTunnel.class);
         when(tunnel.getAccessId()).thenReturn(999999L);
         when(tunnel.getMessageFactory()).thenReturn(messageFactory);
         EmbeddedChannel channel = new EmbeddedChannel();
@@ -106,7 +106,7 @@ public class CoderTest {
                 RandomAccessFile file = new RandomAccessFile("/Users/kgtny/Desktop/cshap.bin", "rw");
                 FileChannel fileChannel = file.getChannel()
         ) {
-            byteBuf.writeBytes(fileChannel, 0, (int)fileChannel.size());
+            byteBuf.writeBytes(fileChannel, 0, (int) fileChannel.size());
             List<Object> messags = new ArrayList<>();
             decoder.decode(ctx, byteBuf, messags);
             for (Object data : messags) {

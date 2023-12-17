@@ -39,7 +39,7 @@ class TunnelConnection {
 
     private final AtomicBoolean shutdown = new AtomicBoolean(false);
 
-    private final NetTunnel<?> tunnel;
+    private final NetTunnel tunnel;
 
     private final Lock lock = new ReentrantLock();
 
@@ -49,11 +49,11 @@ class TunnelConnection {
 
     private final AtomicBoolean autoRetrying = new AtomicBoolean(false);
 
-    private final NettyClient<?> client;
+    private final NettyClient client;
 
     private volatile ScheduledFuture<Void> future;
 
-    TunnelConnection(NetTunnel<?> tunnel, NettyClient<?> client, TunnelConnectExecutor executor) {
+    TunnelConnection(NetTunnel tunnel, NettyClient client, TunnelConnectExecutor executor) {
         this.times = 0;
         this.executor = executor;
         this.client = client;

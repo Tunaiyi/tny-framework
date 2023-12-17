@@ -27,12 +27,12 @@ import java.util.stream.Collectors;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 
-public class ParamFilterPlugin<UID> implements VoidInvokeCommandPlugin<UID> {
+public class ParamFilterPlugin implements VoidInvokeCommandPlugin {
 
-    private final Map<Class<?>, ParamFilter<?>> filterMap = new CopyOnWriteMap<>();
+    private final Map<Class<?>, ParamFilter> filterMap = new CopyOnWriteMap<>();
 
     public ParamFilterPlugin() {
-        Collection<ParamFilter<?>> filters = new ArrayList<>();
+        Collection<ParamFilter> filters = new ArrayList<>();
         filters.add(ByteRangeLimitParamFilter.getInstance());
         filters.add(CharRangeLimitParamFilter.getInstance());
         filters.add(DoubleRangeLimitParamFilter.getInstance());
@@ -45,24 +45,24 @@ public class ParamFilterPlugin<UID> implements VoidInvokeCommandPlugin<UID> {
         this.addParamFilters(filters);
     }
 
-    protected void addParamFilters(Collection<ParamFilter<?>> filters) {
-        Map<Class<?>, ParamFilter<?>> maps = filters.stream().collect(Collectors.toMap(ParamFilter::getAnnotationClass, ObjectAide::self));
+    protected void addParamFilters(Collection<ParamFilter> filters) {
+        Map<Class<?>, ParamFilter> maps = filters.stream().collect(Collectors.toMap(ParamFilter::getAnnotationClass, ObjectAide::self));
         this.filterMap.putAll(maps);
     }
 
-    protected void addParamFilter(ParamFilter<?> filter) {
+    protected void addParamFilter(ParamFilter filter) {
         this.filterMap.put(filter.getClass(), filter);
     }
 
     @Override
-    public void doExecute(Tunnel<UID> communicator, Message message, RpcInvokeContext context) {
+    public void doExecute(Tunnel tunnel, Message message, RpcInvokeContext context) {
         MethodControllerHolder methodHolder = context.getController();
         Set<Class<?>> classSet = methodHolder.getParamAnnotationClass();
         for (Class<?> filterClass : classSet) {
-            ParamFilter<UID> paramFilter = as(this.filterMap.get(filterClass));
+            ParamFilter paramFilter = as(this.filterMap.get(filterClass));
             if (paramFilter != null) {
                 try {
-                    ResultCode resultCode = paramFilter.filter(methodHolder, communicator, message);
+                    ResultCode resultCode = paramFilter.filter(methodHolder, tunnel, message);
                     if (resultCode != NetResultCode.SUCCESS) {
                         // 完成 不继续执行
                         context.doneAndIntercept(resultCode);

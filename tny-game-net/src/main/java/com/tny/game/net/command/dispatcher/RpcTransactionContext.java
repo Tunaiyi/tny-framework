@@ -31,7 +31,7 @@ public interface RpcTransactionContext extends RpcContext {
         return "relay[" + message.getProtocolId() + "]" + message.getMode().getMark();
     }
 
-    static String rpcOperation(Class<?> operation, String method, MessageSubject message) {
+    static String rpcOperation(Class operation, String method, MessageSubject message) {
         return "[" + message.getProtocolId() + "@" + message.getMode().getMark() + "]" + operation.getSimpleName() + "." + method;
     }
 
@@ -47,11 +47,11 @@ public interface RpcTransactionContext extends RpcContext {
         return "error" + "[" + message.getProtocolId() + "@" + message.getMode().getMark() + "]";
     }
 
-    static RpcExitContext createExit(Endpoint<?> endpoint, MessageContent content, boolean async, RpcMonitor rpcMonitor) {
+    static RpcExitContext createExit(Endpoint endpoint, MessageContent content, boolean async, RpcMonitor rpcMonitor) {
         return new RpcExitInvocationContext(endpoint, content, async, rpcMonitor);
     }
 
-    static RpcEnterContext createEnter(NetTunnel<?> tunnel, NetMessage message, boolean async) {
+    static RpcEnterContext createEnter(NetTunnel tunnel, NetMessage message, boolean async) {
         return new RpcEnterInvocationContext(tunnel, message, async);
     }
 

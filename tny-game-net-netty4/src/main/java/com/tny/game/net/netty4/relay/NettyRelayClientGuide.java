@@ -49,23 +49,22 @@ public class NettyRelayClientGuide extends NettyBootstrap<NettyRelayClientBootst
 
     private Bootstrap bootstrap = null;
 
-    private final Map<String, NettyClient<?>> clients = new ConcurrentHashMap<>();
+    private final Map<String, NettyClient> clients = new ConcurrentHashMap<>();
 
     private final AtomicBoolean closed = new AtomicBoolean(false);
 
     private ClientRelayExplorer localRelayExplorer;
 
-    private final ClientCloseListener<Object> closeListener = (client) -> this.clients.remove(clientKey(client.getUrl()),
-            as(client, NettyClient.class));
+    private final ClientCloseListener closeListener = (client) -> this.clients.remove(clientKey(client.getUrl()), as(client, NettyClient.class));
 
     public NettyRelayClientGuide(NetAppContext appContext, NettyRelayClientBootstrapSetting clientSetting) {
         super(appContext, clientSetting);
-        buses().<Object>closeEvent().addListener(this.closeListener);
+        buses().closeEvent().addListener(this.closeListener);
     }
 
     public NettyRelayClientGuide(NetAppContext appContext, NettyRelayClientBootstrapSetting clientSetting, ChannelMaker<Channel> channelMaker) {
         super(appContext, clientSetting, channelMaker);
-        buses().<Object>closeEvent().addListener(this.closeListener);
+        buses().closeEvent().addListener(this.closeListener);
     }
 
     private String clientKey(URL url) {
@@ -97,11 +96,9 @@ public class NettyRelayClientGuide extends NettyBootstrap<NettyRelayClientBootst
                 return createNetRelayLink(channelFuture.channel());
             }
             if (channelFuture.cause() != null) {
-                throw new NetException(format("Connect url: {} failed. result: {} success: {}", url, result, success),
-                        channelFuture.cause());
+                throw new NetException(format("Connect url: {} failed. result: {} success: {}", url, result, success), channelFuture.cause());
             } else {
-                throw new NetException(format("Connect url: {} timeout. result: {}, success: {}", url, result, success),
-                        channelFuture.cause());
+                throw new NetException(format("Connect url: {} timeout. result: {}, success: {}", url, result, success), channelFuture.cause());
             }
         } catch (NetException e) {
             throw e;
@@ -129,27 +126,24 @@ public class NettyRelayClientGuide extends NettyBootstrap<NettyRelayClientBootst
             this.bootstrap = new Bootstrap();
             RelayPacketProcessor relayPacketProcessor = new RelayPacketClientProcessor(this.localRelayExplorer, getContext());
             NettyRelayPacketHandler relayMessageHandler = new NettyRelayPacketHandler(setting, relayPacketProcessor);
-            this.bootstrap.group(workerGroup)
-                    .channel(EPOLL ? EpollSocketChannel.class : NioSocketChannel.class)
-                    .option(ChannelOption.SO_REUSEADDR, true)
-                    .option(ChannelOption.TCP_NODELAY, true)
-                    .option(ChannelOption.SO_KEEPALIVE, true)
-                    .handler(new ChannelInitializer<>() {
+            this.bootstrap.group(workerGroup).channel(EPOLL ? EpollSocketChannel.class : NioSocketChannel.class)
+                          .option(ChannelOption.SO_REUSEADDR, true).option(ChannelOption.TCP_NODELAY, true).option(ChannelOption.SO_KEEPALIVE, true)
+                          .handler(new ChannelInitializer<>() {
 
-                        @Override
-                        protected void initChannel(@Nonnull Channel channel) throws Exception {
-                            try {
-                                if (NettyRelayClientGuide.this.channelMaker != null) {
-                                    NettyRelayClientGuide.this.channelMaker.initChannel(channel);
-                                }
-                                channel.pipeline().addLast("nettyMessageHandler", relayMessageHandler);
-                            } catch (Throwable e) {
-                                LOGGER.info("init {} channel exception", channel, e);
-                                throw e;
-                            }
-                        }
+                              @Override
+                              protected void initChannel(@Nonnull Channel channel) throws Exception {
+                                  try {
+                                      if (NettyRelayClientGuide.this.channelMaker != null) {
+                                          NettyRelayClientGuide.this.channelMaker.initChannel(channel);
+                                      }
+                                      channel.pipeline().addLast("nettyMessageHandler", relayMessageHandler);
+                                  } catch (Throwable e) {
+                                      LOGGER.info("init {} channel exception", channel, e);
+                                      throw e;
+                                  }
+                              }
 
-                    });
+                          });
             return this.bootstrap;
         }
 

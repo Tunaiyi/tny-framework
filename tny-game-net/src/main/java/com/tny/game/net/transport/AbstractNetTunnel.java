@@ -28,7 +28,7 @@ import static com.tny.game.net.transport.listener.TunnelEventBuses.*;
  * 抽象通道
  * Created by Kun Yang on 2017/3/26.
  */
-public abstract class AbstractNetTunnel<UID, E extends NetEndpoint<UID>> extends AbstractConnector<UID> implements NetTunnel<UID> {
+public abstract class AbstractNetTunnel<E extends NetEndpoint> extends AbstractConnector implements NetTunnel {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(AbstractNetTunnel.class);
 
@@ -53,9 +53,7 @@ public abstract class AbstractNetTunnel<UID, E extends NetEndpoint<UID>> extends
     private final StampedLock endpointLock = new StampedLock();
 
     protected AbstractNetTunnel(long id, NetAccessMode accessMode, NetworkContext context) {
-        this.id = id;
-        this.accessMode = accessMode;
-        this.context = context;
+        this.id = id; this.accessMode = accessMode; this.context = context;
     }
 
     @Override
@@ -89,7 +87,7 @@ public abstract class AbstractNetTunnel<UID, E extends NetEndpoint<UID>> extends
     }
 
     @Override
-    public Certificate<UID> getCertificate() {
+    public Certificate getCertificate() {
         return this.endpoint.getCertificate();
     }
 
@@ -109,7 +107,7 @@ public abstract class AbstractNetTunnel<UID, E extends NetEndpoint<UID>> extends
     }
 
     @Override
-    public NetEndpoint<UID> getEndpoint() {
+    public NetEndpoint getEndpoint() {
         return this.endpoint;
     }
 
@@ -128,15 +126,11 @@ public abstract class AbstractNetTunnel<UID, E extends NetEndpoint<UID>> extends
     }
 
     private boolean doReceive(NetMessage message) {
-        E endpoint = this.endpoint;
-        var rpcContext = RpcTransactionContext.createEnter(this, message, true);
-        var rpcMonitor = this.context.getRpcMonitor();
-        rpcMonitor.onReceive(rpcContext);
-        while (true) {
+        E endpoint = this.endpoint; var rpcContext = RpcTransactionContext.createEnter(this, message, true);
+        var rpcMonitor = this.context.getRpcMonitor(); rpcMonitor.onReceive(rpcContext); while (true) {
             if (endpoint.isClosed()) {
                 return false;
-            }
-            if (endpoint.receive(rpcContext)) {
+            } if (endpoint.receive(rpcContext)) {
                 return true;
             }
         }
@@ -144,8 +138,7 @@ public abstract class AbstractNetTunnel<UID, E extends NetEndpoint<UID>> extends
 
     @Override
     public SendReceipt send(MessageContent content) {
-        return StampedLockAide.supplyInOptimisticReadLock(this.endpointLock,
-                () -> doSend(content));
+        return StampedLockAide.supplyInOptimisticReadLock(this.endpointLock, () -> doSend(content));
     }
 
     private SendReceipt doSend(MessageContent messageContext) {
@@ -153,111 +146,77 @@ public abstract class AbstractNetTunnel<UID, E extends NetEndpoint<UID>> extends
     }
 
     @Override
-    public boolean bind(NetEndpoint<UID> endpoint) {
+    public boolean bind(NetEndpoint endpoint) {
         if (endpoint == null) {
             return false;
-        }
-        if (this.endpoint == endpoint) {
+        } if (this.endpoint == endpoint) {
             return true;
-        }
-        synchronized (this) {
+        } synchronized (this) {
             if (this.endpoint == endpoint) {
                 return true;
-            }
-            if (this.endpoint == null) {
-                this.endpoint = as(endpoint);
-                return true;
+            } if (this.endpoint == null) {
+                this.endpoint = as(endpoint); return true;
             } else {
-                Certificate<UID> certificate = endpoint.getCertificate();
-                if (!certificate.isAuthenticated()) {
+                Certificate certificate = endpoint.getCertificate(); if (!certificate.isAuthenticated()) {
                     return false;
-                }
-                return StampedLockAide.supplyInWriteLock(this.endpointLock, () -> replaceEndpoint(endpoint));
+                } return StampedLockAide.supplyInWriteLock(this.endpointLock, () -> replaceEndpoint(endpoint));
             }
         }
     }
 
-    protected abstract boolean replaceEndpoint(NetEndpoint<UID> endpoint);
+    protected abstract boolean replaceEndpoint(NetEndpoint endpoint);
 
     @Override
     public boolean open() {
         if (this.isClosed()) {
             return false;
-        }
-        if (this.isActive()) {
+        } if (this.isActive()) {
             return true;
-        }
-        synchronized (this) {
+        } synchronized (this) {
             if (this.isClosed()) {
                 return false;
-            }
-            if (this.isActive()) {
+            } if (this.isActive()) {
                 return true;
-            }
-            if (!this.onOpen()) {
+            } if (!this.onOpen()) {
                 return false;
-            }
-            this.status = TunnelStatus.OPEN;
-            this.onOpened();
-        }
-        buses().activateEvent().notify(this);
-        return true;
+            } this.status = TunnelStatus.OPEN; this.onOpened();
+        } buses().activateEvent().notify(this); return true;
     }
 
     @Override
     public void disconnect() {
-        NetEndpoint<UID> endpoint;
-        synchronized (this) {
+        NetEndpoint endpoint; synchronized (this) {
             if (this.status == TunnelStatus.CLOSED || this.status == TunnelStatus.SUSPEND) {
                 return;
-            }
-            this.doDisconnect();
-            this.status = TunnelStatus.SUSPEND;
-            endpoint = this.endpoint;
-            this.onDisconnected();
-        }
-        if (endpoint != null) { // 避免死锁
+            } this.doDisconnect(); this.status = TunnelStatus.SUSPEND; endpoint = this.endpoint; this.onDisconnected();
+        } if (endpoint != null) { // 避免死锁
             endpoint.onUnactivated(this);
-        }
-        buses().unactivatedEvent().notify(this);
+        } buses().unactivatedEvent().notify(this);
     }
 
     @Override
     public boolean close() {
         if (this.status == TunnelStatus.CLOSED) {
             return false;
-        }
-        NetEndpoint<UID> endpoint;
-        synchronized (this) {
+        } NetEndpoint endpoint; synchronized (this) {
             if (this.status == TunnelStatus.CLOSED) {
                 return false;
-            }
-            this.status = TunnelStatus.CLOSED;
-            this.onClose();
-            this.doDisconnect();
-            endpoint = this.endpoint;
-            this.onClosed();
-        }
-        if (endpoint != null) { // 避免死锁
+            } this.status = TunnelStatus.CLOSED; this.onClose(); this.doDisconnect(); endpoint = this.endpoint; this.onClosed();
+        } if (endpoint != null) { // 避免死锁
             endpoint.onUnactivated(this);
-        }
-        buses().closeEvent().notify(this);
-        return true;
+        } buses().closeEvent().notify(this); return true;
     }
 
     @Override
     public void reset() {
         if (this.status == TunnelStatus.INIT) {
             return;
-        }
-        synchronized (this) {
+        } synchronized (this) {
             if (this.status == TunnelStatus.INIT) {
                 return;
-            }
-            if (!this.isActive()) {
+            } if (!this.isActive()) {
                 this.disconnect();
-            }
-            this.status = TunnelStatus.INIT;
+            } this.status = TunnelStatus.INIT;
         }
     }
 
@@ -277,11 +236,9 @@ public abstract class AbstractNetTunnel<UID, E extends NetEndpoint<UID>> extends
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        }
-        if (!(o instanceof AbstractNetTunnel)) {
+        } if (!(o instanceof AbstractNetTunnel<?> that)) {
             return false;
         }
-        AbstractNetTunnel<?, ?> that = (AbstractNetTunnel<?, ?>) o;
         return this.id == that.id;
     }
 

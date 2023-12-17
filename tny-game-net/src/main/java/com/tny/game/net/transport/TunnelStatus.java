@@ -15,8 +15,8 @@ import com.tny.game.common.enums.*;
 /**
  * <p>
  *
- * @author: Kun Yang
- * @date: 2018-10-08 11:49
+ * @author Kun Yang
+ * @date 2018-10-08 11:49
  */
 public enum TunnelStatus implements IntEnumerable {
 

@@ -16,7 +16,7 @@ package com.tny.game.net.relay.link;
  * @author : kgtny
  * @date : 2021/8/20 4:57 下午
  */
-public interface ServerRelayTunnel<UID> extends NetRelayTunnel<UID> {
+public interface ServerRelayTunnel extends NetRelayTunnel {
 
     /**
      * 切换 link

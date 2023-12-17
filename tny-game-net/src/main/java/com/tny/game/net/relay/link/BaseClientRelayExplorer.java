@@ -32,7 +32,7 @@ import static com.tny.game.net.relay.cluster.ServeClusterFilterStatus.*;
  * @author : kgtny
  * @date : 2021/8/25 9:00 下午
  */
-public abstract class BaseClientRelayExplorer<T extends NetRemoteServeCluster> extends BaseRelayExplorer<ClientRelayTunnel<?>>
+public abstract class BaseClientRelayExplorer<T extends NetRemoteServeCluster> extends BaseRelayExplorer<ClientRelayTunnel>
         implements NetClientRelayExplorer {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(BaseClientRelayExplorer.class);
@@ -47,10 +47,9 @@ public abstract class BaseClientRelayExplorer<T extends NetRemoteServeCluster> e
         this.context = context;
     }
 
-    protected BaseClientRelayExplorer<T> initClusters(Collection<T> clusters) {
+    protected void initClusters(Collection<T> clusters) {
         this.clusters = ImmutableList.copyOf(clusters);
         this.clusterMap = ImmutableMap.copyOf(clusters.stream().collect(Collectors.toMap(NetRemoteServeCluster::serviceName, ObjectAide::self)));
-        return this;
     }
 
     @Override
@@ -64,9 +63,9 @@ public abstract class BaseClientRelayExplorer<T extends NetRemoteServeCluster> e
     }
 
     @Override
-    public <D> DoneResult<ClientRelayTunnel<D>> createTunnel(long id, MessageTransporter transport, NetworkContext context) {
+    public DoneResult<ClientRelayTunnel> createTunnel(long id, MessageTransporter transport, NetworkContext context) {
         RelayMessageRouter relayMessageRouter = this.context.getRelayMessageRouter();
-        GeneralClientRelayTunnel<D> tunnel = new GeneralClientRelayTunnel<>(this.context.getInstanceId(), id, transport, context,
+        GeneralClientRelayTunnel tunnel = new GeneralClientRelayTunnel(this.context.getInstanceId(), id, transport, context,
                 relayMessageRouter);
         Map<String, ClientTunnelRelayer> relayer = preassignRelayer(tunnel);
         tunnel.initRelayers(relayer);
@@ -74,7 +73,7 @@ public abstract class BaseClientRelayExplorer<T extends NetRemoteServeCluster> e
     }
 
     @Override
-    public <D> ClientRelayLink allotLink(ClientRelayTunnel<D> tunnel, String service) {
+    public ClientRelayLink allotLink(ClientRelayTunnel tunnel, String service) {
         RemoteServeCluster cluster = this.getCluster(service);
         if (cluster == null) {
             return null;
@@ -83,7 +82,7 @@ public abstract class BaseClientRelayExplorer<T extends NetRemoteServeCluster> e
     }
 
     // 预分配 link
-    private Map<String, ClientTunnelRelayer> preassignRelayer(ClientRelayTunnel<?> tunnel) {
+    private Map<String, ClientTunnelRelayer> preassignRelayer(ClientRelayTunnel tunnel) {
         if (this.clusters.size() == 1) {
             return preassignForSingleCluster(tunnel);
         } else {
@@ -92,7 +91,7 @@ public abstract class BaseClientRelayExplorer<T extends NetRemoteServeCluster> e
     }
 
     // 预分配 link, 单集群
-    private Map<String, ClientTunnelRelayer> preassignForSingleCluster(ClientRelayTunnel<?> tunnel) {
+    private Map<String, ClientTunnelRelayer> preassignForSingleCluster(ClientRelayTunnel tunnel) {
         for (NetRemoteServeCluster cluster : clusters) {
             ClientTunnelRelayer relayer = assignRelayer(tunnel, cluster);
             if (relayer != null) {
@@ -103,7 +102,7 @@ public abstract class BaseClientRelayExplorer<T extends NetRemoteServeCluster> e
     }
 
     // 预分配 link, 多集群
-    private Map<String, ClientTunnelRelayer> preassignForMultipleCluster(ClientRelayTunnel<?> tunnel) {
+    private Map<String, ClientTunnelRelayer> preassignForMultipleCluster(ClientRelayTunnel tunnel) {
         Map<String, ClientTunnelRelayer> relayerMap = new HashMap<>();
         for (NetRemoteServeCluster cluster : clusters) {
             ClientTunnelRelayer relayer = assignRelayer(tunnel, cluster);
@@ -114,7 +113,7 @@ public abstract class BaseClientRelayExplorer<T extends NetRemoteServeCluster> e
         return relayerMap;
     }
 
-    private ClientTunnelRelayer assignRelayer(ClientRelayTunnel<?> tunnel, NetRemoteServeCluster cluster) {
+    private ClientTunnelRelayer assignRelayer(ClientRelayTunnel tunnel, NetRemoteServeCluster cluster) {
         ServeClusterFilter serveClusterFilter = context.getServeClusterFilter();
         ServeClusterFilterStatus filterStatus = serveClusterFilter.filter(tunnel, cluster); // 过滤器
         if (filterStatus == UNNECESSARY) {

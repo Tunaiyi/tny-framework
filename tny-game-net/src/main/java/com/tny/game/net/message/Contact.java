@@ -21,12 +21,12 @@ import com.tny.game.net.base.*;
  **/
 public interface Contact {
 
-    long contactId();
+    long getContactId();
 
-    ContactType contactType();
+    ContactType getContactType();
 
     default String getGroup() {
-        return contactType().getGroup();
+        return getContactType().getGroup();
     }
 
 }

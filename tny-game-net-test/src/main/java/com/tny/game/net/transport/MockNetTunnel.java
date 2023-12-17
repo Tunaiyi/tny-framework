@@ -23,7 +23,7 @@ import java.net.InetSocketAddress;
 /**
  * <p>
  */
-public class MockNetTunnel extends AttributeHolder implements NetTunnel<Long> {
+public class MockNetTunnel extends AttributeHolder implements NetTunnel {
 
     private long accessId;
 
@@ -31,7 +31,7 @@ public class MockNetTunnel extends AttributeHolder implements NetTunnel<Long> {
 
     private TunnelStatus state;
 
-    private NetEndpoint<Long> endpoint;
+    private NetEndpoint endpoint;
 
     private final InetSocketAddress address = new InetSocketAddress(7100);
 
@@ -47,7 +47,7 @@ public class MockNetTunnel extends AttributeHolder implements NetTunnel<Long> {
 
     private final NetBootstrapContext context;
 
-    public MockNetTunnel(NetEndpoint<Long> endpoint, NetAccessMode mode) {
+    public MockNetTunnel(NetEndpoint endpoint, NetAccessMode mode) {
         this.endpoint = endpoint;
         this.state = TunnelStatus.OPEN;
         this.mode = mode;
@@ -95,7 +95,7 @@ public class MockNetTunnel extends AttributeHolder implements NetTunnel<Long> {
     }
 
     @Override
-    public NetEndpoint<Long> getEndpoint() {
+    public NetEndpoint getEndpoint() {
         return this.endpoint;
     }
 
@@ -134,7 +134,7 @@ public class MockNetTunnel extends AttributeHolder implements NetTunnel<Long> {
     }
 
     @Override
-    public boolean bind(NetEndpoint<Long> endpoint) {
+    public boolean bind(NetEndpoint endpoint) {
         if (this.bindSuccess) {
             this.endpoint = endpoint;
             return true;
@@ -168,12 +168,12 @@ public class MockNetTunnel extends AttributeHolder implements NetTunnel<Long> {
     }
 
     @Override
-    public Long getIdentify() {
+    public long getIdentify() {
         return this.endpoint.getIdentify();
     }
 
     @Override
-    public Certificate<Long> getCertificate() {
+    public Certificate getCertificate() {
         return this.endpoint.getCertificate();
     }
 

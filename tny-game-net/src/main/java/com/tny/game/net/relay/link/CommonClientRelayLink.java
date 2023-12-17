@@ -40,18 +40,18 @@ public class CommonClientRelayLink extends BaseRelayLink implements ClientRelayL
     }
 
     @Override
-    public void switchTunnel(ClientRelayTunnel<?> tunnel) {
+    public void switchTunnel(ClientRelayTunnel tunnel) {
         if (tunnel.getLink(this.getService()) == this) {
             this.write(TunnelSwitchLinkPacket.FACTORY, new TunnelVoidArguments(tunnel));
         }
     }
 
     @Override
-    public void delinkTunnel(RelayTunnel<?> tunnel) {
+    public void delinkTunnel(RelayTunnel tunnel) {
     }
 
     @Override
-    public void openTunnel(RelayTunnel<?> tunnel) {
+    public void openTunnel(RelayTunnel tunnel) {
         byte[] address = DEFAULT_ADDRESS;
         int port = 0;
         InetSocketAddress socketAddress = tunnel.getRemoteAddress();
@@ -85,7 +85,7 @@ public class CommonClientRelayLink extends BaseRelayLink implements ClientRelayL
     }
 
     //	@Override
-    //	public boolean registerTunnel(NetRelayTunnel<?> tunnel) {
+    //	public boolean registerTunnel(NetRelayTunnel tunnel) {
     //		if (!this.isActive()) {
     //			return false;
     //		}

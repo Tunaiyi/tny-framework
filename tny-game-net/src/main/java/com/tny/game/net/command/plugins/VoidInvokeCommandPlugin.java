@@ -14,7 +14,7 @@ import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
 
-public interface VoidInvokeCommandPlugin<UID> extends CommandPlugin<UID, Void> {
+public interface VoidInvokeCommandPlugin extends CommandPlugin<Void> {
 
     @Override
     default Class<Void> getAttributesClass() {
@@ -24,24 +24,24 @@ public interface VoidInvokeCommandPlugin<UID> extends CommandPlugin<UID, Void> {
     /**
      * 请求过滤
      *
-     * @param communicator 通道
+     * @param tunnel 通道
      * @param message      消息
      * @param context      上下文
      * @throws Exception 异常
      */
     @Override
-    default void execute(Tunnel<UID> communicator, Message message, RpcInvokeContext context, Void attribute) throws Exception {
-        this.doExecute(communicator, message, context);
+    default void execute(Tunnel tunnel, Message message, RpcInvokeContext context, Void attribute) throws Exception {
+        this.doExecute(tunnel, message, context);
     }
 
     /**
      * 请求过滤
      *
-     * @param communicator 通道
+     * @param tunnel 通道
      * @param message      消息
      * @param context      上下文
      * @throws Exception 异常
      */
-    void doExecute(Tunnel<UID> communicator, Message message, RpcInvokeContext context) throws Exception;
+    void doExecute(Tunnel tunnel, Message message, RpcInvokeContext context) throws Exception;
 
 }

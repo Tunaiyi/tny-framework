@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Created by Kun Yang on 2018/8/25.
  */
-public abstract class NetTunnelTest<T extends NetTunnel<Long>, E extends MockNetEndpoint> extends TunnelTest<T> {
+public abstract class NetTunnelTest<T extends NetTunnel, E extends MockNetEndpoint> extends TunnelTest<T> {
 
     protected TunnelTestInstance<T, E> create() {
         return create(createLoginCert(), true);
@@ -29,22 +29,22 @@ public abstract class NetTunnelTest<T extends NetTunnel<Long>, E extends MockNet
         return create(createLoginCert(), open);
     }
 
-    protected abstract TunnelTestInstance<T, E> create(Certificate<Long> certificate, boolean open);
+    protected abstract TunnelTestInstance<T, E> create(Certificate certificate, boolean open);
 
     protected E createEndpoint() {
         return createEndpoint(createLoginCert());
     }
 
-    protected E createEndpoint(Certificate<Long> certificate) {
+    protected E createEndpoint(Certificate certificate) {
         return create(certificate, false).getEndpoint();
     }
 
     @Override
-    protected T createTunnel(Certificate<Long> certificate) {
+    protected T createTunnel(Certificate certificate) {
         return create(certificate, true).getTunnel();
     }
 
-    protected T createTunnel(Certificate<Long> certificate, boolean open) {
+    protected T createTunnel(Certificate certificate, boolean open) {
         return create(certificate, open).getTunnel();
     }
 
@@ -75,8 +75,8 @@ public abstract class NetTunnelTest<T extends NetTunnel<Long>, E extends MockNet
     // @Test
     // public void send() {
     //     TestMessages messages;
-    //     NetSession<Long> session;
-    //     NetTunnel<Long> tunnel;
+    //     NetSession session;
+    //     NetTunnel tunnel;
     //
     //     // 发送 message
     //     tunnel = createLoginTunnel();
@@ -242,9 +242,9 @@ public abstract class NetTunnelTest<T extends NetTunnel<Long>, E extends MockNet
     // @Test
     // @Override
     // public void resend() {
-    //     ResendMessage<Long> message = ResendMessage.fromTo(1, 7);
-    //     NetSession<Long> session;
-    //     NetTunnel<Long> tunnel;
+    //     ResendMessage message = ResendMessage.fromTo(1, 7);
+    //     NetSession session;
+    //     NetTunnel tunnel;
     //
     //     // 在线 resend
     //     tunnel = createLoginTunnel();
@@ -272,10 +272,10 @@ public abstract class NetTunnelTest<T extends NetTunnel<Long>, E extends MockNet
     //
     // @Test
     // public void write() throws TunnelWriteException {
-    //     NetSession<Long> session;
-    //     NetTunnel<Long> tunnel;
-    //     MessageSendEvent<Long> event;
-    //     MessageContext<Long> messageContent;
+    //     NetSession session;
+    //     NetTunnel tunnel;
+    //     MessageSendEvent event;
+    //     MessageContext messageContent;
     //
     //     // 正常写出
     //     tunnel = createLoginTunnel();
@@ -349,16 +349,16 @@ public abstract class NetTunnelTest<T extends NetTunnel<Long>, E extends MockNet
     //             () -> content.getRespondFuture().get(300, TimeUnit.MILLISECONDS), exceptionClass));
     // }
     //
-    // protected void doReceive(Tunnel<Long> tunnel, TestMessages responses) {
+    // protected void doReceive(Tunnel tunnel, TestMessages responses) {
     //     responses.messagesForEach(tunnel::receive);
     //     // return service.schedule(() -> {
     //     //     responses.messagesForEach(tunnel::receive);
-    //     //     // MessageEventsBox<Long> eventsBox = tunnel.getEventsBox();
+    //     //     // MessageEventsBox eventsBox = tunnel.getEventsBox();
     //     //     // assertEquals(responses.getMessageSize(), eventsBox.getInputEventSize());
     //     //     // while (eventsBox.isHasInputEvent()) {
-    //     //     //     MessageInputEvent<Long> event = eventsBox.pollInputEvent();
+    //     //     //     MessageInputEvent event = eventsBox.pollInputEvent();
     //     //     //     if (event instanceof MessageReceiveEvent)
-    //     //     //         ((MessageReceiveEvent<Long>) event).completeResponse();
+    //     //     //         ((MessageReceiveEvent) event).completeResponse();
     //     //     // }
     //     // }, 50, TimeUnit.MILLISECONDS);
     // }

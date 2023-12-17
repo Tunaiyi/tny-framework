@@ -61,8 +61,8 @@ class ObjectReadWriteLock extends AbstractTimeLimiter implements ObjectLock {
      */
     public static Object getIdentity(Object object) {
         return LockEntity.class.isAssignableFrom(object.getClass()) ?
-                ((LockEntity)object).getIdentity() :
-                System.identityHashCode(object);
+               ((LockEntity) object).getIdentity() :
+               System.identityHashCode(object);
     }
 
     /**
@@ -98,29 +98,12 @@ class ObjectReadWriteLock extends AbstractTimeLimiter implements ObjectLock {
         return false;
     }
 
-    @Override
-    public boolean isTimeOut() {
-        return System.currentTimeMillis() > this.last.get();
-    }
-
-    @Override
-    public boolean update() {
-        long now = System.currentTimeMillis();
-        long lastTime = this.last.get();
-        while (true) {
-            if (this.last.compareAndSet(lastTime, now <= lastTime ? now + this.interval : -1L)) {
-                return this.last.get() > -1;
-            }
-            now = System.currentTimeMillis();
-            lastTime = this.last.get();
-        }
-    }
 
     @Override
     public void lock() {
         if (!this.update()) {
             throw new LockTimeOutException("[" + Thread.currentThread().getName() +
-                    "] Thread does not hold the lock " + this.identity);
+                                           "] Thread does not hold the lock " + this.identity);
         }
         this.getCurrentLock().lock();
     }
@@ -129,7 +112,7 @@ class ObjectReadWriteLock extends AbstractTimeLimiter implements ObjectLock {
     public void lockInterruptibly() throws InterruptedException {
         if (!this.update()) {
             throw new LockTimeOutException("[" + Thread.currentThread().getName() +
-                    "] Thread does not hold the lock " + this.identity);
+                                           "] Thread does not hold the lock " + this.identity);
         }
         this.getCurrentLock().lockInterruptibly();
     }
@@ -138,7 +121,7 @@ class ObjectReadWriteLock extends AbstractTimeLimiter implements ObjectLock {
     public boolean tryLock() {
         if (!this.update()) {
             throw new LockTimeOutException("[" + Thread.currentThread().getName() +
-                    "] Thread does not hold the lock " + this.identity);
+                                           "] Thread does not hold the lock " + this.identity);
         }
         return this.getCurrentLock().tryLock();
     }
@@ -152,7 +135,7 @@ class ObjectReadWriteLock extends AbstractTimeLimiter implements ObjectLock {
     public boolean tryLock(long time, TimeUnit unit) throws InterruptedException {
         if (!this.update()) {
             throw new LockTimeOutException("[" + Thread.currentThread().getName() +
-                    "] Thread does not hold the lock " + this.identity);
+                                           "] Thread does not hold the lock " + this.identity);
         }
         return this.getCurrentLock().tryLock(time, unit);
     }
@@ -185,7 +168,7 @@ class ObjectReadWriteLock extends AbstractTimeLimiter implements ObjectLock {
         final int prime = 31;
         int result = super.hashCode();
         result = prime * result
-                + ((this.identity == null) ? 0 : this.identity.hashCode());
+                 + ((this.identity == null) ? 0 : this.identity.hashCode());
         return result;
     }
 
@@ -200,7 +183,7 @@ class ObjectReadWriteLock extends AbstractTimeLimiter implements ObjectLock {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        ObjectReadWriteLock other = (ObjectReadWriteLock)obj;
+        ObjectReadWriteLock other = (ObjectReadWriteLock) obj;
         if (this.identity == null) {
             if (other.identity != null) {
                 return false;

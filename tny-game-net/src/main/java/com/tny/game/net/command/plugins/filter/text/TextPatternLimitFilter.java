@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 
 import static com.tny.game.net.command.plugins.filter.FilterCode.*;
 
-public class TextPatternLimitFilter extends AbstractParamFilter<Object, PatternMatch, String> {
+public class TextPatternLimitFilter extends AbstractParamFilter<PatternMatch, String> {
 
     private final Map<String, Pattern> patternMap = new CopyOnWriteMap<>();
 
@@ -49,14 +49,12 @@ public class TextPatternLimitFilter extends AbstractParamFilter<Object, PatternM
     }
 
     @Override
-    protected ResultCode doFilter(MethodControllerHolder holder, Tunnel<Object> communicator, Message message, int index,
-            PatternMatch annotation,
+    protected ResultCode doFilter(MethodControllerHolder holder, Tunnel tunnel, Message message, int index, PatternMatch annotation,
             String param) {
         if (!this.getPattern(annotation.value()).matcher(param).matches()) {
             MessageHead head = message.getHead();
-            LOGGER.warn("{} 玩家请求 协议[{}] 第{}个参数 [{}] 的字符串无法匹配正则表达式{}",
-                    communicator.getIdentify(), head.getId(),
-                    index, param, annotation.value());
+            LOGGER.warn("{} 玩家请求 协议[{}] 第{}个参数 [{}] 的字符串无法匹配正则表达式{}", tunnel.getIdentify(), head.getId(), index, param,
+                    annotation.value());
             return code(NetResultCode.SERVER_ILLEGAL_PARAMETERS, annotation.illegalCode());
         }
         return ResultCode.SUCCESS;

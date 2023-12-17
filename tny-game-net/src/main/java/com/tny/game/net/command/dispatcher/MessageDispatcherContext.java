@@ -21,8 +21,8 @@ import java.util.Collection;
 /**
  * <p>
  *
- * @author: Kun Yang
- * @date: 2018-09-30 18:03
+ * @author Kun Yang
+ * @date 2018-09-30 18:03
  */
 @UnitInterface
 public interface MessageDispatcherContext {
@@ -38,7 +38,7 @@ public interface MessageDispatcherContext {
      * @param pluginClass 抄件类型
      * @return 返回 ControllerHolder
      */
-    CommandPlugin<?, ?> getPlugin(Class<? extends CommandPlugin<?, ?>> pluginClass);
+    CommandPlugin<?> getPlugin(Class<? extends CommandPlugin<?>> pluginClass);
 
     /**
      * 获取身份校验器
@@ -46,7 +46,7 @@ public interface MessageDispatcherContext {
      * @param protocol 协议
      * @return 返回身份校验器
      */
-    AuthenticationValidator<?, ?> getValidator(Object protocol);
+    AuthenticationValidator getValidator(Object protocol);
 
     /**
      * 获取身份校验器
@@ -54,7 +54,7 @@ public interface MessageDispatcherContext {
      * @param validatorClass 类
      * @return 返回身份校验器
      */
-    AuthenticationValidator<?, ?> getValidator(Class<? extends AuthenticationValidator<?, ?>> validatorClass);
+    AuthenticationValidator getValidator(Class<? extends AuthenticationValidator> validatorClass);
 
     Collection<MessageCommandListener> getCommandListener();
 

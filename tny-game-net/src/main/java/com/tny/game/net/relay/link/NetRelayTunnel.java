@@ -32,7 +32,7 @@ import com.tny.game.net.transport.*;
  * @author : kgtny
  * @date : 2021/3/3 11:46 上午
  */
-public interface NetRelayTunnel<UID> extends NetTunnel<UID>, RelayTunnel<UID> {
+public interface NetRelayTunnel extends NetTunnel, RelayTunnel {
 
     //	/**
     //	 * 如果当前 link 是指定 link 对象的话, 关闭 tunnel

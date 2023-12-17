@@ -10,10 +10,6 @@
 
 package com.tny.game.net.netty4.network.guide;
 
-import com.tny.game.net.command.*;
-
-import static com.tny.game.net.base.configuration.NetUnitNames.*;
-
 /**
  * <p>
  *
@@ -26,7 +22,6 @@ public class SpringNettyRpcServerBootstrapSetting extends SpringNettyNetServerBo
 
     public SpringNettyRpcServerBootstrapSetting() {
         super();
-        this.setCertificateFactory(defaultName(ContactCertificateFactory.class));
     }
 
 }

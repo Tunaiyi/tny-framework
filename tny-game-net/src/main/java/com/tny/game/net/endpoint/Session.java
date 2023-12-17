@@ -15,6 +15,6 @@ package com.tny.game.net.endpoint;
  *
  * @author KGTny
  */
-public interface Session<UID> extends Endpoint<UID> {
+public interface Session extends Endpoint {
 
 }

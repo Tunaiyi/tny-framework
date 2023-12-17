@@ -28,7 +28,7 @@ public class ContactNodeSet implements RpcInvokeNodeSet, RpcInvokeNode {
 
     private final ContactType contactType;
 
-    private EndpointKeeper<Object, Endpoint<Object>> keeper;
+    private EndpointKeeper<Endpoint> keeper;
 
     private final List<ContactNodeSet> remoterList;
 
@@ -37,7 +37,7 @@ public class ContactNodeSet implements RpcInvokeNodeSet, RpcInvokeNode {
         this.remoterList = Collections.singletonList(this);
     }
 
-    void bind(EndpointKeeper<?, ? extends Endpoint<?>> keeper) {
+    void bind(EndpointKeeper<? extends Endpoint> keeper) {
         if (this.keeper == null) {
             this.keeper = as(keeper);
         }
@@ -79,7 +79,7 @@ public class ContactNodeSet implements RpcInvokeNodeSet, RpcInvokeNode {
 
     @Override
     public RpcAccess getAccess(long accessId) {
-        Endpoint<?> endpoint = keeper.getEndpoint(accessId);
+        Endpoint endpoint = keeper.getEndpoint(accessId);
         if (endpoint != null) {
             return RpcEndpointAccess.of(endpoint);
         }

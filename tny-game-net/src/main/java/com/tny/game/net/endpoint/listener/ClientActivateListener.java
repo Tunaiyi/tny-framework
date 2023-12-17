@@ -14,8 +14,8 @@ import com.tny.game.net.endpoint.*;
 import com.tny.game.net.transport.*;
 
 @FunctionalInterface
-public interface ClientActivateListener<UID> extends ClientListener {
+public interface ClientActivateListener extends ClientListener {
 
-    void onActivate(Client<UID> session, Tunnel<UID> tunnel);
+    void onActivate(Client session, Tunnel tunnel);
 
 }

@@ -16,7 +16,7 @@ import com.tny.game.net.transport.*;
 /**
  * Created by Kun Yang on 2018/8/28.
  */
-public interface NettyTerminal<UID> extends NetEndpoint<UID>, NetTerminal<UID> {
+public interface NettyTerminal extends NetEndpoint, NetTerminal {
 
     boolean isAutoReconnect();
 

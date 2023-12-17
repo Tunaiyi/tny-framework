@@ -186,9 +186,9 @@ public final class MethodControllerHolder extends ControllerHolder {
         return this.rpcProfile.getMode();
     }
 
-    public List<ControllerParamDescription> getParamDescriptions() {
-        return this.paramDescriptions;
-    }
+    // List<ControllerParamDescription> getParamDescriptions() {
+    //     return this.paramDescriptions;
+    // }
 
     public int getParameterSize() {
         return this.paramDescriptions.size();
@@ -207,7 +207,7 @@ public final class MethodControllerHolder extends ControllerHolder {
         return this.executor.getClass();
     }
 
-    public Object getParameterValue(int index, NetTunnel<?> tunnel, Message message, Object body) throws RpcInvokeException {
+    public Object getParameterValue(int index, NetTunnel tunnel, Message message, Object body) throws RpcInvokeException {
         if (index >= this.paramDescriptions.size()) {
             throw new RpcInvokeException(NetResultCode.SERVER_EXECUTE_EXCEPTION,
                     format("{} 获取 index 为 {} 的ParamDesc越界, index < {}", this, index, this.paramDescriptions.size()));
@@ -270,7 +270,7 @@ public final class MethodControllerHolder extends ControllerHolder {
     }
 
     @Override
-    public Class<? extends AuthenticationValidator<?, ?>> getAuthValidator() {
+    public Class<? extends AuthenticationValidator> getAuthValidator() {
         return this.auth != null ? super.getAuthValidator() : this.classController.getAuthValidator();
     }
 
@@ -325,7 +325,7 @@ public final class MethodControllerHolder extends ControllerHolder {
         return this.returnType;
     }
 
-    Object invoke(NetTunnel<?> tunnel, Message message) throws Exception {
+    Object invoke(NetTunnel tunnel, Message message) throws Exception {
         // 获取调用方法的参数类型
         Object[] param = new Object[this.getParameterSize()];
         Object body = message.bodyAs(Object.class);
@@ -335,14 +335,14 @@ public final class MethodControllerHolder extends ControllerHolder {
         return this.invoke(param);
     }
 
-    void beforeInvoke(Tunnel<?> tunnel, Message message, RpcInvokeContext context) {
+    void beforeInvoke(Tunnel tunnel, Message message, RpcInvokeContext context) {
         if (this.beforeContext == null) {
             return;
         }
         this.beforeContext.execute(tunnel, message, context);
     }
 
-    void afterInvoke(Tunnel<?> tunnel, Message message, RpcInvokeContext context) {
+    void afterInvoke(Tunnel tunnel, Message message, RpcInvokeContext context) {
         if (this.afterContext == null) {
             return;
         }

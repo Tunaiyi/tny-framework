@@ -88,7 +88,7 @@ public class NetPacketV1Decoder extends NetPacketV1Codec implements NetPacketDec
     private Message readPayload(Channel channel, ByteBuf in, byte option, int payloadLength) throws Exception {
         ByteBuf bodyBuffer = null;
         try {
-            NetTunnel<?> tunnel = channel.attr(NettyNetAttrKeys.TUNNEL).get();
+            NetTunnel tunnel = channel.attr(NettyNetAttrKeys.TUNNEL).get();
             // 获取打包器
             int index = in.readerIndex();
             long accessId = NettyVarIntCoder.readVarInt64(in);

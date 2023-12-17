@@ -10,15 +10,11 @@
  */
 package com.tny.game.net.base;
 
-import com.tny.game.net.command.*;
 import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.command.processor.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.message.common.*;
 import com.tny.game.net.rpc.*;
-import com.tny.game.net.transport.*;
-
-import static com.tny.game.common.utils.ObjectAide.*;
 
 /**
  * <p>
@@ -36,7 +32,6 @@ public class NetBootstrapContext implements NetworkContext {
 
     private final ContactFactory contactFactory;
 
-    private final CertificateFactory<?> certificateFactory;
 
     private final MessageDispatcher messageDispatcher;
 
@@ -49,7 +44,6 @@ public class NetBootstrapContext implements NetworkContext {
     public NetBootstrapContext() {
         this.messageFactory = new CommonMessageFactory();
         this.contactFactory = new DefaultContactFactory();
-        this.certificateFactory = new DefaultCertificateFactory<>();
         this.rpcMonitor = new RpcMonitor();
         this.appContext = null;
         this.setting = null;
@@ -65,7 +59,6 @@ public class NetBootstrapContext implements NetworkContext {
             CommandExecutorFactory commandExecutorFactory,
             MessageFactory messageFactory,
             ContactFactory contactFactory,
-            CertificateFactory<?> certificateFactory,
             RpcForwarder rpcForwarder,
             RpcMonitor rpcMonitor) {
         this.appContext = appContext;
@@ -74,7 +67,6 @@ public class NetBootstrapContext implements NetworkContext {
         this.commandExecutorFactory = commandExecutorFactory;
         this.messageFactory = messageFactory;
         this.contactFactory = contactFactory;
-        this.certificateFactory = certificateFactory;
         this.rpcForwarder = rpcForwarder;
         this.rpcMonitor = rpcMonitor;
     }
@@ -92,11 +84,6 @@ public class NetBootstrapContext implements NetworkContext {
     @Override
     public ContactFactory getContactFactory() {
         return this.contactFactory;
-    }
-
-    @Override
-    public <I> CertificateFactory<I> getCertificateFactory() {
-        return as(this.certificateFactory);
     }
 
     @Override

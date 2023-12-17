@@ -18,7 +18,7 @@ import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
 import org.slf4j.*;
 
-public class TaskReceiverSchedulerPlugin implements VoidCommandPlugin<Long> {
+public class TaskReceiverSchedulerPlugin implements VoidCommandPlugin {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskReceiverSchedulerPlugin.class);
 
@@ -32,11 +32,11 @@ public class TaskReceiverSchedulerPlugin implements VoidCommandPlugin<Long> {
     }
 
     @Override
-    public void doExecute(Tunnel<Long> communicator, Message message, RpcInvokeContext context) throws Exception {
-        TaskReceiverType type = properties.getPlugin().getReceiverType(communicator.getGroup());
+    public void doExecute(Tunnel tunnel, Message message, RpcInvokeContext context) throws Exception {
+        TaskReceiverType type = properties.getPlugin().getReceiverType(tunnel.getGroup());
         if (type != null) {
             try {
-                this.timeTaskService.checkTask(communicator.getIdentify(), type);
+                this.timeTaskService.checkTask(tunnel.getIdentify(), type);
             } catch (Exception e) {
                 LOGGER.error("", e);
             }

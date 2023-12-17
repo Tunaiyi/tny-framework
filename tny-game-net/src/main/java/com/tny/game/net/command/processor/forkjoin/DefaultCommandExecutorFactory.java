@@ -43,7 +43,7 @@ public class DefaultCommandExecutorFactory implements CommandExecutorFactory {
     }
 
     @Override
-    public CommandExecutor create(Endpoint<?> endpoint) {
+    public CommandExecutor create(Endpoint endpoint) {
         return new SerialCommandExecutor("CommandExecutor-" + endpoint.getId(), executorService);
     }
 

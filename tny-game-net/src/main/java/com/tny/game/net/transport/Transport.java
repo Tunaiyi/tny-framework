@@ -17,8 +17,8 @@ import com.tny.game.net.message.*;
 /**
  * <p>
  *
- * @author: Kun Yang
- * @date: 2018-10-11 17:45
+ * @author Kun Yang
+ * @date 2018-10-11 17:45
  */
 public interface Transport {
 

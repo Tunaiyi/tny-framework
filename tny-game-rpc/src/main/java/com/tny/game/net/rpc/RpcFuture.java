@@ -32,7 +32,7 @@ public interface RpcFuture<T> extends Future<RpcResult<T>>, CompletionStage<RpcR
 
     Message getMessage();
 
-    Endpoint<?> endpoint();
+    Endpoint endpoint();
 
     boolean isSuccess();
 

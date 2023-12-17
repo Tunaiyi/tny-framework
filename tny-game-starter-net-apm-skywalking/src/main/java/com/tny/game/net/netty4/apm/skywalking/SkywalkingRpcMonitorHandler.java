@@ -470,7 +470,7 @@ public class SkywalkingRpcMonitorHandler implements RpcMonitorReceiveHandler, Rp
     }
 
     private String getContactName(Contact contact) {
-        return contact.contactType().getGroup() + "[" + contact.contactId() + "]";
+        return contact.getContactType().getGroup() + "[" + contact.getContactId() + "]";
     }
 
 }

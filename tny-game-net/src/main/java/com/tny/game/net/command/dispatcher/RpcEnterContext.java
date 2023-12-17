@@ -50,7 +50,7 @@ public interface RpcEnterContext extends RpcInvocationContext, RpcTransferContex
     /**
      * @return 获取通道
      */
-    <U> NetTunnel<U> netTunnel();
+    NetTunnel netTunnel();
 
     /**
      * @return rpc监控

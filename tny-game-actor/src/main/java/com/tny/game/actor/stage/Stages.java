@@ -515,11 +515,6 @@ class Stages {
             super(fn);
         }
 
-        @Override
-        protected boolean isNoneParam() {
-            return false;
-        }
-
     }
 
     static class ThrowRunFragment extends VoidThrowFragment<CatcherRun, Void> {
@@ -691,10 +686,10 @@ class Stages {
                     }
                 }
                 return DoneResults.success(fns.entrySet().stream()
-                        .collect(Collectors.toMap(
-                                Entry::getKey,
-                                e -> e.getValue().get().get()
-                        )));
+                                              .collect(Collectors.toMap(
+                                                      Entry::getKey,
+                                                      e -> e.getValue().get().get()
+                                              )));
             }, timeout);
         }
 

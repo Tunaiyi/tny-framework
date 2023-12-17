@@ -19,28 +19,28 @@ import org.slf4j.*;
 import java.util.Optional;
 import java.util.concurrent.locks.Lock;
 
-public class CommonSessionKeeper<UID> extends AbstractSessionKeeper<UID> implements SessionKeeper<UID> {
+public class CommonSessionKeeper extends AbstractSessionKeeper implements SessionKeeper {
 
     private static final Logger LOG = LoggerFactory.getLogger(NetLogger.SESSION);
 
     private static final MapObjectLocker<Object> locker = new MapObjectLocker<>();
 
-    public CommonSessionKeeper(ContactType contactType, SessionFactory<UID, ? extends NetSession<UID>, ? extends SessionSetting> factory,
+    public CommonSessionKeeper(ContactType contactType, SessionFactory<? extends NetSession, ? extends SessionSetting> factory,
             SessionKeeperSetting setting) {
         super(contactType, factory, setting);
     }
 
     @Override
-    public Optional<Session<UID>> online(Certificate<UID> certificate, NetTunnel<UID> tunnel) throws AuthFailedException {
+    public Optional<Session> online(Certificate certificate, NetTunnel tunnel) throws AuthFailedException {
         if (!certificate.isAuthenticated()) {
             throw new AuthFailedException(NetResultCode.AUTH_FAIL_ERROR, "cert {} is unauthentic", certificate);
         }
-        if (!this.getContactType().equals(certificate.contactType())) {
+        if (!this.getContactType().equals(certificate.getContactType())) {
             throw new AuthFailedException(NetResultCode.AUTH_FAIL_ERROR,
-                    "cert {} userType is {}, not {}", certificate, certificate.contactType(), this.getContactType());
+                    "cert {} userType is {}, not {}", certificate, certificate.getContactType(), this.getContactType());
         }
-        UID uid = certificate.getIdentify();
-        Lock lock = locker.lock(uid);
+        long identify = certificate.getIdentify();
+        Lock lock = locker.lock(identify);
         try {
             if (certificate.getStatus() == CertificateStatus.AUTHENTICATED) { // 登录创建 Session
                 return Optional.of(doNewSession(certificate, tunnel));
@@ -48,23 +48,22 @@ public class CommonSessionKeeper<UID> extends AbstractSessionKeeper<UID> impleme
                 return Optional.of(doAcceptTunnel(certificate, tunnel));
             }
         } finally {
-            locker.unlock(uid, lock);
+            locker.unlock(identify, lock);
         }
     }
 
-    private Session<UID> doNewSession(Certificate<UID> certificate, NetTunnel<UID> newTunnel) throws AuthFailedException {
-        NetSession<UID> oldSession = findEndpoint(certificate.getIdentify());
+    private Session doNewSession(Certificate certificate, NetTunnel newTunnel) throws AuthFailedException {
+        NetSession oldSession = findEndpoint(certificate.getIdentify());
         if (oldSession != null) { // 如果旧 session 存在
-            Certificate<UID> oldCert = oldSession.getCertificate();
+            Certificate oldCert = oldSession.getCertificate();
             // 判断新授权是否比原有授权时间早, 如果是则无法登录
             if (certificate.getId() != oldCert.getId() && certificate.isOlderThan(oldCert)) {
                 LOG.warn("认证已过 {}", certificate);
                 throw new AuthFailedException(NetResultCode.INVALID_CERTIFICATE_ERROR);
             }
         }
-        NetEndpoint<UID> endpoint = newTunnel.getEndpoint();
-        var networkContext = newTunnel.getContext();
-        NetSession<UID> session = this.factory.create(this.setting.getSession(), endpoint.getContext(), networkContext.getCertificateFactory());
+        NetEndpoint endpoint = newTunnel.getEndpoint();
+        NetSession session = this.factory.create(this.setting.getSession(), endpoint.getContext());
         if (oldSession != null) {
             if (!oldSession.isClosed()) {
                 oldSession.close();
@@ -76,8 +75,8 @@ public class CommonSessionKeeper<UID> extends AbstractSessionKeeper<UID> impleme
         return session;
     }
 
-    private Session<UID> doAcceptTunnel(Certificate<UID> certificate, NetTunnel<UID> newTunnel) throws AuthFailedException {
-        NetSession<UID> existSession = this.findEndpoint(certificate.getIdentify());
+    private Session doAcceptTunnel(Certificate certificate, NetTunnel newTunnel) throws AuthFailedException {
+        NetSession existSession = this.findEndpoint(certificate.getIdentify());
         if (existSession == null) { // 旧 session 失效
             LOG.warn("旧session {} 已经丢失", newTunnel.getIdentify());
             throw new AuthFailedException(NetResultCode.SESSION_LOSS_ERROR);

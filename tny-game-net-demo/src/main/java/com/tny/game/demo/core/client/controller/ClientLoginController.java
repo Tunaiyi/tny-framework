@@ -23,8 +23,8 @@ import static com.tny.game.net.base.ContactType.*;
 /**
  * <p>
  *
- * @author: Kun Yang
- * @date: 2018-10-31 16:46
+ * @author Kun Yang
+ * @date 2018-10-31 16:46
  */
 @RpcController
 @AuthenticationRequired(DEFAULT_USER_TYPE)
@@ -51,13 +51,13 @@ public class ClientLoginController {
 
     @RpcPush(CtrlerIds.SPEAK$PUSH)
     @BeforePlugin(SpringBootParamFilterPlugin.class)
-    public void pushMessage(Tunnel<Long> tunnel, @RpcBody String message) {
+    public void pushMessage(Tunnel tunnel, @RpcBody String message) {
         LOGGER.info("User {} [accessId {}]receive push message {}", tunnel.getIdentify(), tunnel.getAccessId(), message);
     }
 
     @Rpc(CtrlerIds.SPEAK$PING)
     @BeforePlugin(SpringBootParamFilterPlugin.class)
-    public void pingMessage(Tunnel<Long> tunnel, @RpcBody String message) {
+    public void pingMessage(Tunnel tunnel, @RpcBody String message) {
         LOGGER.info("User {} [accessId {}] receive : {}", tunnel.getIdentify(), tunnel.getAccessId(), message);
     }
 

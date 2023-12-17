@@ -23,7 +23,7 @@ import java.util.List;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 
-public abstract class AbstractParamFilter<UID, A extends Annotation, P> implements ParamFilter<UID> {
+public abstract class AbstractParamFilter<A extends Annotation, P> implements ParamFilter {
 
     protected final static Logger LOGGER = LoggerFactory.getLogger(ParamFilter.class);
 
@@ -40,24 +40,18 @@ public abstract class AbstractParamFilter<UID, A extends Annotation, P> implemen
 
     @Override
     @SuppressWarnings("unchecked")
-    public ResultCode filter(MethodControllerHolder holder, Tunnel<UID> communicator, Message message) throws RpcInvokeException {
-        List<A> annotations = holder.getAnnotationsOfParametersByType(this.annClass);
-        int index = 0;
-        Object body = message.bodyAs(Object.class);
+    public ResultCode filter(MethodControllerHolder holder, Tunnel tunnel, Message message) throws RpcInvokeException {
+        List<A> annotations = holder.getAnnotationsOfParametersByType(this.annClass); int index = 0; Object body = message.bodyAs(Object.class);
         for (A an : annotations) {
             if (an != null) {
-                P param = (P) holder.getParameterValue(index, as(communicator), message, body);
-                ResultCode result = this.doFilter(holder, communicator, message, index, an, param);
-                if (result != NetResultCode.SUCCESS) {
+                P param = (P) holder.getParameterValue(index, as(tunnel), message, body);
+                ResultCode result = this.doFilter(holder, tunnel, message, index, an, param); if (result != NetResultCode.SUCCESS) {
                     return result;
                 }
-            }
-            index++;
-        }
-        return NetResultCode.SUCCESS;
+            } index++;
+        } return NetResultCode.SUCCESS;
     }
 
-    protected abstract ResultCode doFilter(MethodControllerHolder holder, Tunnel<UID> communicator, Message message, int index, A annotation,
-            P param);
+    protected abstract ResultCode doFilter(MethodControllerHolder holder, Tunnel tunnel, Message message, int index, A annotation, P param);
 
 }

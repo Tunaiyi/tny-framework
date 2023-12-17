@@ -22,10 +22,10 @@ import java.util.stream.Collectors;
 /**
  * <p>
  *
- * @author: Kun Yang
- * @date: 2019-03-27 15:30
+ * @author Kun Yang
+ * @date 2019-03-27 15:30
  */
-public class MessageQueue<UID> {
+public class MessageQueue {
 
     /* 发送缓存 */
     private CircularFifoQueue<Message> sentMessageQueue = null;

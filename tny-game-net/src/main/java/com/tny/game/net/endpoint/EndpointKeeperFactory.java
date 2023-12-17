@@ -17,7 +17,7 @@ import com.tny.game.net.base.*;
  * <p>
  */
 @UnitInterface
-public interface EndpointKeeperFactory<UID, E extends NetEndpointKeeper<UID, ?>, S extends EndpointKeeperSetting> {
+public interface EndpointKeeperFactory<E extends NetEndpointKeeper<?>, S extends EndpointKeeperSetting> {
 
     E createKeeper(ContactType contactType, S setting);
 

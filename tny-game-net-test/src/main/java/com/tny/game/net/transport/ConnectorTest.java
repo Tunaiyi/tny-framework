@@ -20,32 +20,32 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Created by Kun Yang on 2018/8/12.
  */
-public abstract class ConnectorTest<C extends Connector<Long>> {
+public abstract class ConnectorTest<C extends Connector> {
 
     protected static Long uid = 100L;
 
     private static final Long UNAUTHENTICATED_UID = null;
 
-    private static ContactType contactType = NetContactType.DEFAULT_USER;
+    private static final ContactType contactType = NetContactType.DEFAULT_USER;
 
     protected static Long certificateId = System.currentTimeMillis();
 
-    protected Certificate<Long> createUnLoginCert() {
-        return Certificates.createUnauthenticated(UNAUTHENTICATED_UID);
+    protected Certificate createUnLoginCert() {
+        return Certificates.anonymous();
     }
 
-    protected Certificate<Long> createLoginCert() {
+    protected Certificate createLoginCert() {
         return Certificates.createAuthenticated(certificateId, uid, uid, contactType, Instant.now());
     }
 
-    protected Certificate<Long> createLoginCert(long certificateId, Long uid) {
+    protected Certificate createLoginCert(long certificateId, Long uid) {
         return Certificates.createAuthenticated(certificateId, uid, uid, contactType, Instant.now());
     }
 
     protected ConnectorTest() {
     }
 
-    public abstract C createNetter(Certificate<Long> certificate);
+    public abstract C createNetter(Certificate certificate);
 
     @Test
     public void getUserId() {

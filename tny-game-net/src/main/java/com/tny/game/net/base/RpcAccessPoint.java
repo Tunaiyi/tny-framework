@@ -24,10 +24,10 @@ import java.util.Comparator;
  **/
 public interface RpcAccessPoint extends RpcServicer, Contact, Comparable<RpcAccessPoint> {
 
-    Comparator<RpcAccessPoint> COMPARATOR = Comparator.comparing(RpcAccessPoint::contactId);
+    Comparator<RpcAccessPoint> COMPARATOR = Comparator.comparing(RpcAccessPoint::getContactId);
 
     @Override
-    default ContactType contactType() {
+    default ContactType getContactType() {
         return getServiceType();
     }
 

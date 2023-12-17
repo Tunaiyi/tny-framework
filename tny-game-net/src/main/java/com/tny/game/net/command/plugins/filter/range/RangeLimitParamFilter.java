@@ -21,14 +21,14 @@ import java.lang.annotation.Annotation;
 
 import static com.tny.game.net.command.plugins.filter.FilterCode.*;
 
-public abstract class RangeLimitParamFilter<A extends Annotation, N extends Comparable<N>> extends AbstractParamFilter<Object, A, N> {
+public abstract class RangeLimitParamFilter<A extends Annotation, N extends Comparable<N>> extends AbstractParamFilter<A, N> {
 
     protected RangeLimitParamFilter(Class<A> annClass) {
         super(annClass);
     }
 
     @Override
-    protected ResultCode doFilter(MethodControllerHolder holder, Tunnel<Object> tunnel, Message message, int index, A annotation, N param) {
+    protected ResultCode doFilter(MethodControllerHolder holder, Tunnel tunnel, Message message, int index, A annotation, N param) {
         N low = this.getLow(annotation);
         N high = this.getHigh(annotation);
         if (!this.filterRange(low, param, high)) {

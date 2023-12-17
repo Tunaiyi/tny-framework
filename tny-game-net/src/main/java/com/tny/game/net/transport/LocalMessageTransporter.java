@@ -38,7 +38,7 @@ public class LocalMessageTransporter implements MessageTransporter {
 
     private final Executor executor;
 
-    private NetTunnel<?> tunnel;
+    private NetTunnel tunnel;
 
     public LocalMessageTransporter(String ip, int port, Executor executor) {
         this.address = new InetSocketAddress(ip, port);
@@ -71,7 +71,7 @@ public class LocalMessageTransporter implements MessageTransporter {
     }
 
     @Override
-    public void bind(NetTunnel<?> tunnel) {
+    public void bind(NetTunnel tunnel) {
         this.tunnel = tunnel;
     }
 

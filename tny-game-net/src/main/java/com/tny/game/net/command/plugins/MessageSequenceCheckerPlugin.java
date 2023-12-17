@@ -18,22 +18,22 @@ import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
 import org.slf4j.*;
 
-public class MessageSequenceCheckerPlugin implements VoidCommandPlugin<Object> {
+public class MessageSequenceCheckerPlugin implements VoidCommandPlugin {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NetLogger.CHECKER);
 
     private static final AttrKey<Integer> CHECK_MESSAGE_ID = AttrKeys.key(MessageSequenceCheckerPlugin.class, "CHECK_MESSAGE_ID");
 
     @Override
-    public void doExecute(Tunnel<Object> communicator, Message message, RpcInvokeContext context) {
-        if (!communicator.isAuthenticated()) {
+    public void doExecute(Tunnel tunnel, Message message, RpcInvokeContext context) {
+        if (!tunnel.isAuthenticated()) {
             return;
         }
-        Endpoint<Object> endpoint = null;
-        if (communicator instanceof Endpoint) {
-            endpoint = (Endpoint<Object>) communicator;
-        } else if (communicator instanceof Tunnel) {
-            endpoint = ((Tunnel<Object>) communicator).getEndpoint();
+        Endpoint endpoint = null;
+        if (tunnel instanceof Endpoint) {
+            endpoint = (Endpoint) tunnel;
+        } else if (tunnel instanceof Tunnel) {
+            endpoint = ((Tunnel) tunnel).getEndpoint();
         }
         Integer lastHandledId = endpoint.attributes().getAttribute(CHECK_MESSAGE_ID, 0);
         MessageHead head = message.getHead();

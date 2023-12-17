@@ -64,7 +64,7 @@ public class RpcClientFactory implements Serve {
         return setting.isDiscovery();
     }
 
-    private <ID> PostConnect<ID> postConnect(int index) {
+    private PostConnect postConnect(int index) {
         return (tunnel) -> {
             String username = StringAide.ifBlank(setting.getUsername(), appContext.getService());
             RpcServiceType serviceType = RpcServiceTypes.checkService(username);
@@ -87,7 +87,7 @@ public class RpcClientFactory implements Serve {
         };
     }
 
-    public <UID> Client<UID> create(int index, URL url) {
+    public Client create(int index, URL url) {
         return clientGuide.client(url, postConnect(index));
     }
 

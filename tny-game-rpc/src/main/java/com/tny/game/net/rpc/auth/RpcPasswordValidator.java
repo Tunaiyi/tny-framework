@@ -10,17 +10,14 @@
  */
 package com.tny.game.net.rpc.auth;
 
-import com.tny.game.common.result.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.net.base.*;
-import com.tny.game.net.command.*;
 import com.tny.game.net.command.auth.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
 
-import java.time.Instant;
 import java.util.*;
 
 import static com.tny.game.common.utils.StringAide.*;
@@ -29,7 +26,7 @@ import static com.tny.game.net.rpc.auth.RpcAuthMessageContexts.*;
 /**
  * <p>
  */
-public class RpcPasswordValidator implements AuthenticationValidator<RpcAccessIdentify, ContactCertificateFactory<RpcAccessIdentify>> {
+public class RpcPasswordValidator implements AuthenticationValidator {
 
     private final RpcAuthService rpcAuthService;
 
@@ -41,8 +38,7 @@ public class RpcPasswordValidator implements AuthenticationValidator<RpcAccessId
     }
 
     @Override
-    public Certificate<RpcAccessIdentify> validate(Tunnel<RpcAccessIdentify> communicator, Message message,
-            ContactCertificateFactory<RpcAccessIdentify> factory)
+    public Certificate validate(Tunnel tunnel, Message message)
             throws RpcInvokeException, AuthFailedException {
         Optional<MessageParamList> paramListOptional = MessageParamList.of(message.bodyAs(List.class));
         if (!paramListOptional.isPresent()) {
@@ -51,10 +47,11 @@ public class RpcPasswordValidator implements AuthenticationValidator<RpcAccessId
         MessageParamList paramList = paramListOptional.get();
         long id = getIdParam(paramList);
         String password = getPasswordParam(paramList);
-        DoneResult<RpcAccessIdentify> result = rpcAuthService.authenticate(id, password);
+        var result = rpcAuthService.authenticate(id, password);
         if (result.isSuccess()) {
             RpcAccessIdentify identify = result.get();
-            return factory.certificate(idCreator.createId(), identify, id, identify.getServiceType(), Instant.now());
+            return Certificates.createAuthenticated(idCreator.createId(), identify.getId(), identify.getContactId(), identify.getContactType(),
+                    identify);
         }
         throw new AuthFailedException(format("Rpc登录认证失败, Code : {} ; Message : {}", result.getCode(), result.getMessage()));
     }

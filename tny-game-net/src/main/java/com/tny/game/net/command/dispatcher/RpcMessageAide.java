@@ -21,8 +21,8 @@ import java.util.Collection;
 /**
  * <p>
  *
- * @author: Kun Yang
- * @date: 2018-10-16 15:55
+ * @author Kun Yang
+ * @date 2018-10-16 15:55
  */
 public class RpcMessageAide {
 
@@ -34,7 +34,7 @@ public class RpcMessageAide {
      * @param tunnel  通道
      * @param content 消息信息上下文
      */
-    public static <UID> SendReceipt send(NetTunnel<UID> tunnel, MessageContent content) {
+    public static  SendReceipt send(NetTunnel tunnel, MessageContent content) {
         return send(tunnel, content, !content.existHeader(MessageHeaderConstants.RPC_FORWARD_HEADER));
     }
 
@@ -44,7 +44,7 @@ public class RpcMessageAide {
      * @param tunnel  通道
      * @param content 消息信息上下文
      */
-    public static <UID> SendReceipt send(NetTunnel<UID> tunnel, MessageContent content, boolean autoClose) {
+    public static  SendReceipt send(NetTunnel tunnel, MessageContent content, boolean autoClose) {
         boolean close = content.getResultCode().getLevel() == ResultLevel.ERROR;
         if (close) {
             if (!content.isWriteAwaitable()) {

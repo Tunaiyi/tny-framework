@@ -157,7 +157,7 @@ public class RpcInvokeCommand extends RpcHandleCommand {
         }
     }
 
-    private void afterInvoke(Tunnel<Object> tunnel, Message message, Throwable cause) {
+    private void afterInvoke(Tunnel tunnel, Message message, Throwable cause) {
         MethodControllerHolder controller = this.invokeContext.getController();
         if (controller != null) {
             DISPATCHER_LOG.debug("Controller [{}] 执行AfterPlugins", getName());
@@ -203,8 +203,7 @@ public class RpcInvokeCommand extends RpcHandleCommand {
             content = RpcMessageAide.toMessage(invokeContext.getRpcContext(), code, body);
         }
         if (relay && code.isSuccess()) { // 如果是协议需要继续转发, 成功时候继续转发
-            if (tunnel instanceof RelayTunnel) {
-                var relayTunnel = (RelayTunnel<?>) tunnel;
+            if (tunnel instanceof RelayTunnel relayTunnel) {
                 var monitor = invokeContext.getRpcContext().rpcMonitor();
                 var rpcContext = RpcTransactionContext.createRelay(tunnel, message, monitor, false);
                 relayTunnel.relay(rpcContext, false);
@@ -230,8 +229,7 @@ public class RpcInvokeCommand extends RpcHandleCommand {
             RpcInvokeException dex = (RpcInvokeException) e;
             DISPATCHER_LOG.error(dex.getMessage(), dex);
             return RpcResults.fail(dex.getCode(), dex.getBody());
-        } else if (e instanceof ResultCodableException) {
-            ResultCodableException dex = (ResultCodableException) e;
+        } else if (e instanceof ResultCodableException dex) {
             DISPATCHER_LOG.error(dex.getMessage(), dex);
             return RpcResults.fail(dex.getCode());
         } else if (e instanceof InvocationTargetException) {

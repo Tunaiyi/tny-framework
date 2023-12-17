@@ -13,8 +13,8 @@ package com.tny.game.demo.core.common;
 /**
  * <p>
  *
- * @author: Kun Yang
- * @date: 2018-10-31 16:51
+ * @author Kun Yang
+ * @date 2018-10-31 16:51
  */
 public interface CtrlerIds {
 

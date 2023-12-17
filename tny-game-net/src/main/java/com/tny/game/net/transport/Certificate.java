@@ -10,23 +10,19 @@
  */
 package com.tny.game.net.transport;
 
-import com.tny.game.net.message.*;
-
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.*;
 
-public interface Certificate<UID> extends Contact, Serializable {
+public interface Certificate extends ConnectIdentity, Serializable {
 
+    long ANONYMITY_CONTACT_ID = -1L;
+    long ANONYMITY_IDENTIFY = -1L;
+    long ANONYMITY_ID = -1L;
     /**
      * @return 获取凭证号
      */
     long getId();
-
-    /**
-     * @return 用户 ID
-     */
-    UID getIdentify();
 
     /**
      * @return 是否已认证
@@ -56,7 +52,7 @@ public interface Certificate<UID> extends Contact, Serializable {
      * @param other 对比认证
      * @return 比 other 新返回 true, 否则返回 false
      */
-    default boolean isNewerThan(Certificate<UID> other) {
+    default boolean isNewerThan(Certificate other) {
         if (this.isAuthenticated() && !other.isAuthenticated()) {
             return true;
         }
@@ -77,7 +73,7 @@ public interface Certificate<UID> extends Contact, Serializable {
      * @param other 对比认证
      * @return 比 other 旧返回 true, 否则返回 false
      */
-    default boolean isOlderThan(Certificate<UID> other) {
+    default boolean isOlderThan(Certificate other) {
         if (!this.isAuthenticated() && other.isAuthenticated()) {
             return true;
         }
@@ -98,12 +94,12 @@ public interface Certificate<UID> extends Contact, Serializable {
      * @param other 指定凭证
      * @return true 同用户, false 不同用户
      */
-    default boolean isSameUser(Certificate<UID> other) {
+    default boolean isSameUser(Certificate other) {
         if (this == other) {
             return true;
         }
-        return Objects.equals(getIdentify(), other.getIdentify()) &&
-               Objects.equals(contactType(), other.contactType());
+        return Objects.equals(getContactId(), other.getContactId()) &&
+               Objects.equals(getContactType(), other.getContactType());
     }
 
     /**
@@ -112,13 +108,14 @@ public interface Certificate<UID> extends Contact, Serializable {
      * @param other 指定凭证
      * @return true 同用户, false 不同用户
      */
-    default boolean isSameCertificate(Certificate<UID> other) {
+    default boolean isSameCertificate(Certificate other) {
         if (this == other) {
             return true;
         }
         return getId() == other.getId() &&
                Objects.equals(getIdentify(), other.getIdentify()) &&
-               Objects.equals(contactType(), other.contactType());
+               Objects.equals(getContactId(), other.getContactId()) &&
+               Objects.equals(getContactType(), other.getContactType());
     }
 
 }

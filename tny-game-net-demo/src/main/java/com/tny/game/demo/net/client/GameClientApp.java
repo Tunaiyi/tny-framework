@@ -37,8 +37,8 @@ import static com.tny.game.common.utils.StringAide.*;
 /**
  * <p>
  *
- * @author: Kun Yang
- * @date: 2018-10-30 16:49
+ * @author Kun Yang
+ * @date 2018-10-30 16:49
  */
 @EnableNetApplication
 @SpringBootApplication(scanBasePackages = {
@@ -63,7 +63,7 @@ public class GameClientApp {
             ClientGuide clientGuide = applicationContext.getBean("defaultClientGuide", ClientGuide.class);
             long userId = 1000;
             AtomicInteger times = new AtomicInteger();
-            Client<Long> client = clientGuide.client(URL.valueOf("protoex://127.0.0.1:18800"),
+            Client client = clientGuide.client(URL.valueOf("protoex://127.0.0.1:18800"),
                     tunnel -> {
                         tunnel.setAccessId(4000);
                         String message = "[" + IDS + "] 请求登录 " + times.incrementAndGet() + " 次";
@@ -188,7 +188,7 @@ public class GameClientApp {
         }
     }
 
-    private static <T> T send(Client<Long> client, Protocol protocol, Class<T> returnClass, long waitTimeout, Object... params) {
+    private static <T> T send(Client client, Protocol protocol, Class<T> returnClass, long waitTimeout, Object... params) {
         RequestContent messageContent = MessageContents.request(protocol, params);
         if (waitTimeout > 0) {
             SendReceipt context = client.send(messageContent
@@ -207,7 +207,7 @@ public class GameClientApp {
         return null;
     }
 
-    private static void send(Client<Long> client, String content, boolean wait) {
+    private static void send(Client client, String content, boolean wait) {
         RequestContent messageContent = MessageContents.request(Protocols.protocol(CtrlerIds.SPEAK$SAY), content);
         if (wait) {
             RpcResult<SayContentDTO> result = speakService.say(content);
@@ -217,7 +217,7 @@ public class GameClientApp {
         }
     }
 
-    private static void test(Client<Long> client, String content, boolean wait) {
+    private static void test(Client client, String content, boolean wait) {
         ThreadLocalRandom random = ThreadLocalRandom.current();
         RequestContent messageContent = MessageContents.request(Protocols.protocol(CtrlerIds.SPEAK$TEST),
                 (byte) random.nextInt(Byte.MIN_VALUE, Byte.MAX_VALUE),

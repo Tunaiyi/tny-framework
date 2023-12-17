@@ -15,8 +15,8 @@ import com.tny.game.net.command.dispatcher.*;
 /**
  * <p>
  *
- * @author: Kun Yang
- * @date: 2018-10-11 18:05
+ * @author Kun Yang
+ * @date 2018-10-11 18:05
  */
 public interface Receiver {
 

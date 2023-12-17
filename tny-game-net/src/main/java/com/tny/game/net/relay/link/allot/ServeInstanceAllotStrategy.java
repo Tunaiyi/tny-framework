@@ -29,6 +29,6 @@ public interface ServeInstanceAllotStrategy {
      * @param cluster 目标集群
      * @return 返回服务实例
      */
-    RemoteServeInstance allot(Tunnel<?> tunnel, NetRemoteServeCluster cluster);
+    RemoteServeInstance allot(Tunnel tunnel, NetRemoteServeCluster cluster);
 
 }

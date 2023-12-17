@@ -18,11 +18,11 @@ import java.util.Map;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 
-public class SpringBootParamFilterPlugin<UID> extends ParamFilterPlugin<UID> implements ApplicationContextAware {
+public class SpringBootParamFilterPlugin extends ParamFilterPlugin implements ApplicationContextAware {
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        Map<String, ParamFilter<?>> appFilter = as(applicationContext.getBeansOfType(ParamFilter.class));
+        Map<String, ParamFilter> appFilter = as(applicationContext.getBeansOfType(ParamFilter.class));
         this.addParamFilters(appFilter.values());
     }
 

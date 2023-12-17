@@ -134,12 +134,12 @@ public abstract class AbstractItemModel extends BaseModel<ItemModelContext> impl
             return new SimpleTryToDoResult(action, collector.getFailedDemands());
         }
         return new SimpleTryToDoResult(action, award ?
-                behaviorPlan.countAward(playerId, action, attributeMap) :
-                new SimpleTrade(action, TradeType.AWARD),
+                                               behaviorPlan.countAward(playerId, action, attributeMap) :
+                                               new SimpleTrade(action, TradeType.AWARD),
                 new SimpleTrade(action, TradeType.DEDUCT, collector.getCostDemands().stream()
-                        .filter(d -> d.getDemandType() == TradeDemandType.DEDUCT_DEMAND_GE)
-                        .map(d -> new SimpleTradeItem<>(d, d.getAlterType(), d.getParamMap()))
-                        .collect(Collectors.toList())));
+                                                                   .filter(d -> d.getDemandType() == TradeDemandType.DEDUCT_DEMAND_GE)
+                                                                   .map(d -> new SimpleTradeItem<>(d, d.getAlterType(), d.getParamMap()))
+                                                                   .collect(Collectors.toList())));
     }
 
     protected BehaviorResult doCountBehaviorResult(long playerId, Item<?> item, Behavior behavior, Object... attributes) {
@@ -271,10 +271,6 @@ public abstract class AbstractItemModel extends BaseModel<ItemModelContext> impl
         return this.doTryToDo(item.getPlayerId(), item, action, award, true, attributes);
     }
 
-    @Override
-    public Set<Object> tags() {
-        return this.tags;
-    }
 
     @Override
     public BehaviorResult getBehaviorResult(Item<?> item, Behavior behavior, Object... attributes) {
@@ -430,7 +426,7 @@ public abstract class AbstractItemModel extends BaseModel<ItemModelContext> impl
                 if (this.hasAbility(ability)) {
                     object = this.doCountAbility(item.getPlayerId(), item, ability, clazz, attributes);
                 }
-                valueMap.put((A)ability, object);
+                valueMap.put((A) ability, object);
             }
         }
         return valueMap;
@@ -446,7 +442,7 @@ public abstract class AbstractItemModel extends BaseModel<ItemModelContext> impl
                 if (this.hasAbility(ability)) {
                     object = this.doCountAbility(playerId, null, ability, clazz, attributes);
                 }
-                valueMap.put((A)ability, object);
+                valueMap.put((A) ability, object);
             }
         }
         return valueMap;
@@ -488,7 +484,7 @@ public abstract class AbstractItemModel extends BaseModel<ItemModelContext> impl
     @SuppressWarnings("unchecked")
     public <A> A getAbility(Item<?> item, A defaultObject, Ability ability, Object... attributes) {
         A value = this.doCountAbility(item.getPlayerId(), item, ability,
-                (Class<A>)(defaultObject == null ? Object.class : (Class<A>)defaultObject.getClass()), attributes);
+                (Class<A>) (defaultObject == null ? Object.class : (Class<A>) defaultObject.getClass()), attributes);
         return this.defaultNumber(value, defaultObject);
     }
 
@@ -496,7 +492,7 @@ public abstract class AbstractItemModel extends BaseModel<ItemModelContext> impl
     @SuppressWarnings("unchecked")
     public <A> A getAbility(long playerId, A defaultObject, Ability ability, Object... attributes) {
         A value = this
-                .doCountAbility(playerId, null, ability, (Class<A>)(defaultObject == null ? Object.class : defaultObject.getClass()), attributes);
+                .doCountAbility(playerId, null, ability, (Class<A>) (defaultObject == null ? Object.class : defaultObject.getClass()), attributes);
         return this.defaultNumber(value, defaultObject);
     }
 
@@ -637,11 +633,9 @@ public abstract class AbstractItemModel extends BaseModel<ItemModelContext> impl
             return true;
         }
 
-        if (!(o instanceof AbstractItemModel)) {
+        if (!(o instanceof AbstractItemModel that)) {
             return false;
         }
-
-        AbstractItemModel that = (AbstractItemModel)o;
 
         return new EqualsBuilder().append(getId(), that.getId()).isEquals();
     }

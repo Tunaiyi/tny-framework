@@ -36,6 +36,5 @@ public interface RpcAccess {
     /**
      * @return endpoint
      */
-    Endpoint<?> getEndpoint();
-
+    Endpoint getEndpoint();
 }

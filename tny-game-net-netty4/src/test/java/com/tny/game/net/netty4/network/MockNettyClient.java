@@ -11,7 +11,6 @@
 package com.tny.game.net.netty4.network;
 
 import com.tny.game.common.url.*;
-import com.tny.game.net.endpoint.*;
 import com.tny.game.net.rpc.*;
 import com.tny.game.net.transport.*;
 
@@ -21,23 +20,13 @@ import java.util.*;
 /**
  * <p>
  */
-public class MockNettyClient extends MockNetEndpoint implements NetTerminal<Long> {
+public class MockNettyClient extends MockNetEndpoint implements NetTerminal {
 
-    private URL url;
+    private final URL url;
 
-    public MockNettyClient(URL url, Certificate<Long> certificate) {
+    public MockNettyClient(URL url, Certificate certificate) {
         super(certificate, NetAccessMode.CLIENT);
         this.url = url;
-    }
-
-    @Override
-    public long getConnectTimeout() {
-        return 0;
-    }
-
-    @Override
-    public boolean isAsyncConnect() {
-        return false;
     }
 
     @Override
@@ -45,39 +34,16 @@ public class MockNettyClient extends MockNetEndpoint implements NetTerminal<Long
         return new NettyChannelMessageTransporter(NetAccessMode.CLIENT, new MockChannel(new InetSocketAddress(8090), new InetSocketAddress(8091)));
     }
 
-    @Override
-    public int getConnectRetryTimes() {
-        return 0;
-    }
 
     @Override
     public List<Long> getConnectRetryIntervals() {
         return Collections.singletonList(30000L);
     }
 
-    @Override
-    public void reconnect() {
-
-    }
-
-    @Override
-    public void onConnected(NetTunnel<Long> tunnel) {
-
-    }
 
     @Override
     public URL getUrl() {
         return this.url;
-    }
-
-    @Override
-    public void resend(NetTunnel<Long> tunnel, long fromId, FilterBound bound) {
-
-    }
-
-    @Override
-    public void resend(NetTunnel<Long> tunnel, long fromId, long toId, FilterBound bound) {
-
     }
 
 }

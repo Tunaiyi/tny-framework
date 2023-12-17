@@ -23,8 +23,8 @@ import static com.tny.game.common.utils.ObjectAide.*;
 /**
  * <p>
  *
- * @author: Kun Yang
- * @date: 2018-09-18 10:58
+ * @author Kun Yang
+ * @date 2018-09-18 10:58
  */
 public class RespondFutureMonitor {
 

@@ -23,7 +23,7 @@ public class TunnelConnectedPacket extends BaseTunnelPacket<TunnelConnectedArgum
 
     public static final RelayPacketFactory<TunnelConnectedPacket, TunnelConnectedArguments> FACTORY = TunnelConnectedPacket::new;
 
-    public TunnelConnectedPacket(int id, RelayTunnel<?> tunnel, boolean result) {
+    public TunnelConnectedPacket(int id, RelayTunnel tunnel, boolean result) {
         super(id, RelayPacketType.TUNNEL_CONNECTED, TunnelConnectedArguments.ofResult(tunnel.getInstanceId(), tunnel.getId(), result));
     }
 

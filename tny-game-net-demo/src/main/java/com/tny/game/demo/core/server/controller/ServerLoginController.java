@@ -26,8 +26,8 @@ import static com.tny.game.net.base.ContactType.*;
 /**
  * <p>
  *
- * @author: Kun Yang
- * @date: 2018-10-31 16:46
+ * @author Kun Yang
+ * @date 2018-10-31 16:46
  */
 @RpcController
 @AuthenticationRequired(DEFAULT_USER_TYPE)
@@ -39,8 +39,8 @@ public class ServerLoginController {
     @Rpc(CtrlerIds.LOGIN$LOGIN)
     @BeforePlugin(SpringBootParamFilterPlugin.class)
     @AuthenticationRequired(value = DEFAULT_USER_TYPE, validator = DemoAuthenticationValidator.class)
-    public LoginDTO login(Tunnel<Long> tunnel, Endpoint<Long> endpoint, @RpcParam long sessionId, @RpcParam long userId) {
-        Certificate<Long> certificate = endpoint.getCertificate();
+    public LoginDTO login(Tunnel tunnel, Endpoint endpoint, @RpcParam long sessionId, @RpcParam long userId) {
+        Certificate certificate = endpoint.getCertificate();
         //        EXECUTOR_SERVICE.scheduleAtFixedRate(() -> endpoint.send(MessageContexts
         //                .push(ProtocolAide.protocol(CtrlerIDs.LOGIN$PING), "ping tunnel id " + tunnel.getId())), 0, 3, TimeUnit.SECONDS);
         return new LoginDTO(certificate.getId(), userId, format("{} - {} 登录成功 at {}", userId, sessionId, ZonedDateTime.now()));

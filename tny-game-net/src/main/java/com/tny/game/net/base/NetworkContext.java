@@ -14,7 +14,6 @@ import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.rpc.*;
-import com.tny.game.net.transport.*;
 
 /**
  * 网络上下文对象
@@ -53,11 +52,6 @@ public interface NetworkContext extends EndpointContext {
      */
     ContactFactory getContactFactory();
 
-    /**
-     * @param <UID> id类型
-     * @return 选项工厂
-     */
-    <UID> CertificateFactory<UID> getCertificateFactory();
 
     /**
      * @return Rpc转发器
