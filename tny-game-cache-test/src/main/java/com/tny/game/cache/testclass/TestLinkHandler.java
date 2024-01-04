@@ -37,7 +37,7 @@ public class TestLinkHandler extends CacheFormatter<Object, Object> {
         if (bytes == null) {
             return null;
         }
-        ByteArrayInputStream byteIn = new ByteArrayInputStream(Base64.decodeBase64((String)bytes));
+        ByteArrayInputStream byteIn = new ByteArrayInputStream(Base64.decodeBase64((String) bytes));
         ObjectInputStream objectIn = null;
         try {
             objectIn = new ObjectInputStream(byteIn);

@@ -11,7 +11,7 @@
 package com.tny.game.net.rpc;
 
 import com.google.common.collect.ImmutableSet;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.rpc.annotation.*;
 import com.tny.game.net.transport.*;
@@ -138,16 +138,16 @@ public enum RpcReturnMode {
     private static Class<?> genericBodyClass(Method method) {
         Type type = method.getGenericReturnType();
         if (type instanceof Class) {
-            return (Class<?>)type;
+            return (Class<?>) type;
         }
         if (type instanceof ParameterizedType) {
-            Type[] actualTypeValue = ((ParameterizedType)type).getActualTypeArguments();
+            Type[] actualTypeValue = ((ParameterizedType) type).getActualTypeArguments();
             Type typeClass = actualTypeValue[0];
             if (typeClass instanceof ParameterizedType) {
-                ParameterizedType bodyType = (ParameterizedType)typeClass;
-                return (Class<?>)bodyType.getRawType();
+                ParameterizedType bodyType = (ParameterizedType) typeClass;
+                return (Class<?>) bodyType.getRawType();
             }
-            return (Class<?>)typeClass;
+            return (Class<?>) typeClass;
         }
         throw new IllegalArgumentException();
     }

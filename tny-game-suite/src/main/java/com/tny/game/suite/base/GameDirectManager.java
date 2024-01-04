@@ -34,17 +34,17 @@ public abstract class GameDirectManager<O> extends GameManager<O> {
     @SuppressWarnings("unchecked")
     protected Collection<O> gets(long playerId, Collection<?> ids) {
         List<String> keys = ids.stream().map(id -> this.cache.getKey(this.entityClass, playerId, id)).collect(Collectors.toList());
-        return onLoad((Collection<O>)this.cache.getObjectsByKeys(this.entityClass, keys));
+        return onLoad((Collection<O>) this.cache.getObjectsByKeys(this.entityClass, keys));
     }
 
     @SuppressWarnings("unchecked")
     protected Collection<O> getByKeys(String... keys) {
-        return onLoad((Collection<O>)this.cache.getObjectsByKeys(this.entityClass, Arrays.asList(keys)));
+        return onLoad((Collection<O>) this.cache.getObjectsByKeys(this.entityClass, Arrays.asList(keys)));
     }
 
     @SuppressWarnings("unchecked")
     protected Collection<O> getByKeys(Collection<String> keys) {
-        return onLoad((Collection<O>)this.cache.getObjectsByKeys(this.entityClass, keys));
+        return onLoad((Collection<O>) this.cache.getObjectsByKeys(this.entityClass, keys));
     }
 
     @SuppressWarnings("unchecked")

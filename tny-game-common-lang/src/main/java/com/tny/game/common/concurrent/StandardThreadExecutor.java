@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -79,7 +80,7 @@ public class StandardThreadExecutor extends ThreadPoolExecutor {
     public StandardThreadExecutor(int coreThreads, int maxThreads, long keepAliveTime, TimeUnit unit,
             int queueCapacity, ThreadFactory threadFactory, RejectedExecutionHandler handler) {
         super(coreThreads, maxThreads, keepAliveTime, unit, new ExecutorQueue(), threadFactory, handler);
-        ((ExecutorQueue)getQueue()).setStandardThreadExecutor(this);
+        ((ExecutorQueue) getQueue()).setStandardThreadExecutor(this);
 
         submittedTasksCount = new AtomicInteger(0);
 
@@ -102,7 +103,7 @@ public class StandardThreadExecutor extends ThreadPoolExecutor {
             super.execute(command);
         } catch (RejectedExecutionException rx) {
             // there could have been contention around the queue
-            if (!((ExecutorQueue)getQueue()).force(command)) {
+            if (!((ExecutorQueue) getQueue()).force(command)) {
                 submittedTasksCount.decrementAndGet();
 
                 getRejectedExecutionHandler().rejectedExecution(command, this);

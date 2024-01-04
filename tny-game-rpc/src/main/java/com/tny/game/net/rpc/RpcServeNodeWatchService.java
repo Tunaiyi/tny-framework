@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -14,8 +15,7 @@ import com.google.common.collect.ImmutableList;
 import com.tny.game.common.concurrent.collection.*;
 import com.tny.game.common.lifecycle.*;
 import com.tny.game.common.url.*;
-import com.tny.game.common.utils.*;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.relay.cluster.*;
 import com.tny.game.net.relay.cluster.watch.*;
@@ -40,10 +40,7 @@ public class RpcServeNodeWatchService implements AppPrepareStart, AppClosed {
 
     private final ServeNodeClient serveNodeClient;
 
-    private final IdCreator idCreator;
-
     public RpcServeNodeWatchService(ServeNodeClient serveNodeClient, Collection<RpcClientFactory> connectors) {
-        this.idCreator = new HashIDCreator(32);
         this.serveNodeClient = serveNodeClient;
         this.factories.addAll(connectors);
     }
@@ -84,9 +81,9 @@ public class RpcServeNodeWatchService implements AppPrepareStart, AppClosed {
                 ClientConnectFuture future = client.open();
                 future.handle((cl, cause) -> {
                     if (cause != null) {
-                        LOGGER.warn("Rpc [{}] Client {} connect failed", clientCreator.serviceName(), url, cause);
+                        LOGGER.warn("Rpc [{}] Client {} connect failed", clientCreator.getService(), url, cause);
                     } else {
-                        LOGGER.info("Rpc [{}] Client {} connect success", clientCreator.serviceName(), url);
+                        LOGGER.info("Rpc [{}] Client {} connect success", clientCreator.getService(), url);
                     }
                     return cl;
                 });
@@ -137,7 +134,7 @@ public class RpcServeNodeWatchService implements AppPrepareStart, AppClosed {
 
         private void start() {
             if (connector.isDiscovery()) {
-                serveNodeClient.subscribe(connector.discoverService(), this);
+                serveNodeClient.subscribe(connector.getServeName(), this);
             } else {
                 RpcServiceSetting setting = connector.getSetting();
                 setting.url().ifPresent(this::connect);
@@ -154,7 +151,7 @@ public class RpcServeNodeWatchService implements AppPrepareStart, AppClosed {
 
         private void stop() {
             if (connector.isDiscovery()) {
-                serveNodeClient.unsubscribe(connector.discoverService(), this);
+                serveNodeClient.unsubscribe(connector.getServeName(), this);
             }
             this.close();
         }

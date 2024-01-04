@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -42,12 +43,12 @@ public class ZKMonitorClient {
         STAT(EnumSet.of(Code.OK, Code.NONODE)) {
             @Override
             public void handleCallBack(AsyncCallback callback, int rc, String path, Object value, Object ctx, Stat stat) {
-                ((StatCallback)callback).processResult(rc, path, ctx, stat);
+                ((StatCallback) callback).processResult(rc, path, ctx, stat);
             }
 
             @Override
             public void addWatcher(ZKClient keeper, String path, Watcher watcher, AsyncCallback cb, Object ctx) {
-                keeper.exists(path, watcher, (StatCallback)cb, ctx);
+                keeper.exists(path, watcher, (StatCallback) cb, ctx);
             }
         },
 
@@ -55,12 +56,12 @@ public class ZKMonitorClient {
             @Override
             @SuppressWarnings("unchecked")
             public void handleCallBack(AsyncCallback callback, int rc, String path, Object value, Object ctx, Stat stat) {
-                ((ChildrenCallback)callback).processResult(rc, path, ctx, (List<String>)value);
+                ((ChildrenCallback) callback).processResult(rc, path, ctx, (List<String>) value);
             }
 
             @Override
             public void addWatcher(ZKClient keeper, String path, Watcher watcher, AsyncCallback cb, Object ctx) {
-                keeper.getChildren(path, watcher, (ChildrenCallback)cb, ctx);
+                keeper.getChildren(path, watcher, (ChildrenCallback) cb, ctx);
             }
 
         },
@@ -69,12 +70,12 @@ public class ZKMonitorClient {
             @Override
             @SuppressWarnings("unchecked")
             public void handleCallBack(AsyncCallback callback, int rc, String path, Object value, Object ctx, Stat stat) {
-                ((Children2Callback)callback).processResult(rc, path, ctx, (List<String>)value, stat);
+                ((Children2Callback) callback).processResult(rc, path, ctx, (List<String>) value, stat);
             }
 
             @Override
             public void addWatcher(ZKClient keeper, String path, Watcher watcher, AsyncCallback cb, Object ctx) {
-                keeper.getChildren2(path, watcher, (Children2Callback)cb, ctx);
+                keeper.getChildren2(path, watcher, (Children2Callback) cb, ctx);
             }
 
         },
@@ -82,12 +83,12 @@ public class ZKMonitorClient {
         DATA(EnumSet.of(Code.OK)) {
             @Override
             public void handleCallBack(AsyncCallback callback, int rc, String path, Object value, Object ctx, Stat stat) {
-                ((DataCallback)callback).processResult(rc, path, ctx, (byte[])value, stat);
+                ((DataCallback) callback).processResult(rc, path, ctx, (byte[]) value, stat);
             }
 
             @Override
             public void addWatcher(ZKClient keeper, String path, Watcher watcher, AsyncCallback cb, Object ctx) {
-                keeper.getData(path, watcher, (DataCallback)cb, ctx);
+                keeper.getData(path, watcher, (DataCallback) cb, ctx);
             }
         };
 
@@ -200,7 +201,8 @@ public class ZKMonitorClient {
             if (state == KeeperState.SyncConnected || state == KeeperState.Expired) {
                 this.setState(MonitorState.UNWATCH);
                 this.policy.reset();
-                LOGGER.debug("{} 第{}次监听到 {} 发生变化, monitor状态:{}, keeperState: {}", this.path, this.time.get(), this.operation, this.state, state);
+                LOGGER.debug("{} 第{}次监听到 {} 发生变化, monitor状态:{}, keeperState: {}", this.path, this.time.get(), this.operation, this.state,
+                        state);
                 if (this.handler != null) {
                     this.handler.process(event);
                 }

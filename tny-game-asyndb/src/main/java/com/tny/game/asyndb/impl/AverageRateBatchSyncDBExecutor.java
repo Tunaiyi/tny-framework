@@ -245,7 +245,8 @@ public class AverageRateBatchSyncDBExecutor implements SyncDBExecutor {
                         int size = this.sumitQueue.size();
                         costTime = System.currentTimeMillis() - startAt;
                         if (LOGGER.isInfoEnabled() && syncSize > 0) {
-                            LOGGER.info("同步器 [{}-{}] 消耗 {} ms, 同步 {} 对象! 提交队列对象数: {}", AverageRateBatchSyncDBExecutor.class.getSimpleName(),
+                            LOGGER.info("同步器 [{}-{}] 消耗 {} ms, 同步 {} 对象! 提交队列对象数: {}",
+                                    AverageRateBatchSyncDBExecutor.class.getSimpleName(),
                                     this.syncID,
                                     costTime, syncSize, size);
                         }

@@ -87,7 +87,7 @@ public class ClusterUtils {
         @Override
         public byte[] data2Bytes(Object data) {
             if (data instanceof byte[]) {
-                return (byte[])data;
+                return (byte[]) data;
             }
             throw new ClassCastException(data + " is not byte[] class");
         }

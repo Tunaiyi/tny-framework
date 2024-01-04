@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -64,12 +65,13 @@ public abstract class BaseFieldOptions<T> implements FieldOptions<T> {
             throw new NullPointerException(format("{} 类 {} 字段 ProtoField.value = {} <= 0", field.getDeclaringClass(), field, member.value()));
         }
         ProtoExConf conf = member.conf();
-        Class<T> type = (Class<T>)field.getType();
+        Class<T> type = (Class<T>) field.getType();
         if (conf.use() != Void.class) {
             if (!type.isAssignableFrom(conf.use())) {
-                throw new IllegalArgumentException(format("{} 类 {} 字段 use {} 不是 type {} 的子类", field.getDeclaringClass(), field, ProtoExField.class));
+                throw new IllegalArgumentException(
+                        format("{} 类 {} 字段 use {} 不是 type {} 的子类", field.getDeclaringClass(), field, ProtoExField.class));
             }
-            this.use = (Class<T>)conf.use();
+            this.use = (Class<T>) conf.use();
         } else {
             this.use = type;
         }
@@ -91,7 +93,7 @@ public abstract class BaseFieldOptions<T> implements FieldOptions<T> {
 
     protected static boolean checkExplicit(Class<?> type, boolean explicit) {
         if (!Collection.class.isAssignableFrom(type) && !Map.class.isAssignableFrom(type) &&
-                ((Modifier.isAbstract(type.getModifiers())) && !explicit)) {
+            ((Modifier.isAbstract(type.getModifiers())) && !explicit)) {
             return false;
         }
         return true;
@@ -130,9 +132,9 @@ public abstract class BaseFieldOptions<T> implements FieldOptions<T> {
     @Override
     public String toString() {
         return "IOConfiger [name=" + this.name + ", index=" + this.index + ", type=" + this.type + ", typeEncode=" + this.typeEncode +
-                ", protoExType=" + this.protoExType + ", packed="
-                + this.packed + ", format=" + this.format
-                + "]";
+               ", protoExType=" + this.protoExType + ", packed="
+               + this.packed + ", format=" + this.format
+               + "]";
     }
 
 }

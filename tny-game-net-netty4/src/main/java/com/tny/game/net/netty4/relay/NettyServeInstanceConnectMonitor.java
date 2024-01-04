@@ -10,6 +10,7 @@
  */
 package com.tny.game.net.netty4.relay;
 
+import com.tny.game.net.clusters.*;
 import com.tny.game.net.relay.link.*;
 
 import java.util.*;
@@ -46,7 +47,7 @@ class NettyServeInstanceConnectMonitor {
         executorService.schedule(monitor::connect, delayTime, TimeUnit.MILLISECONDS);
     }
 
-    public synchronized void start(NetRemoteServeInstance instance, int connectionSize) {
+    public synchronized void start(NetRelayServeInstance instance, int connectionSize) {
         if (!this.connections.isEmpty()) {
             return;
         }

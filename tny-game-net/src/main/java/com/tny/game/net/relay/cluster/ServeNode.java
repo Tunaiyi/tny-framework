@@ -10,8 +10,7 @@
  */
 package com.tny.game.net.relay.cluster;
 
-import com.tny.game.net.base.*;
-import com.tny.game.net.serve.*;
+import com.tny.game.net.application.*;
 
 import javax.annotation.Nonnull;
 import java.util.Comparator;
@@ -23,7 +22,7 @@ import java.util.Comparator;
  * @author : kgtny
  * @date : 2021/8/23 9:21 下午
  */
-public interface ServeNode extends NetAccessNode, Serve, Comparable<ServeNode> {
+public interface ServeNode extends NetAccessNode, ServedService, Comparable<ServeNode> {
 
     Comparator<ServeNode> COMPARATOR = Comparator.comparingLong(ServeNode::getId);
 
@@ -36,27 +35,6 @@ public interface ServeNode extends NetAccessNode, Serve, Comparable<ServeNode> {
      * @return scope 类型
      */
     String getScopeType();
-
-    /**
-     * @return app 类型枚举
-     */
-    default AppType appType() {
-        return AppTypes.ofAppName(this.getAppType());
-    }
-
-    /**
-     * @return scope 类型枚举
-     */
-    default AppScope scopeType() {
-        return AppScopes.ofScopeName(this.getScopeType());
-    }
-    /**
-     * @return 服务类型
-     */
-
-    default RpcServiceType serviceType() {
-        return RpcServiceTypes.checkService(serviceName());
-    }
 
     @Override
     default int compareTo(@Nonnull ServeNode o) {

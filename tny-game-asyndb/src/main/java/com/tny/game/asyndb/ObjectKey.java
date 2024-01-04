@@ -24,7 +24,7 @@ public class ObjectKey {
         if (!(o instanceof ObjectKey)) {
             return false;
         }
-        ObjectKey objectKey = (ObjectKey)o;
+        ObjectKey objectKey = (ObjectKey) o;
         return Arrays.equals(keyWords, objectKey.keyWords);
     }
 

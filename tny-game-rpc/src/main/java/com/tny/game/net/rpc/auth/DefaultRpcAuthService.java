@@ -16,7 +16,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.tny.game.codec.jackson.mapper.*;
 import com.tny.game.common.exception.*;
 import com.tny.game.common.result.*;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 
 /**
  * <p>
@@ -38,6 +38,7 @@ public class DefaultRpcAuthService implements RpcAuthService {
         module.addDeserializer(RpcServiceType.class, new RpcServiceTypeJsonDeserializer());
         objectMapper.registerModule(module);
     }
+
     public DefaultRpcAuthService(NetAppContext netAppContext, RpcUserPasswordManager rpcUserPasswordManager) {
         this.rpcUserPasswordManager = rpcUserPasswordManager;
         this.netAppContext = netAppContext;

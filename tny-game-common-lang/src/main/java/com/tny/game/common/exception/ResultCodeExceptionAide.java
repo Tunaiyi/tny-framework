@@ -29,7 +29,7 @@ public class ResultCodeExceptionAide {
 
     public static ResultCode codeOf(Throwable cause, ResultCode defaultCode) {
         if (cause instanceof ResultCodableException) {
-            return ((ResultCodableException)cause).getCode();
+            return ((ResultCodableException) cause).getCode();
         }
         return defaultCode;
     }

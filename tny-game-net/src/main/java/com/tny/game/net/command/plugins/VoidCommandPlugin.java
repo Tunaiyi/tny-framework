@@ -24,9 +24,9 @@ public interface VoidCommandPlugin extends CommandPlugin<Void> {
     /**
      * 请求过滤
      *
-     * @param tunnel 通道
-     * @param message      消息
-     * @param context      上下文
+     * @param tunnel  通道
+     * @param message 消息
+     * @param context 上下文
      * @throws Exception 异常
      */
     @Override
@@ -37,9 +37,9 @@ public interface VoidCommandPlugin extends CommandPlugin<Void> {
     /**
      * 请求过滤
      *
-     * @param tunnel 通道
-     * @param message      消息
-     * @param context      上下文
+     * @param tunnel  通道
+     * @param message 消息
+     * @param context 上下文
      * @throws Exception 异常
      */
     void doExecute(Tunnel tunnel, Message message, RpcInvokeContext context) throws Exception;

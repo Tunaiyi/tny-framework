@@ -1,6 +1,6 @@
 package com.tny.game.demo.core.common;
 
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 
 public enum TestRpcServiceType implements RpcServiceType {
 
@@ -33,9 +33,9 @@ public enum TestRpcServiceType implements RpcServiceType {
         return service;
     }
 
-    @Override
-    public AppType getAppType() {
-        return appType;
-    }
+    // @Override
+    // public AppType getAppType() {
+    //     return appType;
+    // }
 
 }

@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -79,7 +80,7 @@ public class LocalActorContext<ID, M> implements ActorContext<ID, DefaultLocalAc
 
     @Override
     public DefaultLocalActor<ID, M> actorOf(ID id, ActorURL path) {
-        return actorOf(id, path, (ActorProps)null);
+        return actorOf(id, path, (ActorProps) null);
     }
 
     @Override
@@ -105,7 +106,7 @@ public class LocalActorContext<ID, M> implements ActorContext<ID, DefaultLocalAc
         if (actor instanceof DefaultLocalActor && this.isExist(actor)) {
             if (this.remove(actor)) {
                 if (!actor.isTerminated()) {
-                    ((DefaultLocalActor)actor).terminate();
+                    ((DefaultLocalActor) actor).terminate();
                 }
                 return true;
             }

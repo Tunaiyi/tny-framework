@@ -36,7 +36,7 @@ public abstract class AutoMethod<I extends Annotation, R extends Annotation, P e
                         if (autoParamMap == null) {
                             autoParamMap = new HashMap<>();
                         }
-                        this.autoParamMap.put(index, (P)ann);
+                        this.autoParamMap.put(index, (P) ann);
                     }
                 }
                 index++;

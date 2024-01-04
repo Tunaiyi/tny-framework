@@ -10,7 +10,7 @@
  */
 package com.tny.game.net.netty4.relay.configuration;
 
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.net.netty4.network.*;
 import com.tny.game.net.netty4.relay.*;
 import com.tny.game.net.netty4.relay.cluster.*;
@@ -33,7 +33,7 @@ import java.util.List;
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties({
         FixedRelayMessageRoutersProperties.class,
-        SpringRelayServeClustersProperties.class,
+        SpringRelayClustersProperties.class,
         SpringBootRelayBootstrapProperties.class
 })
 public class RelayClientAutoConfiguration {

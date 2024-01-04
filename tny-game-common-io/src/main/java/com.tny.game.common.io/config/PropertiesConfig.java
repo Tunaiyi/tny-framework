@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -226,7 +227,7 @@ class PropertiesConfig implements Config {
             return null;
         }
         try {
-            return (O)value;
+            return (O) value;
         } catch (ClassCastException e) {
             return null;
         }
@@ -239,7 +240,7 @@ class PropertiesConfig implements Config {
         if (value == null) {
             return defValue;
         }
-        return (O)value;
+        return (O) value;
     }
 
     @Override
@@ -299,7 +300,7 @@ class PropertiesConfig implements Config {
         Map<String, T> map = new HashMap<>();
         for (Entry<String, Object> entry : this.configMap.entrySet()) {
             if (regular.matcher(entry.getKey()).matches()) {
-                map.put(entry.getKey(), (T)entry.getValue());
+                map.put(entry.getKey(), (T) entry.getValue());
             }
         }
         return map;

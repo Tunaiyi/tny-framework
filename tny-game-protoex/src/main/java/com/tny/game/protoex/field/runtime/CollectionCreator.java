@@ -38,7 +38,7 @@ public class CollectionCreator {
             throw new IllegalArgumentException(format("{}无法找到对应的Collection", clazz));
         } else {
             try {
-                return (Map<K, V>)clazz.getDeclaredConstructor().newInstance();
+                return (Map<K, V>) clazz.getDeclaredConstructor().newInstance();
             } catch (Exception e) {
                 throw ProtobufExException.causeBy(e);
             }
@@ -66,7 +66,7 @@ public class CollectionCreator {
                 return new ArrayList<>();
             }
             try {
-                return (Collection<T>)clazz.getDeclaredConstructor().newInstance();
+                return (Collection<T>) clazz.getDeclaredConstructor().newInstance();
             } catch (Exception e) {
                 throw ProtobufExException.causeBy(e);
             }

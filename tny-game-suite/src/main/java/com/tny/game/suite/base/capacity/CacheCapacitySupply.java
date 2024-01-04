@@ -58,7 +58,7 @@ public class CacheCapacitySupply implements InnerCapacitySupply {
         return this.cache.getAll(Capacity.class).entrySet()
                 .stream()
                 .collect(Collectors.toMap(
-                        e -> (Capacity)e.getKey(),
+                        e -> (Capacity) e.getKey(),
                         Entry::getValue));
     }
 

@@ -129,7 +129,8 @@ public abstract class BaseCluster {
         ServiceNode node = holder.randNode();
         Asserts.checkArgument(node != null, "获取 Protocol : {} | Path : [{}] 时, 没有找到符合的服务器节点", urlProtocol, path);
         URL url = node.getURL(urlProtocol);
-        Asserts.checkArgument(url != null, "获取 Protocol : {} | Path : [{}] 时, {} 服务器节点 {} 没有对应的URL", urlProtocol, path, node.getAppType(),
+        Asserts.checkArgument(url != null, "获取 Protocol : {} | Path : [{}] 时, {} 服务器节点 {} 没有对应的URL", urlProtocol, path,
+                node.getAppType(),
                 node.getServerId());
         return url.toString() + path;
     }
@@ -140,7 +141,8 @@ public abstract class BaseCluster {
         ServiceNode node = holder.getNode(id);
         Asserts.checkArgument(node != null, "获取 Protocol : {} | Path : [{}] 时, 没有找到 {} 服务器节点 {}", urlProtocol, path, type, id);
         URL url = node.getURL(urlProtocol);
-        Asserts.checkArgument(url != null, "获取 Protocol : {} | Path : [{}] 时, {} 服务器节点 {} 没有对应的URL", urlProtocol, path, node.getAppType(),
+        Asserts.checkArgument(url != null, "获取 Protocol : {} | Path : [{}] 时, {} 服务器节点 {} 没有对应的URL", urlProtocol, path,
+                node.getAppType(),
                 node.getServerId());
         return url.toString() + path;
     }

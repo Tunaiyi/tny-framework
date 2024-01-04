@@ -19,7 +19,7 @@ public abstract class ParallelismLoadManager<O> extends GameCacheManager<O> {
     private int groupSize;
 
     private static final ForkJoinPool forkJoinPool = ForkJoinPool.getCommonPoolParallelism() >= 100 ?
-            ForkJoinPool.commonPool() : new ForkJoinPool(20);
+                                                     ForkJoinPool.commonPool() : new ForkJoinPool(20);
 
     private boolean parallelism;
 

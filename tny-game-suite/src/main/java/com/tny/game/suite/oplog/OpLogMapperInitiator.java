@@ -2,7 +2,7 @@ package com.tny.game.suite.oplog;
 
 import com.fasterxml.jackson.databind.jsontype.NamedType;
 import com.tny.game.common.lifecycle.*;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.oplog.*;
 import com.tny.game.oplog.utils.*;
 import com.tny.game.scanner.*;
@@ -50,7 +50,7 @@ public class OpLogMapperInitiator implements AppPrepareStart {
                     if (Modifier.isAbstract(modifier)) {
                         continue;
                     }
-                    Snapshot snapShot = (Snapshot)cl.newInstance();
+                    Snapshot snapShot = (Snapshot) cl.newInstance();
                     OpLogMapper.getMapper().registerSubtypes(new NamedType(cl, snapShot.getType().toString()));
                 }
             } catch (Throwable e) {

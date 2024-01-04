@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -34,7 +35,7 @@ public abstract class AbstractLuaScript<E, R> implements LuaScript<E, R> {
     private final Type returnType;
 
     public AbstractLuaScript(ScriptContent content, List<String> keys, List<Object> arguments, Class<E> elementType, Class<R> returnType) {
-        this(content, keys, arguments, elementType, (Type)returnType);
+        this(content, keys, arguments, elementType, (Type) returnType);
     }
 
     public AbstractLuaScript(ScriptContent content, List<String> keys, List<Object> arguments, Type elementType, Type returnType) {
@@ -46,7 +47,7 @@ public abstract class AbstractLuaScript<E, R> implements LuaScript<E, R> {
     }
 
     public AbstractLuaScript(String script, List<String> keys, List<Object> arguments, Class<E> elementType, Class<R> returnType) {
-        this(script, keys, arguments, (Type)elementType, (Type)returnType);
+        this(script, keys, arguments, (Type) elementType, (Type) returnType);
     }
 
     public AbstractLuaScript(String script, List<String> keys, List<Object> arguments, Type elementType, Type returnType) {

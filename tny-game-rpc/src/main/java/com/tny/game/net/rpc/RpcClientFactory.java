@@ -12,13 +12,12 @@ package com.tny.game.net.rpc;
 
 import com.tny.game.common.url.*;
 import com.tny.game.common.utils.*;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.rpc.auth.*;
 import com.tny.game.net.rpc.setting.*;
-import com.tny.game.net.serve.*;
 import com.tny.game.net.transport.*;
 
 import java.util.concurrent.TimeUnit;
@@ -29,7 +28,7 @@ import java.util.concurrent.TimeUnit;
  * @author : kgtny
  * @date : 2021/11/10 2:22 下午
  */
-public class RpcClientFactory implements Serve {
+public class RpcClientFactory implements ServedService {
 
     private ClientGuide clientGuide;
 
@@ -52,12 +51,12 @@ public class RpcClientFactory implements Serve {
 
     @Override
     public String getServeName() {
-        return setting.getServeName();
+        return setting.discoverService();
     }
 
     @Override
     public String getService() {
-        return setting.getService();
+        return setting.serviceName();
     }
 
     public boolean isDiscovery() {

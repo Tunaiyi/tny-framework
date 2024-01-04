@@ -11,7 +11,7 @@
 package com.tny.game.net.endpoint;
 
 import com.tny.game.common.utils.*;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.command.processor.MessageCommandBox;
 import com.tny.game.net.exception.*;
@@ -76,12 +76,17 @@ public abstract class BaseNetEndpoint extends AbstractConnector implements NetEn
     private volatile MessageHandleFilter sendFilter = MessageHandleFilter.allHandleFilter();
 
     protected BaseNetEndpoint(Certificate certificate, EndpointContext context, int sendMessageCachedSize) {
-        this.id = ConnectIdFactory.newEndpointId(); this.state = EndpointStatus.INIT; this.context = context; this.certificate = certificate;
-        var commandExecutorFactory = context.getCommandExecutorFactory(); if (sendMessageCachedSize > 0) {
+        this.id = ConnectIdFactory.newEndpointId();
+        this.state = EndpointStatus.INIT;
+        this.context = context;
+        this.certificate = certificate;
+        var commandExecutorFactory = context.getCommandExecutorFactory();
+        if (sendMessageCachedSize > 0) {
             this.sentMessageQueue = new MessageQueue(sendMessageCachedSize);
         } else {
             this.sentMessageQueue = new MessageQueue(0);
-        } this.commandBox = new MessageCommandBox(commandExecutorFactory.create(this));
+        }
+        this.commandBox = new MessageCommandBox(commandExecutorFactory.create(this));
     }
 
     @Override
@@ -102,25 +107,31 @@ public abstract class BaseNetEndpoint extends AbstractConnector implements NetEn
     private RespondFutureMonitor respondFutureMonitor() {
         if (this.respondFutureMonitor != null) {
             return this.respondFutureMonitor;
-        } synchronized (this) {
+        }
+        synchronized (this) {
             if (this.respondFutureMonitor != null) {
                 return this.respondFutureMonitor;
-            } return this.respondFutureMonitor = RespondFutureMonitor.getHolder(this);
+            }
+            return this.respondFutureMonitor = RespondFutureMonitor.getHolder(this);
         }
     }
 
     private void putFuture(long messageId, MessageRespondFuture respondFuture) {
         if (respondFuture == null) {
             return;
-        } respondFutureMonitor().putFuture(messageId, respondFuture);
+        }
+        respondFutureMonitor().putFuture(messageId, respondFuture);
     }
 
     private MessageRespondFuture pollFuture(Message message) {
-        RespondFutureMonitor respondFutureHolder = this.respondFutureMonitor; if (respondFutureHolder == null) {
+        RespondFutureMonitor respondFutureHolder = this.respondFutureMonitor;
+        if (respondFutureHolder == null) {
             return null;
-        } if (message.getMode() == MessageMode.RESPONSE) {
+        }
+        if (message.getMode() == MessageMode.RESPONSE) {
             return respondFutureHolder.pollFuture(message.getToMessage());
-        } return null;
+        }
+        return null;
     }
 
     @Override
@@ -132,34 +143,49 @@ public abstract class BaseNetEndpoint extends AbstractConnector implements NetEn
     public void setSendFilter(MessageHandleFilter filter) {
         if (filter == null) {
             filter = MessageHandleFilter.allHandleFilter();
-        } this.sendFilter = filter;
+        }
+        this.sendFilter = filter;
     }
 
     @Override
     public void setReceiveFilter(MessageHandleFilter filter) {
         if (filter == null) {
             filter = MessageHandleFilter.allHandleFilter();
-        } this.receiveFilter = filter;
+        }
+        this.receiveFilter = filter;
     }
 
     @Override
     public boolean receive(RpcEnterContext rpcContext) {
-        RpcRejectReceiveException cause; var result = MessageHandleStrategy.HANDLE; try {
-            MessageHandleFilter filter = this.getReceiveFilter(); var tunnel = rpcContext.netTunnel(); var message = rpcContext.getMessage();
-            MessageRespondFuture future = this.pollFuture(message); if (future != null) {
+        RpcRejectReceiveException cause;
+        var result = MessageHandleStrategy.HANDLE;
+        try {
+            MessageHandleFilter filter = this.getReceiveFilter();
+            var tunnel = rpcContext.netTunnel();
+            var message = rpcContext.getMessage();
+            MessageRespondFuture future = this.pollFuture(message);
+            if (future != null) {
                 this.commandBox.execute(new RespondFutureTask(rpcContext, future));
-            } if (filter != null) {
+            }
+            if (filter != null) {
                 result = filter.filter(this, message);
-            } if (result.isHandleable()) {
+            }
+            if (result.isHandleable()) {
                 return this.commandBox.addCommand(rpcContext);
             } else {
                 cause = new RpcRejectReceiveException(rejectMessage(true, filter, message, tunnel));
             }
         } catch (Throwable e) {
-            LOGGER.error("", e); rpcContext.complete(e); throw new NetException(NetResultCode.SERVER_ERROR, e);
-        } LOGGER.warn("", cause); rpcContext.complete(cause); if (result.isThrowable()) {
+            LOGGER.error("", e);
+            rpcContext.complete(e);
+            throw new NetException(NetResultCode.SERVER_ERROR, e);
+        }
+        LOGGER.warn("", cause);
+        rpcContext.complete(cause);
+        if (result.isThrowable()) {
             throw cause;
-        } return true;
+        }
+        return true;
     }
 
     private String rejectMessage(boolean receive, MessageHandleFilter filter, MessageSubject message, Tunnel tunnel) {
@@ -173,30 +199,47 @@ public abstract class BaseNetEndpoint extends AbstractConnector implements NetEn
 
     @Override
     public SendReceipt send(NetTunnel tunnel, MessageContent content) {
-        RpcRejectSendException cause; var result = MessageHandleStrategy.HANDLE; if (this.isClosed()) {
-            content.cancel(new EndpointClosedException(format("endpoint {} closed", this))); return content;
-        } try {
+        RpcRejectSendException cause;
+        var result = MessageHandleStrategy.HANDLE;
+        if (this.isClosed()) {
+            content.cancel(new EndpointClosedException(format("endpoint {} closed", this)));
+            return content;
+        }
+        try {
             if (tunnel == null) {
                 tunnel = tunnel();
-            } MessageHandleFilter filter = this.getSendFilter(); if (filter != null) {
+            }
+            MessageHandleFilter filter = this.getSendFilter();
+            if (filter != null) {
                 result = filter.filter(this, content);
-            } if (result.isHandleable()) {
-                tunnel.write(this::createMessage, content); return content;
-            } cause = new RpcRejectSendException(rejectMessage(false, filter, content, tunnel));
+            }
+            if (result.isHandleable()) {
+                tunnel.write(this::createMessage, content);
+                return content;
+            }
+            cause = new RpcRejectSendException(rejectMessage(false, filter, content, tunnel));
         } catch (Throwable e) {
-            LOGGER.error("", e); content.cancel(e); throw new NetException(NetResultCode.SERVER_ERROR, e);
-        } LOGGER.warn("", cause); content.cancel(cause); if (result.isThrowable()) {
+            LOGGER.error("", e);
+            content.cancel(e);
+            throw new NetException(NetResultCode.SERVER_ERROR, e);
+        }
+        LOGGER.warn("", cause);
+        content.cancel(cause);
+        if (result.isThrowable()) {
             throw cause;
-        } return content;
+        }
+        return content;
     }
 
     @Override
     public void resend(NetTunnel tunnel, Predicate<Message> filter) {
         if (this.isClosed()) {
             return;
-        } if (tunnel == null) {
+        }
+        if (tunnel == null) {
             tunnel = tunnel();
-        } for (Message message : this.getSentMessages(filter)) {
+        }
+        for (Message message : this.getSentMessages(filter)) {
             tunnel.write(message, null);
         }
     }
@@ -205,9 +248,11 @@ public abstract class BaseNetEndpoint extends AbstractConnector implements NetEn
     public void resend(NetTunnel tunnel, long fromId, FilterBound bound) {
         if (this.isClosed()) {
             return;
-        } if (tunnel == null) {
+        }
+        if (tunnel == null) {
             tunnel = tunnel();
-        } for (Message message : this.getSentMessages(fromId, bound)) {
+        }
+        for (Message message : this.getSentMessages(fromId, bound)) {
             tunnel.write(message, null);
         }
     }
@@ -216,9 +261,11 @@ public abstract class BaseNetEndpoint extends AbstractConnector implements NetEn
     public void resend(NetTunnel tunnel, long fromId, long toId, FilterBound bound) {
         if (this.isClosed()) {
             return;
-        } if (tunnel == null) {
+        }
+        if (tunnel == null) {
             tunnel = tunnel();
-        } for (Message message : this.getSentMessages(fromId, toId, bound)) {
+        }
+        for (Message message : this.getSentMessages(fromId, toId, bound)) {
             tunnel.write(message, null);
         }
     }
@@ -255,9 +302,12 @@ public abstract class BaseNetEndpoint extends AbstractConnector implements NetEn
 
     @Override
     public NetMessage createMessage(MessageFactory messageFactory, MessageContent context) {
-        NetMessage message = messageFactory.create(allocateMessageId(), context); if (context instanceof RequestContent) {
+        NetMessage message = messageFactory.create(allocateMessageId(), context);
+        if (context instanceof RequestContent) {
             this.putFuture(message.getId(), ((RequestContent) context).getRespondFuture());
-        } this.sentMessageQueue.addMessage(message); return message;
+        }
+        this.sentMessageQueue.addMessage(message);
+        return message;
     }
 
     private long allocateMessageId() {
@@ -285,15 +335,21 @@ public abstract class BaseNetEndpoint extends AbstractConnector implements NetEn
     }
 
     private void setOnline() {
-        this.offlineTime = 0; this.state = EndpointStatus.ONLINE; buses().onlineEvent().notify(this);
+        this.offlineTime = 0;
+        this.state = EndpointStatus.ONLINE;
+        buses().onlineEvent().notify(this);
     }
 
     protected void setOffline() {
-        this.offlineTime = System.currentTimeMillis(); this.state = EndpointStatus.OFFLINE; buses().offlineEvent().notify(this);
+        this.offlineTime = System.currentTimeMillis();
+        this.state = EndpointStatus.OFFLINE;
+        buses().offlineEvent().notify(this);
     }
 
     private void setClose() {
-        this.state = EndpointStatus.CLOSE; this.destroyFutureHolder(); buses().closeEvent().notify(this);
+        this.state = EndpointStatus.CLOSE;
+        this.destroyFutureHolder();
+        buses().closeEvent().notify(this);
     }
 
     private void destroyFutureHolder() {
@@ -302,17 +358,20 @@ public abstract class BaseNetEndpoint extends AbstractConnector implements NetEn
 
     @Override
     public InetSocketAddress getRemoteAddress() {
-        NetTunnel tunnel = this.tunnel; return tunnel == null ? null : tunnel.getRemoteAddress();
+        NetTunnel tunnel = this.tunnel;
+        return tunnel == null ? null : tunnel.getRemoteAddress();
     }
 
     @Override
     public InetSocketAddress getLocalAddress() {
-        NetTunnel tunnel = this.tunnel; return tunnel == null ? null : tunnel.getLocalAddress();
+        NetTunnel tunnel = this.tunnel;
+        return tunnel == null ? null : tunnel.getLocalAddress();
     }
 
     @Override
     public boolean isActive() {
-        NetTunnel tunnel = this.tunnel; return tunnel != null && tunnel.isActive();
+        NetTunnel tunnel = this.tunnel;
+        return tunnel != null && tunnel.isActive();
     }
 
     @Override
@@ -334,9 +393,11 @@ public abstract class BaseNetEndpoint extends AbstractConnector implements NetEn
         synchronized (this) {
             if (tunnel != tunnel()) {
                 return;
-            } if (!tunnel.isClosed()) {
+            }
+            if (!tunnel.isClosed()) {
                 tunnel.close();
-            } setOffline();
+            }
+            setOffline();
         }
     }
 
@@ -344,18 +405,23 @@ public abstract class BaseNetEndpoint extends AbstractConnector implements NetEn
     public void offline() {
         if (isClosed()) {
             return;
-        } synchronized (this) {
+        }
+        synchronized (this) {
             if (isClosed()) {
                 return;
-            } NetTunnel tunnel = tunnel(); if (!tunnel.isClosed()) {
+            }
+            NetTunnel tunnel = tunnel();
+            if (!tunnel.isClosed()) {
                 tunnel.close();
-            } setOffline();
+            }
+            setOffline();
         }
     }
 
     @Override
     public void heartbeat() {
-        NetTunnel tunnel = tunnel(); if (tunnel.isOpen()) {
+        NetTunnel tunnel = tunnel();
+        if (tunnel.isOpen()) {
             tunnel.ping();
         }
     }
@@ -364,10 +430,12 @@ public abstract class BaseNetEndpoint extends AbstractConnector implements NetEn
     public boolean closeWhen(EndpointStatus status) {
         if (this.state != status) {
             return false;
-        } synchronized (this) {
+        }
+        synchronized (this) {
             if (this.state != status) {
                 return false;
-            } return this.close();
+            }
+            return this.close();
         }
     }
 
@@ -375,10 +443,16 @@ public abstract class BaseNetEndpoint extends AbstractConnector implements NetEn
     public boolean close() {
         if (this.state == EndpointStatus.CLOSE) {
             return false;
-        } synchronized (this) {
+        }
+        synchronized (this) {
             if (this.state == EndpointStatus.CLOSE) {
                 return false;
-            } this.offline(); this.prepareClose(); this.setClose(); this.postClose(); return true;
+            }
+            this.offline();
+            this.prepareClose();
+            this.setClose();
+            this.postClose();
+            return true;
         }
     }
 
@@ -389,11 +463,14 @@ public abstract class BaseNetEndpoint extends AbstractConnector implements NetEn
     }
 
     private void checkOnlineCertificate(Certificate certificate) throws AuthFailedException {
-        Certificate currentCert = this.certificate; if (!certificate.isAuthenticated()) {
+        Certificate currentCert = this.certificate;
+        if (!certificate.isAuthenticated()) {
             throw new AuthFailedException(NetResultCode.NO_LOGIN);
-        } if (currentCert != null && currentCert.isAuthenticated() && !currentCert.isSameCertificate(certificate)) { // 是否是同一个授权
+        }
+        if (currentCert != null && currentCert.isAuthenticated() && !currentCert.isSameCertificate(certificate)) { // 是否是同一个授权
             throw new AuthFailedException("Certificate new [{}] 与 old [{}] 不同", certificate, this.certificate);
-        } if (this.isClosed()) // 判断 session 状态是否可以重登
+        }
+        if (this.isClosed()) // 判断 session 状态是否可以重登
         {
             throw new AuthFailedException(NetResultCode.SESSION_LOSS_ERROR);
         }
@@ -401,19 +478,28 @@ public abstract class BaseNetEndpoint extends AbstractConnector implements NetEn
 
     @Override
     public void online(Certificate certificate, NetTunnel tunnel) throws AuthFailedException {
-        Asserts.checkNotNull(tunnel, "newSession is null"); checkOnlineCertificate(certificate); synchronized (this) {
-            checkOnlineCertificate(certificate); this.certificate = certificate; this.acceptTunnel(tunnel);
+        Asserts.checkNotNull(tunnel, "newSession is null");
+        checkOnlineCertificate(certificate);
+        synchronized (this) {
+            checkOnlineCertificate(certificate);
+            this.certificate = certificate;
+            this.acceptTunnel(tunnel);
         }
     }
 
     // 接受 Tunnel
     private void acceptTunnel(NetTunnel newTunnel) throws AuthFailedException {
         if (newTunnel.bind(this)) {
-            NetTunnel oldTunnel = this.tunnel; this.tunnel = newTunnel; this.offlineTime = 0; if (oldTunnel != null && newTunnel != oldTunnel) {
+            NetTunnel oldTunnel = this.tunnel;
+            this.tunnel = newTunnel;
+            this.offlineTime = 0;
+            if (oldTunnel != null && newTunnel != oldTunnel) {
                 oldTunnel.close();  // 关闭旧 Tunnel
-            } this.setOnline();
+            }
+            this.setOnline();
         } else {
-            this.offlineIf(newTunnel); throw new AuthFailedException("{} tunnel is bound session", newTunnel);
+            this.offlineIf(newTunnel);
+            throw new AuthFailedException("{} tunnel is bound session", newTunnel);
         }
     }
 

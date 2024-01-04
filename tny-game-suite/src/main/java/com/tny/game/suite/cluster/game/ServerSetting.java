@@ -98,7 +98,7 @@ public class ServerSetting {
         if (this.getClass() != obj.getClass()) {
             return false;
         }
-        ServerSetting other = (ServerSetting)obj;
+        ServerSetting other = (ServerSetting) obj;
         if (this.serverId != other.serverId) {
             return false;
         }
@@ -108,11 +108,11 @@ public class ServerSetting {
     @Override
     public String toString() {
         return "ServerSetting{" + "serverId=" + serverId +
-                ", serverState=" + serverState +
-                ", featureVersion='" + featureVersion + '\'' +
-                ", clientVersion='" + clientVersion + '\'' +
-                ", name='" + name + '\'' +
-                '}';
+               ", serverState=" + serverState +
+               ", featureVersion='" + featureVersion + '\'' +
+               ", clientVersion='" + clientVersion + '\'' +
+               ", name='" + name + '\'' +
+               '}';
     }
 
 }

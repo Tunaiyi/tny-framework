@@ -29,7 +29,7 @@ public abstract class ProtoCacheFormatter<I, P extends Message> extends CacheFor
         }
         try {
             if (object instanceof Item) {
-                Item<?> item = (Item<?>)object;
+                Item<?> item = (Item<?>) object;
                 return new ProtoItem(proto2Bytes(proto), item, this.getNumber(object), this.getState(object));
             } else {
                 return proto2Bytes(proto);
@@ -43,7 +43,7 @@ public abstract class ProtoCacheFormatter<I, P extends Message> extends CacheFor
     @Override
     public Object format2Load(String key, Object data) {
         try {
-            P proto = this.bytes2Proto((byte[])data);
+            P proto = this.bytes2Proto((byte[]) data);
             return this.proto2Object(key, proto);
         } catch (Exception e) {
             LOG.error("{}解析异常", this.getClass().getName(), e);

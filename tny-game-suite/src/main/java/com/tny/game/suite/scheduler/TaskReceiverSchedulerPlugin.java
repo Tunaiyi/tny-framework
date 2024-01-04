@@ -29,7 +29,8 @@ public class TaskReceiverSchedulerPlugin implements VoidCommandPlugin<Long> {
     public void doExecute(Tunnel<Long> tunnel, Message message, MessageCommandContext context) throws Exception {
         if (tunnel.getUserType().equals(Certificates.DEFAULT_USER_TYPE)) {
             if (IDAide.isSystem(tunnel.getUserId())) {
-                TEST_LOGGER.error("{} 非玩家ID | 登陆 {} | tunnel {} | 请求 {} 协议", tunnel.getUserId(), tunnel.isLogin(), tunnel, message.getProtocolId(),
+                TEST_LOGGER.error("{} 非玩家ID | 登陆 {} | tunnel {} | 请求 {} 协议", tunnel.getUserId(), tunnel.isLogin(), tunnel,
+                        message.getProtocolId(),
                         new RuntimeException());
             } else {
                 try {

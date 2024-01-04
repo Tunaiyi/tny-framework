@@ -13,7 +13,7 @@ package com.tny.game.net.relay.link;
 import com.google.common.collect.ImmutableMap;
 import com.tny.game.common.concurrent.collection.*;
 import com.tny.game.common.result.*;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.relay.link.exception.*;

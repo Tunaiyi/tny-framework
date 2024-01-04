@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -17,12 +18,12 @@ import com.tny.game.demo.core.common.*;
 import com.tny.game.demo.core.common.dto.*;
 import com.tny.game.demo.core.server.*;
 import com.tny.game.net.annotation.*;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.net.netty4.configuration.command.*;
 import org.slf4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static com.tny.game.net.base.ContactType.*;
+import static com.tny.game.net.application.ContactType.*;
 import static com.tny.game.net.message.MessageMode.*;
 
 /**

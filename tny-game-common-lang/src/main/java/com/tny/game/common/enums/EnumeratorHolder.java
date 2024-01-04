@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -53,9 +54,9 @@ public class EnumeratorHolder<O extends Enumerable<?>> implements Enumerator<O> 
 
     public void register(O object) {
         if (object.getClass().isEnum()) {
-            putAndCheck(((Enum<?>)object).name(), object);
+            putAndCheck(((Enum<?>) object).name(), object);
         }
-        putAndCheck(((Enumerable<?>)object).getId(), object);
+        putAndCheck(((Enumerable<?>) object).getId(), object);
         postRegister(object);
     }
 
@@ -86,13 +87,13 @@ public class EnumeratorHolder<O extends Enumerable<?>> implements Enumerator<O> 
             }
         } else {
             this.enumerators.add(value);
-            this.classes.add((Class<? extends O>)value.getClass());
+            this.classes.add((Class<? extends O>) value.getClass());
         }
     }
 
     @Override
     public <T extends O> T check(Object key, String message, Object... args) {
-        T value = (T)this.enumeratorMap.get(key);
+        T value = (T) this.enumeratorMap.get(key);
         if (value == null) {
             throw new NullPointerException(StringAide.format(message, args));
         }
@@ -100,7 +101,7 @@ public class EnumeratorHolder<O extends Enumerable<?>> implements Enumerator<O> 
     }
 
     public <T extends O, S> T checkBySymbol(EnumerableSymbol<O, S> symbol, S key, String message, Object... args) {
-        T value = (T)this.symbolMap(symbol).get(key);
+        T value = (T) this.symbolMap(symbol).get(key);
         if (value == null) {
             throw new NullPointerException(StringAide.format(message, args));
         }
@@ -109,25 +110,25 @@ public class EnumeratorHolder<O extends Enumerable<?>> implements Enumerator<O> 
 
     @Override
     public <T extends O> T of(Object key) {
-        return (T)this.enumeratorMap.get(key);
+        return (T) this.enumeratorMap.get(key);
     }
 
     public <T extends O, S> T ofBySymbol(EnumerableSymbol<O, S> symbol, S key) {
-        return (T)this.symbolMap(symbol).get(key);
+        return (T) this.symbolMap(symbol).get(key);
     }
 
     @Override
     public <T extends O> Optional<T> option(Object key) {
-        return Optional.ofNullable((T)this.enumeratorMap.get(key));
+        return Optional.ofNullable((T) this.enumeratorMap.get(key));
     }
 
     public <T extends O, S> Optional<T> optionBySymbol(EnumerableSymbol<O, S> symbol, S key) {
-        return Optional.ofNullable((T)this.symbolMap(symbol).get(key));
+        return Optional.ofNullable((T) this.symbolMap(symbol).get(key));
     }
 
     @Override
     public <T extends O> Set<T> allValues() {
-        return (Set<T>)Collections.unmodifiableSet(this.enumerators);
+        return (Set<T>) Collections.unmodifiableSet(this.enumerators);
     }
 
     @Override
@@ -137,7 +138,7 @@ public class EnumeratorHolder<O extends Enumerable<?>> implements Enumerator<O> 
 
     @Override
     public <T extends Enum<T>> Set<Class<T>> allEnumClasses() {
-        return this.classes.stream().filter(Class::isEnum).map((c) -> (Class<T>)c).collect(Collectors.toSet());
+        return this.classes.stream().filter(Class::isEnum).map((c) -> (Class<T>) c).collect(Collectors.toSet());
     }
 
 }

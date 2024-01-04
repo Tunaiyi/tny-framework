@@ -13,7 +13,7 @@ package com.tny.game.net.command.plugins.filter;
 import com.tny.game.common.concurrent.collection.*;
 import com.tny.game.common.result.*;
 import com.tny.game.common.utils.*;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.command.plugins.*;
 import com.tny.game.net.command.plugins.filter.range.*;

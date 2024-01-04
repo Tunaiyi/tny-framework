@@ -10,7 +10,7 @@
  */
 package com.tny.game.net.relay;
 
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.net.relay.link.*;
 import com.tny.game.net.relay.packet.*;
 

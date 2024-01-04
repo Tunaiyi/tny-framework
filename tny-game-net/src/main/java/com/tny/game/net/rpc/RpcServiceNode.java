@@ -11,7 +11,7 @@
 package com.tny.game.net.rpc;
 
 import com.google.common.collect.ImmutableList;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.net.endpoint.*;
 
 import java.util.*;

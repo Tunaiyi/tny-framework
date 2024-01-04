@@ -4,13 +4,14 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
 package com.tny.game.net.netty4.relay.codec;
 
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.relay.packet.*;
 import io.netty.buffer.ByteBuf;
@@ -39,19 +40,19 @@ public class RelayPackEncodeHandler extends MessageToByteEncoder<Object> impleme
     @Override
     protected void encode(ChannelHandlerContext ctx, Object msg, ByteBuf out) throws Exception {
         if (msg instanceof ByteBuf) {
-            out.writeBytes((ByteBuf)msg);
+            out.writeBytes((ByteBuf) msg);
             return;
         } else if (msg instanceof byte[]) {
-            out.writeBytes((byte[])msg);
+            out.writeBytes((byte[]) msg);
             return;
         }
         if (msg instanceof ByteBuffer) {
-            out.writeBytes((ByteBuffer)msg);
+            out.writeBytes((ByteBuffer) msg);
             return;
         }
         if (msg instanceof RelayPacket) {
             try {
-                this.encoder.encodeObject(ctx, (RelayPacket<?>)msg, out);
+                this.encoder.encodeObject(ctx, (RelayPacket<?>) msg, out);
             } catch (Throwable exception) {
                 handleOnDecodeError(LOGGER, ctx, exception, closeOnError);
             }

@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -65,11 +66,11 @@ class TimeTaskModel implements Comparable<TimeTaskModel> {
     @SuppressWarnings("unchecked")
     protected void setStopTime(long stopTime) throws ParseException {
         Date start = stopTime > 0 ? new Date(stopTime) : new Date();
-        this.trigger = (AbstractTrigger<CronTrigger>)TriggerBuilder.newTrigger()
+        this.trigger = (AbstractTrigger<CronTrigger>) TriggerBuilder.newTrigger()
                 .startAt(start)
                 .withSchedule(CronScheduleBuilder.cronSchedule(this.timeExpression))
                 .build();
-        CronTriggerImpl cronTrigger = (CronTriggerImpl)this.trigger;
+        CronTriggerImpl cronTrigger = (CronTriggerImpl) this.trigger;
         cronTrigger.setNextFireTime(start);
         cronTrigger.triggered(null);
         this.fireTime = this.trigger.getNextFireTime().getTime();
@@ -110,7 +111,7 @@ class TimeTaskModel implements Comparable<TimeTaskModel> {
     @Override
     public String toString() {
         return "\nTimeTaskModel [timeExpression=" + this.timeExpression + ", handlerList=" + this.handlerList +
-                ", trigger=" + this.fireTime + " - " + this.nextFireTime() + "]\n";
+               ", trigger=" + this.fireTime + " - " + this.nextFireTime() + "]\n";
     }
 
 }

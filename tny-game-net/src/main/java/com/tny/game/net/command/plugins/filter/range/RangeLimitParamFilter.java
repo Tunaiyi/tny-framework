@@ -11,7 +11,7 @@
 package com.tny.game.net.command.plugins.filter.range;
 
 import com.tny.game.common.result.*;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.command.plugins.filter.*;
 import com.tny.game.net.message.*;

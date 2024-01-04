@@ -10,7 +10,7 @@
  */
 package com.tny.game.net.netty4.relay;
 
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.net.relay.link.*;
 import com.tny.game.net.relay.link.route.*;
 
@@ -38,8 +38,12 @@ public class NettyClientRelayContext implements ClientRelayContext {
     private final AtomicLong indexCounter = new AtomicLong();
 
     public NettyClientRelayContext(NetAppContext appContext, RelayMessageRouter relayMessageRouter, ServeClusterFilter serveClusterFilter) {
-        this.setAppContext(appContext); this.relayMessageRouter = relayMessageRouter; this.serveClusterFilter = serveClusterFilter;
-        long launchAt = System.nanoTime(); String value = String.valueOf(launchAt); this.launchNum = value.substring(value.length() - 12);
+        this.setAppContext(appContext);
+        this.relayMessageRouter = relayMessageRouter;
+        this.serveClusterFilter = serveClusterFilter;
+        long launchAt = System.nanoTime();
+        String value = String.valueOf(launchAt);
+        this.launchNum = value.substring(value.length() - 12);
     }
 
     @Override
@@ -59,7 +63,8 @@ public class NettyClientRelayContext implements ClientRelayContext {
         String launchId = service + "." + this.getInstanceId() + "." + launchNum + "." + ThreadLocalRandom.current().nextInt(100000000, 1000000000);
         UUID uuid = UUID.nameUUIDFromBytes((launchId + "#" + indexCounter.incrementAndGet()).getBytes(StandardCharsets.UTF_8));
         String head = Long.toUnsignedString(uuid.getMostSignificantBits(), 32);
-        String tail = Long.toUnsignedString(uuid.getLeastSignificantBits(), 32); return head + "-" + tail;
+        String tail = Long.toUnsignedString(uuid.getLeastSignificantBits(), 32);
+        return head + "-" + tail;
     }
 
     @Override
@@ -78,15 +83,18 @@ public class NettyClientRelayContext implements ClientRelayContext {
     }
 
     public NettyClientRelayContext setAppContext(NetAppContext appContext) {
-        this.appContext = appContext; return this;
+        this.appContext = appContext;
+        return this;
     }
 
     public NettyClientRelayContext setRelayMessageRouter(RelayMessageRouter relayMessageRouter) {
-        this.relayMessageRouter = relayMessageRouter; return this;
+        this.relayMessageRouter = relayMessageRouter;
+        return this;
     }
 
     public NettyClientRelayContext setServeClusterFilter(ServeClusterFilter serveClusterFilter) {
-        this.serveClusterFilter = serveClusterFilter; return this;
+        this.serveClusterFilter = serveClusterFilter;
+        return this;
     }
 
 }

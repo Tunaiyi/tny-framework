@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -137,9 +138,9 @@ public abstract class AbstractItemModel extends BaseModel<ItemModelContext> impl
                                                behaviorPlan.countAward(playerId, action, attributeMap) :
                                                new SimpleTrade(action, TradeType.AWARD),
                 new SimpleTrade(action, TradeType.DEDUCT, collector.getCostDemands().stream()
-                                                                   .filter(d -> d.getDemandType() == TradeDemandType.DEDUCT_DEMAND_GE)
-                                                                   .map(d -> new SimpleTradeItem<>(d, d.getAlterType(), d.getParamMap()))
-                                                                   .collect(Collectors.toList())));
+                        .filter(d -> d.getDemandType() == TradeDemandType.DEDUCT_DEMAND_GE)
+                        .map(d -> new SimpleTradeItem<>(d, d.getAlterType(), d.getParamMap()))
+                        .collect(Collectors.toList())));
     }
 
     protected BehaviorResult doCountBehaviorResult(long playerId, Item<?> item, Behavior behavior, Object... attributes) {

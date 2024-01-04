@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -86,48 +87,48 @@ public class ItemTypes extends ClassImporter {
 
     public static <T extends ItemType> T ofItemId(long id) {
         if (id < 10000L) {
-            return ofModelId((int)id);
+            return ofModelId((int) id);
         }
         if (id < 100000L) {
-            return ofModelId((int)(id / 10L));
+            return ofModelId((int) (id / 10L));
         }
         if (id < 1000000L) {
-            return ofModelId((int)(id / 100L));
+            return ofModelId((int) (id / 100L));
         }
         if (id < 10000000L) {
-            return ofModelId((int)(id / 1000L));
+            return ofModelId((int) (id / 1000L));
         }
         if (id < 100000000L) {
-            return ofModelId((int)(id / 10000L));
+            return ofModelId((int) (id / 10000L));
         }
         if (id < 1000000000L) {
-            return ofModelId((int)(id / 100000L));
+            return ofModelId((int) (id / 100000L));
         }
         if (id < 10000000000L) {
-            return ofModelId((int)(id / 1000000L));
+            return ofModelId((int) (id / 1000000L));
         }
         if (id < 100000000000L) {
-            return ofModelId((int)(id / 10000000L));
+            return ofModelId((int) (id / 10000000L));
         }
         if (id < 1000000000000L) {
-            return ofModelId((int)(id / 100000000L));
+            return ofModelId((int) (id / 100000000L));
         }
         if (id < 10000000000000L) {
-            return ofModelId((int)(id / 1000000000L));
+            return ofModelId((int) (id / 1000000000L));
         }
         if (id < 100000000000000L) {
-            return ofModelId((int)(id / 10000000000L));
+            return ofModelId((int) (id / 10000000000L));
         }
         if (id < 1000000000000000L) {
-            return ofModelId((int)(id / 100000000000L));
+            return ofModelId((int) (id / 100000000000L));
         }
         if (id < 10000000000000000L) {
-            return ofModelId((int)(id / 1000000000000L));
+            return ofModelId((int) (id / 1000000000000L));
         }
         if (id < 100000000000000000L) {
-            return ofModelId((int)(id / 10000000000000L));
+            return ofModelId((int) (id / 10000000000000L));
         }
-        return ofModelId((int)(id / 100000000000000L));
+        return ofModelId((int) (id / 100000000000000L));
     }
 
 }

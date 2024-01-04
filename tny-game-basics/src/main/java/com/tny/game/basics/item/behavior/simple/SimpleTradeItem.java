@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -37,7 +38,7 @@ public class SimpleTradeItem<I extends StuffModel> implements TradeItem<I> {
     public SimpleTradeItem(DemandResult result, AlterType alertType, boolean valid, DemandParamEntry<?>... entries) {
         this.id = result.getId();
         this.alertType = alertType;
-        this.itemModel = (I)result.getItemModel();
+        this.itemModel = (I) result.getItemModel();
         this.number = result.getExpectValue(Number.class);
         this.valid = valid;
         for (DemandParamEntry<?> entry : entries) {
@@ -53,7 +54,7 @@ public class SimpleTradeItem<I extends StuffModel> implements TradeItem<I> {
     public SimpleTradeItem(DemandResult result, AlterType alertType, boolean valid, Map<DemandParam, Object> paramMap) {
         this.id = result.getId();
         this.alertType = alertType;
-        this.itemModel = (I)result.getItemModel();
+        this.itemModel = (I) result.getItemModel();
         this.number = result.getExpectValue(Number.class);
         this.valid = valid;
         if (paramMap != null) {
@@ -139,7 +140,7 @@ public class SimpleTradeItem<I extends StuffModel> implements TradeItem<I> {
     @Override
     @SuppressWarnings("unchecked")
     public <SI extends I> SI getItemModel() {
-        return (SI)itemModel;
+        return (SI) itemModel;
     }
 
     @Override
@@ -159,14 +160,14 @@ public class SimpleTradeItem<I extends StuffModel> implements TradeItem<I> {
         if (value == null) {
             return null;
         }
-        return (P)value;
+        return (P) value;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <P> P getParam(DemandParam param, P defaultValue) {
         Object value = this.getParam(param);
-        return value == null ? defaultValue : (P)value;
+        return value == null ? defaultValue : (P) value;
     }
 
     @Override

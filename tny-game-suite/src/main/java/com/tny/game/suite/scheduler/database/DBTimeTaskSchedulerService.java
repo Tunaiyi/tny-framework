@@ -23,13 +23,13 @@ public class DBTimeTaskSchedulerService implements TimeTaskSchedulerService {
             if (this.taskReceiver == null) {
                 TaskReceiver dbReceiver = this.schedulerObjectManager.getTaskReceiver();
                 if (dbReceiver == null) {
-                    this.taskReceiver = (GameTaskReceiver)TaskReceiverBuilder.create()
+                    this.taskReceiver = (GameTaskReceiver) TaskReceiverBuilder.create()
                             .setGroup(ReceiverType.SYSTEM)
                             .setPlayerId(0)
                             .build();
                     this.schedulerObjectManager.saveTaskReceiver(this.taskReceiver);
                 } else {
-                    this.taskReceiver = (GameTaskReceiver)dbReceiver;
+                    this.taskReceiver = (GameTaskReceiver) dbReceiver;
                 }
             }
             this.scheduler.schedule(this.taskReceiver);

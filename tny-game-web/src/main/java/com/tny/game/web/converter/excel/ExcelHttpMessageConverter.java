@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -49,7 +50,7 @@ public class ExcelHttpMessageConverter extends AbstractHttpMessageConverter<Work
     protected Workbook readInternal(Class<? extends Workbook> clazz, HttpInputMessage inputMessage)
             throws IOException, HttpMessageNotReadableException {
         long contentLength = inputMessage.getHeaders().getContentLength();
-        ByteArrayOutputStream bos = new ByteArrayOutputStream(contentLength >= 0 ? (int)contentLength : StreamUtils.BUFFER_SIZE);
+        ByteArrayOutputStream bos = new ByteArrayOutputStream(contentLength >= 0 ? (int) contentLength : StreamUtils.BUFFER_SIZE);
         StreamUtils.copy(inputMessage.getBody(), bos);
         return WorkbookFactory.create(inputMessage.getBody());
     }

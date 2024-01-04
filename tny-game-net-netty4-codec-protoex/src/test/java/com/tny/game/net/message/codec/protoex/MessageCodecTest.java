@@ -66,7 +66,7 @@ public class MessageCodecTest {
         bodyBytes = noDecodeBodyMessage.bodyAs(OctetMessageBody.class);
         assertNotNull(bodyBytes);
 
-        ByteBuf bodyBuf = (ByteBuf)bodyBytes.getBody();
+        ByteBuf bodyBuf = (ByteBuf) bodyBytes.getBody();
         byte[] bodyArray = new byte[bodyBuf.readableBytes()];
         bodyBuf.readBytes(bodyArray);
         try (ProtoExReader bodyReader = new ProtoExReader(bodyArray)) {
@@ -87,7 +87,7 @@ public class MessageCodecTest {
             Message noDecodeBodyNoBodyMessage = this.codecNoDecode.decode(data, this.messageFactory);
             assertEquals(encodeNoBodyMessage.getHead(), noDecodeBodyNoBodyMessage.getHead());
             bodyBytes = noDecodeBodyNoBodyMessage.bodyAs(ByteBufMessageBody.class);
-            bodyBuf = (ByteBuf)bodyBytes.getBody();
+            bodyBuf = (ByteBuf) bodyBytes.getBody();
             bodyArray = new byte[bodyBuf.readableBytes()];
             bodyBuf.readBytes(bodyArray);
         }

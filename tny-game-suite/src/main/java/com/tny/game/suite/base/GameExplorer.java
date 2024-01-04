@@ -46,12 +46,12 @@ public class GameExplorer implements ItemExplorer, StuffOwnerExplorer, ModelExpl
 
     @Override
     public <IM extends Model> IM getModel(int itemId) {
-        return (IM)this.getModelManager(itemId).getModel(itemId);
+        return (IM) this.getModelManager(itemId).getModel(itemId);
     }
 
     @Override
     public <IM extends Model> IM getModelByAlias(String itemAlias) {
-        return (IM)this.getModelManager(itemAlias).getModelByAlias(itemAlias);
+        return (IM) this.getModelManager(itemAlias).getModelByAlias(itemAlias);
     }
 
     @Override
@@ -70,7 +70,7 @@ public class GameExplorer implements ItemExplorer, StuffOwnerExplorer, ModelExpl
         if (object.length > 0) {
             System.arraycopy(object, 0, params, 1, object.length);
         }
-        return (I)manager.get(playerId, params);
+        return (I) manager.get(playerId, params);
     }
 
     @Override
@@ -185,7 +185,7 @@ public class GameExplorer implements ItemExplorer, StuffOwnerExplorer, ModelExpl
         if (manager == null) {
             return null;
         }
-        return (O)manager.get(playerId, object);
+        return (O) manager.get(playerId, object);
     }
 
     @Override
@@ -323,7 +323,7 @@ public class GameExplorer implements ItemExplorer, StuffOwnerExplorer, ModelExpl
         if (manager == null) {
             throw new NullPointerException(MessageFormat.format("获取 {0} 事物的model manager 为null", itemType));
         }
-        return (M)manager;
+        return (M) manager;
     }
 
     private ModelManager<Model> getModelManager(String alias) {

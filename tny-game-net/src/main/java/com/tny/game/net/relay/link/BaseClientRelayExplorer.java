@@ -13,7 +13,8 @@ package com.tny.game.net.relay.link;
 import com.google.common.collect.*;
 import com.tny.game.common.result.*;
 import com.tny.game.common.utils.*;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
+import com.tny.game.net.clusters.*;
 import com.tny.game.net.relay.cluster.*;
 import com.tny.game.net.relay.link.exception.*;
 import com.tny.game.net.relay.link.route.*;
@@ -49,7 +50,7 @@ public abstract class BaseClientRelayExplorer<T extends NetRemoteServeCluster> e
 
     protected void initClusters(Collection<T> clusters) {
         this.clusters = ImmutableList.copyOf(clusters);
-        this.clusterMap = ImmutableMap.copyOf(clusters.stream().collect(Collectors.toMap(NetRemoteServeCluster::serviceName, ObjectAide::self)));
+        this.clusterMap = ImmutableMap.copyOf(clusters.stream().collect(Collectors.toMap(NetRemoteServeCluster::getServeName, ObjectAide::self)));
     }
 
     @Override
@@ -119,7 +120,7 @@ public abstract class BaseClientRelayExplorer<T extends NetRemoteServeCluster> e
         if (filterStatus == UNNECESSARY) {
             return null;
         }
-        ClientTunnelRelayer relayer = new ClientTunnelRelayer(cluster.serviceName(), filterStatus, this);
+        ClientTunnelRelayer relayer = new ClientTunnelRelayer(cluster.getService(), filterStatus, this);
         ClientRelayLink link = relayer.allot(tunnel); // 分配
         if ((link == null || !link.isActive())) {
             if (filterStatus == ServeClusterFilterStatus.REQUIRED) {

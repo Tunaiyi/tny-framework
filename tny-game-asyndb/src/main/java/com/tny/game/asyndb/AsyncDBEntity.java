@@ -149,7 +149,7 @@ public class AsyncDBEntity implements PersistentObject {
             Object currentObject = this.value.get();
             this.state = operation.getChangeTo(currentState);
             if ((currentState.isDelete() && object != null) ||
-                    (this.isCanReplace() && currentObject != object)) {
+                (this.isCanReplace() && currentObject != object)) {
                 this.setValue(object);
                 this.visit();
             }
@@ -209,7 +209,7 @@ public class AsyncDBEntity implements PersistentObject {
             AsyncDBState currentState = this.state;
             Object object = this.holdObject;
             if ((object != null && currentState == AsyncDBState.NORMAL && this.releaseStrategy.release(this, releaseAt)) ||
-                    currentState == AsyncDBState.DELETED) {
+                currentState == AsyncDBState.DELETED) {
                 this.holdObject = null;
                 this.syncObject = null;
             }
@@ -253,7 +253,7 @@ public class AsyncDBEntity implements PersistentObject {
         if (this.getClass() != obj.getClass()) {
             return false;
         }
-        AsyncDBEntity other = (AsyncDBEntity)obj;
+        AsyncDBEntity other = (AsyncDBEntity) obj;
         if (this.value == null) {
             if (other.value != null) {
                 return false;
@@ -271,7 +271,7 @@ public class AsyncDBEntity implements PersistentObject {
             object = this.value.get();
         }
         return "AsynDBEntity [state=" + this.state + "\t] [" + (object != null ? object.getClass().getSimpleName() : this.value) + "] [value=" +
-                object + "]";
+               object + "]";
     }
 
 }

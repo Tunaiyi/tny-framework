@@ -86,7 +86,8 @@ public class LocalAsyncObjectPool implements ObjectPool {
                         POOL_LOGGER.error("{}回收异常", entry.getKey(), e);
                     }
                 }
-                POOL_LOGGER.info("对象池中存在 {} 个对象, 释放 {} 个对象, 剩余 {} 个对象", size, removeSize, LocalAsyncObjectPool.this.entityMap.size());
+                POOL_LOGGER.info("对象池中存在 {} 个对象, 释放 {} 个对象, 剩余 {} 个对象", size, removeSize,
+                        LocalAsyncObjectPool.this.entityMap.size());
                 if (!LocalAsyncObjectPool.this.recycleExecutor.isShutdown()) {
                     LocalAsyncObjectPool.this.recycleExecutor.schedule(this, recycleTime, TimeUnit.MILLISECONDS);
                 }
@@ -105,7 +106,7 @@ public class LocalAsyncObjectPool implements ObjectPool {
             }
             Object object = asyncDBEntity.visit();
             if (object != null) {
-                return (T)object;
+                return (T) object;
             }
             this.entityMap.remove(key, asyncDBEntity);
         }
@@ -113,7 +114,7 @@ public class LocalAsyncObjectPool implements ObjectPool {
         Synchronizer<Object> synchronizer = this.getSynchronizer(holder);
         Object object = synchronizer.get(clazz, key);
         if (object != null) {
-            return (T)this.put(key, object);
+            return (T) this.put(key, object);
         }
         return null;
     }
@@ -137,7 +138,7 @@ public class LocalAsyncObjectPool implements ObjectPool {
                     this.entityMap.remove(key, asyncDBEntity);
                     noCacheKeys.add(key);
                 } else {
-                    returnMap.put(key, (T)object);
+                    returnMap.put(key, (T) object);
                 }
             } else {
                 noCacheKeys.add(key);
@@ -152,7 +153,7 @@ public class LocalAsyncObjectPool implements ObjectPool {
                 continue;
             }
             value = this.put(entry.getKey(), value);
-            returnMap.put(entry.getKey(), (T)value);
+            returnMap.put(entry.getKey(), (T) value);
         }
         return returnMap;
     }
@@ -176,7 +177,7 @@ public class LocalAsyncObjectPool implements ObjectPool {
                     this.entityMap.remove(key, asyncDBEntity);
                     noCacheKeys.add(key);
                 } else {
-                    returnCollection.add((T)object);
+                    returnCollection.add((T) object);
                 }
             } else {
                 noCacheKeys.add(key);
@@ -191,7 +192,7 @@ public class LocalAsyncObjectPool implements ObjectPool {
                 continue;
             }
             value = this.put(entry.getKey(), value);
-            returnCollection.add((T)value);
+            returnCollection.add((T) value);
         }
         return returnCollection;
     }
@@ -219,7 +220,7 @@ public class LocalAsyncObjectPool implements ObjectPool {
                             e);
                 }
                 return this.entityMap.putIfAbsent(key, asyncDBEntity) == null
-                        && this.syncDBExecutor.summit(asyncDBEntity);
+                       && this.syncDBExecutor.summit(asyncDBEntity);
             } else {
                 if (asyncDBEntity.isDelete()) {
                     try {
@@ -232,7 +233,8 @@ public class LocalAsyncObjectPool implements ObjectPool {
                         return this.insert(key, object);
                     } catch (OperationStateException e) {
                         // 对象状态无法进行该操作
-                        LOGGER.error(MessageFormat.format("#LoaclAsynBDObjectPool#提交状态为{0}对象{1},进行{2}操作异常", e.getState(), object, e.getOperation()),
+                        LOGGER.error(MessageFormat.format("#LoaclAsynBDObjectPool#提交状态为{0}对象{1},进行{2}操作异常", e.getState(), object,
+                                        e.getOperation()),
                                 e);
                     }
                 }
@@ -288,7 +290,8 @@ public class LocalAsyncObjectPool implements ObjectPool {
         }
         Object currentObject = asyncDBEntity.getObject();
         if (!asyncDBEntity.isDelete() && !asyncDBEntity.isCanReplace() && asyncDBEntity.getObject() != object) {
-            throw new IllegalArgumentException(format("对象 [key:{}] 执行 {} , 但 当前对象 {} 与 更改对象 {} 不是同一个对象", key, operation, currentObject, object));
+            throw new IllegalArgumentException(
+                    format("对象 [key:{}] 执行 {} , 但 当前对象 {} 与 更改对象 {} 不是同一个对象", key, operation, currentObject, object));
         }
         try {
             LOGGER.debug("#LoaclAsynBDObjectPool#提交更改对象池中{} 状态: {} -> {}", asyncDBEntity, asyncDBEntity.getState(), operation);
@@ -305,7 +308,8 @@ public class LocalAsyncObjectPool implements ObjectPool {
             this.entityMap.remove(key, asyncDBEntity);
         } catch (OperationStateException e) {
             // 对象状态无法进行该操作
-            LOGGER.error(MessageFormat.format("#LoaclAsynBDObjectPool#提交对象{0}[状态:{2}],进行{2}操作异常", object, e.getState(), e.getOperation()), e);
+            LOGGER.error(MessageFormat.format("#LoaclAsynBDObjectPool#提交对象{0}[状态:{2}],进行{2}操作异常", object, e.getState(), e.getOperation()),
+                    e);
         }
         return false;
     }

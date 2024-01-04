@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -51,7 +52,7 @@ public class RuntimeCollectionSchema extends BaseProtoExSchema<Collection<?>> {
         if (!(options instanceof RepeatFieldOptions)) {
             throw ProtobufExException.notRepeatOptions(options);
         }
-        RepeatFieldOptions<?> repeatIOConf = (RepeatFieldOptions<?>)options;
+        RepeatFieldOptions<?> repeatIOConf = (RepeatFieldOptions<?>) options;
         FieldOptions<?> elementDesc = repeatIOConf.getElementOptions();
         if (options.isPacked()) {
             ProtoExSchema<Object> elementSchema = outputStream.getSchemaContext().getSchema(elementDesc.getDefaultType());
@@ -112,7 +113,7 @@ public class RuntimeCollectionSchema extends BaseProtoExSchema<Collection<?>> {
         if (!(options instanceof RepeatFieldOptions)) {
             throw ProtobufExException.notRepeatOptions(options);
         }
-        RepeatFieldOptions<?> repeatIOConf = (RepeatFieldOptions<?>)options;
+        RepeatFieldOptions<?> repeatIOConf = (RepeatFieldOptions<?>) options;
         FieldOptions<?> elementDesc = repeatIOConf.getElementOptions();
 
         int offset = inputStream.position();

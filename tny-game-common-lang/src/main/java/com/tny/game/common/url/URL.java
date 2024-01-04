@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -80,7 +81,7 @@ public final class URL implements Serializable {
     }
 
     public URL(String scheme, String host, int port) {
-        this(scheme, null, null, host, port, null, (Map<String, String>)null);
+        this(scheme, null, null, host, port, null, (Map<String, String>) null);
     }
 
     public URL(String scheme, String host, int port, String[] pairs) { // 变长参数...与下面的path参数冲突，改为数组
@@ -92,7 +93,7 @@ public final class URL implements Serializable {
     }
 
     public URL(String scheme, String host, int port, String path) {
-        this(scheme, null, null, host, port, path, (Map<String, String>)null);
+        this(scheme, null, null, host, port, path, (Map<String, String>) null);
     }
 
     public URL(String scheme, String host, int port, String path, String... pairs) {
@@ -104,7 +105,7 @@ public final class URL implements Serializable {
     }
 
     public URL(String scheme, String username, String password, String host, int port, String path) {
-        this(scheme, username, password, host, port, path, (Map<String, String>)null);
+        this(scheme, username, password, host, port, path, (Map<String, String>) null);
     }
 
     public URL(String scheme, String username, String password, String host, int port, String path, String... pairs) {
@@ -113,7 +114,7 @@ public final class URL implements Serializable {
 
     public URL(String scheme, String username, String password, String host, int port, String path, Map<String, String> parameters) {
         if ((username == null || username.length() == 0)
-                && password != null && password.length() > 0) {
+            && password != null && password.length() > 0) {
             throw new IllegalArgumentException("Invalid url, password without username!");
         }
         this.scheme = scheme;
@@ -262,11 +263,11 @@ public final class URL implements Serializable {
 
     public String getAuthority() {
         if ((this.username == null || this.username.length() == 0)
-                && (this.password == null || this.password.length() == 0)) {
+            && (this.password == null || this.password.length() == 0)) {
             return null;
         }
         return (this.username == null ? "" : this.username)
-                + ":" + (this.password == null ? "" : this.password);
+               + ":" + (this.password == null ? "" : this.password);
     }
 
     public String getHost() {
@@ -354,7 +355,7 @@ public final class URL implements Serializable {
 
     private String appendDefaultPort(String address, int defaultPort) {
         if (address != null && address.length() > 0
-                && defaultPort > 0) {
+            && defaultPort > 0) {
             int i = address.indexOf(':');
             if (i < 0) {
                 return address + ":" + defaultPort;
@@ -655,7 +656,7 @@ public final class URL implements Serializable {
             boolean first = true;
             for (Map.Entry<String, String> entry : new TreeMap<>(getParameters()).entrySet()) {
                 if (entry.getKey() != null && entry.getKey().length() > 0
-                        && (includes == null || includes.contains(entry.getKey()))) {
+                    && (includes == null || includes.contains(entry.getKey()))) {
                     if (first) {
                         if (concat) {
                             buf.append("?");
@@ -751,7 +752,7 @@ public final class URL implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        URL other = (URL)obj;
+        URL other = (URL) obj;
         if (this.host == null) {
             if (other.host != null) {
                 return false;

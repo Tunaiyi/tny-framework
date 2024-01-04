@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -61,7 +62,7 @@ public class RootFieldOptions<T> extends BaseFieldOptions<T> implements MapField
     public static FieldOptions<Map<?, ?>> createMapOptions(
             Class<?> keyType, TypeEncode keyTypeEncode, FieldFormat keyFormat,
             Class<?> valueType, TypeEncode valueTypeEncode, FieldFormat valueFormat) {
-        Class<Map<?, ?>> type = (Class<Map<?, ?>>)Collections.emptyMap().getClass();
+        Class<Map<?, ?>> type = (Class<Map<?, ?>>) Collections.emptyMap().getClass();
         return new RootFieldOptions<>(type, keyType, keyTypeEncode, keyFormat, valueType, valueTypeEncode, valueFormat);
     }
 
@@ -70,8 +71,8 @@ public class RootFieldOptions<T> extends BaseFieldOptions<T> implements MapField
             Class<?> keyType, TypeEncode keyTypeEncode, FieldFormat keyFormat,
             Class<?> valueType, TypeEncode valueTypeEncode, FieldFormat valueFormat) {
         this(ProtoExType.REPEAT, type, false, TypeEncode.DEFAULT, FieldFormat.DEFAULT);
-        Class<Object> keyClass = (Class<Object>)keyType;
-        Class<Object> valueClass = (Class<Object>)valueType;
+        Class<Object> keyClass = (Class<Object>) keyType;
+        Class<Object> valueClass = (Class<Object>) valueType;
         this.keyOptions = new SimpleFieldOptions<>(EntryType.KEY, keyClass, keyTypeEncode, keyFormat);
         this.valueOptions = new SimpleFieldOptions<>(EntryType.VALUE, valueClass, valueTypeEncode, valueFormat);
     }
@@ -80,7 +81,7 @@ public class RootFieldOptions<T> extends BaseFieldOptions<T> implements MapField
     private RootFieldOptions(Class<T> clazz, Class<?> elementType, boolean packed, TypeEncode typeEncode, FieldFormat format) {
         this(ProtoExType.REPEAT, clazz, packed, TypeEncode.DEFAULT, format);
         boolean primitive = Wrapper.getPrimitive(elementType).isPrimitive();
-        this.elementOptions = new SimpleFieldOptions<>((Class<Object>)elementType, this.getIndex(), typeEncode, format);
+        this.elementOptions = new SimpleFieldOptions<>((Class<Object>) elementType, this.getIndex(), typeEncode, format);
         this.packed = packed;
         if (primitive) {
             this.packed = true;
@@ -91,7 +92,7 @@ public class RootFieldOptions<T> extends BaseFieldOptions<T> implements MapField
 
     @SuppressWarnings("unchecked")
     private RootFieldOptions(ProtoExType protoExType, T type, boolean packed, TypeEncode typeEncode, FieldFormat format) {
-        this(protoExType, (Class<T>)type.getClass(), packed, typeEncode, format);
+        this(protoExType, (Class<T>) type.getClass(), packed, typeEncode, format);
     }
 
     private RootFieldOptions(ProtoExType protoExType, Class<T> type, boolean packed, TypeEncode typeEncode, FieldFormat format) {

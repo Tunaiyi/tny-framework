@@ -149,14 +149,14 @@ public class ProtoExReader implements AutoCloseable {
     public <T> Collection<T> readCollection(Class<T> elementType) {
         Tag tag = this.inputStream.getTag();
         this.checkType(ProtoExType.REPEAT, tag);
-        return (Collection<T>)RuntimeCollectionSchema.COLLECTION_SCHEMA.readMessage(this.inputStream,
+        return (Collection<T>) RuntimeCollectionSchema.COLLECTION_SCHEMA.readMessage(this.inputStream,
                 ProtoExIO.createRepeat(ArrayList.class, elementType, true));
     }
 
     public <T, C extends Collection<T>> C readCollection(C collection, Class<T> elementType) {
         Tag tag = this.inputStream.getTag();
         this.checkType(ProtoExType.REPEAT, tag);
-        return (C)RuntimeCollectionSchema.COLLECTION_SCHEMA.readMessage(() -> collection, this.inputStream,
+        return (C) RuntimeCollectionSchema.COLLECTION_SCHEMA.readMessage(() -> collection, this.inputStream,
                 ProtoExIO.createRepeat(collection.getClass(), elementType, true));
     }
 
@@ -176,7 +176,7 @@ public class ProtoExReader implements AutoCloseable {
     public <K, V> Map<K, V> readMap(Class<K> keyType, Class<V> valueType) {
         Tag tag = this.inputStream.getTag();
         this.checkType(ProtoExType.MAP, tag);
-        return (Map<K, V>)RuntimeMapSchema.MAP_SCHEMA.readMessage(this.inputStream,
+        return (Map<K, V>) RuntimeMapSchema.MAP_SCHEMA.readMessage(this.inputStream,
                 ProtoExIO.createMap(keyType, valueType));
     }
 

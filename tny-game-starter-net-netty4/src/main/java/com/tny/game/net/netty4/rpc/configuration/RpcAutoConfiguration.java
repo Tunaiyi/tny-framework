@@ -10,7 +10,7 @@
  */
 package com.tny.game.net.netty4.rpc.configuration;
 
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.netty4.rpc.service.*;

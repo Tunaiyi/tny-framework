@@ -64,9 +64,9 @@ public class AutoSnapAdvice implements TransactionListener, AfterReturningAdvice
                 Action action = snapMethod.getAction(args);
                 Collection<SnapParamEntry> params = snapMethod.getSnapParams(args);
                 if (action != null) {
-                    OperationLogger.logger().logSnapshotByClass((Owned)target, action, snapMethod.getSnapshotTypes());
+                    OperationLogger.logger().logSnapshotByClass((Owned) target, action, snapMethod.getSnapshotTypes());
                     for (SnapParamEntry param : params)
-                        OperationLogger.logger().logSnapshotByClass((Owned)param.getObject(), action, param.getSnapshotTypes());
+                        OperationLogger.logger().logSnapshotByClass((Owned) param.getObject(), action, param.getSnapshotTypes());
                 }
             }
         } catch (Throwable e) {

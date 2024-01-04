@@ -102,9 +102,9 @@ public class ShardingRange<N extends ShardingNode> {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(partition +
-                "{" + fromSlot +
-                " to " + toSlot +
-                '}');
+                                             "{" + fromSlot +
+                                             " to " + toSlot +
+                                             '}');
         getRanges().forEach(r -> sb.append('[').append(r.lowerEndpoint()).append('-').append(r.upperEndpoint()).append(']'));
         return sb.toString();
     }

@@ -10,7 +10,7 @@
  */
 package com.tny.game.net.message;
 
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 
 /**
  * 通讯者(消息发送接受者)

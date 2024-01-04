@@ -103,14 +103,14 @@ public class AoperBuilder<T> {
     private static <T> Class<Aoper<T>> getAOPerClass(Class<?> targetClass, Set<Class<? extends Annotation>> aopAnnotationSet) {
         Class<?> aoperClass = AOPER_MAP.get(targetClass);
         if (aoperClass != null) {
-            return (Class<Aoper<T>>)aoperClass;
+            return (Class<Aoper<T>>) aoperClass;
         }
         ClassPool pool = ClassPool.getDefault();
         try {
             synchronized (targetClass) {
                 aoperClass = AOPER_MAP.get(targetClass);
                 if (aoperClass != null) {
-                    return (Class<Aoper<T>>)aoperClass;
+                    return (Class<Aoper<T>>) aoperClass;
                 }
                 String proxyClassName = targetClass.getPackage().getName() + PROXY_CLASS_NAME + targetClass.getSimpleName();
                 /* 获得DProxy类作为代理类的父类 */
@@ -134,7 +134,7 @@ public class AoperBuilder<T> {
                 for (Method method : allMethodList) {
                     int modifiers = method.getModifiers();
                     if ((Modifier.isPublic(modifiers) || Modifier.isProtected(modifiers)) && !Modifier.isFinal(modifiers) &&
-                            !Modifier.isStatic(modifiers)) {
+                        !Modifier.isStatic(modifiers)) {
                         if (isAop(globalAOP, method, aopAnnotationSet)) {
                             proxyMethod(pool, proxyClass, method, methodIndex, methodSet);
                             aopMethodList.add(method);
@@ -150,7 +150,7 @@ public class AoperBuilder<T> {
                 methodsField.setAccessible(true);
                 methodsField.set(null, aopMethodList.toArray(new Method[0]));
                 Class<?> old = AOPER_MAP.putIfAbsent(targetClass, aoperClass);
-                return (Class<Aoper<T>>)(old != null ? old : aoperClass);
+                return (Class<Aoper<T>>) (old != null ? old : aoperClass);
             }
         } catch (Exception e) {
             LOGGER.error("生成 {} 代理类错误", targetClass, e);
@@ -220,7 +220,7 @@ public class AoperBuilder<T> {
                 .make("public void set$Avice(" + BeforeAdvice.class.getCanonicalName() + " advice) {this._aoper$beforeAdvice = advice;}", cc);
         cc.addMethod(setBeforeAdvice);
         CtMethod setAfterReturningAdvice = CtMethod.make("public void set$Avice(" + AfterReturningAdvice.class.getCanonicalName() +
-                " advice) {this._aoper$afterReturningAdvice = advice;}", cc);
+                                                         " advice) {this._aoper$afterReturningAdvice = advice;}", cc);
         cc.addMethod(setAfterReturningAdvice);
         CtMethod setThrowsAdvice = CtMethod
                 .make("public void set$Avice(" + ThrowsAdvice.class.getCanonicalName() + " advice) {this._aoper$throwsAdvice = advice;}", cc);
@@ -228,15 +228,15 @@ public class AoperBuilder<T> {
         CtMethod getWraper = CtMethod.make("public " + Object.class.getCanonicalName() + " get$Wraper() {return this;}", cc);
         cc.addMethod(getWraper);
         CtMethod getAttributes = CtMethod.make("public " + Attributes.class.getCanonicalName() + " get$Attributes() {"
-                + " if (this._aoper$attributes != null)"
-                + "		return this._aoper$attributes;"
-                + "	synchronized (this) { "
-                + "		if (this._aoper$attributes != null) "
-                + "			return this._aoper$attributes;"
-                + "		this._aoper$attributes = " + ContextAttributes.class.getCanonicalName() + ".create();"
-                + " }"
-                + " return this._aoper$attributes;"
-                + "}", cc);
+                                               + " if (this._aoper$attributes != null)"
+                                               + "		return this._aoper$attributes;"
+                                               + "	synchronized (this) { "
+                                               + "		if (this._aoper$attributes != null) "
+                                               + "			return this._aoper$attributes;"
+                                               + "		this._aoper$attributes = " + ContextAttributes.class.getCanonicalName() + ".create();"
+                                               + " }"
+                                               + " return this._aoper$attributes;"
+                                               + "}", cc);
         cc.addMethod(getAttributes);
     }
 

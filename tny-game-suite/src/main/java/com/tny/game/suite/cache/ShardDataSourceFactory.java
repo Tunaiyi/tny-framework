@@ -69,7 +69,7 @@ public class ShardDataSourceFactory implements DataSourceFactory, ApplicationCon
         DataSourceHolder holder = null;
         Object shardObject = runtime.get(ShardInterpreter.SHARD_BY_KEY);
         if (shardObject != null && shardObject instanceof ShardTable) {
-            holder = this.holderMap.get(((ShardTable)shardObject).getSid());
+            holder = this.holderMap.get(((ShardTable) shardObject).getSid());
         }
         if (holder == null) {
             return this.defaultFactory.getHolder(metaData, runtime);
@@ -102,7 +102,7 @@ public class ShardDataSourceFactory implements DataSourceFactory, ApplicationCon
             this.port = port;
             this.name = name;
             Properties properties = this.createProperties(host, port, name);
-            DruidDataSource dataSource = (DruidDataSource)DruidDataSourceFactory.createDataSource(properties);
+            DruidDataSource dataSource = (DruidDataSource) DruidDataSourceFactory.createDataSource(properties);
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("创建 [s{}] 数据源 {}:{}/{} 发生[成功]!", serverID, host, port, name);
             }

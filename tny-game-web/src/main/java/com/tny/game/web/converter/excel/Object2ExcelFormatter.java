@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -56,13 +57,13 @@ public class Object2ExcelFormatter {
         CellStyle style = cell.getCellStyle();
         style.setWrapText(true);
         if (value instanceof Number) {
-            cell.setCellValue(((Number)value).doubleValue());
+            cell.setCellValue(((Number) value).doubleValue());
         } else if (value instanceof Boolean) {
-            cell.setCellValue((Boolean)value);
+            cell.setCellValue((Boolean) value);
         } else if (value instanceof Calendar) {
-            cell.setCellValue((Calendar)value);
+            cell.setCellValue((Calendar) value);
         } else if (value instanceof Date) {
-            cell.setCellValue((Date)value);
+            cell.setCellValue((Date) value);
         } else {
             cell.setCellValue(value.toString());
         }

@@ -36,7 +36,7 @@ public class ObjectNodeDataFormatter implements NodeDataFormatter {
         try {
             ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
             objectIPStream = new ObjectInputStream(inputStream);
-            return (D)objectIPStream.readObject();
+            return (D) objectIPStream.readObject();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {

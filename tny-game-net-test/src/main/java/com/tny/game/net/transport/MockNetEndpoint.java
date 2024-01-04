@@ -11,7 +11,6 @@
 package com.tny.game.net.transport;
 
 import com.tny.game.common.context.*;
-import com.tny.game.common.url.*;
 import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.command.processor.MessageCommandBox;
 import com.tny.game.net.endpoint.*;
@@ -42,11 +41,13 @@ public class MockNetEndpoint extends AttributeHolder implements NetEndpoint, Net
     private final NetAccessMode accessMode;
 
     public MockNetEndpoint(Certificate certificate, NetAccessMode accessMode) {
-        this.certificate = certificate; if (this.certificate.isAuthenticated()) {
+        this.certificate = certificate;
+        if (this.certificate.isAuthenticated()) {
             this.state = EndpointStatus.ONLINE;
         } else {
             this.state = EndpointStatus.OFFLINE;
-        } this.accessMode = accessMode;
+        }
+        this.accessMode = accessMode;
     }
 
     @Override
@@ -66,17 +67,20 @@ public class MockNetEndpoint extends AttributeHolder implements NetEndpoint, Net
 
     @Override
     public NetMessage createMessage(MessageFactory messageFactory, MessageContent content) {
-        this.writeQueue.add(content); return null;
+        this.writeQueue.add(content);
+        return null;
     }
 
     @Override
     public boolean receive(RpcEnterContext context) {
-        this.receiveQueue.add(context.getMessage()); return true;
+        this.receiveQueue.add(context.getMessage());
+        return true;
     }
 
     @Override
     public SendReceipt send(NetTunnel tunnel, MessageContent content) {
-        this.sendQueue.add(content); return content;
+        this.sendQueue.add(content);
+        return content;
     }
 
     @Override
@@ -201,7 +205,8 @@ public class MockNetEndpoint extends AttributeHolder implements NetEndpoint, Net
 
     @Override
     public boolean close() {
-        this.state = EndpointStatus.CLOSE; return true;
+        this.state = EndpointStatus.CLOSE;
+        return true;
     }
 
     @Override
@@ -226,10 +231,6 @@ public class MockNetEndpoint extends AttributeHolder implements NetEndpoint, Net
         return this.receiveQueue;
     }
 
-    @Override
-    public URL getUrl() {
-        return null;
-    }
 
     @Override
     public long getConnectTimeout() {
@@ -246,10 +247,6 @@ public class MockNetEndpoint extends AttributeHolder implements NetEndpoint, Net
         return null;
     }
 
-    @Override
-    public boolean isAsyncConnect() {
-        return false;
-    }
 
     @Override
     public MessageTransporter connect() {

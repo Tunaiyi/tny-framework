@@ -285,13 +285,13 @@ public abstract class ClientTestTask {
     @SuppressWarnings("unchecked")
     public void testCas() {
         this.cacheClient.set("Test", p1, 0L);
-        CasItem<Person> item = (CasItem<Person>)this.cacheClient.gets("Test");
+        CasItem<Person> item = (CasItem<Person>) this.cacheClient.gets("Test");
         long currentVersion = item.getVersion();
         assertEquals(item.getData(), p1);
         item = new SimpleCasItem<>(item, p2);
         assertEquals(this.cacheClient.get("Test"), p1);
         assertEquals(this.cacheClient.cas(item, 0L), true);
-        item = (CasItem<Person>)this.cacheClient.gets("Test");
+        item = (CasItem<Person>) this.cacheClient.gets("Test");
         assertEquals(item.getData(), p2);
         assertEquals(item.getVersion(), currentVersion + 1);
 

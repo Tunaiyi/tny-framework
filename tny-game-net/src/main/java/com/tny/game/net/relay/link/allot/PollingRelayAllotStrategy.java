@@ -10,6 +10,7 @@
  */
 package com.tny.game.net.relay.link.allot;
 
+import com.tny.game.net.clusters.*;
 import com.tny.game.net.relay.link.*;
 import com.tny.game.net.transport.*;
 
@@ -41,12 +42,12 @@ public class PollingRelayAllotStrategy implements RelayLinkAllotStrategy, ServeI
     }
 
     @Override
-    public ClientRelayLink allot(Tunnel tunnel, RemoteServeInstance instance) {
+    public ClientRelayLink allot(Tunnel tunnel, RelayServeInstance instance) {
         return random(instance.getActiveRelayLinks(), linkCounter);
     }
 
     @Override
-    public RemoteServeInstance allot(Tunnel tunnel, NetRemoteServeCluster cluster) {
+    public RelayServeInstance allot(Tunnel tunnel, NetRemoteServeCluster cluster) {
         return random(cluster.getHealthyLocalInstances(), instanceCounter);
     }
 

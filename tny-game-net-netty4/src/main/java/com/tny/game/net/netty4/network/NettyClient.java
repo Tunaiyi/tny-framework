@@ -13,7 +13,7 @@ package com.tny.game.net.netty4.network;
 import com.google.common.base.MoreObjects;
 import com.tny.game.common.concurrent.*;
 import com.tny.game.common.url.*;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.rpc.*;
@@ -65,35 +65,35 @@ public class NettyClient extends BaseNetEndpoint implements NettyTerminal, Clien
         return this.url.getParameter(CONNECT_TIMEOUT_URL_PARAM, CONNECT_TIMEOUT_DEFAULT_VALUE);
     }
 
-    @Override
-    public boolean isAsyncConnect() {
-        return this.url.getParameter(CONNECT_ASYNC_URL_PARAM, CONNECT_ASYNC_DEFAULT_VALUE);
-    }
+    // @Override
+    // public boolean isAsyncConnect() {
+    //     return this.url.getParameter(CONNECT_ASYNC_URL_PARAM, CONNECT_ASYNC_DEFAULT_VALUE);
+    // }
 
     @Override
     public boolean isAutoReconnect() {
-        ClientSetting setting = guide.getSetting().getConnector();
+        ClientConnectorSetting setting = guide.getSetting().getConnector();
         return this.url.getParameter(AUTO_RECONNECT_PARAM, setting.isAutoReconnect());
     }
 
     @Override
     public int getConnectRetryTimes() {
-        ClientSetting setting = guide.getSetting().getConnector();
+        ClientConnectorSetting setting = guide.getSetting().getConnector();
         return this.url.getParameter(RETRY_TIMES_URL_PARAM, setting.getRetryTimes());
     }
 
     @Override
     public List<Long> getConnectRetryIntervals() {
-        ClientSetting setting = guide.getSetting().getConnector();
+        ClientConnectorSetting setting = guide.getSetting().getConnector();
         String intervals = this.url.getParameter(RETRY_INTERVAL_URL_PARAM, "");
         if (StringUtils.isEmpty(intervals)) {
             return setting.getRetryIntervals();
         }
         String[] data = StringUtils.split(intervals, ",");
         return Stream.of(data)
-                     .map(Long::parseLong)
-                     .filter(i -> i > 0)
-                     .collect(Collectors.toList());
+                .map(Long::parseLong)
+                .filter(i -> i > 0)
+                .collect(Collectors.toList());
     }
 
     private ClientConnectFuture checkPreOpen() {
@@ -212,8 +212,8 @@ public class NettyClient extends BaseNetEndpoint implements NettyTerminal, Clien
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                          .add("url", this.url)
-                          .toString();
+                .add("url", this.url)
+                .toString();
     }
 
 }

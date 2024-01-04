@@ -72,7 +72,7 @@ public class KafkaOpLogAppender extends AbstractAppender {
                 if (data.length > 0) {
                     Message message = event.getMessage();
                     if (message instanceof LogMessage) {
-                        LogMessage logMessage = (LogMessage)message;
+                        LogMessage logMessage = (LogMessage) message;
                         Log loggable = logMessage.getLog();
                         String key = loggable.getServerId() + "-" + loggable.getDate();
                         manager.send(loggable.getServerId(), key, data);

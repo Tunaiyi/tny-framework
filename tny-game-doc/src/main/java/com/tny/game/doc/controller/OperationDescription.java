@@ -14,7 +14,7 @@ import com.tny.game.common.result.*;
 import com.tny.game.doc.*;
 import com.tny.game.doc.annotation.*;
 import com.tny.game.doc.holder.*;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.rpc.*;
 import org.slf4j.*;
@@ -65,15 +65,15 @@ public class OperationDescription extends MethodDescription {
 
     private Class<?> returnType(Type type) {
         if (type instanceof Class) {
-            Class<?> clazz = (Class<?>)type;
+            Class<?> clazz = (Class<?>) type;
             if (clazz == Void.class || clazz == void.class || ResultCode.class.isAssignableFrom(clazz)) {
                 return Void.class;
             } else {
                 return clazz;
             }
         } else if (type instanceof ParameterizedType) {
-            ParameterizedType returnType = (ParameterizedType)type;
-            Class<?> clazz = (Class<?>)returnType.getRawType();
+            ParameterizedType returnType = (ParameterizedType) type;
+            Class<?> clazz = (Class<?>) returnType.getRawType();
             if (RpcReturn.class.isAssignableFrom(clazz) || RpcResult.class.isAssignableFrom(clazz) || RpcFuture.class.isAssignableFrom(clazz)) {
                 return getGenericClass(returnType);
             }
@@ -87,21 +87,21 @@ public class OperationDescription extends MethodDescription {
 
     private Class<?> getGenericClass(Type type) {
         if (type instanceof Class<?>) {
-            return (Class<?>)type;
+            return (Class<?>) type;
         }
-        ParameterizedType resultType = (ParameterizedType)type;
+        ParameterizedType resultType = (ParameterizedType) type;
         Type bodyType = resultType.getActualTypeArguments()[0];
         if (bodyType instanceof Class) {
-            return (Class<?>)bodyType;
+            return (Class<?>) bodyType;
         }
         if (bodyType instanceof ParameterizedType) {
-            return (Class<?>)((ParameterizedType)bodyType).getRawType();
+            return (Class<?>) ((ParameterizedType) bodyType).getRawType();
         }
         throw new UnsupportedOperationException("不支持" + bodyType);
     }
 
     private Type getGenericType(Type type) {
-        ParameterizedType resultType = (ParameterizedType)type;
+        ParameterizedType resultType = (ParameterizedType) type;
         return resultType.getActualTypeArguments()[0];
     }
 

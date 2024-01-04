@@ -13,7 +13,7 @@ package com.tny.game.net.netty4.relay;
 import com.tny.game.common.lifecycle.unit.*;
 import com.tny.game.common.url.*;
 import com.tny.game.common.utils.*;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.net.endpoint.listener.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.netty4.*;
@@ -127,23 +127,23 @@ public class NettyRelayClientGuide extends NettyBootstrap<NettyRelayClientBootst
             RelayPacketProcessor relayPacketProcessor = new RelayPacketClientProcessor(this.localRelayExplorer, getContext());
             NettyRelayPacketHandler relayMessageHandler = new NettyRelayPacketHandler(setting, relayPacketProcessor);
             this.bootstrap.group(workerGroup).channel(EPOLL ? EpollSocketChannel.class : NioSocketChannel.class)
-                          .option(ChannelOption.SO_REUSEADDR, true).option(ChannelOption.TCP_NODELAY, true).option(ChannelOption.SO_KEEPALIVE, true)
-                          .handler(new ChannelInitializer<>() {
+                    .option(ChannelOption.SO_REUSEADDR, true).option(ChannelOption.TCP_NODELAY, true).option(ChannelOption.SO_KEEPALIVE, true)
+                    .handler(new ChannelInitializer<>() {
 
-                              @Override
-                              protected void initChannel(@Nonnull Channel channel) throws Exception {
-                                  try {
-                                      if (NettyRelayClientGuide.this.channelMaker != null) {
-                                          NettyRelayClientGuide.this.channelMaker.initChannel(channel);
-                                      }
-                                      channel.pipeline().addLast("nettyMessageHandler", relayMessageHandler);
-                                  } catch (Throwable e) {
-                                      LOGGER.info("init {} channel exception", channel, e);
-                                      throw e;
-                                  }
-                              }
+                        @Override
+                        protected void initChannel(@Nonnull Channel channel) throws Exception {
+                            try {
+                                if (NettyRelayClientGuide.this.channelMaker != null) {
+                                    NettyRelayClientGuide.this.channelMaker.initChannel(channel);
+                                }
+                                channel.pipeline().addLast("nettyMessageHandler", relayMessageHandler);
+                            } catch (Throwable e) {
+                                LOGGER.info("init {} channel exception", channel, e);
+                                throw e;
+                            }
+                        }
 
-                          });
+                    });
             return this.bootstrap;
         }
 

@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -100,7 +101,7 @@ public class ZKMonitor {
 
     @SuppressWarnings("unchecked")
     public <T> T getNodeData(String path, CreateMode createMode, NodeDataFormatter formatter) {
-        ZKMonitorNode<T> node = (ZKMonitorNode<T>)this.nodeMap.get(path);
+        ZKMonitorNode<T> node = (ZKMonitorNode<T>) this.nodeMap.get(path);
         if (node != null) {
             return node.getData();
         }
@@ -121,7 +122,7 @@ public class ZKMonitor {
         T data = formatter.bytes2Data(bytes);
         node = new ZKMonitorNode<>(createMode, data, path, formatter);
         ZKMonitorNode<T> lastOne = null;
-        if ((lastOne = (ZKMonitorNode<T>)this.nodeMap.putIfAbsent(node.getPath(), node)) == null) {
+        if ((lastOne = (ZKMonitorNode<T>) this.nodeMap.putIfAbsent(node.getPath(), node)) == null) {
             return data;
         } else {
             return lastOne.getData();
@@ -142,7 +143,7 @@ public class ZKMonitor {
 
     @SuppressWarnings("unchecked")
     public synchronized boolean syncNode(String path, Object data) {
-        final ZKMonitorNode<Object> node = (ZKMonitorNode<Object>)this.nodeMap.get(path);
+        final ZKMonitorNode<Object> node = (ZKMonitorNode<Object>) this.nodeMap.get(path);
         if (node == null) {
             return false;
         }
@@ -186,7 +187,7 @@ public class ZKMonitor {
 
     @SuppressWarnings("unchecked")
     private MonitoredNode<Object> getNode(String path) {
-        return (MonitoredNode<Object>)this.monitoredNodeMap.get(path);
+        return (MonitoredNode<Object>) this.monitoredNodeMap.get(path);
     }
 
     public Stat createFullNode(String path, Object leafValue, CreateMode mode, boolean setIfExist) {
@@ -374,7 +375,7 @@ public class ZKMonitor {
         if (formatter != null) {
             return formatter.data2Bytes(object);
         }
-        return (byte[])object;
+        return (byte[]) object;
     }
 
     //	@SuppressWarnings("unchecked")

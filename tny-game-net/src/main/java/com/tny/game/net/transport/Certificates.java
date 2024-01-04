@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -12,7 +13,7 @@ package com.tny.game.net.transport;
 
 import com.google.common.base.MoreObjects;
 import com.tny.game.common.utils.*;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -42,12 +43,12 @@ public final class Certificates {
     }
 
     public static Certificate renewAuthenticated(long id, long identify, long contactId, ContactType contactType, Instant authenticateAt) {
-        return renewAuthenticated(id, identify, contactId, contactType, authenticateAt, null);
+        return createAuthenticated(id, identify, contactId, contactType, RENEW, authenticateAt, null);
     }
 
     public static Certificate renewAuthenticated(long id, long identify, long contactId, ContactType contactType, Instant authenticateAt,
             Object identifyToken) {
-        return new DefaultCertificate(id, identify, contactId, contactType, RENEW, authenticateAt, identifyToken);
+        return createAuthenticated(id, identify, contactId, contactType, RENEW, authenticateAt, identifyToken);
     }
 
     private static Certificate createAuthenticated(long id, long identify, long contactId, ContactType contactType, CertificateStatus status,
@@ -88,10 +89,18 @@ public final class Certificates {
 
         private DefaultCertificate(long id, long identify, long contactId, ContactType contactType, CertificateStatus status, Instant authenticateAt,
                 Object identifyToken) {
-            super(); this.id = id; this.contactId = contactId; this.identifyToken = identifyToken; this.status = status; this.identify = identify;
-            this.contactType = contactType; this.createAt = Instant.now(); if (authenticateAt == null) {
+            super();
+            this.id = id;
+            this.contactId = contactId;
+            this.identifyToken = identifyToken;
+            this.status = status;
+            this.identify = identify;
+            this.contactType = contactType;
+            this.createAt = Instant.now();
+            if (authenticateAt == null) {
                 authenticateAt = this.createAt;
-            } this.authenticateAt = authenticateAt;
+            }
+            this.authenticateAt = authenticateAt;
         }
 
         @Override
@@ -144,7 +153,8 @@ public final class Certificates {
         public boolean equals(Object o) {
             if (this == o) {
                 return true;
-            } if (!(o instanceof DefaultCertificate that)) {
+            }
+            if (!(o instanceof DefaultCertificate that)) {
                 return false;
             }
             return getId() == that.getId() && isAuthenticated() == that.isAuthenticated() && Objects.equals(getIdentify(), that.getIdentify());

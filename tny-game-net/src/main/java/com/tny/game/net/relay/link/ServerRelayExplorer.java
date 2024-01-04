@@ -11,7 +11,7 @@
 package com.tny.game.net.relay.link;
 
 import com.tny.game.common.lifecycle.unit.annotation.*;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 
 /**
  * 远程(客户端连接不在本地)转发服务

@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -44,12 +45,12 @@ public class AttrKeys {
 
     @SuppressWarnings("unchecked")
     private static <T> AttrKey<T> loadOrCreate(String full, String key) {
-        AttrKey<T> value = (AttrKey<T>)KEY_MAP.get(key);
+        AttrKey<T> value = (AttrKey<T>) KEY_MAP.get(key);
         if (value == null) {
             value = new DefaultAttributeKey<>(key);
             AttrKey<?> old = KEY_MAP.putIfAbsent(full, value);
             if (old != null) {
-                value = (AttrKey<T>)old;
+                value = (AttrKey<T>) old;
             }
         }
         return value;

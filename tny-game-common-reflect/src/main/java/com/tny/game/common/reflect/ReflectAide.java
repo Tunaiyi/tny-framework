@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -153,7 +154,7 @@ public class ReflectAide {
             return method;
         }
         throw new MethodNotFoundException("ReflectUtils.getPropertyMethod [clazz: " + clazz + ", name: " + name
-                + ", paramType: " + Arrays.toString(paramTypes) + "] exception");
+                                          + ", paramType: " + Arrays.toString(paramTypes) + "] exception");
     }
 
     private static Method findDeepMethod(Class<?> clazz, String name, Class<?>... paramType) {
@@ -179,7 +180,7 @@ public class ReflectAide {
             }
         }
         throw new MethodNotFoundException("ReflectUtils.getPropertyMethod [clazz: " + clazz + ", name: " + name
-                + ", paramType: " + Arrays.toString(paramTypes) + "] exception");
+                                          + ", paramType: " + Arrays.toString(paramTypes) + "] exception");
     }
 
     public static List<Method> getPropertyMethod(Class<?> clazz, MethodType methodType, String[] names,
@@ -238,7 +239,7 @@ public class ReflectAide {
         if (type instanceof Class) {
             return Collections.emptyList();
         } else if (type instanceof ParameterizedType) {
-            ParameterizedType paramType = (ParameterizedType)type;
+            ParameterizedType paramType = (ParameterizedType) type;
             Type[] genericTypes = paramType.getActualTypeArguments();
             Collections.addAll(types, genericTypes);
         }
@@ -250,9 +251,9 @@ public class ReflectAide {
         List<Class<?>> classes = new ArrayList<>();
         for (Type type : genTypes) {
             if (type instanceof Class) {
-                classes.add((Class<?>)type);
+                classes.add((Class<?>) type);
             } else if (type instanceof ParameterizedType) {
-                classes.add((Class<?>)((ParameterizedType)type).getRawType());
+                classes.add((Class<?>) ((ParameterizedType) type).getRawType());
             }
         }
         return classes;
@@ -270,15 +271,15 @@ public class ReflectAide {
                 if (!(type instanceof ParameterizedType)) {
                     continue;
                 }
-                ParameterizedType paramType = (ParameterizedType)type;
+                ParameterizedType paramType = (ParameterizedType) type;
                 if (paramType.getRawType() != genericClass) {
                     continue;
                 }
                 for (Type t : paramType.getActualTypeArguments()) {
                     if (t instanceof Class) {
-                        classes.add((Class<?>)t);
+                        classes.add((Class<?>) t);
                     } else if (t instanceof ParameterizedType) {
-                        classes.add((Class<?>)((ParameterizedType)t).getRawType());
+                        classes.add((Class<?>) ((ParameterizedType) t).getRawType());
                     }
                 }
             }
@@ -287,15 +288,15 @@ public class ReflectAide {
             if (!(type instanceof ParameterizedType)) {
                 return classes;
             }
-            ParameterizedType paramType = (ParameterizedType)type;
+            ParameterizedType paramType = (ParameterizedType) type;
             if (paramType.getRawType() != genericClass) {
                 return classes;
             }
             for (Type t : paramType.getActualTypeArguments()) {
                 if (t instanceof Class) {
-                    classes.add((Class<?>)t);
+                    classes.add((Class<?>) t);
                 } else if (t instanceof ParameterizedType) {
-                    classes.add((Class<?>)((ParameterizedType)t).getRawType());
+                    classes.add((Class<?>) ((ParameterizedType) t).getRawType());
                 }
             }
         }

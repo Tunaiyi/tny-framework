@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -15,7 +16,7 @@ import com.alibaba.cloud.nacos.registry.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableList;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.net.netty4.cloud.*;
 import com.tny.game.net.relay.cluster.*;
 import org.apache.commons.collections4.MapUtils;
@@ -80,7 +81,7 @@ public class NacosServerGuideRegistrationFactory implements ServerGuideRegistrat
                 host = defaultDiscoveryProperties.getIp();
             }
         }
-        LocalServeNode node = new LocalServeNode(netAppContext, guide.discoverService(), guide.serviceName(), guide.getScheme(), host, port);
+        LocalServeNode node = new LocalServeNode(netAppContext, guide.getServeName(), guide.getService(), guide.getScheme(), host, port);
         for (LocalServerNodeCustomizer customizer : localServerNodeCustomizers) {
             customizer.customize(node);
         }
@@ -105,7 +106,7 @@ public class NacosServerGuideRegistrationFactory implements ServerGuideRegistrat
 
             NacosDiscoveryProperties properties = new NacosDiscoveryProperties();
             copyProperties(defaultDiscoveryProperties, properties);
-            properties.setService(node.discoverService());
+            properties.setService(node.getServeName());
             properties.setIp(node.getHost());
             properties.setPort(node.getPort());
             properties.setMetadata(metadata);

@@ -66,7 +66,7 @@ public class InetConnector {
         if (!(o instanceof InetConnector)) {
             return false;
         }
-        InetConnector that = (InetConnector)o;
+        InetConnector that = (InetConnector) o;
         return new EqualsBuilder()
                 .append(getHost(), that.getHost())
                 .append(getPort(), that.getPort())

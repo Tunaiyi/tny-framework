@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 package com.tny.game.web.converter;
@@ -127,7 +128,7 @@ public class JsonHttpMessageConverter extends MappingJackson2HttpMessageConverte
                     builder.append(line);
                 return builder.toString();
             } else if (inputMessage instanceof MappingJacksonInputMessage) {
-                Class<?> deserializationView = ((MappingJacksonInputMessage)inputMessage).getDeserializationView();
+                Class<?> deserializationView = ((MappingJacksonInputMessage) inputMessage).getDeserializationView();
                 if (deserializationView != null) {
                     return this.getObjectMapper().readerWithView(deserializationView)
                             .forType(javaType)
@@ -155,7 +156,7 @@ public class JsonHttpMessageConverter extends MappingJackson2HttpMessageConverte
                 Object value = object;
                 JavaType javaType = null;
                 if (object instanceof MappingJacksonValue) {
-                    MappingJacksonValue container = (MappingJacksonValue)object;
+                    MappingJacksonValue container = (MappingJacksonValue) object;
                     value = container.getValue();
                     serializationView = container.getSerializationView();
                     filters = container.getFilters();
@@ -207,7 +208,7 @@ public class JsonHttpMessageConverter extends MappingJackson2HttpMessageConverte
         TypeFactory typeFactory = this.getObjectMapper().getTypeFactory();
         if (type instanceof TypeVariable && contextClass != null) {
             ResolvableType resolvedType = resolveVariable(
-                    (TypeVariable<?>)type, ResolvableType.forClass(contextClass));
+                    (TypeVariable<?>) type, ResolvableType.forClass(contextClass));
             if (resolvedType != ResolvableType.NONE) {
                 return typeFactory.constructType(resolvedType.resolve());
             }

@@ -11,8 +11,8 @@ public class ProtoNodeDataFormatter implements NodeDataFormatter {
         if (data == null) {
             return new byte[0];
         }
-        if (data instanceof byte[] && ((byte[])data).length == 0) {
-            return (byte[])data;
+        if (data instanceof byte[] && ((byte[]) data).length == 0) {
+            return (byte[]) data;
         }
         try (ProtoExWriter writer = new ProtoExWriter(256)) {
             writer.writeMessage(data, TypeEncode.EXPLICIT);

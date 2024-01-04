@@ -58,7 +58,7 @@ public class Equip implements Serializable {
         int result = 1;
         result = prime * result + id;
         result = prime * result + ((name == null) ? 0 : name.hashCode());
-        result = prime * result + (int)(playerId ^ (playerId >>> 32));
+        result = prime * result + (int) (playerId ^ (playerId >>> 32));
         return result;
     }
 
@@ -73,7 +73,7 @@ public class Equip implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        Equip other = (Equip)obj;
+        Equip other = (Equip) obj;
         if (id != other.id) {
             return false;
         }

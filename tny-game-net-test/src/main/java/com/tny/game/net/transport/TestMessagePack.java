@@ -25,7 +25,7 @@ public class TestMessagePack {
     private NetMessage message;
 
     public TestMessagePack(MessageContent context, NetMessage message) {
-        this.context = (RequestContent)context;
+        this.context = (RequestContent) context;
         this.message = message;
     }
 

@@ -4,13 +4,15 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
 package com.tny.game.net.netty4.relay;
 
 import com.tny.game.common.url.*;
+import com.tny.game.net.clusters.*;
 import com.tny.game.net.relay.cluster.*;
 import com.tny.game.net.relay.link.*;
 import com.tny.game.net.relay.link.allot.*;
@@ -40,13 +42,13 @@ public class NettyRemoteServeClusterContext implements RemoteServeClusterContext
     }
 
     @Override
-    public String getServeName() {
-        return setting.getServeName();
+    public String getService() {
+        return setting.serviceName();
     }
 
     @Override
-    public String getService() {
-        return setting.getService();
+    public String getServeName() {
+        return setting.discoverService();
     }
 
     @Override
@@ -54,33 +56,19 @@ public class NettyRemoteServeClusterContext implements RemoteServeClusterContext
         return setting.getUsername();
     }
 
+    @Override
+    public RelayServeClusterSetting getSetting() {
+        return setting;
+    }
+
     public RelayClientGuide getClientGuide() {
         return clientGuide;
     }
 
-    @Override
-    public long getLinkMaxIdleTime() {
-        return setting.getLinkMaxIdleTime();
-    }
-
-    @Override
-    public int getLinkConnectionSize() {
-        return setting.getLinkConnectionSize();
-    }
-
-    @Override
-    public boolean isDiscovery() {
-        return setting.isDiscovery();
-    }
-
-    @Override
-    public long getLinkHeartbeatInterval() {
-        return this.setting.getLinkHeartbeatInterval();
-    }
 
     @Override
     public List<NetAccessNode> getInstances() {
-        return as(setting.getInstanceList());
+        return as(setting.getServeNodeList());
     }
 
     @Override

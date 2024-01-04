@@ -12,7 +12,7 @@ package com.tny.game.net.netty4.configuration;
 
 import com.tny.game.expr.*;
 import com.tny.game.expr.groovy.*;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.net.codec.*;
 import com.tny.game.net.codec.cryptoloy.*;
 import com.tny.game.net.codec.verifier.*;

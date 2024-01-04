@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -47,12 +48,12 @@ public class GameExplorer implements ItemExplorer, StuffOwnerExplorer, ModelExpl
 
     @Override
     public <IM extends Model> IM getModel(int modelId) {
-        return (IM)this.getModelManager(modelId).getModel(modelId);
+        return (IM) this.getModelManager(modelId).getModel(modelId);
     }
 
     @Override
     public <IM extends Model> IM getModelByAlias(String itemAlias) {
-        return (IM)this.getModelManager(itemAlias).getModelByAlias(itemAlias);
+        return (IM) this.getModelManager(itemAlias).getModelByAlias(itemAlias);
     }
 
     @Override
@@ -63,14 +64,14 @@ public class GameExplorer implements ItemExplorer, StuffOwnerExplorer, ModelExpl
     @Override
     public <I extends Subject<?>> I getItem(long playerId, int modelId) {
         GameManager<Object> manager = this.getItemManager(modelId);
-        return (I)manager.get(playerId, modelId);
+        return (I) manager.get(playerId, modelId);
     }
 
     @Override
     public <I extends Subject<?>> I getItem(AnyId anyId) {
         ItemType itemType = ItemTypes.ofItemId(anyId.getId());
         GameManager<Object> manager = this.typeManagerMap.get(itemType);
-        return (I)manager.get(anyId);
+        return (I) manager.get(anyId);
     }
 
     public <I> I getItem(Class<? extends Manager<?>> managerClass, AnyId anyId) {
@@ -308,7 +309,7 @@ public class GameExplorer implements ItemExplorer, StuffOwnerExplorer, ModelExpl
         if (manager == null) {
             throw new NullPointerException(MessageFormat.format("获取 {0} 事物的model manager 为null", itemType));
         }
-        return (M)manager;
+        return (M) manager;
     }
 
     private ModelManager<Model> getModelManager(String alias) {

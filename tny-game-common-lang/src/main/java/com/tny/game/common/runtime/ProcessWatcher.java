@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -139,7 +140,8 @@ public class ProcessWatcher {
     public void statisticsLog() {
         long totalCostTime = this.totalCostTime.longValue();
         long totalDoneTimes = this.totalDoneTimes.longValue();
-        LogFragment logFragment = LogFragment.message("执行监控 [ {} ]  总执行统计 | 总执行次数 {}; 总完成次数 {}; 总消耗时间 {} us; 平均耗时 {} us | ",
+        LogFragment logFragment = LogFragment.message(
+                "执行监控 [ {} ]  总执行统计 | 总执行次数 {}; 总完成次数 {}; 总消耗时间 {} us; 平均耗时 {} us | ",
                 this.target, this.totalTraceTimes.longValue(), totalDoneTimes, totalCostTime,
                 totalDoneTimes == 0 ? 0 : totalCostTime / totalDoneTimes);
         ScheduledFuture<?> future = this.scheduledFuture;

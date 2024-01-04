@@ -91,8 +91,8 @@ public class ObjectMimeType<T> {
     @Override
     public String toString() {
         return "ObjectMineType{" + "type=" + type +
-                ", mimeType='" + mimeType + '\'' +
-                '}';
+               ", mimeType='" + mimeType + '\'' +
+               '}';
     }
 
 }

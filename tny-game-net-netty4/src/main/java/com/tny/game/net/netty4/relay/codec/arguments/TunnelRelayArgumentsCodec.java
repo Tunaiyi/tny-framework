@@ -10,7 +10,7 @@
  */
 package com.tny.game.net.netty4.relay.codec.arguments;
 
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.netty4.network.codec.*;
 import com.tny.game.net.netty4.relay.*;

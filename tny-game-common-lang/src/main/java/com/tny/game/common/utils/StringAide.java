@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -323,23 +324,23 @@ public class StringAide {
             // check for primitive array types because they
             // unfortunately cannot be cast to Object[]
             if (o instanceof boolean[]) {
-                booleanArrayAppend(buff, (boolean[])o);
+                booleanArrayAppend(buff, (boolean[]) o);
             } else if (o instanceof byte[]) {
-                byteArrayAppend(buff, (byte[])o);
+                byteArrayAppend(buff, (byte[]) o);
             } else if (o instanceof char[]) {
-                charArrayAppend(buff, (char[])o);
+                charArrayAppend(buff, (char[]) o);
             } else if (o instanceof short[]) {
-                shortArrayAppend(buff, (short[])o);
+                shortArrayAppend(buff, (short[]) o);
             } else if (o instanceof int[]) {
-                intArrayAppend(buff, (int[])o);
+                intArrayAppend(buff, (int[]) o);
             } else if (o instanceof long[]) {
-                longArrayAppend(buff, (long[])o);
+                longArrayAppend(buff, (long[]) o);
             } else if (o instanceof float[]) {
-                floatArrayAppend(buff, (float[])o);
+                floatArrayAppend(buff, (float[]) o);
             } else if (o instanceof double[]) {
-                doubleArrayAppend(buff, (double[])o);
+                doubleArrayAppend(buff, (double[]) o);
             } else {
-                objectArrayAppend(buff, (Object[])o, seenMap);
+                objectArrayAppend(buff, (Object[]) o, seenMap);
             }
         }
     }
@@ -351,7 +352,7 @@ public class StringAide {
         } catch (Throwable t) {
             System.err
                     .println("SLF4J: Failed toString() invocation on an object of type ["
-                            + o.getClass().getName() + "]");
+                             + o.getClass().getName() + "]");
             t.printStackTrace();
             sbuf.append("[FAILED toString()]");
         }

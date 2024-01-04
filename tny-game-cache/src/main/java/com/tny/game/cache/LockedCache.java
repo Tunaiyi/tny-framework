@@ -51,7 +51,7 @@ public final class LockedCache {
         Object entity = entityMap.get(key);
         if (entity != null) {
             if (clazz.isInstance(entity)) {
-                return (T)entity;
+                return (T) entity;
             }
         }
         return null;

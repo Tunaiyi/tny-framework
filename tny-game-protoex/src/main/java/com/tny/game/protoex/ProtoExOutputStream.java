@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -209,8 +210,8 @@ public class ProtoExOutputStream implements ProtoExStream, AutoCloseable {
             return;
         }
         if (schema.isRaw()
-                && schema.getProtoExId() != WireFormat.PROTO_ID_REPEAT
-                && schema.getProtoExId() != WireFormat.PROTO_ID_MAP) {
+            && schema.getProtoExId() != WireFormat.PROTO_ID_REPEAT
+            && schema.getProtoExId() != WireFormat.PROTO_ID_MAP) {
             throw ProtobufExException.rawTypeIsNoLengthLimitation(options.getDefaultType());
         }
         LinkedBuffer currentBuffer = this.byteBuffer;
@@ -293,12 +294,12 @@ public class ProtoExOutputStream implements ProtoExStream, AutoCloseable {
     private void doWriteVarInt32(int value) {
         final int size = computeRawVarint32Size(value);
         if (size == 1) {
-            this.byteBuffer.write((byte)value);
+            this.byteBuffer.write((byte) value);
         } else {
             for (int i = 0, last = size - 1; i < last; i++, value >>>= 7) {
-                this.byteBuffer.write((byte)((value & 0x7F) | 0x80));
+                this.byteBuffer.write((byte) ((value & 0x7F) | 0x80));
             }
-            this.byteBuffer.write((byte)value);
+            this.byteBuffer.write((byte) value);
         }
     }
 
@@ -315,21 +316,21 @@ public class ProtoExOutputStream implements ProtoExStream, AutoCloseable {
     }
 
     private void doWriteLittleEndian64(long value) {
-        this.byteBuffer.write((byte)(value & 0xFF))
-                .write((byte)(value >> 8 & 0xFF))
-                .write((byte)(value >> 16 & 0xFF))
-                .write((byte)(value >> 24 & 0xFF))
-                .write((byte)(value >> 32 & 0xFF))
-                .write((byte)(value >> 40 & 0xFF))
-                .write((byte)(value >> 48 & 0xFF))
-                .write((byte)(value >> 56 & 0xFF));
+        this.byteBuffer.write((byte) (value & 0xFF))
+                .write((byte) (value >> 8 & 0xFF))
+                .write((byte) (value >> 16 & 0xFF))
+                .write((byte) (value >> 24 & 0xFF))
+                .write((byte) (value >> 32 & 0xFF))
+                .write((byte) (value >> 40 & 0xFF))
+                .write((byte) (value >> 48 & 0xFF))
+                .write((byte) (value >> 56 & 0xFF));
     }
 
     private void doWriteLittleEndian32(int value) {
-        this.byteBuffer.write((byte)(value & 0xFF))
-                .write((byte)(value >> 8 & 0xFF))
-                .write((byte)(value >> 16 & 0xFF))
-                .write((byte)(value >> 24 & 0xFF));
+        this.byteBuffer.write((byte) (value & 0xFF))
+                .write((byte) (value >> 8 & 0xFF))
+                .write((byte) (value >> 16 & 0xFF))
+                .write((byte) (value >> 24 & 0xFF));
     }
 
     /**
@@ -338,11 +339,11 @@ public class ProtoExOutputStream implements ProtoExStream, AutoCloseable {
     private void doWriteVarInt64(long value) {
         final int size = computeRawVarInt64Size(value);
         if (size == 1) {
-            this.byteBuffer.write((byte)value);
+            this.byteBuffer.write((byte) value);
         } else {
             for (int i = 0, last = size - 1; i < last; i++, value >>>= 7)
-                this.byteBuffer.write((byte)((value & 0x7F) | 0x80));
-            this.byteBuffer.write((byte)value);
+                this.byteBuffer.write((byte) ((value & 0x7F) | 0x80));
+            this.byteBuffer.write((byte) value);
         }
     }
 

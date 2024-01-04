@@ -11,7 +11,7 @@
 package com.tny.game.demo.core.common;
 
 import com.tny.game.demo.core.common.dto.*;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.net.command.auth.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;

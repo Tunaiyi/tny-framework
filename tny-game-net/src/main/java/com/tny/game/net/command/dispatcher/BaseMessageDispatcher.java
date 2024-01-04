@@ -12,7 +12,7 @@ package com.tny.game.net.command.dispatcher;
 
 import com.tny.game.common.concurrent.collection.*;
 import com.tny.game.expr.*;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.net.command.auth.*;
 import com.tny.game.net.command.listener.*;
 import com.tny.game.net.exception.*;

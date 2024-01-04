@@ -12,7 +12,7 @@ package com.tny.game.net.endpoint;
 
 import com.google.common.collect.ImmutableList;
 import com.tny.game.common.result.*;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
 

@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -114,9 +115,9 @@ public class RuntimeProtoExSchema {
             if (schemaMap == null) {
                 return null;
             }
-            return (ProtoExSchema<T>)schemaMap.get(id);
+            return (ProtoExSchema<T>) schemaMap.get(id);
         } else {
-            return (ProtoExSchema<T>)customSchemaMap.get(id);
+            return (ProtoExSchema<T>) customSchemaMap.get(id);
         }
     }
 
@@ -134,33 +135,33 @@ public class RuntimeProtoExSchema {
                 return null;
             }
             if (type != null) {
-                schema = (ProtoExSchema<T>)schemaMap.get(type);
+                schema = (ProtoExSchema<T>) schemaMap.get(type);
                 if (schema != null) {
                     return schema;
                 }
             }
-            schema = (ProtoExSchema<T>)schemaMap.get(id);
+            schema = (ProtoExSchema<T>) schemaMap.get(id);
             // if (schema != null)
             return schema;
         } else {
-            return (ProtoExSchema<T>)customSchemaMap.get(id);
+            return (ProtoExSchema<T>) customSchemaMap.get(id);
         }
     }
 
     public static <T> ProtoExSchema<T> getProtoSchema(Type type) {
-        ProtoExSchema<T> schema = (ProtoExSchema<T>)schemaMap.get(type);
+        ProtoExSchema<T> schema = (ProtoExSchema<T>) schemaMap.get(type);
         if (schema == null) {
             if (type instanceof Class) {
-                Class<T> clazz = (Class<T>)type;
+                Class<T> clazz = (Class<T>) type;
                 if (clazz.isArray()) {
-                    schema = (ProtoExSchema<T>)RuntimeArraySchema.ARRAY_SCHEMA;
+                    schema = (ProtoExSchema<T>) RuntimeArraySchema.ARRAY_SCHEMA;
                     // throw ProtobufExException.unsupportArray(clazz);
                 } else if (clazz.isEnum()) {
-                    schema = newEnumSchema((Class<Enum<?>>)clazz);
+                    schema = newEnumSchema((Class<Enum<?>>) clazz);
                 } else if (Collection.class.isAssignableFrom(clazz)) {
-                    return (ProtoExSchema<T>)RuntimeCollectionSchema.COLLECTION_SCHEMA;
+                    return (ProtoExSchema<T>) RuntimeCollectionSchema.COLLECTION_SCHEMA;
                 } else if (Map.class.isAssignableFrom(clazz)) {
-                    return (ProtoExSchema<T>)RuntimeMapSchema.MAP_SCHEMA;
+                    return (ProtoExSchema<T>) RuntimeMapSchema.MAP_SCHEMA;
                 } else {
                     if (clazz.getAnnotation(ProtoEx.class) == null) {
                         return null;

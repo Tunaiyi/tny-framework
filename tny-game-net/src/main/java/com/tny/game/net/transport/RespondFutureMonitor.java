@@ -43,7 +43,7 @@ public class RespondFutureMonitor {
 
     static {
         Executors.newSingleThreadScheduledExecutor(new CoreThreadFactory("SessionEventBoxCleaner", true))
-                 .scheduleAtFixedRate(RespondFutureMonitor::clearTimeoutFuture, INIT_DELAY, PERIOD, TimeUnit.SECONDS);
+                .scheduleAtFixedRate(RespondFutureMonitor::clearTimeoutFuture, INIT_DELAY, PERIOD, TimeUnit.SECONDS);
     }
 
     public static RespondFutureMonitor getHolder(Object object) {

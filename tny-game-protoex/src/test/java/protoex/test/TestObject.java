@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -119,7 +120,7 @@ public class TestObject {
         result = prime * result + testChar;
         long temp;
         temp = Double.doubleToLongBits(testDouble);
-        result = prime * result + (int)(temp ^ (temp >>> 32));
+        result = prime * result + (int) (temp ^ (temp >>> 32));
         result = prime * result + Float.floatToIntBits(testFloat);
         result = prime * result + testInt;
         result = prime * result + ((testIntValues == null) ? 0 : testIntValues.hashCode());
@@ -127,7 +128,7 @@ public class TestObject {
         result = prime * result + ((testKeyExpValues == null) ? 0 : testKeyExpValues.hashCode());
         result = prime * result + ((testKeyImpMap == null) ? 0 : testKeyImpMap.hashCode());
         result = prime * result + ((testKeyImpValues == null) ? 0 : testKeyImpValues.hashCode());
-        result = prime * result + (int)(testLong ^ (testLong >>> 32));
+        result = prime * result + (int) (testLong ^ (testLong >>> 32));
         result = prime * result + testShot;
         result = prime * result + ((testString == null) ? 0 : testString.hashCode());
         result = prime * result + ((testValueExpMap == null) ? 0 : testValueExpMap.hashCode());
@@ -146,7 +147,7 @@ public class TestObject {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        TestObject other = (TestObject)obj;
+        TestObject other = (TestObject) obj;
         if (testAllExpMap == null) {
             if (other.testAllExpMap != null) {
                 return false;

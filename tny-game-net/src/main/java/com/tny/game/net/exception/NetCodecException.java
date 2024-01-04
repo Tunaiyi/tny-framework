@@ -11,7 +11,7 @@
 package com.tny.game.net.exception;
 
 import com.tny.game.common.result.*;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 
 public class NetCodecException extends NetException {
 

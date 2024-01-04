@@ -12,7 +12,7 @@ package com.tny.game.net.netty4.relay.codec.arguments;
 
 import com.baidu.bjf.remoting.protobuf.*;
 import com.google.protobuf.*;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.netty4.relay.codec.arguments.protobuf.*;
 import com.tny.game.net.relay.packet.arguments.*;
@@ -31,7 +31,8 @@ import static com.google.protobuf.CodedOutputStream.*;
  * @author : kgtny
  * @date : 2021/8/9 8:01 下午
  */
-public abstract class BaseProtobufPacketArgumentsCodec<A extends RelayPacketArguments, P extends PacketArgumentsProto<A>> implements RelayPacketArgumentsCodec<A> {
+public abstract class BaseProtobufPacketArgumentsCodec<A extends RelayPacketArguments, P extends PacketArgumentsProto<A>>
+        implements RelayPacketArgumentsCodec<A> {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(BaseProtobufPacketArgumentsCodec.class);
 

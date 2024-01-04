@@ -4,14 +4,15 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
 package com.tny.game.net.endpoint;
 
 import com.tny.game.common.event.bus.*;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.net.endpoint.listener.*;
 
 /**
@@ -20,9 +21,7 @@ import com.tny.game.net.endpoint.listener.*;
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class EndpointEventBuses extends BaseEventBuses<EndpointListener> {
 
-    // @SuppressWarnings("unchecked")
-    // private final BindP1EventBus<EndpointAcceptListener, Endpoint, Tunnel> ON_ACCEPT =
-    //         EventBuses.of(EndpointAcceptListener.class, EndpointAcceptListener::onAccept);
+    private final static EndpointEventBuses eventBuses = new EndpointEventBuses();
 
     private final BindVoidEventBus<EndpointOnlineListener, Endpoint> ON_ONLINE =
             EventBuses.of(EndpointOnlineListener.class, EndpointOnlineListener::onOnline);
@@ -33,7 +32,6 @@ public class EndpointEventBuses extends BaseEventBuses<EndpointListener> {
     private final BindVoidEventBus<EndpointCloseListener, Endpoint> ON_CLOSE =
             EventBuses.of(EndpointCloseListener.class, EndpointCloseListener::onClose);
 
-    private final static EndpointEventBuses eventBuses = new EndpointEventBuses();
 
     private EndpointEventBuses() {
         super();
@@ -42,10 +40,6 @@ public class EndpointEventBuses extends BaseEventBuses<EndpointListener> {
     public static EndpointEventBuses buses() {
         return eventBuses;
     }
-
-    // public BindP1EventBus<EndpointAcceptListener, Endpoint, Tunnel> acceptEvent() {
-    //     return ON_ACCEPT;
-    // }
 
     public BindVoidEventBus<EndpointOnlineListener, Endpoint> onlineEvent() {
         return this.ON_ONLINE;

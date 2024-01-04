@@ -50,7 +50,7 @@ public class DBCacheItem<T> extends RawCacheItem<T, Blob> {
         if (data != null) {
             byte[] bytes = null;
             if (data instanceof byte[]) {
-                bytes = (byte[])data;
+                bytes = (byte[]) data;
                 this.flags = BYTE_ARRAY;
             } else {
                 bytes = this.object2Bytes(data);
@@ -99,7 +99,7 @@ public class DBCacheItem<T> extends RawCacheItem<T, Blob> {
                 this.dataObject = this.bytes2Object();
             } else {
                 try {
-                    this.dataObject = this.data.getBytes(1, (int)this.data.length());
+                    this.dataObject = this.data.getBytes(1, (int) this.data.length());
                 } catch (SQLException e) {
                     logger.error("SerialBlob getBytes exception", e);
                 }

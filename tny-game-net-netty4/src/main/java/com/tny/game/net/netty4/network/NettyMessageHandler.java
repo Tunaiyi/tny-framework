@@ -14,7 +14,7 @@ import com.tny.game.common.exception.*;
 import com.tny.game.common.lifecycle.unit.annotation.*;
 import com.tny.game.common.result.*;
 import com.tny.game.common.runtime.*;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.rpc.*;
@@ -29,7 +29,7 @@ import java.io.IOException;
 import java.nio.channels.ClosedChannelException;
 
 import static com.tny.game.common.utils.ObjectAide.*;
-import static com.tny.game.net.base.NetLogger.*;
+import static com.tny.game.net.application.NetLogger.*;
 import static com.tny.game.net.message.Protocols.*;
 
 /**

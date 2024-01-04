@@ -150,7 +150,7 @@ public class AverageRateSyncDBExecutor implements SyncDBExecutor {
                         @Override
                         public void run() {
                             while (!AverageRateSyncDBExecutor.this.stop || !synchronizableQueue.isEmpty() ||
-                                    !AverageRateSyncDBExecutor.this.sumitQueue.isEmpty()) {
+                                   !AverageRateSyncDBExecutor.this.sumitQueue.isEmpty()) {
                                 PersistentObject synchronizable;
                                 try {
                                     synchronizable = synchronizableQueue.poll(1000, TimeUnit.MILLISECONDS);
@@ -222,7 +222,7 @@ public class AverageRateSyncDBExecutor implements SyncDBExecutor {
             long rate = 1000 / (AverageRateSyncDBExecutor.this.speed / AverageRateSyncDBExecutor.this.step);
             ExecutorService currentService = AverageRateSyncDBExecutor.this.executorService;
             while (true) {
-                ThreadPoolExecutor pool = (ThreadPoolExecutor)currentService;
+                ThreadPoolExecutor pool = (ThreadPoolExecutor) currentService;
                 for (int i = 0; i < AverageRateSyncDBExecutor.this.step; i++) {
                     final PersistentObject synchronizable = AverageRateSyncDBExecutor.this.sumitQueue.poll();
                     if (synchronizable == null) {

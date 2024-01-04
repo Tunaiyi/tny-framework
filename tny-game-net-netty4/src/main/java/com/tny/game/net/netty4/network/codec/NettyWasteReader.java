@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -37,13 +38,13 @@ public class NettyWasteReader extends NettyBytesWaster {
                 for (int index = 0; index < length; index++) {
                     currentValue = wasteBuffer.readByte();
                     if (index != 0) {
-                        readValue = (byte)(readValue | (byte)((currentValue & 0xff) >>> leftShiftBits));
+                        readValue = (byte) (readValue | (byte) ((currentValue & 0xff) >>> leftShiftBits));
                         bodyBuffer.writeByte(readValue);
                     }
-                    readValue = (byte)((currentValue & 0xff) << this.rightShiftBits);
+                    readValue = (byte) ((currentValue & 0xff) << this.rightShiftBits);
                 }
                 currentValue = wasteBuffer.readByte();
-                readValue = (byte)(readValue | (byte)((currentValue & 0xff) >>> leftShiftBits));
+                readValue = (byte) (readValue | (byte) ((currentValue & 0xff) >>> leftShiftBits));
                 bodyBuffer.writeByte(readValue);
             }
         }

@@ -11,7 +11,7 @@
 package com.tny.game.net.message.codec;
 
 import com.tny.game.common.lifecycle.unit.*;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.net.codec.cryptoloy.*;
 import com.tny.game.net.codec.verifier.*;
 import com.tny.game.net.message.*;

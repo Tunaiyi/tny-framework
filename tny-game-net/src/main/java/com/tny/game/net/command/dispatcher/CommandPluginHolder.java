@@ -13,7 +13,7 @@ package com.tny.game.net.command.dispatcher;
 import com.tny.game.expr.*;
 import com.tny.game.expr.groovy.*;
 import com.tny.game.net.annotation.*;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.net.command.plugins.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
@@ -60,8 +60,8 @@ public class CommandPluginHolder {
             this.attributes = null;
         } else if (StringUtils.startsWith(attributes, EXPR_PREFIX)) {
             this.attributes = exprHolderFactory.create(attributes.substring(1))
-                                               .createExpr()
-                                               .execute(plugin.getAttributesClass());
+                    .createExpr()
+                    .execute(plugin.getAttributesClass());
         } else {
             this.attributes = attributes;
         }

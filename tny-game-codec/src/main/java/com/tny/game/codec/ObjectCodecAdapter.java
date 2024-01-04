@@ -53,8 +53,8 @@ public class ObjectCodecAdapter {
     public <T> ObjectCodec<T> codec(ObjectMimeType<T> mineType) {
         ObjectCodecHolder<T> holder = holder(mineType);
         return mineType.hasMineType() ?
-                holder.loadObjectCodec(mineType.getMineType()) :
-                holder.getDefaultCodec();
+               holder.loadObjectCodec(mineType.getMineType()) :
+               holder.getDefaultCodec();
     }
 
     public <T> ObjectCodec<T> codec(Class<?> codecForClass, String mineType) {
@@ -207,7 +207,7 @@ public class ObjectCodecAdapter {
                     return MimeTypeAide.getMimeType(codableObject);
                 }
             } else if (type instanceof ParameterizedType) {
-                clazz = as(((ParameterizedType)type).getRawType());
+                clazz = as(((ParameterizedType) type).getRawType());
                 Codable codable = clazz.getAnnotation(Codable.class);
                 if (codable != null) {
                     return MimeTypeAide.getMimeType(codable);

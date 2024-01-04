@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -573,10 +574,10 @@ public class HashAide {
             } else {
                 // surrogate pair
                 // int utf32 = pos < end ? (int) data.charAt(pos++) : 0;
-                int utf32 = (int)data.charAt(pos++);
+                int utf32 = (int) data.charAt(pos++);
                 utf32 = ((code - 0xD7C0) << 10) + (utf32 & 0x3FF);
                 k2 = (0xff & (0xF0 | (utf32 >> 18))) | ((0x80 | ((utf32 >> 12) & 0x3F))) << 8 | ((0x80 | ((utf32 >> 6) & 0x3F))) << 16 |
-                        (0x80 | (utf32 & 0x3F)) << 24;
+                     (0x80 | (utf32 & 0x3F)) << 24;
                 bits = 32;
             }
 

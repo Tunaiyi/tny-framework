@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -36,7 +37,7 @@ class ActorMailCommand<T> extends BaseActorCommand<T> implements ActorMail<Objec
 
     @Override
     protected Done<T> doHandle() {
-        return DoneResults.successNullable((T)this.actorCell.handle(this));
+        return DoneResults.successNullable((T) this.actorCell.handle(this));
     }
 
     @Override
@@ -46,7 +47,7 @@ class ActorMailCommand<T> extends BaseActorCommand<T> implements ActorMail<Objec
 
     @Override
     public <ACT extends Actor> ACT getSender() {
-        return (ACT)this.sender;
+        return (ACT) this.sender;
     }
 
 }

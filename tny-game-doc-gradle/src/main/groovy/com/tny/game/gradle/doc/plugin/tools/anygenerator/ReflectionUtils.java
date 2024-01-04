@@ -141,7 +141,7 @@ public class ReflectionUtils {
             Method[] methods = (searchType.isInterface() ? searchType.getMethods() : searchType.getDeclaredMethods());
             for (Method method : methods) {
                 if (name.equals(method.getName())
-                        && (paramTypes == null || Arrays.equals(paramTypes, method.getParameterTypes()))) {
+                    && (paramTypes == null || Arrays.equals(paramTypes, method.getParameterTypes()))) {
                     return method;
                 }
             }
@@ -202,10 +202,10 @@ public class ReflectionUtils {
             throw new IllegalStateException("Could not access method: " + ex.getMessage());
         }
         if (ex instanceof InvocationTargetException) {
-            handleInvocationTargetException((InvocationTargetException)ex);
+            handleInvocationTargetException((InvocationTargetException) ex);
         }
         if (ex instanceof RuntimeException) {
-            throw (RuntimeException)ex;
+            throw (RuntimeException) ex;
         }
         throw new UndeclaredThrowableException(ex);
     }
@@ -236,10 +236,10 @@ public class ReflectionUtils {
      */
     public static void rethrowRuntimeException(Throwable ex) {
         if (ex instanceof RuntimeException) {
-            throw (RuntimeException)ex;
+            throw (RuntimeException) ex;
         }
         if (ex instanceof Error) {
-            throw (Error)ex;
+            throw (Error) ex;
         }
         throw new UndeclaredThrowableException(ex);
     }

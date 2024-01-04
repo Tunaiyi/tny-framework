@@ -70,7 +70,7 @@ public abstract class GameStorageManager<O> extends GameCacheManager<O> {
             return false;
         }
         if (item instanceof Item) {
-            O storage = this.getStorage(((Item<?>)item).getPlayerId());
+            O storage = this.getStorage(((Item<?>) item).getPlayerId());
             if (storage != null) {
                 return super.save(storage);
             }
@@ -90,7 +90,7 @@ public abstract class GameStorageManager<O> extends GameCacheManager<O> {
                 continue;
             }
             if (item instanceof Item) {
-                O storage = this.getStorage(((Item<?>)item).getPlayerId());
+                O storage = this.getStorage(((Item<?>) item).getPlayerId());
                 if (storage != null) {
                     saveCollection.add(storage);
                 }

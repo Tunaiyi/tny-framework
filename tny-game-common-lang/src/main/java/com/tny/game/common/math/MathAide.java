@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -82,7 +83,7 @@ public class MathAide {
      * @return
      */
     public static int toPow(int a, int b) {
-        return (int)Math.pow(a, b);
+        return (int) Math.pow(a, b);
     }
 
     /**
@@ -92,7 +93,7 @@ public class MathAide {
      * @return
      */
     public static int toSqrt(int a) {
-        return (int)Math.sqrt(a);
+        return (int) Math.sqrt(a);
     }
 
     /**
@@ -128,7 +129,7 @@ public class MathAide {
         List<RandomObject<V>> itemList = new ArrayList<>();
         int number = 0;
         for (int index = 0; index < randomItemList.size(); index = index + 2) {
-            Integer value = (Integer)randomItemList.get(index);
+            Integer value = (Integer) randomItemList.get(index);
             V object = ObjectAide.as(randomItemList.get(index + 1));
             number += value;
             itemList.add(new RandomObject<>(object, number));
@@ -194,7 +195,7 @@ public class MathAide {
         List<RandomObject<V>> itemList = new ArrayList<>();
         int number = 0;
         for (int index = 0; index < randomItemList.size(); index = index + 2) {
-            Integer value = (Integer)randomItemList.get(index);
+            Integer value = (Integer) randomItemList.get(index);
             V object = ObjectAide.as(randomItemList.get(index + 1));
             number += value;
             itemList.add(new RandomObject<>(object, number));
@@ -232,7 +233,7 @@ public class MathAide {
     public static <V> V rand(final int number, List<Object> randomItemList, V defaultObject) {
         List<RandomObject<V>> itemList = new ArrayList<>();
         for (int index = 0; index < randomItemList.size(); index = index + 2) {
-            Integer value = (Integer)randomItemList.get(index);
+            Integer value = (Integer) randomItemList.get(index);
             V object = ObjectAide.as(randomItemList.get(index + 1));
             itemList.add(new RandomObject<>(object, value));
         }
@@ -331,7 +332,7 @@ public class MathAide {
             Integer prob = null;
             SortedMap<Integer, Integer> sortedMap;
             if (timesProbsMap instanceof SortedMap) {
-                sortedMap = (SortedMap<Integer, Integer>)timesProbsMap;
+                sortedMap = (SortedMap<Integer, Integer>) timesProbsMap;
             } else {
                 sortedMap = new TreeMap<>(timesProbsMap);
             }

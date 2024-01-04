@@ -67,10 +67,10 @@ public class NameNode<T> {
     @Override
     public String toString() {
         return "NameNode{" + "name=" + name +
-                ", id=" + id +
-                ", version=" + version +
-                ", revision=" + revision +
-                '}';
+               ", id=" + id +
+               ", version=" + version +
+               ", revision=" + revision +
+               '}';
     }
 
 }

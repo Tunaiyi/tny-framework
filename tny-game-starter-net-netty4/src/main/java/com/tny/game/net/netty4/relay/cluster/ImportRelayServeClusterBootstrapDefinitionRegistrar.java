@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -17,7 +18,7 @@ import org.springframework.core.type.AnnotationMetadata;
 
 import javax.annotation.Nonnull;
 
-import static com.tny.game.net.base.configuration.NetUnitNames.*;
+import static com.tny.game.net.application.configuration.NetUnitNames.*;
 
 /**
  * <p>
@@ -26,7 +27,7 @@ public class ImportRelayServeClusterBootstrapDefinitionRegistrar extends ImportC
 
     @Override
     public void registerBeanDefinitions(@Nonnull AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
-        SpringRelayServeClustersProperties properties = loadProperties(SpringRelayServeClustersProperties.class);
+        SpringRelayClustersProperties properties = loadProperties(SpringRelayClustersProperties.class);
         for (SpringRelayServeClusterSetting setting : properties.getServeClusters()) {
             registerRelayServeClusterContext(setting, registry);
         }
@@ -34,7 +35,7 @@ public class ImportRelayServeClusterBootstrapDefinitionRegistrar extends ImportC
 
     private void registerRelayServeClusterContext(SpringRelayServeClusterSetting setting, BeanDefinitionRegistry registry) {
         NettyRemoteServeClusterContext clusterContext = new NettyRemoteServeClusterContext(setting);
-        String name = unitName(setting.getServeName(), NettyRemoteServeClusterContext.class);
+        String name = unitName(setting.serviceName(), NettyRemoteServeClusterContext.class);
         BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(NettyRemoteServeClusterContext.class, () -> clusterContext)
                 .addPropertyReference("clientGuide", setting.getClientGuide());
         if (setting.isHasServeInstanceAllotStrategy()) {

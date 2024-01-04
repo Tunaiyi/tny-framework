@@ -56,7 +56,7 @@ public class DirectCache implements Cache {
         if (!clazz.isInstance(loadObject)) {
             throw new ClassCastException("memcached get " + key + " - " + object + " is " + object.getClass() + ", not " + clazz);
         }
-        return new SimpleCasItem<>(mItem, (T)loadObject);
+        return new SimpleCasItem<>(mItem, (T) loadObject);
     }
 
     @Override
@@ -78,7 +78,7 @@ public class DirectCache implements Cache {
         if (!clazz.isInstance(loadObject)) {
             throw new ClassCastException("memcached get " + key + " - " + object + " is " + object.getClass() + ", not " + clazz);
         }
-        return new SimpleCasItem<>(mItem, (T)loadObject);
+        return new SimpleCasItem<>(mItem, (T) loadObject);
     }
 
     @Override
@@ -89,7 +89,7 @@ public class DirectCache implements Cache {
     @Override
     @SuppressWarnings("unchecked")
     public <T> boolean casObject(CasItem<T> item, long millisecond) {
-        T object = (T)this.getObjectByKey(item.getData().getClass(), item.getKey());
+        T object = (T) this.getObjectByKey(item.getData().getClass(), item.getKey());
         if (object == null) {
             return false;
         }
@@ -119,7 +119,7 @@ public class DirectCache implements Cache {
         if (!clazz.isInstance(loadObject)) {
             throw new ClassCastException("memcached get " + key + " - " + object + " is " + object.getClass() + ", not " + clazz);
         }
-        return (T)loadObject;
+        return (T) loadObject;
     }
 
     @Override
@@ -144,7 +144,7 @@ public class DirectCache implements Cache {
             if (!clazz.isInstance(loadObject)) {
                 throw new ClassCastException("memcached get " + entity.getKey() + " - " + object + " is " + object.getClass() + ", not " + clazz);
             }
-            returnCollection.add((T)loadObject);
+            returnCollection.add((T) loadObject);
         }
         return returnCollection;
     }
@@ -171,7 +171,7 @@ public class DirectCache implements Cache {
             if (!clazz.isInstance(loadObject)) {
                 throw new ClassCastException("memcached get " + entity.getKey() + " - " + object + " is " + object.getClass() + ", not " + clazz);
             }
-            returnMap.put(key, (T)loadObject);
+            returnMap.put(key, (T) loadObject);
         }
         return returnMap;
     }
@@ -193,7 +193,7 @@ public class DirectCache implements Cache {
         if (!clazz.isInstance(loadObject)) {
             throw new ClassCastException("memcached get " + key + " - " + object + " is " + object.getClass() + ", not " + clazz);
         }
-        return (T)loadObject;
+        return (T) loadObject;
     }
 
     @Override

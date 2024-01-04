@@ -47,10 +47,10 @@ public class CommonSession extends BaseNetEndpoint implements NetSession {
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                          .add("contactGroup", this.getGroup())
-                          .add("identify", this.getIdentify())
-                          .add("tunnel", this.tunnel())
-                          .toString();
+                .add("contactGroup", this.getGroup())
+                .add("identify", this.getIdentify())
+                .add("tunnel", this.tunnel())
+                .toString();
     }
 
 }

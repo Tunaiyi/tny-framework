@@ -1,6 +1,6 @@
 package com.tny.game.suite;
 
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 
 /**
  * 服务器作用域类型

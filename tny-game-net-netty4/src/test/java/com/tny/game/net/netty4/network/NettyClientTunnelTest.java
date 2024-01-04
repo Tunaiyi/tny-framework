@@ -12,7 +12,7 @@ package com.tny.game.net.netty4.network;
 
 import com.tny.game.common.url.*;
 import com.tny.game.common.utils.*;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.message.common.*;
 import com.tny.game.net.transport.*;

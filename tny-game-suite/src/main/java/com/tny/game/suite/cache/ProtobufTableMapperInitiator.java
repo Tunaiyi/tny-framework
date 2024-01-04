@@ -3,7 +3,7 @@ package com.tny.game.suite.cache;
 import com.tny.game.cache.annotation.*;
 import com.tny.game.common.collection.*;
 import com.tny.game.common.lifecycle.*;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.scanner.*;
 import com.tny.game.scanner.filter.*;
 import com.tny.game.suite.utils.*;
@@ -56,7 +56,7 @@ public class ProtobufTableMapperInitiator implements InitializingBean, AppPostSt
         Map<Class<?>, ProtoCacheFormatter<?, ?>> formatterMap = this.context.getBeansOfType(ProtoCacheFormatter.class)
                 .values()
                 .stream()
-                .map(f -> (ProtoCacheFormatter<?, ?>)f)
+                .map(f -> (ProtoCacheFormatter<?, ?>) f)
                 .collect(CollectorsAide.toMap(ProtoCacheFormatter::getClass));
         for (Class<?> clazz : this.selector.getClasses()) {
             ToCache cache = clazz.getAnnotation(ToCache.class);

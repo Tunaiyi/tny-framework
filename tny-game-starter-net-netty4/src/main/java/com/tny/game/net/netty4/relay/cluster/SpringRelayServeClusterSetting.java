@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -17,7 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 
-import static com.tny.game.net.base.configuration.NetUnitNames.*;
+import static com.tny.game.net.application.configuration.NetUnitNames.*;
 
 /**
  * <p>
@@ -35,11 +36,11 @@ public class SpringRelayServeClusterSetting implements RelayServeClusterSetting 
 
     private String clientGuide = defaultName(RelayClientGuide.class);
 
-    private int linkConnectionSize = 1;
+    private int connectionSize = 1;
 
-    private long linkHeartbeatInterval = 5000;
+    private long connectionHeartbeatInterval = 5000;
 
-    private long linkMaxIdleTime = 10000;
+    private long connectionMaxIdleTime = 10000;
 
     private boolean discovery = true;
 
@@ -47,7 +48,12 @@ public class SpringRelayServeClusterSetting implements RelayServeClusterSetting 
 
     private String relayLinkAllotStrategy = lowerCamelName(PollingRelayAllotStrategy.class);
 
-    private List<SpringRelayServeInstanceSetting> instances = new ArrayList<>();
+    private List<SpringRelayServeNodeSetting> serveNodes = new ArrayList<>();
+
+    @Override
+    public String getService() {
+        return service;
+    }
 
     @Override
     public String getServeName() {
@@ -57,11 +63,6 @@ public class SpringRelayServeClusterSetting implements RelayServeClusterSetting 
     @Override
     public String getUsername() {
         return username;
-    }
-
-    @Override
-    public String getService() {
-        return service;
     }
 
     public String getClientGuide() {
@@ -74,27 +75,27 @@ public class SpringRelayServeClusterSetting implements RelayServeClusterSetting 
     }
 
     @Override
-    public long getLinkHeartbeatInterval() {
-        return linkHeartbeatInterval;
+    public long getConnectionHeartbeatInterval() {
+        return connectionHeartbeatInterval;
     }
 
     @Override
-    public long getLinkMaxIdleTime() {
-        return linkMaxIdleTime;
+    public long getConnectionMaxIdleTime() {
+        return connectionMaxIdleTime;
     }
 
     @Override
-    public int getLinkConnectionSize() {
-        return linkConnectionSize;
+    public int getConnectionSize() {
+        return connectionSize;
+    }
+
+    public List<SpringRelayServeNodeSetting> getServeNodes() {
+        return serveNodes;
     }
 
     @Override
-    public List<RelayServeInstanceSetting> getInstanceList() {
-        return Lists.newArrayList(instances);
-    }
-
-    public List<SpringRelayServeInstanceSetting> getInstances() {
-        return instances;
+    public List<RelayServeNodeSetting> getServeNodeList() {
+        return Lists.newArrayList(serveNodes);
     }
 
     public SpringRelayServeClusterSetting setUsername(String username) {
@@ -138,8 +139,8 @@ public class SpringRelayServeClusterSetting implements RelayServeClusterSetting 
         return this;
     }
 
-    public SpringRelayServeClusterSetting setLinkConnectionSize(int linkConnectionSize) {
-        this.linkConnectionSize = linkConnectionSize;
+    public SpringRelayServeClusterSetting setConnectionSize(int connectionSize) {
+        this.connectionSize = connectionSize;
         return this;
     }
 
@@ -153,18 +154,18 @@ public class SpringRelayServeClusterSetting implements RelayServeClusterSetting 
         return this;
     }
 
-    public SpringRelayServeClusterSetting setInstances(List<SpringRelayServeInstanceSetting> instances) {
-        this.instances = instances;
+    public SpringRelayServeClusterSetting setServeNodes(List<SpringRelayServeNodeSetting> serveNodes) {
+        this.serveNodes = serveNodes;
         return this;
     }
 
-    public SpringRelayServeClusterSetting setLinkMaxIdleTime(long linkMaxIdleTime) {
-        this.linkMaxIdleTime = linkMaxIdleTime;
+    public SpringRelayServeClusterSetting setConnectionMaxIdleTime(long connectionMaxIdleTime) {
+        this.connectionMaxIdleTime = connectionMaxIdleTime;
         return this;
     }
 
-    public SpringRelayServeClusterSetting setLinkHeartbeatInterval(long linkHeartbeatInterval) {
-        this.linkHeartbeatInterval = linkHeartbeatInterval;
+    public SpringRelayServeClusterSetting setConnectionHeartbeatInterval(long connectionHeartbeatInterval) {
+        this.connectionHeartbeatInterval = connectionHeartbeatInterval;
         return this;
     }
 

@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -213,10 +214,10 @@ class DefaultTimeTrigger<C extends TimeCycle> implements TimeTrigger<C> {
             return false;
         }
         long suspendMills = Math.max(time.toEpochMilli() - suspendTime.toEpochMilli(), 0);
-        this.nextTime = nextTime.plusMillis((int)suspendMills);
+        this.nextTime = nextTime.plusMillis((int) suspendMills);
         Instant endTime = this.endTime;
         if (endTime != null) {
-            this.endTime = endTime.plusMillis((int)suspendMills);
+            this.endTime = endTime.plusMillis((int) suspendMills);
         }
         this.suspendTime = null;
         return true;
@@ -224,7 +225,7 @@ class DefaultTimeTrigger<C extends TimeCycle> implements TimeTrigger<C> {
 
     @Override
     public boolean suspend(Instant time) {
-        if (!isWorking() && time.plusMillis((int)this.getSpeedMills())
+        if (!isWorking() && time.plusMillis((int) this.getSpeedMills())
                 .isAfter(this.getNextTime())) {
             return false;
         }
@@ -239,9 +240,9 @@ class DefaultTimeTrigger<C extends TimeCycle> implements TimeTrigger<C> {
         }
         Instant nextTime = this.nextTime;
         Instant endTime = this.endTime;
-        this.nextTime = nextTime.plusMillis((int)timeMillis);
+        this.nextTime = nextTime.plusMillis((int) timeMillis);
         if (endTime != null) {
-            this.endTime = endTime.plusMillis((int)timeMillis);
+            this.endTime = endTime.plusMillis((int) timeMillis);
         }
         return false;
     }

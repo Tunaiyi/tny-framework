@@ -19,6 +19,7 @@ public interface Certificate extends ConnectIdentity, Serializable {
     long ANONYMITY_CONTACT_ID = -1L;
     long ANONYMITY_IDENTIFY = -1L;
     long ANONYMITY_ID = -1L;
+
     /**
      * @return 获取凭证号
      */
