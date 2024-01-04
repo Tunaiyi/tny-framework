@@ -27,7 +27,7 @@ public class EnumItemDescription extends FieldDescription {
         super(docField);
         Field field = docField.getField();
         try {
-            Enum<?> object = (Enum<?>)field.get(null);
+            Enum<?> object = (Enum<?>) field.get(null);
             Map<String, EnumItemAttribute> attributes = new HashMap<>();
             for (Field enumField : field.getDeclaringClass().getDeclaredFields()) {
                 if (!Modifier.isStatic(enumField.getModifiers())) {

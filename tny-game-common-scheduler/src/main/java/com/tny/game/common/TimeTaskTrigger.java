@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -50,11 +51,11 @@ public class TimeTaskTrigger implements Comparable<TimeTaskTrigger> {
     public TimeTaskTrigger(TimeTaskScheme scheme, long stopTime) {
         this.scheme = scheme;
         Date start = stopTime > 0 ? new Date(stopTime) : new Date();
-        this.trigger = (AbstractTrigger<CronTrigger>)TriggerBuilder.newTrigger()
+        this.trigger = (AbstractTrigger<CronTrigger>) TriggerBuilder.newTrigger()
                 .startAt(start)
                 .withSchedule(CronScheduleBuilder.cronSchedule(scheme.getCron()))
                 .build();
-        CronTriggerImpl cronTrigger = (CronTriggerImpl)this.trigger;
+        CronTriggerImpl cronTrigger = (CronTriggerImpl) this.trigger;
         cronTrigger.setNextFireTime(start);
         this.handlerList = new ArrayList<>(scheme.getTasks());
         this.trigger();
@@ -95,7 +96,7 @@ public class TimeTaskTrigger implements Comparable<TimeTaskTrigger> {
     @Override
     public String toString() {
         return "\nTimeTaskModel [cron=" + scheme.getCron() + ", handlerList=" + this.handlerList +
-                ", trigger=" + this.fireTime + " - " + new Date(this.nextFireTime()) + "]\n";
+               ", trigger=" + this.fireTime + " - " + new Date(this.nextFireTime()) + "]\n";
     }
 
 }

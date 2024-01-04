@@ -10,7 +10,7 @@
  */
 package com.tny.game.net.annotation;
 
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.net.message.*;
 
 import java.lang.annotation.*;
@@ -26,7 +26,7 @@ import java.lang.annotation.*;
  * @author Kun Yang
  * @date 2022/4/28 20:54
  * @see Contact
- * @see com.tny.game.net.base.RpcServicer
+ * @see RpcServicer
  * @see RpcAccessPoint
  **/
 @Target({ElementType.PARAMETER})

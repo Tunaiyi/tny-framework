@@ -1397,7 +1397,7 @@ class EtcdNamespaceExplorerTest {
             if (!(o instanceof Player)) {
                 return false;
             }
-            Player player = (Player)o;
+            Player player = (Player) o;
             return getAge() == player.getAge() && Objects.equals(getName(), player.getName());
         }
 
@@ -1409,8 +1409,8 @@ class EtcdNamespaceExplorerTest {
         @Override
         public String toString() {
             return "Player{" + "name='" + name + '\'' +
-                    ", age=" + age +
-                    '}';
+                   ", age=" + age +
+                   '}';
         }
 
     }

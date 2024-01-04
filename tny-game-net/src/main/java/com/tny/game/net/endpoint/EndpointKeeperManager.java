@@ -11,7 +11,7 @@
 package com.tny.game.net.endpoint;
 
 import com.tny.game.common.lifecycle.unit.annotation.*;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.net.rpc.*;
 
 import java.util.Optional;

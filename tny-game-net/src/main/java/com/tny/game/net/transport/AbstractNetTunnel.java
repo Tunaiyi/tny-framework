@@ -11,7 +11,7 @@
 package com.tny.game.net.transport;
 
 import com.tny.game.common.concurrent.utils.*;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
@@ -53,7 +53,9 @@ public abstract class AbstractNetTunnel<E extends NetEndpoint> extends AbstractC
     private final StampedLock endpointLock = new StampedLock();
 
     protected AbstractNetTunnel(long id, NetAccessMode accessMode, NetworkContext context) {
-        this.id = id; this.accessMode = accessMode; this.context = context;
+        this.id = id;
+        this.accessMode = accessMode;
+        this.context = context;
     }
 
     @Override
@@ -126,11 +128,15 @@ public abstract class AbstractNetTunnel<E extends NetEndpoint> extends AbstractC
     }
 
     private boolean doReceive(NetMessage message) {
-        E endpoint = this.endpoint; var rpcContext = RpcTransactionContext.createEnter(this, message, true);
-        var rpcMonitor = this.context.getRpcMonitor(); rpcMonitor.onReceive(rpcContext); while (true) {
+        E endpoint = this.endpoint;
+        var rpcContext = RpcTransactionContext.createEnter(this, message, true);
+        var rpcMonitor = this.context.getRpcMonitor();
+        rpcMonitor.onReceive(rpcContext);
+        while (true) {
             if (endpoint.isClosed()) {
                 return false;
-            } if (endpoint.receive(rpcContext)) {
+            }
+            if (endpoint.receive(rpcContext)) {
                 return true;
             }
         }
@@ -149,17 +155,23 @@ public abstract class AbstractNetTunnel<E extends NetEndpoint> extends AbstractC
     public boolean bind(NetEndpoint endpoint) {
         if (endpoint == null) {
             return false;
-        } if (this.endpoint == endpoint) {
+        }
+        if (this.endpoint == endpoint) {
             return true;
-        } synchronized (this) {
+        }
+        synchronized (this) {
             if (this.endpoint == endpoint) {
                 return true;
-            } if (this.endpoint == null) {
-                this.endpoint = as(endpoint); return true;
+            }
+            if (this.endpoint == null) {
+                this.endpoint = as(endpoint);
+                return true;
             } else {
-                Certificate certificate = endpoint.getCertificate(); if (!certificate.isAuthenticated()) {
+                Certificate certificate = endpoint.getCertificate();
+                if (!certificate.isAuthenticated()) {
                     return false;
-                } return StampedLockAide.supplyInWriteLock(this.endpointLock, () -> replaceEndpoint(endpoint));
+                }
+                return StampedLockAide.supplyInWriteLock(this.endpointLock, () -> replaceEndpoint(endpoint));
             }
         }
     }
@@ -170,53 +182,81 @@ public abstract class AbstractNetTunnel<E extends NetEndpoint> extends AbstractC
     public boolean open() {
         if (this.isClosed()) {
             return false;
-        } if (this.isActive()) {
+        }
+        if (this.isActive()) {
             return true;
-        } synchronized (this) {
+        }
+        synchronized (this) {
             if (this.isClosed()) {
                 return false;
-            } if (this.isActive()) {
+            }
+            if (this.isActive()) {
                 return true;
-            } if (!this.onOpen()) {
+            }
+            if (!this.onOpen()) {
                 return false;
-            } this.status = TunnelStatus.OPEN; this.onOpened();
-        } buses().activateEvent().notify(this); return true;
+            }
+            this.status = TunnelStatus.OPEN;
+            this.onOpened();
+        }
+        buses().activateEvent().notify(this);
+        return true;
     }
 
     @Override
     public void disconnect() {
-        NetEndpoint endpoint; synchronized (this) {
+        NetEndpoint endpoint;
+        synchronized (this) {
             if (this.status == TunnelStatus.CLOSED || this.status == TunnelStatus.SUSPEND) {
                 return;
-            } this.doDisconnect(); this.status = TunnelStatus.SUSPEND; endpoint = this.endpoint; this.onDisconnected();
-        } if (endpoint != null) { // 避免死锁
+            }
+            this.doDisconnect();
+            this.status = TunnelStatus.SUSPEND;
+            endpoint = this.endpoint;
+            this.onDisconnected();
+        }
+        if (endpoint != null) { // 避免死锁
             endpoint.onUnactivated(this);
-        } buses().unactivatedEvent().notify(this);
+        }
+        buses().unactivatedEvent().notify(this);
     }
 
     @Override
     public boolean close() {
         if (this.status == TunnelStatus.CLOSED) {
             return false;
-        } NetEndpoint endpoint; synchronized (this) {
+        }
+        NetEndpoint endpoint;
+        synchronized (this) {
             if (this.status == TunnelStatus.CLOSED) {
                 return false;
-            } this.status = TunnelStatus.CLOSED; this.onClose(); this.doDisconnect(); endpoint = this.endpoint; this.onClosed();
-        } if (endpoint != null) { // 避免死锁
+            }
+            this.status = TunnelStatus.CLOSED;
+            this.onClose();
+            this.doDisconnect();
+            endpoint = this.endpoint;
+            this.onClosed();
+        }
+        if (endpoint != null) { // 避免死锁
             endpoint.onUnactivated(this);
-        } buses().closeEvent().notify(this); return true;
+        }
+        buses().closeEvent().notify(this);
+        return true;
     }
 
     @Override
     public void reset() {
         if (this.status == TunnelStatus.INIT) {
             return;
-        } synchronized (this) {
+        }
+        synchronized (this) {
             if (this.status == TunnelStatus.INIT) {
                 return;
-            } if (!this.isActive()) {
+            }
+            if (!this.isActive()) {
                 this.disconnect();
-            } this.status = TunnelStatus.INIT;
+            }
+            this.status = TunnelStatus.INIT;
         }
     }
 
@@ -236,7 +276,8 @@ public abstract class AbstractNetTunnel<E extends NetEndpoint> extends AbstractC
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } if (!(o instanceof AbstractNetTunnel<?> that)) {
+        }
+        if (!(o instanceof AbstractNetTunnel<?> that)) {
             return false;
         }
         return this.id == that.id;

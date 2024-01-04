@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -31,7 +32,7 @@ public final class RuntimeEnv {
         Constructor<Object> c = null;
         Class<?> reflectionFactoryClass = null;
         try {
-            c = Object.class.getConstructor((Class[])null);
+            c = Object.class.getConstructor((Class[]) null);
             reflectionFactoryClass = Thread.currentThread().getContextClassLoader().loadClass("sun.reflect.ReflectionFactory");
         } catch (Exception e) {
             // ignore
@@ -62,7 +63,7 @@ public final class RuntimeEnv {
     @SuppressWarnings("unchecked")
     static <T> Class<T> loadClass(String className) {
         try {
-            return (Class<T>)Thread.currentThread().getContextClassLoader().loadClass(className);
+            return (Class<T>) Thread.currentThread().getContextClassLoader().loadClass(className);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -91,7 +92,7 @@ public final class RuntimeEnv {
 
         public T newInstance() {
             try {
-                return constructor.newInstance((Object[])null);
+                return constructor.newInstance((Object[]) null);
             } catch (IllegalArgumentException e) {
                 throw new RuntimeException(e);
             } catch (InstantiationException e) {
@@ -116,7 +117,7 @@ public final class RuntimeEnv {
         @SuppressWarnings("unchecked")
         public T newInstance() {
             try {
-                return (T)newInstanceFromObjectInputStream.invoke(null, clazz, Object.class);
+                return (T) newInstanceFromObjectInputStream.invoke(null, clazz, Object.class);
             } catch (IllegalArgumentException e) {
                 throw new RuntimeException(e);
             } catch (IllegalAccessException e) {

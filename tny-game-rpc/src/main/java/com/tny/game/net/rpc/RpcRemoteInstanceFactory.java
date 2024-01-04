@@ -11,7 +11,7 @@
 package com.tny.game.net.rpc;
 
 import com.tny.game.common.result.*;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.rpc.annotation.*;
@@ -63,7 +63,7 @@ public class RpcRemoteInstanceFactory {
         } catch (Throwable e) {
             throw new RpcException(ResultCode.FAILURE, e);
         }
-        ((Proxy)proxy).setHandler(handler);
+        ((Proxy) proxy).setHandler(handler);
         return as(proxy);
     }
 

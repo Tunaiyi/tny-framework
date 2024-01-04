@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -52,12 +53,12 @@ public class DefaultNettyMessageCodec implements NettyMessageCodec {
         }
         long id = NettyVarIntCoder.readVarInt64(buffer);
         byte option = buffer.readByte();
-        MessageMode mode = MessageMode.valueOf(MESSAGE, (byte)(option & MESSAGE_HEAD_OPTION_MODE_MASK));
+        MessageMode mode = MessageMode.valueOf(MESSAGE, (byte) (option & MESSAGE_HEAD_OPTION_MODE_MASK));
         int protocol = NettyVarIntCoder.readVarInt32(buffer);
         int code = NettyVarIntCoder.readVarInt32(buffer);
         long toMessage = NettyVarIntCoder.readVarInt64(buffer);
         long time = NettyVarIntCoder.readVarInt64(buffer);
-        int line = (byte)(option & MESSAGE_HEAD_OPTION_LINE_MASK);
+        int line = (byte) (option & MESSAGE_HEAD_OPTION_LINE_MASK);
         line = line >> MESSAGE_HEAD_OPTION_LINE_SHIFT;
         Map<String, MessageHeader<?>> headerMap = Collections.emptyMap();
         if (CodecConstants.isOption(option, MESSAGE_HEAD_OPTION_EXIST_HEADERS_VALUE_EXIST)) {
@@ -84,15 +85,15 @@ public class DefaultNettyMessageCodec implements NettyMessageCodec {
         MessageMode mode = head.getMode();
         boolean hasHeader = message.isHasHeaders();
         byte option = mode.getOption();
-        option = (byte)(option |
-                (message.existBody() ? CodecConstants.MESSAGE_HEAD_OPTION_EXIST_BODY_VALUE_EXIST : (byte)0) |
-                (hasHeader ? CodecConstants.MESSAGE_HEAD_OPTION_EXIST_HEADERS_VALUE_EXIST : (byte)0));
+        option = (byte) (option |
+                         (message.existBody() ? CodecConstants.MESSAGE_HEAD_OPTION_EXIST_BODY_VALUE_EXIST : (byte) 0) |
+                         (hasHeader ? CodecConstants.MESSAGE_HEAD_OPTION_EXIST_HEADERS_VALUE_EXIST : (byte) 0));
         int line = head.getLine();
         if (line < MESSAGE_HEAD_OPTION_LINE_VALUE_MIN || line > MESSAGE_HEAD_OPTION_LINE_VALUE_MAX) {
             throw NetCodecException.causeEncodeFailed("line is {}. line must {} <= line <= {}", line,
                     MESSAGE_HEAD_OPTION_LINE_VALUE_MIN, MESSAGE_HEAD_OPTION_LINE_VALUE_MAX);
         }
-        option = (byte)(option | line << MESSAGE_HEAD_OPTION_LINE_SHIFT);
+        option = (byte) (option | line << MESSAGE_HEAD_OPTION_LINE_SHIFT);
         buffer.writeByte(option);
         NettyVarIntCoder.writeVarInt32(head.getProtocolId(), buffer);
         NettyVarIntCoder.writeVarInt32(head.getCode(), buffer);
@@ -155,7 +156,7 @@ public class DefaultNettyMessageCodec implements NettyMessageCodec {
         OctetMessageBody releaseBody = null;
         try {
             if (object instanceof byte[]) {
-                write(buffer, (byte[])object);
+                write(buffer, (byte[]) object);
             } else if (object instanceof ByteArrayMessageBody) {
                 ByteArrayMessageBody arrayMessageBody = as(object);
                 releaseBody = arrayMessageBody;

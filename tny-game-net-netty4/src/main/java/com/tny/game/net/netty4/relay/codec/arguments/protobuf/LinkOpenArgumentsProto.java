@@ -12,7 +12,7 @@ package com.tny.game.net.netty4.relay.codec.arguments.protobuf;
 
 import com.baidu.bjf.remoting.protobuf.FieldType;
 import com.baidu.bjf.remoting.protobuf.annotation.*;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.net.relay.packet.arguments.*;
 
 /**

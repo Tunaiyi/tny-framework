@@ -11,7 +11,7 @@
 package com.tny.game.net.message;
 
 import com.baidu.bjf.remoting.protobuf.annotation.*;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 
 /**
  * Rpc节点

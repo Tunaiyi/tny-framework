@@ -133,7 +133,7 @@ public abstract class BaseRedisCacheClient implements CacheClient {
 
     private Response<?> doAdd(Pipeline pipeline, CacheItem<?> item) {
         if (item.getExpire() > 0) {
-            return jedisSetNXPX(pipeline, item.getKey().getBytes(), object2Bytes(item.getData()), (int)item.getExpire());
+            return jedisSetNXPX(pipeline, item.getKey().getBytes(), object2Bytes(item.getData()), (int) item.getExpire());
         } else {
             return jedisSetNX(pipeline, item.getKey().getBytes(), object2Bytes(item.getData()));
         }
@@ -299,7 +299,7 @@ public abstract class BaseRedisCacheClient implements CacheClient {
         List<C> fails = null;
         for (Entry<C, ? extends Response<?>> entry : responseMap.entrySet()) {
             Object rs = entry.getValue().get();
-            if (rs == null || (rs instanceof Long && (Long)rs <= 0)) {
+            if (rs == null || (rs instanceof Long && (Long) rs <= 0)) {
                 fails = CacheItemHelper.getAndCreate(fails);
                 fails.add(entry.getKey());
             }
@@ -346,14 +346,14 @@ public abstract class BaseRedisCacheClient implements CacheClient {
     private static byte[] object2Bytes(Object object) {
         try {
             if (object instanceof byte[]) {
-                byte[] bytes = (byte[])object;
+                byte[] bytes = (byte[]) object;
                 byte[] data = new byte[bytes.length + 1];
                 data[0] = 0;
                 System.arraycopy(bytes, 0, data, 1, bytes.length);
                 return data;
             } else if (object instanceof Blob) {
-                Blob blob = (Blob)object;
-                byte[] bytes = blob.getBytes(1, (int)blob.length());
+                Blob blob = (Blob) object;
+                byte[] bytes = blob.getBytes(1, (int) blob.length());
                 byte[] data = new byte[bytes.length + 1];
                 data[0] = 0;
                 System.arraycopy(bytes, 0, data, 1, bytes.length);

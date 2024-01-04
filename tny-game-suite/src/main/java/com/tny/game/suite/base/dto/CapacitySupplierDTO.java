@@ -74,7 +74,7 @@ public class CapacitySupplierDTO {
                     .collect(Collectors.toSet());
         }
         if (supplier instanceof ExpireCapacitySupplier) {
-            ExpireCapacitySupplier timeoutSupplier = (ExpireCapacitySupplier)supplier;
+            ExpireCapacitySupplier timeoutSupplier = (ExpireCapacitySupplier) supplier;
             long remain = timeoutSupplier.getRemainTime(System.currentTimeMillis());
             if (remain >= 0) {
                 dto.timeout = true;

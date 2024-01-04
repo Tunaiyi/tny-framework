@@ -14,7 +14,7 @@ public interface StoreCapacityGoal extends ExpireCapacityGoal {
 
     static StoreCapacityGoal saveByGoal(CapacityGoal goal, CapacityVisitor visitor, long expireAt) {
         if (goal instanceof StoreCapacityGoal) {
-            if (expireAt == 0 || ((StoreCapacityGoal)goal).getExpireAt() == expireAt) {
+            if (expireAt == 0 || ((StoreCapacityGoal) goal).getExpireAt() == expireAt) {
                 return ObjectAide.as(goal);
             }
         }

@@ -31,13 +31,13 @@ public abstract class GameSaveByStorageManager<S extends Stuff<?>, O extends Stu
         if (holder == null) {
             return null;
         }
-        return (O)holder.getOwner(this.ownItemType);
+        return (O) holder.getOwner(this.ownItemType);
     }
 
     @Override
     protected S get(long playerId, Object... object) {
         O storage = this.getSaveObject(playerId);
-        return storage.getItemById(((Number)object[0]).longValue());
+        return storage.getItemById(((Number) object[0]).longValue());
     }
 
     @Override
@@ -46,7 +46,7 @@ public abstract class GameSaveByStorageManager<S extends Stuff<?>, O extends Stu
     @Override
     protected S getInstance(long playerId, Object... object) {
         O storage = this.getSaveObject(playerId);
-        return storage.getItemById((long)object[0]);
+        return storage.getItemById((long) object[0]);
     }
 
 }

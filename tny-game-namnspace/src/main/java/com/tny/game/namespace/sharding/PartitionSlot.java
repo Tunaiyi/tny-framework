@@ -88,7 +88,7 @@ public class PartitionSlot<N extends ShardingNode> extends ShardingPartition<N> 
         if (!(o instanceof PartitionSlot)) {
             return false;
         }
-        PartitionSlot<?> that = (PartitionSlot<?>)o;
+        PartitionSlot<?> that = (PartitionSlot<?>) o;
         return getIndex() == that.getIndex() && Objects.equals(getKey(), that.getKey());
     }
 

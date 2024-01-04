@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -136,11 +137,11 @@ public class Base62 {
 
             // Add regular bytes with 3 bytes group composed from 4 units with 6 bits.
             if (m == 4) {
-                b = (byte)((unit[0] << 2) | (unit[1] >> 4));
+                b = (byte) ((unit[0] << 2) | (unit[1] >> 4));
                 decodedList.add(b);
-                b = (byte)((unit[1] << 4) | (unit[2] >> 2));
+                b = (byte) ((unit[1] << 4) | (unit[2] >> 2));
                 decodedList.add(b);
-                b = (byte)((unit[2] << 6) | unit[3]);
+                b = (byte) ((unit[2] << 6) | unit[3]);
                 decodedList.add(b);
 
                 // Reset unit counter
@@ -151,15 +152,15 @@ public class Base62 {
         // Add tail bytes group less than 4 units
         if (m != 0) {
             if (m == 1) {
-                b = (byte)((unit[0] << 2));
+                b = (byte) ((unit[0] << 2));
                 decodedList.add(b);
             } else if (m == 2) {
-                b = (byte)((unit[0] << 2) | (unit[1] >> 4));
+                b = (byte) ((unit[0] << 2) | (unit[1] >> 4));
                 decodedList.add(b);
             } else if (m == 3) {
-                b = (byte)((unit[0] << 2) | (unit[1] >> 4));
+                b = (byte) ((unit[0] << 2) | (unit[1] >> 4));
                 decodedList.add(b);
-                b = (byte)((unit[1] << 4) | (unit[2] >> 2));
+                b = (byte) ((unit[1] << 4) | (unit[2] >> 2));
                 decodedList.add(b);
             }
         }

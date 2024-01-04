@@ -91,8 +91,8 @@ public abstract class EtcdObject {
 
     private <T> ObjectCodec<T> codecOf(ObjectMimeType<T> type) {
         return type.hasMineType() ?
-                objectCodecAdapter.codec(type.getType(), type.getMineType()) :
-                objectCodecAdapter.codec(type.getType());
+               objectCodecAdapter.codec(type.getType(), type.getMineType()) :
+               objectCodecAdapter.codec(type.getType());
     }
 
 }

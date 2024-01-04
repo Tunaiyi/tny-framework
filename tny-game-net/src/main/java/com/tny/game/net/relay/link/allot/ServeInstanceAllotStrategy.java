@@ -10,7 +10,7 @@
  */
 package com.tny.game.net.relay.link.allot;
 
-import com.tny.game.net.relay.link.*;
+import com.tny.game.net.clusters.*;
 import com.tny.game.net.transport.*;
 
 /**
@@ -29,6 +29,6 @@ public interface ServeInstanceAllotStrategy {
      * @param cluster 目标集群
      * @return 返回服务实例
      */
-    RemoteServeInstance allot(Tunnel tunnel, NetRemoteServeCluster cluster);
+    RelayServeInstance allot(Tunnel tunnel, NetRemoteServeCluster cluster);
 
 }

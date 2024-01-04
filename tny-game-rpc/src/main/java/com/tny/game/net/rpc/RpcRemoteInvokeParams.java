@@ -13,7 +13,7 @@ package com.tny.game.net.rpc;
 import com.tny.game.common.collection.empty.*;
 import com.tny.game.common.result.*;
 import com.tny.game.common.utils.*;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.net.message.*;
 
 import java.util.*;
@@ -150,7 +150,7 @@ public class RpcRemoteInvokeParams {
 
     RpcRemoteInvokeParams setCode(Object code) {
         if (code instanceof Number) {
-            this.code = ResultCodes.of(((Number)code).intValue());
+            this.code = ResultCodes.of(((Number) code).intValue());
         } else if (code instanceof ResultCode) {
             this.code = as(code);
         } else {

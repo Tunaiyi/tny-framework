@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -141,7 +142,7 @@ public class ClassScanner {
             jarRes = new UrlResource(url + "/");
         }
         URLConnection con = jarRes.getURL().openConnection();
-        JarURLConnection jarCon = (JarURLConnection)con;
+        JarURLConnection jarCon = (JarURLConnection) con;
         JarFile jarFile = jarCon.getJarFile();
         JarEntry jarEntry = jarCon.getJarEntry();
         String rootEntryPath = (jarEntry != null ? jarEntry.getName() : "");
@@ -244,7 +245,7 @@ public class ClassScanner {
         }
 
         public ClassSelector selector() throws Exception {
-            return (ClassSelector)this.method.invoke(null);
+            return (ClassSelector) this.method.invoke(null);
         }
 
         public static List<ClassSelectorProviderInvoker> instance(Class<?> clazz) {

@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -165,28 +166,28 @@ public class FrequencyCommandExecutor implements CommandExecutor {
         long runningTime = this.runningTime;
         int continueTime = this.continueTime;
         return this.getName() +
-                " #任务数量: " +
-                size() +
-                " #附加任务箱数量: " +
-                this.commandBoxQueue.size() +
-                " #总运行数量" +
-                this.totalRunSize +
-                " #最近运行数量" +
-                this.runSize +
-                " #最近连续次数: " +
-                continueTime +
-                " #最近休眠时间: " +
-                sleepTime +
-                " #最近运行时间" +
-                runningTime +
-                " #最近休眠比率: " +
-                (double)sleepTime / (double)(sleepTime + runningTime) +
-                " #休眠总时间: " +
-                totalSleepTime +
-                " #运行总时间: " +
-                totalRunningTime +
-                " #总休眠比率: " +
-                (double)totalSleepTime / (double)(totalSleepTime + totalRunningTime);
+               " #任务数量: " +
+               size() +
+               " #附加任务箱数量: " +
+               this.commandBoxQueue.size() +
+               " #总运行数量" +
+               this.totalRunSize +
+               " #最近运行数量" +
+               this.runSize +
+               " #最近连续次数: " +
+               continueTime +
+               " #最近休眠时间: " +
+               sleepTime +
+               " #最近运行时间" +
+               runningTime +
+               " #最近休眠比率: " +
+               (double) sleepTime / (double) (sleepTime + runningTime) +
+               " #休眠总时间: " +
+               totalSleepTime +
+               " #运行总时间: " +
+               totalRunningTime +
+               " #总休眠比率: " +
+               (double) totalSleepTime / (double) (totalSleepTime + totalRunningTime);
     }
 
     @Override
@@ -200,7 +201,7 @@ public class FrequencyCommandExecutor implements CommandExecutor {
     @Override
     public boolean register(CommandBox<?> commandBox) {
         if (commandBox instanceof WorkerCommandBox) {
-            WorkerCommandBox<?, ?> workerCommandBox = (WorkerCommandBox<?, ?>)commandBox;
+            WorkerCommandBox<?, ?> workerCommandBox = (WorkerCommandBox<?, ?>) commandBox;
             if (workerCommandBox.bindWorker(this.worker)) {
                 this.commandBoxQueue.add(workerCommandBox);
                 return true;
@@ -212,7 +213,7 @@ public class FrequencyCommandExecutor implements CommandExecutor {
     @Override
     public boolean unregister(CommandBox<?> commandBox) {
         if (commandBox instanceof WorkerCommandBox) {
-            WorkerCommandBox<?, ?> workerCommandBox = (WorkerCommandBox<?, ?>)commandBox;
+            WorkerCommandBox<?, ?> workerCommandBox = (WorkerCommandBox<?, ?>) commandBox;
             if (this.commandBoxQueue.remove(workerCommandBox)) {
                 workerCommandBox.unbindWorker();
                 return true;

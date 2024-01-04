@@ -4,11 +4,14 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
 package com.tny.game.common.event.bus;
+
+import com.google.common.base.Objects;
 
 import java.util.List;
 
@@ -39,7 +42,7 @@ public abstract class BindEventBus<L, H, D> extends BaseEventBus<D> implements L
         return this.bindWith;
     }
 
-    protected class BindHandler<L> {
+    protected static class BindHandler<L> {
 
         L handler;
 
@@ -48,26 +51,19 @@ public abstract class BindEventBus<L, H, D> extends BaseEventBus<D> implements L
         }
 
         @Override
-        @SuppressWarnings("unchecked")
         public boolean equals(Object o) {
-            if (this == o) {
+            if (this == o)
                 return true;
-            }
-            if (o == null) {
+            if (o == null || getClass() != o.getClass())
                 return false;
-            }
-            if (!(o instanceof BindHandler)) {
-                return false;
-            }
-            BindHandler<?> that = (BindHandler<?>)o;
-            return this.handler != null ? this.handler.equals(that.handler) : that.handler == null;
+            BindHandler<?> that = (BindHandler<?>) o;
+            return Objects.equal(handler, that.handler);
         }
 
         @Override
         public int hashCode() {
-            return this.handler != null ? this.handler.hashCode() : 0;
+            return Objects.hashCode(handler);
         }
-
     }
 
 }

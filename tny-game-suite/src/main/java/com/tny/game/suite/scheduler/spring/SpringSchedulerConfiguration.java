@@ -1,6 +1,6 @@
 package com.tny.game.suite.scheduler.spring;
 
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.suite.login.*;
 import com.tny.game.suite.scheduler.*;
 import com.tny.game.suite.scheduler.cache.*;

@@ -11,7 +11,7 @@
 package com.tny.game.net.transport;
 
 import com.tny.game.common.context.*;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.exception.*;

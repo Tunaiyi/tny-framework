@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -57,9 +58,9 @@ public class TestBuffer {
         byte[] directData = new byte[size / 10];
         byte[] nettyData = new byte[size / 10];
         for (int i = 0; i < size; i++) {
-            heap.put((byte)-1);
-            direct.put((byte)-1);
-            nettyBuf.writeByte((byte)-1);
+            heap.put((byte) -1);
+            direct.put((byte) -1);
+            nettyBuf.writeByte((byte) -1);
             heap.position(0);
             direct.position(0);
         }
@@ -107,12 +108,12 @@ public class TestBuffer {
             buffer.reset();
 
             try (ProcessTracer ignored = writeWatcher.trace()) {
-                buffer.put((byte)-1);
+                buffer.put((byte) -1);
                 buffer.putInt(0xffffffff);
                 buffer.putDouble(-1);
                 buffer.putLong(-1L);
                 buffer.putFloat(-1);
-                buffer.putShort((short)-1);
+                buffer.putShort((short) -1);
                 buffer.put(data);
             }
 
@@ -137,12 +138,12 @@ public class TestBuffer {
             buffer.resetReaderIndex();
 
             try (ProcessTracer ignored = writeWatcher.trace()) {
-                buffer.writeByte((byte)-1);
+                buffer.writeByte((byte) -1);
                 buffer.writeInt(0xffffffff);
                 buffer.writeDouble(-1);
                 buffer.writeLong(-1L);
                 buffer.writeFloat(-1);
-                buffer.writeShort((short)-1);
+                buffer.writeShort((short) -1);
                 buffer.writeBytes(data);
             }
 

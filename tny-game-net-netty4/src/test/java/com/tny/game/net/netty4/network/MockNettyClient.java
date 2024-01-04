@@ -41,9 +41,4 @@ public class MockNettyClient extends MockNetEndpoint implements NetTerminal {
     }
 
 
-    @Override
-    public URL getUrl() {
-        return this.url;
-    }
-
 }

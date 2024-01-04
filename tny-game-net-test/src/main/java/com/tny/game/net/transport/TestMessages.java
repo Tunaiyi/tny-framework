@@ -249,7 +249,7 @@ public class TestMessages {
 
     private static TestMessages createMessages(TestMessages messages) {
         return messages.addPush("push 1").addResponse("request 2", 1).addResponse("request 3", 1).addResponse("request 4", 1)
-                       .addResponse("request 5", 1).addResponse("request 6", 1).addRequest("request 7");
+                .addResponse("request 5", 1).addResponse("request 6", 1).addRequest("request 7");
     }
 
 }

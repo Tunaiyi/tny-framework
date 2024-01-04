@@ -16,7 +16,7 @@ class DBCacheItemHelper {
         List<DBCacheItem<?>> items = new ArrayList<>();
         for (CacheItem<?> item : cacheItems) {
             if (item instanceof DBCacheItem) {
-                items.add((DBCacheItem<Object>)item);
+                items.add((DBCacheItem<Object>) item);
             } else {
                 items.add(new DBCacheItem<>(item));
             }
@@ -42,7 +42,7 @@ class DBCacheItemHelper {
             if (results[index] <= 0 && results[index] != Statement.SUCCESS_NO_INFO) {
                 DBCacheItem<?> item = items.get(index);
                 fails = CacheItemHelper.getAndCreate(fails);
-                fails.add((C)item);
+                fails.add((C) item);
             }
         }
         return CacheItemHelper.checkEmpty(fails);

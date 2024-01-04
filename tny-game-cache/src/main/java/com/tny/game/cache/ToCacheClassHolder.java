@@ -81,7 +81,7 @@ public class ToCacheClassHolder extends TriggerHolder {
             PropertyAccessor old = idMethodMap.put(cacheID.index(), accessor);
             if (old != null) {
                 throw new IllegalArgumentException("[" + this.cacheClass + "]Index " + cacheID.index() + " exist " + old.getName()
-                        + ",  so can't put " + accessor.getName());
+                                                   + ",  so can't put " + accessor.getName());
             }
         }
         if (idMethodMap.isEmpty()) {

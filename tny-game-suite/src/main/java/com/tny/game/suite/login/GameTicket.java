@@ -286,9 +286,9 @@ public class GameTicket {
     @Override
     public String toString() {
         return "GamesTicket [pf=" + this.pf + ", ad=" + this.ad + ", server=" + this.server + ", zone=" + this.zone + ", entry=" + this.entry +
-                ", device=" + this.device + ", openId=" + this.openId
-                + ", openKey=" + this.openKey + ", time="
-                + this.time + ", pwdKey=" + this.pwdKey + ", secret=" + this.secret + "]";
+               ", device=" + this.device + ", openId=" + this.openId
+               + ", openKey=" + this.openKey + ", time="
+               + this.time + ", pwdKey=" + this.pwdKey + ", secret=" + this.secret + "]";
     }
 
     public static void main(String[] args) {

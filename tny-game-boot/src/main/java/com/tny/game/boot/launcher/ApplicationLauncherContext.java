@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -81,7 +82,7 @@ public class ApplicationLauncherContext {
                 processor.onPrepareStart(false);
             } catch (Throwable throwable) {
                 LOGGER.error("System exit -1 | {} processor exec exception", processor.getClass(), throwable);
-                ((ConfigurableApplicationContext)context).close();
+                ((ConfigurableApplicationContext) context).close();
                 //                throw new IllegalArgumentException(throwable);
                 //                System.exit(1);
             }
@@ -95,7 +96,7 @@ public class ApplicationLauncherContext {
                 processor.onPostStart(false);
             } catch (Throwable throwable) {
                 LOGGER.error("System exit -1 | {} processor exec exception", processor.getClass(), throwable);
-                ((ConfigurableApplicationContext)context).close();
+                ((ConfigurableApplicationContext) context).close();
             }
         }
     }

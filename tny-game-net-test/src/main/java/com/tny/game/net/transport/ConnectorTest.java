@@ -10,7 +10,7 @@
  */
 package com.tny.game.net.transport;
 
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import org.junit.jupiter.api.*;
 
 import java.time.Instant;

@@ -10,7 +10,7 @@
  */
 package com.tny.game.net.transport;
 
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 
 /**
  * Created by Kun Yang on 2017/9/11.

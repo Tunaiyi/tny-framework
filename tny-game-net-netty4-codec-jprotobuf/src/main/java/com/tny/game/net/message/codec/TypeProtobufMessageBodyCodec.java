@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -67,7 +68,7 @@ public class TypeProtobufMessageBodyCodec<T> implements MessageBodyCodec<T> {
                     paramList = new ArrayList<>();
                     body = new MessageParamList(paramList);
                 }
-                ProtobufRawType rawType = EnumAide.check(ProtobufRawType.class, (byte)(option & PROTOBUF_HEAD_TYPE_BIT_MASK));
+                ProtobufRawType rawType = EnumAide.check(ProtobufRawType.class, (byte) (option & PROTOBUF_HEAD_TYPE_BIT_MASK));
                 Object value = doDecode(rawType, input);
                 if (paramList != null) {
                     paramList.add(value);
@@ -95,7 +96,7 @@ public class TypeProtobufMessageBodyCodec<T> implements MessageBodyCodec<T> {
     public void encode(T object, ByteBuf buffer) throws Exception {
         try (ProtoExOutputStream output = new ProtoExOutputStream(new NettyByteBufferAllocator(buffer.alloc()))) {
             if (object instanceof MessageParamList) {
-                for (Object param : ((MessageParamList)object)) {
+                for (Object param : ((MessageParamList) object)) {
                     doEncode(output, buffer.alloc(), param, true);
                 }
             } else {
@@ -108,11 +109,11 @@ public class TypeProtobufMessageBodyCodec<T> implements MessageBodyCodec<T> {
     private void doEncode(ProtoExOutputStream output, ByteBufAllocator allocator, Object object, boolean params) throws Exception {
         byte option = params ? PROTOBUF_MESSAGE_PARAMS : 0;
         if (object == null) {
-            output.writeByte((byte)(option | ProtobufRawType.NULL.option()));
+            output.writeByte((byte) (option | ProtobufRawType.NULL.option()));
             return;
         }
         ProtobufRawType rawType = ProtobufRawType.ofObject(object);
-        output.writeByte((byte)(option | rawType.option()));
+        output.writeByte((byte) (option | rawType.option()));
         if (rawType.isHasValueWriter()) {
             rawType.writeValue(output, object);
         } else {

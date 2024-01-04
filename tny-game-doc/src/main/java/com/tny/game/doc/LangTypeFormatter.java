@@ -26,10 +26,10 @@ public enum LangTypeFormatter implements TypeFormatter {
         @Override
         public String format(Type type) {
             if (type instanceof Class) {
-                return ((Class<?>)type).getSimpleName();
+                return ((Class<?>) type).getSimpleName();
             } else if (type instanceof ParameterizedType) {
-                ParameterizedType pType = (ParameterizedType)type;
-                Class<?> javaType = (Class<?>)pType.getRawType();
+                ParameterizedType pType = (ParameterizedType) type;
+                Class<?> javaType = (Class<?>) pType.getRawType();
                 return javaType.getSimpleName();
             }
             throw new IllegalArgumentException(StringAide.format("{} 类型 无法进行map", type));
@@ -47,7 +47,7 @@ public enum LangTypeFormatter implements TypeFormatter {
         @Override
         public String format(Type type) {
             if (type instanceof Class) {
-                Class<?> javaType = (Class<?>)type;
+                Class<?> javaType = (Class<?>) type;
                 if (javaType.isEnum()) {
                     return "String";
                 } else if (intClassSet.contains(javaType)) {
@@ -61,8 +61,8 @@ public enum LangTypeFormatter implements TypeFormatter {
                 }
                 return javaType.getSimpleName();
             } else if (type instanceof ParameterizedType) {
-                ParameterizedType pType = (ParameterizedType)type;
-                Class<?> javaType = (Class<?>)pType.getRawType();
+                ParameterizedType pType = (ParameterizedType) type;
+                Class<?> javaType = (Class<?>) pType.getRawType();
                 if (Collection.class.isAssignableFrom(javaType)) {
                     return "Array";
                 } else if (Map.class.isAssignableFrom(javaType)) {
@@ -91,7 +91,7 @@ public enum LangTypeFormatter implements TypeFormatter {
 
     private static String cshapFormat(Type type, boolean formatEnum) {
         if (type instanceof Class) {
-            Class<?> javaType = (Class<?>)type;
+            Class<?> javaType = (Class<?>) type;
             if (Enumerable.class.isAssignableFrom(javaType)) {
                 return "int";
             } else if (formatEnum && (javaType.isEnum() || String.class.isAssignableFrom(javaType))) {
@@ -115,20 +115,20 @@ public enum LangTypeFormatter implements TypeFormatter {
             }
             return javaType.getSimpleName();
         } else if (type instanceof ParameterizedType) {
-            ParameterizedType pType = (ParameterizedType)type;
-            Class<?> javaType = (Class<?>)pType.getRawType();
+            ParameterizedType pType = (ParameterizedType) type;
+            Class<?> javaType = (Class<?>) pType.getRawType();
             if (Collection.class.isAssignableFrom(javaType)) {
                 return "List<" + cshapFormat(pType.getActualTypeArguments()[0], formatEnum) + ">";
             } else if (Map.class.isAssignableFrom(javaType)) {
                 return "Dictionary<" +
-                        cshapFormat(pType.getActualTypeArguments()[0], formatEnum) + ", " +
-                        cshapFormat(pType.getActualTypeArguments()[0], formatEnum) + ">";
+                       cshapFormat(pType.getActualTypeArguments()[0], formatEnum) + ", " +
+                       cshapFormat(pType.getActualTypeArguments()[0], formatEnum) + ">";
             }
         } else if (type instanceof TypeVariable) {
-            TypeVariable<?> pType = (TypeVariable<?>)type;
+            TypeVariable<?> pType = (TypeVariable<?>) type;
             var gType = pType.getGenericDeclaration();
             if (gType instanceof Type) {
-                return cshapFormat((Type)gType, formatEnum);
+                return cshapFormat((Type) gType, formatEnum);
             }
         }
         throw new IllegalArgumentException(StringAide.format("{} 类型 无法进行map", type));

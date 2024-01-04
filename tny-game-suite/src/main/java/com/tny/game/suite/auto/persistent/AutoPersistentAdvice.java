@@ -103,7 +103,7 @@ public class AutoPersistentAdvice implements TransactionListener, AfterReturning
     private void handleSaveList(Object object, Map<Object, String> saveMap, String operation, boolean immediately) {
         immediately = this.checkImmediately(operation, immediately);
         if (object instanceof Collection) {
-            for (Object o : (Collection<?>)object) {
+            for (Object o : (Collection<?>) object) {
                 if (immediately) {
                     saveMap.remove(o);
                     this.toDB(o, operation);
@@ -165,7 +165,7 @@ public class AutoPersistentAdvice implements TransactionListener, AfterReturning
                 if (saveBy == null) {
                     throw new NullPointerException(format("{} 类未标记 {} 注解", clazz, AutoDBBy.class));
                 }
-                manager = (Manager<Object>)this.explorer.getManager(saveBy.manager());
+                manager = (Manager<Object>) this.explorer.getManager(saveBy.manager());
                 if (manager == null) {
                     throw new NullPointerException(format("{} 类找不到 {} manager", clazz, saveBy.manager()));
                 }

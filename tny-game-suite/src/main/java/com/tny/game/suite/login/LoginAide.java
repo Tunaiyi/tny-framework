@@ -39,19 +39,19 @@ public class LoginAide {
 
     public static String ticket2MD5(GameTicket ticket, String key) {
         String ticketStr = String.valueOf(ticket.getTokenId()) +
-                ticket.getOpenId() +
-                ticket.getBindId() +
-                ticket.getOpenKey() +
-                ticket.getAccountTag() +
-                ticket.getServer() +
-                ticket.getTime() +
-                ticket.getPf() +
-                ticket.getZone() +
-                ticket.getEntry() +
-                ticket.getDevice() +
-                ticket.getDeviceId() +
-                ticket.isInterior() +
-                key;
+                           ticket.getOpenId() +
+                           ticket.getBindId() +
+                           ticket.getOpenKey() +
+                           ticket.getAccountTag() +
+                           ticket.getServer() +
+                           ticket.getTime() +
+                           ticket.getPf() +
+                           ticket.getZone() +
+                           ticket.getEntry() +
+                           ticket.getDevice() +
+                           ticket.getDeviceId() +
+                           ticket.isInterior() +
+                           key;
         return MD5.md5(ticketStr);
     }
 
@@ -61,10 +61,10 @@ public class LoginAide {
 
     public static String ticket2MD5(ServerTicket ticket, String key) {
         return MD5.md5(ticket.getServerType() +
-                ticket.getServerId() +
-                ticket.getTime() +
-                ticket.isConfirm() +
-                key);
+                       ticket.getServerId() +
+                       ticket.getTime() +
+                       ticket.isConfirm() +
+                       key);
     }
 
 }

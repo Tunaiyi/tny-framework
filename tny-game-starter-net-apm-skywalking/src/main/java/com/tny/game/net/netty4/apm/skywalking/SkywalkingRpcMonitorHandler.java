@@ -171,7 +171,7 @@ public class SkywalkingRpcMonitorHandler implements RpcMonitorReceiveHandler, Rp
             span = ContextManager.createExitSpan(operationName, contextCarrier, peer(rpcContext.getContact()));
             var context = RpcContexts.current();
             if (context != null) {
-                restore((RpcTransactionContext)context);
+                restore((RpcTransactionContext) context);
             } else {
                 restore(rpcContext);
             }
@@ -220,7 +220,7 @@ public class SkywalkingRpcMonitorHandler implements RpcMonitorReceiveHandler, Rp
             if (current.isValid()) { // Relay Handle 之后再转发
                 headerCarrier = new ContextCarrier();
                 span = ContextManager.createExitSpan(operationName, headerCarrier, peer(rpcContext.getTo()));
-                restore = restore((RpcTransactionContext)current);
+                restore = restore((RpcTransactionContext) current);
             } else { // Relay 直接转发
                 headerCarrier = new ContextCarrier();
                 span = ContextManager.createExitSpan(operationName, headerCarrier, peer(rpcContext.getTo()));
@@ -444,7 +444,7 @@ public class SkywalkingRpcMonitorHandler implements RpcMonitorReceiveHandler, Rp
     private void collectArguments(AbstractSpan span, MessageSubject message, int argumentsLengthThreshold) {
         Object body = message.getBody();
         if (message.getMode() == MessageMode.REQUEST && body instanceof Collection) {
-            var parameters = (Collection<?>)body;
+            var parameters = (Collection<?>) body;
             StringBuilder stringBuilder = new StringBuilder();
             boolean first = true;
             for (var parameter : parameters) {

@@ -13,7 +13,7 @@ package com.tny.game.net.netty4.relay;
 import com.tny.game.common.exception.*;
 import com.tny.game.common.result.*;
 import com.tny.game.common.runtime.*;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.net.netty4.network.*;
 import com.tny.game.net.relay.*;
 import com.tny.game.net.relay.link.*;
@@ -30,7 +30,7 @@ import java.io.IOException;
 import java.nio.channels.ClosedChannelException;
 
 import static com.tny.game.common.utils.ObjectAide.*;
-import static com.tny.game.net.base.NetLogger.*;
+import static com.tny.game.net.application.NetLogger.*;
 
 /**
  * 游戏请求处理器. 负责获取请求并将请求传给分发器

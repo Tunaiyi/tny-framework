@@ -21,7 +21,7 @@ import java.time.ZonedDateTime;
 import java.util.concurrent.*;
 
 import static com.tny.game.common.utils.StringAide.*;
-import static com.tny.game.net.base.ContactType.*;
+import static com.tny.game.net.application.ContactType.*;
 
 /**
  * <p>

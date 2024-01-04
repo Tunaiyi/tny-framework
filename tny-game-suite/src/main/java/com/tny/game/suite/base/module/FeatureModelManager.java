@@ -97,7 +97,8 @@ public class FeatureModelManager<FM extends GameFeatureModel> extends GameModelM
                 model.getOpenPlan()
                         .forEach(plan -> modelSetMap.computeIfAbsent(plan.getMode(), k -> new TreeSet<>(new FeatureComparator<>(k))).add(model));
             } else {
-                LOGGER.warn("当前版本 {} | 功能 {}({}) | 激活版本 [{}] | 未激活", version, model.getDesc(), model.getAlias(), model.getOpenVersion().orElse(null));
+                LOGGER.warn("当前版本 {} | 功能 {}({}) | 激活版本 [{}] | 未激活", version, model.getDesc(), model.getAlias(),
+                        model.getOpenVersion().orElse(null));
             }
         }
         this.typeMap = Collections.unmodifiableMap(typeMap);

@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -25,7 +26,7 @@ public abstract class ReferenceType<T> {
         Class<?> parameterizedTypeReferenceSubclass = findReferenceTypeSubclass(getClass());
         Type type = parameterizedTypeReferenceSubclass.getGenericSuperclass();
         Asserts.checkArgument(type instanceof ParameterizedType, "Type must be a parameterized type");
-        ParameterizedType parameterizedType = (ParameterizedType)type;
+        ParameterizedType parameterizedType = (ParameterizedType) type;
         Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
         Asserts.checkArgument(actualTypeArguments.length == 1, "Number of type arguments must be 1");
         this.type = actualTypeArguments[0];
@@ -42,7 +43,7 @@ public abstract class ReferenceType<T> {
     @Override
     public boolean equals(Object other) {
         return (this == other || (other instanceof ReferenceType &&
-                this.type.equals(((ReferenceType<?>)other).type)));
+                                  this.type.equals(((ReferenceType<?>) other).type)));
     }
 
     @Override

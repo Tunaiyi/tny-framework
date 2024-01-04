@@ -11,7 +11,7 @@
 package com.tny.game.net.rpc.setting;
 
 import com.tny.game.common.url.*;
-import com.tny.game.net.serve.*;
+import com.tny.game.net.application.configuration.*;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Optional;
@@ -24,7 +24,7 @@ import static com.tny.game.common.utils.StringAide.*;
  * @author : kgtny
  * @date : 2021/11/5 5:02 下午
  */
-public class RpcServiceSetting implements Serve {
+public class RpcServiceSetting implements ServiceSetting {
 
     /**
      * rpc服务名

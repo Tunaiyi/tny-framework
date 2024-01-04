@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -79,7 +80,7 @@ public abstract class AbstractAttributes implements Attributes {
     public <T> T getAttribute(AttrKey<? extends T> key) {
         this.readLock();
         try {
-            return (T)this.getMap().get(key);
+            return (T) this.getMap().get(key);
         } finally {
             this.readUnlock();
         }
@@ -100,21 +101,21 @@ public abstract class AbstractAttributes implements Attributes {
     @SuppressWarnings("unchecked")
     public <T> T computeIfAbsent(AttrKey<? extends T> key, T value) {
         Map<AttrKey<?>, Object> map = this.getMap();
-        return (T)map.computeIfAbsent(key, k -> value);
+        return (T) map.computeIfAbsent(key, k -> value);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <T> T computeIfAbsent(AttrKey<? extends T> key, Supplier<T> value) {
         Map<AttrKey<?>, Object> map = this.getMap();
-        return (T)map.computeIfAbsent(key, k -> value.get());
+        return (T) map.computeIfAbsent(key, k -> value.get());
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <T> T setIfAbsent(AttrKey<? extends T> key, T value) {
         Map<AttrKey<?>, Object> map = this.getMap();
-        return (T)map.putIfAbsent(key, value);
+        return (T) map.putIfAbsent(key, value);
     }
 
     @Override
@@ -122,7 +123,7 @@ public abstract class AbstractAttributes implements Attributes {
     public <T> T removeAttribute(AttrKey<? extends T> key) {
         this.writeLock();
         try {
-            return (T)this.getMap().remove(key);
+            return (T) this.getMap().remove(key);
         } finally {
             this.writeUnlock();
         }

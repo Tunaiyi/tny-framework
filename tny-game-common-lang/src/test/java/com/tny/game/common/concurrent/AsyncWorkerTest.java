@@ -63,7 +63,7 @@ public class AsyncWorkerTest {
         var thread = Thread.currentThread();
         System.out.println(
                 DateTimeFormatter.ISO_INSTANT.format(Instant.now()) + " # " + message + "|" + current() + "|" + thread.getName() + "-" +
-                        thread.getId());
+                thread.getId());
     }
 
 }

@@ -5,7 +5,7 @@ import com.tny.game.basics.log.*;
 import com.tny.game.common.io.config.*;
 import com.tny.game.common.runtime.*;
 import com.tny.game.common.utils.*;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.suite.utils.*;
 import org.slf4j.*;
 
@@ -57,7 +57,7 @@ public class GameInfo {
         try (InputStream inputStream = FileIOAide.openInputStream(Configs.GAME_INFO_CONFIG_PATH)) {
             LOGGER.info("#itemModelManager# 解析 <{}> xml ......", GameInfo.class.getName());
             @SuppressWarnings("unchecked")
-            List<GameInfo> list = (List<GameInfo>)xStream.fromXML(inputStream);
+            List<GameInfo> list = (List<GameInfo>) xStream.fromXML(inputStream);
             for (GameInfo info : list) {
                 if (info.isMainServer()) {
                     if (GAMES_INFO != null) {
@@ -78,7 +78,8 @@ public class GameInfo {
             throw new RuntimeException(e);
         }
         GameInfo.GAMES_INFO_MAP = Collections.unmodifiableMap(map);
-        LOGGER.info("#itemModelManager# 装载 <{}> model 完成 | 耗时 {} ms", GameInfo.class.getName(), RunChecker.end(GameInfo.class).costMillisTime());
+        LOGGER.info("#itemModelManager# 装载 <{}> model 完成 | 耗时 {} ms", GameInfo.class.getName(),
+                RunChecker.end(GameInfo.class).costMillisTime());
     }
 
     public static GameInfo info() {

@@ -44,7 +44,7 @@ public class AutoSnapMethod<SN extends Annotation> extends AutoMethod<Snap, None
                 if (!(anno instanceof Snap)) {
                     continue;
                 }
-                paramSnapsHolders.add(new SnapParamHolder((Snap)anno, pIndex));
+                paramSnapsHolders.add(new SnapParamHolder((Snap) anno, pIndex));
                 break;
             }
         }
@@ -88,7 +88,7 @@ public class AutoSnapMethod<SN extends Annotation> extends AutoMethod<Snap, None
             return this.action;
         }
         if (param.length > this.actionParamIndex) {
-            return (Action)param[this.actionParamIndex];
+            return (Action) param[this.actionParamIndex];
         }
         return null;
     }

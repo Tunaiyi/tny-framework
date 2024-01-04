@@ -13,7 +13,7 @@ package com.tny.game.net.netty4.configuration.command;
 import com.tny.game.common.lifecycle.*;
 import com.tny.game.expr.*;
 import com.tny.game.net.annotation.*;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.net.command.auth.*;
 import com.tny.game.net.command.dispatcher.*;
 import org.springframework.beans.factory.annotation.Autowired;

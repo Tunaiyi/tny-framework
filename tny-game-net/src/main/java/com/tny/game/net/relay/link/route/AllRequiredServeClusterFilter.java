@@ -10,8 +10,8 @@
  */
 package com.tny.game.net.relay.link.route;
 
+import com.tny.game.net.clusters.*;
 import com.tny.game.net.relay.cluster.*;
-import com.tny.game.net.relay.link.*;
 import com.tny.game.net.transport.*;
 
 /**

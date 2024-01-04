@@ -58,7 +58,7 @@ public abstract class Lifecycle<L extends Lifecycle<?, ?>, P extends LifecycleHa
 
     static <I extends Lifecycle<?, ?>> I getLifecycle(Class<? extends Lifecycle<?, ?>> lifecycleClass, Class<?> InitiatorClass) {
         Lifecycle<?, ?> Initiator = map(lifecycleClass).get(InitiatorClass);
-        return (I)Initiator;
+        return (I) Initiator;
     }
 
     Lifecycle(Class<L> lifecycleClass, Class<? extends P> processorClass, LifecyclePriority priority) {
@@ -85,9 +85,9 @@ public abstract class Lifecycle<L extends Lifecycle<?, ?>, P extends LifecycleHa
 
     public L head() {
         if (this.prev == null) {
-            return (L)this;
+            return (L) this;
         } else {
-            return (L)this.prev.head();
+            return (L) this.prev.head();
         }
     }
 
@@ -132,7 +132,7 @@ public abstract class Lifecycle<L extends Lifecycle<?, ?>, P extends LifecycleHa
         if (!(o instanceof Lifecycle)) {
             return false;
         }
-        Lifecycle<?, ?> lifecycle = (Lifecycle<?, ?>)o;
+        Lifecycle<?, ?> lifecycle = (Lifecycle<?, ?>) o;
         return lifecycleClass.equals(lifecycle.lifecycleClass) && processorClass.equals(lifecycle.processorClass);
     }
 
@@ -144,8 +144,8 @@ public abstract class Lifecycle<L extends Lifecycle<?, ?>, P extends LifecycleHa
     @Override
     public String toString() {
         return this.getClass().getSimpleName() + "{" +
-                "processorClass=" + this.processorClass +
-                '}';
+               "processorClass=" + this.processorClass +
+               '}';
     }
 
 }

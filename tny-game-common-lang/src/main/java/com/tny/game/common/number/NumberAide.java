@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -90,7 +91,7 @@ public class NumberAide {
         } else {
             value = source.intValue();
         }
-        return (N)value;
+        return (N) value;
     }
 
     @SuppressWarnings("unchecked")
@@ -115,7 +116,7 @@ public class NumberAide {
         } else {
             source = source.intValue();
         }
-        return (N)source;
+        return (N) source;
     }
 
     public static <N extends Number> N parse(String source, Class<N> clazz) {
@@ -243,7 +244,7 @@ public class NumberAide {
         }
         Class<?> numClass = findClass(one.getClass(), other.getClass());
         if (numClass.isAssignableFrom(Integer.class) || numClass.isAssignableFrom(Float.class) || numClass.isAssignableFrom(Short.class) ||
-                numClass.isAssignableFrom(Byte.class)) {
+            numClass.isAssignableFrom(Byte.class)) {
             return as(one.floatValue() / other.floatValue(), Float.class);
         }
         // if (numClass.isAssignableFrom(Long.class) || numClass.isAssignableFrom(Double.class))
@@ -693,10 +694,10 @@ public class NumberAide {
             value = -value;
         }
         while (value <= -radix) {
-            buf[charPos--] = set.getChar((int)(-(value % radix)));
+            buf[charPos--] = set.getChar((int) (-(value % radix)));
             value = value / radix;
         }
-        buf[charPos] = set.getChar((int)(-value));
+        buf[charPos] = set.getChar((int) (-value));
         if (negative) {
             buf[--charPos] = '-';
         }

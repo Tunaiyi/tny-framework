@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -92,15 +93,15 @@ public class ProtoExInputStream implements ProtoExStream, AutoCloseable {
     }
 
     public char readChar() {
-        return (char)this.doReadRawVarInt32();
+        return (char) this.doReadRawVarInt32();
     }
 
     public short readShort() {
-        return (short)this.doReadRawVarInt32();
+        return (short) this.doReadRawVarInt32();
     }
 
     public short readSignShort() {
-        return (short)this.doReadSInt32();
+        return (short) this.doReadSInt32();
     }
 
     public byte readByte() {
@@ -288,7 +289,7 @@ public class ProtoExInputStream implements ProtoExStream, AutoCloseable {
         long result = 0;
         while (shift < 64) {
             final byte b = this.buffer.get();
-            result |= (long)(b & 0x7F) << shift;
+            result |= (long) (b & 0x7F) << shift;
             if ((b & 0x80) == 0) {
                 return result;
             }
@@ -299,14 +300,14 @@ public class ProtoExInputStream implements ProtoExStream, AutoCloseable {
 
     private int doReadRawLittleEndian32() {
         return ((this.buffer.get() & 0xff)) | ((this.buffer.get() & 0xff) << 8) | ((this.buffer.get() & 0xff) << 16) |
-                ((this.buffer.get() & 0xff) << 24);
+               ((this.buffer.get() & 0xff) << 24);
     }
 
     private long doReadRawLittleEndian64() {
-        return (((long)this.buffer.get() & 0xff)) | (((long)this.buffer.get() & 0xff) << 8)
-                | (((long)this.buffer.get() & 0xff) << 16) | (((long)this.buffer.get() & 0xff) << 24)
-                | (((long)this.buffer.get() & 0xff) << 32) | (((long)this.buffer.get() & 0xff) << 40)
-                | (((long)this.buffer.get() & 0xff) << 48) | (((long)this.buffer.get() & 0xff) << 56);
+        return (((long) this.buffer.get() & 0xff)) | (((long) this.buffer.get() & 0xff) << 8)
+               | (((long) this.buffer.get() & 0xff) << 16) | (((long) this.buffer.get() & 0xff) << 24)
+               | (((long) this.buffer.get() & 0xff) << 32) | (((long) this.buffer.get() & 0xff) << 40)
+               | (((long) this.buffer.get() & 0xff) << 48) | (((long) this.buffer.get() & 0xff) << 56);
     }
 
     private byte[] doReadBytes() {

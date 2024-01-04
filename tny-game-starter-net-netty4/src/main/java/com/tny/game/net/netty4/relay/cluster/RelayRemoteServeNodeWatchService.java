@@ -12,6 +12,7 @@ package com.tny.game.net.netty4.relay.cluster;
 
 import com.tny.game.common.concurrent.collection.*;
 import com.tny.game.common.lifecycle.*;
+import com.tny.game.net.clusters.*;
 import com.tny.game.net.relay.cluster.*;
 import com.tny.game.net.relay.cluster.watch.*;
 import com.tny.game.net.relay.link.*;
@@ -51,7 +52,8 @@ public class RelayRemoteServeNodeWatchService implements AppPrepareStart, AppClo
     public void prepareStart() {
         for (RemoteServeCluster cluster : localRelayExplorer.getClusters()) {
             RemoteServeClusterContext context = cluster.getContext();
-            if (context.isDiscovery()) {
+            var setting = context.getSetting();
+            if (setting.isDiscovery()) {
                 ServeInstanceWatcher watcher = new ServeInstanceWatcher(cluster);
                 if (watchers.add(watcher)) {
                     watcher.start();
@@ -65,11 +67,11 @@ public class RelayRemoteServeNodeWatchService implements AppPrepareStart, AppClo
         private final RemoteServeCluster cluster;
 
         private void start() {
-            serveNodeClient.subscribe(cluster.discoverService(), this);
+            serveNodeClient.subscribe(cluster.getServeName(), this);
         }
 
         private void stop() {
-            serveNodeClient.unsubscribe(cluster.discoverService(), this);
+            serveNodeClient.unsubscribe(cluster.getServeName(), this);
         }
 
         private ServeInstanceWatcher(RemoteServeCluster cluster) {

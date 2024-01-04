@@ -14,7 +14,7 @@ import com.tny.game.common.collection.*;
 import com.tny.game.common.concurrent.collection.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.net.annotation.*;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.net.command.auth.*;
 import com.tny.game.net.command.listener.*;
 import com.tny.game.net.command.plugins.*;
@@ -99,7 +99,7 @@ public class DefaultMessageDispatcherContext implements NetMessageDispatcherCont
     @Override
     public void addControllerPlugin(Collection<? extends CommandPlugin<?>> plugins) {
         this.pluginMap.putAll(plugins.stream()
-                                     .collect(CollectorsAide.toMap(CommandPlugin::getClass)));
+                .collect(CollectorsAide.toMap(CommandPlugin::getClass)));
     }
 
     /**

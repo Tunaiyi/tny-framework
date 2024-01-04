@@ -44,7 +44,7 @@ public interface RelayCodecErrorHandler {
             if (!close) {
                 ResultCode code = null;
                 if (exception instanceof ResultCodableException) {
-                    code = ((ResultCodableException)exception).getCode();
+                    code = ((ResultCodableException) exception).getCode();
                 }
                 if (code != null && code.getLevel() == ResultLevel.ERROR) {
                     close = true;

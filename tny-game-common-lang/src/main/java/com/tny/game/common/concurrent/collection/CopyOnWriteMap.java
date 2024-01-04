@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -158,13 +159,13 @@ public class CopyOnWriteMap<K, V> implements Map<K, V>, Cloneable {
     public boolean replace(K key, V oldValue, V newValue) {
         Object curValue = get(key);
         if (!Objects.equals(curValue, oldValue) ||
-                (curValue == null && !containsKey(key))) {
+            (curValue == null && !containsKey(key))) {
             return false;
         }
         synchronized (this) {
             curValue = get(key);
             if (!Objects.equals(curValue, oldValue) ||
-                    (curValue == null && !containsKey(key))) {
+                (curValue == null && !containsKey(key))) {
                 return false;
             }
             put(key, newValue);
@@ -247,7 +248,7 @@ public class CopyOnWriteMap<K, V> implements Map<K, V>, Cloneable {
         synchronized (this) {
             V oldValue = get(key);
             V newValue = (oldValue == null) ? value :
-                    remappingFunction.apply(oldValue, value);
+                         remappingFunction.apply(oldValue, value);
             if (newValue == null) {
                 remove(key);
             } else {

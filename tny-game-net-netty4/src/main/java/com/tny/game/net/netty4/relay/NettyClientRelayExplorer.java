@@ -13,6 +13,7 @@ package com.tny.game.net.netty4.relay;
 import com.tny.game.common.concurrent.*;
 import com.tny.game.common.lifecycle.*;
 import com.tny.game.common.lifecycle.unit.annotation.*;
+import com.tny.game.net.clusters.*;
 import com.tny.game.net.relay.cluster.*;
 import com.tny.game.net.relay.link.*;
 import org.apache.commons.collections4.CollectionUtils;
@@ -54,7 +55,7 @@ public class NettyClientRelayExplorer extends BaseClientRelayExplorer<NettyRemot
 
     @Override
     public void putInstance(ServeNode node) {
-        NettyRemoteServeCluster cluster = this.clusterOf(node.serviceName());
+        NettyRemoteServeCluster cluster = this.clusterOf(node.getService());
         if (cluster != null) {
             addInstance(node, cluster);
         }
@@ -62,7 +63,7 @@ public class NettyClientRelayExplorer extends BaseClientRelayExplorer<NettyRemot
 
     @Override
     public void removeInstance(ServeNode node) {
-        NettyRemoteServeCluster cluster = this.clusterOf(node.serviceName());
+        NettyRemoteServeCluster cluster = this.clusterOf(node.getService());
         if (cluster != null) {
             cluster.unregisterInstance(node.getId());
         }
@@ -73,7 +74,7 @@ public class NettyClientRelayExplorer extends BaseClientRelayExplorer<NettyRemot
      */
     @Override
     public void updateInstance(ServeNode node, List<ServeNodeChangeStatus> statuses) {
-        NettyRemoteServeCluster cluster = this.clusterOf(node.serviceName());
+        NettyRemoteServeCluster cluster = this.clusterOf(node.getService());
         if (cluster != null) {
             if (statuses.contains(ServeNodeChangeStatus.URL_CHANGE)) {
                 cluster.unregisterInstance(node.getId());
@@ -89,8 +90,9 @@ public class NettyClientRelayExplorer extends BaseClientRelayExplorer<NettyRemot
     private void addInstance(ServeNode node, NettyRemoteServeCluster cluster) {
         RemoteServeClusterContext context = cluster.getContext();
         NettyServeInstanceConnectMonitor connectMonitor = new NettyServeInstanceConnectMonitor(clientRelayContext, context, executorService);
-        NetRemoteServeInstance instance = new NettyRemoteServeInstance(cluster, node, connectMonitor);
-        connectMonitor.start(instance, context.getLinkConnectionSize());
+        NetRelayServeInstance instance = new NettyRelayServeInstance(cluster, node, connectMonitor);
+        var setting = context.getSetting();
+        connectMonitor.start(instance, setting.getConnectionSize());
         cluster.registerInstance(instance);
     }
 
@@ -105,7 +107,8 @@ public class NettyClientRelayExplorer extends BaseClientRelayExplorer<NettyRemot
                     addInstance(node, cluster);
                 });
             }
-            long heartbeatInterval = clusterContext.getLinkHeartbeatInterval();
+            var setting = clusterContext.getSetting();
+            long heartbeatInterval = setting.getConnectionHeartbeatInterval();
             if (heartbeatInterval > 0) {
                 executorService.scheduleWithFixedDelay(cluster::heartbeat, heartbeatInterval, heartbeatInterval, TimeUnit.MILLISECONDS);
             }

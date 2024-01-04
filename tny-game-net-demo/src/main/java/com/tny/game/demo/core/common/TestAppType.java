@@ -1,6 +1,6 @@
 package com.tny.game.demo.core.common;
 
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 
 public enum TestAppType implements AppType {
 

@@ -1,7 +1,7 @@
 package com.tny.game.suite.login;
 
 import com.fasterxml.jackson.annotation.*;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.protoex.annotations.*;
 import com.tny.game.suite.*;
 import org.apache.commons.lang3.EnumUtils;
@@ -99,7 +99,7 @@ public class ServerTicket implements Serializable {
             return false;
         }
 
-        ServerTicket serveTicket = (ServerTicket)o;
+        ServerTicket serveTicket = (ServerTicket) o;
 
         if (serverID != serveTicket.serverID) {
             return false;
@@ -114,7 +114,7 @@ public class ServerTicket implements Serializable {
     @Override
     public int hashCode() {
         int result = serverID;
-        result = 31 * result + (int)(time ^ (time >>> 32));
+        result = 31 * result + (int) (time ^ (time >>> 32));
         result = 31 * result + secret.hashCode();
         return result;
     }
@@ -122,10 +122,10 @@ public class ServerTicket implements Serializable {
     @Override
     public String toString() {
         return "APITicket{" +
-                "serverID=" + serverID +
-                ", time=" + time +
-                ", secret='" + secret + '\'' +
-                '}';
+               "serverID=" + serverID +
+               ", time=" + time +
+               ", secret='" + secret + '\'' +
+               '}';
     }
 
 }

@@ -31,7 +31,7 @@ public class DBCacheClient implements CacheClient {
         }
         this.name = name;
         this.dao = dao;
-        this.dbCacheItemFactory = (RawCacheItemFactory<Object, ? extends DBCacheItem<?>>)dbCacheItemFactory;
+        this.dbCacheItemFactory = (RawCacheItemFactory<Object, ? extends DBCacheItem<?>>) dbCacheItemFactory;
     }
 
     @Override

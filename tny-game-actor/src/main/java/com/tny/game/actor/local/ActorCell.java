@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -48,7 +49,7 @@ class ActorCell implements ActorDispatcher {
     @Override
     @SuppressWarnings("unchecked")
     public <ACT extends Actor<?, ?>> ACT getActor() {
-        return (ACT)this.actor;
+        return (ACT) this.actor;
     }
 
     void terminate() {
@@ -108,7 +109,7 @@ class ActorCell implements ActorDispatcher {
     public <V> Answer<V> sendMessage(Object message, Actor<?, ?> sender, boolean needAnswer) {
         if (!needAnswer) {
             if (message instanceof ActorCommand) {
-                this.commandBox.accept((ActorCommand<?>)message);
+                this.commandBox.accept((ActorCommand<?>) message);
             } else {
                 this.commandBox.accept(new ActorMailCommand<>(this, message, sender));
             }
@@ -116,7 +117,7 @@ class ActorCell implements ActorDispatcher {
         } else {
             ActorCommand<V> command = null;
             if (message instanceof ActorCommand) {
-                command = (ActorCommand<V>)message;
+                command = (ActorCommand<V>) message;
                 if (command.getAnswer() == null) {
                     command.setAnswer(new ActorAnswer<>());
                 }

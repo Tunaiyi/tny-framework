@@ -82,7 +82,7 @@ public class Person implements IPerson, Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        Person other = (Person)obj;
+        Person other = (Person) obj;
         if (age != other.age) {
             return false;
         }
@@ -105,7 +105,7 @@ public class Person implements IPerson, Serializable {
     @Override
     public String toString() {
         return "PersonDao [id=" + id + ", name=" + name + ", age=" + age
-                + ", sex=" + sex + "]";
+               + ", sex=" + sex + "]";
     }
 
 }

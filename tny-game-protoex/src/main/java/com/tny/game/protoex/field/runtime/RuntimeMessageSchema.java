@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -107,7 +108,7 @@ public class RuntimeMessageSchema<T> extends BaseProtoExSchema<T> {
     @SuppressWarnings("unchecked")
     public void writeValue(ProtoExOutputStream outputStream, T value, FieldOptions<?> options) {
         for (FieldDesc<?> field : this.fields) {
-            FieldDesc<Object> childDesc = (FieldDesc<Object>)field;
+            FieldDesc<Object> childDesc = (FieldDesc<Object>) field;
             Object fieldValue = childDesc.getValue(value);
             if (fieldValue != null) {
                 ProtoExSchemaContext context = outputStream.getSchemaContext();
@@ -122,7 +123,7 @@ public class RuntimeMessageSchema<T> extends BaseProtoExSchema<T> {
     public T readValue(ProtoExInputStream inputStream, Tag tag, FieldOptions<?> options) {
         T message = null;
         try {
-            message = (T)this.accessor.newInstance();
+            message = (T) this.accessor.newInstance();
         } catch (InstantiationException | InvocationTargetException e) {
             e.printStackTrace();
         }
@@ -133,7 +134,7 @@ public class RuntimeMessageSchema<T> extends BaseProtoExSchema<T> {
             Tag currentTag = inputStream.getTag();
             fieldIndex = currentTag.getFieldNumber();
             //判断是否显示 读取
-            final FieldDesc<Object> field = (FieldDesc<Object>)this.getFieldDesc(fieldIndex);
+            final FieldDesc<Object> field = (FieldDesc<Object>) this.getFieldDesc(fieldIndex);
             int protoExID = currentTag.getProtoExId();
             if (field == null) {
                 LOGGER.warn("获取 Tag | {} -> [字段ID : {}] 不存在! Tag : {}", this.accessor.getName(), currentTag.getFieldNumber(), currentTag);

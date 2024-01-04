@@ -14,7 +14,7 @@ import com.google.common.collect.*;
 import com.tny.game.common.reflect.*;
 import com.tny.game.expr.*;
 import com.tny.game.net.annotation.*;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.net.command.auth.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
@@ -57,7 +57,7 @@ public final class MethodControllerHolder extends ControllerHolder {
     /**
      * 参数类型
      */
-    private final List<ControllerParamDescription> paramDescriptions;
+    private final List<RpcLocalParamDescription> paramDescriptions;
 
     /**
      * 参数注解列表
@@ -115,14 +115,14 @@ public final class MethodControllerHolder extends ControllerHolder {
             simpleName = nameBuilder.toString();
             // 解析参数
             Class<?>[] parameterClasses = method.getJavaMethod().getParameterTypes();
-            List<ControllerParamDescription> paramDescriptions = new ArrayList<>();
+            List<RpcLocalParamDescription> paramDescriptions = new ArrayList<>();
             Annotation[][] parameterAnnotations = method.getJavaMethod().getParameterAnnotations();
             ParamIndexCreator indexCreator = new ParamIndexCreator(method.getJavaMethod());
             if (parameterClasses.length > 0) {
                 for (int index = 0; index < parameterClasses.length; index++) {
                     Class<?> paramClass = parameterClasses[index];
                     List<Annotation> annotations = ImmutableList.copyOf(parameterAnnotations[index]);
-                    ControllerParamDescription paramDesc = new ControllerParamDescription(this, paramClass, annotations, indexCreator);
+                    RpcLocalParamDescription paramDesc = new RpcLocalParamDescription(this, paramClass, annotations, indexCreator);
                     paramDescriptions.add(paramDesc);
                     if (index > 0) {
                         nameBuilder.append(", ");
@@ -212,7 +212,7 @@ public final class MethodControllerHolder extends ControllerHolder {
             throw new RpcInvokeException(NetResultCode.SERVER_EXECUTE_EXCEPTION,
                     format("{} 获取 index 为 {} 的ParamDesc越界, index < {}", this, index, this.paramDescriptions.size()));
         }
-        ControllerParamDescription desc = this.paramDescriptions.get(index);
+        RpcLocalParamDescription desc = this.paramDescriptions.get(index);
         if (desc == null) {
             throw new RpcInvokeException(NetResultCode.SERVER_EXECUTE_EXCEPTION, "{} 获取 index 为 {} 的ParamDesc为null", this, index);
         }

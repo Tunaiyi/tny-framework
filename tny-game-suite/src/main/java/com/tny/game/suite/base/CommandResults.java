@@ -8,7 +8,7 @@ import com.tny.game.common.utils.*;
 import com.tny.game.net.command.*;
 import com.tny.game.suite.base.dto.*;
 
-public class CommandResults extends com.tny.game.net.base.CommandResults {
+public class CommandResults extends com.tny.game.net.application.CommandResults {
 
     public static CommandResult fail(TryToDoResult tryToDoResult) {
         DemandResult result = tryToDoResult.getFailResult();

@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -34,7 +35,7 @@ public class RuntimeUnsafeFieldDescFactory {
         try {
             Field f = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
             f.setAccessible(true);
-            return (sun.misc.Unsafe)f.get(null);
+            return (sun.misc.Unsafe) f.get(null);
         } catch (Exception e) {
             throw new UnsafeInitException(e);
         }
@@ -66,7 +67,7 @@ public class RuntimeUnsafeFieldDescFactory {
         @Override
         @SuppressWarnings("unchecked")
         public T getValue(Object message) {
-            return (T)UNSAFE.getObject(message, this.offset);
+            return (T) UNSAFE.getObject(message, this.offset);
         }
 
         //		private ProtoExSchema<T> getSchema(T value) {
@@ -122,7 +123,7 @@ public class RuntimeUnsafeFieldDescFactory {
             if (this.primitive) {
                 return this.getPrimitive(message);
             } else {
-                return (T)UNSAFE.getObject(message, this.offset);
+                return (T) UNSAFE.getObject(message, this.offset);
             }
         }
 
@@ -358,7 +359,7 @@ public class RuntimeUnsafeFieldDescFactory {
         @SuppressWarnings("unchecked")
         protected UnsafeRepeatFieldDesc(Field field) {
             super(ProtoExType.REPEAT, field);
-            Class<Object> elementType = (Class<Object>)getComponentType(field);
+            Class<Object> elementType = (Class<Object>) getComponentType(field);
             ProtoExElement protoExElement = field.getAnnotation(ProtoExElement.class);
             if (protoExElement == null) {
                 //				throw new NullPointerException(LogUtils.format("{} 类 {} 字段不能存在 @{}", field.getDeclaringClass(), field,
@@ -415,9 +416,9 @@ public class RuntimeUnsafeFieldDescFactory {
         @SuppressWarnings("unchecked")
         protected UnsafeMapFieldDesc(Field field) {
             super(ProtoExType.MAP, field);
-            Type[] paramType = ((ParameterizedType)field.getGenericType()).getActualTypeArguments();
-            Class<Object> keyClass = (Class<Object>)paramType[0];
-            Class<Object> valueClass = (Class<Object>)paramType[1];
+            Type[] paramType = ((ParameterizedType) field.getGenericType()).getActualTypeArguments();
+            Class<Object> keyClass = (Class<Object>) paramType[0];
+            Class<Object> valueClass = (Class<Object>) paramType[1];
             ProtoExEntry protoExEntry = field.getAnnotation(ProtoExEntry.class);
             if (protoExEntry == null) {
                 //				throw new NullPointerException(LogUtils.format("{} 类 {} 字段不能存在 @{}", field.getDeclaringClass(), field, ProtoExEntry
@@ -446,13 +447,13 @@ public class RuntimeUnsafeFieldDescFactory {
             if (value == null) {
                 return;
             }
-            Map<Object, Object> map = (Map<Object, Object>)this.getValue(message);
+            Map<Object, Object> map = (Map<Object, Object>) this.getValue(message);
             if (map == null) {
                 map = CollectionCreator.createMap(this.type);
                 super.setValue(message, map);
             }
             if (value instanceof Map) {
-                map.putAll((Map<?, ?>)value);
+                map.putAll((Map<?, ?>) value);
             }
         }
 
@@ -467,7 +468,7 @@ public class RuntimeUnsafeFieldDescFactory {
         if (typeClass.isArray()) {
             return field.getType().getComponentType();
         } else if (Collection.class.isAssignableFrom(typeClass)) {
-            return (Class<?>)((ParameterizedType)field.getGenericType()).getActualTypeArguments()[0];
+            return (Class<?>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
         }
         return typeClass;
     }
@@ -480,7 +481,7 @@ public class RuntimeUnsafeFieldDescFactory {
 
     public static void main(String[] args) {
         Test test = new Test();
-        test.data = (Integer[])Array.newInstance(Integer.class, 3);
+        test.data = (Integer[]) Array.newInstance(Integer.class, 3);
         for (int i = 0; i < test.data.length; i++) {
             test.data[i] = i + 1;
         }

@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -104,24 +105,24 @@ public class NettyVarIntCoder {
     public static void writeVarInt32(int value, ByteBuf buf) {
         final int size = varInt2Size(value);
         if (size == 1) {
-            buf.writeByte((byte)value);
+            buf.writeByte((byte) value);
         } else {
             for (int i = 0, last = size - 1; i < last; i++, value >>>= 7) {
-                buf.writeByte((byte)((value & 0x7F) | 0x80));
+                buf.writeByte((byte) ((value & 0x7F) | 0x80));
             }
-            buf.writeByte((byte)value);
+            buf.writeByte((byte) value);
         }
     }
 
     public static void writeVarInt64(long value, ByteBuf buf) {
         final int size = varInt64Size(value);
         if (size == 1) {
-            buf.writeByte((byte)value);
+            buf.writeByte((byte) value);
         } else {
             for (int i = 0, last = size - 1; i < last; i++, value >>>= 7) {
-                buf.writeByte((byte)((value & 0x7F) | 0x80));
+                buf.writeByte((byte) ((value & 0x7F) | 0x80));
             }
-            buf.writeByte((byte)value);
+            buf.writeByte((byte) value);
         }
     }
 
@@ -164,7 +165,7 @@ public class NettyVarIntCoder {
         long result = 0;
         while (shift < 64) {
             final byte b = buf.readByte();
-            result |= (long)(b & 0x7F) << shift;
+            result |= (long) (b & 0x7F) << shift;
             if ((b & 0x80) == 0) {
                 return result;
             }
@@ -175,38 +176,38 @@ public class NettyVarIntCoder {
 
     public static int readFixed32(ByteBuf buffer) {
         return ((buffer.readByte() & 0xff))
-                | ((buffer.readByte() & 0xff) << 8)
-                | ((buffer.readByte() & 0xff) << 16)
-                | ((buffer.readByte() & 0xff) << 24);
+               | ((buffer.readByte() & 0xff) << 8)
+               | ((buffer.readByte() & 0xff) << 16)
+               | ((buffer.readByte() & 0xff) << 24);
     }
 
     public static long readFixed64(ByteBuf buffer) {
-        return (((long)buffer.readByte() & 0xff))
-                | (((long)buffer.readByte() & 0xff) << 8)
-                | (((long)buffer.readByte() & 0xff) << 16)
-                | (((long)buffer.readByte() & 0xff) << 24)
-                | (((long)buffer.readByte() & 0xff) << 32)
-                | (((long)buffer.readByte() & 0xff) << 40)
-                | (((long)buffer.readByte() & 0xff) << 48)
-                | (((long)buffer.readByte() & 0xff) << 56);
+        return (((long) buffer.readByte() & 0xff))
+               | (((long) buffer.readByte() & 0xff) << 8)
+               | (((long) buffer.readByte() & 0xff) << 16)
+               | (((long) buffer.readByte() & 0xff) << 24)
+               | (((long) buffer.readByte() & 0xff) << 32)
+               | (((long) buffer.readByte() & 0xff) << 40)
+               | (((long) buffer.readByte() & 0xff) << 48)
+               | (((long) buffer.readByte() & 0xff) << 56);
     }
 
     public static void writeFixed32(int value, ByteBuf buffer) {
-        buffer.writeByte((byte)(value & 0xFF))
-                .writeByte((byte)(value >> 8 & 0xFF))
-                .writeByte((byte)(value >> 16 & 0xFF))
-                .writeByte((byte)(value >> 24 & 0xFF));
+        buffer.writeByte((byte) (value & 0xFF))
+                .writeByte((byte) (value >> 8 & 0xFF))
+                .writeByte((byte) (value >> 16 & 0xFF))
+                .writeByte((byte) (value >> 24 & 0xFF));
     }
 
     public static void writeFixed64(long value, ByteBuf buffer) {
-        buffer.writeByte((byte)(value & 0xFF))
-                .writeByte((byte)(value >> 8 & 0xFF))
-                .writeByte((byte)(value >> 16 & 0xFF))
-                .writeByte((byte)(value >> 24 & 0xFF))
-                .writeByte((byte)(value >> 32 & 0xFF))
-                .writeByte((byte)(value >> 40 & 0xFF))
-                .writeByte((byte)(value >> 48 & 0xFF))
-                .writeByte((byte)(value >> 56 & 0xFF));
+        buffer.writeByte((byte) (value & 0xFF))
+                .writeByte((byte) (value >> 8 & 0xFF))
+                .writeByte((byte) (value >> 16 & 0xFF))
+                .writeByte((byte) (value >> 24 & 0xFF))
+                .writeByte((byte) (value >> 32 & 0xFF))
+                .writeByte((byte) (value >> 40 & 0xFF))
+                .writeByte((byte) (value >> 48 & 0xFF))
+                .writeByte((byte) (value >> 56 & 0xFF));
     }
 
 }

@@ -11,7 +11,7 @@
 package com.tny.game.net.netty4.network.guide;
 
 import com.tny.game.boot.registrar.*;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.net.netty4.*;
 import com.tny.game.net.netty4.channel.*;
 import com.tny.game.net.netty4.network.*;
@@ -25,7 +25,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.tny.game.common.utils.ObjectAide.*;
-import static com.tny.game.net.base.configuration.NetUnitNames.*;
+import static com.tny.game.net.application.configuration.NetUnitNames.*;
 
 /**
  * <p>

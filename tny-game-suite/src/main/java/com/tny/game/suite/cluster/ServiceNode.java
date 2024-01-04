@@ -73,7 +73,7 @@ public class ServiceNode {
         if (this.getClass() != obj.getClass()) {
             return false;
         }
-        ServiceNode other = (ServiceNode)obj;
+        ServiceNode other = (ServiceNode) obj;
         if (this.serverId != other.serverId) {
             return false;
         }

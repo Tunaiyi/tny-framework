@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -176,7 +177,7 @@ public class TimeTriggerTest {
     @Test
     public void suspend() throws Exception {
         Instant checkAt;
-        long duration = (long)this.CYCLE_1000.getDuration().toMillis();
+        long duration = (long) this.CYCLE_1000.getDuration().toMillis();
         Instant suspendTime = this.atTime.plusMillis(500);
         assertTrue(this.startNoEndTrigger.suspend(suspendTime));
         assertTrue(this.startNoEndTrigger.isSuspend());
@@ -209,7 +210,7 @@ public class TimeTriggerTest {
     @Test
     public void lengthen() throws Exception {
         long lengthenTime = 2000;
-        long duration = (long)this.CYCLE_1000.getDuration().toMillis();
+        long duration = (long) this.CYCLE_1000.getDuration().toMillis();
         this.startNoEndTrigger.lengthen(lengthenTime);
         Instant checkAt = this.atTime;
         assertEquals(duration + 2000, this.startNoEndTrigger.countRemainMills(checkAt.toEpochMilli()));

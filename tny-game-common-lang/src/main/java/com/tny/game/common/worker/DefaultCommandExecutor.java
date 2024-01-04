@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -116,12 +117,12 @@ public class DefaultCommandExecutor implements CommandExecutor, CommandBoxWorker
     public String toString() {
         long sleepTime = this.lastSleepTime;
         return this.getName() +
-                " #任务数量: " +
-                size() +
-                " #附加任务箱数量: " +
-                this.commandBoxList.size() +
-                " #最近休眠时间: " +
-                sleepTime;
+               " #任务数量: " +
+               size() +
+               " #附加任务箱数量: " +
+               this.commandBoxList.size() +
+               " #最近休眠时间: " +
+               sleepTime;
     }
 
     @Override

@@ -16,7 +16,7 @@ import com.tny.game.common.url.*;
 import com.tny.game.demo.core.client.service.*;
 import com.tny.game.demo.core.common.*;
 import com.tny.game.demo.core.common.dto.*;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.netty4.configuration.application.*;
@@ -70,7 +70,7 @@ public class GameClientApp {
                         System.out.println("!!@   [发送] 请求 = " + message);
                         SendReceipt context = tunnel
                                 .send(MessageContents.request(Protocols.protocol(CtrlerIds.LOGIN$LOGIN), 888888L, userId)
-                                                     .willRespondFuture(3000000L));
+                                        .willRespondFuture(3000000L));
                         try {
                             Message response = context.respond().get(300000L, TimeUnit.MILLISECONDS);
                             System.out.println("!!@   [响应] 请求 = " + response.bodyAs(Object.class));

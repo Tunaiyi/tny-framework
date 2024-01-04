@@ -10,7 +10,7 @@
  */
 package com.tny.game.net.command.plugins;
 
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
@@ -19,7 +19,7 @@ import org.slf4j.*;
 /**
  * 检查消息超时Plugin
  * 参数 为超时时间ms:
- *
+ * <p>
  * 3000 3秒
  * <p>
  * Created by Kun Yang on 2017/3/4.

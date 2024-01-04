@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -121,7 +122,7 @@ public abstract class BaseDemand extends DemandParamsObject implements Demand, I
         Object expect = this.expect != null ? this.expect.createExpr().putAll(attributeMap).execute(Object.class) : null;
         boolean satisfy = this.checkSatisfy(current, expect, demandModel, attributeMap);
         if (this.getDemandType() == TradeDemandType.DEDUCT_DEMAND_GE) {
-            Number costId = (Number)attributeMap.getOrDefault(ItemModel.ATTRIBUTE_KEY_COST_ITEM_ID, 0L);
+            Number costId = (Number) attributeMap.getOrDefault(ItemModel.ATTRIBUTE_KEY_COST_ITEM_ID, 0L);
             return new CostDemandResult(costId.longValue(), as(demandModel), this.demandType, current, expect, satisfy, this.alertType, paramMap);
         } else {
             return new DemandResult(0L, demandModel, this.demandType, current, expect, satisfy, paramMap);

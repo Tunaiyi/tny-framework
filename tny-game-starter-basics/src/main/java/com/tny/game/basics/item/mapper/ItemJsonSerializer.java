@@ -34,7 +34,7 @@ public class ItemJsonSerializer extends JsonSerializer<Object> {
         if (value == null) {
             gen.writeObject(null);
         } else if (value instanceof Item) {
-            Item<?> item = (Item<?>)value;
+            Item<?> item = (Item<?>) value;
             AnyId id = item.getAnyId();
             gen.writeObject(id);
         } else if (value instanceof Set) {

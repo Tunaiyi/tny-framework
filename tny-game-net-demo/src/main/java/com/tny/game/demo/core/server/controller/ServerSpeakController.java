@@ -14,7 +14,7 @@ import com.tny.game.common.concurrent.*;
 import com.tny.game.demo.core.common.*;
 import com.tny.game.demo.core.common.dto.*;
 import com.tny.game.net.annotation.*;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.netty4.configuration.command.*;
@@ -22,7 +22,7 @@ import com.tny.game.net.transport.*;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-import static com.tny.game.net.base.ContactType.*;
+import static com.tny.game.net.application.ContactType.*;
 
 /**
  * <p>
@@ -58,13 +58,13 @@ public class ServerSpeakController {
             @RpcParam boolean booleanValue,
             @RpcParam String message) {
         String content = "\nbyteValue:" + byteValue +
-                "\nshortValue:" + shortValue +
-                "\nintValue:" + intValue +
-                "\nlongValue:" + longValue +
-                "\nfloatValue:" + floatValue +
-                "\ndoubleValue:" + doubleValue +
-                "\nbooleanValue:" + booleanValue +
-                "\nmessage:" + message;
+                         "\nshortValue:" + shortValue +
+                         "\nintValue:" + intValue +
+                         "\nlongValue:" + longValue +
+                         "\nfloatValue:" + floatValue +
+                         "\ndoubleValue:" + doubleValue +
+                         "\nbooleanValue:" + booleanValue +
+                         "\nmessage:" + message;
         endpoint.send(MessageContents
                 .push(Protocols.protocol(CtrlerIds.SPEAK$PUSH), content));
         return new SayContentDTO(endpoint.getId(), "test result: " + content);

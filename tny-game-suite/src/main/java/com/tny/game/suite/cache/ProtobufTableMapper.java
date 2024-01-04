@@ -51,7 +51,7 @@ public class ProtobufTableMapper {
 
     public Message parser(Blob data) {
         try {
-            return this.formatter.bytes2Proto(data.getBytes(1L, (int)data.length()));
+            return this.formatter.bytes2Proto(data.getBytes(1L, (int) data.length()));
         } catch (Exception e) {
             LOGGER.error("", e);
         }

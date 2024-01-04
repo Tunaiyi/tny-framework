@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -219,8 +220,9 @@ public class ProtobufExException extends RuntimeException {
      * @return
      */
     public static ProtobufExException invalidProtoExId(Class<?> typeClass, int protoExID) {
-        return new ProtobufExException(format("{} 类ProtoID {} 不在有效方位内({} <= protoExID <= {}) ", typeClass, protoExID, WireFormat.MIN_PROTO_EX_ID,
-                WireFormat.MAX_PROTO_EX_ID));
+        return new ProtobufExException(
+                format("{} 类ProtoID {} 不在有效方位内({} <= protoExID <= {}) ", typeClass, protoExID, WireFormat.MIN_PROTO_EX_ID,
+                        WireFormat.MAX_PROTO_EX_ID));
     }
 
     /**
@@ -232,8 +234,9 @@ public class ProtobufExException extends RuntimeException {
      * @return
      */
     public static ProtobufExException invalidFieldNumber(Class<?> typeClass, String name, int fieldNumber) {
-        return new ProtobufExException(format("{} 类 {} 字段Number {} 不在有效方位内({} <= fieldNumber <= {}) ", typeClass, name, WireFormat.MIN_FIELD_NUMBER,
-                WireFormat.MAX_FIELD_NUMBER));
+        return new ProtobufExException(
+                format("{} 类 {} 字段Number {} 不在有效方位内({} <= fieldNumber <= {}) ", typeClass, name, WireFormat.MIN_FIELD_NUMBER,
+                        WireFormat.MAX_FIELD_NUMBER));
     }
     //	缩短了的；被删节的；切去顶端的
     //	public static ProtobufExException truncatedMessage() {

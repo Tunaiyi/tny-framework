@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -44,10 +45,10 @@ public interface EnvironmentAide {
         if (propertiesAppNames != null) {
             return new HashSet<>(propertiesAppNames);
         } else {
-            MutablePropertySources propertySources = ((ConfigurableEnvironment)environment).getPropertySources();
+            MutablePropertySources propertySources = ((ConfigurableEnvironment) environment).getPropertySources();
             return StreamSupport.stream(propertySources.spliterator(), true)
                     .filter(EnumerablePropertySource.class::isInstance)
-                    .map(ps -> ((EnumerablePropertySource<?>)ps).getPropertyNames())
+                    .map(ps -> ((EnumerablePropertySource<?>) ps).getPropertyNames())
                     .flatMap(Arrays::stream)
                     .filter(propName -> propName.startsWith(keyHead + "."))
                     .filter(propName -> !Objects.equals(propName, keyHead))

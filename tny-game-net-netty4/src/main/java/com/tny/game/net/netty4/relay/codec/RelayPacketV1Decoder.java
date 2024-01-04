@@ -76,7 +76,7 @@ public class RelayPacketV1Decoder implements RelayPacketDecoder, RelayPacketCode
                 int id = NettyVarIntCoder.readFixed32(packetBody);
                 // 读取转发包Option
                 byte option = packetBody.readByte();
-                RelayPacketType relayType = EnumAide.check(RelayPacketType.class, (byte)(option & RELAY_PACKET_TYPE_MASK));
+                RelayPacketType relayType = EnumAide.check(RelayPacketType.class, (byte) (option & RELAY_PACKET_TYPE_MASK));
                 // 读取转发包发送时间
                 long time = NettyVarIntCoder.readFixed64(packetBody);
                 argumentsClass = relayType.getClassOfArguments();

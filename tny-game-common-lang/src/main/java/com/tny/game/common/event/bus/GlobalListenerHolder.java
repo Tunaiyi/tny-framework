@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -69,7 +70,7 @@ public class GlobalListenerHolder {
         if (listeners == null) {
             return Collections.emptyList();
         }
-        return (List<L>)listeners;
+        return (List<L>) listeners;
     }
 
     private Set<Class<?>> getAllClasses(Class<?> clazz) {
@@ -89,7 +90,7 @@ public class GlobalListenerHolder {
             listeners = new CopyOnWriteArrayList<>();
             this.listenerMap.put(clazz, listeners);
         }
-        return (List<Object>)listeners;
+        return (List<Object>) listeners;
     }
 
 }

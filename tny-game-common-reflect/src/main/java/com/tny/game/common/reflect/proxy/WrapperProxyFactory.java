@@ -44,7 +44,7 @@ public class WrapperProxyFactory {
     public static <T> Class<WrapperProxy<T>> getWrapperProxyClass(Class<?> targetClass) {
         Class<?> wrapperClass = WRAPPER_CLASS_MAP.get(targetClass);
         if (wrapperClass != null) {
-            return (Class<WrapperProxy<T>>)wrapperClass;
+            return (Class<WrapperProxy<T>>) wrapperClass;
         }
         ClassPool pool = ClassPool.getDefault();
         try {
@@ -70,7 +70,7 @@ public class WrapperProxyFactory {
             }
             wrapperClass = proxyClass.toClass(targetClass.getClassLoader(), null);
             Class<?> old = WRAPPER_CLASS_MAP.putIfAbsent(targetClass, wrapperClass);
-            return (Class<WrapperProxy<T>>)(old != null ? old : wrapperClass);
+            return (Class<WrapperProxy<T>>) (old != null ? old : wrapperClass);
         } catch (Exception e) {
             LOGGER.error("生成 {} 代理类错误", targetClass, e);
         }
@@ -102,7 +102,7 @@ public class WrapperProxyFactory {
                 .make("public void set$Advice(" + BeforeAdvice.class.getCanonicalName() + " advice) {this._wrapper$beforeAdvice = advice;}", cc);
         cc.addMethod(setBeforeAdvice);
         CtMethod setAfterReturningAdvice = CtMethod.make("public void set$Advice(" + AfterReturningAdvice.class.getCanonicalName() +
-                " advice) {this._wrapper$afterReturningAdvice = advice;}", cc);
+                                                         " advice) {this._wrapper$afterReturningAdvice = advice;}", cc);
         cc.addMethod(setAfterReturningAdvice);
         CtMethod setThrowsAdvice = CtMethod
                 .make("public void set$Advice(" + ThrowsAdvice.class.getCanonicalName() + " advice) {this._wrapper$throwsAdvice = advice;}", cc);
@@ -110,9 +110,9 @@ public class WrapperProxyFactory {
         CtMethod getWrapper = CtMethod.make("public " + Object.class.getCanonicalName() + " get$Wrapper() {return this;}", cc);
         cc.addMethod(getWrapper);
         String setProxiedCode = "public void set$Proxied(Object proxied) {" +
-                "this._wrapper$target = " +
-                InvokerFactory.generateCast("proxied", Object.class, targetClazz) +
-                ";}";
+                                "this._wrapper$target = " +
+                                InvokerFactory.generateCast("proxied", Object.class, targetClazz) +
+                                ";}";
         CtMethod setProxied = CtMethod.make(setProxiedCode, cc);
         cc.addMethod(setProxied);
     }

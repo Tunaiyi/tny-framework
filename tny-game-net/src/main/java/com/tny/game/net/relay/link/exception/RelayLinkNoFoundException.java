@@ -10,7 +10,7 @@
  */
 package com.tny.game.net.relay.link.exception;
 
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 
 /**
  * <p>

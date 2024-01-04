@@ -48,13 +48,13 @@ tny:
           setting:
             enable: true
             threads: 4
-#    command:
-#      processor:
-#        disruptor:
-#          setting:
-#            enable: true
-#            wait-strategy: blocking
-#            threads: 4
+    #    command:
+    #      processor:
+    #        disruptor:
+    #          setting:
+    #            enable: true
+    #            wait-strategy: blocking
+    #            threads: 4
     rpc:
       client:
         services:

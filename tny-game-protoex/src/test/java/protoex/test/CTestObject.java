@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -152,7 +153,7 @@ public class CTestObject {
         if (this.getClass() != obj.getClass()) {
             return false;
         }
-        CTestObject other = (CTestObject)obj;
+        CTestObject other = (CTestObject) obj;
         if (this.testAllExpMap == null) {
             if (other.testAllExpMap != null) {
                 return false;
@@ -330,31 +331,31 @@ public class CTestObject {
     @Override
     public String toString() {
         return "CTestObject [\n"
-                + "\t testLong=" + this.testLong + ",\n"
-                + "\t testShot=" + this.testShot + ",\n"
-                + "\t testInt=" + this.testInt + ",\n"
-                + "\t testByte=" + this.testByte + ",\n"
-                + "\t testFloat=" + this.testFloat + "\n"
-                + "\t testDouble=" + this.testDouble + ",\n"
-                + "\t testString=" + this.testString + ",\n"
-                + "\t testBytes=" + Arrays.toString(this.testBytes) + ",\n"
-                + "\t testChar=" + this.testChar + ",\n"
-                + "\t testBoolean=" + this.testBoolean + ",\n"
-                + "\t testIntValues=" + this.testIntValues + ",\n"
-                + "\t testKeyExpValues=" + this.testKeyExpValues + ",\n"
-                + "\t testKeyImpValues=" + this.testKeyImpValues + ",\n"
-                + "\t testValueExpMap=" + this.testValueExpMap + ",\n"
-                + "\t testValueImpMap=" + this.testValueImpMap + ",\n"
-                + "\t testKeyExpMap=" + this.testKeyExpMap + ",\n"
-                + "\t testKeyImpMap=" + this.testKeyImpMap + ",\n"
-                + "\t testAllExpMap=" + this.testAllExpMap + ",\n"
-                + "\t testAllImpMap=" + this.testAllImpMap + ",\n"
-                + "\t testObject=" + this.testObject + ",\n"
-                + "\t testImpObject=" + this.testImpObject + ",\n"
-                + "\t testExcessObject=" + this.testExcessObject + ",\n"
-                + "\t testExcessInt=" + this.testExcessInt + ",\n"
-                + "\t testKeyUnpackedExpValues=" + this.testKeyUnpackedExpValues + ",\n"
-                + "\t testKeyUnpackedImpValues=" + this.testKeyUnpackedImpValues + "\n]";
+               + "\t testLong=" + this.testLong + ",\n"
+               + "\t testShot=" + this.testShot + ",\n"
+               + "\t testInt=" + this.testInt + ",\n"
+               + "\t testByte=" + this.testByte + ",\n"
+               + "\t testFloat=" + this.testFloat + "\n"
+               + "\t testDouble=" + this.testDouble + ",\n"
+               + "\t testString=" + this.testString + ",\n"
+               + "\t testBytes=" + Arrays.toString(this.testBytes) + ",\n"
+               + "\t testChar=" + this.testChar + ",\n"
+               + "\t testBoolean=" + this.testBoolean + ",\n"
+               + "\t testIntValues=" + this.testIntValues + ",\n"
+               + "\t testKeyExpValues=" + this.testKeyExpValues + ",\n"
+               + "\t testKeyImpValues=" + this.testKeyImpValues + ",\n"
+               + "\t testValueExpMap=" + this.testValueExpMap + ",\n"
+               + "\t testValueImpMap=" + this.testValueImpMap + ",\n"
+               + "\t testKeyExpMap=" + this.testKeyExpMap + ",\n"
+               + "\t testKeyImpMap=" + this.testKeyImpMap + ",\n"
+               + "\t testAllExpMap=" + this.testAllExpMap + ",\n"
+               + "\t testAllImpMap=" + this.testAllImpMap + ",\n"
+               + "\t testObject=" + this.testObject + ",\n"
+               + "\t testImpObject=" + this.testImpObject + ",\n"
+               + "\t testExcessObject=" + this.testExcessObject + ",\n"
+               + "\t testExcessInt=" + this.testExcessInt + ",\n"
+               + "\t testKeyUnpackedExpValues=" + this.testKeyUnpackedExpValues + ",\n"
+               + "\t testKeyUnpackedImpValues=" + this.testKeyUnpackedImpValues + "\n]";
     }
 
 }

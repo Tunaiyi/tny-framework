@@ -12,7 +12,7 @@ package com.tny.game.net.rpc.auth;
 
 import com.tny.game.common.result.*;
 import com.tny.game.common.utils.*;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.net.command.auth.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;

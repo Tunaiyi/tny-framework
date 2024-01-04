@@ -10,7 +10,7 @@
  */
 package com.tny.game.net.netty4.relay;
 
-import com.tny.game.net.base.configuration.*;
+import com.tny.game.net.application.configuration.*;
 
 /**
  * <p>

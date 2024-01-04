@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -117,7 +118,7 @@ public class DemandResult {
             return null;
         }
         if (clazz.isInstance(currentValue)) {
-            return (V)currentValue;
+            return (V) currentValue;
         }
         throw new ClassCastException(currentValue + "is not " + clazz + "instance");
     }
@@ -145,7 +146,7 @@ public class DemandResult {
     @SuppressWarnings("unchecked")
     public <P> P getParam(DemandParam param, P defaultValue) {
         Object value = this.getParam(param, defaultValue.getClass());
-        return value == null ? defaultValue : (P)value;
+        return value == null ? defaultValue : (P) value;
     }
 
     public Map<DemandParam, Object> getParamMap() {
@@ -162,7 +163,7 @@ public class DemandResult {
     @Override
     public String toString() {
         return "DemandResult [modelId=" + getModelId() + ", demandType=" + demandType + ", currentValue=" + currentValue
-                + ", expectValue=" + expectValue + ", satisfy=" + satisfy + "]";
+               + ", expectValue=" + expectValue + ", satisfy=" + satisfy + "]";
     }
 
 }

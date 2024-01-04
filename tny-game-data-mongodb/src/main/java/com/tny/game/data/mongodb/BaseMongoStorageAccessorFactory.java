@@ -22,7 +22,8 @@ import org.springframework.data.mongodb.core.MongoTemplate;
  * @author : kgtny
  * @date : 2021/9/27 12:21 下午
  */
-public abstract class BaseMongoStorageAccessorFactory extends AbstractCachedFactory<Class<?>, StorageAccessor<?, ?>> implements StorageAccessorFactory {
+public abstract class BaseMongoStorageAccessorFactory extends AbstractCachedFactory<Class<?>, StorageAccessor<?, ?>>
+        implements StorageAccessorFactory {
 
     protected final String dataSource;
 

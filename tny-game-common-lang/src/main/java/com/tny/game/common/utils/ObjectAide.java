@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -129,7 +130,7 @@ public class ObjectAide {
 
     @SuppressWarnings("unchecked")
     public static <T> T as(Object object) {
-        return (T)object;
+        return (T) object;
     }
 
     @SuppressWarnings("unchecked")
@@ -138,7 +139,7 @@ public class ObjectAide {
             return null;
         }
         if (clazz.isInstance(object)) {
-            return (T)object;
+            return (T) object;
         }
         throw new ClassCastException(object + "is not " + clazz + "instance");
     }
@@ -148,19 +149,19 @@ public class ObjectAide {
         if (object == null) {
             return null;
         }
-        return (T)object;
+        return (T) object;
         //		throw new ClassCastException(object + "is not " + clazz + "instance");
     }
 
     @SuppressWarnings("unchecked")
     private static <T> Class<T> getClassType(ReferenceType<T> referenceType) {
         Type[] types = referenceType.getClass().getGenericInterfaces();
-        Type subType = ((ParameterizedType)types[0]).getActualTypeArguments()[0];
+        Type subType = ((ParameterizedType) types[0]).getActualTypeArguments()[0];
         Class<T> clazz = null;
         if (subType instanceof Class) {
-            clazz = (Class<T>)subType;
+            clazz = (Class<T>) subType;
         } else if (subType instanceof ParameterizedType) {
-            clazz = (Class<T>)((ParameterizedType)subType).getRawType();
+            clazz = (Class<T>) ((ParameterizedType) subType).getRawType();
         }
         return clazz;
     }

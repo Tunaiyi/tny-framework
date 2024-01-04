@@ -104,11 +104,11 @@ public class GameFeatureModel extends XMLModel implements FeatureModel {
     @Override
     public String toString() {
         return "GameFeatureModel{" +
-                "feature=" + this.feature +
-                ", id=" + this.id +
-                ", desc='" + this.desc + '\'' +
-                ", effect=" + this.effect +
-                '}';
+               "feature=" + this.feature +
+               ", id=" + this.id +
+               ", desc='" + this.desc + '\'' +
+               ", effect=" + this.effect +
+               '}';
     }
 
 }

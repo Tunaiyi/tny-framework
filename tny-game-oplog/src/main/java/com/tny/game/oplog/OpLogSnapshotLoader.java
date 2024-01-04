@@ -48,7 +48,7 @@ public class OpLogSnapshotLoader {
                 if (Snapshot.class.isAssignableFrom(cl)) {
                     Snapshot snapshot;
                     try {
-                        snapshot = (Snapshot)cl.getDeclaredConstructor().newInstance();
+                        snapshot = (Snapshot) cl.getDeclaredConstructor().newInstance();
                         OpLogMapper.getMapper().registerSubtypes(new NamedType(cl, snapshot.getType().toString()));
                     } catch (Throwable e) {
                         LOGGER.error("", e);

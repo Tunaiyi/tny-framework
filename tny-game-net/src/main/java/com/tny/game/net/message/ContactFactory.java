@@ -11,7 +11,7 @@
 package com.tny.game.net.message;
 
 import com.tny.game.common.lifecycle.unit.annotation.*;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 
 /**
  * 消息者工厂
@@ -26,7 +26,7 @@ public interface ContactFactory {
     /**
      * 创建 Contact
      *
-     * @param type       消息者类型
+     * @param type      消息者类型
      * @param contactId 消息者id
      * @return 返回创建的 Contact
      */

@@ -14,7 +14,7 @@ import com.baidu.bjf.remoting.protobuf.annotation.*;
 import com.tny.game.codec.annotation.*;
 import com.tny.game.codec.typeprotobuf.*;
 import com.tny.game.codec.typeprotobuf.annotation.*;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -139,14 +139,14 @@ public class RpcForwardHeader extends MessageHeader<RpcForwardHeader> {
         return this;
     }
 
-    private ForwardPoint toForwardPoint(RpcServicer rpcServicer) {
-        if (rpcServicer == null) {
+    private ForwardPoint toForwardPoint(RpcServicer rpcServer) {
+        if (rpcServer == null) {
             return null;
         }
-        if (rpcServicer instanceof ForwardPoint) {
-            return as(rpcServicer);
+        if (rpcServer instanceof ForwardPoint) {
+            return as(rpcServer);
         } else {
-            return new ForwardPoint(rpcServicer);
+            return new ForwardPoint(rpcServer);
         }
     }
 

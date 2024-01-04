@@ -113,7 +113,7 @@ public class DemandResultDTO implements Serializable {
     @Override
     public String toString() {
         return "DemandResultDTO [itemId=" + this.itemId + ", demandType="
-                + this.demandType + ", expectValue=" + this.expectValue + "]";
+               + this.demandType + ", expectValue=" + this.expectValue + "]";
     }
 
 }

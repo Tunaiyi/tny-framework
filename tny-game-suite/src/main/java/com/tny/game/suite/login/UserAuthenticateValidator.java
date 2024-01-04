@@ -2,7 +2,7 @@ package com.tny.game.suite.login;
 
 import com.tny.game.common.digest.md5.*;
 import com.tny.game.common.type.*;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.net.command.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
@@ -84,7 +84,7 @@ public abstract class UserAuthenticateValidator extends GameAuthenticateValidato
         } catch (Throwable e) {
             LOGGER.error("ticket word to object JSONException", e);
             if (e instanceof AuthFailedException) {
-                throw (AuthFailedException)e;
+                throw (AuthFailedException) e;
             }
             throw new AuthFailedException(SuiteResultCode.AUTH_ERROR, openID, e);
         }

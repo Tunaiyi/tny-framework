@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -63,13 +64,13 @@ class MvelExpression extends AbstractMvelExpr {
                 for (Entry<String, Object> entry : context.entrySet()) {
                     Object value = entry.getValue();
                     if (value instanceof Class) {
-                        parserContext.addImport(entry.getKey(), (Class<?>)value);
+                        parserContext.addImport(entry.getKey(), (Class<?>) value);
                     }
                     if (value instanceof Method) {
-                        parserContext.addImport(entry.getKey(), (Method)value);
+                        parserContext.addImport(entry.getKey(), (Method) value);
                     }
                     if (value instanceof MethodStub) {
-                        parserContext.addImport(entry.getKey(), (MethodStub)value);
+                        parserContext.addImport(entry.getKey(), (MethodStub) value);
                     }
                 }
             }

@@ -109,7 +109,7 @@ public final class AutoManageAdvice implements AfterReturningAdvice, ThrowsAdvic
 
     private void handleModifyList(Object object, Modify modify, boolean immediately) {
         if (object instanceof Collection) {
-            for (Object o : (Collection<?>)object) {
+            for (Object o : (Collection<?>) object) {
                 this.doFlush(o, modify);
             }
         } else if (object.getClass().isArray()) {

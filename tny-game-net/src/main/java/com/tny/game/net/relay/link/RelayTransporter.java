@@ -10,7 +10,7 @@
  */
 package com.tny.game.net.relay.link;
 
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.net.relay.*;
 import com.tny.game.net.relay.packet.*;
 import com.tny.game.net.transport.*;
@@ -31,6 +31,7 @@ public interface RelayTransporter extends Connection {
     //  */
     // NetAccessMode getAccessMode();
     //
+
     /**
      * @param onClose 注册关闭监听器
      */

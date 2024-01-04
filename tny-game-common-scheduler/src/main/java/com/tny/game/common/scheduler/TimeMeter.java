@@ -4,7 +4,8 @@
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
  * You may obtain a copy of Mulan PSL v2 at:
  *          http://license.coscl.org.cn/MulanPSL2
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
 
@@ -61,13 +62,13 @@ public interface TimeMeter<C extends TimeCycle> {
     default double getProgress(long timeMillis) {
         long duration = this.getDuration();
         long progressTime = duration - this.countRemainMills(timeMillis);
-        return (double)progressTime / duration;
+        return (double) progressTime / duration;
     }
 
     default double getTotalProgress(long timeMillis) {
         long duration = this.getTotalDuration();
         long progressTime = duration - this.countEndRemainMills(timeMillis);
-        return (double)progressTime / duration;
+        return (double) progressTime / duration;
     }
 
     default long getTotalDuration() {

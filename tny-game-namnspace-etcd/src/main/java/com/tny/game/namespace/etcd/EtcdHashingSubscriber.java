@@ -269,7 +269,8 @@ public class EtcdHashingSubscriber<T> extends EtcdHashing<T> implements HashingS
                                 }
                                 if (!range.contains(lower) || !range.contains(upper)) {
                                     throw new NamespaceHashingException("It is illegal to {}({}) to {}() for the interval",
-                                            range.lowerEndpoint(), range.lowerBoundType(), range.upperEndpoint(), range.upperBoundType());
+                                            range.lowerEndpoint(), range.lowerBoundType(), range.upperEndpoint(),
+                                            range.upperBoundType());
                                 }
                                 if (lower == upper) {
                                     var path = parent.subPath(range.lowerEndpoint());

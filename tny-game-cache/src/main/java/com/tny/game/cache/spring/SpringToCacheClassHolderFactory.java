@@ -105,7 +105,7 @@ public class SpringToCacheClassHolderFactory implements CacheTriggerFactory, ToC
             if (!(object instanceof TriggerHolder)) {
                 throw new NullPointerException("[" + clazz + "] formatterHolder is null");
             } else {
-                holder = (TriggerHolder)object;
+                holder = (TriggerHolder) object;
                 this.triggerHolderMap.put(holder.getClass(), holder);
             }
         }

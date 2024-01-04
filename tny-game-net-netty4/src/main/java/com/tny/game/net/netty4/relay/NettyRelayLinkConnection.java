@@ -11,7 +11,7 @@
 package com.tny.game.net.netty4.relay;
 
 import com.tny.game.common.url.*;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.net.relay.link.*;
 
 /**
@@ -26,7 +26,7 @@ class NettyRelayLinkConnection implements RelayConnectCallback {
 
     private final ClientRelayContext relayContext;
 
-    private final NetRemoteServeInstance instance;
+    private final NetRelayServeInstance instance;
 
     private final NettyServeInstanceConnectMonitor connector;
 
@@ -40,7 +40,7 @@ class NettyRelayLinkConnection implements RelayConnectCallback {
 
     private final static long[] delayTimeList = {1, 2, 2, 3, 3, 3, 5, 5, 5, 5, 10, 10, 10, 10, 10, 15};
 
-    NettyRelayLinkConnection(ClientRelayContext relayContext, NetRemoteServeInstance instance, NettyServeInstanceConnectMonitor connector) {
+    NettyRelayLinkConnection(ClientRelayContext relayContext, NetRelayServeInstance instance, NettyServeInstanceConnectMonitor connector) {
         this.relayContext = relayContext;
         this.instance = instance;
         this.connector = connector;
@@ -95,18 +95,18 @@ class NettyRelayLinkConnection implements RelayConnectCallback {
     @Override
     public void complete(boolean result, URL url, RelayTransporter transporter, Throwable cause) {
         if (this.status == RelayConnectionStatus.CLOSE) {
-            NettyRemoteServeInstance.LOGGER.warn("Server [{}-{}-{}] Connector is closed",
+            NettyRelayServeInstance.LOGGER.warn("Server [{}-{}-{}] Connector is closed",
                     instance.getServeName(), instance.getId(), this.linkKey);
             transporter.close();
             return;
         }
         if (result && transporter.isActive()) {
-            NettyRemoteServeInstance.LOGGER.info("Server [{}-{}-{}] connect to {} success on the {}th times",
+            NettyRelayServeInstance.LOGGER.info("Server [{}-{}-{}] connect to {} success on the {}th times",
                     instance.getServeName(), instance.getId(), this.linkKey, url, times);
             onConnected(transporter);
         } else {
             this.status = RelayConnectionStatus.DISCONNECT;
-            NettyRemoteServeInstance.LOGGER.warn("Server [{}-{}-{}] connect to {} failed {} times",
+            NettyRelayServeInstance.LOGGER.warn("Server [{}-{}-{}] connect to {} failed {} times",
                     instance.getServeName(), instance.getId(), this.linkKey, url, times, cause.getCause());
             onReconnected();
         }

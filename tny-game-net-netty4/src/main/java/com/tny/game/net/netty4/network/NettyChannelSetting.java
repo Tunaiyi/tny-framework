@@ -13,7 +13,7 @@ package com.tny.game.net.netty4.network;
 import com.tny.game.net.netty4.channel.*;
 import com.tny.game.net.netty4.network.codec.*;
 
-import static com.tny.game.net.base.configuration.NetUnitNames.*;
+import static com.tny.game.net.application.configuration.NetUnitNames.*;
 
 /**
  * <p>

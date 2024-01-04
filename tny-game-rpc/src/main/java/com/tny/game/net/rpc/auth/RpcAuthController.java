@@ -11,7 +11,7 @@
 package com.tny.game.net.rpc.auth;
 
 import com.tny.game.net.annotation.*;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import org.slf4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
 

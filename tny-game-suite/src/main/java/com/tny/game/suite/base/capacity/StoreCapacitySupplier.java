@@ -20,7 +20,7 @@ public interface StoreCapacitySupplier extends ExpireCapacitySupplier {
 
     static StoreCapacitySupplier saveBySupplier(CapacitySupplier supplier, long expireAt) {
         if (supplier instanceof StoreCapacitySupplier) {
-            if (expireAt == 0 || ((StoreCapacitySupplier)supplier).getExpireAt() == expireAt) {
+            if (expireAt == 0 || ((StoreCapacitySupplier) supplier).getExpireAt() == expireAt) {
                 return ObjectAide.as(supplier);
             }
         }
@@ -41,7 +41,7 @@ public interface StoreCapacitySupplier extends ExpireCapacitySupplier {
 
     static StoreCapacitySupplier saveBySupplier(ComboCapacitySupplier supplier, CapacityVisitor visitor, long expireAt) {
         if (supplier instanceof StoreCapacitySupplier) {
-            if (expireAt == 0 || ((StoreCapacitySupplier)supplier).getExpireAt() == expireAt) {
+            if (expireAt == 0 || ((StoreCapacitySupplier) supplier).getExpireAt() == expireAt) {
                 return ObjectAide.as(supplier);
             }
         }
@@ -70,7 +70,7 @@ public interface StoreCapacitySupplier extends ExpireCapacitySupplier {
 
     static StoreCapacitySupplier linkBySupplier(CapacitySupplier supplier, long expireAt) {
         if (supplier instanceof StoreCapacitySupplier) {
-            if (expireAt == 0 || ((StoreCapacitySupplier)supplier).getExpireAt() == expireAt) {
+            if (expireAt == 0 || ((StoreCapacitySupplier) supplier).getExpireAt() == expireAt) {
                 return ObjectAide.as(supplier);
             }
         }

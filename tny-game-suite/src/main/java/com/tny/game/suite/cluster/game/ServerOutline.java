@@ -271,7 +271,7 @@ public class ServerOutline {
     @Override
     public String toString() {
         return "ServerOutline [serverId=" + this.serverId + ", publicIP=" + this.publicIP + ", privateIP=" + this.privateIP + ", serverPort=" +
-                this.serverPort + ", rmiPort=" + this.rmiPort + ", openDate=" + this.openDate + "]";
+               this.serverPort + ", rmiPort=" + this.rmiPort + ", openDate=" + this.openDate + "]";
     }
 
     public boolean isHasDB() {

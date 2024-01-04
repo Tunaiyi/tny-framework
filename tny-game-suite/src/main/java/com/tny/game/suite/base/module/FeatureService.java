@@ -85,7 +85,7 @@ public abstract class FeatureService<DTO> implements AppPrepareStart, Applicatio
                 continue;
             }
             if (!model.isCanOpen(explorer, openMode)
-                    && model.getParent().map(f -> !explorer.isFeatureOpened(f)).orElse(false)) {
+                && model.getParent().map(f -> !explorer.isFeatureOpened(f)).orElse(false)) {
                 continue;
             }
             Feature feature = handler.getFeature();

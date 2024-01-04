@@ -80,12 +80,12 @@ public class NoCopyBytesBlob implements Blob, Serializable {
     public byte[] getBytes(long pos, int length) throws SerialException {
         isValid();
         if (length > len) {
-            length = (int)len;
+            length = (int) len;
         }
 
         if (pos < 1 || len - pos < 0) {
             throw new SerialException("Invalid arguments: position cannot be "
-                    + "less than 1 or greater than the length of the SerialBlob");
+                                      + "less than 1 or greater than the length of the SerialBlob");
         }
 
         pos--; // correct pos to array index
@@ -93,7 +93,7 @@ public class NoCopyBytesBlob implements Blob, Serializable {
         byte[] b = new byte[length];
 
         for (int i = 0; i < length; i++) {
-            b[i] = this.buf[(int)pos];
+            b[i] = this.buf[(int) pos];
             pos++;
         }
         return b;
@@ -163,7 +163,7 @@ public class NoCopyBytesBlob implements Blob, Serializable {
             return -1;
         }
 
-        int pos = (int)start - 1; // internally Blobs are stored as arrays.
+        int pos = (int) start - 1; // internally Blobs are stored as arrays.
         int i = 0;
         long patlen = pattern.length;
 
@@ -206,7 +206,7 @@ public class NoCopyBytesBlob implements Blob, Serializable {
     public long position(Blob pattern, long start)
             throws SerialException, SQLException {
         isValid();
-        return position(pattern.getBytes(1, (int)(pattern.length())), start);
+        return position(pattern.getBytes(1, (int) (pattern.length())), start);
     }
 
     /**
@@ -278,19 +278,19 @@ public class NoCopyBytesBlob implements Blob, Serializable {
             throw new SerialException("Invalid position in BLOB object set");
         }
 
-        if ((long)(length) > origLen) {
+        if ((long) (length) > origLen) {
             throw new SerialException("Buffer is not sufficient to hold the value");
         }
 
         if ((length + offset) > bytes.length) {
             throw new SerialException("Invalid OffSet. Cannot have combined offset " +
-                    "and length that is greater that the Blob buffer");
+                                      "and length that is greater that the Blob buffer");
         }
 
         int i = 0;
         pos--; // correct to array indexing
         while (i < length || (offset + i + 1) < (bytes.length - offset)) {
-            this.buf[(int)pos + i] = bytes[offset + i];
+            this.buf[(int) pos + i] = bytes[offset + i];
             i++;
         }
         return i;
@@ -319,8 +319,8 @@ public class NoCopyBytesBlob implements Blob, Serializable {
     @Override
     public java.io.OutputStream setBinaryStream(long pos) throws SQLException {
         throw new SerialException("Unsupported operation. SerialBlob cannot " +
-                "return a writable binary stream, unless instantiated with a Blob object " +
-                "that provides a setBinaryStream() implementation");
+                                  "return a writable binary stream, unless instantiated with a Blob object " +
+                                  "that provides a setBinaryStream() implementation");
     }
 
     /**
@@ -340,12 +340,12 @@ public class NoCopyBytesBlob implements Blob, Serializable {
         if (length > len) {
             throw new SerialException(
                     "Length more than what can be truncated");
-        } else if ((int)length == 0) {
+        } else if ((int) length == 0) {
             buf = new byte[0];
             len = length;
         } else {
             len = length;
-            buf = this.getBytes(1, (int)len);
+            buf = this.getBytes(1, (int) len);
         }
     }
 
@@ -377,7 +377,7 @@ public class NoCopyBytesBlob implements Blob, Serializable {
             throw new SerialException(
                     "length is < 1 or pos + length > total number of bytes");
         }
-        return new ByteArrayInputStream(buf, (int)pos - 1, (int)length);
+        return new ByteArrayInputStream(buf, (int) pos - 1, (int) length);
     }
 
     /**
@@ -411,7 +411,7 @@ public class NoCopyBytesBlob implements Blob, Serializable {
             return true;
         }
         if (obj instanceof NoCopyBytesBlob) {
-            NoCopyBytesBlob sb = (NoCopyBytesBlob)obj;
+            NoCopyBytesBlob sb = (NoCopyBytesBlob) obj;
             if (this.len == sb.len) {
                 return Arrays.equals(buf, sb.buf);
             }
@@ -425,7 +425,7 @@ public class NoCopyBytesBlob implements Blob, Serializable {
      * @return a hash code value for this object.
      */
     public int hashCode() {
-        return ((31 + Arrays.hashCode(buf)) * 31 + (int)len) * 31 + (int)origLen;
+        return ((31 + Arrays.hashCode(buf)) * 31 + (int) len) * 31 + (int) origLen;
     }
 
     /**
@@ -435,7 +435,7 @@ public class NoCopyBytesBlob implements Blob, Serializable {
     private void readObject(ObjectInputStream s)
             throws IOException, ClassNotFoundException {
         ObjectInputStream.GetField fields = s.readFields();
-        byte[] tmp = (byte[])fields.get("buf", null);
+        byte[] tmp = (byte[]) fields.get("buf", null);
         if (tmp == null) {
             throw new InvalidObjectException("buf is null and should not be!");
         }
@@ -470,7 +470,7 @@ public class NoCopyBytesBlob implements Blob, Serializable {
     private void isValid() throws SerialException {
         if (buf == null) {
             throw new SerialException("Error: You cannot call a method on a " +
-                    "SerialBlob instance once free() has been called.");
+                                      "SerialBlob instance once free() has been called.");
         }
     }
 

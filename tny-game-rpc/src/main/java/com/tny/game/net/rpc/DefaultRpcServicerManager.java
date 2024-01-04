@@ -11,7 +11,7 @@
 package com.tny.game.net.rpc;
 
 import com.tny.game.common.event.bus.annotation.*;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.net.rpc.setting.*;
 
 /**
@@ -27,7 +27,7 @@ public class DefaultRpcServicerManager extends BaseRpcServicerManager {
         setting.getServices()
                 .stream()
                 .map(RpcServiceSetting::serviceName)
-                .map(s -> (RpcServiceType)RpcServiceTypes.ofService(s))
+                .map(s -> (RpcServiceType) RpcServiceTypes.ofService(s))
                 .forEach(this::loadInvokeNodeSet);
     }
 

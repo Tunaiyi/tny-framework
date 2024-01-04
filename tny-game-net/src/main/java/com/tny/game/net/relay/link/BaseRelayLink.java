@@ -11,7 +11,7 @@
 package com.tny.game.net.relay.link;
 
 import com.tny.game.common.event.firer.*;
-import com.tny.game.net.base.*;
+import com.tny.game.net.application.*;
 import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.relay.link.listener.*;
@@ -333,9 +333,9 @@ public abstract class BaseRelayLink implements NetRelayLink {
         }
         BaseRelayLink that = (BaseRelayLink) o;
         return new EqualsBuilder().append(getInstanceId(), that.getInstanceId())
-                                  .append(getId(), that.getId())
-                                  .append(getService(), that.getService())
-                                  .isEquals();
+                .append(getId(), that.getId())
+                .append(getService(), that.getService())
+                .isEquals();
     }
 
     @Override
