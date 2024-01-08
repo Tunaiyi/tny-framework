@@ -54,7 +54,8 @@ ext.libs = [
 
 
 
-        graalvm_js                           : "org.graalvm.js:js:${graalvmVersion}",
+        graalvm_js                           : "org.graalvm.polyglot:js:${graalvmVersion}",
+        graalvm_polyglot                     : "org.graalvm.polyglot:polyglot:${graalvmVersion}",
         graalvm_js_scriptengine              : "org.graalvm.js:js-scriptengine:${graalvmVersion}",
         graalvm_js_launcher                  : "org.graalvm.js:js-launcher:${graalvmVersion}",
         graalvm_sdk                          : "org.graalvm.sdk:graal-sdk:${graalvmVersion}",

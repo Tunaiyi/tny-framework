@@ -15,7 +15,7 @@ import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine;
 import com.tny.game.common.math.*;
 import com.tny.game.expr.*;
 import com.tny.game.expr.jsr223.*;
-import org.graalvm.polyglot.Context;
+import org.graalvm.polyglot.*;
 
 import javax.script.*;
 import java.time.Instant;
@@ -57,9 +57,9 @@ public class GraalJsExprHolderFactory extends ScriptExprHolderFactory {
 
     @Override
     protected ScriptEngine createEngine(String lan) {
-
         return GraalJSScriptEngine.create(null,
                 Context.newBuilder("js")
+                        .allowHostAccess(HostAccess.ALL)
                         .allowAllAccess(true)
                         .allowHostClassLoading(true)
                         .allowHostClassLookup(cl -> true)
@@ -92,10 +92,12 @@ public class GraalJsExprHolderFactory extends ScriptExprHolderFactory {
                         "}");
         List<ForkJoinTask<?>> tasks = new ArrayList<>();
         for (int n = 0; n < 100; n++) {
-            tasks.add(ForkJoinPool.commonPool().submit(() -> System.out.println(holder3.createExpr().execute(Integer.class))));
+            System.out.println(holder3.createExpr().execute(Integer.class));
+            // tasks.add(ForkJoinPool.commonPool().submit(() -> System.out.println(holder3.createExpr().execute(Integer.class))));
         }
         for (int n = 0; n < 100; n++) {
-            tasks.add(ForkJoinPool.commonPool().submit(() -> System.out.println(holder4.createExpr().execute(Integer.class))));
+            System.out.println(holder4.createExpr().execute(Integer.class));
+            // tasks.add(ForkJoinPool.commonPool().submit(() -> System.out.println(holder4.createExpr().execute(Integer.class))));
         }
         tasks.forEach(ForkJoinTask::join);
     }

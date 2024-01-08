@@ -8,14 +8,15 @@ dependencies {
     api project(":tny-game-common-lang")
 
     api libs.graalvm_js
+    api libs.graalvm_polyglot
     api libs.graalvm_js_scriptengine
-    api libs.graalvm_js_launcher
-    api libs.graalvm_sdk
-    api libs.graalvm_sdk_launcher_common
-    api libs.graalvm_regex
-    api libs.graalvm_truffle_api
-    api libs.graalvm_compiler
-    api libs.graalvm_compiler_management
-    api libs.icu4j
+//    api libs.graalvm_js_launcher
+//    api libs.graalvm_sdk
+//    api libs.graalvm_sdk_launcher_common
+//    api libs.graalvm_regex
+//    api libs.graalvm_truffle_api
+//    api libs.graalvm_compiler
+//    api libs.graalvm_compiler_management
+//    api libs.icu4j
 }
 
