@@ -10,7 +10,7 @@
  */
 package com.tny.game.namespace;
 
-import com.tny.game.common.event.firer.*;
+import com.tny.game.common.event.*;
 import com.tny.game.namespace.listener.*;
 
 import java.util.concurrent.CompletableFuture;
@@ -67,7 +67,7 @@ public interface Lessee {
     /**
      * @return 租约事件
      */
-    EventSource<LesseeListener> event();
+    EventWatchAdapter<LesseeListener> event();
 
     /**
      * 生成租约

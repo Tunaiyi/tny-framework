@@ -13,7 +13,9 @@ package com.tny.game.namespace.etcd;
 import com.tny.game.codec.*;
 import com.tny.game.codec.jackson.*;
 import com.tny.game.common.concurrent.*;
-import com.tny.game.common.event.firer.*;
+import com.tny.game.common.event.*;
+import com.tny.game.common.event.notifier.*;
+import com.tny.game.common.notifier.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.namespace.*;
 import com.tny.game.namespace.exception.*;
@@ -55,7 +57,7 @@ public abstract class EtcdNodeHashing<N extends ShardingNode> extends EtcdObject
 
     private static final Logger LOGGER = getLogger(EtcdNodeHashing.class);
 
-    private final EventFirer<ShardingListener<N>, Sharding<N>> event = EventFirers.firer(ShardingListener.class);
+    private final EventNotifier<ShardingListener<N>, Sharding<N>> event = EventNotifiers.notifier(ShardingListener.class);
 
     private static final int INIT = 0;
 
@@ -186,11 +188,11 @@ public abstract class EtcdNodeHashing<N extends ShardingNode> extends EtcdObject
     }
 
     protected void fireChange(Sharding<N> sharding, List<Partition<N>> partitions) {
-        event.fire(ShardingListener::onChange, sharding, partitions);
+        event.notify(ShardingListener::onChange, sharding, partitions);
     }
 
     protected void fireRemove(Sharding<N> sharding, List<Partition<N>> partitions) {
-        event.fire(ShardingListener::onRemove, sharding, partitions);
+        event.notify(ShardingListener::onRemove, sharding, partitions);
     }
 
     @Override
@@ -217,7 +219,7 @@ public abstract class EtcdNodeHashing<N extends ShardingNode> extends EtcdObject
     }
 
     @Override
-    public EventSource<ShardingListener<N>> event() {
+    public EventWatchAdapter<ShardingListener<N>> event() {
         return event;
     }
 

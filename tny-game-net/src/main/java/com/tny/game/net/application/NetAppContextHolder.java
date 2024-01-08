@@ -11,6 +11,8 @@
 
 package com.tny.game.net.application;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 import static com.tny.game.common.utils.StringAide.*;
 
 /**
@@ -21,21 +23,20 @@ import static com.tny.game.common.utils.StringAide.*;
  */
 public final class NetAppContextHolder {
 
-    private static NetAppContext CONTEXT = null;
+    private static final AtomicReference<NetAppContext> CONTEXT = new AtomicReference<>();
 
     private NetAppContextHolder() {
     }
 
-    public static synchronized void register(NetAppContext context) {
-        if (CONTEXT == null) {
-            CONTEXT = context;
+    public static  void register(NetAppContext context) {
+        if (CONTEXT.compareAndSet(null, context)) {
         } else {
             throw new IllegalArgumentException(format("NetAppContext registered, {}", CONTEXT));
         }
     }
 
     public static NetAppContext getContext() {
-        return CONTEXT;
+        return CONTEXT.get();
     }
 
 }

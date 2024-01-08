@@ -48,6 +48,7 @@ public class DataPackCodecOptions {
     // 默认最大包大小
     private int maxPayloadLength = 0xFFFF;
 
+
     public String[] getSecurityKeys() {
         return securityKeys;
     }

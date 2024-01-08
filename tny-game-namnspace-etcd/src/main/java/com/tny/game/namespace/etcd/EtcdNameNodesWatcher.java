@@ -11,7 +11,9 @@
 package com.tny.game.namespace.etcd;
 
 import com.tny.game.codec.*;
-import com.tny.game.common.event.firer.*;
+import com.tny.game.common.event.*;
+import com.tny.game.common.event.notifier.*;
+import com.tny.game.common.notifier.*;
 import com.tny.game.namespace.*;
 import com.tny.game.namespace.exception.*;
 import com.tny.game.namespace.listener.*;
@@ -62,15 +64,15 @@ public class EtcdNameNodesWatcher<T> extends EtcdObject implements NameNodesWatc
 
     private final ObjectMimeType<T> valueType;
 
-    private final EventFirer<WatcherListener, NameNodesWatcher<T>> watcherEvent = EventFirers.firer(WatcherListener.class);
+    private final EventNotifier<WatcherListener, NameNodesWatcher<T>> watcherEvent = EventNotifiers.notifier(WatcherListener.class);
 
-    private final EventFirer<WatchLoadListener<T>, NameNodesWatcher<T>> loadEvent = EventFirers.firer(WatchLoadListener.class);
+    private final EventNotifier<WatchLoadListener<T>, NameNodesWatcher<T>> loadEvent = EventNotifiers.notifier(WatchLoadListener.class);
 
-    private final EventFirer<WatchCreateListener<T>, NameNodesWatcher<T>> createEvent = EventFirers.firer(WatchCreateListener.class);
+    private final EventNotifier<WatchCreateListener<T>, NameNodesWatcher<T>> createEvent = EventNotifiers.notifier(WatchCreateListener.class);
 
-    private final EventFirer<WatchUpdateListener<T>, NameNodesWatcher<T>> updateEvent = EventFirers.firer(WatchUpdateListener.class);
+    private final EventNotifier<WatchUpdateListener<T>, NameNodesWatcher<T>> updateEvent = EventNotifiers.notifier(WatchUpdateListener.class);
 
-    private final EventFirer<WatchDeleteListener<T>, NameNodesWatcher<T>> deleteEvent = EventFirers.firer(WatchDeleteListener.class);
+    private final EventNotifier<WatchDeleteListener<T>, NameNodesWatcher<T>> deleteEvent = EventNotifiers.notifier(WatchDeleteListener.class);
 
     private Watcher watcher;
 
@@ -163,27 +165,27 @@ public class EtcdNameNodesWatcher<T> extends EtcdObject implements NameNodesWatc
     }
 
     @Override
-    public EventSource<WatcherListener> watcherEvent() {
+    public EventWatchAdapter<WatcherListener> watcherEvent() {
         return watcherEvent;
     }
 
     @Override
-    public EventSource<WatchLoadListener<T>> loadEvent() {
+    public EventWatchAdapter<WatchLoadListener<T>> loadEvent() {
         return loadEvent;
     }
 
     @Override
-    public EventSource<WatchCreateListener<T>> createEvent() {
+    public EventWatchAdapter<WatchCreateListener<T>> createEvent() {
         return createEvent;
     }
 
     @Override
-    public EventSource<WatchUpdateListener<T>> updateEvent() {
+    public EventWatchAdapter<WatchUpdateListener<T>> updateEvent() {
         return updateEvent;
     }
 
     @Override
-    public EventSource<WatchDeleteListener<T>> deleteEvent() {
+    public EventWatchAdapter<WatchDeleteListener<T>> deleteEvent() {
         return deleteEvent;
     }
 
@@ -218,7 +220,7 @@ public class EtcdNameNodesWatcher<T> extends EtcdObject implements NameNodesWatc
             }
             long watchRevision = response.getHeader().getRevision();
             List<NameNode<T>> nodes = as(decodeAllKeyValues(response.getKvs(), valueType));
-            this.loadEvent.fire(WatchLoadListener::onLoad, this, nodes);
+            this.loadEvent.notify(WatchLoadListener::onLoad, this, nodes);
             WatchOption.Builder optionBuilder = WatchOption.newBuilder()
                     .withRevision(watchRevision + 1)
                     .withPrevKV(true)
@@ -247,14 +249,14 @@ public class EtcdNameNodesWatcher<T> extends EtcdObject implements NameNodesWatc
                 if (kv.getVersion() == 0) {
                     var removeKv = event.getPrevKV();
                     NameNode<T> node = decode(removeKv.getValue().getBytes(), kv, removeKv.getCreateRevision(), removeKv.getVersion(), valueType);
-                    deleteEvent.fire(WatchDeleteListener::onDelete, EtcdNameNodesWatcher.this, node);
+                    deleteEvent.notify(WatchDeleteListener::onDelete, EtcdNameNodesWatcher.this, node);
                 } else {
                     KeyValue preKv = event.getPrevKV();
                     NameNode<T> node = decode(event.getKeyValue(), valueType);
                     if (preKv.getVersion() == 0) {
-                        createEvent.fire(WatchCreateListener::onCreate, EtcdNameNodesWatcher.this, node);
+                        createEvent.notify(WatchCreateListener::onCreate, EtcdNameNodesWatcher.this, node);
                     } else {
-                        updateEvent.fire(WatchUpdateListener::onUpdate, EtcdNameNodesWatcher.this, node);
+                        updateEvent.notify(WatchUpdateListener::onUpdate, EtcdNameNodesWatcher.this, node);
                     }
                 }
             }
@@ -274,12 +276,12 @@ public class EtcdNameNodesWatcher<T> extends EtcdObject implements NameNodesWatc
 
     private synchronized void onWatchException(Throwable cause) {
         LOGGER.error("watching {} exception", watchPath, cause);
-        watcherEvent.fire(WatcherListener::onError, EtcdNameNodesWatcher.this, cause);
+        watcherEvent.notify(WatcherListener::onError, EtcdNameNodesWatcher.this, cause);
     }
 
     private synchronized void onWatchCompleted() {
         closeWatcher();
-        watcherEvent.fire(WatcherListener::onCompleted, EtcdNameNodesWatcher.this);
+        watcherEvent.notify(WatcherListener::onCompleted, EtcdNameNodesWatcher.this);
     }
 
     private void closeWatcher() {

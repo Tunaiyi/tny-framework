@@ -11,40 +11,88 @@
 
 package com.tny.game.common.event;
 
+import org.slf4j.*;
+
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.function.Supplier;
+
 /**
- * @author KGTny
- * @ClassName: Event
- * @Description: 时间基础抽象类
- * @date 2011-9-21 上午11:30:08
- * <p>
- * EventDispatcher派发的抽象基础类
- * <p>
- * EventDispatcher派发器派发事件的抽象基础类<br>
+ * Created by Kun Yang on 16/2/4.
  */
-public abstract class BaseEvent<T> implements Event<T> {
+public abstract class BaseEvent<D, E extends BaseEvent<D, E>> implements Event<D, E> {
 
-    /**
-     * 事件源
-     *
-     * @uml.property name="source"
-     */
-    protected final T source;
+    protected static final Logger LOGGER = LoggerFactory.getLogger(BaseEvent.class);
 
-    public BaseEvent(T source) {
-        this.source = source;
+    protected E parent;
+
+    protected Supplier<Collection<D>> factory;
+
+    private volatile Collection<D> listeners;
+
+    protected BaseEvent() {
     }
 
-    /**
-     * 获取事件源
-     * <p>
-     * <p>
-     * 获取触发该事件的事件源<br>
-     *
-     * @return 返回事件源
-     */
+    protected BaseEvent(E parent) {
+        this(ConcurrentLinkedQueue::new);
+        this.parent = parent;
+        this.factory = parent.factory;
+    }
+
+    protected BaseEvent(Supplier<Collection<D>> factory) {
+        this.factory = factory;
+    }
+
+    protected Optional<Collection<D>> listenerOpt() {
+        return Optional.ofNullable(listeners);
+    }
+
+    protected Collection<D> readOnlyListeners() {
+        return listeners == null ? List.of() : listeners;
+    }
+
+    protected Collection<D> loadListeners() {
+        if (listeners != null) {
+            return listeners;
+        }
+        synchronized (this) {
+            if (listeners != null) {
+                return listeners;
+            }
+            listeners = factory != null ? factory.get() : new CopyOnWriteArrayList<>();
+        }
+        return listeners;
+    }
+
+
     @Override
-    public T getSource() {
-        return this.source;
+    public void add(D listener) {
+        if (listener == null) {
+            return;
+        }
+        this.loadListeners().add(listener);
+    }
+
+    @Override
+    public void remove(D listener) {
+        if (listener == null) {
+            return;
+        }
+        var opt = this.listenerOpt();
+        if (opt.isPresent()) {
+            var listeners = opt.get();
+            listeners.remove(listener);
+        }
+    }
+
+    @Override
+    public void clear() {
+        var opt = this.listenerOpt();
+        if (opt.isPresent()) {
+            var listeners = opt.get();
+            listeners.clear();
+        }
     }
 
 }
+

@@ -15,7 +15,7 @@ import com.tny.game.basics.item.*;
 import com.tny.game.basics.persistent.annotation.*;
 import com.tny.game.common.concurrent.collection.*;
 import com.tny.game.common.context.*;
-import com.tny.game.common.event.bus.annotation.*;
+import com.tny.game.common.event.annotation.*;
 import com.tny.game.common.reflect.aop.*;
 import org.slf4j.*;
 

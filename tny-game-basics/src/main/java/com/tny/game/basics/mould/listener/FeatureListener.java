@@ -12,7 +12,7 @@
 package com.tny.game.basics.mould.listener;
 
 import com.tny.game.basics.mould.*;
-import com.tny.game.common.event.bus.*;
+import com.tny.game.common.event.*;
 
 public interface FeatureListener {
 

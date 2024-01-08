@@ -12,8 +12,8 @@
 package com.tny.game.boot.registrar;
 
 import com.tny.game.boot.event.annotation.*;
-import com.tny.game.common.event.bus.*;
-import com.tny.game.common.event.bus.annotation.*;
+import com.tny.game.common.event.*;
+import com.tny.game.common.event.annotation.*;
 import com.tny.game.common.lifecycle.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;

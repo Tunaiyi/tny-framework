@@ -13,7 +13,7 @@ package com.tny.game.basics.item.capacity;
 
 import com.tny.game.basics.item.capacity.event.*;
 import com.tny.game.common.concurrent.collection.*;
-import com.tny.game.common.event.bus.*;
+import com.tny.game.common.event.*;
 import com.tny.game.common.utils.*;
 
 import java.util.*;

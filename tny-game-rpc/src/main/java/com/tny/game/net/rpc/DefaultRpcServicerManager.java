@@ -10,7 +10,7 @@
  */
 package com.tny.game.net.rpc;
 
-import com.tny.game.common.event.bus.annotation.*;
+import com.tny.game.common.event.annotation.*;
 import com.tny.game.net.application.*;
 import com.tny.game.net.rpc.setting.*;
 

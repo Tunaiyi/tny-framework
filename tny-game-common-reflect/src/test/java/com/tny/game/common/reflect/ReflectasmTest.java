@@ -11,7 +11,7 @@
 
 package com.tny.game.common.reflect;
 
-import com.tny.game.common.event.bus.annotation.*;
+import com.tny.game.common.event.annotation.*;
 import com.tny.game.common.reflect.javassist.*;
 import org.junit.jupiter.api.*;
 

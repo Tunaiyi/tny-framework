@@ -17,6 +17,7 @@ import com.tny.game.net.session.*;
 import com.tny.game.net.transport.*;
 
 import java.net.InetSocketAddress;
+import java.util.concurrent.locks.*;
 
 /**
  * <p>
@@ -29,6 +30,9 @@ public class DefaultServerRelayTransport extends AttributeHolder implements Serv
     private ServerRelayTunnel tunnel;
 
     private volatile ServerRelayLink link;
+
+    private final Lock lock = new ReentrantLock();
+
 
     public DefaultServerRelayTransport(ServerRelayLink link) {
         this.link = link;
@@ -95,7 +99,8 @@ public class DefaultServerRelayTransport extends AttributeHolder implements Serv
         if (link == null) {
             return false;
         }
-        synchronized (this) {
+        lock.lock();
+        try {
             if (this.link == null) {
                 return false;
             }
@@ -106,6 +111,8 @@ public class DefaultServerRelayTransport extends AttributeHolder implements Serv
                 return true;
             }
             return false;
+        } finally {
+            lock.unlock();
         }
     }
 

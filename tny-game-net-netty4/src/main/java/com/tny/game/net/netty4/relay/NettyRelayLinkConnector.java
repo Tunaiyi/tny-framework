@@ -14,6 +14,8 @@ import com.tny.game.common.url.*;
 import com.tny.game.net.application.*;
 import com.tny.game.net.relay.link.*;
 
+import java.util.concurrent.locks.*;
+
 /**
  * <p>
  *
@@ -38,6 +40,8 @@ class NettyRelayLinkConnector implements RelayConnectCallback {
 
     private final String username;
 
+    private Lock lock = new ReentrantLock();
+
     private final static long[] delayTimeList = {1, 2, 2, 3, 3, 3, 5, 5, 5, 5, 10, 10, 10, 10, 10, 15};
 
     NettyRelayLinkConnector(ClientRelayContext relayContext, NetRelayServeInstance instance, NettyServeInstanceConnectMonitor connector) {
@@ -51,13 +55,18 @@ class NettyRelayLinkConnector implements RelayConnectCallback {
         return instance.url();
     }
 
-    public synchronized void connect() {
-        if (!status.isCanConnect()) {
-            return;
-        }
-        if (link == null || !link.isActive()) {
-            status = RelayConnectionStatus.CONNECTING;
-            connector.connect(this);
+    public void connect() {
+        lock.lock();
+        try {
+            if (!status.isCanConnect()) {
+                return;
+            }
+            if (link == null || !link.isActive()) {
+                status = RelayConnectionStatus.CONNECTING;
+                connector.connect(this);
+            }
+        } finally {
+            lock.unlock();
         }
     }
 
@@ -88,8 +97,13 @@ class NettyRelayLinkConnector implements RelayConnectCallback {
         }
     }
 
-    public synchronized void close() {
-        status = RelayConnectionStatus.CLOSE;
+    public void close() {
+        lock.lock();
+        try {
+            status = RelayConnectionStatus.CLOSE;
+        } finally {
+            lock.unlock();
+        }
     }
 
     @Override

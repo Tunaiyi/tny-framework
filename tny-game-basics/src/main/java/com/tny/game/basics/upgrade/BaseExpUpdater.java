@@ -15,7 +15,7 @@ import com.tny.game.basics.item.*;
 import com.tny.game.basics.item.behavior.*;
 import com.tny.game.basics.upgrade.notify.*;
 import com.tny.game.common.context.*;
-import com.tny.game.common.event.bus.*;
+import com.tny.game.common.event.*;
 
 /**
  * 抽象升级器

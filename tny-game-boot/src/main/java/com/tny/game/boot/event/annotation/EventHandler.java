@@ -11,7 +11,7 @@
 
 package com.tny.game.boot.event.annotation;
 
-import com.tny.game.common.event.bus.annotation.*;
+import com.tny.game.common.event.annotation.*;
 import org.springframework.stereotype.Component;
 
 import java.lang.annotation.*;

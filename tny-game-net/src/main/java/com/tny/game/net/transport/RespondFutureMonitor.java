@@ -17,6 +17,7 @@ import org.slf4j.*;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.*;
+import java.util.concurrent.locks.*;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 
@@ -40,6 +41,8 @@ public class RespondFutureMonitor {
     public static final Logger LOGGER = LoggerFactory.getLogger(RespondFutureMonitor.class);
 
     private volatile boolean close = false;
+
+    private final Lock lock = new ReentrantLock();
 
     static {
         Executors.newSingleThreadScheduledExecutor(new CoreThreadFactory("SessionEventBoxCleaner", true))
@@ -117,11 +120,15 @@ public class RespondFutureMonitor {
         if (this.futureMap != null) {
             return this.futureMap;
         }
-        synchronized (this) {
+
+        lock.lock();
+        try {
             if (this.futureMap != null) {
                 return this.futureMap;
             }
             this.futureMap = new ConcurrentHashMap<>();
+        } finally {
+            lock.unlock();
         }
         return this.futureMap;
     }

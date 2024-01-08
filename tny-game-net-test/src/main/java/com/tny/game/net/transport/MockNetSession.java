@@ -37,7 +37,7 @@ public class MockNetSession extends AttributeHolder implements NetSession {
 
     private SessionStatus state;
 
-    private final SessionEventWatches watches = new SessionEventBuses();
+    private final SessionEventWatches watches = new SessionEvents();
 
     private final NetAccessMode accessMode;
 

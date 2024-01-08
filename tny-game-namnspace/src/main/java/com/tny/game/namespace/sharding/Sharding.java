@@ -10,7 +10,7 @@
  */
 package com.tny.game.namespace.sharding;
 
-import com.tny.game.common.event.firer.*;
+import com.tny.game.common.event.*;
 import com.tny.game.namespace.sharding.listener.*;
 
 import java.util.*;
@@ -101,7 +101,7 @@ public interface Sharding<N extends ShardingNode> {
     /**
      * @return 分区改变事件
      */
-    EventSource<ShardingListener<N>> event();
+    EventWatchAdapter<ShardingListener<N>> event();
 
     /**
      * 最大槽数

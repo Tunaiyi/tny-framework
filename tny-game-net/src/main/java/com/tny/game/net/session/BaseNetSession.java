@@ -24,6 +24,7 @@ import javax.annotation.Nonnull;
 import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.locks.*;
 import java.util.function.Predicate;
 
 import static com.tny.game.common.utils.ObjectAide.*;
@@ -48,6 +49,7 @@ public abstract class BaseNetSession extends BaseCommunicator implements NetSess
     /* 状态 */
     private volatile SessionStatus state;
 
+
     /* ID 生成器 */
     private final AtomicLong idCreator = new AtomicLong(0);
 
@@ -63,7 +65,6 @@ public abstract class BaseNetSession extends BaseCommunicator implements NetSess
     /* 响应 future 管理器 */
     private volatile RespondFutureMonitor respondFutureMonitor;
 
-    private final SessionEventBuses buses = new SessionEventBuses();
 
     /* 离线时间 */
     private volatile long offlineTime;
@@ -73,6 +74,10 @@ public abstract class BaseNetSession extends BaseCommunicator implements NetSess
 
     /* 发送消息过滤器 */
     private volatile MessageHandleFilter sendFilter = MessageHandleFilter.allHandleFilter();
+
+    protected final Lock lock = new ReentrantLock();
+
+    private final SessionEvents buses = new SessionEvents();
 
     protected BaseNetSession(Certificate certificate, SessionContext context, NetTunnel tunnel, int sendMessageCachedSize) {
         this.id = ConnectIdFactory.newSessionId();
@@ -113,11 +118,14 @@ public abstract class BaseNetSession extends BaseCommunicator implements NetSess
         if (this.respondFutureMonitor != null) {
             return this.respondFutureMonitor;
         }
-        synchronized (this) {
+        lock.lock();
+        try {
             if (this.respondFutureMonitor != null) {
                 return this.respondFutureMonitor;
             }
             return this.respondFutureMonitor = RespondFutureMonitor.getHolder(this);
+        } finally {
+            lock.unlock();
         }
     }
 
@@ -305,7 +313,6 @@ public abstract class BaseNetSession extends BaseCommunicator implements NetSess
         return this.commandBox;
     }
 
-    @Override
     public NetMessage createMessage(MessageFactory messageFactory, MessageContent context) {
         NetMessage message = messageFactory.create(allocateMessageId(), context);
         if (context instanceof RequestContent) {
@@ -395,7 +402,8 @@ public abstract class BaseNetSession extends BaseCommunicator implements NetSess
     }
 
     private void offlineIf(NetTunnel tunnel) {
-        synchronized (this) {
+        lock.lock();
+        try {
             if (tunnel != tunnel()) {
                 return;
             }
@@ -403,6 +411,8 @@ public abstract class BaseNetSession extends BaseCommunicator implements NetSess
                 tunnel.close();
             }
             setOffline();
+        } finally {
+            lock.unlock();
         }
     }
 
@@ -411,7 +421,8 @@ public abstract class BaseNetSession extends BaseCommunicator implements NetSess
         if (isClosed()) {
             return;
         }
-        synchronized (this) {
+        lock.lock();
+        try {
             if (isClosed()) {
                 return;
             }
@@ -420,6 +431,8 @@ public abstract class BaseNetSession extends BaseCommunicator implements NetSess
                 tunnel.close();
             }
             setOffline();
+        } finally {
+            lock.unlock();
         }
     }
 
@@ -436,11 +449,14 @@ public abstract class BaseNetSession extends BaseCommunicator implements NetSess
         if (this.state != status) {
             return false;
         }
-        synchronized (this) {
+        lock.lock();
+        try {
             if (this.state != status) {
                 return false;
             }
             return this.close();
+        } finally {
+            lock.unlock();
         }
     }
 
@@ -449,7 +465,8 @@ public abstract class BaseNetSession extends BaseCommunicator implements NetSess
         if (this.state == SessionStatus.CLOSE) {
             return false;
         }
-        synchronized (this) {
+        lock.lock();
+        try {
             if (this.state == SessionStatus.CLOSE) {
                 return false;
             }
@@ -458,6 +475,8 @@ public abstract class BaseNetSession extends BaseCommunicator implements NetSess
             this.setClose();
             this.postClose();
             return true;
+        } finally {
+            lock.unlock();
         }
     }
 
@@ -491,10 +510,13 @@ public abstract class BaseNetSession extends BaseCommunicator implements NetSess
     @Override
     public void online(Certificate certificate) throws AuthFailedException {
         checkOnlineCertificate(certificate);
-        synchronized (this) {
+        lock.lock();
+        try {
             checkOnlineCertificate(certificate);
             this.certificate = certificate;
             this.setOnline();
+        } finally {
+            lock.unlock();
         }
     }
 
@@ -502,10 +524,13 @@ public abstract class BaseNetSession extends BaseCommunicator implements NetSess
     public void online(Certificate certificate, NetTunnel tunnel) throws AuthFailedException {
         Asserts.checkNotNull(tunnel, "newSession is null");
         checkOnlineCertificate(certificate);
-        synchronized (this) {
+        lock.lock();
+        try {
             checkOnlineCertificate(certificate);
             this.certificate = certificate;
             this.acceptTunnel(tunnel);
+        } finally {
+            lock.unlock();
         }
     }
 

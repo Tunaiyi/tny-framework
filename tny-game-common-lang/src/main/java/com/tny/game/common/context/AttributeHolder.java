@@ -22,7 +22,7 @@ package com.tny.game.common.context;
  */
 public class AttributeHolder {
 
-    private volatile transient Attributes attributes;
+    private transient volatile Attributes attributes;
 
     private final Object holderLock = new Object();
 
