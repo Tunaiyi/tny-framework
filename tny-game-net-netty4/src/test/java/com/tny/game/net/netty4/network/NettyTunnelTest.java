@@ -76,11 +76,11 @@ public abstract class NettyTunnelTest<E extends NetSession, T extends TransportT
         assertTrue(tunnel.bind(session));
         assertTrue(tunnel.isAuthenticated());
 
-        // 重复绑定 同一终端
+        // 重复绑定 同一会话
         assertTrue(tunnel.bind(session));
         assertTrue(tunnel.isAuthenticated());
 
-        // 重复绑定 不同终端
+        // 重复绑定 不同会话
         session = createSession();
         assertFalse(tunnel.bind(session));
 

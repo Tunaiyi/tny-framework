@@ -36,7 +36,7 @@ public abstract class BaseNetSession extends BaseCommunicator implements NetSess
 
     public static final Logger LOGGER = LoggerFactory.getLogger(BaseNetSession.class);
 
-    /* 终端 ID */
+    /* 会话 ID */
     private final long id;
 
     /* 通讯管道 */

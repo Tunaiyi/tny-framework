@@ -19,7 +19,7 @@ import java.util.*;
 import java.util.stream.Stream;
 
 /**
- * 终端持有器
+ * 会话持有器
  */
 public interface SessionKeeper {
 

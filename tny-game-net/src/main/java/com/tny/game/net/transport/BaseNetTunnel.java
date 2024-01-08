@@ -42,7 +42,7 @@ public abstract class BaseNetTunnel<S extends NetSession> extends BaseCommunicat
     /* 管道模式 */
     private final NetAccessMode accessMode;
 
-    /* 会话终端 */
+    /* 会话会话 */
     protected volatile S session;
 
     /* 上下文 */

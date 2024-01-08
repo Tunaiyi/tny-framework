@@ -15,7 +15,7 @@ import com.tny.game.net.command.processor.*;
 import com.tny.game.net.rpc.*;
 
 /**
- * 终端上下文
+ * 会话上下文
  * <p>
  *
  * @author : kgtny

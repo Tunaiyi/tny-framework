@@ -19,7 +19,7 @@ import java.util.concurrent.Executor;
 import java.util.function.Predicate;
 
 /**
- * 终端, 代表通选两端
+ * 会话, 代表通选两端
  * <p>
  */
 public interface Session extends Communicator, Connection, MessageSender, Executor {
@@ -30,7 +30,7 @@ public interface Session extends Communicator, Connection, MessageSender, Execut
     SessionEventWatches events();
 
     /*
-     * @return 终端ID
+     * @return 会话ID
      */
     long getId();
 
