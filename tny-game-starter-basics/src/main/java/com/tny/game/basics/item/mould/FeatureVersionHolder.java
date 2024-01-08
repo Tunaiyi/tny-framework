@@ -25,8 +25,8 @@ import java.util.function.*;
  */
 public class FeatureVersionHolder {
 
-    static final BindVoidEventBus<FeatureVersionChangeListener, FeatureVersionHolder> ON_CHANGE =
-            EventBuses.of(FeatureVersionChangeListener.class, FeatureVersionChangeListener::onChange);
+    static final VoidBindEvent<FeatureVersionChangeListener, FeatureVersionHolder> ON_CHANGE =
+            Events.ofEvent(FeatureVersionChangeListener.class, FeatureVersionChangeListener::onChange);
 
     private volatile Version version;
 

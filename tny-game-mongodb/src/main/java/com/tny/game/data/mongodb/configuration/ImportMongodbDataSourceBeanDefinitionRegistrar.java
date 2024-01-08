@@ -21,6 +21,7 @@ import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.support.*;
 import org.springframework.boot.autoconfigure.mongo.*;
 import org.springframework.boot.context.properties.PropertyMapper;
+import org.springframework.boot.ssl.SslBundles;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.data.mapping.model.FieldNamingStrategy;
 import org.springframework.data.mongodb.MongoDatabaseFactory;
@@ -55,6 +56,7 @@ public class ImportMongodbDataSourceBeanDefinitionRegistrar extends ImportConfig
                 .findFirst()
                 .orElseGet(() -> new MongoCustomConversions(Collections.emptyList()));
 
+        ObjectProvider<SslBundles> sslBundlesObjectProvider = this.beanFactory.getBeanProvider(SslBundles.class);
         ObjectProvider<MongoClientSettingsBuilderCustomizer> customizerObjectProvider = this.beanFactory.getBeanProvider(
                 MongoClientSettingsBuilderCustomizer.class);
         List<MongoClientSettingsBuilderCustomizer> customizers = customizerObjectProvider
@@ -63,22 +65,20 @@ public class ImportMongodbDataSourceBeanDefinitionRegistrar extends ImportConfig
 
         MongodbDataSourceSetting sourcesSetting = properties.getSetting();
         if (sourcesSetting != null) {
-            registerMongoBeanFactory(registry, sourcesSetting, mongoEntityClasses, customizers, conversions, "default", true);
+            registerMongoBeanFactory(registry, sourcesSetting, mongoEntityClasses, customizers, sslBundlesObjectProvider,
+                    conversions, "default", true);
         }
-        properties.getSettings()
-                .forEach((name, setting) -> registerMongoBeanFactory(registry, setting, mongoEntityClasses, customizers, conversions, name, false));
+        properties.getSettings().forEach((name, setting) ->
+                registerMongoBeanFactory(registry, setting, mongoEntityClasses, customizers, sslBundlesObjectProvider,
+                        conversions, name, false));
     }
 
     private void registerMongoBeanFactory(BeanDefinitionRegistry registry, MongodbDataSourceSetting properties,
             MongoEntityClasses mongoEntityClasses, List<MongoClientSettingsBuilderCustomizer> customizers,
-            MongoCustomConversions conversions, String beanName, boolean primary) {
+            ObjectProvider<SslBundles> sslBundlesObjectProvider, MongoCustomConversions conversions, String beanName, boolean primary) {
         try {
             MongoClientSettings clientSettings = MongoClientSettings.builder().build();
-
-            MongoPropertiesClientSettingsBuilderCustomizer customizer =
-                    new MongoPropertiesClientSettingsBuilderCustomizer(properties);
-            List<MongoClientSettingsBuilderCustomizer> builderCustomizers = new ArrayList<>();
-            builderCustomizers.add(customizer);
+            var builderCustomizers = careateBuilderCustomizers(properties, sslBundlesObjectProvider);
             builderCustomizers.addAll(customizers);
 
             MongoClient mongoClient = new MongoClientFactory(builderCustomizers)
@@ -121,6 +121,16 @@ public class ImportMongodbDataSourceBeanDefinitionRegistrar extends ImportConfig
         } catch (Throwable e) {
             throw new CommonRuntimeException(e, "create mongodb data source {} exception", beanName);
         }
+    }
+
+    private List<MongoClientSettingsBuilderCustomizer> careateBuilderCustomizers(
+            MongodbDataSourceSetting properties, ObjectProvider<SslBundles> sslBundlesObjectProvider) {
+        PropertiesMongoConnectionDetails details = new PropertiesMongoConnectionDetails(properties);
+        StandardMongoClientSettingsBuilderCustomizer customizer = new StandardMongoClientSettingsBuilderCustomizer(
+                details.getConnectionString(), properties.getUuidRepresentation(), properties.getSsl(), sslBundlesObjectProvider.getIfAvailable());
+        List<MongoClientSettingsBuilderCustomizer> builderCustomizers = new ArrayList<>();
+        builderCustomizers.add(customizer);
+        return builderCustomizers;
     }
 
     private MongoMappingContext mongoMappingContext(MongoEntityClasses mongoEntityClasses, MongoProperties properties,

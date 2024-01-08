@@ -12,8 +12,8 @@ package com.tny.game.net.command.auth;
 
 import com.tny.game.net.application.*;
 import com.tny.game.net.command.dispatcher.*;
-import com.tny.game.net.endpoint.*;
 import com.tny.game.net.exception.*;
+import com.tny.game.net.session.*;
 import com.tny.game.net.transport.*;
 
 import static com.tny.game.common.utils.ObjectAide.*;
@@ -26,10 +26,10 @@ import static com.tny.game.common.utils.ObjectAide.*;
  **/
 public class ContactAuthenticateService implements ContactAuthenticator {
 
-    private final EndpointKeeperManager endpointKeeperManager;
+    private final SessionKeeperManager sessionKeeperManager;
 
-    public ContactAuthenticateService(EndpointKeeperManager endpointKeeperManager) {
-        this.endpointKeeperManager = endpointKeeperManager;
+    public ContactAuthenticateService(SessionKeeperManager sessionKeeperManager) {
+        this.sessionKeeperManager = sessionKeeperManager;
     }
 
     @Override
@@ -47,9 +47,9 @@ public class ContactAuthenticateService implements ContactAuthenticator {
             Certificate certificate = validator.validate(tunnel, message);
             // 是否需要做登录校验,判断是否已经登录
             if (certificate != null && certificate.isAuthenticated()) {
-                EndpointKeeper<Endpoint> endpointKeeper = this.endpointKeeperManager
-                        .loadEndpoint(certificate.getContactType(), tunnel.getAccessMode());
-                endpointKeeper.online(certificate, tunnel);
+                SessionKeeper sessionKeeper = this.sessionKeeperManager
+                        .loadKeeper(certificate.getContactType(), tunnel.getAccessMode());
+                sessionKeeper.online(certificate, tunnel);
             }
         }
     }

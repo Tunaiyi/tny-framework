@@ -16,6 +16,7 @@ import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.command.processor.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.rpc.*;
+import com.tny.game.net.session.*;
 
 import static com.tny.game.common.lifecycle.LifecycleLevel.*;
 import static com.tny.game.common.utils.ObjectAide.*;
@@ -49,13 +50,14 @@ public class NetBootstrap<S extends NetBootstrapSetting> implements ServedServic
     public void prepareStart() throws Exception {
         MessageFactory messageFactory = UnitLoader.getLoader(MessageFactory.class).checkUnit(this.setting.getMessageFactory());
         ContactFactory contactFactory = UnitLoader.getLoader(ContactFactory.class).checkUnit(this.setting.getContactFactory());
+        SessionFactory sessionFactory = UnitLoader.getLoader(SessionFactory.class).checkUnit(this.setting.getSessionFactory());
         MessageDispatcher messageDispatcher = UnitLoader.getLoader(MessageDispatcher.class).checkUnit(this.setting.getMessageDispatcher());
         CommandExecutorFactory commandTaskProcessor =
                 UnitLoader.getLoader(CommandExecutorFactory.class).checkUnit(this.setting.getCommandExecutorFactory());
         RpcForwarder rpcForwarder = UnitLoader.getLoader(RpcForwarder.class).checkUnit(this.setting.getRpcForwarder());
         RpcMonitor rpcMonitor = UnitLoader.getLoader(RpcMonitor.class).checkUnit();
         this.context = new NetBootstrapContext(appContext, this.setting, messageDispatcher, commandTaskProcessor,
-                messageFactory, contactFactory, rpcForwarder, rpcMonitor);
+                messageFactory, sessionFactory, contactFactory, rpcForwarder, rpcMonitor);
         this.idGenerator = UnitLoader.getLoader(NetIdGenerator.class).checkUnit(this.setting.getTunnelIdGenerator());
         this.onLoadUnit(this.setting);
     }

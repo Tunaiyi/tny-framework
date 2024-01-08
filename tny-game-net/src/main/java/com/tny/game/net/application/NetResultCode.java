@@ -72,7 +72,7 @@ public enum NetResultCode implements ResultCode {
     /**
      * 终端关闭
      */
-    ENDPOINT_CLOSE(185, "终端关闭", ResultLevel.WARN),
+    SESSION_CLOSE(185, "终端关闭", ResultLevel.WARN),
 
     /**
      * 服务端接受请求异常

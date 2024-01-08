@@ -160,11 +160,11 @@ public class NetLogger {
         }
     }
 
-    public static void logReceive(RelayTransporter transporter, LinkOpenPacket packet) {
+    public static void logReceive(RelayTransport transport, LinkOpenPacket packet) {
         var arguments = packet.getArguments();
         Logger logger = getRelayPacketSendLogger(arguments.getService(), packet);
         if (logger != null && logger.isDebugEnabled()) {
-            logger.debug("RelayLink[{}]{} # [接收] << LinkPacket : {}", "NEW-LINK", transporter, packet);
+            logger.debug("RelayLink[{}]{} # [接收] << LinkPacket : {}", "NEW-LINK", transport, packet);
         }
     }
 

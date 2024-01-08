@@ -11,6 +11,10 @@
 
 package com.tny.game.net.rpc;
 
+import com.tny.game.net.rpc.setting.*;
+
+import java.util.*;
+
 /**
  * <p>
  *
@@ -22,6 +26,8 @@ public class RpcRemoteSetting {
     private long invokeTimeout = 5000L;
 
     private Class<? extends FirstRpcRouter> defaultRpcRemoteRouter = FirstRpcRouter.class;
+
+    private List<RpcClusterSetting> clusters = new ArrayList<>();
 
     public long getInvokeTimeout() {
         return invokeTimeout;
@@ -41,4 +47,12 @@ public class RpcRemoteSetting {
         return this;
     }
 
+    public List<RpcClusterSetting> getClusters() {
+        return clusters;
+    }
+
+    public RpcRemoteSetting setClusters(List<RpcClusterSetting> clusters) {
+        this.clusters = clusters;
+        return this;
+    }
 }

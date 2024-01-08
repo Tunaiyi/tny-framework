@@ -10,19 +10,18 @@
  */
 package com.tny.game.net.netty4.relay;
 
+import com.tny.game.common.concurrent.collection.*;
 import com.tny.game.common.lifecycle.unit.*;
 import com.tny.game.common.url.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.net.application.*;
-import com.tny.game.net.endpoint.listener.*;
-import com.tny.game.net.exception.*;
 import com.tny.game.net.netty4.*;
 import com.tny.game.net.netty4.channel.*;
-import com.tny.game.net.netty4.network.*;
 import com.tny.game.net.relay.*;
 import com.tny.game.net.relay.link.*;
 import com.tny.game.net.relay.packet.*;
 import com.tny.game.net.rpc.*;
+import com.tny.game.net.transport.*;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.epoll.EpollSocketChannel;
@@ -31,13 +30,8 @@ import org.slf4j.*;
 
 import javax.annotation.Nonnull;
 import java.net.InetSocketAddress;
-import java.util.Map;
-import java.util.concurrent.*;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import static com.tny.game.common.utils.ObjectAide.*;
-import static com.tny.game.common.utils.StringAide.*;
-import static com.tny.game.net.endpoint.listener.ClientEventBuses.*;
 
 public class NettyRelayClientGuide extends NettyBootstrap<NettyRelayClientBootstrapSetting> implements RelayClientGuide {
 
@@ -49,22 +43,18 @@ public class NettyRelayClientGuide extends NettyBootstrap<NettyRelayClientBootst
 
     private Bootstrap bootstrap = null;
 
-    private final Map<String, NettyClient> clients = new ConcurrentHashMap<>();
+    private final Set<NetTunnel> tunnels = new ConcurrentHashSet<>();
 
     private final AtomicBoolean closed = new AtomicBoolean(false);
 
     private ClientRelayExplorer localRelayExplorer;
 
-    private final ClientCloseListener closeListener = (client) -> this.clients.remove(clientKey(client.getUrl()), as(client, NettyClient.class));
-
     public NettyRelayClientGuide(NetAppContext appContext, NettyRelayClientBootstrapSetting clientSetting) {
         super(appContext, clientSetting);
-        buses().closeEvent().addListener(this.closeListener);
     }
 
     public NettyRelayClientGuide(NetAppContext appContext, NettyRelayClientBootstrapSetting clientSetting, ChannelMaker<Channel> channelMaker) {
         super(appContext, clientSetting, channelMaker);
-        buses().closeEvent().addListener(this.closeListener);
     }
 
     private String clientKey(URL url) {
@@ -74,7 +64,8 @@ public class NettyRelayClientGuide extends NettyBootstrap<NettyRelayClientBootst
     @Override
     public void connect(URL url, long timeout, RelayConnectCallback callback) {
         Asserts.checkNotNull(url, "url is null");
-        ChannelFuture channelFuture = this.getBootstrap().connect(new InetSocketAddress(url.getHost(), url.getPort()));
+        ChannelFuture channelFuture = this.bootstrap()
+                .connect(new InetSocketAddress(url.getHost(), url.getPort()));
         channelFuture.addListener(future -> {
             if (future.isSuccess()) {
                 callback.complete(true, url, createNetRelayLink(channelFuture.channel()), null);
@@ -84,38 +75,13 @@ public class NettyRelayClientGuide extends NettyBootstrap<NettyRelayClientBootst
         });
     }
 
-    @Override
-    public RelayTransporter connect(URL url, long connectTimeout) throws NetException {
-        Asserts.checkNotNull(url, "url is null");
-        ChannelFuture channelFuture = null;
-        try {
-            channelFuture = this.getBootstrap().connect(new InetSocketAddress(url.getHost(), url.getPort()));
-            boolean result = channelFuture.awaitUninterruptibly(connectTimeout, TimeUnit.MILLISECONDS);
-            boolean success = channelFuture.isSuccess();
-            if (result && success) {
-                return createNetRelayLink(channelFuture.channel());
-            }
-            if (channelFuture.cause() != null) {
-                throw new NetException(format("Connect url: {} failed. result: {} success: {}", url, result, success), channelFuture.cause());
-            } else {
-                throw new NetException(format("Connect url: {} timeout. result: {}, success: {}", url, result, success), channelFuture.cause());
-            }
-        } catch (NetException e) {
-            throw e;
-        } catch (Exception e) {
-            if (channelFuture != null) {
-                channelFuture.channel().close();
-            }
-            throw new NetException(format("Connect url: {} exception.", url), e);
-        }
-    }
 
     @Override
     protected void onLoadUnit(NettyRelayClientBootstrapSetting setting) {
         this.localRelayExplorer = UnitLoader.getLoader(ClientRelayExplorer.class).checkUnit();
     }
 
-    private Bootstrap getBootstrap() {
+    private Bootstrap bootstrap() {
         if (this.bootstrap != null) {
             return this.bootstrap;
         }
@@ -157,16 +123,15 @@ public class NettyRelayClientGuide extends NettyBootstrap<NettyRelayClientBootst
     @Override
     public boolean close() {
         if (this.closed.compareAndSet(false, true)) {
-            this.clients.values().forEach(NettyClient::close);
+            this.tunnels.forEach(Tunnel::close);
             workerGroup.shutdownGracefully();
-            buses().closeEvent().removeListener(this.closeListener);
             return true;
         }
         return false;
     }
 
-    private RelayTransporter createNetRelayLink(Channel channel) {
-        return new NettyChannelRelayTransporter(NetAccessMode.CLIENT, channel, this.getContext());
+    private RelayTransport createNetRelayLink(Channel channel) {
+        return new NettyChannelRelayTransport(NetAccessMode.CLIENT, channel, this.getContext());
     }
 
 }

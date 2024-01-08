@@ -14,8 +14,8 @@ import com.tny.game.common.concurrent.collection.*;
 import com.tny.game.common.concurrent.lock.*;
 import com.tny.game.common.event.bus.annotation.*;
 import com.tny.game.net.application.*;
-import com.tny.game.net.endpoint.*;
-import com.tny.game.net.endpoint.listener.*;
+import com.tny.game.net.session.*;
+import com.tny.game.net.session.listener.*;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -31,7 +31,7 @@ import static com.tny.game.common.utils.ObjectAide.*;
  * @date : 2021/11/3 6:11 下午
  */
 @GlobalEventListener
-public class BaseRpcServicerManager implements RpcServicerManager, EndpointKeeperCreateListener {
+public class BaseRpcServicerManager implements RpcServicerManager, SessionKeeperCreateListener {
 
     private final Map<ContactType, RpcServiceNodeSet> serviceSetMap = new CopyOnWriteMap<>();
 
@@ -103,22 +103,22 @@ public class BaseRpcServicerManager implements RpcServicerManager, EndpointKeepe
     }
 
     @Override
-    public void onCreate(EndpointKeeper<Endpoint> keeper) {
+    public void onCreate(SessionKeeper keeper) {
         ContactType contactType = keeper.getContactType();
         if (contactType instanceof RpcServiceType) {
             RpcServiceType serviceType = as(contactType, RpcServiceType.class);
             RpcServiceNodeSet nodeSet = doLoadRpcServiceSet(serviceType);
-            EndpointKeeper<Endpoint> rpcKeeper = as(keeper);
-            rpcKeeper.addListener(new EndpointKeeperListener() {
+            SessionKeeper rpcKeeper = as(keeper);
+            rpcKeeper.addListener(new SessionKeeperListener() {
 
                 @Override
-                public void onAddEndpoint(EndpointKeeper<Endpoint> keeper, Endpoint endpoint) {
-                    nodeSet.addEndpoint(endpoint);
+                public void onAddSession(SessionKeeper keeper, Session session) {
+                    nodeSet.addSession(session);
                 }
 
                 @Override
-                public void onRemoveEndpoint(EndpointKeeper<Endpoint> keeper, Endpoint endpoint) {
-                    nodeSet.removeEndpoint(endpoint);
+                public void onRemoveSession(SessionKeeper keeper, Session session) {
+                    nodeSet.removeSession(session);
                 }
 
             });

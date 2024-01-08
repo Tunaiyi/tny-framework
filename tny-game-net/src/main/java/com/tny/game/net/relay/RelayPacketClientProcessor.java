@@ -40,7 +40,7 @@ public class RelayPacketClientProcessor extends BaseRelayPacketProcessor {
     }
 
     @Override
-    public void onLinkOpen(RelayTransporter transporter, LinkOpenPacket packet) {
+    public void onLinkOpen(RelayTransport transport, LinkOpenPacket packet) {
     }
 
     @Override

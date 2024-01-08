@@ -11,10 +11,9 @@
 
 package com.tny.game.net.netty4.relay.cluster;
 
-import com.google.common.collect.ImmutableList;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * <p>
@@ -22,26 +21,18 @@ import java.util.List;
  * @author : kgtny
  * @date : 2021/8/26 1:50 下午
  */
-@ConfigurationProperties("tny.net.relay.cluster")
+@ConfigurationProperties("tny.net.relay")
 public class SpringRelayClustersProperties {
 
-    private List<SpringRelayServeClusterSetting> serveClusters = ImmutableList.of();
+    private List<SpringRelayServeClusterSetting> clusters = new ArrayList<>();
 
-    public List<SpringRelayServeClusterSetting> getServeClusters() {
-        return serveClusters;
+    public List<SpringRelayServeClusterSetting> getClusters() {
+        return clusters;
     }
 
-    public SpringRelayClustersProperties setServeClusters(List<SpringRelayServeClusterSetting> serveClusters) {
-        this.serveClusters = ImmutableList.copyOf(serveClusters);
+    public SpringRelayClustersProperties setClusters(List<SpringRelayServeClusterSetting> clusters) {
+        this.clusters = new ArrayList<>(clusters);
         return this;
     }
-    //
-    //	public String getRelayMessageRouter() {
-    //		return relayMessageRouter;
-    //	}
-    //
-    //	public String getServeClusterSelector() {
-    //		return serveClusterSelector;
-    //	}
 
 }

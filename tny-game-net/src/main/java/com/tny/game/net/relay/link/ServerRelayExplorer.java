@@ -35,11 +35,11 @@ public interface ServerRelayExplorer extends RelayExplorer {
     /**
      * 接收打开的 link
      *
-     * @param transporter 转发器
+     * @param transport 转发器
      * @param service     集群 id
      * @param instance    实例 id
      */
-    RelayLink acceptOpenLink(RelayTransporter transporter, RpcServiceType serviceType, String service, long instance, String key);
+    RelayLink acceptOpenLink(RelayTransport transport, RpcServiceType serviceType, String service, long instance, String key);
 
     /**
      * 接收连接的 Tunnel

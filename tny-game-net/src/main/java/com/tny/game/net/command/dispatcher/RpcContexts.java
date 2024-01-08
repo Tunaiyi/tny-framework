@@ -11,7 +11,7 @@
 package com.tny.game.net.command.dispatcher;
 
 import com.tny.game.common.context.*;
-import com.tny.game.net.endpoint.*;
+import com.tny.game.net.session.*;
 
 import java.util.concurrent.Executor;
 
@@ -50,15 +50,15 @@ public class RpcContexts {
     /**
      * @return 获取当前线程正在执行的终端
      */
-    public static Endpoint currentEndpoint() {
-        return current().getEndpoint();
+    public static Session currentSession() {
+        return current().getSession();
     }
 
     /**
      * @return 获取当前线程正在执行的终端
      */
     public static Executor currentExecutor() {
-        return current().getEndpoint();
+        return current().getSession();
     }
 
     static void setCurrent(RpcEnterContext context) {

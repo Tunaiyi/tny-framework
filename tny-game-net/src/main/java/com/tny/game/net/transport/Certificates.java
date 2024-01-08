@@ -24,7 +24,7 @@ import static com.tny.game.net.transport.CertificateStatus.*;
 public final class Certificates {
 
     private static final Certificate ANONYMOUS = new DefaultCertificate(Certificate.ANONYMITY_ID, Certificate.ANONYMITY_IDENTIFY,
-            Certificate.ANONYMITY_CONTACT_ID, NetContactType.ANONYMITY, UNAUTHENTICATED, null, null);
+            Certificate.ANONYMITY_CONTACT_ID, DefaultContactType.ANONYMITY, UNAUTHENTICATED, null, null);
 
     public static boolean isAnonymity(int contactId) {
         return contactId < 0;

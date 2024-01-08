@@ -14,9 +14,9 @@ import com.tny.game.common.result.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.net.annotation.*;
 import com.tny.game.net.application.*;
-import com.tny.game.net.endpoint.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
+import com.tny.game.net.session.*;
 import com.tny.game.net.transport.*;
 import org.apache.commons.lang3.StringUtils;
 
@@ -67,10 +67,6 @@ class RpcLocalParamDescription {
             this.mode = SETTING;
         } else if (Session.class.isAssignableFrom(paramClass)) {
             this.mode = SESSION;
-        } else if (Client.class.isAssignableFrom(paramClass)) {
-            this.mode = CLIENT;
-        } else if (Endpoint.class.isAssignableFrom(paramClass)) {
-            this.mode = ENDPOINT;
         } else if (Tunnel.class.isAssignableFrom(paramClass)) {
             this.mode = TUNNEL;
         } else if (paramClass == Message.class) {
@@ -152,7 +148,7 @@ class RpcLocalParamDescription {
         if (body == null) {
             body = message.bodyAs(Object.class);
         }
-        NetEndpoint endpoint = tunnel.getEndpoint();
+        NetSession session = tunnel.getSession();
         NetworkContext context = tunnel.getContext();
         MessageHead head = message.getHead();
         Object value = null;
@@ -163,22 +159,11 @@ class RpcLocalParamDescription {
                 value = message;
                 break;
             case SESSION: {
-                value = endpoint;
+                value = session;
                 if (value instanceof Session) {
                     break;
                 }
                 throw new NullPointerException(format("{} session is null", tunnel));
-            }
-            case CLIENT: {
-                value = endpoint;
-                if (value instanceof Client) {
-                    break;
-                }
-                throw new NullPointerException(format("{} session is null", tunnel));
-            }
-            case ENDPOINT: {
-                value = endpoint;
-                break;
             }
             case TUNNEL:
                 if (this.paramClass.isInstance(tunnel)) {

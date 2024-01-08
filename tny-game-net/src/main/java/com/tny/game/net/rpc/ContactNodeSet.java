@@ -11,11 +11,9 @@
 package com.tny.game.net.rpc;
 
 import com.tny.game.net.application.*;
-import com.tny.game.net.endpoint.*;
+import com.tny.game.net.session.*;
 
 import java.util.*;
-
-import static com.tny.game.common.utils.ObjectAide.*;
 
 /**
  * Rpc 转发节点
@@ -28,7 +26,7 @@ public class ContactNodeSet implements RpcInvokeNodeSet, RpcInvokeNode {
 
     private final ContactType contactType;
 
-    private EndpointKeeper<Endpoint> keeper;
+    private SessionKeeper keeper;
 
     private final List<ContactNodeSet> remoterList;
 
@@ -37,9 +35,9 @@ public class ContactNodeSet implements RpcInvokeNodeSet, RpcInvokeNode {
         this.remoterList = Collections.singletonList(this);
     }
 
-    void bind(EndpointKeeper<? extends Endpoint> keeper) {
+    void bind(SessionKeeper keeper) {
         if (this.keeper == null) {
-            this.keeper = as(keeper);
+            this.keeper = keeper;
         }
     }
 
@@ -79,9 +77,9 @@ public class ContactNodeSet implements RpcInvokeNodeSet, RpcInvokeNode {
 
     @Override
     public RpcAccess getAccess(long accessId) {
-        Endpoint endpoint = keeper.getEndpoint(accessId);
-        if (endpoint != null) {
-            return RpcEndpointAccess.of(endpoint);
+        Session session = keeper.getSession(accessId);
+        if (session != null) {
+            return RpcAccessor.of(session);
         }
         return null;
     }

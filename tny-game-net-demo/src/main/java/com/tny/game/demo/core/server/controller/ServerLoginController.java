@@ -13,8 +13,8 @@ package com.tny.game.demo.core.server.controller;
 import com.tny.game.demo.core.common.*;
 import com.tny.game.demo.core.common.dto.*;
 import com.tny.game.net.annotation.*;
-import com.tny.game.net.endpoint.*;
 import com.tny.game.net.netty4.configuration.command.*;
+import com.tny.game.net.session.*;
 import com.tny.game.net.transport.*;
 
 import java.time.ZonedDateTime;
@@ -36,13 +36,11 @@ public class ServerLoginController {
 
     private static final ScheduledExecutorService EXECUTOR_SERVICE = Executors.newScheduledThreadPool(1);
 
-    @Rpc(CtrlerIds.LOGIN$LOGIN)
+    @RpcRequest(CtrlerIds.LOGIN$LOGIN)
     @BeforePlugin(SpringBootParamFilterPlugin.class)
     @AuthenticationRequired(value = DEFAULT_USER_TYPE, validator = DemoAuthenticationValidator.class)
-    public LoginDTO login(Tunnel tunnel, Endpoint endpoint, @RpcParam long sessionId, @RpcParam long userId) {
-        Certificate certificate = endpoint.getCertificate();
-        //        EXECUTOR_SERVICE.scheduleAtFixedRate(() -> endpoint.send(MessageContexts
-        //                .push(ProtocolAide.protocol(CtrlerIDs.LOGIN$PING), "ping tunnel id " + tunnel.getId())), 0, 3, TimeUnit.SECONDS);
+    public LoginDTO login(Tunnel tunnel, Session session, @RpcParam long sessionId, @RpcParam long userId) {
+        Certificate certificate = session.getCertificate();
         return new LoginDTO(certificate.getId(), userId, format("{} - {} 登录成功 at {}", userId, sessionId, ZonedDateTime.now()));
     }
 

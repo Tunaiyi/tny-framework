@@ -7,16 +7,16 @@ ext.vers = [
         mockito       : "3.9.0",
 
 
-        spring_batch  : "5.0.1",
-        spring_retry  : "2.0.1",
+        spring_batch  : "5.1.0",
+        spring_retry  : "2.0.5",
 
         skywalking    : "8.13.0",
 
         httpclient    : "4.5.12",
-        aspectj       : "1.9.7",
-        redisson      : "3.20.0",
+        aspectj       : "1.9.21",
+        redisson      : "3.25.2",
 
-        poi           : "5.2.3",
+        poi           : "5.2.5",
         jade          : "1.6.x-SNAPSHOT",
 
 ]
@@ -34,8 +34,8 @@ ext.libs = [
         log4j_jul                            : "org.apache.logging.log4j:log4j-jul",
         log4j_slf4j_impl                     : "org.apache.logging.log4j:log4j-slf4j-impl",
         log4j_web                            : "org.apache.logging.log4j:log4j-web",
-        checkerframework                     : "org.checkerframework:checker-qual:3.32.0",
-        errorprone                           : "com.google.errorprone:error_prone_annotations:2.18.0",
+        checkerframework                     : "org.checkerframework:checker-qual:3.42.0",
+        errorprone                           : "com.google.errorprone:error_prone_annotations:2.24.1",
 
         javassist                            : "org.javassist:javassist",
 
@@ -108,10 +108,10 @@ ext.libs = [
 
 
         zookeeper                            : "org.apache.zookeeper:zookeeper:3.4.14",
-        jetcd_core                           : 'io.etcd:jetcd-core:0.7.5',
+        jetcd_core                           : 'io.etcd:jetcd-core:0.7.7',
 
 
-        quartz_scheduler                     : "org.quartz-scheduler:quartz:2.3.2",
+        quartz_scheduler                     : "org.quartz-scheduler:quartz:2.5.0-rc1",
 
 
         groovy_all                           : "org.apache.groovy:groovy-all:${groovyVersion}",
@@ -119,7 +119,7 @@ ext.libs = [
         groovy_jsr223                        : "org.apache.groovy:groovy-jsr223:${groovyVersion}",
 
         luaj                                 : "org.luaj:luaj-jse:3.0.1",
-        mvel                                 : "org.mvel:mvel2:2.4.12.Final",
+        mvel                                 : "org.mvel:mvel2:2.5.1.Final",
         xstream                              : "com.thoughtworks.xstream:xstream",
         xpp3                                 : 'xpp3:xpp3:1.1.4c',
 
@@ -140,8 +140,8 @@ ext.libs = [
         junit_platform_launcher              : "org.junit.platform:junit-platform-launcher:$vers.junit_platform",
         junit_platform_commons               : "org.junit.platform:junit-platform-commons:$vers.junit_platform",
 
-        byte_buddy                           : "net.bytebuddy:byte-buddy:1.10.14",
-        byte_buddy_agent                     : "net.bytebuddy:byte-buddy-agent:1.10.14",
+        byte_buddy                           : "net.bytebuddy:byte-buddy:1.14.11",
+        byte_buddy_agent                     : "net.bytebuddy:byte-buddy-agent:1.14.11",
 
         spring_messaging                     : "org.springframework:spring-messaging",
 
@@ -212,17 +212,17 @@ ext.libs = [
         alibaba_cloud_starter_nacos_discovery: "com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-discovery",
 
         protobuf_java                        : "com.google.protobuf:protobuf-java",
-        jprotobuf                            : "com.baidu:jprotobuf:2.4.18",
-        jprotobuf_precompile_plugin_gradle   : "gradle.plugin.com.baidu.jprotobuf:jprotobuf-precompile-plugin-gradle:1.1.1",
+        jprotobuf                            : "com.baidu:jprotobuf:2.4.20",
+        jprotobuf_precompile_plugin_gradle   : "gradle.plugin.com.baidu.jprotobuf:jprotobuf-precompile-plugin-gradle:1.2.1",
 
         aspectjrt                            : "org.aspectj:aspectjrt:$vers.aspectj",
 
 
-        jedis                                : "redis.clients:jedis:3.6.0",
+        jedis                                : "redis.clients:jedis:5.1.0",
         redisson                             : "org.redisson:redisson",
         redisson_spring_boot_starter         : "org.redisson:redisson-spring-boot-starter:${vers.redisson}",
 
-        mongo_java_driver                    : 'org.mongodb:mongo-java-driver:3.12.10',
+        mongo_java_driver                    : 'org.mongodb:mongo-java-driver:3.12.14',
 
         memcached_java_client                : "com.whalin:Memcached-Java-Client:3.0.2",
         mysql_connector                      : "mysql:mysql-connector-java:8.0.24",

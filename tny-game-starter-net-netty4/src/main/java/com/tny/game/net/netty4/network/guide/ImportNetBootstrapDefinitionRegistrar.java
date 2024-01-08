@@ -25,7 +25,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.tny.game.common.utils.ObjectAide.*;
-import static com.tny.game.net.application.configuration.NetUnitNames.*;
+import static com.tny.game.common.lifecycle.unit.UnitNames.*;
 
 /**
  * <p>

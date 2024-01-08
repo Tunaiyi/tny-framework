@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Created by Kun Yang on 2018/8/25.
  */
-public abstract class NetTunnelTest<T extends NetTunnel, E extends MockNetEndpoint> extends TunnelTest<T> {
+public abstract class NetTunnelTest<T extends NetTunnel, E extends MockNetSession> extends TunnelTest<T> {
 
     protected TunnelTestInstance<T, E> create() {
         return create(createLoginCert(), true);
@@ -32,12 +32,12 @@ public abstract class NetTunnelTest<T extends NetTunnel, E extends MockNetEndpoi
 
     protected abstract TunnelTestInstance<T, E> create(Certificate certificate, boolean open);
 
-    protected E createEndpoint() {
-        return createEndpoint(createLoginCert());
+    protected E createSession() {
+        return createSession(createLoginCert());
     }
 
-    protected E createEndpoint(Certificate certificate) {
-        return create(certificate, false).getEndpoint();
+    protected E createSession(Certificate certificate) {
+        return create(certificate, false).getSession();
     }
 
     @Override
@@ -62,11 +62,11 @@ public abstract class NetTunnelTest<T extends NetTunnel, E extends MockNetEndpoi
     public abstract void receive() throws ExecutionException, InterruptedException;
 
     @Test
-    public void getEndpoint() {
+    public void getSession() {
         T loginTunnel = createBindTunnel();
-        assertNotNull(loginTunnel.getEndpoint());
+        assertNotNull(loginTunnel.getSession());
         T unloginTunnel = createUnbindTunnel();
-        assertNotNull(unloginTunnel.getEndpoint());
+        assertNotNull(unloginTunnel.getSession());
     }
 
     // @Test
@@ -292,7 +292,7 @@ public abstract class NetTunnelTest<T extends NetTunnel, E extends MockNetEndpoi
     //     verify(event, times(1)).getTunnel();
     //     verify(event, times(1)).getMessageContext();
     //     verify(tunnel, times(1)).getMessageBuilderFactory();
-    //     verify(tunnel, times(1)).getEndpoint();
+    //     verify(tunnel, times(1)).getSession();
     //     verify(tunnel, times(1)).write(as(any(Message.class)), eq(event));
     //     verifyNoMoreInteractions(tunnel, event);
     //
@@ -309,7 +309,7 @@ public abstract class NetTunnelTest<T extends NetTunnel, E extends MockNetEndpoi
     //     verify(event, times(1)).getTunnel();
     //     verify(event, times(1)).getMessageContext();
     //     verify(tunnel, times(1)).getMessageBuilderFactory();
-    //     verify(tunnel, times(1)).getEndpoint();
+    //     verify(tunnel, times(1)).getSession();
     //     verify(tunnel, times(1)).write(as(any(Message.class)), eq(event));
     //     verify(event, times(1)).sendFail(any(NullPointerException.class));
     //     verifyNoMoreInteractions(tunnel, event);

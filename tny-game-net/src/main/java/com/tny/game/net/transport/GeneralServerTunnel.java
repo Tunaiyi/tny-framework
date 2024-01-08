@@ -11,15 +11,19 @@
 package com.tny.game.net.transport;
 
 import com.tny.game.net.application.*;
-import com.tny.game.net.endpoint.*;
+import com.tny.game.net.session.*;
 
 /**
  * Created by Kun Yang on 2017/9/11.
  */
-public class GeneralServerTunnel extends ServerTunnel<NetSession, MessageTransporter> {
+public class GeneralServerTunnel extends ServerTransportTunnel<NetSession, MessageTransport> {
 
-    public GeneralServerTunnel(long id, MessageTransporter transport, NetworkContext context) {
+    public GeneralServerTunnel(long id, MessageTransport transport, NetworkContext context) {
         super(id, transport, context);
+    }
+
+    public GeneralServerTunnel(long id, MessageTransport transport, NetSession session, NetworkContext context) {
+        super(id, transport, session, context);
     }
 
 }

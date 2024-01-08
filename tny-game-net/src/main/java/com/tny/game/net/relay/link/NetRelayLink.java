@@ -11,11 +11,11 @@
 package com.tny.game.net.relay.link;
 
 import com.tny.game.common.event.firer.*;
-import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.relay.link.listener.*;
 import com.tny.game.net.relay.packet.*;
 import com.tny.game.net.relay.packet.arguments.*;
+import com.tny.game.net.session.*;
 import com.tny.game.net.transport.*;
 
 /**
@@ -46,12 +46,12 @@ public interface NetRelayLink extends RelayLink, EventSourceObject<RelayLinkList
     void openTunnel(RelayTunnel tunnel);
 
     /**
-     * 判断指定的 transporter 是否是当前通道的 transporter
+     * 判断指定的 transport 是否是当前通道的 transport
      *
-     * @param transporter 判断的transporter
+     * @param transport 判断的transport
      * @return 如果是返回 true, 否则返回 false
      */
-    boolean isCurrentTransporter(RelayTransporter transporter);
+    boolean isCurrentTransport(RelayTransport transport);
 
     /**
      * 发送转发数据包

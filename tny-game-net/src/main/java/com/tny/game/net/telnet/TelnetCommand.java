@@ -11,7 +11,7 @@
 
 package com.tny.game.net.telnet;
 
-import com.tny.game.net.endpoint.*;
+import com.tny.game.net.session.*;
 
 public interface TelnetCommand {
 

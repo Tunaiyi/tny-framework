@@ -24,10 +24,6 @@ public enum ParamMode {
 
     SESSION,
 
-    CLIENT,
-
-    ENDPOINT,
-
     SETTING,
 
     IDENTIFY,

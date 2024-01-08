@@ -33,11 +33,11 @@ public class EventFirerDispatcherTest {
 
     private int level = 100;
 
-    BindVoidEventBus<TestListener, String> CREATE_EVENT
-            = EventBuses.of(TestListener.class, TestListener::handleCreate);
+    private VoidBindEvent<TestListener, String> CREATE_EVENT
+            = Events.ofEvent(TestListener.class, TestListener::handleCreate);
 
-    BindP1EventBus<TestListener, String, Integer> UPGRADE_EVENT
-            = EventBuses.of(TestListener.class, TestListener::handleUpgrade);
+    private A1BindEvent<TestListener, String, Integer> UPGRADE_EVENT
+            = Events.ofEvent(TestListener.class, TestListener::handleUpgrade);
 
     /**
      * @uml.property name="listener"

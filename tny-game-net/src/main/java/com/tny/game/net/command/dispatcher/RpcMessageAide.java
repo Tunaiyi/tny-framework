@@ -34,7 +34,7 @@ public class RpcMessageAide {
      * @param tunnel  通道
      * @param content 消息信息上下文
      */
-    public static SendReceipt send(NetTunnel tunnel, MessageContent content) {
+    public static MessageSent send(NetTunnel tunnel, MessageContent content) {
         return send(tunnel, content, !content.existHeader(MessageHeaderConstants.RPC_FORWARD_HEADER));
     }
 
@@ -44,14 +44,14 @@ public class RpcMessageAide {
      * @param tunnel  通道
      * @param content 消息信息上下文
      */
-    public static SendReceipt send(NetTunnel tunnel, MessageContent content, boolean autoClose) {
+    public static MessageSent send(NetTunnel tunnel, MessageContent content, boolean autoClose) {
         boolean close = content.getResultCode().getLevel() == ResultLevel.ERROR;
         if (close) {
             if (!content.isWriteAwaitable()) {
                 content.willWriteFuture();
             }
         }
-        SendReceipt receipt = tunnel.send(content);
+        MessageSent receipt = tunnel.send(content);
         if (autoClose && close) {
             receipt.written().thenRun(tunnel::close);
         }

@@ -14,23 +14,23 @@ package com.tny.game.net.transport;
 /**
  * <p>
  */
-public class TunnelTestInstance<T, E extends MockNetEndpoint> {
+public class TunnelTestInstance<T, E extends MockNetSession> {
 
     private T tunnel;
 
-    private E endpoint;
+    private E session;
 
-    public TunnelTestInstance(T tunnel, E endpoint) {
+    public TunnelTestInstance(T tunnel, E session) {
         this.tunnel = tunnel;
-        this.endpoint = endpoint;
+        this.session = session;
     }
 
     public T getTunnel() {
         return tunnel;
     }
 
-    public E getEndpoint() {
-        return endpoint;
+    public E getSession() {
+        return session;
     }
 
 }

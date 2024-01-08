@@ -145,7 +145,7 @@ public class AoperBuilder<T> {
                         //					}
                     }
                 }
-                aoperClass = proxyClass.toClass(targetClass.getClassLoader(), null);
+                aoperClass = proxyClass.toClass(targetClass);
                 Field methodsField = aoperClass.getDeclaredField("_aoper$METHODS");
                 methodsField.setAccessible(true);
                 methodsField.set(null, aopMethodList.toArray(new Method[0]));

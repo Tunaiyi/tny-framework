@@ -10,10 +10,10 @@
  */
 package com.tny.game.net.netty4.network;
 
-import com.tny.game.net.endpoint.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.rpc.*;
+import com.tny.game.net.session.*;
 import com.tny.game.net.transport.*;
 import io.netty.channel.embedded.EmbeddedChannel;
 import org.apache.commons.collections4.CollectionUtils;
@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Created by Kun Yang on 2018/8/25.
  */
-public abstract class NettyTunnelTest<E extends NetEndpoint, T extends BaseNetTunnel<E, ?>, ME extends MockNetEndpoint>
+public abstract class NettyTunnelTest<E extends NetSession, T extends TransportTunnel<NetSession, ?>, ME extends MockNetSession>
         extends NetTunnelTest<T, ME> {
 
     protected EmbeddedChannel mockChannel() {
@@ -62,32 +62,32 @@ public abstract class NettyTunnelTest<E extends NetEndpoint, T extends BaseNetTu
     @Test
     void bind() throws AuthFailedException {
         NetTunnel tunnel;
-        MockNetEndpoint endpoint;
+        MockNetSession session;
         TunnelTestInstance<T, ME> object;
         // 正常绑定
         object = create(createUnLoginCert(), false);
         tunnel = object.getTunnel();
         if (tunnel.getAccessMode() == NetAccessMode.CLIENT) {
-            endpoint = object.getEndpoint();
-            endpoint.online(createLoginCert(), tunnel);
+            session = object.getSession();
+            session.online(createLoginCert(), tunnel);
         } else {
-            endpoint = createEndpoint();
+            session = createSession();
         }
-        assertTrue(tunnel.bind(endpoint));
+        assertTrue(tunnel.bind(session));
         assertTrue(tunnel.isAuthenticated());
 
         // 重复绑定 同一终端
-        assertTrue(tunnel.bind(endpoint));
+        assertTrue(tunnel.bind(session));
         assertTrue(tunnel.isAuthenticated());
 
         // 重复绑定 不同终端
-        endpoint = createEndpoint();
-        assertFalse(tunnel.bind(endpoint));
+        session = createSession();
+        assertFalse(tunnel.bind(session));
 
         // 接受未认证凭证
         tunnel = createUnbindTunnel();
-        endpoint = createEndpoint(createUnLoginCert());
-        assertFalse(tunnel.bind(endpoint));
+        session = createSession(createUnLoginCert());
+        assertFalse(tunnel.bind(session));
 
     }
 
@@ -118,17 +118,10 @@ public abstract class NettyTunnelTest<E extends NetEndpoint, T extends BaseNetTu
         // 断开再打开
         tunnel = createTunnel(createLoginCert(), true);
         tunnel.disconnect();
-        if (tunnel.getAccessMode() == NetAccessMode.SERVER) {
-            assertFalse(tunnel.open());
-            assertTrue(tunnel.isClosed());
-            assertFalse(tunnel.isActive());
-            assertFalse(tunnel.isOpen());
-        } else {
-            assertTrue(tunnel.open());
-            assertFalse(tunnel.isClosed());
-            assertTrue(tunnel.isActive());
-            assertTrue(tunnel.isOpen());
-        }
+        assertFalse(tunnel.open());
+        assertTrue(tunnel.isClosed());
+        assertFalse(tunnel.isActive());
+        assertFalse(tunnel.isOpen());
     }
 
     @Test
@@ -184,31 +177,31 @@ public abstract class NettyTunnelTest<E extends NetEndpoint, T extends BaseNetTu
     public void receive() {
         T tunnel;
         TestMessages messages;
-        ME endpoint;
+        ME session;
         TunnelTestInstance<T, ME> object;
 
         // 接受Message
         object = create();
         tunnel = object.getTunnel();
-        endpoint = object.getEndpoint();
+        session = object.getSession();
         messages = new TestMessages(tunnel)
                 .addPush("push")
                 .addRequest("request")
                 .addResponse("response", 1);
         messages.receive(tunnel);
-        assertTrue(CollectionUtils.containsAll(messages.getMessages(), endpoint.getReceiveQueue()));
+        assertTrue(CollectionUtils.containsAll(messages.getMessages(), session.getReceiveQueue()));
 
         // 关闭 接受Message
         object = create();
         tunnel = object.getTunnel();
-        endpoint = object.getEndpoint();
+        session = object.getSession();
         messages = new TestMessages(tunnel)
                 .addPush("push")
                 .addRequest("request")
                 .addResponse("response", 1);
         tunnel.close();
         messages.receive(tunnel);
-        assertTrue(CollectionUtils.containsAll(messages.getMessages(), endpoint.getReceiveQueue()));
+        assertTrue(CollectionUtils.containsAll(messages.getMessages(), session.getReceiveQueue()));
 
     }
 
@@ -217,31 +210,31 @@ public abstract class NettyTunnelTest<E extends NetEndpoint, T extends BaseNetTu
     public void send() {
         T tunnel;
         TestMessages messages;
-        ME endpoint;
+        ME session;
         TunnelTestInstance<T, ME> object;
 
         // 接受Message
         object = create();
         tunnel = object.getTunnel();
-        endpoint = object.getEndpoint();
+        session = object.getSession();
         messages = new TestMessages(tunnel)
                 .addPush("push")
                 .addRequest("request")
                 .addResponse("response", 1);
         messages.send(tunnel);
-        assertTrue(CollectionUtils.containsAll(messages.getMessages(), endpoint.getReceiveQueue()));
+        assertTrue(CollectionUtils.containsAll(messages.getMessages(), session.getReceiveQueue()));
 
         // 关闭 接受Message
         object = create();
         tunnel = object.getTunnel();
-        endpoint = object.getEndpoint();
+        session = object.getSession();
         messages = new TestMessages(tunnel)
                 .addPush("push")
                 .addRequest("request")
                 .addResponse("response", 1);
         tunnel.close();
         messages.send(tunnel);
-        assertTrue(endpoint.getReceiveQueue().isEmpty());
+        assertTrue(session.getReceiveQueue().isEmpty());
     }
 
     @Test

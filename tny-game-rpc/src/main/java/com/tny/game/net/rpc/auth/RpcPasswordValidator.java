@@ -13,9 +13,9 @@ package com.tny.game.net.rpc.auth;
 import com.tny.game.common.utils.*;
 import com.tny.game.net.application.*;
 import com.tny.game.net.command.auth.*;
-import com.tny.game.net.endpoint.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
+import com.tny.game.net.session.*;
 import com.tny.game.net.transport.*;
 
 import java.util.*;

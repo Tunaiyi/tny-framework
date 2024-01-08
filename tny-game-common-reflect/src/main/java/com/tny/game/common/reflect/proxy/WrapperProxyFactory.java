@@ -51,7 +51,7 @@ public class WrapperProxyFactory {
             String proxyClassName = targetClass.getPackage().getName() + PROXY_CLASS_NAME + targetClass.getSimpleName();
             /* 获得DProxy类作为代理类的父类 */
             CtClass proxyClass = pool.makeClass(proxyClassName);
-            CtClass superclass = pool.get(targetClass.getCanonicalName());
+            CtClass superclass = pool.get(targetClass.getName());
             proxyClass.setSuperclass(superclass);
             CtConstructor ctConstructor = new CtConstructor(new CtClass[]{}, proxyClass);
             ctConstructor.setBody("{super();}");
@@ -68,7 +68,7 @@ public class WrapperProxyFactory {
                 }
                 proxyMethod(pool, proxyClass, method, methodSet);
             }
-            wrapperClass = proxyClass.toClass(targetClass.getClassLoader(), null);
+            wrapperClass = proxyClass.toClass(targetClass);
             Class<?> old = WRAPPER_CLASS_MAP.putIfAbsent(targetClass, wrapperClass);
             return (Class<WrapperProxy<T>>) (old != null ? old : wrapperClass);
         } catch (Exception e) {

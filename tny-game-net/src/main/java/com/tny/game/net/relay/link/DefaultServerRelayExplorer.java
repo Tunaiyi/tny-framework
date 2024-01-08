@@ -34,10 +34,10 @@ public class DefaultServerRelayExplorer extends BaseRelayExplorer<ServerRelayTun
     private final Map<String, ServerRelayLink> linkMap = new ConcurrentHashMap<>();
 
     @Override
-    public RelayLink acceptOpenLink(RelayTransporter transporter, RpcServiceType serviceType, String service, long instance, String key) {
-        CommonServerRelayLink link = new CommonServerRelayLink(transporter, serviceType, service, instance, key);
+    public RelayLink acceptOpenLink(RelayTransport transport, RpcServiceType serviceType, String service, long instance, String key) {
+        CommonServerRelayLink link = new CommonServerRelayLink(transport, serviceType, service, instance, key);
         ServerRelayLink relayLink = linkMap.putIfAbsent(link.getId(), link);
-        if (relayLink != null && !relayLink.isCurrentTransporter(transporter)) {
+        if (relayLink != null && !relayLink.isCurrentTransport(transport)) {
             link.openOnFailure();
         } else {
             link.open();
@@ -53,9 +53,9 @@ public class DefaultServerRelayExplorer extends BaseRelayExplorer<ServerRelayTun
             LOGGER.warn("acceptConnectTunnel link[{}] 不存在", link.getId());
             return;
         }
-        ServerRelayTransporter transporter = new DefaultServerRelayTransporter(relayLink);
+        ServerRelayTransport transport = new DefaultServerRelayTransport(relayLink);
         ServerRelayTunnel replayTunnel = new GeneralServerRelayTunnel(
-                instanceId, tunnelId, transporter, new InetSocketAddress(host, port), networkContext);
+                instanceId, tunnelId, transport, new InetSocketAddress(host, port), networkContext);
         putTunnel(replayTunnel);
         relayLink.openTunnel(replayTunnel);
         replayTunnel.open();

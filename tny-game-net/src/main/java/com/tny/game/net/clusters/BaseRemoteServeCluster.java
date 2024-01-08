@@ -21,6 +21,7 @@ import org.slf4j.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.*;
 import java.util.stream.Collectors;
 
 import static com.tny.game.common.utils.ObjectAide.*;
@@ -40,6 +41,8 @@ public abstract class BaseRemoteServeCluster implements NetRemoteServeCluster {
     private final String serveName;
 
     private final String username;
+
+    private final Lock lock = new ReentrantLock();
 
     private final ServeInstanceAllotStrategy instanceAllotStrategy;
 
@@ -124,11 +127,16 @@ public abstract class BaseRemoteServeCluster implements NetRemoteServeCluster {
     }
 
     @Override
-    public synchronized void unregisterInstance(long instanceId) {
-        NetRelayServeInstance instance = instanceMap.remove(instanceId);
-        if (instance != null && !instance.isClose()) {
-            instance.close();
-            this.doRefreshInstances();
+    public void unregisterInstance(long instanceId) {
+        lock.lock();
+        try {
+            NetRelayServeInstance instance = instanceMap.remove(instanceId);
+            if (instance != null && !instance.isClose()) {
+                instance.close();
+                this.doRefreshInstances();
+            }
+        } finally {
+            lock.unlock();
         }
     }
 
@@ -144,8 +152,13 @@ public abstract class BaseRemoteServeCluster implements NetRemoteServeCluster {
     }
 
     @Override
-    public synchronized void refreshInstances() {
-        this.doRefreshInstances();
+    public void refreshInstances() {
+        lock.lock();
+        try {
+            this.doRefreshInstances();
+        } finally {
+            lock.unlock();
+        }
     }
 
     private void doRefreshInstances() {
@@ -154,12 +167,17 @@ public abstract class BaseRemoteServeCluster implements NetRemoteServeCluster {
     }
 
     @Override
-    public synchronized void close() {
-        if (close.compareAndSet(false, true)) {
-            List<NetRelayServeInstance> oldList = instances;
-            instances = ImmutableList.of();
-            oldList.forEach(NetRelayServeInstance::close);
-            instanceMap = new ConcurrentHashMap<>();
+    public void close() {
+        lock.lock();
+        try {
+            if (close.compareAndSet(false, true)) {
+                List<NetRelayServeInstance> oldList = instances;
+                instances = ImmutableList.of();
+                oldList.forEach(NetRelayServeInstance::close);
+                instanceMap.clear();
+            }
+        } finally {
+            lock.unlock();
         }
     }
 

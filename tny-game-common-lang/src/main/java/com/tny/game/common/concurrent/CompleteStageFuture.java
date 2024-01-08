@@ -18,13 +18,13 @@ import java.util.concurrent.CompletableFuture;
  */
 public class CompleteStageFuture<T> extends CompletableFuture<T> implements CompletionStageFuture<T> {
 
-    public static <T> CompleteStageFuture<T> future(Throwable cause) {
+    public static <T> CompleteStageFuture<T> exception(Throwable cause) {
         CompleteStageFuture<T> future = new CompleteStageFuture<>();
         future.completeExceptionally(cause);
         return future;
     }
 
-    public static <T> CompleteStageFuture<T> success(T value) {
+    public static <T> CompleteStageFuture<T> result(T value) {
         CompleteStageFuture<T> future = new CompleteStageFuture<>();
         future.complete(value);
         return future;

@@ -64,12 +64,12 @@ public class MessageCommandBox implements Executor {
 
     private boolean doAddCommand(RpcEnterContext rpcContext) {
         var command = createCommand(rpcContext);
-        executor.executeCommand(this, command);
+        executor.executeCommand(command);
         return true;
     }
 
     private void addRunnable(Runnable runnable) {
-        executor.executeRunnable(this, runnable);
+        executor.executeRunnable( runnable);
     }
 
 }

@@ -12,7 +12,7 @@
 package com.tny.game.net.application;
 
 import com.tny.game.common.concurrent.*;
-import com.tny.game.net.endpoint.*;
+import com.tny.game.net.session.*;
 
 
 /**
@@ -21,6 +21,6 @@ import com.tny.game.net.endpoint.*;
  * @author : kgtny
  * @date : 2021/11/8 2:43 下午
  */
-public interface ClientConnectFuture extends CompletionStageFuture<Client> {
+public interface ClientConnectFuture extends CompletionStageFuture<TunnelConnector> {
 
 }

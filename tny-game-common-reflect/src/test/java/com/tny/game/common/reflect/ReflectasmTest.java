@@ -13,7 +13,6 @@ package com.tny.game.common.reflect;
 
 import com.tny.game.common.event.bus.annotation.*;
 import com.tny.game.common.reflect.javassist.*;
-import net.sf.cglib.reflect.*;
 import org.junit.jupiter.api.*;
 
 import java.lang.annotation.Annotation;
@@ -93,18 +92,18 @@ public class ReflectasmTest {
     // time));
     // }
 
-    @Test
-    public void testNomalCGLIB() throws Exception {
-        FastClass clazz = FastClass.create(Counter.class);
-        FastMethod method = clazz.getMethod("count", new Class<?>[]{
-                int.class, long.class
-        });
-        Object[] object = new Object[]{80, 2L};
-        long time = System.currentTimeMillis();
-        for (int index = 0; index < this.times; index++)
-            method.invoke(this.counter, object);
-        System.out.println("CGLIB  : " + (System.currentTimeMillis() - time));
-    }
+    // @Test
+    // public void testNomalCGLIB() throws Exception {
+    //     FastClass clazz = FastClass.create(Counter.class);
+    //     FastMethod method = clazz.getMethod("count", new Class<?>[]{
+    //             int.class, long.class
+    //     });
+    //     Object[] object = new Object[]{80, 2L};
+    //     long time = System.currentTimeMillis();
+    //     for (int index = 0; index < this.times; index++)
+    //         method.invoke(this.counter, object);
+    //     System.out.println("CGLIB  : " + (System.currentTimeMillis() - time));
+    // }
 
     @Test
     public void testNomalJavasisst() throws Exception {

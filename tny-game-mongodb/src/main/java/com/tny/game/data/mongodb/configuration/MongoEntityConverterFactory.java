@@ -133,7 +133,7 @@ public class MongoEntityConverterFactory {
                 convertMethod.setModifiers(Modifier.PUBLIC);
                 ctClass.addMethod(setObjectConverterMethod);
 
-                proxyClass = ctClass.toClass();
+                proxyClass = ctClass.toClass(PersistObjectLoader.class);
                 LOGGER.info("生成 {} Class 的 {} 转换器 {} 完成", persistClass, type, proxyClassName);
             } catch (Exception ex) {
                 LOGGER.error("", ex);

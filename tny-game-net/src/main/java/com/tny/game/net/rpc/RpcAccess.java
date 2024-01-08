@@ -10,7 +10,7 @@
  */
 package com.tny.game.net.rpc;
 
-import com.tny.game.net.endpoint.*;
+import com.tny.game.net.session.*;
 
 /**
  * Rpc远程接入点(链接)
@@ -34,7 +34,7 @@ public interface RpcAccess {
     boolean isActive();
 
     /**
-     * @return endpoint
+     * @return session
      */
-    Endpoint getEndpoint();
+    Session getSession();
 }

@@ -11,8 +11,11 @@
 
 package com.tny.game.net.application;
 
+import com.tny.game.common.concurrent.*;
 import com.tny.game.common.url.*;
-import com.tny.game.net.endpoint.*;
+import com.tny.game.net.transport.*;
+
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by Kun Yang on 2017/3/28.
@@ -29,19 +32,21 @@ public interface ClientGuide {
      */
     boolean close();
 
-    /**
-     * @param url         url
-     * @param postConnect 连接后处理
-     * @return 返回客户端
-     */
-    Client client(URL url, PostConnect postConnect);
+    default CompletionStageFuture<NetTunnel> connectAsync(URL url) {
+        return connectAsync(url, null);
+    }
+
+    CompletionStageFuture<NetTunnel> connectAsync(URL url, TunnelUnavailableWatch watch);
 
     /**
      * @param url url
-     * @param *   @return
+     * @return 返回客户端
      */
-    default Client client(URL url) {
-        return client(url, null);
+    NetTunnel connect(URL url, TunnelUnavailableWatch watch) throws ExecutionException, InterruptedException;
+
+
+    default NetTunnel connect(URL url) throws ExecutionException, InterruptedException {
+        return connect(url, null);
     }
 
     ClientBootstrapSetting getSetting();

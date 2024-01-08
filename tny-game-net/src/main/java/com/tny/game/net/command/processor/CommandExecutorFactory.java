@@ -11,7 +11,7 @@
 package com.tny.game.net.command.processor;
 
 import com.tny.game.common.lifecycle.unit.annotation.*;
-import com.tny.game.net.endpoint.*;
+import com.tny.game.net.session.*;
 
 /**
  * <p>
@@ -22,6 +22,6 @@ import com.tny.game.net.endpoint.*;
 @UnitInterface
 public interface CommandExecutorFactory {
 
-    CommandExecutor create(Endpoint endpoint);
+    CommandExecutor create(Session session);
 
 }

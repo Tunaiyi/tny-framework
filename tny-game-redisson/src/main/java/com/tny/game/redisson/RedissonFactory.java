@@ -110,7 +110,7 @@ public class RedissonFactory {
                 ctConstructor.setBody("{super();}");
                 ctClass.addConstructor(ctConstructor);
 
-                proxyClass = ctClass.toClass(persistClass.getClassLoader(), null);
+                proxyClass = ctClass.toClass(persistClass);
                 LOGGER.info("生成 {} Class 的 TypedRedisson 类 {} 完成", persistClass, proxyClassName);
             } catch (Exception ex) {
                 LOGGER.error("", ex);

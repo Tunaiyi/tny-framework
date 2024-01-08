@@ -20,7 +20,7 @@ import java.util.*;
 /**
  * <p>
  */
-public class MockNettyClient extends MockNetEndpoint implements NetTerminal {
+public class MockNettyClient extends MockNetSession {
 
     private final URL url;
 
@@ -29,13 +29,11 @@ public class MockNettyClient extends MockNetEndpoint implements NetTerminal {
         this.url = url;
     }
 
-    @Override
-    public MessageTransporter connect() {
-        return new NettyChannelMessageTransporter(NetAccessMode.CLIENT, new MockChannel(new InetSocketAddress(8090), new InetSocketAddress(8091)));
+    public MessageTransport connect() {
+        return new NettyChannelMessageTransport(NetAccessMode.CLIENT, new MockChannel(new InetSocketAddress(8090), new InetSocketAddress(8091)));
     }
 
 
-    @Override
     public List<Long> getConnectRetryIntervals() {
         return Collections.singletonList(30000L);
     }

@@ -2,8 +2,3 @@ spring:
   main:
     allow-bean-definition-overriding: true
     web-application-type: none
-  redis:
-    host: '${r2.redis.host:127.0.0.1}'
-    password: '${r2.redis.password:tNbrH3NSErGd}'
-    port: '${r2.redis.post:6379}'
-    database: '${r2.redis.db:9}'

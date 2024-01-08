@@ -13,9 +13,9 @@ package com.tny.game.net.rpc;
 import com.tny.game.common.concurrent.*;
 import com.tny.game.common.result.*;
 import com.tny.game.net.application.*;
-import com.tny.game.net.endpoint.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
+import com.tny.game.net.session.*;
 
 import java.util.Optional;
 
@@ -31,7 +31,7 @@ public class RpcPromise<T> extends CompleteStageFuture<RpcResult<T>> implements 
 
     private Message message;
 
-    private Endpoint endpoint;
+    private Session session;
 
     public RpcPromise() {
     }
@@ -52,8 +52,8 @@ public class RpcPromise<T> extends CompleteStageFuture<RpcResult<T>> implements 
     }
 
     @Override
-    public Endpoint endpoint() {
-        return endpoint;
+    public Session session() {
+        return session;
     }
 
     @Override
@@ -66,9 +66,9 @@ public class RpcPromise<T> extends CompleteStageFuture<RpcResult<T>> implements 
         return result().isFailure();
     }
 
-    public boolean complete(Endpoint endpoint, Message message, RpcResult<T> value) {
+    public boolean complete(Session session, Message message, RpcResult<T> value) {
         this.message = message;
-        this.endpoint = endpoint;
+        this.session = session;
         return super.complete(value);
     }
 

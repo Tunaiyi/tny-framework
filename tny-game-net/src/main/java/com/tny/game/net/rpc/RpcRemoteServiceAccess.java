@@ -11,11 +11,11 @@
 package com.tny.game.net.rpc;
 
 import com.tny.game.net.application.*;
-import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
+import com.tny.game.net.session.*;
 
 /**
- * Endpoint接入点
+ * RpcAccessor接入点
  * <p>
  *
  * @author Kun Yang
@@ -23,28 +23,28 @@ import com.tny.game.net.message.*;
  **/
 public class RpcRemoteServiceAccess implements RpcServiceAccess {
 
-    private final Endpoint endpoint;
+    private final Session session;
 
     private final ForwardPoint forwardPoint;
 
-    public RpcRemoteServiceAccess(Endpoint endpoint) {
-        this.endpoint = endpoint;
-        this.forwardPoint = new ForwardPoint(endpoint.getIdentifyToken(RpcAccessIdentify.class));
+    public RpcRemoteServiceAccess(Session session) {
+        this.session = session;
+        this.forwardPoint = new ForwardPoint(session.getIdentifyToken(RpcAccessIdentify.class));
     }
 
     @Override
     public long getAccessId() {
-        return endpoint.getContactId();
+        return session.getContactId();
     }
 
     @Override
-    public Endpoint getEndpoint() {
-        return endpoint;
+    public Session getSession() {
+        return session;
     }
 
     @Override
     public RpcAccessIdentify getRpcIdentify() {
-        return endpoint.getIdentifyToken(RpcAccessIdentify.class);
+        return session.getIdentifyToken(RpcAccessIdentify.class);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class RpcRemoteServiceAccess implements RpcServiceAccess {
 
     @Override
     public boolean isActive() {
-        return endpoint.isActive();
+        return session.isActive();
     }
 
 }

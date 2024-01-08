@@ -76,7 +76,7 @@ public class NettyRelayPacketHandler extends ChannelDuplexHandler {
             try {
                 RelayPacketType packetType = packet.getType();
                 if (packetType == RelayPacketType.LINK_OPEN) { // transporter 处理
-                    RelayTransporter transporter = channel.attr(NettyRelayAttrKeys.RELAY_TRANSPORTER).get();
+                    RelayTransport transporter = channel.attr(NettyRelayAttrKeys.RELAY_TRANSPORTER).get();
                     var openPacket = (LinkOpenPacket) packet;
                     this.relayMonitor.onLinkOpen(transporter, openPacket);
                     this.relayPacketProcessor.onLinkOpen(transporter, openPacket);

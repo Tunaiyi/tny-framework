@@ -15,9 +15,9 @@ import com.tny.game.common.concurrent.collection.*;
 import com.tny.game.common.result.*;
 import com.tny.game.net.application.*;
 import com.tny.game.net.command.dispatcher.*;
-import com.tny.game.net.endpoint.*;
 import com.tny.game.net.relay.link.exception.*;
 import com.tny.game.net.relay.link.route.*;
+import com.tny.game.net.session.*;
 import com.tny.game.net.transport.*;
 
 import java.util.*;
@@ -28,7 +28,7 @@ import java.util.*;
  * @author : kgtny
  * @date : 2021/8/16 8:00 下午
  */
-public class GeneralClientRelayTunnel extends ServerTunnel<NetSession, MessageTransporter> implements ClientRelayTunnel {
+public class GeneralClientRelayTunnel extends ServerTransportTunnel<NetSession, MessageTransport> implements ClientRelayTunnel {
 
     /**
      * 当前服务器的服务实例 id
@@ -50,7 +50,7 @@ public class GeneralClientRelayTunnel extends ServerTunnel<NetSession, MessageTr
      */
     private final RelayMessageRouter relayMessageRouter;
 
-    public GeneralClientRelayTunnel(long instanceId, long id, MessageTransporter transport, NetworkContext context,
+    public GeneralClientRelayTunnel(long instanceId, long id, MessageTransport transport, NetworkContext context,
             RelayMessageRouter relayMessageRouter) {
         super(id, transport, context);
         this.instanceId = instanceId;

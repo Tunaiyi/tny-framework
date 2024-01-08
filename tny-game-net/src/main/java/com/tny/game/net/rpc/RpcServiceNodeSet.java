@@ -12,7 +12,7 @@ package com.tny.game.net.rpc;
 
 import com.google.common.collect.ImmutableList;
 import com.tny.game.net.application.*;
-import com.tny.game.net.endpoint.*;
+import com.tny.game.net.session.*;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -89,15 +89,15 @@ public class RpcServiceNodeSet implements RpcInvokeNodeSet, RpcForwardNodeSet {
         return remoteNode.anyGet();
     }
 
-    protected void addEndpoint(Endpoint endpoint) {
-        RpcServiceNode node = loadOrCreate(endpoint);
-        node.addEndpoint(endpoint);
+    protected void addSession(Session session) {
+        RpcServiceNode node = loadOrCreate(session);
+        node.addSession(session);
         refreshNodes(node);
     }
 
-    protected void removeEndpoint(Endpoint endpoint) {
-        RpcServiceNode node = loadOrCreate(endpoint);
-        node.removeEndpoint(endpoint);
+    protected void removeSession(Session session) {
+        RpcServiceNode node = loadOrCreate(session);
+        node.removeSession(session);
         refreshNodes(node);
     }
 
@@ -109,8 +109,8 @@ public class RpcServiceNodeSet implements RpcInvokeNodeSet, RpcForwardNodeSet {
         refreshNodes(rpcNode);
     }
 
-    private RpcServiceNode loadOrCreate(Endpoint endpoint) {
-        var opt = endpoint.identifyToken(RpcAccessIdentify.class);
+    private RpcServiceNode loadOrCreate(Session session) {
+        var opt = session.identifyToken(RpcAccessIdentify.class);
         if (opt.isEmpty()) {
             throw new NullPointerException("RpcAccessIdentify token is null");
         }

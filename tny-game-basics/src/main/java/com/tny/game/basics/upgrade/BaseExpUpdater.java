@@ -23,11 +23,11 @@ import com.tny.game.common.event.bus.*;
  */
 public abstract class BaseExpUpdater<I extends Item<?>, EM extends ExpModel> extends BaseUpdater<I> implements ExpUpdater<I> {
 
-    private static final BindP3EventBus<ExpUpdaterListener, ExpUpdater<?>, Action, Integer, Integer> UPGRADE_EVENT =
-            EventBuses.of(ExpUpdaterListener.class, ExpUpdaterListener::onUpgrade, true);
+    private static final A3BindEvent<ExpUpdaterListener, ExpUpdater<?>, Action, Integer, Integer> UPGRADE_EVENT =
+            Events.ofEvent(ExpUpdaterListener.class, ExpUpdaterListener::onUpgrade, true);
 
-    private static final BindP4EventBus<ExpUpdaterListener, ExpUpdater<?>, ExpModel, Action, Long, Long> RECEIVE_EXP_EVENT =
-            EventBuses.of(ExpUpdaterListener.class, ExpUpdaterListener::onReceiveExp, true);
+    private static final A4BindEvent<ExpUpdaterListener, ExpUpdater<?>, ExpModel, Action, Long, Long> RECEIVE_EXP_EVENT =
+            Events.ofEvent(ExpUpdaterListener.class, ExpUpdaterListener::onReceiveExp, true);
 
     protected long exp;
 

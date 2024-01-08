@@ -32,12 +32,31 @@ public class MessageQueue {
     private CircularFifoQueue<Message> sentMessageQueue = null;
 
     /* 锁 */
-    private StampedLock sentMessageLock;
+    private final StampedLock sentMessageLock;
 
-    public MessageQueue(int cacheSentMessageSize) {
-        if (cacheSentMessageSize > 0) {
-            this.sentMessageQueue = new CircularFifoQueue<>(cacheSentMessageSize);
-            this.sentMessageLock = new StampedLock();
+    private int messageSize;
+
+    public MessageQueue(int messageSize) {
+        this.messageSize = messageSize;
+        this.sentMessageLock = new StampedLock();
+        if (messageSize > 0) {
+            this.sentMessageQueue = new CircularFifoQueue<>(messageSize);
+        }
+    }
+
+    public void resize(int messageSize) {
+        if (this.messageSize == messageSize) {
+            return;
+        }
+        StampedLock lock = this.sentMessageLock;
+        long stamp = lock.writeLock();
+        try {
+            this.messageSize = messageSize;
+            var old = this.sentMessageQueue;
+            this.sentMessageQueue = new CircularFifoQueue<>(messageSize);
+            this.sentMessageQueue.addAll(old);
+        } finally {
+            lock.unlockWrite(stamp);
         }
     }
 

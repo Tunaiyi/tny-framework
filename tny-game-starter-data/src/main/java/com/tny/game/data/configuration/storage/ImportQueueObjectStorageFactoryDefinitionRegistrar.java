@@ -26,6 +26,7 @@ import javax.annotation.Nonnull;
  */
 public class ImportQueueObjectStorageFactoryDefinitionRegistrar extends ImportConfigurationBeanDefinitionRegistrar {
 
+
     private void registerQueueObjectStorageFactory(BeanDefinitionRegistry registry, QueueObjectStorageFactorySetting setting, String beanName) {
         QueueObjectStorageFactory factory = new QueueObjectStorageFactory();
         registry.registerBeanDefinition(beanName, BeanDefinitionBuilder

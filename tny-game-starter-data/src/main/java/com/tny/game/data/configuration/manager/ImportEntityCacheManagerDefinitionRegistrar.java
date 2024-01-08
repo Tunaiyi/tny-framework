@@ -16,6 +16,7 @@ import com.tny.game.common.reflect.*;
 import com.tny.game.common.type.*;
 import com.tny.game.data.*;
 import com.tny.game.data.cache.*;
+import com.tny.game.data.configuration.*;
 import com.tny.game.data.storage.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.*;
@@ -39,6 +40,7 @@ public class ImportEntityCacheManagerDefinitionRegistrar extends ImportConfigura
 
     private final static DynamicEntityCacheManagerFactory entityCacheManagerFactory = new DynamicEntityCacheManagerFactory();
 
+
     private String beamName(String name, String defaultName) {
         if (StringUtils.isBlank(name)) {
             return defaultName;
@@ -49,6 +51,9 @@ public class ImportEntityCacheManagerDefinitionRegistrar extends ImportConfigura
     @Override
     public void registerBeanDefinitions(@Nonnull AnnotationMetadata importingClassMetadata, @Nonnull BeanDefinitionRegistry registry) {
         EntityCacheManagerProperties properties = loadProperties(EntityCacheManagerProperties.class);
+        if (!properties.isEnable()) {
+            return;
+        }
         Set<Class<?>> registeredClasses = new HashSet<>();
         for (EntityScheme scheme : EntitySchemeLoader.getAllCacheSchemes()) {
             Class<?> objectClass = scheme.getCacheClass();

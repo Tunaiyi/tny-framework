@@ -15,7 +15,6 @@ import com.tny.game.common.event.bus.*;
 import com.tny.game.common.lifecycle.unit.*;
 import com.tny.game.net.application.*;
 import com.tny.game.net.application.listener.*;
-import com.tny.game.net.netty4.*;
 import com.tny.game.net.netty4.channel.*;
 import com.tny.game.net.relay.*;
 import com.tny.game.net.relay.link.*;
@@ -23,15 +22,13 @@ import com.tny.game.net.relay.packet.*;
 import com.tny.game.net.rpc.*;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
-import io.netty.channel.epoll.EpollServerSocketChannel;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
 import org.slf4j.*;
 
 import javax.annotation.Nonnull;
 import java.net.InetSocketAddress;
 import java.util.*;
 
-public class NettyRelayServerGuide extends NettyBootstrap<NettyRelayServerBootstrapSetting> implements RelayServerGuide {
+public class NettyRelayServerGuide extends NettyServerBootstrap<NettyRelayServerBootstrapSetting> implements RelayServerGuide {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(NettyRelayServerGuide.class);
 
@@ -54,7 +51,7 @@ public class NettyRelayServerGuide extends NettyBootstrap<NettyRelayServerBootst
     /**
      * 服务器关闭监听器
      */
-    private final BindVoidEventBus<ServerClosedListener, ServerGuide> onClose = EventBuses.of(
+    private final VoidBindEvent<ServerClosedListener, ServerGuide> onClose = Events.ofEvent(
             ServerClosedListener.class, ServerClosedListener::onClosed);
 
     public NettyRelayServerGuide(NetAppContext appContext, NettyRelayServerBootstrapSetting unitSetting) {
@@ -161,11 +158,7 @@ public class NettyRelayServerGuide extends NettyBootstrap<NettyRelayServerBootst
             this.bootstrap = new ServerBootstrap();
             RelayPacketProcessor relayPacketProcessor = new RelayPacketServerProcessor(this.localRelayExplorer, this.getContext());
             NettyRelayPacketHandler relayMessageHandler = new NettyRelayPacketHandler(setting, relayPacketProcessor);
-            this.bootstrap.group(parentGroup, childGroup);
-            this.bootstrap.channel(EPOLL ? EpollServerSocketChannel.class : NioServerSocketChannel.class);
-            this.bootstrap.option(ChannelOption.SO_REUSEADDR, true);
-            this.bootstrap.childOption(ChannelOption.TCP_NODELAY, true);
-            this.bootstrap.childOption(ChannelOption.SO_KEEPALIVE, true);
+            init(this.bootstrap, parentGroup, childGroup, EPOLL);
             this.bootstrap.childHandler(new ChannelInitializer<>() {
 
                 @Override
@@ -195,7 +188,7 @@ public class NettyRelayServerGuide extends NettyBootstrap<NettyRelayServerBootst
     }
 
     private void createRelayChannelTransmitter(Channel channel) {
-        new NettyChannelRelayTransporter(NetAccessMode.SERVER, channel, this.getContext());
+        new NettyChannelRelayTransport(NetAccessMode.SERVER, channel, this.getContext());
     }
 
 }

@@ -11,19 +11,21 @@
 package com.tny.game.demo.net.client;
 
 import com.tny.game.boot.launcher.*;
+import com.tny.game.common.concurrent.*;
 import com.tny.game.common.number.*;
+import com.tny.game.common.result.*;
 import com.tny.game.common.url.*;
 import com.tny.game.demo.core.client.service.*;
 import com.tny.game.demo.core.common.*;
 import com.tny.game.demo.core.common.dto.*;
 import com.tny.game.net.application.*;
-import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.netty4.configuration.application.*;
 import com.tny.game.net.netty4.network.annotation.*;
 import com.tny.game.net.rpc.*;
+import com.tny.game.net.session.*;
 import com.tny.game.net.transport.*;
-import org.redisson.spring.starter.RedissonAutoConfiguration;
+import org.redisson.spring.starter.RedissonAutoConfigurationV2;
 import org.slf4j.*;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -41,10 +43,12 @@ import static com.tny.game.common.utils.StringAide.*;
  * @date 2018-10-30 16:49
  */
 @EnableNetApplication
-@SpringBootApplication(scanBasePackages = {
-        "com.tny.game.demo.net.client",
-        "com.tny.game.demo.core.common",
-        "com.tny.game.demo.core.client"}, exclude = {RedissonAutoConfiguration.class})
+@SpringBootApplication(
+        scanBasePackages = {
+                "com.tny.game.demo.net.client",
+                "com.tny.game.demo.core.common",
+                "com.tny.game.demo.core.client"
+        }, exclude = {RedissonAutoConfigurationV2.class})
 public class GameClientApp {
 
     private static final ScheduledExecutorService SERVICE = Executors.newScheduledThreadPool(1);
@@ -63,24 +67,33 @@ public class GameClientApp {
             ClientGuide clientGuide = applicationContext.getBean("defaultClientGuide", ClientGuide.class);
             long userId = 1000;
             AtomicInteger times = new AtomicInteger();
-            Client client = clientGuide.client(URL.valueOf("protoex://127.0.0.1:18800"),
-                    tunnel -> {
-                        tunnel.setAccessId(4000);
-                        String message = "[" + IDS + "] 请求登录 " + times.incrementAndGet() + " 次";
-                        System.out.println("!!@   [发送] 请求 = " + message);
-                        SendReceipt context = tunnel
-                                .send(MessageContents.request(Protocols.protocol(CtrlerIds.LOGIN$LOGIN), 888888L, userId)
-                                        .willRespondFuture(3000000L));
-                        try {
-                            Message response = context.respond().get(300000L, TimeUnit.MILLISECONDS);
-                            System.out.println("!!@   [响应] 请求 = " + response.bodyAs(Object.class));
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            return false;
+            var connector = new CommonTunnelConnector(clientGuide, URL.valueOf("protoex://127.0.0.1:16800"), tunnel -> {
+                var futrue = new CompleteStageFuture<Boolean>();
+                tunnel.setAccessId(4000);
+                String message = "[" + IDS + "] 请求登录 " + times.incrementAndGet() + " 次";
+                System.out.println("!!@   [发送] 请求 = " + message);
+                MessageSent sent = tunnel.send(MessageContents
+                        .request(Protocols.protocol(CtrlerIds.LOGIN$LOGIN), 888888L, userId)
+                        .willRespondFuture(3000000L));
+                sent.respond().whenComplete((response, cause) -> {
+                    try {
+                        if (cause != null) {
+                            futrue.completeExceptionally(cause);
+                            LOGGER.error("", cause);
+                            return;
                         }
-                        return true;
-                    });
-            client.open();
+                        if (ResultCodes.isSuccess(response.getCode())) {
+                            futrue.complete(true);
+                        } else {
+                            futrue.complete(false);
+                        }
+                    } catch (Exception e) {
+                        futrue.completeExceptionally(e);
+                    }
+                });
+                return futrue;
+            }, SERVICE);
+            Session session = connector.open().get();
             speakService = applicationContext.getBean(SpeakRemoteService.class);
             application.waitForConsole("q", (cmd, cmds) -> {
                 if (cmd.startsWith("@t ")) {
@@ -98,7 +111,7 @@ public class GameClientApp {
                             public void run() {
                                 int index = 0;
                                 while (this.num.sub(1) > 0) {
-                                    send(client, message, false);
+                                    send(session, message, false);
                                     if (++index > stepTimes) {
                                         break;
                                     }
@@ -112,30 +125,30 @@ public class GameClientApp {
                 } else if (cmd.startsWith("@delay ")) {
                     String message = cmds[1];
                     long delay = Long.parseLong(cmds[2]);
-                    send(client, Protocols.protocol(CtrlerIds.SPEAK$DELAY_SAY), SayContentDTO.class, delay + 3000, message, delay);
+                    send(session, Protocols.protocol(CtrlerIds.SPEAK$DELAY_SAY), SayContentDTO.class, delay + 3000, message, delay);
                 } else if (cmd.startsWith("@test ")) {
                     String message = cmds[1];
-                    test(client, message, true);
+                    test(session, message, true);
                 } else if (cmd.startsWith("@player ")) {
                     String op = cmds[1];
                     long playerId = Long.parseLong(cmds[2]);
                     switch (op) {
                         case "g":
-                            send(client, Protocols.protocol(CtrlerIds.PLAYER$GET), PlayerDTO.class, 3000, playerId);
+                            send(session, Protocols.protocol(CtrlerIds.PLAYER$GET), PlayerDTO.class, 3000, playerId);
                             break;
                         case "d":
-                            send(client, Protocols.protocol(CtrlerIds.PLAYER$DELETE), PlayerDTO.class, 3000, playerId);
+                            send(session, Protocols.protocol(CtrlerIds.PLAYER$DELETE), PlayerDTO.class, 3000, playerId);
                             break;
                         case "a":
-                            send(client, Protocols.protocol(CtrlerIds.PLAYER$ADD), PlayerDTO.class, 3000, playerId, cmds[3],
+                            send(session, Protocols.protocol(CtrlerIds.PLAYER$ADD), PlayerDTO.class, 3000, playerId, cmds[3],
                                     Integer.parseInt(cmds[4]));
                             break;
                         case "u":
-                            send(client, Protocols.protocol(CtrlerIds.PLAYER$UPDATE), PlayerDTO.class, 3000, playerId, cmds[3],
+                            send(session, Protocols.protocol(CtrlerIds.PLAYER$UPDATE), PlayerDTO.class, 3000, playerId, cmds[3],
                                     Integer.parseInt(cmds[4]));
                             break;
                         case "s":
-                            send(client, Protocols.protocol(CtrlerIds.PLAYER$SAVE), PlayerDTO.class, 3000, playerId, cmds[3],
+                            send(session, Protocols.protocol(CtrlerIds.PLAYER$SAVE), PlayerDTO.class, 3000, playerId, cmds[3],
                                     Integer.parseInt(cmds[4]));
                             break;
                     }
@@ -177,7 +190,7 @@ public class GameClientApp {
                         LOGGER.error("", e);
                     }
                 } else {
-                    send(client, cmd, true);
+                    send(session, cmd, true);
                 }
 
             });
@@ -188,10 +201,10 @@ public class GameClientApp {
         }
     }
 
-    private static <T> T send(Client client, Protocol protocol, Class<T> returnClass, long waitTimeout, Object... params) {
+    private static <T> T send(Session session, Protocol protocol, Class<T> returnClass, long waitTimeout, Object... params) {
         RequestContent messageContent = MessageContents.request(protocol, params);
         if (waitTimeout > 0) {
-            SendReceipt context = client.send(messageContent
+            MessageSent context = session.send(messageContent
                     .willRespondFuture(waitTimeout));
             try {
                 Message message = context.respond().get();
@@ -202,22 +215,26 @@ public class GameClientApp {
                 e.printStackTrace();
             }
         } else {
-            client.send(messageContent);
+            session.send(messageContent);
         }
         return null;
     }
 
-    private static void send(Client client, String content, boolean wait) {
-        RequestContent messageContent = MessageContents.request(Protocols.protocol(CtrlerIds.SPEAK$SAY), content);
-        if (wait) {
-            RpcResult<SayContentDTO> result = speakService.say(content);
-            LOGGER.info("SpeakService receive [code({})] : {}", result.getCode(), result.getBody());
-        } else {
-            client.send(messageContent);
+    private static void send(Session session, String content, boolean wait) {
+        try {
+            RequestContent messageContent = MessageContents.request(Protocols.protocol(CtrlerIds.SPEAK$SAY), content);
+            if (wait) {
+                RpcResult<SayContentDTO> result = speakService.say(content);
+                LOGGER.info("SpeakService receive [code({})] : {}", result.getCode(), result.getBody());
+            } else {
+                session.send(messageContent);
+            }
+        } catch (Throwable e) {
+            LOGGER.error("", e);
         }
     }
 
-    private static void test(Client client, String content, boolean wait) {
+    private static void test(Session session, String content, boolean wait) {
         ThreadLocalRandom random = ThreadLocalRandom.current();
         RequestContent messageContent = MessageContents.request(Protocols.protocol(CtrlerIds.SPEAK$TEST),
                 (byte) random.nextInt(Byte.MIN_VALUE, Byte.MAX_VALUE),
@@ -239,7 +256,7 @@ public class GameClientApp {
         //				"jdsaf");
         System.out.println(messageContent.bodyAs(Object.class));
         if (wait) {
-            SendReceipt context = client.send(messageContent.willRespondFuture(300000L));
+            MessageSent context = session.send(messageContent.willRespondFuture(300000L));
             try {
                 Message message = context.respond().get();
                 LOGGER.info("Client receive : {}", message.bodyAs(SayContentDTO.class));
@@ -247,7 +264,7 @@ public class GameClientApp {
                 e.printStackTrace();
             }
         } else {
-            client.send(messageContent);
+            session.send(messageContent);
         }
     }
 

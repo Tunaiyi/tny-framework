@@ -43,7 +43,7 @@ public class RpcAuthController {
     @RpcResponse(RPC_AUTH_$_AUTHENTICATE)
     @AuthenticationRequired(validator = RpcTokenValidator.class)
     public void authenticated(@IdentifyToken RpcAccessIdentify id) {
-        LOGGER.info("Rpc响应 >> [{}] 认证完成", id);
+        LOGGER.info("Rpc响应 << [{}] 认证完成", id);
     }
 
 }

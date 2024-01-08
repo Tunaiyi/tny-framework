@@ -12,9 +12,9 @@ package com.tny.game.net.command.dispatcher;
 
 import com.tny.game.common.context.*;
 import com.tny.game.net.application.*;
-import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.rpc.*;
+import com.tny.game.net.session.*;
 import com.tny.game.net.transport.*;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -54,8 +54,8 @@ class RpcEnterInvocationContext extends CompletableRpcTransactionContext impleme
     }
 
     @Override
-    public Endpoint getEndpoint() {
-        return as(this.tunnel.getEndpoint());
+    public Session getSession() {
+        return as(this.tunnel.getSession());
     }
 
 

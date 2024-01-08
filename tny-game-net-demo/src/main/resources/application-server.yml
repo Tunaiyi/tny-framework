@@ -11,7 +11,7 @@ tny:
     bootstrap:
       network:
         server:
-          name: game-service
+          name: game-server
           bind-address: 127.0.0.1:16800
           channel:
             encoder:
@@ -24,14 +24,16 @@ tny:
               security-keys:
                 - abcdefghijklmn
                 - opqrstuvwxyz
-    command:
-      processor:
-        disruptor:
-          setting:
-            enable: true
-            wait-strategy: blocking
-            threads: 4
-    endpoint:
+      rpc:
+        server:
+          name: game-service
+          bind-address: 127.0.0.1:17800
+          channel:
+            encoder:
+              message-body-codec: typeProtobufMessageBodyCodec
+            decoder:
+              message-body-codec: typeProtobufMessageBodyCodec
+    session:
       session-keeper-settings:
         _user:
           offline-close-delay: 1000

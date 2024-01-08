@@ -12,14 +12,14 @@
 package com.tny.game.net.rpc;
 
 import com.google.common.collect.ImmutableList;
+import com.tny.game.common.concurrent.*;
 import com.tny.game.common.concurrent.collection.*;
 import com.tny.game.common.lifecycle.*;
 import com.tny.game.common.url.*;
-import com.tny.game.net.application.*;
-import com.tny.game.net.endpoint.*;
 import com.tny.game.net.relay.cluster.*;
 import com.tny.game.net.relay.cluster.watch.*;
 import com.tny.game.net.rpc.setting.*;
+import com.tny.game.net.session.*;
 import org.slf4j.*;
 
 import java.util.*;
@@ -36,11 +36,11 @@ public class RpcServeNodeWatchService implements AppPrepareStart, AppClosed {
 
     private final Set<RpcServeNodeWatcher> watchers = new ConcurrentHashSet<>();
 
-    private final Set<RpcClientFactory> factories = new ConcurrentHashSet<>();
+    private final Set<RpcConnectorFactory> factories = new ConcurrentHashSet<>();
 
     private final ServeNodeClient serveNodeClient;
 
-    public RpcServeNodeWatchService(ServeNodeClient serveNodeClient, Collection<RpcClientFactory> connectors) {
+    public RpcServeNodeWatchService(ServeNodeClient serveNodeClient, Collection<RpcConnectorFactory> connectors) {
         this.serveNodeClient = serveNodeClient;
         this.factories.addAll(connectors);
     }
@@ -54,7 +54,7 @@ public class RpcServeNodeWatchService implements AppPrepareStart, AppClosed {
 
     @Override
     public void prepareStart() {
-        for (RpcClientFactory factory : factories) {
+        for (RpcConnectorFactory factory : factories) {
             RpcServeNodeWatcher watcher = new RpcServeNodeWatcher(factory);
             if (watchers.add(watcher)) {
                 watcher.start();
@@ -66,24 +66,24 @@ public class RpcServeNodeWatchService implements AppPrepareStart, AppClosed {
 
         private final int index;
 
-        private final RpcClientFactory clientCreator;
+        private final RpcConnectorFactory connectorFactory;
 
-        private Client client;
+        private TunnelConnector connector;
 
-        private RpcClient(int index, RpcClientFactory clientCreator) {
+        private RpcClient(int index, RpcConnectorFactory connectorFactory) {
             this.index = index;
-            this.clientCreator = clientCreator;
+            this.connectorFactory = connectorFactory;
         }
 
         void connect(URL url) {
-            if (client == null) {
-                client = clientCreator.create(index, url);
-                ClientConnectFuture future = client.open();
+            if (connector == null) {
+                connector = connectorFactory.create(index, url);
+                CompletionStageFuture<Session> future = connector.open();
                 future.handle((cl, cause) -> {
                     if (cause != null) {
-                        LOGGER.warn("Rpc [{}] Client {} connect failed", clientCreator.getService(), url, cause);
+                        LOGGER.warn("Rpc [{}] Client {} connect failed", connectorFactory.getService(), url, cause);
                     } else {
-                        LOGGER.info("Rpc [{}] Client {} connect success", clientCreator.getService(), url);
+                        LOGGER.info("Rpc [{}] Client {} connect success", connectorFactory.getService(), url);
                     }
                     return cl;
                 });
@@ -91,15 +91,15 @@ public class RpcServeNodeWatchService implements AppPrepareStart, AppClosed {
         }
 
         void tryReconnect() {
-            if (!client.isActive()) {
-                client.reconnect();
+            if (connector.status() == TunnelConnectorStatus.DISCONNECT) {
+                connector.reconnect();
             }
         }
 
         public void close() {
-            if (client != null) {
-                client.close();
-                client = null;
+            if (connector != null) {
+                connector.close();
+                connector = null;
             }
         }
 
@@ -107,11 +107,11 @@ public class RpcServeNodeWatchService implements AppPrepareStart, AppClosed {
 
     private class RpcServeNodeWatcher implements ServeNodeListener {
 
-        private final RpcClientFactory connector;
+        private final RpcConnectorFactory connector;
 
         private volatile List<RpcClient> clients = ImmutableList.of();
 
-        private RpcServeNodeWatcher(RpcClientFactory connector) {
+        private RpcServeNodeWatcher(RpcConnectorFactory connector) {
             this.connector = connector;
         }
 

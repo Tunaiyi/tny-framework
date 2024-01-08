@@ -63,8 +63,8 @@ public class RpcForwardCommand implements RpcCommand {
         RpcForwardHeader forwardHeader = message.getHeader(MessageHeaderConstants.RPC_FORWARD_HEADER);
         RpcForwardAccess toAccess = networkContext.getRpcForwarder().forward(message, forwardHeader);
         if (toAccess != null && toAccess.isActive()) {
-            var endpoint = toAccess.getEndpoint();
-            rpcContext.transfer(endpoint, forwardOperation(message));
+            var session = toAccess.getSession();
+            rpcContext.transfer(session, forwardOperation(message));
             ForwardPoint fromPoint = new ForwardPoint(tunnel.getIdentifyToken(RpcAccessIdentify.class));
             RpcAccessPoint toPoint = toAccess.getForwardPoint();
             var content = MessageContents.copy(message)
@@ -79,7 +79,7 @@ public class RpcForwardCommand implements RpcCommand {
                         .setMessageId(message.getId())
                         .build());
             }
-            endpoint.send(content);
+            session.send(content);
             rpcContext.completeSilently();
         } else {
             rpcContext.complete(NetResultCode.RPC_SERVICE_NOT_AVAILABLE);

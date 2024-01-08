@@ -12,7 +12,7 @@ package com.tny.game.net.command.processor.forkjoin;
 
 import com.tny.game.common.concurrent.*;
 import com.tny.game.net.command.processor.*;
-import com.tny.game.net.endpoint.*;
+import com.tny.game.net.session.*;
 
 import java.util.concurrent.ExecutorService;
 
@@ -43,8 +43,8 @@ public class DefaultCommandExecutorFactory implements CommandExecutorFactory {
     }
 
     @Override
-    public CommandExecutor create(Endpoint endpoint) {
-        return new SerialCommandExecutor("CommandExecutor-" + endpoint.getId(), executorService);
+    public CommandExecutor create(Session session) {
+        return new SerialCommandExecutor("CommandExecutor-" + session.getId(), executorService);
     }
 
 }

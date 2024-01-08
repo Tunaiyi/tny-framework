@@ -12,12 +12,12 @@ package com.tny.game.net.relay.link;
 
 import com.tny.game.common.event.firer.*;
 import com.tny.game.net.application.*;
-import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.relay.link.listener.*;
 import com.tny.game.net.relay.packet.*;
 import com.tny.game.net.relay.packet.arguments.*;
 import com.tny.game.net.rpc.*;
+import com.tny.game.net.session.*;
 import com.tny.game.net.transport.*;
 import org.apache.commons.lang3.builder.*;
 import org.slf4j.*;
@@ -76,7 +76,7 @@ public abstract class BaseRelayLink implements NetRelayLink {
     /**
      * 转发发送器
      */
-    protected final RelayTransporter transporter;
+    protected final RelayTransport transport;
 
     /**
      * 转发关掉事件
@@ -91,16 +91,16 @@ public abstract class BaseRelayLink implements NetRelayLink {
     private final ContactType contactType;
 
     public BaseRelayLink(NetAccessMode accessMode, String key, ContactType contactType, String service, long instanceId,
-            RelayTransporter transporter) {
+            RelayTransport transport) {
         this.key = key;
         this.service = service;
         this.instanceId = instanceId;
         this.accessMode = accessMode;
         this.id = NetRelayLink.idOf(this);
-        this.transporter = transporter;
+        this.transport = transport;
         this.createAt = System.currentTimeMillis();
         this.contactType = contactType;
-        this.transporter.bind(this);
+        this.transport.bind(this);
     }
 
     @Override
@@ -150,22 +150,18 @@ public abstract class BaseRelayLink implements NetRelayLink {
 
     @Override
     public InetSocketAddress getRemoteAddress() {
-        return this.transporter.getRemoteAddress();
+        return this.transport.getRemoteAddress();
     }
 
     @Override
     public InetSocketAddress getLocalAddress() {
-        return this.transporter.getLocalAddress();
+        return this.transport.getLocalAddress();
     }
 
-    //	@Override
-    //	public RelayTransporter getTransporter() {
-    //		return transporter;
-    //	}
 
     @Override
-    public boolean isCurrentTransporter(RelayTransporter transporter) {
-        return Objects.equals(this.transporter, transporter);
+    public boolean isCurrentTransport(RelayTransport transport) {
+        return Objects.equals(this.transport, transport);
     }
 
     @Override
@@ -174,8 +170,8 @@ public abstract class BaseRelayLink implements NetRelayLink {
     }
 
     private boolean isConnected() {
-        RelayTransporter transporter = this.transporter;
-        return transporter != null && transporter.isActive();
+        RelayTransport transport = this.transport;
+        return transport != null && transport.isActive();
     }
 
     @Override
@@ -190,12 +186,12 @@ public abstract class BaseRelayLink implements NetRelayLink {
 
     @Override
     public MessageWriteFuture relay(RelayTunnel from, Message message, MessageWriteFuture awaiter) {
-        return this.transporter.write(new TunnelRelayPacket(createPacketId(), from.getInstanceId(), from.getId(), message), awaiter);
+        return this.transport.write(new TunnelRelayPacket(createPacketId(), from.getInstanceId(), from.getId(), message), awaiter);
     }
 
     @Override
     public MessageWriteFuture relay(RelayTunnel from, MessageAllocator allocator, MessageFactory factory, MessageContent content) {
-        return this.transporter.write(
+        return this.transport.write(
                 () -> new TunnelRelayPacket(createPacketId(), from.getInstanceId(), from.getId(), allocator.allocate(factory, content)),
                 content.getWriteFuture());
     }
@@ -203,18 +199,18 @@ public abstract class BaseRelayLink implements NetRelayLink {
     @Override
     public <P extends RelayPacket<A>, A extends RelayPacketArguments> MessageWriteFuture write(RelayPacketFactory<P, A> factory, A arguments,
             boolean promise) {
-        return this.transporter.write(factory.createPacket(createPacketId(), arguments, System.currentTimeMillis()),
+        return this.transport.write(factory.createPacket(createPacketId(), arguments, System.currentTimeMillis()),
                 promise ? new MessageWriteFuture() : null);
     }
 
     @Override
     public void ping() {
-        this.transporter.write(LinkHeartBeatPacket.ping(createPacketId()), null);
+        this.transport.write(LinkHeartBeatPacket.ping(createPacketId()), null);
     }
 
     @Override
     public void pong() {
-        this.transporter.write(LinkHeartBeatPacket.pong(createPacketId()), null);
+        this.transport.write(LinkHeartBeatPacket.pong(createPacketId()), null);
     }
 
     @Override
@@ -224,11 +220,11 @@ public abstract class BaseRelayLink implements NetRelayLink {
 
     @Override
     public void open() {
-        if (this.status != RelayLinkStatus.INIT || !this.transporter.isActive()) {
+        if (this.status != RelayLinkStatus.INIT || !this.transport.isActive()) {
             return;
         }
         synchronized (this) {
-            if (this.status != RelayLinkStatus.INIT || !this.transporter.isActive()) {
+            if (this.status != RelayLinkStatus.INIT || !this.transport.isActive()) {
                 return;
             }
             this.status = RelayLinkStatus.OPEN;
@@ -276,9 +272,9 @@ public abstract class BaseRelayLink implements NetRelayLink {
     }
 
     private void doDisconnect() {
-        RelayTransporter transporter = this.transporter;
-        if (transporter != null && transporter.isActive()) {
-            transporter.close();
+        RelayTransport transport = this.transport;
+        if (transport != null && transport.isActive()) {
+            transport.close();
         }
         event.fire(RelayLinkListener::onDisconnect, this);
         LOGGER.info("RelayLink [{}:{}] 转发链接断开", this, this.status);
@@ -345,7 +341,7 @@ public abstract class BaseRelayLink implements NetRelayLink {
 
     @Override
     public String toString() {
-        return "RelayLink(" + this.getAccessMode() + ")[" + this.getId() + "]" + this.transporter;
+        return "RelayLink(" + this.getAccessMode() + ")[" + this.getId() + "]" + this.transport;
     }
 
 }

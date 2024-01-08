@@ -19,7 +19,6 @@ import com.tny.game.common.worker.command.*;
  * Actor命令
  * Created by Kun Yang on 16/4/26.
  */
-@SuppressWarnings("unchecked")
 public abstract class ActorCommand<T> implements Command {
 
     protected ActorCell actorCell;
@@ -28,10 +27,8 @@ public abstract class ActorCommand<T> implements Command {
         this.actorCell = actorCell;
     }
 
-    @SuppressWarnings("unchecked")
     protected abstract void handle() throws Throwable;
 
-    @SuppressWarnings("unchecked")
     public abstract T getResult();
 
     public abstract Answer<T> getAnswer();

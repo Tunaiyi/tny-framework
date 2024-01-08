@@ -10,116 +10,295 @@
  */
 package com.tny.game.net.transport;
 
+import com.tny.game.common.concurrent.utils.*;
 import com.tny.game.net.application.*;
-import com.tny.game.net.endpoint.*;
-import com.tny.game.net.exception.*;
+import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.rpc.*;
+import com.tny.game.net.session.*;
+import org.slf4j.*;
 
-import java.net.InetSocketAddress;
+import java.util.Objects;
+import java.util.concurrent.locks.StampedLock;
+
+import static com.tny.game.common.utils.ObjectAide.*;
 
 /**
- * Created by Kun Yang on 2017/3/28.
+ * 抽象通道
+ * Created by Kun Yang on 2017/3/26.
  */
-public abstract class BaseNetTunnel<E extends NetEndpoint, T extends MessageTransporter> extends AbstractNetTunnel<E> {
+public abstract class BaseNetTunnel<S extends NetSession> extends BaseCommunicator implements NetTunnel {
 
-    protected volatile T transporter;
+    public static final Logger LOGGER = LoggerFactory.getLogger(BaseNetTunnel.class);
 
-    protected BaseNetTunnel(long id, T transporter, NetAccessMode accessMode, NetworkContext context) {
-        super(id, accessMode, context);
-        if (transporter != null) {
-            this.transporter = transporter;
-            this.transporter.bind(this);
-        }
+    private volatile TunnelStatus status = TunnelStatus.INIT;
+
+    /*管道 id*/
+    private final long id;
+
+    /*访问 id*/
+    private long accessId;
+
+    /* 管道模式 */
+    private final NetAccessMode accessMode;
+
+    /* 会话终端 */
+    protected volatile S session;
+
+    /* 上下文 */
+    private final NetworkContext context;
+
+    private final TunnelEventBuses buses = new TunnelEventBuses();
+
+    /* session 锁 */
+    private final StampedLock sessionLock = new StampedLock();
+
+    protected BaseNetTunnel(long id, NetAccessMode accessMode, NetworkContext context) {
+        this.id = id;
+        this.accessMode = accessMode;
+        this.context = context;
     }
 
-    protected MessageTransporter getTransporter() {
-        return this.transporter;
-    }
-
-    @Override
-    public InetSocketAddress getRemoteAddress() {
-        return this.transporter.getRemoteAddress();
-    }
-
-    @Override
-    public InetSocketAddress getLocalAddress() {
-        return this.transporter.getLocalAddress();
-    }
-
-    @Override
-    public boolean isActive() {
-        T transporter = this.transporter;
-        return this.getStatus() == TunnelStatus.OPEN && transporter != null && transporter.isActive();
-    }
-
-    @Override
-    public MessageWriteFuture write(Message message, MessageWriteFuture awaiter) throws NetException {
-        if (this.checkAvailable(awaiter)) {
-            return this.transporter.write(message, awaiter);
-        }
-        return awaiter;
-    }
-
-    @Override
-    public MessageWriteFuture write(MessageAllocator allocator, MessageContent context) throws NetException {
-        MessageWriteFuture promise = context.getWriteFuture();
-        if (this.checkAvailable(promise)) {
-            return this.transporter.write(allocator, this.getMessageFactory(), context);
-        }
-        return promise;
+    protected BaseNetTunnel(long id, NetAccessMode accessMode, NetworkContext context, NetSession session) {
+        this.id = id;
+        this.accessMode = accessMode;
+        this.context = context;
+        this.bind(session);
     }
 
     @Override
-    protected void onDisconnected() {
+    public TunnelEventWatches events() {
+        return buses;
     }
 
     @Override
-    protected void onOpened() {
+    public long getAccessId() {
+        return this.accessId;
     }
 
     @Override
-    protected void onClose() {
+    public long getId() {
+        return this.id;
     }
 
     @Override
-    protected void onClosed() {
-    }
-
-    protected void onWriteUnavailable() {
+    public NetAccessMode getAccessMode() {
+        return this.accessMode;
     }
 
     @Override
-    protected void doDisconnect() {
-        T transporter = this.transporter;
-        if (transporter != null && transporter.isActive()) {
-            try {
-                transporter.close();
-            } catch (Throwable e) {
-                LOGGER.error("transporter close error", e);
+    public boolean isClosed() {
+        return this.status == TunnelStatus.CLOSED;
+    }
+
+    @Override
+    public boolean isOpen() {
+        return this.status == TunnelStatus.OPEN;
+    }
+
+    @Override
+    public TunnelStatus getStatus() {
+        return this.status;
+    }
+
+    @Override
+    public Certificate getCertificate() {
+        return this.session.getCertificate();
+    }
+
+    @Override
+    public void setAccessId(long accessId) {
+        this.accessId = accessId;
+    }
+
+    @Override
+    public void ping() {
+        this.write(TickMessage.ping(), null);
+    }
+
+    @Override
+    public void pong() {
+        this.write(TickMessage.pong(), null);
+    }
+
+    @Override
+    public NetSession getSession() {
+        return this.session;
+    }
+
+    protected void setSession(S session) {
+        this.session = session;
+    }
+
+    @Override
+    public NetworkContext getContext() {
+        return this.context;
+    }
+
+    @Override
+    public boolean receive(NetMessage message) {
+        return StampedLockAide.supplyInOptimisticReadLock(this.sessionLock, this::doReceive, message);
+    }
+
+    private boolean doReceive(NetMessage message) {
+        S session = this.session;
+        var rpcContext = RpcTransactionContext.createEnter(this, message, true);
+        var rpcMonitor = this.context.getRpcMonitor();
+        rpcMonitor.onReceive(rpcContext);
+        while (true) {
+            if (session.isClosed()) {
+                return false;
+            }
+            if (session.receive(rpcContext)) {
+                return true;
             }
         }
     }
 
-    private boolean checkAvailable(MessageWriteFuture awaiter) {
-        if (!this.isActive()) {
-            this.onWriteUnavailable();
-            if (awaiter != null) {
-                awaiter.completeExceptionally(new TunnelDisconnectedException("{} is disconnect", this));
-            }
+    @Override
+    public MessageSent send(MessageContent content) {
+        return StampedLockAide.supplyInOptimisticReadLock(this.sessionLock, () -> doSend(content));
+    }
+
+    private MessageSent doSend(MessageContent messageContext) {
+        return this.session.send(this, messageContext);
+    }
+
+    @Override
+    public boolean bind(NetSession session) {
+        if (session == null) {
             return false;
         }
+        if (this.session == session) {
+            return true;
+        }
+        synchronized (this) {
+            if (this.session == session) {
+                return true;
+            }
+            if (this.session == null) {
+                this.session = as(session);
+                return true;
+            } else {
+                Certificate certificate = session.getCertificate();
+                if (!certificate.isAuthenticated()) {
+                    return false;
+                }
+                return StampedLockAide.supplyInWriteLock(this.sessionLock, () -> resetSession(session));
+            }
+        }
+    }
+
+    protected abstract boolean resetSession(NetSession session);
+
+    @Override
+    public boolean open() {
+        if (this.isClosed()) {
+            return false;
+        }
+        if (this.isActive()) {
+            return true;
+        }
+        synchronized (this) {
+            if (this.isClosed()) {
+                return false;
+            }
+            if (this.isActive()) {
+                return true;
+            }
+            if (!this.onOpen()) {
+                return false;
+            }
+            this.status = TunnelStatus.OPEN;
+            this.onOpened();
+        }
+        buses.activateEvent().notify(this);
         return true;
     }
 
-    //	protected AbstractTunnel<UID, E> setNetTransport(T transport) {
-    //		this.transporter = transport;
-    //		return this;
-    //	}
+    @Override
+    public void disconnect() {
+        NetSession session;
+        synchronized (this) {
+            if (this.status == TunnelStatus.CLOSED || this.status == TunnelStatus.SUSPEND) {
+                return;
+            }
+            this.doDisconnect();
+            this.status = TunnelStatus.SUSPEND;
+            session = this.session;
+            this.onDisconnected();
+        }
+        if (session != null) { // 避免死锁
+            session.onUnactivated(this);
+        }
+        buses.unactivatedEvent().notify(this);
+    }
 
     @Override
-    public String toString() {
-        return "Tunnel(" + this.getAccessMode() + ")[" + this.getGroup() + "(" + this.getIdentify() + ")]" + this.transporter;
+    public boolean close() {
+        if (this.status == TunnelStatus.CLOSED) {
+            return false;
+        }
+        NetSession session;
+        synchronized (this) {
+            if (this.status == TunnelStatus.CLOSED) {
+                return false;
+            }
+            this.status = TunnelStatus.CLOSED;
+            this.onClose();
+            this.doDisconnect();
+            session = this.session;
+            this.onClosed();
+        }
+        if (session != null) { // 避免死锁
+            session.onUnactivated(this);
+        }
+        buses.closeEvent().notify(this);
+        return true;
+    }
+
+    @Override
+    public void reset() {
+        if (this.status == TunnelStatus.INIT) {
+            return;
+        }
+        synchronized (this) {
+            if (this.status == TunnelStatus.INIT) {
+                return;
+            }
+            if (!this.isActive()) {
+                this.disconnect();
+            }
+            this.status = TunnelStatus.INIT;
+        }
+    }
+
+    protected abstract void doDisconnect();
+
+    protected abstract boolean onOpen();
+
+    protected abstract void onOpened();
+
+    protected abstract void onClose();
+
+    protected abstract void onClosed();
+
+    protected abstract void onDisconnected();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof BaseNetTunnel<?> that)) {
+            return false;
+        }
+        return this.id == that.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.id);
     }
 
 }

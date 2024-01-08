@@ -58,7 +58,7 @@ public interface ClientRelayExplorer extends RelayExplorer {
      * @param context   网络上下文
      * @return 返回创建的管道
      */
-    DoneResult<ClientRelayTunnel> createTunnel(long id, MessageTransporter transport, NetworkContext context);
+    DoneResult<ClientRelayTunnel> createTunnel(long id, MessageTransport transport, NetworkContext context);
 
     /**
      * 为通讯管道分配指定的集群转发连接

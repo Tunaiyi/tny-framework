@@ -13,9 +13,11 @@ package com.tny.game.net.netty4;
 
 import com.tny.game.net.application.*;
 import com.tny.game.net.netty4.channel.*;
+import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
-import io.netty.channel.epoll.EpollEventLoopGroup;
+import io.netty.channel.epoll.*;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.util.concurrent.DefaultThreadFactory;
 
 /**
@@ -32,6 +34,15 @@ public abstract class NettyBootstrap<S extends NetBootstrapSetting> extends NetB
     public NettyBootstrap(NetAppContext appContext, S unitSetting, ChannelMaker<Channel> channelMaker) {
         super(appContext, unitSetting);
         this.channelMaker = channelMaker;
+    }
+
+
+    protected void init(ServerBootstrap bootstrap, EventLoopGroup parentGroup, EventLoopGroup childGroup, boolean epoll) {
+        bootstrap.group(parentGroup, childGroup);
+        bootstrap.channel(epoll ? EpollServerSocketChannel.class : NioServerSocketChannel.class);
+        bootstrap.option(ChannelOption.SO_REUSEADDR, true);
+        bootstrap.childOption(ChannelOption.TCP_NODELAY, true);
+        bootstrap.childOption(ChannelOption.SO_KEEPALIVE, true);
     }
 
 

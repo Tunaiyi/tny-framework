@@ -19,11 +19,7 @@ public interface TestListener {
     default void handleCreate(String string) {
     }
 
-    ;
-
     default void handleUpgrade(String string, Integer level) {
     }
-
-    ;
 
 }

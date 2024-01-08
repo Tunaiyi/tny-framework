@@ -71,7 +71,7 @@ public class DynamicEntityCacheManagerFactory {
                 ctConstructor.setModifiers(Modifier.PUBLIC);
                 ctConstructor.setBody("{super();}");
                 ctClass.addConstructor(ctConstructor);
-                proxyClass = ctClass.toClass();
+                proxyClass = ctClass.toClass(objectClass);
                 LOGGER.info("生成 Class {} 的 {} 类完成", objectClass, proxyClassName);
             } catch (Exception ex) {
                 LOGGER.error("", ex);

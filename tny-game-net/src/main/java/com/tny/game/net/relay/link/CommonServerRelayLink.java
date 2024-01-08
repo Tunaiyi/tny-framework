@@ -23,8 +23,8 @@ import com.tny.game.net.rpc.*;
  */
 public class CommonServerRelayLink extends BaseRelayLink implements ServerRelayLink {
 
-    public CommonServerRelayLink(RelayTransporter transporter, RpcServiceType serviceType, String service, long instanceId, String key) {
-        super(NetAccessMode.SERVER, key, serviceType, service, instanceId, transporter);
+    public CommonServerRelayLink(RelayTransport transport, RpcServiceType serviceType, String service, long instanceId, String key) {
+        super(NetAccessMode.SERVER, key, serviceType, service, instanceId, transport);
     }
 
     @Override

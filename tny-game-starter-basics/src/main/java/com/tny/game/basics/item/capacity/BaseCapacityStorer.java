@@ -28,26 +28,26 @@ import static java.util.Collections.*;
  */
 public class BaseCapacityStorer implements CapacityObjectStorer {
 
-    private static BindP1EventBus<CapacityStorerListener, CapacityObjectStorer, Collection<ExpireCapacitySupplier>>
-            ON_SAVE_SUPPLIER = EventBuses.of(CapacityStorerListener.class, CapacityStorerListener::onSaveSupplier);
+    private static A1BindEvent<CapacityStorerListener, CapacityObjectStorer, Collection<ExpireCapacitySupplier>>
+            ON_SAVE_SUPPLIER = Events.ofEvent(CapacityStorerListener.class, CapacityStorerListener::onSaveSupplier);
 
-    private static BindP1EventBus<CapacityStorerListener, CapacityObjectStorer, Collection<ExpireCapacitySupplier>>
-            ON_DELETE_SUPPLIER = EventBuses.of(CapacityStorerListener.class, CapacityStorerListener::onDeleteSupplier);
+    private static A1BindEvent<CapacityStorerListener, CapacityObjectStorer, Collection<ExpireCapacitySupplier>>
+            ON_DELETE_SUPPLIER = Events.ofEvent(CapacityStorerListener.class, CapacityStorerListener::onDeleteSupplier);
 
-    private static BindP1EventBus<CapacityStorerListener, CapacityObjectStorer, Collection<ExpireCapacitySupplier>>
-            ON_LINK_SUPPLIER = EventBuses.of(CapacityStorerListener.class, CapacityStorerListener::onLinkSupplier);
+    private static A1BindEvent<CapacityStorerListener, CapacityObjectStorer, Collection<ExpireCapacitySupplier>>
+            ON_LINK_SUPPLIER = Events.ofEvent(CapacityStorerListener.class, CapacityStorerListener::onLinkSupplier);
 
-    private static BindP1EventBus<CapacityStorerListener, CapacityObjectStorer, Collection<ExpireCapacitySupplier>>
-            ON_EXPIRE_SUPPLIER = EventBuses.of(CapacityStorerListener.class, CapacityStorerListener::onExpireSupplier);
+    private static A1BindEvent<CapacityStorerListener, CapacityObjectStorer, Collection<ExpireCapacitySupplier>>
+            ON_EXPIRE_SUPPLIER = Events.ofEvent(CapacityStorerListener.class, CapacityStorerListener::onExpireSupplier);
 
-    private static BindP1EventBus<CapacityStorerListener, CapacityObjectStorer, Collection<ExpireCapabler>>
-            ON_SAVE_CAPABLER = EventBuses.of(CapacityStorerListener.class, CapacityStorerListener::onSaveCapabler);
+    private static A1BindEvent<CapacityStorerListener, CapacityObjectStorer, Collection<ExpireCapabler>>
+            ON_SAVE_CAPABLER = Events.ofEvent(CapacityStorerListener.class, CapacityStorerListener::onSaveCapabler);
 
-    private static BindP1EventBus<CapacityStorerListener, CapacityObjectStorer, Collection<ExpireCapabler>>
-            ON_DELETE_CAPABLER = EventBuses.of(CapacityStorerListener.class, CapacityStorerListener::onDeleteCapabler);
+    private static A1BindEvent<CapacityStorerListener, CapacityObjectStorer, Collection<ExpireCapabler>>
+            ON_DELETE_CAPABLER = Events.ofEvent(CapacityStorerListener.class, CapacityStorerListener::onDeleteCapabler);
 
-    private static BindP1EventBus<CapacityStorerListener, CapacityObjectStorer, Collection<ExpireCapabler>>
-            ON_EXPIRE_CAPABLER = EventBuses.of(CapacityStorerListener.class, CapacityStorerListener::onExpireCapabler);
+    private static A1BindEvent<CapacityStorerListener, CapacityObjectStorer, Collection<ExpireCapabler>>
+            ON_EXPIRE_CAPABLER = Events.ofEvent(CapacityStorerListener.class, CapacityStorerListener::onExpireCapabler);
 
     /**
      * 玩家ID

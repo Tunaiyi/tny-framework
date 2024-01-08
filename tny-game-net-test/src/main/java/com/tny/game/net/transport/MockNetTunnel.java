@@ -13,10 +13,10 @@ package com.tny.game.net.transport;
 import com.tny.game.common.context.*;
 import com.tny.game.net.application.*;
 import com.tny.game.net.command.dispatcher.*;
-import com.tny.game.net.endpoint.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.rpc.*;
+import com.tny.game.net.session.*;
 
 import java.net.InetSocketAddress;
 
@@ -31,7 +31,7 @@ public class MockNetTunnel extends AttributeHolder implements NetTunnel {
 
     private TunnelStatus state;
 
-    private NetEndpoint endpoint;
+    private NetSession session;
 
     private final InetSocketAddress address = new InetSocketAddress(7100);
 
@@ -47,11 +47,15 @@ public class MockNetTunnel extends AttributeHolder implements NetTunnel {
 
     private final NetBootstrapContext context;
 
-    public MockNetTunnel(NetEndpoint endpoint, NetAccessMode mode) {
-        this.endpoint = endpoint;
+    public MockNetTunnel(NetAccessMode mode) {
         this.state = TunnelStatus.OPEN;
         this.mode = mode;
         this.context = new NetBootstrapContext();
+    }
+
+    @Override
+    public TunnelEventWatches events() {
+        return null;
     }
 
     @Override
@@ -95,8 +99,8 @@ public class MockNetTunnel extends AttributeHolder implements NetTunnel {
     }
 
     @Override
-    public NetEndpoint getEndpoint() {
-        return this.endpoint;
+    public NetSession getSession() {
+        return this.session;
     }
 
 
@@ -124,7 +128,7 @@ public class MockNetTunnel extends AttributeHolder implements NetTunnel {
     @Override
     public void disconnect() {
         this.state = TunnelStatus.SUSPEND;
-        this.endpoint.onUnactivated(this);
+        this.session.onUnactivated(this);
     }
 
     @Override
@@ -134,9 +138,9 @@ public class MockNetTunnel extends AttributeHolder implements NetTunnel {
     }
 
     @Override
-    public boolean bind(NetEndpoint endpoint) {
+    public boolean bind(NetSession session) {
         if (this.bindSuccess) {
-            this.endpoint = endpoint;
+            this.session = session;
             return true;
         }
         return false;
@@ -162,24 +166,24 @@ public class MockNetTunnel extends AttributeHolder implements NetTunnel {
     }
 
     @Override
-    public MessageWriteFuture write(MessageAllocator allocator, MessageContent context) throws NetException {
+    public MessageWriteFuture write(MessageAllocator allocator, MessageContent content) throws NetException {
         this.writeTimes++;
         return null;
     }
 
     @Override
     public long getIdentify() {
-        return this.endpoint.getIdentify();
+        return this.session.getIdentify();
     }
 
     @Override
     public Certificate getCertificate() {
-        return this.endpoint.getCertificate();
+        return this.session.getCertificate();
     }
 
     @Override
     public boolean isAuthenticated() {
-        return this.endpoint.isAuthenticated();
+        return this.session.isAuthenticated();
     }
 
     @Override
@@ -195,18 +199,18 @@ public class MockNetTunnel extends AttributeHolder implements NetTunnel {
     }
 
     public boolean receive(RpcEnterContext context) {
-        return this.endpoint.receive(context);
+        return this.session.receive(context);
     }
 
     @Override
     public boolean receive(NetMessage message) {
         var rpcContext = RpcTransactionContext.createEnter(this, message, true);
-        return this.endpoint.receive(rpcContext);
+        return this.session.receive(rpcContext);
     }
 
     @Override
-    public SendReceipt send(MessageContent content) {
-        return this.endpoint.send(this, content);
+    public MessageSent send(MessageContent content) {
+        return this.session.send(this, content);
     }
 
     public MockNetTunnel setBindSuccess(boolean bindSuccess) {

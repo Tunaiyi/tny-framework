@@ -64,7 +64,7 @@ public abstract class BaseClientRelayExplorer<T extends NetRemoteServeCluster> e
     }
 
     @Override
-    public DoneResult<ClientRelayTunnel> createTunnel(long id, MessageTransporter transport, NetworkContext context) {
+    public DoneResult<ClientRelayTunnel> createTunnel(long id, MessageTransport transport, NetworkContext context) {
         RelayMessageRouter relayMessageRouter = this.context.getRelayMessageRouter();
         GeneralClientRelayTunnel tunnel = new GeneralClientRelayTunnel(this.context.getInstanceId(), id, transport, context,
                 relayMessageRouter);

@@ -18,7 +18,7 @@ import com.tny.game.net.netty4.relay.codec.*;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 import static com.tny.game.common.utils.ObjectAide.*;
-import static com.tny.game.net.application.configuration.NetUnitNames.*;
+import static com.tny.game.common.lifecycle.unit.UnitNames.*;
 
 /**
  * <p>

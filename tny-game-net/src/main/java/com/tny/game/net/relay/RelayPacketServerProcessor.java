@@ -67,9 +67,9 @@ public class RelayPacketServerProcessor extends BaseRelayPacketProcessor {
     }
 
     @Override
-    public void onLinkOpen(RelayTransporter transporter, LinkOpenPacket packet) {
+    public void onLinkOpen(RelayTransport transport, LinkOpenPacket packet) {
         LinkOpenArguments arguments = packet.getArguments();
-        var link = serverRelayExplorer.acceptOpenLink(transporter,
+        var link = serverRelayExplorer.acceptOpenLink(transport,
                 arguments.getServiceType(), arguments.getService(), arguments.getInstance(), arguments.getKey());
         LOGGER.info("#{} [ 接受连接 ]", link);
     }

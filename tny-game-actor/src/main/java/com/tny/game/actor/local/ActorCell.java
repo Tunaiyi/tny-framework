@@ -20,7 +20,7 @@ import static com.tny.game.common.utils.ObjectAide.*;
  * Actor单元,负责管理与当前Actor相关的对象
  * Created by Kun Yang on 16/4/25.
  */
-class ActorCell implements ActorDispatcher {
+public class ActorCell implements ActorDispatcher {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ActorCell.class);
 

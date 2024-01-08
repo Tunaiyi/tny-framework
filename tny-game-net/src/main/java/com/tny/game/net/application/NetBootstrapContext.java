@@ -15,6 +15,7 @@ import com.tny.game.net.command.processor.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.message.common.*;
 import com.tny.game.net.rpc.*;
+import com.tny.game.net.session.*;
 
 /**
  * <p>
@@ -30,6 +31,8 @@ public class NetBootstrapContext implements NetworkContext {
 
     private final MessageFactory messageFactory;
 
+    private final SessionFactory sessionFactory;
+
     private final ContactFactory contactFactory;
 
 
@@ -42,6 +45,7 @@ public class NetBootstrapContext implements NetworkContext {
     private final RpcMonitor rpcMonitor;
 
     public NetBootstrapContext() {
+        this.sessionFactory = new CommonSessionFactory();
         this.messageFactory = new CommonMessageFactory();
         this.contactFactory = new DefaultContactFactory();
         this.rpcMonitor = new RpcMonitor();
@@ -58,6 +62,7 @@ public class NetBootstrapContext implements NetworkContext {
             MessageDispatcher messageDispatcher,
             CommandExecutorFactory commandExecutorFactory,
             MessageFactory messageFactory,
+            SessionFactory sessionFactory,
             ContactFactory contactFactory,
             RpcForwarder rpcForwarder,
             RpcMonitor rpcMonitor) {
@@ -66,6 +71,7 @@ public class NetBootstrapContext implements NetworkContext {
         this.messageDispatcher = messageDispatcher;
         this.commandExecutorFactory = commandExecutorFactory;
         this.messageFactory = messageFactory;
+        this.sessionFactory = sessionFactory;
         this.contactFactory = contactFactory;
         this.rpcForwarder = rpcForwarder;
         this.rpcMonitor = rpcMonitor;
@@ -79,6 +85,11 @@ public class NetBootstrapContext implements NetworkContext {
     @Override
     public MessageFactory getMessageFactory() {
         return this.messageFactory;
+    }
+
+    @Override
+    public SessionFactory getSessionFactory() {
+        return sessionFactory;
     }
 
     @Override

@@ -37,6 +37,8 @@ public interface NetBootstrapSetting extends ServiceSetting {
 
     String getMessageFactory();
 
+    String getSessionFactory();
+
     String getContactFactory();
 
     String getMessageDispatcher();

@@ -115,7 +115,7 @@ public class InvokerFactory {
                     }
                     invokeCode.append("}");
                     cc.addMethod(CtMethod.make(invokeCode.toString(), cc));
-                    proxyClass = cc.toClass(sourceClass.getClassLoader(), null);
+                    proxyClass = cc.toClass(declaringClass);
                     invoker = (MethodInvoker) proxyClass.getConstructor().newInstance();
                     MethodInvoker oldInvoker = INVOKER_MAP.putIfAbsent(method, invoker);
                     if (oldInvoker != null) {
@@ -136,7 +136,7 @@ public class InvokerFactory {
             return invoker;
         }
         Class<?> sourceClass = constructor.getDeclaringClass();
-        String proxyClassName = sourceClass.getCanonicalName() + "$Constructor$" + Math.abs(constructor.hashCode());
+        String proxyClassName = sourceClass.getName() + "$Constructor$" + Math.abs(constructor.hashCode());
         StringBuilder invokeCode = new StringBuilder();
         try {
             synchronized (constructor) {
@@ -171,7 +171,7 @@ public class InvokerFactory {
                     invokeCode.append(");");
                     invokeCode.append("}");
                     cc.addMethod(CtMethod.make(invokeCode.toString(), cc));
-                    proxyClass = cc.toClass(sourceClass.getClassLoader(), null);
+                    proxyClass = cc.toClass(sourceClass);
                     invoker = (ConstructInvoker) proxyClass.getConstructor().newInstance();
                     ConstructInvoker oldInvoker = CONSTRUCTOR_MAP.putIfAbsent(constructor, invoker);
                     if (oldInvoker != null) {
