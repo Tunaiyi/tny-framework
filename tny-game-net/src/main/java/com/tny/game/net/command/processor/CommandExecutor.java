@@ -22,8 +22,8 @@ import java.util.concurrent.Executor;
  */
 public interface CommandExecutor extends Executor {
 
-    void executeCommand(MessageCommandBox box, RpcCommand command);
+    void executeCommand(RpcCommand command);
 
-    void executeRunnable(MessageCommandBox box, Runnable runnable);
+    void executeRunnable(Runnable runnable);
 
 }

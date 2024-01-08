@@ -32,7 +32,7 @@ configure(subprojects) {
             mavenBom("com.google.protobuf:protobuf-bom:${protobufVersion}")
             mavenBom("io.netty:netty-bom:${nettyVersion}")
             mavenBom("org.slf4j:slf4j-parent:${slf4jVersion}")
-            mavenBom("com.fasterxml.jackson:jackson-bom:${jacksonVesion}")
+            mavenBom("com.fasterxml.jackson:jackson-bom:${jacksonVersion}")
         }
 
         dependencies {
@@ -54,7 +54,7 @@ configure(subprojects) {
             dependency "${libs.checkerframework}"
             dependency "${libs.errorprone}"
             dependency "${libs.guava}:31.1-jre"
-            dependency "${libs.javassist}:3.29.2-GA"
+            dependency "${libs.javassist}:3.30.2-GA"
             dependency "${libs.xstream}:1.4.20"
         }
         generatedPomCustomization {

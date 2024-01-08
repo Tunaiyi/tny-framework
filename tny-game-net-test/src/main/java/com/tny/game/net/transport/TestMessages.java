@@ -11,9 +11,9 @@
 package com.tny.game.net.transport;
 
 import com.tny.game.common.result.*;
-import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.message.common.*;
+import com.tny.game.net.session.*;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -54,8 +54,8 @@ public class TestMessages {
         this.idCreator = new AtomicInteger(0);
     }
 
-    public TestMessages(NetEndpoint endpoint) {
-        this.certificate = endpoint.getCertificate();
+    public TestMessages(NetSession session) {
+        this.certificate = session.getCertificate();
         this.idCreator = new AtomicInteger(0);
     }
 
@@ -170,28 +170,28 @@ public class TestMessages {
         send(sender, null);
     }
 
-    public void send(Sender sender, Consumer<SendReceipt> check) {
+    public void send(Sender sender, Consumer<MessageSent> check) {
         assertFalse(this.messages.isEmpty());
         if (check == null) {
             check = f -> {
             };
         }
-        Consumer<SendReceipt> consumer = check;
+        Consumer<MessageSent> consumer = check;
         this.messages.forEach(p -> consumer.accept(sender.send(p.getContext())));
     }
 
-    public void write(Transport transport) {
-        write(transport, null);
+    public void write(NetTunnel tunnel) {
+        write(tunnel, null);
     }
 
-    public void write(Transport transport, Consumer<MessageWriteFuture> check) {
+    public void write(NetTunnel tunnel, Consumer<MessageWriteFuture> check) {
         assertFalse(this.messages.isEmpty());
         if (check == null) {
             check = f -> {
             };
         }
         final Consumer<MessageWriteFuture> consumer = check;
-        this.messages.forEach(p -> consumer.accept(transport.write(p.getMessage(), null)));
+        this.messages.forEach(p -> consumer.accept(tunnel.write(p.getMessage(), null)));
     }
     // public void sendSync(Sender sender, long timeout) {
     //     assertFalse(this.messages.isEmpty());
@@ -243,8 +243,8 @@ public class TestMessages {
         return createMessages(new TestMessages(tunnel));
     }
 
-    public static TestMessages createMessages(NetEndpoint endpoint) {
-        return createMessages(new TestMessages(endpoint));
+    public static TestMessages createMessages(NetSession session) {
+        return createMessages(new TestMessages(session));
     }
 
     private static TestMessages createMessages(TestMessages messages) {

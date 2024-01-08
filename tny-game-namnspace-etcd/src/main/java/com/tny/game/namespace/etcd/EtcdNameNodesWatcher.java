@@ -228,7 +228,6 @@ public class EtcdNameNodesWatcher<T> extends EtcdObject implements NameNodesWatc
                 optionBuilder.withRange(endKey).isPrefix(false);
             }
             this.watcher = watch.watch(key, optionBuilder.build(), etcdWatchListener);
-
             status = WATCH;
             future.complete(this);
         } catch (Throwable e) {

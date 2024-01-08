@@ -58,7 +58,7 @@ public abstract class TypedRedisson<V> {
         return this.redissonClient.getSetCache(name, this.codec);
     }
 
-    public <K> RMapCache<K, V> getMapCache(String name, MapOptions<K, V> options) {
+    public <K> RMapCache<K, V> getMapCache(String name, MapCacheOptions<K, V> options) {
         return this.redissonClient.getMapCache(name, this.codec, options);
     }
 

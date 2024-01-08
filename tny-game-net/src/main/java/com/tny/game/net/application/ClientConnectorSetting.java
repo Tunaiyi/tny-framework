@@ -11,10 +11,9 @@
 
 package com.tny.game.net.application;
 
-import com.google.common.collect.ImmutableList;
 import com.tny.game.net.utils.*;
 
-import java.util.List;
+import java.util.*;
 
 import static com.tny.game.net.utils.NetConfigs.*;
 
@@ -30,7 +29,7 @@ public class ClientConnectorSetting {
 
     private boolean autoReconnect = AUTO_RECONNECT_DEFAULT_VALUE;
 
-    private List<Long> retryIntervals = ImmutableList.of(RETRY_INTERVAL_DEFAULT_VALUE);
+    private List<Long> retryIntervals = new ArrayList<>(List.of(RETRY_INTERVAL_DEFAULT_VALUE));
 
     private long connectTimeout = NetConfigs.CONNECT_TIMEOUT_DEFAULT_VALUE;
 
@@ -62,7 +61,7 @@ public class ClientConnectorSetting {
     }
 
     public ClientConnectorSetting setRetryIntervals(List<Long> retryIntervals) {
-        this.retryIntervals = ImmutableList.copyOf(retryIntervals);
+        this.retryIntervals = new ArrayList<>(retryIntervals);
         return this;
     }
 

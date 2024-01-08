@@ -34,13 +34,13 @@ public interface EventSourceObject<L> extends EventSource<L> {
     }
 
     @Override
-    default void addListener(Collection<? extends L> listeners) {
-        event().addListener(listeners);
+    default void add(Collection<? extends L> listeners) {
+        event().add(listeners);
     }
 
     @Override
-    default void removeListener(Collection<? extends L> listeners) {
-        event().removeListener(listeners);
+    default void remove(Collection<? extends L> listeners) {
+        event().remove(listeners);
     }
 
     @Override

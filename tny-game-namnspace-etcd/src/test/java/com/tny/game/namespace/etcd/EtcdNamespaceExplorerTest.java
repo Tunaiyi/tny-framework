@@ -243,7 +243,7 @@ class EtcdNamespaceExplorerTest {
         List<List<Player>> checkList = Arrays.asList(loadList, createList, updateList, deleteList);
 
         explorer.save(PLAYER_NODE_1_KEY, MINE_TYPE, players.get(0)).get();
-        explorer.save(PLAYER_NODE_1_KEY, MINE_TYPE, players.get(1)).get();
+        // explorer.save(PLAYER_NODE_1_KEY, MINE_TYPE, players.get(1)).get();
 
         watcher.createEvent().add((w, node) -> {
             createList.add(node.getValue());

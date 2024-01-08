@@ -10,8 +10,8 @@
  */
 package com.tny.game.net.transport;
 
-import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
+import com.tny.game.net.session.*;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 
@@ -48,6 +48,6 @@ public interface MessageHandleFilter {
      *
      * @return true 处理 false 不可处理
      */
-    MessageHandleStrategy filter(Endpoint endpoint, MessageSubject message);
+    MessageHandleStrategy filter(Session session, MessageSubject message);
 
 }

@@ -24,7 +24,7 @@ public class ConnectIdFactory {
 
     private static final AtomicLong SESSION_ID_CREATOR = new AtomicLong(0);
 
-    public static long newEndpointId() {
+    public static long newSessionId() {
         return SESSION_ID_CREATOR.incrementAndGet();
     }
 

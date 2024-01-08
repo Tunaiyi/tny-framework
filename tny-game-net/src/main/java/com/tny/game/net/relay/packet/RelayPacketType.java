@@ -93,7 +93,7 @@ public enum RelayPacketType implements ByteEnumerable {
 
     private final RelayPacketHandleByLinkInvoker<RelayPacket<?>> handleByLink;
 
-    private final RelayPacketHandleByTransporterInvoker<RelayPacket<?>> handleByTransporter;
+    private final RelayPacketHandleByTransportInvoker<RelayPacket<?>> handleByTransport;
 
     <A extends RelayPacketArguments, P extends RelayPacket<A>> RelayPacketType(int id,
             Class<P> packetClass, Class<A> classOfArguments, RelayPacketFactory<P, A> packetFactory,
@@ -103,13 +103,13 @@ public enum RelayPacketType implements ByteEnumerable {
 
     <A extends RelayPacketArguments, P extends RelayPacket<A>> RelayPacketType(int id,
             Class<P> packetClass, Class<A> classOfArguments, RelayPacketFactory<P, A> packetFactory,
-            RelayPacketHandleByTransporterInvoker<P> transporterHandlerInvoker, NetworkWay way) {
-        this(id, packetClass, classOfArguments, packetFactory, null, transporterHandlerInvoker, way);
+            RelayPacketHandleByTransportInvoker<P> transportHandlerInvoker, NetworkWay way) {
+        this(id, packetClass, classOfArguments, packetFactory, null, transportHandlerInvoker, way);
     }
 
     <A extends RelayPacketArguments, P extends RelayPacket<A>> RelayPacketType(int id,
             Class<P> packetClass, Class<A> classOfArguments, RelayPacketFactory<P, A> packetFactory,
-            RelayPacketHandleByLinkInvoker<P> packetHandlerInvoker, RelayPacketHandleByTransporterInvoker<?> transporterHandlerInvoker,
+            RelayPacketHandleByLinkInvoker<P> packetHandlerInvoker, RelayPacketHandleByTransportInvoker<?> transportHandlerInvoker,
             NetworkWay way) {
         this.id = (byte) id;
         this.way = way;
@@ -117,7 +117,7 @@ public enum RelayPacketType implements ByteEnumerable {
         this.classOfArguments = classOfArguments;
         this.packetFactory = as(packetFactory);
         this.handleByLink = as(packetHandlerInvoker);
-        this.handleByTransporter = as(transporterHandlerInvoker);
+        this.handleByTransport = as(transportHandlerInvoker);
     }
 
     public void handle(RelayPacketProcessor handler, NetRelayLink link, RelayPacket<?> packet) throws RelayPacketHandleException {
@@ -131,12 +131,12 @@ public enum RelayPacketType implements ByteEnumerable {
         }
     }
 
-    public void handle(RelayPacketProcessor handler, RelayTransporter transporter, RelayPacket<?> packet) throws RelayPacketHandleException {
+    public void handle(RelayPacketProcessor handler, RelayTransport transport, RelayPacket<?> packet) throws RelayPacketHandleException {
         if (packet == null) {
             throw new NullPointerException(format("invoke {} handler error, datagram is null", this));
         }
         if (this.packetClass.isInstance(packet)) {
-            this.handleByTransporter.invoke(handler, transporter, packet);
+            this.handleByTransport.invoke(handler, transport, packet);
         } else {
             throw new RelayPacketHandleException("invoke {} handler error, datagram is {} instead of {}", this, packet.getClass(), this.packetClass);
         }
@@ -151,8 +151,8 @@ public enum RelayPacketType implements ByteEnumerable {
         return handleByLink != null;
     }
 
-    public boolean isHandleByTransporter() {
-        return handleByTransporter != null;
+    public boolean getHandleByTransport() {
+        return handleByTransport != null;
     }
 
     public NetworkWay getWay() {

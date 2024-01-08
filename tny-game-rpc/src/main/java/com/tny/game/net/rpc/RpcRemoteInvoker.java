@@ -15,9 +15,9 @@ import com.tny.game.common.result.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.net.application.*;
 import com.tny.game.net.command.dispatcher.*;
-import com.tny.game.net.endpoint.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
+import com.tny.game.net.session.*;
 import com.tny.game.net.transport.*;
 import org.slf4j.*;
 
@@ -80,14 +80,14 @@ public class RpcRemoteInvoker {
         if (rpcAccess == null) {
             throw new RpcInvokeException(NetResultCode.RPC_SERVICE_NOT_AVAILABLE, "调用 {} 异常, 未找到有效的远程服务节点", this.method);
         }
-        var endpoint = rpcAccess.getEndpoint();
+        var session = rpcAccess.getSession();
         long timeout = timeout();
         return switch (method.getMode()) {
             case PUSH -> {
-                push(endpoint, timeout, invokeParams);
+                push(session, timeout, invokeParams);
                 yield null;
             }
-            case REQUEST -> request(endpoint, timeout, invokeParams);
+            case REQUEST -> request(session, timeout, invokeParams);
             default -> throw new RpcInvokeException(NetResultCode.RPC_INVOKE_FAILED, "调用 {} 异常, 非法 rpc 模式", this.method);
         };
     }
@@ -107,7 +107,7 @@ public class RpcRemoteInvoker {
         };
     }
 
-    private Object getReturnFuture(Endpoint endpoint, RpcExitContext context, MessageRespondFuture future) {
+    private Object getReturnFuture(Session session, RpcExitContext context, MessageRespondFuture future) {
         RpcPromise<Object> rpcFuture = null;
         Object returnFuture;
         if (this.method.getReturnClass().isAssignableFrom(MessageRespondFuture.class)) {
@@ -117,11 +117,11 @@ public class RpcRemoteInvoker {
             returnFuture = rpcFuture;
         }
         var resultFuture = rpcFuture;
-        future.whenComplete((message, cause) -> handleMessageResult(endpoint, context, message, cause, resultFuture));
+        future.whenComplete((message, cause) -> handleMessageResult(session, context, message, cause, resultFuture));
         return returnFuture;
     }
 
-    private void handleMessageResult(Endpoint endpoint, RpcExitContext context, Message message, Throwable cause,
+    private void handleMessageResult(Session session, RpcExitContext context, Message message, Throwable cause,
             RpcPromise<Object> rpcFuture) {
         if (cause != null) {
             if (rpcFuture != null) {
@@ -130,23 +130,23 @@ public class RpcRemoteInvoker {
             context.complete(cause);
         } else {
             if (rpcFuture != null) {
-                rpcFuture.complete(endpoint, message, RpcResults.result(ResultCodes.of(message.getCode()), message.getBody()));
+                rpcFuture.complete(session, message, RpcResults.result(ResultCodes.of(message.getCode()), message.getBody()));
             }
             context.complete(message);
         }
     }
 
-    private Object request(Endpoint endpoint, long timeout, RpcRemoteInvokeParams params) {
+    private Object request(Session session, long timeout, RpcRemoteInvokeParams params) {
         RequestContent content = MessageContents.request(protocol(), params.getParams());
         content.willRespondFuture(timeout)
                 .withHeaders(params.getAllHeaders());
-        var invokeContext = RpcTransactionContext.createExit(endpoint, content, this.method.isAsync(), rpcMonitor);
+        var invokeContext = RpcTransactionContext.createExit(session, content, this.method.isAsync(), rpcMonitor);
         invokeContext.invoke(rpcOperation(method.getName(), content));
-        endpoint.send(content);
+        session.send(content);
         MessageRespondFuture respondFuture = content.getRespondFuture();
         if (this.method.isAsync()) {
             return switch (this.method.getReturnMode()) {
-                case FUTURE -> getReturnFuture(endpoint, invokeContext, respondFuture);
+                case FUTURE -> getReturnFuture(session, invokeContext, respondFuture);
                 case VOID, RESULT, OBJECT -> null;
             };
         } else {
@@ -169,16 +169,16 @@ public class RpcRemoteInvoker {
         throw new RpcInvokeException(NetResultCode.RPC_INVOKE_FAILED, "返回类型错误");
     }
 
-    private void push(Endpoint endpoint, long timeout, RpcRemoteInvokeParams invokeParams) {
+    private void push(Session session, long timeout, RpcRemoteInvokeParams invokeParams) {
         ResultCode code = ObjectAide.ifNull(invokeParams.getCode(), NetResultCode.SUCCESS);
         MessageContent content = MessageContents.push(protocol(), code)
                 .withBody(invokeParams.getBody())
                 .withHeaders(invokeParams.getAllHeaders());
-        var invokeContext = RpcTransactionContext.createExit(endpoint, content, false, rpcMonitor);
+        var invokeContext = RpcTransactionContext.createExit(session, content, false, rpcMonitor);
 
         try {
             invokeContext.invoke(rpcOperation(method.getName(), content));
-            endpoint.send(content);
+            session.send(content);
             invokeContext.complete();
             if (this.method.isAsync()) {
                 return;

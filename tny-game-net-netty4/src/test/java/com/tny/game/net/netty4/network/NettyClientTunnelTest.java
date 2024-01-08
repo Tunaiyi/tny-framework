@@ -21,9 +21,9 @@ import io.netty.channel.embedded.EmbeddedChannel;
 /**
  * Created by Kun Yang on 2018/8/27.
  */
-public class NettyClientTunnelTest extends NettyTunnelTest<MockNettyClient, TestGeneralClientTunnel, MockNettyClient> {
+public class NettyClientTunnelTest extends NettyTunnelTest<MockNetSession, TestGeneralClientTunnel, MockNettyClient> {
 
-    public static final NetIdGenerator ID_GENERATOR = new AutoIncrementIdGenerator();
+    private static final NetIdGenerator ID_GENERATOR = new AutoIncrementIdGenerator();
 
     private static final int CONNECT_TIMEOUT = 140;
 
@@ -39,7 +39,7 @@ public class NettyClientTunnelTest extends NettyTunnelTest<MockNettyClient, Test
 
     @Override
     protected TunnelTestInstance<TestGeneralClientTunnel, MockNettyClient> create(Certificate certificate, boolean open) {
-        MockNettyClient client = this.createEndpoint(certificate);
+        MockNettyClient client = this.createSession(certificate);
         TestGeneralClientTunnel tunnel = this.newTunnel(open, client);
         if (certificate.isAuthenticated()) {
             tunnel.bind(client);
@@ -48,15 +48,14 @@ public class NettyClientTunnelTest extends NettyTunnelTest<MockNettyClient, Test
     }
 
     @Override
-    protected MockNettyClient createEndpoint(Certificate certificate) {
+    protected MockNettyClient createSession(Certificate certificate) {
         return new MockNettyClient(this.url, certificate);
     }
 
     private TestGeneralClientTunnel newTunnel(boolean open, MockNettyClient client) {
-        TestGeneralClientTunnel tunnel = new TestGeneralClientTunnel(ID_GENERATOR.generate(),
-                new NetBootstrapContext(null, null, null, null, new CommonMessageFactory(), new DefaultContactFactory(), null,
+        TestGeneralClientTunnel tunnel = new TestGeneralClientTunnel(ID_GENERATOR.generate(), client.connect(), client,
+                new NetBootstrapContext(null, null, null, null, new CommonMessageFactory(), null, new DefaultContactFactory(), null,
                         new RpcMonitor()));
-        tunnel.setEndpoint(client);
         if (open) {
             tunnel.open();
         }
@@ -65,7 +64,7 @@ public class NettyClientTunnelTest extends NettyTunnelTest<MockNettyClient, Test
 
     @Override
     protected EmbeddedChannel embeddedChannel(TestGeneralClientTunnel tunnel) {
-        return (EmbeddedChannel) ((NettyChannelMessageTransporter) tunnel.getTransporter()).getChannel();
+        return (EmbeddedChannel) ((NettyChannelMessageTransport) tunnel.getTransport()).getChannel();
     }
     // @Override
     // protected NettyClientTunnel createUnloginTunnel(SessionFactory sessionFactory, MessageBuilderFactory

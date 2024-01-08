@@ -11,6 +11,8 @@
 
 package com.tny.game.common.event.bus;
 
+import java.util.Collection;
+
 /**
  * Created by Kun Yang on 16/2/4.
  */
@@ -22,5 +24,12 @@ public interface EventWatch<D> {
 
     void clear();
 
+    default void add(Collection<? extends D> listeners) {
+        listeners.forEach(this::add);
+    }
+
+    default void remove(Collection<? extends D> listeners) {
+        listeners.forEach(this::remove);
+    }
 }
 

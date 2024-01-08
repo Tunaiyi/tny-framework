@@ -15,12 +15,13 @@ import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.command.processor.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.rpc.*;
+import com.tny.game.net.session.*;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 
 import static com.tny.game.common.utils.StringAide.*;
-import static com.tny.game.net.application.configuration.NetUnitNames.*;
+import static com.tny.game.common.lifecycle.unit.UnitNames.*;
 
 public abstract class CommonNetBootstrapSetting implements NetBootstrapSetting {
 
@@ -52,6 +53,8 @@ public abstract class CommonNetBootstrapSetting implements NetBootstrapSetting {
 
     private String tunnelIdGenerator = defaultName(NetIdGenerator.class);
 
+    private String sessionFactory = defaultName(SessionFactory.class);
+
     private String rpcForwarder = defaultName(RpcForwarder.class);
 
     private Set<String> readIgnoreHeaders = new HashSet<>();
@@ -64,6 +67,11 @@ public abstract class CommonNetBootstrapSetting implements NetBootstrapSetting {
     @Override
     public String getMessageFactory() {
         return this.messageFactory;
+    }
+
+    @Override
+    public String getSessionFactory() {
+        return sessionFactory;
     }
 
     @Override

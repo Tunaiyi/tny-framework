@@ -24,7 +24,7 @@ import java.util.concurrent.*;
  */
 class NettyServeInstanceConnectMonitor {
 
-    private final List<NettyRelayLinkConnection> connections = new CopyOnWriteArrayList<>();
+    private final List<NettyRelayLinkConnector> connections = new CopyOnWriteArrayList<>();
 
     private final ClientRelayContext relayContext;
 
@@ -39,11 +39,11 @@ class NettyServeInstanceConnectMonitor {
         this.executorService = executorService;
     }
 
-    protected void connect(NettyRelayLinkConnection monitor) {
+    protected void connect(NettyRelayLinkConnector monitor) {
         serveClusterContext.connect(monitor.getUrl(), monitor);
     }
 
-    protected void connect(NettyRelayLinkConnection monitor, long delayTime) {
+    protected void connect(NettyRelayLinkConnector monitor, long delayTime) {
         executorService.schedule(monitor::connect, delayTime, TimeUnit.MILLISECONDS);
     }
 
@@ -51,18 +51,18 @@ class NettyServeInstanceConnectMonitor {
         if (!this.connections.isEmpty()) {
             return;
         }
-        List<NettyRelayLinkConnection> monitors = new ArrayList<>();
+        List<NettyRelayLinkConnector> monitors = new ArrayList<>();
         for (int i = 0; i < connectionSize; i++) {
-            monitors.add(new NettyRelayLinkConnection(relayContext, instance, this));
+            monitors.add(new NettyRelayLinkConnector(relayContext, instance, this));
         }
         this.connections.addAll(monitors);
-        for (NettyRelayLinkConnection connector : monitors) {
+        for (NettyRelayLinkConnector connector : monitors) {
             connector.connect();
         }
     }
 
     public synchronized void stop() {
-        for (NettyRelayLinkConnection monitor : connections) {
+        for (NettyRelayLinkConnector monitor : connections) {
             monitor.close();
         }
         connections.clear();

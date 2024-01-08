@@ -20,7 +20,8 @@ import com.tny.game.net.command.auth.*;
 import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.command.plugins.*;
 import com.tny.game.net.command.plugins.filter.*;
-import com.tny.game.net.endpoint.*;
+import com.tny.game.net.command.processor.*;
+import com.tny.game.net.command.processor.forkjoin.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.message.codec.*;
 import com.tny.game.net.message.common.*;
@@ -29,13 +30,14 @@ import com.tny.game.net.netty4.channel.*;
 import com.tny.game.net.netty4.configuration.application.*;
 import com.tny.game.net.netty4.configuration.channel.*;
 import com.tny.game.net.netty4.configuration.command.*;
-import com.tny.game.net.netty4.configuration.endpoint.*;
 import com.tny.game.net.netty4.configuration.filter.*;
 import com.tny.game.net.netty4.configuration.processor.forkjoin.*;
+import com.tny.game.net.netty4.configuration.session.*;
 import com.tny.game.net.netty4.network.*;
 import com.tny.game.net.netty4.network.codec.*;
 import com.tny.game.net.netty4.network.configuration.*;
 import com.tny.game.net.rpc.*;
+import com.tny.game.net.session.*;
 import com.tny.game.net.transport.*;
 import org.springframework.boot.autoconfigure.condition.*;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -51,7 +53,7 @@ import java.util.List;
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties({
         SpringNetAppProperties.class,
-        SpringNetEndpointProperties.class,
+        SpringNetSessionProperties.class,
         ReadIdlePipelineChainProperties.class,
         SerialCommandExecutorProperties.class,})
 @Import({TextFilterAutoConfiguration.class})
@@ -59,17 +61,21 @@ public class NetAutoConfiguration {
 
 
     @Bean
-    @ConditionalOnMissingBean(EndpointKeeperManager.class)
-    public EndpointKeeperManager endpointKeeperManager(SpringNetEndpointProperties configure) {
-        return new CommonEndpointKeeperManager(configure.getSessionKeeper(), configure.getTerminalKeeper(), configure.getSessionKeeperSettings(),
-                configure.getTerminalKeeperSettings());
+    @ConditionalOnMissingBean(SessionKeeperManager.class)
+    public SessionKeeperManager sessionKeeperManager(SpringNetSessionProperties configure) {
+        return new CommonSessionKeeperManager(configure.getSessionKeeper(),  configure.getSessionKeeperSettings());
     }
 
     @Bean
     @ConditionalOnMissingBean(ContactService.class)
-    @ConditionalOnBean(EndpointKeeperManager.class)
-    public ContactService contactService(EndpointKeeperManager endpointKeeperManager) {
-        return new ContactService(endpointKeeperManager);
+    @ConditionalOnBean(SessionKeeperManager.class)
+    public ContactService contactService(SessionKeeperManager sessionKeeperManager) {
+        return new ContactService(sessionKeeperManager);
+    }
+
+    @Bean
+    public CommandExecutorFactory defaultCommandExecutorFactory() {
+        return new DefaultCommandExecutorFactory();
     }
 
     @Bean
@@ -89,18 +95,13 @@ public class NetAutoConfiguration {
     }
 
     @Bean
-    public SessionFactory<?, ?> defaultSessionFactory() {
+    public SessionFactory defaultSessionFactory() {
         return new CommonSessionFactory();
     }
 
     @Bean
     public SessionKeeperFactory<?> defaultSessionKeeperFactory() {
         return new CommonSessionKeeperFactory();
-    }
-
-    @Bean
-    public TerminalKeeperFactory<?> defaultTerminalKeeperFactory() {
-        return new CommonTerminalKeeperFactory();
     }
 
     @Bean
@@ -115,13 +116,13 @@ public class NetAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnBean({EndpointKeeperManager.class})
-    public ContactAuthenticateService authenticationService(EndpointKeeperManager endpointKeeperManager) {
-        return new ContactAuthenticateService(endpointKeeperManager);
+    @ConditionalOnBean({SessionKeeperManager.class})
+    public ContactAuthenticateService authenticationService(SessionKeeperManager sessionKeeperManager) {
+        return new ContactAuthenticateService(sessionKeeperManager);
     }
 
     @Bean
-    @ConditionalOnBean({EndpointKeeperManager.class, ContactAuthenticator.class, NetAppContext.class})
+    @ConditionalOnBean({SessionKeeperManager.class, ContactAuthenticator.class, NetAppContext.class})
     public MessageDispatcher defaultMessageDispatcher(NetAppContext appContext, ContactAuthenticator contactAuthenticator,
             ExprHolderFactory exprHolderFactory) {
         return new SpringBootMessageDispatcher(appContext, contactAuthenticator, exprHolderFactory);

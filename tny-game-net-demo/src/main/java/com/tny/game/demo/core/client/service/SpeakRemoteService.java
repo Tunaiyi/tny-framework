@@ -27,7 +27,7 @@ import com.tny.game.net.rpc.annotation.*;
 @RpcRemoteService("game-service")
 public interface SpeakRemoteService {
 
-    @RpcRequest(value = CtrlerIds.SPEAK$SAY_FOR_RPC)
+    @RpcRequest(value = CtrlerIds.SPEAK$SAY)
     RpcResult<SayContentDTO> say(String message);
 
     @RpcBody

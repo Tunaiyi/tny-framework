@@ -29,8 +29,8 @@ public class CommonClientRelayLink extends BaseRelayLink implements ClientRelayL
 
     private final NetRelayServeInstance serveInstance;
 
-    public CommonClientRelayLink(String key, NetRelayServeInstance serveInstance, RelayTransporter transporter) {
-        super(NetAccessMode.CLIENT, key, serveInstance.serviceType(), serveInstance.getService(), serveInstance.getId(), transporter);
+    public CommonClientRelayLink(String key, NetRelayServeInstance serveInstance, RelayTransport transport) {
+        super(NetAccessMode.CLIENT, key, serveInstance.serviceType(), serveInstance.getService(), serveInstance.getId(), transport);
         this.serveInstance = serveInstance;
     }
 

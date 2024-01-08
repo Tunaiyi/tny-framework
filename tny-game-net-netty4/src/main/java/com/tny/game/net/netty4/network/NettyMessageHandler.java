@@ -93,7 +93,7 @@ public class NettyMessageHandler extends ChannelDuplexHandler {
         if (code.getLevel() == ResultLevel.ERROR) {
             LOGGER.error("[Tunnel]  ## 通道 {} ==> {} 断开链接 # cause {}({})[{}], message:{}", channel.remoteAddress(), channel.localAddress(), code,
                     code.getCode(), code.getMessage(), cause.getMessage(), cause);
-            NetTunnel tunnel = channel.attr(NettyNetAttrKeys.TUNNEL).getAndSet(null);
+            NetTunnel tunnel = channel.attr(NettyNetAttrKeys.TUNNEL).get();
             if (tunnel != null) {
                 RpcMessageAide.send(tunnel, MessageContents.push(PUSH, code), true);
             }

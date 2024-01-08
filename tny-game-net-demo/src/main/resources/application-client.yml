@@ -48,21 +48,13 @@ tny:
           setting:
             enable: true
             threads: 4
-    #    command:
-    #      processor:
-    #        disruptor:
-    #          setting:
-    #            enable: true
-    #            wait-strategy: blocking
-    #            threads: 4
     rpc:
-      client:
-        services:
-          - service: game-service
-            discovery: false
-            host: 127.0.0.1
-            port: 17800
-            username: game-client
+      clusters:
+        - service: game-service
+          discovery: false
+          host: 127.0.0.1
+          port: 17800
+          username: game-client
 
   data:
     enable: false

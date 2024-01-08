@@ -12,7 +12,7 @@ package com.tny.game.net.rpc;
 
 import com.google.common.collect.ImmutableList;
 import com.tny.game.net.application.*;
-import com.tny.game.net.endpoint.*;
+import com.tny.game.net.session.*;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -34,7 +34,7 @@ public class RpcServiceNode implements RpcInvokeNode, RpcForwardNode {
 
     private final RpcServiceNodeSet service;
 
-    private ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
+    private final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
 
     public RpcServiceNode(int serverId, RpcServiceNodeSet service) {
         this.serverId = serverId;
@@ -110,12 +110,12 @@ public class RpcServiceNode implements RpcInvokeNode, RpcForwardNode {
         return !orderAccessPoints.isEmpty();
     }
 
-    protected void addEndpoint(Endpoint endpoint) {
+    protected void addSession(Session session) {
         writeLock();
         try {
             boolean activate = this.remoteServiceAccessMap.isEmpty();
-            RpcAccessIdentify nodeId = endpoint.getIdentifyToken(RpcAccessIdentify.class);
-            this.remoteServiceAccessMap.put(nodeId.getContactId(), new RpcRemoteServiceAccess(endpoint));
+            RpcAccessIdentify nodeId = session.getIdentifyToken(RpcAccessIdentify.class);
+            this.remoteServiceAccessMap.put(nodeId.getContactId(), new RpcRemoteServiceAccess(session));
             this.orderAccessPoints = ImmutableList.sortedCopyOf(Comparator.comparing(RpcAccess::getAccessId), remoteServiceAccessMap.values());
             if (!activate && !this.remoteServiceAccessMap.isEmpty()) {
                 service.onNodeActivate(this);
@@ -125,16 +125,16 @@ public class RpcServiceNode implements RpcInvokeNode, RpcForwardNode {
         }
     }
 
-    protected void removeEndpoint(Endpoint endpoint) {
+    protected void removeSession(Session session) {
         writeLock();
         try {
-            RpcAccessIdentify nodeId = endpoint.getIdentifyToken(RpcAccessIdentify.class);
+            RpcAccessIdentify nodeId = session.getIdentifyToken(RpcAccessIdentify.class);
             boolean activate = this.remoteServiceAccessMap.isEmpty();
             RpcRemoteServiceAccess accessPoint = this.remoteServiceAccessMap.get(nodeId.getContactId());
             if (accessPoint == null) {
                 return;
             }
-            if (accessPoint.getEndpoint() != endpoint) {
+            if (accessPoint.getSession() != session) {
                 return;
             }
             if (this.remoteServiceAccessMap.remove(nodeId.getContactId(), accessPoint)) {

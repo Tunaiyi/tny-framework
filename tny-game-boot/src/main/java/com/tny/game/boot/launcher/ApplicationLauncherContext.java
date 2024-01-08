@@ -45,6 +45,7 @@ public class ApplicationLauncherContext {
     public static void register(Class<?> applicationClass) {
         ClassLoader loader = applicationClass.getClassLoader();
         Set<String> scanBasePackages = new HashSet<>();
+        scanBasePackages.add("com.tny.game.net");
         SpringBootApplication application = applicationClass.getAnnotation(SpringBootApplication.class);
         if (application != null) {
             String[] packages = application.scanBasePackages();

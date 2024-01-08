@@ -19,9 +19,9 @@ import org.slf4j.*;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-class ActorAnswer<T> extends BaseFuture<T> implements Answer<T> {
+public class ActorAnswer<T> extends BaseFuture<T> implements Answer<T> {
 
-    protected static final Logger LOGGER = LoggerFactory.getLogger(ActorAnswer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ActorAnswer.class);
 
     private volatile List<AnswerListener<T>> listeners;
 

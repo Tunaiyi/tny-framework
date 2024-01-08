@@ -23,11 +23,22 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "tny.data.entity-manager")
 public class EntityCacheManagerProperties {
 
+    private boolean enable = true;
+
     private String cacheKeyMakerFactory = AnnotationCacheKeyMakerFactory.MAKER_NAME;
 
     private String cacheFactory = LocalObjectCacheFactory.CACHE_NAME;
 
     private String storageFactory = QueueObjectStorageFactory.STORAGE_NAME;
+
+    public boolean isEnable() {
+        return enable;
+    }
+
+    public EntityCacheManagerProperties setEnable(boolean enable) {
+        this.enable = enable;
+        return this;
+    }
 
     public String getCacheKeyMakerFactory() {
         return cacheKeyMakerFactory;

@@ -38,15 +38,15 @@ public class DemoAuthenticationValidator implements AuthenticationValidator {
         Object value = message.bodyAs(Object.class);
         if (value instanceof List) {
             List<Object> paramList = as(value);
-            return Certificates.createAuthenticated(as(paramList.get(0)), as(paramList.get(1)), as(paramList.get(1)), NetContactType.DEFAULT_USER);
+            return Certificates.createAuthenticated(as(paramList.get(0)), as(paramList.get(1)), as(paramList.get(1)), DefaultContactType.DEFAULT_USER);
         }
         if (value instanceof LoginDTO) {
             LoginDTO dto = as(value);
-            return Certificates.createAuthenticated(dto.getCertId(), dto.getUserId(), dto.getUserId(), NetContactType.DEFAULT_USER);
+            return Certificates.createAuthenticated(dto.getCertId(), dto.getUserId(), dto.getUserId(), DefaultContactType.DEFAULT_USER);
         }
         if (value instanceof LoginResultDTO) {
             LoginResultDTO dto = as(value);
-            return Certificates.createAuthenticated(System.currentTimeMillis(), dto.getUserId(), dto.getUserId(), NetContactType.DEFAULT_USER);
+            return Certificates.createAuthenticated(System.currentTimeMillis(), dto.getUserId(), dto.getUserId(), DefaultContactType.DEFAULT_USER);
         }
         System.out.println(value);
         throw new AuthFailedException("登录失败");

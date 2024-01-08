@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
         ImportRpcServiceDefinitionRegistrar.class,
         ImportRpcClientDefinitionRegistrar.class
 })
-@EnableConfigurationProperties(RpcRemoteProperties.class)
+@EnableConfigurationProperties(RpcClustersProperties.class)
 public class RpcAutoConfiguration {
 
     @Bean
@@ -45,8 +45,8 @@ public class RpcAutoConfiguration {
     }
 
     @Bean
-    public EndpointRouter endpointRouter() {
-        return new EndpointRouter();
+    public RpcAccessRouter accessRouter() {
+        return new RpcAccessRouter();
     }
 
     @Bean
@@ -64,7 +64,7 @@ public class RpcAutoConfiguration {
     @Bean
     public RpcServeNodeWatchService rpcServeNodeWatchService(
             @Autowired(required = false) ServeNodeClient client,
-            ObjectProvider<RpcClientFactory> connectorProvider) {
+            ObjectProvider<RpcConnectorFactory> connectorProvider) {
         return new RpcServeNodeWatchService(client, connectorProvider.stream().collect(Collectors.toList()));
     }
 
@@ -81,8 +81,8 @@ public class RpcAutoConfiguration {
     }
 
     @Bean
-    public RpcServicerManager rpcServicerManager(RpcRemoteProperties properties) {
-        return new DefaultRpcServicerManager(properties.getClient());
+    public RpcServicerManager rpcServicerManager(RpcClustersProperties properties) {
+        return new DefaultRpcServicerManager(properties);
     }
 
     @Bean

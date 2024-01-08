@@ -5,6 +5,7 @@ import com.tny.game.net.application.*;
 public enum TestAppType implements AppType {
 
     GAME(100, "game-service"),
+    GATEWAY(101, "gateway-service"),
     GAME_CLIENT(200, "game-client"),
     ;
 

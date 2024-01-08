@@ -15,6 +15,7 @@ import com.tny.game.data.*;
 import com.tny.game.data.accessor.*;
 import com.tny.game.data.cache.*;
 
+import static com.tny.game.common.lifecycle.unit.UnitNames.*;
 import static com.tny.game.common.utils.ObjectAide.*;
 import static com.tny.game.common.utils.StringAide.*;
 
@@ -26,7 +27,7 @@ import static com.tny.game.common.utils.StringAide.*;
  */
 public class QueueObjectStorageFactory extends AbstractCachedFactory<Class<?>, ObjectStorage<?, ?>> implements ObjectStorageFactory {
 
-    public static final String STORAGE_NAME = "queueObjectCacheFactory";
+    public static final String STORAGE_NAME = lowerCamelName(QueueObjectStorageFactory.class);
 
     private AsyncObjectStoreExecutor storeExecutor;
 

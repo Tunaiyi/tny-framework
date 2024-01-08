@@ -20,13 +20,13 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Created by Kun Yang on 2018/8/12.
  */
-public abstract class ConnectorTest<C extends Connector> {
+public abstract class ConnectorTest<C extends Communicator> {
 
     protected static Long uid = 100L;
 
     private static final Long UNAUTHENTICATED_UID = null;
 
-    private static final ContactType contactType = NetContactType.DEFAULT_USER;
+    private static final ContactType contactType = DefaultContactType.DEFAULT_USER;
 
     protected static Long certificateId = System.currentTimeMillis();
 

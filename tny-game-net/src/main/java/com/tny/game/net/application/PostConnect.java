@@ -11,6 +11,7 @@
 
 package com.tny.game.net.application;
 
+import com.tny.game.common.concurrent.*;
 import com.tny.game.net.transport.*;
 
 /**
@@ -21,6 +22,6 @@ import com.tny.game.net.transport.*;
  */
 public interface PostConnect {
 
-    boolean onConnected(NetTunnel tunnel) throws Exception;
+    CompleteStageFuture<Boolean> onConnected(NetTunnel tunnel);
 
 }

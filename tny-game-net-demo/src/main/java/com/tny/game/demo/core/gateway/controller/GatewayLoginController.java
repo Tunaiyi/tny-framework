@@ -12,8 +12,8 @@ package com.tny.game.demo.core.gateway.controller;
 
 import com.tny.game.demo.core.common.*;
 import com.tny.game.net.annotation.*;
-import com.tny.game.net.endpoint.*;
 import com.tny.game.net.netty4.configuration.command.*;
+import com.tny.game.net.session.*;
 import org.slf4j.*;
 
 import java.time.ZonedDateTime;
@@ -34,10 +34,10 @@ public class GatewayLoginController {
     private static final Logger LOGGER = LoggerFactory.getLogger(GatewayLoginController.class);
 
     @RelayTo
-    @Rpc(CtrlerIds.LOGIN$LOGIN)
+    @RpcRequest(CtrlerIds.LOGIN$LOGIN)
     @BeforePlugin(SpringBootParamFilterPlugin.class)
     @AuthenticationRequired(value = DEFAULT_USER_TYPE, validator = DemoAuthenticationValidator.class)
-    public void login(Endpoint endpoint, @RpcParam long sessionId, @RpcParam long userId) {
+    public void login(Session session, @RpcParam long sessionId, @RpcParam long userId) {
         LOGGER.info("{} - {} 登录成功 at {}", userId, sessionId, ZonedDateTime.now());
     }
 

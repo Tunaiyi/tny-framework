@@ -12,7 +12,7 @@ package com.tny.game.net.relay.link;
 
 import com.tny.game.net.application.*;
 import com.tny.game.net.command.dispatcher.*;
-import com.tny.game.net.endpoint.*;
+import com.tny.game.net.session.*;
 import com.tny.game.net.transport.*;
 
 import java.net.InetSocketAddress;
@@ -23,20 +23,21 @@ import java.net.InetSocketAddress;
  * @author : kgtny
  * @date : 2021/3/3 12:02 下午
  */
-public class GeneralServerRelayTunnel extends ServerTunnel<NetSession, MessageTransporter> implements ServerRelayTunnel {
+public class GeneralServerRelayTunnel extends ServerTransportTunnel<NetSession, MessageTransport> implements ServerRelayTunnel {
 
     private final long instanceId;
 
     private final InetSocketAddress remoteAddress;
 
-    private final ServerRelayTransporter transporter;
+    private final ServerRelayTransport relayTransport;
 
-    public GeneralServerRelayTunnel(long instanceId, long id, ServerRelayTransporter transporter,
+    public GeneralServerRelayTunnel(long instanceId, long id, ServerRelayTransport relayTransport,
             InetSocketAddress remoteAddress, NetworkContext context) {
-        super(id, transporter, context);
-        this.transporter = transporter;
+        super(id, relayTransport, context);
+        this.relayTransport = relayTransport;
         this.instanceId = instanceId;
         this.remoteAddress = remoteAddress;
+        this.bind(new CommonSession(Certificates.anonymous(), context, this, 0));
     }
 
     @Override
@@ -52,7 +53,7 @@ public class GeneralServerRelayTunnel extends ServerTunnel<NetSession, MessageTr
     @Override
     public MessageWriteFuture relay(RpcTransferContext rpcContext, boolean needPromise) {
         MessageWriteFuture promise = needPromise ? new MessageWriteFuture() : null;
-        rpcContext.transfer(transporter.getLink(), RpcTransactionContext.relayOperation(rpcContext.getMessage()));
+        rpcContext.transfer(relayTransport.getLink(), RpcTransactionContext.relayOperation(rpcContext.getMessage()));
         this.write(rpcContext.getMessage(), promise);
         rpcContext.completeSilently();
         return promise;
@@ -60,7 +61,7 @@ public class GeneralServerRelayTunnel extends ServerTunnel<NetSession, MessageTr
 
     @Override
     public boolean switchLink(ServerRelayLink link) {
-        return this.transporter.switchLink(link);
+        return this.relayTransport.switchLink(link);
     }
 
     //	@Override

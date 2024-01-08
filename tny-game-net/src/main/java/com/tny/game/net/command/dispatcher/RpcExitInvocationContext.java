@@ -10,9 +10,9 @@
  */
 package com.tny.game.net.command.dispatcher;
 
-import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.rpc.*;
+import com.tny.game.net.session.*;
 import com.tny.game.net.transport.*;
 
 /**
@@ -25,14 +25,14 @@ class RpcExitInvocationContext extends BaseRpcTransactionContext implements RpcE
 
     private final MessageContent content;
 
-    private final Endpoint endpoint;
+    private final Session session;
 
     private final RpcMonitor rpcMonitor;
 
-    RpcExitInvocationContext(Endpoint endpoint, MessageContent content, boolean async, RpcMonitor rpcMonitor) {
+    RpcExitInvocationContext(Session session, MessageContent content, boolean async, RpcMonitor rpcMonitor) {
         super(async);
         this.content = content;
-        this.endpoint = endpoint;
+        this.session = session;
         this.rpcMonitor = rpcMonitor;
     }
 
@@ -58,7 +58,7 @@ class RpcExitInvocationContext extends BaseRpcTransactionContext implements RpcE
 
     @Override
     public NetContact getContact() {
-        return endpoint;
+        return session;
     }
 
     @Override

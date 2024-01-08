@@ -15,20 +15,18 @@ import com.tny.game.common.event.bus.*;
 import com.tny.game.common.lifecycle.unit.*;
 import com.tny.game.net.application.*;
 import com.tny.game.net.application.listener.*;
-import com.tny.game.net.netty4.*;
 import com.tny.game.net.netty4.channel.*;
+import com.tny.game.net.netty4.relay.*;
 import com.tny.game.net.transport.*;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
-import io.netty.channel.epoll.EpollServerSocketChannel;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
 import org.slf4j.*;
 
 import javax.annotation.Nonnull;
 import java.net.InetSocketAddress;
 import java.util.*;
 
-public class NettyServerGuide extends NettyBootstrap<NettyNetServerBootstrapSetting> implements ServerGuide {
+public class NettyServerGuide extends NettyServerBootstrap<NettyNetServerBootstrapSetting> implements ServerGuide {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(NettyServerGuide.class);
 
@@ -49,7 +47,7 @@ public class NettyServerGuide extends NettyBootstrap<NettyNetServerBootstrapSett
     /**
      * 服务器关闭监听器
      */
-    private final BindVoidEventBus<ServerClosedListener, ServerGuide> onClose = EventBuses.of(ServerClosedListener.class,
+    private final VoidBindEvent<ServerClosedListener, ServerGuide> onClose = Events.ofEvent(ServerClosedListener.class,
             ServerClosedListener::onClosed);
 
     public NettyServerGuide(NetAppContext appContext, NettyNetServerBootstrapSetting setting) {
@@ -162,13 +160,10 @@ public class NettyServerGuide extends NettyBootstrap<NettyNetServerBootstrapSett
             NettyChannelSetting channelSetting = setting.getChannel();
             NettyMessageHandlerFactory nettyMessageHandlerFactory = UnitLoader.getLoader(NettyMessageHandlerFactory.class)
                     .checkUnit(channelSetting.getMessageHandlerFactory());
-            NettyTunnelFactory tunnelFactory = UnitLoader.getLoader(NettyTunnelFactory.class).checkUnit(channelSetting.getTunnelFactory());
+            NettyTunnelFactory tunnelFactory = UnitLoader.getLoader(NettyTunnelFactory.class)
+                    .checkUnit(channelSetting.getTunnelFactory());
             var messageHandler = nettyMessageHandlerFactory.create(this.getContext());
-            this.bootstrap.group(parentGroup, childGroup);
-            this.bootstrap.channel(EPOLL ? EpollServerSocketChannel.class : NioServerSocketChannel.class);
-            this.bootstrap.option(ChannelOption.SO_REUSEADDR, true);
-            this.bootstrap.childOption(ChannelOption.TCP_NODELAY, true);
-            this.bootstrap.childOption(ChannelOption.SO_KEEPALIVE, true);
+            init(this.bootstrap, parentGroup, childGroup, EPOLL);
             this.bootstrap.childHandler(new ChannelInitializer<>() {
 
                 @Override
@@ -180,7 +175,9 @@ public class NettyServerGuide extends NettyBootstrap<NettyNetServerBootstrapSett
                         }
                         channel.pipeline().addLast("nettyMessageHandler", messageHandler);
                         NetworkContext context = NettyServerGuide.this.getContext();
+                        var sessionFactory = context.getSessionFactory();
                         NetTunnel tunnel = tunnelFactory.create(idGenerator.generate(), channel, context); // 创建 Tunnel 已经transport.bind
+                        sessionFactory.create(context, tunnel);
                         tunnel.open();
                     } catch (Throwable e) {
                         LOGGER.info("init {} channel exception", channel, e);
@@ -192,5 +189,4 @@ public class NettyServerGuide extends NettyBootstrap<NettyNetServerBootstrapSett
         }
 
     }
-
 }

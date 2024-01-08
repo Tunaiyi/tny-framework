@@ -10,13 +10,18 @@
  */
 package com.tny.game.net.transport;
 
-import com.tny.game.net.endpoint.*;
+import com.tny.game.net.session.*;
 
 /**
  * 通道
  * Created by Kun Yang on 2017/3/26.
  */
-public interface Tunnel extends Connector, Connection {
+public interface Tunnel extends Communicator, Connection {
+
+    /**
+     * @return 事件
+     */
+    TunnelEventWatches events();
 
     /**
      * @return 通道 Id
@@ -36,7 +41,7 @@ public interface Tunnel extends Connector, Connection {
     /**
      * @return 获取绑定中断
      */
-    Endpoint getEndpoint();
+    Session getSession();
 
     /**
      * @return 管道状态

@@ -34,20 +34,6 @@ public interface RelayClientGuide {
 
     /**
      * @param url url
-     * @return 返回客户端
-     */
-    default RelayTransporter connect(URL url) {
-        return connect(url, -1);
-    }
-
-    /**
-     * @param url url
-     * @return 返回客户端
-     */
-    RelayTransporter connect(URL url, long timeout);
-
-    /**
-     * @param url url
      */
     default void connect(URL url, RelayConnectCallback callback) {
         connect(url, -1, callback);

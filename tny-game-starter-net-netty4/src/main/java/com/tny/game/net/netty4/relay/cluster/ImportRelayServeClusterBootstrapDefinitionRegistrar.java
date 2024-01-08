@@ -18,7 +18,7 @@ import org.springframework.core.type.AnnotationMetadata;
 
 import javax.annotation.Nonnull;
 
-import static com.tny.game.net.application.configuration.NetUnitNames.*;
+import static com.tny.game.common.lifecycle.unit.UnitNames.*;
 
 /**
  * <p>
@@ -28,7 +28,7 @@ public class ImportRelayServeClusterBootstrapDefinitionRegistrar extends ImportC
     @Override
     public void registerBeanDefinitions(@Nonnull AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
         SpringRelayClustersProperties properties = loadProperties(SpringRelayClustersProperties.class);
-        for (SpringRelayServeClusterSetting setting : properties.getServeClusters()) {
+        for (SpringRelayServeClusterSetting setting : properties.getClusters()) {
             registerRelayServeClusterContext(setting, registry);
         }
     }

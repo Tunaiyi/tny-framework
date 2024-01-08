@@ -15,9 +15,9 @@ import com.tny.game.demo.core.common.*;
 import com.tny.game.demo.core.common.dto.*;
 import com.tny.game.net.annotation.*;
 import com.tny.game.net.application.*;
-import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.netty4.configuration.command.*;
+import com.tny.game.net.session.*;
 import com.tny.game.net.transport.*;
 
 import java.util.concurrent.ThreadLocalRandom;
@@ -35,20 +35,25 @@ import static com.tny.game.net.application.ContactType.*;
 @BeforePlugin(SpringBootParamFilterPlugin.class)
 public class ServerSpeakController {
 
-    @Rpc(CtrlerIds.SPEAK$SAY)
-    public SayContentDTO say(Endpoint endpoint, @RpcParam String message) {
-        endpoint.send(MessageContents
+    @RpcRequest(CtrlerIds.SPEAK$SAY)
+    public SayContentDTO say(Session session, @RpcParam String message) {
+        session.send(MessageContents
                 .push(Protocols.protocol(CtrlerIds.SPEAK$PUSH), "因为 [" + message + "] 推条信息给你! " + ThreadLocalRandom.current().nextInt(3000)));
-        return new SayContentDTO(endpoint.getId(), "respond " + message);
+        return new SayContentDTO(session.getId(), "respond " + message);
     }
 
-    @Rpc(CtrlerIds.SPEAK$SAY_FOR_RPC)
-    public SayContentDTO say(@Identify RpcAccessIdentify id, @RpcParam String message) {
+    @RpcRequest(CtrlerIds.SPEAK$SAY_FOR_RPC)
+    public SayContentDTO say(@IdentifyToken RpcAccessIdentify id, @RpcParam String message) {
         return new SayContentDTO(id.getContactId(), "respond " + message);
     }
 
-    @Rpc(CtrlerIds.SPEAK$TEST)
-    public SayContentDTO test(Endpoint endpoint,
+    @RpcRequest(CtrlerIds.SPEAK$SAY_FOR_CONTENT)
+    public SayContentDTO sayForContent(@IdentifyToken RpcAccessIdentify id, @RpcParam SayContentDTO content) {
+        return new SayContentDTO(id.getContactId(), "respond " + content.getMessage());
+    }
+
+    @RpcRequest(CtrlerIds.SPEAK$TEST)
+    public SayContentDTO test(Session session,
             @RpcParam byte byteValue,
             @RpcParam short shortValue,
             @RpcParam int intValue,
@@ -65,13 +70,13 @@ public class ServerSpeakController {
                          "\ndoubleValue:" + doubleValue +
                          "\nbooleanValue:" + booleanValue +
                          "\nmessage:" + message;
-        endpoint.send(MessageContents
+        session.send(MessageContents
                 .push(Protocols.protocol(CtrlerIds.SPEAK$PUSH), content));
-        return new SayContentDTO(endpoint.getId(), "test result: " + content);
+        return new SayContentDTO(session.getId(), "test result: " + content);
     }
 
-    @Rpc(CtrlerIds.SPEAK$DELAY_SAY)
-    public Wait<SayContentDTO> delaySay(Endpoint endpoint, @RpcParam String message, @RpcParam long delay) {
+    @RpcRequest(CtrlerIds.SPEAK$DELAY_SAY)
+    public Wait<SayContentDTO> delaySay(Session session, @RpcParam String message, @RpcParam long delay) {
         long timeout = System.currentTimeMillis() + delay;
         return new Wait<SayContentDTO>() {
 
@@ -98,7 +103,7 @@ public class ServerSpeakController {
             @Override
             public SayContentDTO getResult() {
                 System.out.println(message);
-                return new SayContentDTO(endpoint.getId(), "delay message : " + message);
+                return new SayContentDTO(session.getId(), "delay message : " + message);
             }
         };
     }

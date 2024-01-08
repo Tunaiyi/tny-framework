@@ -27,9 +27,8 @@ import static com.tny.game.net.application.ContactType.*;
  * @date 2018-10-31 16:46
  */
 @RpcController
-@AuthenticationRequired(DEFAULT_USER_TYPE)
+@AuthenticationRequired({DEFAULT_USER_TYPE, "game-service"})
 @BeforePlugin(SpringBootParamFilterPlugin.class)
-//@MessageFilter(modes = {RESPONSE, PUSH})
 public class ClientLoginController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ClientLoginController.class);
@@ -55,7 +54,7 @@ public class ClientLoginController {
         LOGGER.info("User {} [accessId {}]receive push message {}", tunnel.getIdentify(), tunnel.getAccessId(), message);
     }
 
-    @Rpc(CtrlerIds.SPEAK$PING)
+    @RpcPush(CtrlerIds.SPEAK$PING)
     @BeforePlugin(SpringBootParamFilterPlugin.class)
     public void pingMessage(Tunnel tunnel, @RpcBody String message) {
         LOGGER.info("User {} [accessId {}] receive : {}", tunnel.getIdentify(), tunnel.getAccessId(), message);

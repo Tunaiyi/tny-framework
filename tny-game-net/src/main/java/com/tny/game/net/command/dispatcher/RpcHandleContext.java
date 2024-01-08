@@ -10,7 +10,7 @@
  */
 package com.tny.game.net.command.dispatcher;
 
-import com.tny.game.net.endpoint.*;
+import com.tny.game.net.session.*;
 
 import java.util.concurrent.Executor;
 
@@ -25,13 +25,13 @@ public interface RpcHandleContext extends RpcContext {
     /**
      * @return 获取终端
      */
-    Endpoint getEndpoint();
+    Session getSession();
 
     /**
      * @return 当前执行器
      */
     default Executor getExecutor() {
-        return getEndpoint();
+        return getSession();
     }
 
 }

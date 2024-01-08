@@ -18,7 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 
-import static com.tny.game.net.application.configuration.NetUnitNames.*;
+import static com.tny.game.common.lifecycle.unit.UnitNames.*;
 
 /**
  * <p>

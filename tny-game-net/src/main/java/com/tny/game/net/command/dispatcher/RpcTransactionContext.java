@@ -10,9 +10,9 @@
  */
 package com.tny.game.net.command.dispatcher;
 
-import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.rpc.*;
+import com.tny.game.net.session.*;
 import com.tny.game.net.transport.*;
 
 /**
@@ -47,8 +47,8 @@ public interface RpcTransactionContext extends RpcContext {
         return "error" + "[" + message.getProtocolId() + "@" + message.getMode().getMark() + "]";
     }
 
-    static RpcExitContext createExit(Endpoint endpoint, MessageContent content, boolean async, RpcMonitor rpcMonitor) {
-        return new RpcExitInvocationContext(endpoint, content, async, rpcMonitor);
+    static RpcExitContext createExit(Session session, MessageContent content, boolean async, RpcMonitor rpcMonitor) {
+        return new RpcExitInvocationContext(session, content, async, rpcMonitor);
     }
 
     static RpcEnterContext createEnter(NetTunnel tunnel, NetMessage message, boolean async) {

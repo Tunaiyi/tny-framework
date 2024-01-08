@@ -31,24 +31,20 @@ public class ImportRpcClientDefinitionRegistrar extends ImportConfigurationBeanD
 
     @Override
     public void registerBeanDefinitions(@Nonnull AnnotationMetadata importingClassMetadata, @Nonnull BeanDefinitionRegistry registry) {
-        RpcRemoteProperties rpcProperties = loadProperties(RpcRemoteProperties.class);
-        RpcClientSetting setting = rpcProperties.getClient();
-        if (setting == null) {
-            return;
-        }
-        for (RpcServiceSetting serviceSetting : setting.getServices()) {
-            registerRpcConnector(registry, serviceSetting);
+        RpcClustersProperties rpcProperties = loadProperties(RpcClustersProperties.class);
+        for (RpcClusterSetting clusterSetting : rpcProperties.getClusters()) {
+            registerRpcConnector(registry, clusterSetting);
         }
     }
 
-    private <T> void registerRpcConnector(BeanDefinitionRegistry registry, RpcServiceSetting serviceSetting) {
-        String beanName = BeanNameUtils.lowerCamelName(serviceSetting.serviceName() + RpcClientFactory.class.getSimpleName());
+    private <T> void registerRpcConnector(BeanDefinitionRegistry registry, RpcClusterSetting setting) {
+        String beanName = BeanNameUtils.lowerCamelName(setting.serviceName() + RpcConnectorFactory.class.getSimpleName());
         BeanDefinitionBuilder builder = BeanDefinitionBuilder
-                .genericBeanDefinition(RpcClientFactory.class)
+                .genericBeanDefinition(RpcConnectorFactory.class)
                 .addAutowiredProperty("appContext")
-                .addPropertyValue("setting", serviceSetting);
-        if (serviceSetting.isHasGuide()) {
-            builder.addPropertyReference("clientGuide", serviceSetting.getGuide());
+                .addPropertyValue("setting", setting);
+        if (setting.isHasGuide()) {
+            builder.addPropertyReference("clientGuide", setting.getGuide());
         } else {
             builder.addPropertyReference("clientGuide", "rpcClientGuide");
         }

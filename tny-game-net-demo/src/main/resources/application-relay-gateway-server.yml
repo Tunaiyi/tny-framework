@@ -2,7 +2,7 @@ tny:
   app:
     server-id: 1
     name: GatewayApp
-    app-type: gateway
+    app-type: gateway-service
     scope-type: online
   net:
     bootstrap:
@@ -35,31 +35,24 @@ tny:
             decoder:
               message-body-codec: typeProtobufMessageBodyCodec
     relay:
-      cluster:
-        serve-clusters:
-          - service: "game-server"
-            discovery: false
-            link-connection-size: 1
-            instances:
-              - id: 1
-                url: tcp://127.0.0.1:15800
+      clusters:
+        - service: "game-service"
+          discovery: false
+          connection-size: 1
+          serve-nodes:
+            - id: 1
+              url: tcp://127.0.0.1:15800
       router:
         fixed-message-router:
-          service: "game-server"
-    command:
-      processor:
-        disruptor:
-          setting:
-            enable: true
-            wait-strategy: blocking
-            threads: 4
-    endpoint:
+          service: "game-service"
+    session:
       session-keeper:
         name: _user
         offline-close-delay: 1000
         offline-max-size: 1000
 
   data:
+    enable: false
     object-storage:
       async-storage:
         enable: false

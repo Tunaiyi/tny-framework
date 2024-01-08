@@ -59,7 +59,7 @@ public class DataAutoConfiguration {
     }
 
     @Bean
-    public CacheKeyMakerIdConverterFactory entityKeyMakerIdConverterFactory() {
+    public CacheKeyMakerIdConverterFactory cacheKeyMakerIdConverterFactory() {
         return new CacheKeyMakerIdConverterFactory();
     }
 

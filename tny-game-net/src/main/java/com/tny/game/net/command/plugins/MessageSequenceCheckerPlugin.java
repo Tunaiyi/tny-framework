@@ -13,8 +13,8 @@ package com.tny.game.net.command.plugins;
 import com.tny.game.common.context.*;
 import com.tny.game.net.application.*;
 import com.tny.game.net.command.dispatcher.*;
-import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
+import com.tny.game.net.session.*;
 import com.tny.game.net.transport.*;
 import org.slf4j.*;
 
@@ -29,16 +29,16 @@ public class MessageSequenceCheckerPlugin implements VoidCommandPlugin {
         if (!tunnel.isAuthenticated()) {
             return;
         }
-        Endpoint endpoint = null;
-        if (tunnel instanceof Endpoint) {
-            endpoint = (Endpoint) tunnel;
+        Session session = null;
+        if (tunnel instanceof Session) {
+            session = (Session) tunnel;
         } else if (tunnel instanceof Tunnel) {
-            endpoint = ((Tunnel) tunnel).getEndpoint();
+            session = ((Tunnel) tunnel).getSession();
         }
-        Integer lastHandledId = endpoint.attributes().getAttribute(CHECK_MESSAGE_ID, 0);
+        Integer lastHandledId = session.attributes().getAttribute(CHECK_MESSAGE_ID, 0);
         MessageHead head = message.getHead();
         if (head.getId() > lastHandledId) {
-            endpoint.attributes().setAttribute(CHECK_MESSAGE_ID, lastHandledId);
+            session.attributes().setAttribute(CHECK_MESSAGE_ID, lastHandledId);
         } else {
             LOGGER.warn("message [{}] is handled, the id of the last message handled is {}", message, lastHandledId);
             context.doneAndIntercept(NetResultCode.MESSAGE_HANDLED);

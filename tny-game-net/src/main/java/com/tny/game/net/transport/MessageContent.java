@@ -18,7 +18,7 @@ import java.util.Collection;
 /**
  * Created by Kun Yang on 2017/2/16.
  */
-public abstract class MessageContent extends BaseMessageHeaderContainer implements SendReceipt, MessageSubject {
+public abstract class MessageContent extends BaseMessageHeaderContainer implements MessageSent, MessageSubject {
 
     /**
      * @return 获取结果码

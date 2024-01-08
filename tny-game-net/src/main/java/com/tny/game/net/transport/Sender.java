@@ -24,6 +24,6 @@ public interface Sender {
      * @param content 发送消息上下文
      * @return 返回发送上下文
      */
-    SendReceipt send(MessageContent content);
+    MessageSent send(MessageContent content);
 
 }

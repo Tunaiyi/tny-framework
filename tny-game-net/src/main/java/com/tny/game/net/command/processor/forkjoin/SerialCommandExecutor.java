@@ -14,7 +14,6 @@ import com.tny.game.common.concurrent.worker.*;
 import com.tny.game.common.runtime.*;
 import com.tny.game.net.application.*;
 import com.tny.game.net.command.dispatcher.*;
-import com.tny.game.net.command.processor.MessageCommandBox;
 import com.tny.game.net.command.processor.*;
 import org.slf4j.Logger;
 
@@ -50,7 +49,7 @@ public class SerialCommandExecutor implements CommandExecutor {
     }
 
     @Override
-    public void executeCommand(MessageCommandBox box, RpcCommand command) {
+    public void executeCommand(RpcCommand command) {
         commandWorker.await(() -> {
             var future = execute(command);
             if (LOG_NET.isDebugEnabled()) {
@@ -70,7 +69,7 @@ public class SerialCommandExecutor implements CommandExecutor {
     }
 
     @Override
-    public void executeRunnable(MessageCommandBox box, Runnable runnable) {
+    public void executeRunnable(Runnable runnable) {
         this.executeWorker.run(runnable);
     }
 

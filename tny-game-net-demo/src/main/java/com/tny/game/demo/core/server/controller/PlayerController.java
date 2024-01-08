@@ -21,7 +21,6 @@ import com.tny.game.net.annotation.*;
 import com.tny.game.net.application.*;
 import com.tny.game.net.netty4.configuration.command.*;
 import org.slf4j.*;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import static com.tny.game.net.application.ContactType.*;
 import static com.tny.game.net.message.MessageMode.*;
@@ -39,10 +38,13 @@ public class PlayerController implements AppPostStart {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PlayerController.class);
 
-    @Autowired
-    private EntityCacheManager<Long, DemoPlayer> entityCacheManager;
+    private final EntityCacheManager<Long, DemoPlayer> entityCacheManager;
 
-    @Rpc(CtrlerIds.PLAYER$GET)
+    public PlayerController(EntityCacheManager<Long, DemoPlayer> entityCacheManager) {
+        this.entityCacheManager = entityCacheManager;
+    }
+
+    @RpcRequest(CtrlerIds.PLAYER$GET)
     public RpcResult<PlayerDTO> getPlayer(@RpcParam long playerId) {
         DemoPlayer player = entityCacheManager.getEntity(playerId);
         if (player != null) {
@@ -53,7 +55,7 @@ public class PlayerController implements AppPostStart {
         }
     }
 
-    @Rpc(CtrlerIds.PLAYER$ADD)
+    @RpcRequest(CtrlerIds.PLAYER$ADD)
     public RpcResult<PlayerDTO> addPlayer(@RpcParam long playerId, @RpcParam String name, @RpcParam int age) {
         entityCacheManager.getEntity(playerId);
         DemoPlayer player = new DemoPlayer(playerId, name, age);
@@ -65,7 +67,7 @@ public class PlayerController implements AppPostStart {
         }
     }
 
-    @Rpc(CtrlerIds.PLAYER$UPDATE)
+    @RpcRequest(CtrlerIds.PLAYER$UPDATE)
     public RpcResult<PlayerDTO> updatePlayer(@RpcParam long playerId, @RpcParam String name, @RpcParam int age) {
         DemoPlayer player = entityCacheManager.getEntity(playerId);
         if (player != null) {
@@ -81,7 +83,7 @@ public class PlayerController implements AppPostStart {
         return RpcResults.fail(ResultCode.FAILURE);
     }
 
-    @Rpc(CtrlerIds.PLAYER$SAVE)
+    @RpcRequest(CtrlerIds.PLAYER$SAVE)
     public RpcResult<PlayerDTO> savePlayer(@RpcParam long playerId, @RpcParam String name, @RpcParam int age) {
         DemoPlayer player = null;
         for (int id = 0; id < 500000; id++) {
@@ -93,7 +95,7 @@ public class PlayerController implements AppPostStart {
         return RpcResults.success(new PlayerDTO(player));
     }
 
-    @Rpc(CtrlerIds.PLAYER$DELETE)
+    @RpcRequest(CtrlerIds.PLAYER$DELETE)
     public RpcResult<PlayerDTO> deletePlayer(@RpcParam long playerId) {
         DemoPlayer player = entityCacheManager.getEntity(playerId);
         if (player != null) {

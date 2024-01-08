@@ -19,7 +19,6 @@ import com.tny.game.common.result.*;
  * Actor命令
  * Created by Kun Yang on 16/4/26.
  */
-@SuppressWarnings("unchecked")
 public abstract class BaseActorCommand<T> extends ActorCommand<T> {
 
     private ActorAnswer<T> answer;
@@ -64,7 +63,6 @@ public abstract class BaseActorCommand<T> extends ActorCommand<T> {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected void handle() throws Throwable {
         if (isDone()) {
             return;

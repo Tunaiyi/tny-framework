@@ -15,8 +15,8 @@ import com.tny.game.common.concurrent.*;
 import com.tny.game.common.result.*;
 import com.tny.game.common.type.*;
 import com.tny.game.common.utils.*;
-import com.tny.game.net.endpoint.*;
 import com.tny.game.net.message.*;
+import com.tny.game.net.session.*;
 
 import java.util.Collection;
 

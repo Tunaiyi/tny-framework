@@ -14,7 +14,7 @@ package com.tny.game.net.netty4.relay.codec;
 import com.tny.game.net.netty4.network.codec.*;
 import org.apache.commons.lang3.StringUtils;
 
-import static com.tny.game.net.application.configuration.NetUnitNames.*;
+import static com.tny.game.common.lifecycle.unit.UnitNames.*;
 
 /**
  * Created by Kun Yang on 2018/8/13.

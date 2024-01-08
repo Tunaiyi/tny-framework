@@ -12,8 +12,8 @@ package com.tny.game.net.application;
 
 import com.tny.game.common.concurrent.*;
 import com.tny.game.common.url.*;
-import com.tny.game.net.endpoint.*;
 import com.tny.game.net.exception.*;
+import com.tny.game.net.session.*;
 
 /**
  * <p>
@@ -21,7 +21,7 @@ import com.tny.game.net.exception.*;
  * @author : kgtny
  * @date : 2021/11/8 2:43 下午
  */
-public class ClientConnectPromise extends CompleteStageFuture<Client> implements ClientConnectFuture {
+public class ClientConnectPromise extends CompleteStageFuture<TunnelConnector> implements ClientConnectFuture {
 
     public static ClientConnectPromise connected(URL url) {
         ClientConnectPromise future = new ClientConnectPromise();
@@ -31,11 +31,11 @@ public class ClientConnectPromise extends CompleteStageFuture<Client> implements
 
     public static ClientConnectPromise closed(URL url) {
         ClientConnectPromise future = new ClientConnectPromise();
-        future.completeExceptionally(new EndpointClosedException("client {} close", url));
+        future.completeExceptionally(new SessionClosedException("client {} close", url));
         return future;
     }
 
-    public static ClientConnectPromise success(Client client) {
+    public static ClientConnectPromise success(TunnelConnector client) {
         ClientConnectPromise future = new ClientConnectPromise();
         future.complete(client);
         return future;

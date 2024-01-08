@@ -97,7 +97,8 @@ public class ImportRedisDataSourceBeanDefinitionRegistrar extends ImportConfigur
         } else {
             config = new Config();
             String prefix = REDIS_PROTOCOL_PREFIX;
-            if (redisProperties.isSsl()) {
+            var ssl = redisProperties.getSsl();
+            if (ssl.isEnabled()) {
                 prefix = REDISS_PROTOCOL_PREFIX;
             }
 

@@ -28,7 +28,10 @@ import org.springframework.context.ApplicationContext;
  */
 @EnableNetApplication
 @EnableRelayServerApplication
-@SpringBootApplication(scanBasePackages = {"com.tny.game.demo.relay.server", "com.tny.game.demo.core.common", "com.tny.game.demo.core.server"})
+@SpringBootApplication(scanBasePackages = {
+        "com.tny.game.demo.relay.server",
+        "com.tny.game.demo.core.common",
+        "com.tny.game.demo.core.server"})
 public class RelayGameServerApp {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RelayGameServerApp.class);

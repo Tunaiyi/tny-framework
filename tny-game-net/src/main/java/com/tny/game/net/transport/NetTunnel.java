@@ -12,13 +12,14 @@ package com.tny.game.net.transport;
 
 import com.tny.game.net.application.*;
 import com.tny.game.net.command.dispatcher.*;
-import com.tny.game.net.endpoint.*;
+import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
+import com.tny.game.net.session.*;
 
 /**
  * Created by Kun Yang on 2017/3/26.
  */
-public interface NetTunnel extends Tunnel, Transport, MessageSender {
+public interface NetTunnel extends Tunnel, MessageSender {
 
     /**
      * 接受消息
@@ -60,12 +61,27 @@ public interface NetTunnel extends Tunnel, Transport, MessageSender {
     void reset();
 
     /**
-     * 终端 Endpoint
+     * 会话
      *
-     * @param endpoint 终端
+     * @param session 会话
      * @return 返回是否绑定成功
      */
-    boolean bind(NetEndpoint endpoint);
+    boolean bind(NetSession session);
+
+    /**
+     * 写出消息
+     *
+     * @param message 发送消息
+     * @param promise 发送promise
+     */
+    MessageWriteFuture write(Message message, MessageWriteFuture promise) throws NetException;
+
+    /**
+     * 写出消息
+     *
+     * @param content 发送消息
+     */
+    MessageWriteFuture write(MessageAllocator allocator, MessageContent content) throws NetException;
 
     /**
      * @return message factory
@@ -83,7 +99,7 @@ public interface NetTunnel extends Tunnel, Transport, MessageSender {
      * @return 获取绑定中断
      */
     @Override
-    NetEndpoint getEndpoint();
+    NetSession getSession();
 
 }
 

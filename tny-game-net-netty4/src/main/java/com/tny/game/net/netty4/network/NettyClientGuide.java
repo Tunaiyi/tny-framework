@@ -10,15 +10,15 @@
  */
 package com.tny.game.net.netty4.network;
 
+import com.tny.game.common.concurrent.*;
 import com.tny.game.common.concurrent.collection.*;
 import com.tny.game.common.url.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.net.application.*;
-import com.tny.game.net.endpoint.*;
-import com.tny.game.net.endpoint.listener.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.netty4.*;
 import com.tny.game.net.netty4.channel.*;
+import com.tny.game.net.rpc.*;
 import com.tny.game.net.transport.*;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
@@ -29,11 +29,8 @@ import org.slf4j.*;
 import javax.annotation.Nonnull;
 import java.net.InetSocketAddress;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import static com.tny.game.common.utils.StringAide.*;
-import static com.tny.game.net.endpoint.listener.ClientEventBuses.*;
 
 public class NettyClientGuide extends NettyBootstrap<NettyNetClientBootstrapSetting> implements ClientGuide {
 
@@ -45,34 +42,20 @@ public class NettyClientGuide extends NettyBootstrap<NettyNetClientBootstrapSett
 
     private Bootstrap bootstrap = null;
 
-    private final Set<Client> clients = new ConcurrentHashSet<>();
+    private final Set<NetTunnel> tunnels = new ConcurrentHashSet<>();
 
     private final AtomicBoolean closed = new AtomicBoolean(false);
 
-    private final ClientCloseListener closeListener = this.clients::remove;
-
-    private final ClientOpenListener openListener = this.clients::add;
-
     public NettyClientGuide(NetAppContext appContext, NettyNetClientBootstrapSetting clientSetting) {
         super(appContext, clientSetting);
-        buses().<Object>closeEvent().addListener(this.closeListener);
-        buses().<Object>openEvent().addListener(this.openListener);
     }
 
     public NettyClientGuide(NetAppContext appContext, NettyNetClientBootstrapSetting clientSetting, ChannelMaker<Channel> channelMaker) {
         super(appContext, clientSetting, channelMaker);
-        buses().closeEvent().addListener(this.closeListener);
-        buses().openEvent().addListener(this.openListener);
     }
 
     private String clientKey(URL url) {
         return url.getHost() + ":" + url.getPort();
-    }
-
-    @Override
-    public Client client(URL url, PostConnect connect) {
-        NetworkContext context = this.getContext();
-        return new NettyClient(this, this.idGenerator, url, connect, Certificates.anonymous(), context);
     }
 
     private Bootstrap getBootstrap() {
@@ -85,11 +68,8 @@ public class NettyClientGuide extends NettyBootstrap<NettyNetClientBootstrapSett
             }
             this.bootstrap = new Bootstrap();
             NettyMessageHandler messageHandler = new NettyMessageHandler(this.getContext());
-            this.bootstrap.group(workerGroup)
-                    .channel(EPOLL ? EpollSocketChannel.class : NioSocketChannel.class)
-                    .option(ChannelOption.SO_REUSEADDR, true)
-                    .option(ChannelOption.TCP_NODELAY, true)
-                    .option(ChannelOption.SO_KEEPALIVE, true)
+            this.bootstrap.group(workerGroup).channel(EPOLL ? EpollSocketChannel.class : NioSocketChannel.class)
+                    .option(ChannelOption.SO_REUSEADDR, true).option(ChannelOption.TCP_NODELAY, true).option(ChannelOption.SO_KEEPALIVE, true)
                     .handler(new ChannelInitializer<>() {
 
                         @Override
@@ -111,38 +91,43 @@ public class NettyClientGuide extends NettyBootstrap<NettyNetClientBootstrapSett
 
     }
 
-    Channel connect(URL url, long connectTimeout) throws NetException {
-        Asserts.checkNotNull(url, "url is null");
-        ChannelFuture channelFuture = null;
-        try {
-            channelFuture = this.getBootstrap().connect(new InetSocketAddress(url.getHost(), url.getPort()));
-            boolean result = channelFuture.awaitUninterruptibly(connectTimeout, TimeUnit.MILLISECONDS);
-            boolean success = channelFuture.isSuccess();
-            if (result && success) {
-                return channelFuture.channel();
-            }
-            boolean connected = false;
-            if (channelFuture.channel() != null) {
-                connected = channelFuture.channel().isActive();
-            }
-            if (channelFuture.cause() != null) {
-                channelFuture.cancel(true);
-                throw new NetException(format("Connect url: {} failed. result: {} success: {}, connected: {}", url, result, success, connected),
-                        channelFuture.cause());
+    @Override
+    public CompletionStageFuture<NetTunnel> connectAsync(URL url, TunnelUnavailableWatch watch) {
+        ClientConnectorSetting setting = getSetting().getConnector();
+        var future = new CompleteStageFuture<NetTunnel>();
+        var channelFuture = connectAsync(url, setting.getConnectTimeout());
+        channelFuture.addListener(f -> {
+            if (f.isSuccess()) {
+                var context = getContext();
+                var channel = channelFuture.channel();
+                var transport = new NettyChannelMessageTransport(NetAccessMode.CLIENT, channel);
+                var tunnel = new GeneralClientTunnel(this.idGenerator.generate(), transport, this.getContext(), watch);
+                var sessionFactory = context.getSessionFactory();
+                sessionFactory.create(context, tunnel);
+                channel.closeFuture().addListener((closeFuture) -> {
+                    channel.attr(NettyNetAttrKeys.TUNNEL);
+                    tunnels.remove(tunnel);
+                    transport.close();
+                });
+                tunnel.open();
+                tunnels.add(tunnel);
+                future.complete(tunnel);
             } else {
-                channelFuture.cancel(true);
-                throw new NetException(format("Connect url: {} timeout. result: {}, success: {}, connected: {}", url, result, success, connected),
-                        channelFuture.cause());
+                if (f.cause() != null) {
+                    future.completeExceptionally(f.cause());
+                } else {
+                    future.completeExceptionally(new TunnelException("connect {} failed!", url));
+                }
             }
-        } catch (NetException e) {
-            throw e;
-        } catch (Exception e) {
-            if (channelFuture != null) {
-                channelFuture.channel().close();
-            }
-            throw new NetException(format("Connect url: {} exception.", url), e);
-        }
+        });
+        return future;
     }
+
+    private ChannelFuture connectAsync(URL url, long connectTimeout) throws NetException {
+        Asserts.checkNotNull(url, "url is null");
+        return this.getBootstrap().connect(new InetSocketAddress(url.getHost(), url.getPort()));
+    }
+
 
     @Override
     public boolean isClosed() {
@@ -152,12 +137,17 @@ public class NettyClientGuide extends NettyBootstrap<NettyNetClientBootstrapSett
     @Override
     public boolean close() {
         if (this.closed.compareAndSet(false, true)) {
-            this.clients.forEach(Client::close);
+            this.tunnels.forEach(Tunnel::close);
             workerGroup.shutdownGracefully();
-            buses().closeEvent().removeListener(this.closeListener);
             return true;
         }
         return false;
+    }
+
+
+    @Override
+    public NetTunnel connect(URL url, TunnelUnavailableWatch watch) throws ExecutionException, InterruptedException {
+        return connectAsync(url, watch).get();
     }
 
 }

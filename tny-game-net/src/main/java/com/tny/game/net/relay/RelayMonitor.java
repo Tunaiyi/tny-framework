@@ -33,8 +33,8 @@ public class RelayMonitor {
         NetLogger.logSend(link, packet);
     }
 
-    public void onLinkOpen(RelayTransporter transporter, LinkOpenPacket packet) {
-        NetLogger.logReceive(transporter, packet);
+    public void onLinkOpen(RelayTransport transport, LinkOpenPacket packet) {
+        NetLogger.logReceive(transport, packet);
     }
 
 }

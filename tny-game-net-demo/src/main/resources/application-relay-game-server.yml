@@ -35,14 +35,7 @@ tny:
     pipeline:
       read-idle-pipeline-chain:
         idle-timeout: 18000
-    command:
-      processor:
-        disruptor:
-          setting:
-            enable: true
-            wait-strategy: blocking
-            threads: 4
-    endpoint:
+    session:
       session-keeper:
         offline-close-delay: 1000
         offline-max-size: 1000
@@ -58,7 +51,6 @@ tny:
         password: '${r2.redis.password:tNbrH3NSErGd}'
         port: '${r2.redis.post:6379}'
         database: '${r2.redis.db:9}'
-
   data:
     object-cache:
       recycler:

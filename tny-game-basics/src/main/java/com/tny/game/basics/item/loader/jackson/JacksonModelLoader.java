@@ -29,6 +29,7 @@ import org.slf4j.*;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.locks.*;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 
@@ -68,6 +69,8 @@ public abstract class JacksonModelLoader<M extends Model> implements ModelLoader
     private final ExprHolderFactory exprHolderFactory;
 
     private final ModelLoadHandler<M> loadHandler;
+
+    private final Lock lock = new ReentrantLock();
 
     private ModelLoaderContextHandler<Object> contextHandler;
 
@@ -139,11 +142,15 @@ public abstract class JacksonModelLoader<M extends Model> implements ModelLoader
         if (this.mapper != null) {
             return mapper;
         }
-        synchronized (this) {
+        var lock = this.lock;
+        lock.lock();
+        try {
             if (this.mapper != null) {
                 return mapper;
             }
             this.mapper = createMapper();
+        } finally {
+            lock.unlock();
         }
         return mapper;
     }

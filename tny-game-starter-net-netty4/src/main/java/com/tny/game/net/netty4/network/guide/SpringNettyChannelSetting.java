@@ -17,7 +17,7 @@ import com.tny.game.net.netty4.network.*;
 import com.tny.game.net.netty4.network.codec.*;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
-import static com.tny.game.net.application.configuration.NetUnitNames.*;
+import static com.tny.game.common.lifecycle.unit.UnitNames.*;
 
 public class SpringNettyChannelSetting extends NettyChannelSetting {
 
