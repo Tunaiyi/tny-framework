@@ -58,7 +58,7 @@ public abstract class LoopCommand extends DelayCommand {
     /**
      * 返回下一次间隔时间
      * 若
-     * 返回 STOP_LOOP = -1 终端任务
+     * 返回 STOP_LOOP = -1 会话任务
      * 返回 n 表示 n 毫秒后会再次执行任务;
      *
      * @return

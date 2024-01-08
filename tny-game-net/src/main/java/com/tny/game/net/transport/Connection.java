@@ -24,7 +24,7 @@ public interface Connection extends AddressPeer {
     boolean isActive();
 
     /**
-     * @return 是否关闭终端
+     * @return 是否关闭会话
      */
     boolean isClosed();
 

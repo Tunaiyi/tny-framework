@@ -16,7 +16,7 @@ import com.tny.game.net.session.*;
 import static com.tny.game.common.utils.ObjectAide.*;
 
 /**
- * 终端消息处理过滤器
+ * 会话消息处理过滤器
  * <p>
  *
  * @author Kun Yang

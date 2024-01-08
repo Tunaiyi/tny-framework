@@ -70,9 +70,9 @@ public enum NetResultCode implements ResultCode {
     CONNECT_FAILED(184, "连接失败", ResultLevel.WARN),
 
     /**
-     * 终端关闭
+     * 会话关闭
      */
-    SESSION_CLOSE(185, "终端关闭", ResultLevel.WARN),
+    SESSION_CLOSE(185, "会话关闭", ResultLevel.WARN),
 
     /**
      * 服务端接受请求异常

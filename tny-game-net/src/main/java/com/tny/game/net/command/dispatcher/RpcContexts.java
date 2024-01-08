@@ -48,14 +48,14 @@ public class RpcContexts {
     }
 
     /**
-     * @return 获取当前线程正在执行的终端
+     * @return 获取当前线程正在执行的会话
      */
     public static Session currentSession() {
         return current().getSession();
     }
 
     /**
-     * @return 获取当前线程正在执行的终端
+     * @return 获取当前线程正在执行的会话
      */
     public static Executor currentExecutor() {
         return current().getSession();

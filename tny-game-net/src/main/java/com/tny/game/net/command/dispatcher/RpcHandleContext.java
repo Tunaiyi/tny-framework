@@ -23,7 +23,7 @@ import java.util.concurrent.Executor;
 public interface RpcHandleContext extends RpcContext {
 
     /**
-     * @return 获取终端
+     * @return 获取会话
      */
     Session getSession();
 
