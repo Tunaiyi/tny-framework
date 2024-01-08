@@ -12,7 +12,7 @@
 package com.tny.game.boot.transaction.listener;
 
 import com.tny.game.boot.transaction.*;
-import com.tny.game.common.event.bus.*;
+import com.tny.game.common.event.*;
 
 public interface TransactionEvents {
 

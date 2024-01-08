@@ -10,7 +10,9 @@
  */
 package com.tny.game.namespace.etcd;
 
-import com.tny.game.common.event.firer.*;
+import com.tny.game.common.event.*;
+import com.tny.game.common.event.notifier.*;
+import com.tny.game.common.notifier.*;
 import com.tny.game.namespace.*;
 import com.tny.game.namespace.exception.*;
 import com.tny.game.namespace.listener.*;
@@ -51,7 +53,7 @@ public class EtcdLessee implements Lessee {
 
     private long ttl;
 
-    private volatile EventFirer<LesseeListener, Lessee> firer;
+    private volatile EventNotifier<LesseeListener, Lessee> firer;
 
     private CloseableClient keepalive;
 
@@ -104,7 +106,7 @@ public class EtcdLessee implements Lessee {
     }
 
     @Override
-    public EventSource<LesseeListener> event() {
+    public EventWatchAdapter<LesseeListener> event() {
         return firer();
     }
 
@@ -139,9 +141,9 @@ public class EtcdLessee implements Lessee {
 
                                 @Override
                                 public void onNext(LeaseKeepAliveResponse value) {
-                                    EventFirer<LesseeListener, Lessee> firer = EtcdLessee.this.firer;
+                                    EventNotifier<LesseeListener, Lessee> firer = EtcdLessee.this.firer;
                                     if (firer != null) {
-                                        firer.fire(LesseeListener::onRenew, EtcdLessee.this);
+                                        firer.notify(LesseeListener::onRenew, EtcdLessee.this);
                                     }
                                 }
 
@@ -150,9 +152,9 @@ public class EtcdLessee implements Lessee {
                                     if (status.compareAndSet(LIVE, PAUSE)) {
                                         doRevoke();
                                     }
-                                    EventFirer<LesseeListener, Lessee> firer = EtcdLessee.this.firer;
+                                    EventNotifier<LesseeListener, Lessee> firer = EtcdLessee.this.firer;
                                     if (firer != null) {
-                                        firer.fire(LesseeListener::onError, EtcdLessee.this, cause);
+                                        firer.notify(LesseeListener::onError, EtcdLessee.this, cause);
                                     }
                                 }
 
@@ -161,18 +163,18 @@ public class EtcdLessee implements Lessee {
                                     if (status.compareAndSet(LIVE, PAUSE)) {
                                         doRevoke();
                                     }
-                                    EventFirer<LesseeListener, Lessee> firer = EtcdLessee.this.firer;
+                                    EventNotifier<LesseeListener, Lessee> firer = EtcdLessee.this.firer;
                                     if (firer != null) {
-                                        firer.fire(LesseeListener::onCompleted, EtcdLessee.this);
+                                        firer.notify(LesseeListener::onCompleted, EtcdLessee.this);
                                     }
                                 }
                             });
                             status.compareAndSet(GRANT, LIVE);
                             if (firer != null) {
                                 if (whenStatus == PAUSE) {
-                                    firer.fire(LesseeListener::onResume, EtcdLessee.this);
+                                    firer.notify(LesseeListener::onResume, EtcdLessee.this);
                                 } else {
-                                    firer.fire(LesseeListener::onLease, EtcdLessee.this);
+                                    firer.notify(LesseeListener::onLease, EtcdLessee.this);
                                 }
                             }
                         }
@@ -201,7 +203,7 @@ public class EtcdLessee implements Lessee {
         return doRevoke();
     }
 
-    private EventFirer<LesseeListener, Lessee> firer() {
+    private EventNotifier<LesseeListener, Lessee> firer() {
         if (firer != null) {
             return firer;
         }
@@ -209,7 +211,7 @@ public class EtcdLessee implements Lessee {
             if (firer != null) {
                 return firer;
             }
-            this.firer = EventFirers.firer(LesseeListener.class);
+            this.firer = EventNotifiers.notifier(LesseeListener.class);
             return this.firer;
         }
     }

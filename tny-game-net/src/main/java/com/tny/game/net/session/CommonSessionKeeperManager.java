@@ -11,7 +11,7 @@
 package com.tny.game.net.session;
 
 import com.google.common.collect.ImmutableMap;
-import com.tny.game.common.event.bus.*;
+import com.tny.game.common.event.*;
 import com.tny.game.common.lifecycle.*;
 import com.tny.game.common.lifecycle.unit.*;
 import com.tny.game.common.lifecycle.unit.annotation.*;
@@ -64,9 +64,9 @@ public class CommonSessionKeeperManager implements SessionKeeperManager, AppPrep
             Events.ofEvent(SessionKeeperCreateListener.class, SessionKeeperCreateListener::onCreate);
 
     public CommonSessionKeeperManager() {
-        SessionEventBuses.globalOnlineWatch().addListener(this::notifyOnline);
-        SessionEventBuses.globalOfflineWatch().addListener(this::notifyOffline);
-        SessionEventBuses.globalCloseWatch().addListener(this::notifyClose);
+        SessionEvents.globalOnlineWatch().addListener(this::notifyOnline);
+        SessionEvents.globalOfflineWatch().addListener(this::notifyOffline);
+        SessionEvents.globalCloseWatch().addListener(this::notifyClose);
     }
 
     public CommonSessionKeeperManager(

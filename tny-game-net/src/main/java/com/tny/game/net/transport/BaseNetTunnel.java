@@ -19,7 +19,7 @@ import com.tny.game.net.session.*;
 import org.slf4j.*;
 
 import java.util.Objects;
-import java.util.concurrent.locks.StampedLock;
+import java.util.concurrent.locks.*;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 
@@ -48,10 +48,12 @@ public abstract class BaseNetTunnel<S extends NetSession> extends BaseCommunicat
     /* 上下文 */
     private final NetworkContext context;
 
-    private final TunnelEventBuses buses = new TunnelEventBuses();
+    private final TunnelEvents buses = new TunnelEvents();
 
     /* session 锁 */
     private final StampedLock sessionLock = new StampedLock();
+
+    protected final Lock lock = new ReentrantLock();
 
     protected BaseNetTunnel(long id, NetAccessMode accessMode, NetworkContext context) {
         this.id = id;
@@ -172,7 +174,8 @@ public abstract class BaseNetTunnel<S extends NetSession> extends BaseCommunicat
         if (this.session == session) {
             return true;
         }
-        synchronized (this) {
+        lock.lock();
+        try {
             if (this.session == session) {
                 return true;
             }
@@ -186,6 +189,8 @@ public abstract class BaseNetTunnel<S extends NetSession> extends BaseCommunicat
                 }
                 return StampedLockAide.supplyInWriteLock(this.sessionLock, () -> resetSession(session));
             }
+        } finally {
+            lock.unlock();
         }
     }
 
@@ -199,7 +204,8 @@ public abstract class BaseNetTunnel<S extends NetSession> extends BaseCommunicat
         if (this.isActive()) {
             return true;
         }
-        synchronized (this) {
+        lock.lock();
+        try {
             if (this.isClosed()) {
                 return false;
             }
@@ -211,6 +217,8 @@ public abstract class BaseNetTunnel<S extends NetSession> extends BaseCommunicat
             }
             this.status = TunnelStatus.OPEN;
             this.onOpened();
+        } finally {
+            lock.unlock();
         }
         buses.activateEvent().notify(this);
         return true;
@@ -219,7 +227,8 @@ public abstract class BaseNetTunnel<S extends NetSession> extends BaseCommunicat
     @Override
     public void disconnect() {
         NetSession session;
-        synchronized (this) {
+        lock.lock();
+        try {
             if (this.status == TunnelStatus.CLOSED || this.status == TunnelStatus.SUSPEND) {
                 return;
             }
@@ -227,6 +236,8 @@ public abstract class BaseNetTunnel<S extends NetSession> extends BaseCommunicat
             this.status = TunnelStatus.SUSPEND;
             session = this.session;
             this.onDisconnected();
+        } finally {
+            lock.unlock();
         }
         if (session != null) { // 避免死锁
             session.onUnactivated(this);
@@ -240,7 +251,8 @@ public abstract class BaseNetTunnel<S extends NetSession> extends BaseCommunicat
             return false;
         }
         NetSession session;
-        synchronized (this) {
+        lock.lock();
+        try {
             if (this.status == TunnelStatus.CLOSED) {
                 return false;
             }
@@ -249,6 +261,8 @@ public abstract class BaseNetTunnel<S extends NetSession> extends BaseCommunicat
             this.doDisconnect();
             session = this.session;
             this.onClosed();
+        } finally {
+            lock.unlock();
         }
         if (session != null) { // 避免死锁
             session.onUnactivated(this);
@@ -262,7 +276,8 @@ public abstract class BaseNetTunnel<S extends NetSession> extends BaseCommunicat
         if (this.status == TunnelStatus.INIT) {
             return;
         }
-        synchronized (this) {
+        lock.lock();
+        try {
             if (this.status == TunnelStatus.INIT) {
                 return;
             }
@@ -270,6 +285,8 @@ public abstract class BaseNetTunnel<S extends NetSession> extends BaseCommunicat
                 this.disconnect();
             }
             this.status = TunnelStatus.INIT;
+        } finally {
+            lock.unlock();
         }
     }
 

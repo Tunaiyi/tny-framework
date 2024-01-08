@@ -12,7 +12,7 @@
 package com.tny.game.basics.item.capacity.event;
 
 import com.tny.game.basics.item.capacity.*;
-import com.tny.game.common.event.bus.*;
+import com.tny.game.common.event.*;
 
 /**
  * Created by Kun Yang on 16/2/17.

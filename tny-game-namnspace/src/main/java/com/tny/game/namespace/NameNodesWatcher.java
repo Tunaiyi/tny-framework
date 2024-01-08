@@ -10,7 +10,7 @@
  */
 package com.tny.game.namespace;
 
-import com.tny.game.common.event.firer.*;
+import com.tny.game.common.event.*;
 import com.tny.game.namespace.listener.*;
 
 import java.util.concurrent.CompletableFuture;
@@ -59,27 +59,27 @@ public interface NameNodesWatcher<T> {
     /**
      * @return 监控者时间
      */
-    EventSource<WatcherListener> watcherEvent();
+    EventWatchAdapter<WatcherListener> watcherEvent();
 
     /**
      * @return 加载事件
      */
-    EventSource<WatchLoadListener<T>> loadEvent();
+    EventWatchAdapter<WatchLoadListener<T>> loadEvent();
 
     /**
      * @return 创建事件
      */
-    EventSource<WatchCreateListener<T>> createEvent();
+    EventWatchAdapter<WatchCreateListener<T>> createEvent();
 
     /**
      * @return 更新事件
      */
-    EventSource<WatchUpdateListener<T>> updateEvent();
+    EventWatchAdapter<WatchUpdateListener<T>> updateEvent();
 
     /**
      * @return 删除事件
      */
-    EventSource<WatchDeleteListener<T>> deleteEvent();
+    EventWatchAdapter<WatchDeleteListener<T>> deleteEvent();
 
     /**
      * 添加节点监听器

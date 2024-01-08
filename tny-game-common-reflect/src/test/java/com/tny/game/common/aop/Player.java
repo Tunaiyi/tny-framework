@@ -13,6 +13,8 @@ package com.tny.game.common.aop;
 
 import com.tny.game.common.reflect.aop.annotation.*;
 
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 public class Player extends Person {
 
     public Player() {
@@ -58,6 +60,29 @@ public class Player extends Person {
     public Player friend(int data, Player player, long value) {
         System.out.println("Player friend(int data, Player player) ");
         return null;
+    }
+
+    public static void main(String[] args) {
+        var queue =new ConcurrentLinkedQueue<String>();
+        queue.add("1");
+        queue.add("2");
+        queue.add("3");
+        queue.add("4");
+        queue.add("5");
+        queue.add("6");
+        for (Object o : queue) {
+            if (o.equals("3")) {
+                queue.remove(o);
+            }
+            if (o.equals("2")) {
+                queue.remove("4");
+            }
+            System.out.println(o);
+        }
+        System.out.println("============");
+        for (Object o : queue) {
+            System.out.println(o);
+        }
     }
 
     // public static void main(String[] args) {

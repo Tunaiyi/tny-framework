@@ -10,7 +10,9 @@
  */
 package com.tny.game.net.relay.link;
 
-import com.tny.game.common.event.firer.*;
+import com.tny.game.common.event.*;
+import com.tny.game.common.event.notifier.*;
+import com.tny.game.common.notifier.*;
 import com.tny.game.net.application.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.relay.link.listener.*;
@@ -25,6 +27,7 @@ import org.slf4j.*;
 import java.net.InetSocketAddress;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.*;
 
 /**
  * <p>
@@ -81,7 +84,7 @@ public abstract class BaseRelayLink implements NetRelayLink {
     /**
      * 转发关掉事件
      */
-    private final EventFirer<RelayLinkListener, NetRelayLink> event = EventFirers.firer(RelayLinkListener.class);
+    private final EventNotifier<RelayLinkListener, NetRelayLink> event = EventNotifiers.notifier(RelayLinkListener.class);
 
     /**
      * 数据包 id 创建器
@@ -89,6 +92,9 @@ public abstract class BaseRelayLink implements NetRelayLink {
     private final AtomicInteger packetIdCreator = new AtomicInteger();
 
     private final ContactType contactType;
+
+    private final Lock lock = new ReentrantLock();
+
 
     public BaseRelayLink(NetAccessMode accessMode, String key, ContactType contactType, String service, long instanceId,
             RelayTransport transport) {
@@ -214,7 +220,7 @@ public abstract class BaseRelayLink implements NetRelayLink {
     }
 
     @Override
-    public EventSource<RelayLinkListener> event() {
+    public EventWatch<RelayLinkListener> eventWatch() {
         return event;
     }
 
@@ -223,14 +229,17 @@ public abstract class BaseRelayLink implements NetRelayLink {
         if (this.status != RelayLinkStatus.INIT || !this.transport.isActive()) {
             return;
         }
-        synchronized (this) {
+        lock.lock();
+        try {
             if (this.status != RelayLinkStatus.INIT || !this.transport.isActive()) {
                 return;
             }
             this.status = RelayLinkStatus.OPEN;
             this.onOpen();
             this.heartbeat();
-            event.fire(RelayLinkListener::onOpen, this);
+            event.notify(RelayLinkListener::onOpen, this);
+        } finally {
+            lock.unlock();
         }
     }
 
@@ -241,13 +250,16 @@ public abstract class BaseRelayLink implements NetRelayLink {
         if (this.status != RelayLinkStatus.INIT) {
             return;
         }
-        synchronized (this) {
+        lock.lock();
+        try {
             if (this.status != RelayLinkStatus.INIT) {
                 return;
             }
             this.write(LinkOpenedPacket.FACTORY, LinkOpenedArguments.failure(), true);
             this.doDisconnect();
             this.onOpenFailure();
+        } finally {
+            lock.unlock();
         }
     }
 
@@ -259,12 +271,15 @@ public abstract class BaseRelayLink implements NetRelayLink {
         if (this.status != RelayLinkStatus.OPEN) {
             return;
         }
-        synchronized (this) {
+        lock.lock();
+        try {
             if (this.status != RelayLinkStatus.OPEN) {
                 return;
             }
             this.status = RelayLinkStatus.DISCONNECT;
             this.doDisconnect();
+        } finally {
+            lock.unlock();
         }
     }
 
@@ -276,7 +291,7 @@ public abstract class BaseRelayLink implements NetRelayLink {
         if (transport != null && transport.isActive()) {
             transport.close();
         }
-        event.fire(RelayLinkListener::onDisconnect, this);
+        event.notify(RelayLinkListener::onDisconnect, this);
         LOGGER.info("RelayLink [{}:{}] 转发链接断开", this, this.status);
         this.onDisconnect();
     }
@@ -286,19 +301,22 @@ public abstract class BaseRelayLink implements NetRelayLink {
         if (this.status.isCloseStatus()) {
             return false;
         }
-        synchronized (this) {
+        lock.lock();
+        try {
             if (this.status.isCloseStatus()) {
                 return false;
             }
             this.status = RelayLinkStatus.CLOSING;
-            event.fire(RelayLinkListener::onClosing, this);
+            event.notify(RelayLinkListener::onClosing, this);
             this.write(LinkClosePacket.FACTORY, null);
             this.doDisconnect();
             this.status = RelayLinkStatus.CLOSED;
-            event.fire(RelayLinkListener::onClosed, this);
+            event.notify(RelayLinkListener::onClosed, this);
             LOGGER.info("RelayLink [{}:{}] 转发链接关闭 ", this, this.status);
             this.onClosed();
             return true;
+        } finally {
+            lock.unlock();
         }
     }
 
@@ -324,10 +342,9 @@ public abstract class BaseRelayLink implements NetRelayLink {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof BaseRelayLink)) {
+        if (!(o instanceof BaseRelayLink that)) {
             return false;
         }
-        BaseRelayLink that = (BaseRelayLink) o;
         return new EqualsBuilder().append(getInstanceId(), that.getInstanceId())
                 .append(getId(), that.getId())
                 .append(getService(), that.getService())

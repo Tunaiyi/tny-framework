@@ -22,6 +22,7 @@ import org.slf4j.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.*;
 import java.util.stream.Collectors;
 
 import static com.tny.game.common.utils.StringAide.*;
@@ -61,6 +62,8 @@ public class BaseRelayServeInstance implements NetRelayServeInstance {
     private Map<String, ClientRelayLink> relayLinkMap = new ConcurrentHashMap<>();
 
     private volatile List<ClientRelayLink> activeRelayLinks = ImmutableList.of();
+
+    private final Lock lock = new ReentrantLock();
 
     public BaseRelayServeInstance(NetRemoteServeCluster cluster, ServeNode node) {
         this.id = node.getId();
@@ -155,14 +158,19 @@ public class BaseRelayServeInstance implements NetRelayServeInstance {
     }
 
     @Override
-    public synchronized void close() {
-        if (close.compareAndSet(false, true)) {
-            this.prepareClose();
-            Map<String, ClientRelayLink> oldMap = this.relayLinkMap;
-            this.relayLinkMap = new ConcurrentHashMap<>();
-            oldMap.forEach((id, link) -> link.close());
-            oldMap.clear();
-            this.postClose();
+    public void close() {
+        lock.lock();
+        try {
+            if (close.compareAndSet(false, true)) {
+                this.prepareClose();
+                Map<String, ClientRelayLink> oldMap = this.relayLinkMap;
+                this.relayLinkMap = new ConcurrentHashMap<>();
+                oldMap.forEach((id, link) -> link.close());
+                oldMap.clear();
+                this.postClose();
+            }
+        } finally {
+            lock.unlock();
         }
     }
 
@@ -204,22 +212,32 @@ public class BaseRelayServeInstance implements NetRelayServeInstance {
     protected void postClose() {
     }
 
-    private synchronized void refreshActiveLinks() {
-        this.activeRelayLinks = ImmutableList.sortedCopyOf(Comparator.comparing(ClientRelayLink::getId), relayLinkMap.values()
-                .stream()
-                .filter(RelayLink::isActive)
-                .collect(Collectors.toList()));
-        cluster.refreshInstances();
+    private void refreshActiveLinks() {
+        lock.lock();
+        try {
+            this.activeRelayLinks = ImmutableList.sortedCopyOf(Comparator.comparing(ClientRelayLink::getId), relayLinkMap.values()
+                    .stream()
+                    .filter(RelayLink::isActive)
+                    .collect(Collectors.toList()));
+            cluster.refreshInstances();
+        } finally {
+            lock.unlock();
+        }
     }
 
     @Override
-    public synchronized void register(ClientRelayLink link) {
-        NetRelayLink old = relayLinkMap.put(link.getId(), link);
-        if (old != null && old != link) {
-            old.close();
+    public void register(ClientRelayLink link) {
+        lock.lock();
+        try {
+            NetRelayLink old = relayLinkMap.put(link.getId(), link);
+            if (old != null && old != link) {
+                old.close();
+            }
+            this.refreshActiveLinks();
+            this.onRegister(link);
+        } finally {
+            lock.unlock();
         }
-        this.refreshActiveLinks();
-        this.onRegister(link);
     }
 
     @Override
@@ -235,13 +253,18 @@ public class BaseRelayServeInstance implements NetRelayServeInstance {
     }
 
     @Override
-    public synchronized void relieve(ClientRelayLink link) {
-        if (relayLinkMap.remove(link.getId(), link)) {
-            if (link.isActive()) {
-                link.close();
+    public void relieve(ClientRelayLink link) {
+        lock.lock();
+        try {
+            if (relayLinkMap.remove(link.getId(), link)) {
+                if (link.isActive()) {
+                    link.close();
+                }
+                this.refreshActiveLinks();
+                this.onRelieve(link);
             }
-            this.refreshActiveLinks();
-            this.onRelieve(link);
+        } finally {
+            lock.unlock();
         }
     }
 

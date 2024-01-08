@@ -11,7 +11,9 @@
 package com.tny.game.namespace.sharding;
 
 import com.google.common.collect.ImmutableList;
-import com.tny.game.common.event.firer.*;
+import com.tny.game.common.event.*;
+import com.tny.game.common.event.notifier.*;
+import com.tny.game.common.notifier.*;
 import com.tny.game.namespace.sharding.listener.*;
 import org.slf4j.*;
 
@@ -37,7 +39,7 @@ public class ConsistentHashRing<N extends ShardingNode> implements ShardingSet<N
 
     private final NavigableMap<Long, Partition<N>> ring = new TreeMap<>();
 
-    private final EventFirer<ShardingListener<N>, Sharding<N>> event = EventFirers.firer(ShardingListener.class);
+    private final EventNotifier<ShardingListener<N>, Sharding<N>> event = EventNotifiers.notifier(ShardingListener.class);
 
     private List<ShardingRange<N>> ranges = ImmutableList.of();
 
@@ -79,7 +81,7 @@ public class ConsistentHashRing<N extends ShardingNode> implements ShardingSet<N
                     .collect(Collectors.toList());
             if (!addList.isEmpty()) {
                 this.resetRanges();
-                event.fire(ShardingListener::onChange, this, addList);
+                event.notify(ShardingListener::onChange, this, addList);
             }
             return addList;
         } finally {
@@ -94,7 +96,7 @@ public class ConsistentHashRing<N extends ShardingNode> implements ShardingSet<N
             if (ring.containsKey(partition.getSlot())) {
                 ring.put(partition.getSlot(), partition);
                 resetRanges();
-                event.fire(ShardingListener::onChange, this, Collections.singletonList(partition));
+                event.notify(ShardingListener::onChange, this, Collections.singletonList(partition));
                 return true;
             }
         } finally {
@@ -109,7 +111,7 @@ public class ConsistentHashRing<N extends ShardingNode> implements ShardingSet<N
         try {
             ring.put(partition.getSlot(), partition);
             resetRanges();
-            event.fire(ShardingListener::onChange, this, Collections.singletonList(partition));
+            event.notify(ShardingListener::onChange, this, Collections.singletonList(partition));
         } finally {
             mutex.writeLock().unlock();
         }
@@ -122,7 +124,7 @@ public class ConsistentHashRing<N extends ShardingNode> implements ShardingSet<N
             Partition<N> partition = ring.remove(slot);
             if (partition != null) {
                 this.resetRanges();
-                event.fire(ShardingListener::onRemove, this, Collections.singletonList(partition));
+                event.notify(ShardingListener::onRemove, this, Collections.singletonList(partition));
             }
             return partition;
         } finally {
@@ -136,7 +138,7 @@ public class ConsistentHashRing<N extends ShardingNode> implements ShardingSet<N
         try {
             if (ring.remove(partition.getSlot(), partition)) {
                 this.resetRanges();
-                event.fire(ShardingListener::onRemove, this, Collections.singletonList(partition));
+                event.notify(ShardingListener::onRemove, this, Collections.singletonList(partition));
                 return true;
             }
         } finally {
@@ -153,7 +155,7 @@ public class ConsistentHashRing<N extends ShardingNode> implements ShardingSet<N
                 List<Partition<N>> clearList = new ArrayList<>(ring.values());
                 ring.clear();
                 this.resetRanges();
-                event.fire(ShardingListener::onRemove, this, clearList);
+                event.notify(ShardingListener::onRemove, this, clearList);
             }
         } finally {
             mutex.writeLock().unlock();
@@ -198,7 +200,7 @@ public class ConsistentHashRing<N extends ShardingNode> implements ShardingSet<N
     }
 
     @Override
-    public EventSource<ShardingListener<N>> event() {
+    public EventWatchAdapter<ShardingListener<N>> event() {
         return event;
     }
 

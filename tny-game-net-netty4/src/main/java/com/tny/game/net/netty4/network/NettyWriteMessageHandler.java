@@ -29,14 +29,12 @@ public class NettyWriteMessageHandler implements ChannelFutureListener {
 
     @Override
     public void operationComplete(ChannelFuture future) {
-        synchronized (this) {
-            if (future.isSuccess()) {
-                this.awaiter.complete(null);
-            } else if (future.isCancelled()) {
-                this.awaiter.cancel(true);
-            } else if (future.cause() != null) {
-                this.awaiter.completeExceptionally(future.cause());
-            }
+        if (future.isSuccess()) {
+            this.awaiter.complete(null);
+        } else if (future.isCancelled()) {
+            this.awaiter.cancel(true);
+        } else if (future.cause() != null) {
+            this.awaiter.completeExceptionally(future.cause());
         }
     }
 

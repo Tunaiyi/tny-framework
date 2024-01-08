@@ -37,7 +37,8 @@ public class CommonSession extends BaseNetSession implements NetSession {
         if (isOffline()) {
             return;
         }
-        synchronized (this) {
+        lock.lock();
+        try {
             if (isOffline()) {
                 return;
             }
@@ -49,6 +50,8 @@ public class CommonSession extends BaseNetSession implements NetSession {
                 return;
             }
             setOffline();
+        } finally {
+            lock.unlock();
         }
     }
 

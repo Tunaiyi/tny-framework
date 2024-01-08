@@ -10,7 +10,7 @@
  */
 package com.tny.game.net.relay.link;
 
-import com.tny.game.common.event.firer.*;
+import com.tny.game.common.event.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.relay.link.listener.*;
 import com.tny.game.net.relay.packet.*;
@@ -25,7 +25,7 @@ import com.tny.game.net.transport.*;
  * @author : kgtny
  * @date : 2021/3/3 11:45 上午
  */
-public interface NetRelayLink extends RelayLink, EventSourceObject<RelayLinkListener> {
+public interface NetRelayLink extends RelayLink, EventWatchAdapter<RelayLinkListener> {
 
     static String idOf(NetRelayLink relayLink) {
         return idOf(relayLink.getService(), relayLink.getInstanceId(), relayLink.getKey());

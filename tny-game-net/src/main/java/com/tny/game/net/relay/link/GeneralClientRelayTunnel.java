@@ -101,7 +101,8 @@ public class GeneralClientRelayTunnel extends ServerTransportTunnel<NetSession, 
 
     @Override
     public void bindLink(ClientRelayLink link) {
-        synchronized (this) {
+        lock.lock();
+        try {
             ClientRelayLink old = linkMap.put(link.getService(), link);
             if (old != null) {
                 old.delinkTunnel(this);
@@ -109,15 +110,20 @@ public class GeneralClientRelayTunnel extends ServerTransportTunnel<NetSession, 
             } else {
                 link.openTunnel(this);
             }
+        } finally {
+            lock.unlock();
         }
     }
 
     @Override
     public void unbindLink(ClientRelayLink link) {
-        synchronized (this) {
+        lock.lock();
+        try {
             if (linkMap.remove(link.getService(), link)) {
                 link.closeTunnel(this);
             }
+        } finally {
+            lock.unlock();
         }
     }
 
