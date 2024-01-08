@@ -72,9 +72,7 @@ include 'tny-game-starter-net-apm-skywalking'
 
 include 'tny-game-actor'
 include 'tny-game-oplog-log4j'
-////include 'tny-game-oplog-log4j2kafka'
 
-//include 'tny-game-web'
 ////include 'tny-game-asyndb'
 ////include 'tny-game-zookeeper'
 
