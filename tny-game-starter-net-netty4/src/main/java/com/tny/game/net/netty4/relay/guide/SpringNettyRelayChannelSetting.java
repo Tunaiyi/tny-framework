@@ -17,8 +17,8 @@ import com.tny.game.net.netty4.relay.*;
 import com.tny.game.net.netty4.relay.codec.*;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
-import static com.tny.game.common.utils.ObjectAide.*;
 import static com.tny.game.common.lifecycle.unit.UnitNames.*;
+import static com.tny.game.common.utils.ObjectAide.*;
 
 /**
  * <p>
@@ -40,10 +40,12 @@ public class SpringNettyRelayChannelSetting extends NettyRelayChannelSetting {
     public SpringNettyRelayChannelSetting() {
         this.setMaker(new NettyChannelMakerSetting(DefaultRelayChannelMaker.class))
                 .setEncoder(new RelayPacketCodecSetting()
-                        .setMessageBodyCodec(lowerCamelName(ProtoExMessageBodyCodec.class))
+                        // .setMessageBodyCodec(lowerCamelName(ProtoExMessageBodyCodec.class))
+                        .setMessageBodyCodec(lowerCamelName(TypeProtobufMessageBodyCodec.class))
                         .setCloseOnError(false))
                 .setDecoder(new RelayPacketCodecSetting()
-                        .setMessageBodyCodec(lowerCamelName(ProtoExMessageBodyCodec.class))
+                        // .setMessageBodyCodec(lowerCamelName(ProtoExMessageBodyCodec.class))
+                        .setMessageBodyCodec(lowerCamelName(TypeProtobufMessageBodyCodec.class))
                         .setCloseOnError(true));
     }
 

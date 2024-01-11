@@ -172,6 +172,11 @@ public abstract class CommonNetBootstrapSetting implements NetBootstrapSetting {
         return this;
     }
 
+    public CommonNetBootstrapSetting setSessionFactory(String sessionFactory) {
+        this.sessionFactory = sessionFactory;
+        return this;
+    }
+
     @Override
     public Set<String> getReadIgnoreHeaders() {
         return readIgnoreHeaders;
