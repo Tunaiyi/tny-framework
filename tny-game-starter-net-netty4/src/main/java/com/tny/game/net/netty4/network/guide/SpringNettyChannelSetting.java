@@ -31,7 +31,7 @@ public class SpringNettyChannelSetting extends NettyChannelSetting {
     private NetPacketCodecSetting decoder;
 
     public SpringNettyChannelSetting() {
-        super(lowerCamelName(ProtoExMessageBodyCodec.class), lowerCamelName(ProtoExMessageBodyCodec.class));
+        super(lowerCamelName(TypeProtobufMessageBodyCodec.class), lowerCamelName(TypeProtobufMessageBodyCodec.class));
     }
 
     @Override
