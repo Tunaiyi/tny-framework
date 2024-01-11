@@ -25,17 +25,17 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class ObjectLockerTest {
 
-    private volatile MapObjectLocker<Object> locker;
+    private volatile MapperLocker<Object> locker;
 
-    private ExecutorService service = Executors.newCachedThreadPool();
+    private final ExecutorService service = Executors.newCachedThreadPool();
 
-    private int initNumber = 0;
+    private final int initNumber = 0;
 
     private int number = 0;
 
     @BeforeEach
     void setUp() {
-        this.locker = new MapObjectLocker<>();
+        this.locker = MapperLocker.common();
         this.number = this.initNumber;
     }
 

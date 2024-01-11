@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
         ImportRpcServiceDefinitionRegistrar.class,
         ImportRpcClientDefinitionRegistrar.class
 })
-@EnableConfigurationProperties(RpcClustersProperties.class)
+@EnableConfigurationProperties(RpcClusterProperties.class)
 public class RpcAutoConfiguration {
 
     @Bean
@@ -81,7 +81,7 @@ public class RpcAutoConfiguration {
     }
 
     @Bean
-    public RpcServicerManager rpcServicerManager(RpcClustersProperties properties) {
+    public RpcServicerManager rpcServicerManager(RpcClusterProperties properties) {
         return new DefaultRpcServicerManager(properties);
     }
 

@@ -47,7 +47,7 @@ public class CommonClientRelayLink extends BaseRelayLink implements ClientRelayL
     }
 
     @Override
-    public void delinkTunnel(RelayTunnel tunnel) {
+    public void unlinkTunnel(RelayTunnel tunnel) {
     }
 
     @Override

@@ -29,33 +29,6 @@ public class CommonSession extends BaseNetSession implements NetSession {
     }
 
     @Override
-    public void onUnactivated(NetTunnel tunnel) {
-        if (!isAuthenticated()) {
-            this.close();
-            return;
-        }
-        if (isOffline()) {
-            return;
-        }
-        lock.lock();
-        try {
-            if (isOffline()) {
-                return;
-            }
-            Tunnel currentTunnel = this.tunnel();
-            if (currentTunnel.isActive()) {
-                return;
-            }
-            if (isClosed()) {
-                return;
-            }
-            setOffline();
-        } finally {
-            lock.unlock();
-        }
-    }
-
-    @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
                 .add("contactGroup", this.getGroup())

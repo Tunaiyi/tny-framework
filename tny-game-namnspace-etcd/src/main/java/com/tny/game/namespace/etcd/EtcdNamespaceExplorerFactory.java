@@ -103,13 +103,13 @@ public class EtcdNamespaceExplorerFactory implements NamespaceExplorerFactory {
         }
     }
 
-    private <T> void setLongIfNotNull(Long value, Consumer<Long> setter) {
+    private void setLongIfNotNull(Long value, Consumer<Long> setter) {
         if (value != null) {
             setter.accept(value);
         }
     }
 
-    private <T> void setDurationIfNotNull(Long value, Consumer<Duration> setter) {
+    private void setDurationIfNotNull(Long value, Consumer<Duration> setter) {
         if (value != null) {
             setter.accept(Duration.ofMillis(value));
         }

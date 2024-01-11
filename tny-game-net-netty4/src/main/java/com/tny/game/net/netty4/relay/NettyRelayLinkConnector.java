@@ -40,7 +40,7 @@ class NettyRelayLinkConnector implements RelayConnectCallback {
 
     private final String username;
 
-    private Lock lock = new ReentrantLock();
+    private Lock statusLock = new ReentrantLock();
 
     private final static long[] delayTimeList = {1, 2, 2, 3, 3, 3, 5, 5, 5, 5, 10, 10, 10, 10, 10, 15};
 
@@ -56,7 +56,7 @@ class NettyRelayLinkConnector implements RelayConnectCallback {
     }
 
     public void connect() {
-        lock.lock();
+        statusLock.lock();
         try {
             if (!status.isCanConnect()) {
                 return;
@@ -66,7 +66,7 @@ class NettyRelayLinkConnector implements RelayConnectCallback {
                 connector.connect(this);
             }
         } finally {
-            lock.unlock();
+            statusLock.unlock();
         }
     }
 
@@ -98,11 +98,11 @@ class NettyRelayLinkConnector implements RelayConnectCallback {
     }
 
     public void close() {
-        lock.lock();
+        statusLock.lock();
         try {
             status = RelayConnectionStatus.CLOSE;
         } finally {
-            lock.unlock();
+            statusLock.unlock();
         }
     }
 

@@ -23,17 +23,17 @@ import java.util.List;
  * @author : kgtny
  * @date : 2021/11/5 4:20 下午
  */
-@ConfigurationProperties("tny.net.rpc")
-public class RpcClustersProperties extends RpcRemoteSetting {
+@ConfigurationProperties("tny.net.rpc.cluster")
+public class RpcClusterProperties extends RpcRemoteSetting {
 
     @Override
-    public List<RpcClusterSetting> getClusters() {
-        return super.getClusters();
+    public List<RpcClusterSetting> getServices() {
+        return super.getServices();
     }
 
     @Override
-    public RpcClustersProperties setClusters(List<RpcClusterSetting> clusters) {
-        super.setClusters(clusters);
+    public RpcClusterProperties setServices(List<RpcClusterSetting> clusters) {
+        super.setServices(clusters);
         return this;
     }
 }

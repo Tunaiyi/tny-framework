@@ -31,8 +31,6 @@ public abstract class BaseNetTunnel<S extends NetSession> extends BaseCommunicat
 
     public static final Logger LOGGER = LoggerFactory.getLogger(BaseNetTunnel.class);
 
-    private volatile TunnelStatus status = TunnelStatus.INIT;
-
     /*管道 id*/
     private final long id;
 
@@ -53,7 +51,9 @@ public abstract class BaseNetTunnel<S extends NetSession> extends BaseCommunicat
     /* session 锁 */
     private final StampedLock sessionLock = new StampedLock();
 
-    protected final Lock lock = new ReentrantLock();
+    private volatile TunnelStatus status = TunnelStatus.INIT;
+    
+    private final Lock statusLock = new ReentrantLock();
 
     protected BaseNetTunnel(long id, NetAccessMode accessMode, NetworkContext context) {
         this.id = id;
@@ -174,7 +174,7 @@ public abstract class BaseNetTunnel<S extends NetSession> extends BaseCommunicat
         if (this.session == session) {
             return true;
         }
-        lock.lock();
+        statusLock.lock();
         try {
             if (this.session == session) {
                 return true;
@@ -190,7 +190,7 @@ public abstract class BaseNetTunnel<S extends NetSession> extends BaseCommunicat
                 return StampedLockAide.supplyInWriteLock(this.sessionLock, () -> resetSession(session));
             }
         } finally {
-            lock.unlock();
+            statusLock.unlock();
         }
     }
 
@@ -204,7 +204,7 @@ public abstract class BaseNetTunnel<S extends NetSession> extends BaseCommunicat
         if (this.isActive()) {
             return true;
         }
-        lock.lock();
+        statusLock.lock();
         try {
             if (this.isClosed()) {
                 return false;
@@ -218,7 +218,7 @@ public abstract class BaseNetTunnel<S extends NetSession> extends BaseCommunicat
             this.status = TunnelStatus.OPEN;
             this.onOpened();
         } finally {
-            lock.unlock();
+            statusLock.unlock();
         }
         buses.activateEvent().notify(this);
         return true;
@@ -227,7 +227,7 @@ public abstract class BaseNetTunnel<S extends NetSession> extends BaseCommunicat
     @Override
     public void disconnect() {
         NetSession session;
-        lock.lock();
+        statusLock.lock();
         try {
             if (this.status == TunnelStatus.CLOSED || this.status == TunnelStatus.SUSPEND) {
                 return;
@@ -237,7 +237,7 @@ public abstract class BaseNetTunnel<S extends NetSession> extends BaseCommunicat
             session = this.session;
             this.onDisconnected();
         } finally {
-            lock.unlock();
+            statusLock.unlock();
         }
         if (session != null) { // 避免死锁
             session.onUnactivated(this);
@@ -251,7 +251,7 @@ public abstract class BaseNetTunnel<S extends NetSession> extends BaseCommunicat
             return false;
         }
         NetSession session;
-        lock.lock();
+        statusLock.lock();
         try {
             if (this.status == TunnelStatus.CLOSED) {
                 return false;
@@ -262,7 +262,7 @@ public abstract class BaseNetTunnel<S extends NetSession> extends BaseCommunicat
             session = this.session;
             this.onClosed();
         } finally {
-            lock.unlock();
+            statusLock.unlock();
         }
         if (session != null) { // 避免死锁
             session.onUnactivated(this);
@@ -276,7 +276,7 @@ public abstract class BaseNetTunnel<S extends NetSession> extends BaseCommunicat
         if (this.status == TunnelStatus.INIT) {
             return;
         }
-        lock.lock();
+        statusLock.lock();
         try {
             if (this.status == TunnelStatus.INIT) {
                 return;
@@ -286,7 +286,7 @@ public abstract class BaseNetTunnel<S extends NetSession> extends BaseCommunicat
             }
             this.status = TunnelStatus.INIT;
         } finally {
-            lock.unlock();
+            statusLock.unlock();
         }
     }
 

@@ -42,7 +42,7 @@ public abstract class BaseRemoteServeCluster implements NetRemoteServeCluster {
 
     private final String username;
 
-    private final Lock lock = new ReentrantLock();
+    private final Lock instanceLock = new ReentrantLock();
 
     private final ServeInstanceAllotStrategy instanceAllotStrategy;
 
@@ -128,7 +128,7 @@ public abstract class BaseRemoteServeCluster implements NetRemoteServeCluster {
 
     @Override
     public void unregisterInstance(long instanceId) {
-        lock.lock();
+        instanceLock.lock();
         try {
             NetRelayServeInstance instance = instanceMap.remove(instanceId);
             if (instance != null && !instance.isClose()) {
@@ -136,7 +136,7 @@ public abstract class BaseRemoteServeCluster implements NetRemoteServeCluster {
                 this.doRefreshInstances();
             }
         } finally {
-            lock.unlock();
+            instanceLock.unlock();
         }
     }
 
@@ -153,11 +153,11 @@ public abstract class BaseRemoteServeCluster implements NetRemoteServeCluster {
 
     @Override
     public void refreshInstances() {
-        lock.lock();
+        instanceLock.lock();
         try {
             this.doRefreshInstances();
         } finally {
-            lock.unlock();
+            instanceLock.unlock();
         }
     }
 
@@ -168,7 +168,7 @@ public abstract class BaseRemoteServeCluster implements NetRemoteServeCluster {
 
     @Override
     public void close() {
-        lock.lock();
+        instanceLock.lock();
         try {
             if (close.compareAndSet(false, true)) {
                 List<NetRelayServeInstance> oldList = instances;
@@ -177,7 +177,7 @@ public abstract class BaseRemoteServeCluster implements NetRemoteServeCluster {
                 instanceMap.clear();
             }
         } finally {
-            lock.unlock();
+            instanceLock.unlock();
         }
     }
 

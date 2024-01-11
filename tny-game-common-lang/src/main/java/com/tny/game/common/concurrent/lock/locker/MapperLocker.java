@@ -15,12 +15,24 @@ import java.util.Optional;
 import java.util.concurrent.*;
 import java.util.concurrent.locks.Lock;
 
+import static com.tny.game.common.utils.ObjectAide.*;
+
 /**
  * <p>
  */
-public class MapObjectLocker<O> implements ObjectLocker<O> {
+public class MapperLocker<O> implements ObjectLocker<O> {
+
+    // TODO 内存泄露监控
+    private static final MapperLocker<Object> defaultLocker = new MapperLocker<>();
+
+    public static <O> MapperLocker<O> common() {
+        return as(defaultLocker);
+    }
 
     private final ConcurrentMap<O, ReleasableLock> lockMap = new ConcurrentHashMap<>();
+
+    private MapperLocker() {
+    }
 
     @Override
     public Lock lock(O object) {
@@ -34,7 +46,7 @@ public class MapObjectLocker<O> implements ObjectLocker<O> {
                     lockMap.remove(object, lock);
                 }
             }
-            lock = new CounterReentrantLock();
+            lock = new RentReentrantLock();
             ReleasableLock old = lockMap.putIfAbsent(object, lock);
             if (old != null) {
                 lock = old;
@@ -59,7 +71,7 @@ public class MapObjectLocker<O> implements ObjectLocker<O> {
                     lockMap.remove(object, lock);
                 }
             }
-            lock = new CounterReentrantLock();
+            lock = new RentReentrantLock();
             ReleasableLock old = lockMap.putIfAbsent(object, lock);
             if (old != null) {
                 lock = old;
@@ -83,7 +95,7 @@ public class MapObjectLocker<O> implements ObjectLocker<O> {
                     lockMap.remove(object, lock);
                 }
             }
-            lock = new CounterReentrantLock();
+            lock = new RentReentrantLock();
             ReleasableLock old = lockMap.putIfAbsent(object, lock);
             if (old != null) {
                 lock = old;
@@ -112,7 +124,7 @@ public class MapObjectLocker<O> implements ObjectLocker<O> {
                     lockMap.remove(object, lock);
                 }
             }
-            lock = new CounterReentrantLock();
+            lock = new RentReentrantLock();
             ReleasableLock old = lockMap.putIfAbsent(object, lock);
             if (old != null) {
                 lock = old;

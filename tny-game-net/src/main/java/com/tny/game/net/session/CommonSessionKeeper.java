@@ -23,7 +23,7 @@ public class CommonSessionKeeper extends AutoCloseableSessionKeeper {
 
     private static final Logger LOG = LoggerFactory.getLogger(NetLogger.SESSION);
 
-    private static final MapObjectLocker<Object> locker = new MapObjectLocker<>();
+    private static final MapperLocker<Long> locker = MapperLocker.common();
 
     public CommonSessionKeeper(ContactType contactType, SessionKeeperSetting setting) {
         super(contactType, setting);
@@ -39,7 +39,7 @@ public class CommonSessionKeeper extends AutoCloseableSessionKeeper {
                     "cert {} userType is {}, not {}", certificate, certificate.getContactType(), this.getContactType());
         }
         long identify = certificate.getIdentify();
-        Lock lock = locker.lock(identify);
+        Lock identifyLock = locker.lock(identify);
         try {
             if (certificate.getStatus() == CertificateStatus.AUTHENTICATED) { // 登录创建 Session
                 return Optional.of(doAuth(certificate, tunnel));
@@ -47,7 +47,7 @@ public class CommonSessionKeeper extends AutoCloseableSessionKeeper {
                 return Optional.of(doReAuth(certificate, tunnel));
             }
         } finally {
-            locker.unlock(identify, lock);
+            locker.unlock(identify, identifyLock);
         }
     }
 

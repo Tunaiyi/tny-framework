@@ -59,27 +59,27 @@ public interface NameNodesWatcher<T> {
     /**
      * @return 监控者时间
      */
-    EventWatchAdapter<WatcherListener> watcherEvent();
+    EventWatch<WatcherListener> watcherEvent();
 
     /**
      * @return 加载事件
      */
-    EventWatchAdapter<WatchLoadListener<T>> loadEvent();
+    EventWatch<WatchLoadListener<T>> loadEvent();
 
     /**
      * @return 创建事件
      */
-    EventWatchAdapter<WatchCreateListener<T>> createEvent();
+    EventWatch<WatchCreateListener<T>> createEvent();
 
     /**
      * @return 更新事件
      */
-    EventWatchAdapter<WatchUpdateListener<T>> updateEvent();
+    EventWatch<WatchUpdateListener<T>> updateEvent();
 
     /**
      * @return 删除事件
      */
-    EventWatchAdapter<WatchDeleteListener<T>> deleteEvent();
+    EventWatch<WatchDeleteListener<T>> deleteEvent();
 
     /**
      * 添加节点监听器
