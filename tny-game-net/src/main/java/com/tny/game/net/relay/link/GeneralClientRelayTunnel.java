@@ -21,6 +21,7 @@ import com.tny.game.net.session.*;
 import com.tny.game.net.transport.*;
 
 import java.util.*;
+import java.util.concurrent.locks.*;
 
 /**
  * <p>
@@ -46,9 +47,15 @@ public class GeneralClientRelayTunnel extends ServerTransportTunnel<NetSession, 
     private Map<String, ClientTunnelRelayer> relayerMap;
 
     /**
+     * 关联的 link
+     */
+    private final Lock linkLock = new ReentrantLock();
+
+    /**
      * 消息路由器
      */
     private final RelayMessageRouter relayMessageRouter;
+
 
     public GeneralClientRelayTunnel(long instanceId, long id, MessageTransport transport, NetworkContext context,
             RelayMessageRouter relayMessageRouter) {
@@ -101,29 +108,29 @@ public class GeneralClientRelayTunnel extends ServerTransportTunnel<NetSession, 
 
     @Override
     public void bindLink(ClientRelayLink link) {
-        lock.lock();
+        linkLock.lock();
         try {
             ClientRelayLink old = linkMap.put(link.getService(), link);
             if (old != null) {
-                old.delinkTunnel(this);
+                old.unlinkTunnel(this);
                 link.switchTunnel(this);
             } else {
                 link.openTunnel(this);
             }
         } finally {
-            lock.unlock();
+            linkLock.unlock();
         }
     }
 
     @Override
     public void unbindLink(ClientRelayLink link) {
-        lock.lock();
+        linkLock.lock();
         try {
             if (linkMap.remove(link.getService(), link)) {
                 link.closeTunnel(this);
             }
         } finally {
-            lock.unlock();
+            linkLock.unlock();
         }
     }
 

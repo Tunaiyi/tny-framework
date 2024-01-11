@@ -11,7 +11,6 @@
 package com.tny.game.namespace.etcd;
 
 import com.tny.game.common.event.*;
-import com.tny.game.common.event.notifier.*;
 import com.tny.game.common.notifier.*;
 import com.tny.game.namespace.*;
 import com.tny.game.namespace.exception.*;
@@ -106,7 +105,7 @@ public class EtcdLessee implements Lessee {
     }
 
     @Override
-    public EventWatchAdapter<LesseeListener> event() {
+    public EventWatch<LesseeListener> event() {
         return firer();
     }
 

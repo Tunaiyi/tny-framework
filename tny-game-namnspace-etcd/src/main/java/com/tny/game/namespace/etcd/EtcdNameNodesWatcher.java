@@ -12,7 +12,6 @@ package com.tny.game.namespace.etcd;
 
 import com.tny.game.codec.*;
 import com.tny.game.common.event.*;
-import com.tny.game.common.event.notifier.*;
 import com.tny.game.common.notifier.*;
 import com.tny.game.namespace.*;
 import com.tny.game.namespace.exception.*;
@@ -123,9 +122,9 @@ public class EtcdNameNodesWatcher<T> extends EtcdObject implements NameNodesWatc
             try {
                 GetOption option;
                 if (endPath != null) {
-                    option = GetOption.newBuilder().withRange(endKey).build();
+                    option = GetOption.builder().withRange(endKey).build();
                 } else {
-                    option = GetOption.newBuilder().isPrefix(match).build();
+                    option = GetOption.builder().isPrefix(match).build();
                 }
                 CompletableFuture<NameNodesWatcher<T>> future = new CompletableFuture<>();
                 kv.get(key, option)
@@ -165,27 +164,27 @@ public class EtcdNameNodesWatcher<T> extends EtcdObject implements NameNodesWatc
     }
 
     @Override
-    public EventWatchAdapter<WatcherListener> watcherEvent() {
+    public EventWatch<WatcherListener> watcherEvent() {
         return watcherEvent;
     }
 
     @Override
-    public EventWatchAdapter<WatchLoadListener<T>> loadEvent() {
+    public EventWatch<WatchLoadListener<T>> loadEvent() {
         return loadEvent;
     }
 
     @Override
-    public EventWatchAdapter<WatchCreateListener<T>> createEvent() {
+    public EventWatch<WatchCreateListener<T>> createEvent() {
         return createEvent;
     }
 
     @Override
-    public EventWatchAdapter<WatchUpdateListener<T>> updateEvent() {
+    public EventWatch<WatchUpdateListener<T>> updateEvent() {
         return updateEvent;
     }
 
     @Override
-    public EventWatchAdapter<WatchDeleteListener<T>> deleteEvent() {
+    public EventWatch<WatchDeleteListener<T>> deleteEvent() {
         return deleteEvent;
     }
 
@@ -221,7 +220,7 @@ public class EtcdNameNodesWatcher<T> extends EtcdObject implements NameNodesWatc
             long watchRevision = response.getHeader().getRevision();
             List<NameNode<T>> nodes = as(decodeAllKeyValues(response.getKvs(), valueType));
             this.loadEvent.notify(WatchLoadListener::onLoad, this, nodes);
-            WatchOption.Builder optionBuilder = WatchOption.newBuilder()
+            WatchOption.Builder optionBuilder = WatchOption.builder()
                     .withRevision(watchRevision + 1)
                     .withPrevKV(true)
                     .isPrefix(match)

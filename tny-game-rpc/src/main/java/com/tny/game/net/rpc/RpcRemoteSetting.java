@@ -47,11 +47,11 @@ public class RpcRemoteSetting {
         return this;
     }
 
-    public List<RpcClusterSetting> getClusters() {
+    public List<RpcClusterSetting> getServices() {
         return clusters;
     }
 
-    public RpcRemoteSetting setClusters(List<RpcClusterSetting> clusters) {
+    public RpcRemoteSetting setServices(List<RpcClusterSetting> clusters) {
         this.clusters = clusters;
         return this;
     }

@@ -14,7 +14,6 @@ import com.tny.game.codec.*;
 import com.tny.game.codec.jackson.*;
 import com.tny.game.common.concurrent.*;
 import com.tny.game.common.event.*;
-import com.tny.game.common.event.notifier.*;
 import com.tny.game.common.notifier.*;
 import com.tny.game.common.utils.*;
 import com.tny.game.namespace.*;
@@ -219,7 +218,7 @@ public abstract class EtcdNodeHashing<N extends ShardingNode> extends EtcdObject
     }
 
     @Override
-    public EventWatchAdapter<ShardingListener<N>> event() {
+    public EventWatch<ShardingListener<N>> event() {
         return event;
     }
 

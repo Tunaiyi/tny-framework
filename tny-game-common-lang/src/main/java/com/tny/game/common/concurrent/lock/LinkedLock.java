@@ -47,7 +47,7 @@ public class LinkedLock implements Lock {
      * @throws IllegalArgumentException 锁对象数量为0时抛出
      */
     public LinkedLock(List<ObjectLock> locks) {
-        if (locks.isEmpty()) {
+        if (!locks.isEmpty()) {
             throw new IllegalArgumentException("Lock list is empty");
         }
         if (!locks.isEmpty()) {

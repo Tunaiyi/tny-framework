@@ -11,7 +11,6 @@
 package com.tny.game.net.relay.link;
 
 import com.tny.game.common.event.*;
-import com.tny.game.common.event.notifier.*;
 import com.tny.game.common.notifier.*;
 import com.tny.game.net.application.*;
 import com.tny.game.net.message.*;
@@ -93,7 +92,7 @@ public abstract class BaseRelayLink implements NetRelayLink {
 
     private final ContactType contactType;
 
-    private final Lock lock = new ReentrantLock();
+    private final Lock statusLock = new ReentrantLock();
 
 
     public BaseRelayLink(NetAccessMode accessMode, String key, ContactType contactType, String service, long instanceId,
@@ -229,7 +228,7 @@ public abstract class BaseRelayLink implements NetRelayLink {
         if (this.status != RelayLinkStatus.INIT || !this.transport.isActive()) {
             return;
         }
-        lock.lock();
+        statusLock.lock();
         try {
             if (this.status != RelayLinkStatus.INIT || !this.transport.isActive()) {
                 return;
@@ -239,7 +238,7 @@ public abstract class BaseRelayLink implements NetRelayLink {
             this.heartbeat();
             event.notify(RelayLinkListener::onOpen, this);
         } finally {
-            lock.unlock();
+            statusLock.unlock();
         }
     }
 
@@ -250,7 +249,7 @@ public abstract class BaseRelayLink implements NetRelayLink {
         if (this.status != RelayLinkStatus.INIT) {
             return;
         }
-        lock.lock();
+        statusLock.lock();
         try {
             if (this.status != RelayLinkStatus.INIT) {
                 return;
@@ -259,7 +258,7 @@ public abstract class BaseRelayLink implements NetRelayLink {
             this.doDisconnect();
             this.onOpenFailure();
         } finally {
-            lock.unlock();
+            statusLock.unlock();
         }
     }
 
@@ -271,7 +270,7 @@ public abstract class BaseRelayLink implements NetRelayLink {
         if (this.status != RelayLinkStatus.OPEN) {
             return;
         }
-        lock.lock();
+        statusLock.lock();
         try {
             if (this.status != RelayLinkStatus.OPEN) {
                 return;
@@ -279,7 +278,7 @@ public abstract class BaseRelayLink implements NetRelayLink {
             this.status = RelayLinkStatus.DISCONNECT;
             this.doDisconnect();
         } finally {
-            lock.unlock();
+            statusLock.unlock();
         }
     }
 
@@ -301,7 +300,7 @@ public abstract class BaseRelayLink implements NetRelayLink {
         if (this.status.isCloseStatus()) {
             return false;
         }
-        lock.lock();
+        statusLock.lock();
         try {
             if (this.status.isCloseStatus()) {
                 return false;
@@ -316,7 +315,7 @@ public abstract class BaseRelayLink implements NetRelayLink {
             this.onClosed();
             return true;
         } finally {
-            lock.unlock();
+            statusLock.unlock();
         }
     }
 

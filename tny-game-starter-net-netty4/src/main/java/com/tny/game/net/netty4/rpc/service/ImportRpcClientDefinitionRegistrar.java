@@ -31,8 +31,8 @@ public class ImportRpcClientDefinitionRegistrar extends ImportConfigurationBeanD
 
     @Override
     public void registerBeanDefinitions(@Nonnull AnnotationMetadata importingClassMetadata, @Nonnull BeanDefinitionRegistry registry) {
-        RpcClustersProperties rpcProperties = loadProperties(RpcClustersProperties.class);
-        for (RpcClusterSetting clusterSetting : rpcProperties.getClusters()) {
+        RpcClusterProperties rpcProperties = loadProperties(RpcClusterProperties.class);
+        for (RpcClusterSetting clusterSetting : rpcProperties.getServices()) {
             registerRpcConnector(registry, clusterSetting);
         }
     }

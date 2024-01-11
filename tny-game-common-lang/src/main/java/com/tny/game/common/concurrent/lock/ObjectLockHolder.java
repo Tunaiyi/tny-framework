@@ -35,7 +35,7 @@ class ObjectLockHolder {
     /**
      * 持有者集合
      */
-    private ConcurrentHashMap<Class, Holder> holders = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Class, Holder> holders = new ConcurrentHashMap<>();
 
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(10, new CoreThreadFactory("LockMonitorPool", true));
 

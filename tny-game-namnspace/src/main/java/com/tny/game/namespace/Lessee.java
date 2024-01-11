@@ -67,7 +67,7 @@ public interface Lessee {
     /**
      * @return 租约事件
      */
-    EventWatchAdapter<LesseeListener> event();
+    EventWatch<LesseeListener> event();
 
     /**
      * 生成租约

@@ -42,7 +42,7 @@ public interface ClientRelayLink extends NetRelayLink {
      *
      * @param tunnel tunnel
      */
-    void delinkTunnel(RelayTunnel tunnel);
+    void unlinkTunnel(RelayTunnel tunnel);
 
     //	/**
     //	 * 绑定客户端传到

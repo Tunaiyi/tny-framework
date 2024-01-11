@@ -63,7 +63,7 @@ public class BaseRelayServeInstance implements NetRelayServeInstance {
 
     private volatile List<ClientRelayLink> activeRelayLinks = ImmutableList.of();
 
-    private final Lock lock = new ReentrantLock();
+    private final Lock linkLock = new ReentrantLock();
 
     public BaseRelayServeInstance(NetRemoteServeCluster cluster, ServeNode node) {
         this.id = node.getId();
@@ -159,7 +159,7 @@ public class BaseRelayServeInstance implements NetRelayServeInstance {
 
     @Override
     public void close() {
-        lock.lock();
+        linkLock.lock();
         try {
             if (close.compareAndSet(false, true)) {
                 this.prepareClose();
@@ -170,7 +170,7 @@ public class BaseRelayServeInstance implements NetRelayServeInstance {
                 this.postClose();
             }
         } finally {
-            lock.unlock();
+            linkLock.unlock();
         }
     }
 
@@ -213,30 +213,34 @@ public class BaseRelayServeInstance implements NetRelayServeInstance {
     }
 
     private void refreshActiveLinks() {
-        lock.lock();
+        linkLock.lock();
         try {
-            this.activeRelayLinks = ImmutableList.sortedCopyOf(Comparator.comparing(ClientRelayLink::getId), relayLinkMap.values()
-                    .stream()
-                    .filter(RelayLink::isActive)
-                    .collect(Collectors.toList()));
-            cluster.refreshInstances();
+            doRefreshActiveLinks();
         } finally {
-            lock.unlock();
+            linkLock.unlock();
         }
+    }
+
+    private void doRefreshActiveLinks() {
+        this.activeRelayLinks = ImmutableList.sortedCopyOf(Comparator.comparing(ClientRelayLink::getId), relayLinkMap.values()
+                .stream()
+                .filter(RelayLink::isActive)
+                .collect(Collectors.toList()));
+        cluster.refreshInstances();
     }
 
     @Override
     public void register(ClientRelayLink link) {
-        lock.lock();
+        linkLock.lock();
         try {
             NetRelayLink old = relayLinkMap.put(link.getId(), link);
             if (old != null && old != link) {
                 old.close();
             }
-            this.refreshActiveLinks();
+            this.doRefreshActiveLinks();
             this.onRegister(link);
         } finally {
-            lock.unlock();
+            linkLock.unlock();
         }
     }
 
@@ -254,17 +258,17 @@ public class BaseRelayServeInstance implements NetRelayServeInstance {
 
     @Override
     public void relieve(ClientRelayLink link) {
-        lock.lock();
+        linkLock.lock();
         try {
             if (relayLinkMap.remove(link.getId(), link)) {
                 if (link.isActive()) {
                     link.close();
                 }
-                this.refreshActiveLinks();
+                this.doRefreshActiveLinks();
                 this.onRelieve(link);
             }
         } finally {
-            lock.unlock();
+            linkLock.unlock();
         }
     }
 

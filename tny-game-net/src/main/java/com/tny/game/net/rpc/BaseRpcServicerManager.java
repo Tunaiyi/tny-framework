@@ -37,7 +37,7 @@ public class BaseRpcServicerManager implements RpcServicerManager, SessionKeeper
 
     private final Map<ContactType, RpcInvokeNodeSet> invokeNodeSetMap = new ConcurrentHashMap<>();
 
-    private static final HashLock<Lock> lockPool = HashLock.common();
+    private static final MapLocker<RpcServiceType, Lock> lockPool = MapLocker.common();
 
     @Override
     public RpcForwardNodeSet loadForwardNodeSet(RpcServiceType type) {
@@ -86,8 +86,8 @@ public class BaseRpcServicerManager implements RpcServicerManager, SessionKeeper
         if (exist != null) {
             return exist;
         }
-        Lock lock = lockPool.getLock(type.getId());
-        lock.lock();
+        Lock typeLock = lockPool.getLock(type);
+        typeLock.lock();
         try {
             exist = serviceSetMap.get(type);
             if (exist != null) {
@@ -98,7 +98,7 @@ public class BaseRpcServicerManager implements RpcServicerManager, SessionKeeper
             this.invokeNodeSetMap.put(type, serviceSet);
             return serviceSet;
         } finally {
-            lock.unlock();
+            typeLock.unlock();
         }
     }
 

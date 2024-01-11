@@ -47,8 +47,10 @@ public abstract class BaseNetSession extends BaseCommunicator implements NetSess
     protected Certificate certificate;
 
     /* 状态 */
-    private volatile SessionStatus state;
+    private volatile SessionStatus status;
 
+    /* 状态锁 */
+    private final Lock statusLock = new ReentrantLock();
 
     /* ID 生成器 */
     private final AtomicLong idCreator = new AtomicLong(0);
@@ -75,13 +77,12 @@ public abstract class BaseNetSession extends BaseCommunicator implements NetSess
     /* 发送消息过滤器 */
     private volatile MessageHandleFilter sendFilter = MessageHandleFilter.allHandleFilter();
 
-    protected final Lock lock = new ReentrantLock();
 
     private final SessionEvents buses = new SessionEvents();
 
     protected BaseNetSession(Certificate certificate, SessionContext context, NetTunnel tunnel, int sendMessageCachedSize) {
         this.id = ConnectIdFactory.newSessionId();
-        this.state = SessionStatus.INIT;
+        this.status = SessionStatus.INIT;
         this.context = context;
         this.certificate = certificate;
         var commandExecutorFactory = context.getCommandExecutorFactory();
@@ -118,14 +119,14 @@ public abstract class BaseNetSession extends BaseCommunicator implements NetSess
         if (this.respondFutureMonitor != null) {
             return this.respondFutureMonitor;
         }
-        lock.lock();
+        statusLock.lock();
         try {
             if (this.respondFutureMonitor != null) {
                 return this.respondFutureMonitor;
             }
             return this.respondFutureMonitor = RespondFutureMonitor.getHolder(this);
         } finally {
-            lock.unlock();
+            statusLock.unlock();
         }
     }
 
@@ -313,6 +314,7 @@ public abstract class BaseNetSession extends BaseCommunicator implements NetSess
         return this.commandBox;
     }
 
+    @Override
     public NetMessage createMessage(MessageFactory messageFactory, MessageContent context) {
         NetMessage message = messageFactory.create(allocateMessageId(), context);
         if (context instanceof RequestContent) {
@@ -338,7 +340,7 @@ public abstract class BaseNetSession extends BaseCommunicator implements NetSess
 
     @Override
     public SessionStatus getStatus() {
-        return this.state;
+        return this.status;
     }
 
     @Override
@@ -348,21 +350,59 @@ public abstract class BaseNetSession extends BaseCommunicator implements NetSess
 
     private void setOnline() {
         this.offlineTime = 0;
-        this.state = SessionStatus.ONLINE;
+        this.status = SessionStatus.ONLINE;
         buses.onlineEvent().notify(this);
     }
 
     protected void setOffline() {
         this.offlineTime = System.currentTimeMillis();
-        this.state = SessionStatus.OFFLINE;
+        this.status = SessionStatus.OFFLINE;
         buses.offlineEvent().notify(this);
     }
 
     private void setClose() {
-        this.state = SessionStatus.CLOSE;
+        this.status = SessionStatus.CLOSE;
         this.destroyFutureHolder();
         buses.closeEvent().notify(this);
     }
+
+    @Override
+    public void onUnactivated(NetTunnel tunnel) {
+        if (!isAuthenticated()) {
+            this.close();
+            return;
+        }
+        if (isOffline()) {
+            return;
+        }
+        var currentTunnel = this.tunnel();
+        if (tunnel != currentTunnel) {
+            return;
+        }
+        if (currentTunnel.isActive()) {
+            return;
+        }
+        statusLock.lock();
+        try {
+            if (isOffline()) {
+                return;
+            }
+            currentTunnel = this.tunnel();
+            if (tunnel != currentTunnel) {
+                return;
+            }
+            if (currentTunnel.isActive()) {
+                return;
+            }
+            if (isClosed()) {
+                return;
+            }
+            setOffline();
+        } finally {
+            statusLock.unlock();
+        }
+    }
+
 
     private void destroyFutureHolder() {
         RespondFutureMonitor.removeHolder(this);
@@ -388,21 +428,21 @@ public abstract class BaseNetSession extends BaseCommunicator implements NetSess
 
     @Override
     public boolean isOnline() {
-        return this.state == SessionStatus.ONLINE;
+        return this.status == SessionStatus.ONLINE;
     }
 
     @Override
     public boolean isOffline() {
-        return this.state == SessionStatus.OFFLINE;
+        return this.status == SessionStatus.OFFLINE;
     }
 
     @Override
     public boolean isClosed() {
-        return this.state == SessionStatus.CLOSE;
+        return this.status == SessionStatus.CLOSE;
     }
 
     private void offlineIf(NetTunnel tunnel) {
-        lock.lock();
+        statusLock.lock();
         try {
             if (tunnel != tunnel()) {
                 return;
@@ -412,7 +452,7 @@ public abstract class BaseNetSession extends BaseCommunicator implements NetSess
             }
             setOffline();
         } finally {
-            lock.unlock();
+            statusLock.unlock();
         }
     }
 
@@ -421,7 +461,7 @@ public abstract class BaseNetSession extends BaseCommunicator implements NetSess
         if (isClosed()) {
             return;
         }
-        lock.lock();
+        statusLock.lock();
         try {
             if (isClosed()) {
                 return;
@@ -432,7 +472,7 @@ public abstract class BaseNetSession extends BaseCommunicator implements NetSess
             }
             setOffline();
         } finally {
-            lock.unlock();
+            statusLock.unlock();
         }
     }
 
@@ -446,28 +486,28 @@ public abstract class BaseNetSession extends BaseCommunicator implements NetSess
 
     @Override
     public boolean closeWhen(SessionStatus status) {
-        if (this.state != status) {
+        if (this.status != status) {
             return false;
         }
-        lock.lock();
+        statusLock.lock();
         try {
-            if (this.state != status) {
+            if (this.status != status) {
                 return false;
             }
             return this.close();
         } finally {
-            lock.unlock();
+            statusLock.unlock();
         }
     }
 
     @Override
     public boolean close() {
-        if (this.state == SessionStatus.CLOSE) {
+        if (this.status == SessionStatus.CLOSE) {
             return false;
         }
-        lock.lock();
+        statusLock.lock();
         try {
-            if (this.state == SessionStatus.CLOSE) {
+            if (this.status == SessionStatus.CLOSE) {
                 return false;
             }
             this.offline();
@@ -476,7 +516,7 @@ public abstract class BaseNetSession extends BaseCommunicator implements NetSess
             this.postClose();
             return true;
         } finally {
-            lock.unlock();
+            statusLock.unlock();
         }
     }
 
@@ -510,13 +550,13 @@ public abstract class BaseNetSession extends BaseCommunicator implements NetSess
     @Override
     public void online(Certificate certificate) throws AuthFailedException {
         checkOnlineCertificate(certificate);
-        lock.lock();
+        statusLock.lock();
         try {
             checkOnlineCertificate(certificate);
             this.certificate = certificate;
             this.setOnline();
         } finally {
-            lock.unlock();
+            statusLock.unlock();
         }
     }
 
@@ -524,13 +564,13 @@ public abstract class BaseNetSession extends BaseCommunicator implements NetSess
     public void online(Certificate certificate, NetTunnel tunnel) throws AuthFailedException {
         Asserts.checkNotNull(tunnel, "newSession is null");
         checkOnlineCertificate(certificate);
-        lock.lock();
+        statusLock.lock();
         try {
             checkOnlineCertificate(certificate);
             this.certificate = certificate;
             this.acceptTunnel(tunnel);
         } finally {
-            lock.unlock();
+            statusLock.unlock();
         }
     }
 

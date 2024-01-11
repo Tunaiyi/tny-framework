@@ -101,7 +101,7 @@ public interface Sharding<N extends ShardingNode> {
     /**
      * @return 分区改变事件
      */
-    EventWatchAdapter<ShardingListener<N>> event();
+    EventWatch<ShardingListener<N>> event();
 
     /**
      * 最大槽数

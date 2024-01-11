@@ -78,10 +78,10 @@ public abstract class EtcdObject {
     }
 
     public <T> NameNode<T> decodeKeyValue(List<KeyValue> pairs, ObjectMimeType<T> type) {
-        if (pairs == null || pairs.size() == 0) {
+        if (pairs == null || pairs.isEmpty()) {
             return null;
         }
-        KeyValue pair = pairs.get(0);
+        KeyValue pair = pairs.getFirst();
         return decode(pair, type);
     }
 

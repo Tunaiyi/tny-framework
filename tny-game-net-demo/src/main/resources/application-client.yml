@@ -49,12 +49,13 @@ tny:
             enable: true
             threads: 4
     rpc:
-      clusters:
-        - service: game-service
-          discovery: false
-          host: 127.0.0.1
-          port: 17800
-          username: game-client
+      cluster:
+        services:
+          - service: game-service
+            discovery: false
+            host: 127.0.0.1
+            port: 17800
+            username: game-client
 
   data:
     enable: false

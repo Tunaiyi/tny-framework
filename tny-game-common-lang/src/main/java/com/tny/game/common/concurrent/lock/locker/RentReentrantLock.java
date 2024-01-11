@@ -18,21 +18,21 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * <p>
  */
-public class CounterReentrantLock extends ReentrantLock implements ReleasableLock {
+public class RentReentrantLock extends ReentrantLock implements ReleasableLock {
 
     private static final int DESTROY_STATUS = -1;
 
-    private final AtomicInteger count = new AtomicInteger(0);
+    private final AtomicInteger times = new AtomicInteger(0);
 
     @Override
     public boolean apply(LockerKey key) {
         int value;
         do {
-            value = count.get();
+            value = times.get();
             if (value == DESTROY_STATUS) {
                 return false;
             }
-        } while (!count.compareAndSet(value, value + 1));
+        } while (!times.compareAndSet(value, value + 1));
         return true;
     }
 
@@ -41,7 +41,7 @@ public class CounterReentrantLock extends ReentrantLock implements ReleasableLoc
         int value;
         int update;
         do {
-            value = count.get();
+            value = times.get();
             if (value == 0) {
                 return;
             }
@@ -49,12 +49,12 @@ public class CounterReentrantLock extends ReentrantLock implements ReleasableLoc
             if (update <= DESTROY_STATUS) {
                 break;
             }
-        } while (!count.compareAndSet(value, update));
+        } while (!times.compareAndSet(value, update));
     }
 
     @Override
     public boolean destroy(LockerKey key) {
-        return count.compareAndSet(0, DESTROY_STATUS);
+        return times.compareAndSet(0, DESTROY_STATUS);
     }
 
     @Override
@@ -84,7 +84,7 @@ public class CounterReentrantLock extends ReentrantLock implements ReleasableLoc
 
     @Override
     public int getApplyCount() {
-        return count.get();
+        return times.get();
     }
 
     @Override

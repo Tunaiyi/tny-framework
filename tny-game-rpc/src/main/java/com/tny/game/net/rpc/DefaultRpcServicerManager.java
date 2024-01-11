@@ -24,7 +24,7 @@ import com.tny.game.net.rpc.setting.*;
 public class DefaultRpcServicerManager extends BaseRpcServicerManager {
 
     public DefaultRpcServicerManager(RpcRemoteSetting setting) {
-        setting.getClusters()
+        setting.getServices()
                 .stream()
                 .map(RpcServiceSetting::serviceName)
                 .map(s -> (RpcServiceType) RpcServiceTypes.ofService(s))

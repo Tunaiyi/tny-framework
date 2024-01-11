@@ -51,13 +51,13 @@ public class EtcdNamespaceExplorer extends EtcdObject implements NamespaceExplor
 
     private final Lease lease;
 
-    private static final GetOption GET_MATCH_OPTION = GetOption.newBuilder().isPrefix(true).build();
+    private static final GetOption GET_MATCH_OPTION = GetOption.builder().isPrefix(true).build();
 
-    private static final DeleteOption DEL_OPTION = DeleteOption.newBuilder().withPrevKV(true).build();
+    private static final DeleteOption DEL_OPTION = DeleteOption.builder().withPrevKV(true).build();
 
-    private static final DeleteOption DEL_MATCH_WITH_PREV_OPTION = DeleteOption.newBuilder().isPrefix(true).withPrevKV(true).build();
+    private static final DeleteOption DEL_MATCH_WITH_PREV_OPTION = DeleteOption.builder().isPrefix(true).withPrevKV(true).build();
 
-    private static final DeleteOption DEL_MATCH_OPTION = DeleteOption.newBuilder().isPrefix(true).withPrevKV(true).build();
+    private static final DeleteOption DEL_MATCH_OPTION = DeleteOption.builder().isPrefix(true).withPrevKV(true).build();
 
     private final Map<String, EtcdLessee> leasers = new ConcurrentHashMap<>();
 
@@ -102,7 +102,7 @@ public class EtcdNamespaceExplorer extends EtcdObject implements NamespaceExplor
 
     @Override
     public <T> CompletableFuture<List<NameNode<T>>> findAll(String from, String to, ObjectMimeType<T> type) {
-        return kv.get(toBytes(from), GetOption.newBuilder().withRange(toBytes(to)).build())
+        return kv.get(toBytes(from), GetOption.builder().withRange(toBytes(to)).build())
                 .thenApply(response -> decodeAllKeyValues(response.getKvs(), type));
     }
 
@@ -417,7 +417,7 @@ public class EtcdNamespaceExplorer extends EtcdObject implements NamespaceExplor
             ByteSequence key = toBytes(path);
             ByteSequence valueBytes = encode(value, type);
             Op getOp = Op.get(key, GetOption.DEFAULT);
-            PutOption option = lessee != null ? PutOption.newBuilder().withLeaseId(lessee.getId()).build() : PutOption.DEFAULT;
+            PutOption option = lessee != null ? PutOption.builder().withLeaseId(lessee.getId()).build() : PutOption.DEFAULT;
             txn.If(new Cmp(key, Cmp.Op.EQUAL, CmpTarget.version(0))).Then(Op.put(key, valueBytes, option), getOp);
             if (loadIfExist) {
                 txn.Else(getOp);
@@ -431,7 +431,7 @@ public class EtcdNamespaceExplorer extends EtcdObject implements NamespaceExplor
             ByteSequence valueBytes = encode(value, type);
             PutOption option = PutOption.DEFAULT;
             if (lessee != null) {
-                option = PutOption.newBuilder().withLeaseId(lessee.getId()).build();
+                option = PutOption.builder().withLeaseId(lessee.getId()).build();
             }
             txn.Then(Op.put(key, valueBytes, option), Op.get(key, GetOption.DEFAULT));
         }).thenApply(txn -> decodeOne(txn.getGetResponses(), type));
@@ -444,7 +444,7 @@ public class EtcdNamespaceExplorer extends EtcdObject implements NamespaceExplor
             ByteSequence valueBytes = encode(value, type);
             ByteSequence expectBytes = expect == null ? null : encode(expect, type);
             Op getOp = Op.get(key, GetOption.DEFAULT);
-            PutOption option = lessee != null ? PutOption.newBuilder().withLeaseId(lessee.getId()).build() : PutOption.DEFAULT;
+            PutOption option = lessee != null ? PutOption.builder().withLeaseId(lessee.getId()).build() : PutOption.DEFAULT;
             List<Cmp> cmpList = createCmpList(id, expectBytes, key, targetFunc, minVersion, minBorder, maxVersion, maxBorder);
             txn.If(cmpList.toArray(new Cmp[0])).Then(Op.put(key, valueBytes, option), getOp);
         }).thenApply(txn -> decodeOne(txn.getGetResponses(), type));
@@ -462,7 +462,7 @@ public class EtcdNamespaceExplorer extends EtcdObject implements NamespaceExplor
             if (responses.isEmpty()) {
                 return null;
             }
-            DeleteResponse response = responses.get(0);
+            DeleteResponse response = responses.getFirst();
             return decodeKeyValue(response.getPrevKvs(), type);
         });
     }
@@ -548,7 +548,7 @@ public class EtcdNamespaceExplorer extends EtcdObject implements NamespaceExplor
         if (responses.isEmpty()) {
             return null;
         }
-        return decodeKeyValue(responses.get(0).getKvs(), type);
+        return decodeKeyValue(responses.getFirst().getKvs(), type);
     }
 
     public void shutdown() {
