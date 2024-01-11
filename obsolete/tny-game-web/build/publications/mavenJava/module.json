@@ -1,0 +1,435 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "com.tny.game",
+    "module": "tny-game-web",
+    "version": "5.5.x-SNAPSHOT",
+    "attributes": {
+      "org.gradle.status": "integration"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "7.4.2"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 11,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api"
+      },
+      "dependencies": [
+        {
+          "group": "org.aspectj",
+          "module": "aspectjrt",
+          "version": {
+            "requires": "1.9.7"
+          },
+          "excludes": [
+            {
+              "group": "commons-logging",
+              "module": "commons-logging"
+            }
+          ]
+        },
+        {
+          "group": "org.springframework",
+          "module": "spring-webmvc",
+          "version": {
+            "requires": "5.3.13"
+          },
+          "excludes": [
+            {
+              "group": "commons-logging",
+              "module": "commons-logging"
+            }
+          ]
+        },
+        {
+          "group": "org.springframework",
+          "module": "spring-aspects",
+          "version": {
+            "requires": "5.3.13"
+          },
+          "excludes": [
+            {
+              "group": "commons-logging",
+              "module": "commons-logging"
+            }
+          ]
+        },
+        {
+          "group": "org.springframework",
+          "module": "spring-orm",
+          "version": {
+            "requires": "5.3.13"
+          },
+          "excludes": [
+            {
+              "group": "commons-logging",
+              "module": "commons-logging"
+            }
+          ]
+        },
+        {
+          "group": "commons-io",
+          "module": "commons-io",
+          "version": {
+            "requires": "2.8.0"
+          },
+          "excludes": [
+            {
+              "group": "commons-logging",
+              "module": "commons-logging"
+            }
+          ]
+        },
+        {
+          "group": "com.google.guava",
+          "module": "guava",
+          "version": {
+            "requires": "31.1-jre"
+          },
+          "excludes": [
+            {
+              "group": "commons-logging",
+              "module": "commons-logging"
+            }
+          ]
+        },
+        {
+          "group": "org.apache.poi",
+          "module": "poi",
+          "version": {
+            "requires": "4.1.2"
+          },
+          "excludes": [
+            {
+              "group": "commons-logging",
+              "module": "commons-logging"
+            }
+          ]
+        },
+        {
+          "group": "org.apache.poi",
+          "module": "poi-ooxml",
+          "version": {
+            "requires": "4.1.2"
+          },
+          "excludes": [
+            {
+              "group": "commons-logging",
+              "module": "commons-logging"
+            }
+          ]
+        },
+        {
+          "group": "org.apache.poi",
+          "module": "poi-ooxml-schemas",
+          "version": {
+            "requires": "4.1.2"
+          },
+          "excludes": [
+            {
+              "group": "commons-logging",
+              "module": "commons-logging"
+            }
+          ]
+        },
+        {
+          "group": "com.tny.game",
+          "module": "tny-game-protoex",
+          "version": {
+            "requires": "5.5.x-SNAPSHOT"
+          },
+          "excludes": [
+            {
+              "group": "commons-logging",
+              "module": "commons-logging"
+            }
+          ]
+        },
+        {
+          "group": "com.tny.game",
+          "module": "tny-game-codec-jackson",
+          "version": {
+            "requires": "5.5.x-SNAPSHOT"
+          },
+          "excludes": [
+            {
+              "group": "commons-logging",
+              "module": "commons-logging"
+            }
+          ]
+        },
+        {
+          "group": "com.tny.game",
+          "module": "tny-game-common-lang",
+          "version": {
+            "requires": "5.5.x-SNAPSHOT"
+          },
+          "excludes": [
+            {
+              "group": "commons-logging",
+              "module": "commons-logging"
+            }
+          ]
+        },
+        {
+          "group": "org.apache.httpcomponents",
+          "module": "httpclient",
+          "version": {
+            "requires": "4.5.13"
+          },
+          "excludes": [
+            {
+              "group": "commons-logging",
+              "module": "commons-logging"
+            }
+          ]
+        }
+      ],
+      "files": [
+        {
+          "name": "tny-game-web-5.5.x-SNAPSHOT.jar",
+          "url": "tny-game-web-5.5.x-SNAPSHOT.jar",
+          "size": 45089,
+          "sha512": "2539772c79c6fbc708c09ad7853319c5cab8e38ef6572b188243885bdd28fc44b16b3dced5cbecc551e6467057c320025730f62c02702f807858a71489c4fa2e",
+          "sha256": "5f5a83b8d4b42299f0b4381b85843b235e67143227486819e0b4cf537be473f1",
+          "sha1": "f25880fbc3083ce54da3db708af6c790d213b042",
+          "md5": "5f13593c6095d4bcbc4403ddc3a015a0"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 11,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "org.slf4j",
+          "module": "slf4j-api",
+          "version": {
+            "requires": "1.7.30"
+          },
+          "excludes": [
+            {
+              "group": "commons-logging",
+              "module": "commons-logging"
+            }
+          ]
+        },
+        {
+          "group": "org.aspectj",
+          "module": "aspectjrt",
+          "version": {
+            "requires": "1.9.7"
+          },
+          "excludes": [
+            {
+              "group": "commons-logging",
+              "module": "commons-logging"
+            }
+          ]
+        },
+        {
+          "group": "org.springframework",
+          "module": "spring-webmvc",
+          "version": {
+            "requires": "5.3.13"
+          },
+          "excludes": [
+            {
+              "group": "commons-logging",
+              "module": "commons-logging"
+            }
+          ]
+        },
+        {
+          "group": "org.springframework",
+          "module": "spring-aspects",
+          "version": {
+            "requires": "5.3.13"
+          },
+          "excludes": [
+            {
+              "group": "commons-logging",
+              "module": "commons-logging"
+            }
+          ]
+        },
+        {
+          "group": "org.springframework",
+          "module": "spring-orm",
+          "version": {
+            "requires": "5.3.13"
+          },
+          "excludes": [
+            {
+              "group": "commons-logging",
+              "module": "commons-logging"
+            }
+          ]
+        },
+        {
+          "group": "commons-io",
+          "module": "commons-io",
+          "version": {
+            "requires": "2.8.0"
+          },
+          "excludes": [
+            {
+              "group": "commons-logging",
+              "module": "commons-logging"
+            }
+          ]
+        },
+        {
+          "group": "com.google.guava",
+          "module": "guava",
+          "version": {
+            "requires": "31.1-jre"
+          },
+          "excludes": [
+            {
+              "group": "commons-logging",
+              "module": "commons-logging"
+            }
+          ]
+        },
+        {
+          "group": "org.apache.poi",
+          "module": "poi",
+          "version": {
+            "requires": "4.1.2"
+          },
+          "excludes": [
+            {
+              "group": "commons-logging",
+              "module": "commons-logging"
+            }
+          ]
+        },
+        {
+          "group": "org.apache.poi",
+          "module": "poi-ooxml",
+          "version": {
+            "requires": "4.1.2"
+          },
+          "excludes": [
+            {
+              "group": "commons-logging",
+              "module": "commons-logging"
+            }
+          ]
+        },
+        {
+          "group": "org.apache.poi",
+          "module": "poi-ooxml-schemas",
+          "version": {
+            "requires": "4.1.2"
+          },
+          "excludes": [
+            {
+              "group": "commons-logging",
+              "module": "commons-logging"
+            }
+          ]
+        },
+        {
+          "group": "com.tny.game",
+          "module": "tny-game-protoex",
+          "version": {
+            "requires": "5.5.x-SNAPSHOT"
+          },
+          "excludes": [
+            {
+              "group": "commons-logging",
+              "module": "commons-logging"
+            }
+          ]
+        },
+        {
+          "group": "com.tny.game",
+          "module": "tny-game-codec-jackson",
+          "version": {
+            "requires": "5.5.x-SNAPSHOT"
+          },
+          "excludes": [
+            {
+              "group": "commons-logging",
+              "module": "commons-logging"
+            }
+          ]
+        },
+        {
+          "group": "com.tny.game",
+          "module": "tny-game-common-lang",
+          "version": {
+            "requires": "5.5.x-SNAPSHOT"
+          },
+          "excludes": [
+            {
+              "group": "commons-logging",
+              "module": "commons-logging"
+            }
+          ]
+        },
+        {
+          "group": "org.apache.httpcomponents",
+          "module": "httpclient",
+          "version": {
+            "requires": "4.5.13"
+          },
+          "excludes": [
+            {
+              "group": "commons-logging",
+              "module": "commons-logging"
+            }
+          ]
+        }
+      ],
+      "files": [
+        {
+          "name": "tny-game-web-5.5.x-SNAPSHOT.jar",
+          "url": "tny-game-web-5.5.x-SNAPSHOT.jar",
+          "size": 45089,
+          "sha512": "2539772c79c6fbc708c09ad7853319c5cab8e38ef6572b188243885bdd28fc44b16b3dced5cbecc551e6467057c320025730f62c02702f807858a71489c4fa2e",
+          "sha256": "5f5a83b8d4b42299f0b4381b85843b235e67143227486819e0b4cf537be473f1",
+          "sha1": "f25880fbc3083ce54da3db708af6c790d213b042",
+          "md5": "5f13593c6095d4bcbc4403ddc3a015a0"
+        }
+      ]
+    },
+    {
+      "name": "sourcesElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "tny-game-web-5.5.x-SNAPSHOT-sources.jar",
+          "url": "tny-game-web-5.5.x-SNAPSHOT-sources.jar",
+          "size": 26816,
+          "sha512": "66073998e4fa6c4b940d56530882f2fb3ac732b2d97493874e7ee79bf66bfcfea4da06ffbdec1c045525c9388495bea49efe9fd9c7361ab2bc8489f490152419",
+          "sha256": "78dbba06589e57cc675d231f1ec945917c9be45a9001ce3308682120ce132912",
+          "sha1": "9e1eba1e7717b3d2d063d46192f2c9b382ed3800",
+          "md5": "1f09383e344efd5e33e91878e5dae2f9"
+        }
+      ]
+    }
+  ]
+}

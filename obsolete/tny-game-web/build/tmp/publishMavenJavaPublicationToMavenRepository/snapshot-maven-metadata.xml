@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata modelVersion="1.1.0">
+    <groupId>com.tny.game</groupId>
+    <artifactId>tny-game-web</artifactId>
+    <version>5.5.x-SNAPSHOT</version>
+    <versioning>
+        <snapshot>
+            <timestamp>20230314.090112</timestamp>
+            <buildNumber>193</buildNumber>
+        </snapshot>
+        <lastUpdated>20230314090112</lastUpdated>
+        <snapshotVersions>
+            <snapshotVersion>
+                <classifier>sources</classifier>
+                <extension>jar</extension>
+                <value>5.5.x-20230314.090112-193</value>
+                <updated>20230314090112</updated>
+            </snapshotVersion>
+            <snapshotVersion>
+                <extension>module</extension>
+                <value>5.5.x-20230314.090112-193</value>
+                <updated>20230314090112</updated>
+            </snapshotVersion>
+            <snapshotVersion>
+                <extension>jar</extension>
+                <value>5.5.x-20230314.090112-193</value>
+                <updated>20230314090112</updated>
+            </snapshotVersion>
+            <snapshotVersion>
+                <extension>pom</extension>
+                <value>5.5.x-20230314.090112-193</value>
+                <updated>20230314090112</updated>
+            </snapshotVersion>
+        </snapshotVersions>
+    </versioning>
+</metadata>
