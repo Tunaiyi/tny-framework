@@ -12,6 +12,7 @@ package com.tny.game.net.relay.link;
 
 import com.tny.game.common.lifecycle.unit.annotation.*;
 import com.tny.game.net.application.*;
+import com.tny.game.net.relay.link.listener.*;
 import com.tny.game.net.relay.packet.*;
 import com.tny.game.net.relay.packet.arguments.*;
 import org.slf4j.*;
@@ -40,6 +41,9 @@ public class DefaultServerRelayExplorer extends BaseRelayExplorer<ServerRelayTun
         if (relayLink != null && !relayLink.isCurrentTransport(transport)) {
             link.openOnFailure();
         } else {
+            // 注册条目随链路失去承载能力摘除：close 路径内部必经 doDisconnect，
+            // onDisconnect 单点覆盖物理断线与主动关闭（relay-link 规格；僵尸条目曾永久滞留）
+            link.eventWatch().add(new LinkUnregisterListener(link));
             link.open();
         }
         return link;
@@ -84,6 +88,34 @@ public class DefaultServerRelayExplorer extends BaseRelayExplorer<ServerRelayTun
     public void close() {
         linkMap.forEach((k, link) -> link.close());
         linkMap.clear();
+    }
+
+    /** 链路断开/关闭时值相等 CAS 摘除自身条目（不误摘同键重建后的新链路） */
+    private final class LinkUnregisterListener implements RelayLinkListener {
+        private final ServerRelayLink link;
+
+        LinkUnregisterListener(ServerRelayLink link) {
+            this.link = link;
+        }
+
+        @Override
+        public void onOpen(NetRelayLink link) {
+        }
+
+        @Override
+        public void onDisconnect(NetRelayLink link) {
+            // 引用相等判定：BaseRelayLink.equals 基于标识字段，同键重建后旧链路的迟到事件
+            // 用 remove(key,value) 会经 equals 误摘新链路（用例⑨实测），computeIfPresent+== 才可靠
+            linkMap.computeIfPresent(this.link.getId(), (k, current) -> current == this.link ? null : current);
+        }
+
+        @Override
+        public void onClosing(NetRelayLink link) {
+        }
+
+        @Override
+        public void onClosed(NetRelayLink link) {
+        }
     }
 
 }

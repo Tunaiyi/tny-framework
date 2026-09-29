@@ -42,9 +42,10 @@ public class BaseRelayExplorer<T extends NetRelayTunnel> implements RelayExplore
 
     @Override
     public void closeTunnel(long instanceId, long tunnelId) {
-        T tunnel = tunnelMap.get(TunnelKey.of(instanceId, tunnelId));
-        if (tunnel != null) {
-            tunnel.close();
+        // remove 原子返回唯一胜者：摘除即关闭，重复请求空手而归（天然幂等，relay-link 规格）
+        T removed = tunnelMap.remove(TunnelKey.of(instanceId, tunnelId));
+        if (removed != null) {
+            removed.close();
         }
     }
 
