@@ -120,7 +120,10 @@ public class NettyMessageHandler extends ChannelDuplexHandler {
                 if (tunnel != null) {
                     tunnel.receive(message);
                 } else {
-                    // TODO rpcMonitor 处理无 tunnel 情况
+                    // 未就绪丢弃必须可观察（net-tunnel 规格）；rpcMonitor 埋点属观测主题后续项
+                    LOGGER.warn("[Tunnel] 通道 {} ==> {} 尚未绑定会话，丢弃消息 id {} protocol {} mode {}",
+                            channel.remoteAddress(), channel.localAddress(),
+                            message.getId(), message.getProtocolId(), message.getMode());
                 }
             } catch (Throwable ex) {
                 LOGGER.error("#GameServerHandler#接受请求异常", ex);

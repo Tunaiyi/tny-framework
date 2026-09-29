@@ -52,19 +52,17 @@ public class SerialCommandExecutor implements CommandExecutor {
     public void executeCommand(RpcCommand command) {
         commandWorker.await(() -> {
             var future = execute(command);
-            if (LOG_NET.isDebugEnabled()) {
-                LOG_NET.debug("execute [{}] command | wait {}", command.getName(), future != null);
-                if (future != null) {
-                    future.whenComplete((value, cause) -> {
-                        if (cause != null) {
-                            LOG_NET.error("execute [{}] command failed", command.getName(), cause);
-                        } else {
-                            LOG_NET.debug("execute [{}] command complete : {}", command.getName(), value);
-                        }
-                    });
+            CompletableFuture<Object> consumed = Objects.requireNonNullElseGet(future, () -> CompletableFuture.completedFuture(null));
+            // 失败可见性无条件成立（fix-executor-exception-visibility D1：
+            // 原实现消费者挂在 debug 门内，生产级别下异步失败静默蒸发）
+            consumed.whenComplete((value, cause) -> {
+                if (cause != null) {
+                    LOG_NET.error("execute [{}] command failed", command.getName(), cause);
+                } else if (LOG_NET.isDebugEnabled()) {
+                    LOG_NET.debug("execute [{}] command complete : {}", command.getName(), value);
                 }
-            }
-            return Objects.requireNonNullElseGet(future, () -> CompletableFuture.completedFuture(null));
+            });
+            return consumed;
         });
     }
 

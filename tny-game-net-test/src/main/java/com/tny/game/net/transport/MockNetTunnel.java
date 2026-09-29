@@ -127,8 +127,15 @@ public class MockNetTunnel extends AttributeHolder implements NetTunnel {
 
     @Override
     public void disconnect() {
+        // 幂等守卫 + 状态前置（对齐 BaseNetTunnel 关序，fix-executor-exception-visibility D4）
+        if (this.state == TunnelStatus.SUSPEND || this.state == TunnelStatus.CLOSED) {
+            return;
+        }
         this.state = TunnelStatus.SUSPEND;
-        this.session.onUnactivated(this);
+        NetSession session = this.session;
+        if (session != null) {
+            session.onUnactivated(this);
+        }
     }
 
     @Override
@@ -193,8 +200,14 @@ public class MockNetTunnel extends AttributeHolder implements NetTunnel {
 
     @Override
     public boolean close() {
-        this.disconnect();
+        if (this.state == TunnelStatus.CLOSED) {
+            return false;
+        }
         this.state = TunnelStatus.CLOSED;
+        NetSession session = this.session;
+        if (session != null) {
+            session.onUnactivated(this);
+        }
         return true;
     }
 
