@@ -46,3 +46,60 @@ publishing {
         }
     }
 }
+
+// 发布前置门禁：依赖 check（含 test）保证发布前强制跑完测试，并做分支/版本/仓库一致性断言
+def publishesToSharedRepository = { candidate ->
+    String taskName = candidate.name
+    if (taskName == "publish" || taskName == "publishAllPublications" || taskName == "publishMavenJavaPublicationToMavenRepository") {
+        return true
+    }
+    return taskName.startsWith("publish") && !taskName.startsWith("publishToMavenLocal")
+}
+
+// 版本后缀必须与分支命名约定（.release）及目标仓库类型（snapshot/release）一致；仅断言，不改变仓库选择逻辑
+def validatePublishConsistency = { gateTask ->
+    def git = rootProject.ext
+    def version = project.version == null ? "" : project.version.toString()
+    def snapshotSuffix = git.SNAPSHOT_PACK_SUFFIX
+    def releaseSuffix = git.RELEASE_PACK_SUFFIX
+    def releaseVersionSuffix = git.RELEASE_VERSION_SUFFIX
+    def currentBranch = git.branchName.toString()
+    boolean snapshotVersion = version.endsWith(snapshotSuffix)
+    boolean releaseVersion = !snapshotVersion && version.endsWith(releaseSuffix)
+    boolean releaseBranch = currentBranch.toLowerCase().endsWith(releaseVersionSuffix)
+    def problems = []
+    if (releaseVersion && !releaseBranch) {
+        problems << "版本 '${version}' 以 ${releaseSuffix} 结尾，但当前分支 '${currentBranch}' 不符合 ${releaseVersionSuffix} 命名约定，分支名与版本后缀不一致"
+    } else if (snapshotVersion && releaseBranch) {
+        problems << "当前分支 '${currentBranch}' 符合 ${releaseVersionSuffix} 发布约定，但版本 '${version}' 以 ${snapshotSuffix} 结尾，分支名与版本后缀不一致"
+    }
+    def repoUrls = publishing.repositories.withType(MavenArtifactRepository).collect { repository ->
+        repository.url == null ? "" : repository.url.toString()
+    }.findAll { repoUrl -> repoUrl.startsWith("http") }
+    repoUrls.each { repoUrl ->
+        def lowered = repoUrl.toLowerCase()
+        if (snapshotVersion && (lowered.contains("releases") || lowered.contains("-release/"))) {
+            problems << "版本 '${version}' 以 ${snapshotSuffix} 结尾，但发布目标仓库 '${repoUrl}' 是 release 仓库，版本后缀与目标仓库类型不一致"
+        } else if (releaseVersion && lowered.contains("snapshots")) {
+            problems << "版本 '${version}' 以 ${releaseSuffix} 结尾，但发布目标仓库 '${repoUrl}' 是 SNAPSHOT 仓库，版本后缀与目标仓库类型不一致"
+        }
+    }
+    if (!problems.isEmpty()) {
+        def hasBranchMismatch = problems.any { message -> message.contains("分支名与版本后缀不一致") }
+        def hint = hasBranchMismatch
+                ? "请切换到与版本后缀 '${version}' 匹配的分支后再发布（release 版本分支需以 ${releaseVersionSuffix} 结尾）。"
+                : "请检查 RELEASE_REPOSITORY_URL / SNAPSHOT_REPOSITORY_URL 配置是否与版本后缀 '${version}' 匹配。"
+        throw new GradleException("发布被阻断（任务 ${gateTask.path}）：\n- " + problems.join("\n-") + "\n" + hint)
+    }
+}
+
+task checkPublishPrerequisites {
+    dependsOn tasks.named("check")
+    doLast {
+        validatePublishConsistency(it)
+    }
+}
+
+tasks.matching { it != checkPublishPrerequisites && publishesToSharedRepository(it) }.configureEach { task ->
+    task.dependsOn(tasks.named("checkPublishPrerequisites"))
+}
