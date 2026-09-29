@@ -121,6 +121,7 @@ configure(javaProjects) {
     apply plugin: 'maven-publish'
     apply from: "${rootDir}/gradle/publications.gradle"
     apply from: "${rootDir}/gradle/tny-module.gradle"
+    apply from: "${rootDir}/gradle/dependency-sources.gradle"
 
 //    ext.springBoot = name.endsWith("-demo") || name.endsWith("-suite") || name.contains("-starter-")
 
@@ -200,7 +201,7 @@ configure(javaProjects) {
             outputDir = compileJava.destinationDir
             testOutputDir = compileTestJava.destinationDir
             downloadJavadoc = false
-            downloadSources = false
+            downloadSources = true
         }
     }
 
