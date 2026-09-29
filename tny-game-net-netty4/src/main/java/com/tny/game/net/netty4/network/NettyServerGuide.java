@@ -101,6 +101,7 @@ public class NettyServerGuide extends NettyServerBootstrap<NettyNetServerBootstr
         EventLoopGroup child = this.childGroup;
         this.parentGroup = null;
         this.childGroup = null;
+        this.bootstrap = null; // 构建器固化旧组引用，必须随组一并失效（net-guide-lifecycle 履行）
         if (parent != null) {
             parent.shutdownGracefully();
         }

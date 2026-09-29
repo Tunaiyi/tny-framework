@@ -70,6 +70,37 @@ class GuideLifecycleTest {
 
     // ---------- 装配与工具 ----------
 
+    /** ④ close 必须同时销毁 bootstrap 缓存（net-guide-lifecycle"关闭后可重新开启"的结构前提；当前只清组不清构建器，应红） */
+    @Test
+    void closeInvalidatesBootstrapCache() throws Exception {
+        assertCloseInvalidatesBootstrap(serverGuide());
+    }
+
+    /** ⑤ relay server guide 同合同同样失效 */
+    @Test
+    void relayServerGuideCloseInvalidatesBootstrap() throws Exception {
+        int port = 10000 + new java.util.Random().nextInt(20000);
+        String address = "127.0.0.1:" + port;
+        com.tny.game.net.netty4.relay.NettyRelayServerBootstrapSetting relaySetting =
+                new com.tny.game.net.netty4.relay.NettyRelayServerBootstrapSetting();
+        relaySetting.setBindAddress(address);
+        relaySetting.setServeAddress(address);
+        assertCloseInvalidatesBootstrap(new com.tny.game.net.netty4.relay.NettyRelayServerGuide(
+                new DefaultNetAppContext(), relaySetting));
+    }
+
+    private static void assertCloseInvalidatesBootstrap(Object guide) throws Exception {
+        java.lang.reflect.Field bootstrapField = guide.getClass().getDeclaredField("bootstrap");
+        bootstrapField.setAccessible(true);
+        Object sentinel = new io.netty.bootstrap.ServerBootstrap();
+        bootstrapField.set(guide, sentinel);   // 预置哨兵：模拟"已开过一次"的缓存状态
+
+        guide.getClass().getMethod("close").invoke(guide);
+
+        assertNull(bootstrapField.get(guide),
+                "close 必须置空 bootstrap 缓存，否则重开时 DCL 复用绑定死组的旧构建器（当前应红）");
+    }
+
     private static NettyServerGuide serverGuide() {
         int port = 10000 + new Random().nextInt(20000);
         String address = "127.0.0.1:" + port;

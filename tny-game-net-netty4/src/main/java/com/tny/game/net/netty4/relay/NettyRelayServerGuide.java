@@ -103,6 +103,7 @@ public class NettyRelayServerGuide extends NettyServerBootstrap<NettyRelayServer
         });
         EventLoopGroup shuttingDownParentGroup = this.parentGroup;
         this.parentGroup = null;
+        this.bootstrap = null; // 构建器固化旧组引用，必须随组一并失效（net-guide-lifecycle 履行）
         if (shuttingDownParentGroup != null) {
             shuttingDownParentGroup.shutdownGracefully();
         }
