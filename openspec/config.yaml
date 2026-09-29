@@ -15,6 +15,9 @@ context: |
   - 架构原则：抽象与实现分离。抽象模块（net、codec、data、expr）MUST NOT 依赖具体实现模块；
     实现模块依赖抽象模块，多实现可插拔。
   - 每个源文件必须携带 Mulan PSL v2 版权头（Copyright (c) 2020 Tunaiyi），新建文件同样必须。
+  - 类型引用一律经 import 引入简单名；代码体内禁止内联全限定类名（javadoc 链接除外）。
+  - 命名规范：类名 UpperCamelCase；方法/变量/参数 lowerCamelCase；静态常量 UPPER_SNAKE_CASE；
+    禁止 snake_case 混入 Java 标识符（Netty 等第三方 API 常量除外）。
   - 构建/测试命令：编译 ./gradlew :模块名:compileJava；单模块测试 ./gradlew :模块名:test；
     全量构建 ./gradlew clean build。
   - 发布：maven-publish 推送到 Nexus（gradle/publish.gradle），groupId 为 com.tny.game；

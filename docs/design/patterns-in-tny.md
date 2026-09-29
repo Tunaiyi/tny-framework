@@ -44,6 +44,8 @@
 | 下游要用一组模块太麻烦 | 门面 starter | `tny-game-starter-*` | 门面不引入新行为，只装配 |
 | 同一对象昂贵创建 | 对象池/享元 | （池化先例已归档于 `obsolete/`，无活跃实现） | **热路径才值得**（P13：写清分配量级论证） |
 | 行为需运行期替换 | 策略持有引用，不用继承 | `MessageDispatcher` 家族 | 继承复用代码、组合复用行为（P8） |
+| 短临界区互斥（队列/缓存等小状态容器） | **热路径（每消息级）→ `ReentrantLock`**；冷路径（启动/装配/偶发）→ `synchronized` 可 | `MessageQueue`（use-reentrant-lock-in-message-queue 后） | 选型三依据：① 不要用 StampedLock 除非乐观读是真需求（无竞争读锁更贵、不可重入是死锁地雷）；② JDK 21 上 synchronized 竞争阻塞会 pin 虚拟线程载体（JEP 491 于 24 才根治）→ 热路径禁用；③ `BaseNetTunnel.statusLock` 用显式锁仅因"锁外回调"编排需求 |
+| 读侧仅需发布一致性（引用整体替换） | volatile 快照读，零锁 | `BaseNetTunnel.receive/send`、clusters 快照族 | 字段组多步读才升级到锁协议（P13） |
 
 ---
 
