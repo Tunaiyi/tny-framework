@@ -96,5 +96,8 @@ include 'tny-game-starter-data'
 
 include 'tny-game-tester'
 
+// 基准设施：刻意不以 tny-game- 开头，不落入发布/模块装配线（optimize-net-hot-path D1）
+include ':tools:net-bench'
+
 
 //include 'tny-game-test-lua'

@@ -50,8 +50,10 @@ public class CRC64CodecVerifier implements CodecVerifier {
     public boolean verify(DataPackageContext packager, byte[] body, int offset, int length, byte[] verifyCode) {
         byte[] generateCode = doGenerate(packager, body, offset, length);
         if (!Arrays.equals(generateCode, verifyCode)) {
-            LOGGER.debug("verify remote code {} is not equals to local code {} form body {}",
-                    toHexString(verifyCode), toHexString(generateCode), toHexString(body));
+            if (LOGGER.isDebugEnabled()) { // 校验失败多源于攻击/坏流量，避免低成本坏包触发的 hex 放大（optimize-net-hot-path D4）
+                LOGGER.debug("verify remote code {} is not equals to local code {} form body {}",
+                        toHexString(verifyCode), toHexString(generateCode), toHexString(body));
+            }
             return false;
         }
         return true;
