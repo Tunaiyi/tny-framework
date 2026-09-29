@@ -10,7 +10,6 @@
  */
 package com.tny.game.net.transport;
 
-import com.tny.game.common.concurrent.utils.*;
 import com.tny.game.net.application.*;
 import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.message.*;
@@ -35,7 +34,7 @@ public abstract class BaseNetTunnel<S extends NetSession> extends BaseCommunicat
     private final long id;
 
     /*访问 id*/
-    private long accessId;
+    private volatile long accessId;
 
     /* 管道模式 */
     private final NetAccessMode accessMode;
@@ -47,9 +46,6 @@ public abstract class BaseNetTunnel<S extends NetSession> extends BaseCommunicat
     private final NetworkContext context;
 
     private final TunnelEvents buses = new TunnelEvents();
-
-    /* session 锁 */
-    private final StampedLock sessionLock = new StampedLock();
 
     private volatile TunnelStatus status = TunnelStatus.INIT;
     
@@ -139,7 +135,9 @@ public abstract class BaseNetTunnel<S extends NetSession> extends BaseCommunicat
 
     @Override
     public boolean receive(NetMessage message) {
-        return StampedLockAide.supplyInOptimisticReadLock(this.sessionLock, this::doReceive, message);
+        // 会话一致性由 doReceive 内对 volatile session 字段的单次快照读保证；
+        // 不使用乐观读锁包装（业务有副作用，见 net-tunnel 规格与 design D1）
+        return doReceive(message);
     }
 
     private boolean doReceive(NetMessage message) {
@@ -159,7 +157,7 @@ public abstract class BaseNetTunnel<S extends NetSession> extends BaseCommunicat
 
     @Override
     public MessageSent send(MessageContent content) {
-        return StampedLockAide.supplyInOptimisticReadLock(this.sessionLock, () -> doSend(content));
+        return doSend(content);
     }
 
     private MessageSent doSend(MessageContent messageContext) {
@@ -187,7 +185,9 @@ public abstract class BaseNetTunnel<S extends NetSession> extends BaseCommunicat
                 if (!certificate.isAuthenticated()) {
                     return false;
                 }
-                return StampedLockAide.supplyInWriteLock(this.sessionLock, () -> resetSession(session));
+                // 会话切换互斥由本方法的 statusLock 提供；bind 是 resetSession 唯一切换入口，
+                // 未来多步实现须经本入口进入以保持互斥（net-tunnel 规格 R1 约束）
+                return resetSession(session);
             }
         } finally {
             statusLock.unlock();

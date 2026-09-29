@@ -38,7 +38,7 @@ public abstract class BaseRelayLink implements NetRelayLink {
 
     public final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
-    private long latelyHeartbeatTime = System.currentTimeMillis();
+    private volatile long latelyHeartbeatTime = System.currentTimeMillis();
 
     /**
      * 连接 id

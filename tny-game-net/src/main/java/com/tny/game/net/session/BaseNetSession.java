@@ -43,8 +43,8 @@ public abstract class BaseNetSession extends BaseCommunicator implements NetSess
     /* 通讯管道 */
     protected volatile NetTunnel tunnel;
 
-    /* 认证 */
-    protected Certificate certificate;
+    /* 认证（跨线程可见性契约见 net-session 规格） */
+    protected volatile Certificate certificate;
 
     /* 状态 */
     private volatile SessionStatus status;
