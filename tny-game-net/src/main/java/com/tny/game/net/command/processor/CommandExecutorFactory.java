@@ -22,6 +22,13 @@ import com.tny.game.net.session.*;
 @UnitInterface
 public interface CommandExecutorFactory {
 
+    /**
+     * 异步命令兜底时限（毫秒）：默认 3000；实现按自身配置覆写。
+     */
+    default long getCommandTimeoutMillis() {
+        return 3000L;
+    }
+
     CommandExecutor create(Session session);
 
 }

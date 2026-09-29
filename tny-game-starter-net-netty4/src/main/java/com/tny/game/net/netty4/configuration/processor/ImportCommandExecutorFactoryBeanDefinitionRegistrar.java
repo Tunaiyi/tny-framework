@@ -38,6 +38,10 @@ public class ImportCommandExecutorFactoryBeanDefinitionRegistrar extends ImportC
             return false;
         }
         String beanName = getBeanName(name, CommandExecutorFactory.class);
+        if (registry.containsBeanDefinition(beanName)) {
+            // 双路注册收口：@Bean（含 @ConditionalOnMissingBean）先到先得，registrar 不再覆盖
+            return false;
+        }
         registry.registerBeanDefinition(beanName,
                 BeanDefinitionBuilder.genericBeanDefinition(DefaultCommandExecutorFactory.class)
                         .addConstructorArgValue(setting)

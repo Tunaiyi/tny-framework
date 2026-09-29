@@ -35,7 +35,6 @@ public class DefaultNetAppContext implements NetAppContext {
     private final Attributes attributes = ContextAttributes.create();
 
     public DefaultNetAppContext() {
-        // NetAppContextHolder.register(this);
     }
 
     @Override

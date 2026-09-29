@@ -24,7 +24,12 @@ import org.springframework.context.event.EventListener;
  */
 public class NacosEventListener implements AppClosed {
 
+    // 变更事件去抖窗口：注册中心抖动不得引发 deregister/register 风暴
+    private static final long RESTART_DEBOUNCE_MILLIS = 5000L;
+
     private final NetAutoServiceRegister netAutoServiceRegister;
+
+    private final java.util.concurrent.atomic.AtomicLong lastRestartAt = new java.util.concurrent.atomic.AtomicLong(0L);
 
     public NacosEventListener(NetAutoServiceRegister netAutoServiceRegister) {
         this.netAutoServiceRegister = netAutoServiceRegister;
@@ -32,6 +37,14 @@ public class NacosEventListener implements AppClosed {
 
     @EventListener
     public void onNacosDiscoveryInfoChangedEvent(NacosDiscoveryInfoChangedEvent event) {
+        long now = System.currentTimeMillis();
+        long previous = this.lastRestartAt.get();
+        if (now - previous < RESTART_DEBOUNCE_MILLIS) {
+            return; // 去抖窗口内的重复变更事件直接吸收
+        }
+        if (!this.lastRestartAt.compareAndSet(previous, now)) {
+            return; // 并发下仅一个胜者执行 restart
+        }
         this.netAutoServiceRegister.restart();
     }
 

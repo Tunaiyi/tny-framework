@@ -123,7 +123,9 @@ public class DefaultMessageDispatcherContext implements NetMessageDispatcherCont
         AuthProtocol protocol = providerClass.getAnnotation(AuthProtocol.class);
         if (protocol != null) {
             if (protocol.all()) {
-                Asserts.checkNotNull(this.defaultValidator, "添加 {} 失败! 存在全局AuthProvider {}", providerClass, this.defaultValidator.getClass());
+                // 语义为"尚无全局时首个注册成功"：原 checkNotNull(getDefaultValidator().getClass())
+                // 首次注册即 NPE 且断言方向颠倒（command-execution"鉴权校验器可注册"契约）
+                Asserts.checkArgument(this.defaultValidator == null, "添加 {} 失败! 已存在全局AuthProvider {}", providerClass, this.defaultValidator);
                 this.defaultValidator = provider;
             } else {
                 for (int value : protocol.protocol()) {

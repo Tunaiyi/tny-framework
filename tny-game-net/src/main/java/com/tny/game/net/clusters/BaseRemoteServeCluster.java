@@ -119,11 +119,19 @@ public abstract class BaseRemoteServeCluster implements NetRemoteServeCluster {
 
     @Override
     public RelayServeInstance registerInstance(NetRelayServeInstance instance) {
-        RelayServeInstance old = instanceMap.putIfAbsent(instance.getId(), instance);
-        if (old == null) {
+        // 与摘除/关闭同锁发布：消除与 instance.close() 交错导致的丢更新与已关集群复活僵尸实例
+        instanceLock.lock();
+        try {
+            RelayServeInstance old = instanceMap.putIfAbsent(instance.getId(), instance);
+            if (old != null) {
+                // 幂等注册：冲突返回既有实例，调用方据此拦截孤儿连接器（net-boot/cluster-view 契约）
+                return old;
+            }
             this.doRefreshInstances();
+            return instance;
+        } finally {
+            instanceLock.unlock();
         }
-        return instance;
     }
 
     @Override

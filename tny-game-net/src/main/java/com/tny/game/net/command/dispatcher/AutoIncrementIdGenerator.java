@@ -34,7 +34,9 @@ public class AutoIncrementIdGenerator implements NetIdGenerator {
     }
 
     public AutoIncrementIdGenerator(int concurrentLevel) {
-        this.bitSize = Integer.bitCount(concurrentLevel);
+        // index 需要 ceil(log2(n)) 位；bitCount(n) 仅在 n=2 或 n-1 全 1 时巧合相等，
+        // 其余取值会让 index 侵占计数位导致跨分片撞号（消息 ID 冲突 → 请求响应错配）
+        this.bitSize = 32 - Integer.numberOfLeadingZeros(concurrentLevel - 1);
         this.idGenerators = new AtomicLong[concurrentLevel];
         for (int i = 0; i < idGenerators.length; i++) {
             idGenerators[i] = new AtomicLong();
@@ -44,7 +46,7 @@ public class AutoIncrementIdGenerator implements NetIdGenerator {
     @Override
     public long generate() {
         long id = Thread.currentThread().getId();
-        int index = (int) (id % idGenerators.length);
+        int index = (int) Math.floorMod(id, idGenerators.length);
         AtomicLong generator = idGenerators[index];
         return generator.incrementAndGet() << bitSize | index;
     }

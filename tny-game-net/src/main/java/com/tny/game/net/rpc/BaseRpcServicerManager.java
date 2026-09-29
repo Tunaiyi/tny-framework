@@ -64,7 +64,8 @@ public class BaseRpcServicerManager implements RpcServicerManager, SessionKeeper
 
     @Override
     public RpcInvokeNodeSet findInvokeNodeSet(ContactType serviceType) {
-        return serviceSetMap.get(serviceType);
+        // 读全量注册表：serviceSetMap 只含 RPC 服务型，Contact 型退化为恒 null（load/find 不对称修复）
+        return invokeNodeSetMap.get(serviceType);
     }
 
     private RpcInvokeNodeSet doLoadRpcServiceSet(ContactType contactType, Consumer<ContactNodeSet> consumer) {

@@ -43,6 +43,10 @@ public class DefaultCommandExecutorFactory implements CommandExecutorFactory {
     }
 
     @Override
+    public long getCommandTimeoutMillis() {
+        return this.setting == null ? 3000L : this.setting.getCommandTimeout();
+    }
+
     public CommandExecutor create(Session session) {
         return new SerialCommandExecutor("CommandExecutor-" + session.getId(), executorService);
     }

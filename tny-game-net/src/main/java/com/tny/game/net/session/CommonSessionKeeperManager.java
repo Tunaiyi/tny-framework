@@ -33,7 +33,7 @@ import static com.tny.game.common.utils.ObjectAide.*;
  * <p>
  */
 @Unit
-public class CommonSessionKeeperManager implements SessionKeeperManager, AppPrepareStart {
+public class CommonSessionKeeperManager implements SessionKeeperManager, AppPrepareStart, AppClosed {
 
     private static final ContactType DEFAULT_KEY = new ContactType() {
 
@@ -103,16 +103,27 @@ public class CommonSessionKeeperManager implements SessionKeeperManager, AppPrep
 
     @Override
     public SessionKeeper loadKeeper(ContactType contactType, NetAccessMode accessMode) {
-        SessionKeeper keeper = this.sessionKeeperMap.get(contactType);
-        if (keeper != null) {
-            return as(keeper);
-        }
-        NetSessionKeeper newOne = create(contactType, accessMode);
-        keeper = as(this.sessionKeeperMap.computeIfAbsent(contactType, (k) -> newOne));
-        if (keeper == newOne) {
+        // 创建移入 computeIfAbsent 原子域：并发首次装载不再产生"落选但已注册周期任务"的孤儿 keeper
+        NetSessionKeeper[] created = new NetSessionKeeper[1];
+        SessionKeeper keeper = as(this.sessionKeeperMap.computeIfAbsent(contactType, k -> {
+            created[0] = create(contactType, accessMode);
+            return created[0];
+        }));
+        if (created[0] != null) {
             ON_CREATE.notify(keeper);
         }
-        return as(keeper);
+        return keeper;
+    }
+
+    @Override
+    public void onClosed() {
+        // 管理器终结 → 逐个取消清理任务；弱引用/静态调度器不再钉住会话树
+        for (NetSessionKeeper keeper : this.sessionKeeperMap.values()) {
+            if (keeper instanceof AutoCloseableSessionKeeper closeable) {
+                closeable.shutdownScan();
+            }
+        }
+        this.sessionKeeperMap.clear();
     }
 
     @Override

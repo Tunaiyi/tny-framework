@@ -40,9 +40,9 @@ public class SkywalkingRpcMonitorHandler implements RpcMonitorReceiveHandler, Rp
 
     private static final StringTag CONTACT = new StringTag(102, "tny-rpc.contact");
 
-    private static final StringTag TARGET = new StringTag(102, "tny-rpc.target");
+    private static final StringTag TARGET = new StringTag(109, "tny-rpc.target");
 
-    private static final StringTag FORWARD = new StringTag(102, "tny-rpc.forward");
+    private static final StringTag FORWARD = new StringTag(110, "tny-rpc.forward");
 
     private static final StringTag RPC_MODE = new StringTag(103, "tny-rpc.mode");
 
@@ -53,10 +53,6 @@ public class SkywalkingRpcMonitorHandler implements RpcMonitorReceiveHandler, Rp
     private static final StringTag SEGMENT_ID = new StringTag(107, "tny-rpc.segment-id");
 
     private static final StringTag SPAN_ID = new StringTag(108, "tny-rpc.span-id");
-
-    private static final StringTag START_TIME = new StringTag(108, "tny-rpc.start-time");
-
-    private static final StringTag END_TIME = new StringTag(108, "tny-rpc.end-time");
 
     private static final OfficialComponent TNY_RPC_SERVER = new OfficialComponent(165, "tny-rpc-java-server");
 
@@ -112,8 +108,21 @@ public class SkywalkingRpcMonitorHandler implements RpcMonitorReceiveHandler, Rp
         if (setting.isDisable()) {
             return;
         }
-        while (ContextManager.isActive()) {
-            ContextManager.stopSpan();
+        // 只停本框架登记过的 span：原 while(isActive) 连坐强停同线程上无关插件的合法 span
+        var attributes = rpcContext.attributes();
+        stopRegisteredSpan(attributes.getAttribute(TRACING_RPC_SPAN));
+        stopRegisteredSpan(attributes.getAttribute(TRACING_INVOKE_SPAN));
+    }
+
+    private void stopRegisteredSpan(AbstractSpan span) {
+        if (span == null) {
+            return;
+        }
+        try {
+            ContextManager.stopSpan(span);
+        } catch (Throwable e) {
+            // 已终结 span 二次停止：仅留痕（挂起路径本就允许与完成回调竞态）
+            LOGGER.debug("stop registered span ignored", e);
         }
     }
 
@@ -134,10 +143,12 @@ public class SkywalkingRpcMonitorHandler implements RpcMonitorReceiveHandler, Rp
             if (rpcContext.getMode() == RpcTransactionMode.ENTER) {
                 var snapshot = ContextManager.capture();
                 rpcContext.attributes().setAttribute(TRACING_SNAPSHOT, snapshot);
-            }
-            rpcContext.attributes().setAttribute(TRACING_INVOKE_SPAN, span.prepareForAsync());
-            if (rpcContext.getMode() == RpcTransactionMode.EXIT) {
+                rpcContext.attributes().setAttribute(TRACING_INVOKE_SPAN, span.prepareForAsync());
+            } else if (rpcContext.getMode() == RpcTransactionMode.EXIT) {
+                // EXIT 单次结束：原同时 prepareForAsync + stopSpan，异步完成链二次结束语义未定义
                 ContextManager.stopSpan(span);
+            } else {
+                rpcContext.attributes().setAttribute(TRACING_INVOKE_SPAN, span.prepareForAsync());
             }
         }
     }
@@ -267,6 +278,8 @@ public class SkywalkingRpcMonitorHandler implements RpcMonitorReceiveHandler, Rp
         for (AttrKey<AbstractSpan> key : keys) {
             stopAsyncSpan(rpcContext, cause, key);
         }
+        // 快照属性随异步终结清理：其持有 TraceContext 引用，滞留即泄漏（net-boot-integration）
+        rpcContext.attributes().removeAttribute(TRACING_SNAPSHOT);
     }
 
     private void stopAsyncSpan(RpcTransactionContext rpcContext, Throwable cause, AttrKey<AbstractSpan> key) {

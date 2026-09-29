@@ -51,6 +51,7 @@ public class RpcContexts {
      * @return 获取当前线程正在执行的会话
      */
     public static Session currentSession() {
+        requireBound();
         return current().getSession();
     }
 
@@ -58,7 +59,18 @@ public class RpcContexts {
      * @return 获取当前线程正在执行的会话
      */
     public static Executor currentExecutor() {
+        requireBound();
         return current().getSession();
+    }
+
+    /**
+     * 空上下文（EMPTY）访问会话必然 NPE——改为带信息异常（command-execution 配套修复）。
+     */
+    private static void requireBound() {
+        var info = LOCAL_CONTEXT.get();
+        if (info == null || !info.isValid()) {
+            throw new IllegalStateException("当前线程没有绑定的命令上下文，无法访问会话/执行器");
+        }
     }
 
     static void setCurrent(RpcEnterContext context) {

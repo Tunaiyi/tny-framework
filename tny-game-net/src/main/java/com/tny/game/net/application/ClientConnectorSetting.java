@@ -33,8 +33,6 @@ public class ClientConnectorSetting {
 
     private long connectTimeout = NetConfigs.CONNECT_TIMEOUT_DEFAULT_VALUE;
 
-    private boolean asyncConnect = NetConfigs.CONNECT_ASYNC_DEFAULT_VALUE;
-
     public int getRetryTimes() {
         return retryTimes;
     }
@@ -51,10 +49,6 @@ public class ClientConnectorSetting {
         return connectTimeout;
     }
 
-    public boolean isAsyncConnect() {
-        return asyncConnect;
-    }
-
     public ClientConnectorSetting setRetryTimes(int retryTimes) {
         this.retryTimes = retryTimes;
         return this;
@@ -67,11 +61,6 @@ public class ClientConnectorSetting {
 
     public ClientConnectorSetting setConnectTimeout(long connectTimeout) {
         this.connectTimeout = connectTimeout;
-        return this;
-    }
-
-    public ClientConnectorSetting setAsyncConnect(boolean asyncConnect) {
-        this.asyncConnect = asyncConnect;
         return this;
     }
 

@@ -51,7 +51,7 @@ public class BaseRelayServeInstance implements NetRelayServeInstance {
 
     private final int port;
 
-    private boolean healthy;
+    private volatile boolean healthy;
 
     private final RpcServiceType serviceType;
 
@@ -59,7 +59,7 @@ public class BaseRelayServeInstance implements NetRelayServeInstance {
 
     private final AtomicBoolean close = new AtomicBoolean(false);
 
-    private Map<String, ClientRelayLink> relayLinkMap = new ConcurrentHashMap<>();
+    private final Map<String, ClientRelayLink> relayLinkMap = new ConcurrentHashMap<>();
 
     private volatile List<ClientRelayLink> activeRelayLinks = ImmutableList.of();
 
@@ -163,10 +163,9 @@ public class BaseRelayServeInstance implements NetRelayServeInstance {
         try {
             if (close.compareAndSet(false, true)) {
                 this.prepareClose();
-                Map<String, ClientRelayLink> oldMap = this.relayLinkMap;
-                this.relayLinkMap = new ConcurrentHashMap<>();
-                oldMap.forEach((id, link) -> link.close());
-                oldMap.clear();
+                Map<String, ClientRelayLink> snapshot = new HashMap<>(this.relayLinkMap);
+                this.relayLinkMap.clear();
+                snapshot.forEach((id, link) -> link.close());
                 this.postClose();
             }
         } finally {
@@ -219,29 +218,39 @@ public class BaseRelayServeInstance implements NetRelayServeInstance {
         } finally {
             linkLock.unlock();
         }
+        // 集群级刷新移出 linkLock：linkLock→instanceLock 与摘除路径反向成环（D1 锁序统一）
+        cluster.refreshInstances();
     }
 
+    /**
+     * 锁内仅做快照重建；cluster.refreshInstances() 由各入口在解锁后调用（锁序契约）。
+     */
     private void doRefreshActiveLinks() {
         this.activeRelayLinks = ImmutableList.sortedCopyOf(Comparator.comparing(ClientRelayLink::getId), relayLinkMap.values()
                 .stream()
                 .filter(RelayLink::isActive)
                 .collect(Collectors.toList()));
-        cluster.refreshInstances();
     }
 
     @Override
     public void register(ClientRelayLink link) {
+        ClientRelayLink evicted = null;
         linkLock.lock();
         try {
             NetRelayLink old = relayLinkMap.put(link.getId(), link);
             if (old != null && old != link) {
-                old.close();
+                evicted = (ClientRelayLink) old;
             }
             this.doRefreshActiveLinks();
             this.onRegister(link);
         } finally {
             linkLock.unlock();
         }
+        // 旧链路终结与集群刷新在 linkLock 之外（锁序契约：任何路径不同时持 linkLock 求 instanceLock）
+        if (evicted != null) {
+            evicted.close();
+        }
+        cluster.refreshInstances();
     }
 
     @Override
@@ -258,17 +267,22 @@ public class BaseRelayServeInstance implements NetRelayServeInstance {
 
     @Override
     public void relieve(ClientRelayLink link) {
+        boolean relieved;
         linkLock.lock();
         try {
-            if (relayLinkMap.remove(link.getId(), link)) {
-                if (link.isActive()) {
-                    link.close();
-                }
+            relieved = relayLinkMap.remove(link.getId(), link);
+            if (relieved) {
                 this.doRefreshActiveLinks();
                 this.onRelieve(link);
             }
         } finally {
             linkLock.unlock();
+        }
+        if (relieved) {
+            if (link.isActive()) {
+                link.close();
+            }
+            cluster.refreshInstances();
         }
     }
 

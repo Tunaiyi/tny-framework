@@ -15,6 +15,7 @@ import com.tny.game.common.utils.*;
 import org.apache.commons.collections4.MapUtils;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import static com.tny.game.common.utils.ObjectAide.*;
@@ -27,7 +28,8 @@ import static com.tny.game.common.utils.ObjectAide.*;
  **/
 public class BaseMessageHeaderContainer implements MessageHeaderContainer {
 
-    private final Map<String, MessageHeader<?>> headers = new EmptyImmutableMap<>();
+    // 消息头容器跨线程（业务线程写 / event-loop 编码读）：底表并发安全 + 读取快照
+    private final Map<String, MessageHeader<?>> headers = new EmptyImmutableMap<>(ConcurrentHashMap::new);
 
     public BaseMessageHeaderContainer() {
     }
@@ -73,7 +75,8 @@ public class BaseMessageHeaderContainer implements MessageHeaderContainer {
 
     @Override
     public Map<String, MessageHeader<?>> getAllHeaderMap() {
-        return Collections.unmodifiableMap(this.headers);
+        // 快照返回：live 视图会把手并发改动暴露给编码器遍历（流错位/CME 面）
+        return Collections.unmodifiableMap(new LinkedHashMap<>(this.headers));
     }
 
     @Override

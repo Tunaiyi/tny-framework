@@ -37,13 +37,14 @@ import static com.tny.game.common.utils.ObjectAide.*;
  */
 public abstract class BaseServeNodeClient implements ServeNodeClient, AppClosed {
 
-    public static final Logger LOGGER = LoggerFactory.getLogger(NacosServeNodeClient.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(BaseServeNodeClient.class);
 
     private static final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1, new CoreThreadFactory("ServeNodeClient"));
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    private static final Map<String, ServeNodeHolder> serveNodeHolderMap = new ConcurrentHashMap<>();
+    // 实例字段：跨 context/多实例不再互相踩状态，非静态 holder 也不再经 static 表钉死创建实例
+    private final Map<String, ServeNodeHolder> serveNodeHolderMap = new ConcurrentHashMap<>();
 
     @Override
     public List<ServeNode> getAllServeNodes(String serveName) {
@@ -90,6 +91,8 @@ public abstract class BaseServeNodeClient implements ServeNodeClient, AppClosed 
         ServeNodeHolder holder = serveNodeHolderMap.get(serveName);
         if (holder != null) {
             holder.addListener(listener);
+            // 已终结实例上的重订阅必须可复活（CAS 幂等，运行中的 start 为空操作）
+            holder.start();
         } else {
             ServeNodeHolder newHolder = new ServeNodeHolder(serveName);
             ServeNodeHolder oldOne = serveNodeHolderMap.putIfAbsent(serveName, newHolder);
@@ -105,9 +108,10 @@ public abstract class BaseServeNodeClient implements ServeNodeClient, AppClosed 
 
     @Override
     public void onClosed() {
-        serveNodeHolderMap.forEach((k, holder) -> {
+        serveNodeHolderMap.values().forEach(holder -> {
             holder.stop();
         });
+        serveNodeHolderMap.clear();
     }
 
     @Override
@@ -202,9 +206,8 @@ public abstract class BaseServeNodeClient implements ServeNodeClient, AppClosed 
                 try {
                     doUnsubscribe(this.serveName);
                 } catch (Throwable e) {
-                    LOGGER.error("Subscribe {} serve exception", this.serveName, e);
-                    start.set(false);
-                    executorService.schedule(this::start, 3000, TimeUnit.MILLISECONDS);
+                    // 退订失败只留痕：不得反向 schedule(start) 把已终结订阅复活
+                    LOGGER.error("Unsubscribe {} serve exception", this.serveName, e);
                 }
             }
         }

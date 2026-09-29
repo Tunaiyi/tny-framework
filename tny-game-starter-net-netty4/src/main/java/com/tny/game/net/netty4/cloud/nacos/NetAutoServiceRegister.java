@@ -61,10 +61,17 @@ public class NetAutoServiceRegister implements ApplicationContextAware {
         Set<ServerGuide> guides = SpringBeanUtils.beansOfType(applicationContext, ServerGuide.class);
         this.applicationContext.publishEvent(new NetApplicationPreRegisteredEvent(application));
         for (ServerGuide guide : guides) {
+            if (!guide.isBound()) {
+                // 绑定失败/未开启的服务器不得注册进服务发现（幽灵节点防线，net-guide-lifecycle 配套）
+                LOGGER.error("skip registering server guide [{}] for discovery: not bound", guide);
+                continue;
+            }
             this.applicationContext.publishEvent(new ServerGuidePreRegisteredEvent(application, guide));
             for (ServerGuideRegistrationFactory factory : registrationFactories) {
                 Registration current = factory.create(guide, application.getAppContext());
                 serviceRegistry.register(current);
+                // 注册即登记：deregister/stop 才能逐一注销（net-boot-integration"注册与注销对称"契约）
+                this.registrations.add(current);
             }
             this.applicationContext.publishEvent(new ServerGuideRegisteredEvent(application, guide));
         }

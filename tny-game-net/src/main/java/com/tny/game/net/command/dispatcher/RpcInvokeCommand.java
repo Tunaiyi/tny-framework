@@ -102,9 +102,13 @@ public class RpcInvokeCommand extends RpcHandleCommand {
             return;
         }
 
-        //检测认证
-        if (!tunnel.isAuthenticated() && controller.isHasAuthValidator()) {
-            contactAuthenticator.authenticate(this.dispatcherContext, enterContext, controller.getAuthValidator());
+        //检测认证：声明需登录且未认证即解析校验器（方法级→协议级→全局兜底），
+        //原条件 isHasAuthValidator() 使协议级/全局注册死路（command-execution"鉴权校验器按维度生效"契约）
+        if (!tunnel.isAuthenticated() && controller.isAuth()) {
+            AuthenticationValidator validator = this.dispatcherContext.resolveValidator(
+                    controller.isHasAuthValidator() ? controller.getAuthValidator() : null,
+                    message.getHead().getProtocolId());
+            contactAuthenticator.authenticate(this.dispatcherContext, enterContext, validator);
         }
 
         String appType = invokeContext.getAppType();
@@ -143,6 +147,11 @@ public class RpcInvokeCommand extends RpcHandleCommand {
         if (result instanceof CompletionStage) {
             CompletionStage<Object> stage = as(result);
             future = stage.toCompletableFuture();
+            long remaining = this.invokeContext.getPromise().remainingTimeoutMillis();
+            if (remaining >= 0) {
+                // 异步兜底：超期以 TimeoutException 终结同一 future，whenComplete 回话串行 worker 推进队列
+                future.orTimeout(remaining, TimeUnit.MILLISECONDS);
+            }
             future.whenCompleteAsync((value, cause) -> {
                 DISPATCHER_LOG.info("{} {} whenComplete {} {}", AbstractAsyncWorker.current(), getName(), value, cause);
                 if (cause != null) {
@@ -198,24 +207,42 @@ public class RpcInvokeCommand extends RpcHandleCommand {
             body = commandResult.getBody();
         }
         this.afterInvoke(tunnel, message, cause);
-        MessageContent content = null;
-        if ((message.getMode() == REQUEST && !relay) || (message.getMode() == PUSH && body != null)) {
-            content = RpcMessageAide.toMessage(invokeContext.getRpcContext(), code, body);
+        boolean relaySuccess = relay && code.isSuccess();
+        if (relaySuccess && !(tunnel instanceof RelayTunnel)) {
+            // 中继隧道类型不符：降级为失败语义本地应答（修复前在此抛异常，请求悬挂且完成监听二次触发）
+            code = NetResultCode.SERVER_EXECUTE_EXCEPTION;
+            relaySuccess = false;
         }
-        if (relay && code.isSuccess()) { // 如果是协议需要继续转发, 成功时候继续转发
-            if (tunnel instanceof RelayTunnel relayTunnel) {
-                var monitor = invokeContext.getRpcContext().rpcMonitor();
-                var rpcContext = RpcTransactionContext.createRelay(tunnel, message, monitor, false);
-                relayTunnel.relay(rpcContext, false);
-            } else {
-                throw new RpcInvokeException(NetResultCode.SERVER_EXECUTE_EXCEPTION, "not relay tunnel");
-            }
+        if (relaySuccess) { // 如果是协议需要继续转发, 成功时候继续转发
+            RelayTunnel relayTunnel = as(tunnel);
+            var monitor = invokeContext.getRpcContext().rpcMonitor();
+            var rpcContext = RpcTransactionContext.createRelay(tunnel, message, monitor, false);
+            relayTunnel.relay(rpcContext, false);
+        }
+        MessageContent content = null;
+        if (shouldRespondLocally(message.getMode(), relay, relaySuccess, body != null)) {
+            content = RpcMessageAide.toMessage(invokeContext.getRpcContext(), code, body);
         }
         if (content != null) {
             enterContext.complete(content, cause);
         } else {
             enterContext.completeSilently();
         }
+    }
+
+    /**
+     * 本地应答判定（command-execution"每个请求恰好收到一个终答"）：
+     * 请求报文除"中继成功移交"外一律本地应答（含中继失败，修复前静默悬挂）；
+     * 推送保持仅在携带响应体时应答；其余模式不应答。
+     */
+    static boolean shouldRespondLocally(MessageMode mode, boolean relay, boolean relaySucceeded, boolean hasBody) {
+        if (mode == REQUEST) {
+            return !(relay && relaySucceeded);
+        }
+        if (mode == PUSH) {
+            return hasBody;
+        }
+        return false;
     }
 
     /**
@@ -234,8 +261,13 @@ public class RpcInvokeCommand extends RpcHandleCommand {
             return RpcResults.fail(dex.getCode());
         } else if (e instanceof InvocationTargetException) {
             return this.resultOfException(((InvocationTargetException) e).getTargetException());
-        } else if (e instanceof ExecutionException) {
-            return this.resultOfException(e.getCause());
+        } else if (e instanceof ExecutionException || e instanceof CompletionException) {
+            Throwable target = e.getCause() == null ? e : e.getCause();
+            if (target instanceof TimeoutException) {
+                DISPATCHER_LOG.error("Controller [{}] 异步命令超时兜底", getName(), e);
+                return RpcResults.fail(NetResultCode.REQUEST_TIMEOUT);
+            }
+            return this.resultOfException(target);
         } else {
             DISPATCHER_LOG.error("Controller [{}] exception", getName(), e);
             return RpcResults.fail(NetResultCode.SERVER_EXECUTE_EXCEPTION);

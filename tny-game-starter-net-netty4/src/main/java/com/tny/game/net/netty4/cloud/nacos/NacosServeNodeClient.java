@@ -44,7 +44,8 @@ public class NacosServeNodeClient extends BaseServeNodeClient {
         try {
             namingService.subscribe(serveName, properties.getGroup(), listener);
         } catch (NacosException e) {
-            e.printStackTrace();
+            // 失败上抛：由 holder 记录并进入重试策略，不得静默"已启动未订阅"
+            throw new IllegalStateException("nacos subscribe failed", e);
         }
     }
 
@@ -54,7 +55,8 @@ public class NacosServeNodeClient extends BaseServeNodeClient {
         try {
             namingService.unsubscribe(serveName, properties.getGroup(), listener);
         } catch (NacosException e) {
-            e.printStackTrace();
+            // 失败上抛：由 holder 记录留痕（退订失败不复活订阅）
+            throw new IllegalStateException("nacos unsubscribe failed", e);
         }
     }
 

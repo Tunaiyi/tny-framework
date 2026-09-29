@@ -20,6 +20,7 @@ dependencies {
     api project(":tny-game-net-netty4-codec-protoex")
     compileOnly project(":tny-game-net-netty4-codec-jprotobuf")
     compileOnly libs.alibaba_cloud_starter_nacos_discovery
+    testImplementation libs.alibaba_cloud_starter_nacos_discovery
 
 }
 

@@ -13,6 +13,7 @@ package com.tny.game.net.transport;
 import com.tny.game.net.application.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
+import com.tny.game.net.message.common.*;
 import com.tny.game.net.rpc.*;
 import com.tny.game.net.session.*;
 
@@ -66,7 +67,19 @@ public abstract class TransportTunnel<S extends NetSession, T extends MessageTra
         if (this.checkAvailable(awaiter)) {
             return this.transport.write(message, awaiter);
         }
+        // 丢弃留痕由 checkAvailable 的异常回执承担；载荷在此终结释放，不交给 GC 时点（relay-link 契约）
+        releaseMessageBody(message);
         return awaiter;
+    }
+
+    private static void releaseMessageBody(Message message) {
+        if (message == null) {
+            return;
+        }
+        Object body = message.getBody();
+        if (body instanceof OctetMessageBody octet) {
+            OctetMessageBody.release(octet);
+        }
     }
 
     @Override

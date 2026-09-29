@@ -54,15 +54,45 @@ public class NettyChannelRelayTransport extends NettyChannelConnection implement
     @Override
     public MessageWriteFuture write(RelayPacket<?> packet, MessageWriteFuture awaiter) {
         ChannelPromise channelPromise = createChannelPromise(awaiter);
-        this.channel.writeAndFlush(packet, channelPromise);
+        channelPromise.addListener(future -> {
+            if (!future.isSuccess()) {
+                // 写失败/通道关闭竞态：载荷在此终结释放（release 幂等，成功路径编码器已释放则二次无害）
+                RelayPacket.release(packet);
+            }
+        });
+        try {
+            this.channel.writeAndFlush(packet, channelPromise);
+        } catch (Throwable e) {
+            RelayPacket.release(packet);
+            channelPromise.tryFailure(e);
+        }
         return awaiter;
     }
 
     @Override
     public MessageWriteFuture write(RelayPacketMaker maker, MessageWriteFuture awaiter) {
         ChannelPromise channelPromise = createChannelPromise(awaiter);
-        this.channel.eventLoop()
-                .execute(() -> this.channel.writeAndFlush(maker.make(), channelPromise));
+        try {
+            this.channel.eventLoop().execute(() -> {
+                RelayPacket<?> made;
+                try {
+                    made = maker.make();
+                } catch (Throwable e) {
+                    channelPromise.tryFailure(e);
+                    return;
+                }
+                final RelayPacket<?> packet = made;
+                channelPromise.addListener(f -> {
+                    if (!f.isSuccess()) {
+                        RelayPacket.release(packet);
+                    }
+                });
+                this.channel.writeAndFlush(packet, channelPromise);
+            });
+        } catch (Throwable e) {
+            // event-loop 终止拒绝提交：回执以失败完成，不得悬挂
+            channelPromise.tryFailure(e);
+        }
         return awaiter;
     }
 

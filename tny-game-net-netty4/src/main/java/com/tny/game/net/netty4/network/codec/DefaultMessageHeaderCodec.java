@@ -13,6 +13,7 @@ package com.tny.game.net.netty4.network.codec;
 import com.tny.game.codec.*;
 import com.tny.game.codec.typeprotobuf.*;
 import com.tny.game.common.lifecycle.unit.annotation.*;
+import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
 import io.netty.buffer.*;
 import io.netty.util.concurrent.FastThreadLocal;
@@ -60,6 +61,10 @@ public class DefaultMessageHeaderCodec implements MessageHeaderCodec {
     public MessageHeader<?> decode(ByteBuf buffer) throws Exception {
         ObjectCodec<MessageHeader<?>> codec = this.codecFactory.createCodec(null);
         int length = NettyVarIntCoder.readVarInt32(buffer);
+        // 先校验后分配：帧内声明的头部长度不可信
+        if (length < 0 || length > buffer.readableBytes()) {
+            throw NetCodecException.causeDecodeError("header length {} beyond readable {}", length, buffer.readableBytes());
+        }
         ByteBuf headersBuf = buffer.alloc().heapBuffer(length);
         try {
             buffer.readBytes(headersBuf, length);

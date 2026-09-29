@@ -71,7 +71,8 @@ public class SpringRelayServeClusterSetting implements RelayServeClusterSetting 
 
     @Override
     public boolean isDiscovery() {
-        return discovery || StringUtils.isNoneBlank(this.serveName);
+        // 开关语义自洽：serveName 只是发现键，不得反向强制开启发现（显式 false 必须生效）
+        return this.discovery;
     }
 
     @Override

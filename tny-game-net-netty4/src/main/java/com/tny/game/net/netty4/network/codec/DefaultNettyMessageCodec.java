@@ -107,47 +107,63 @@ public class DefaultNettyMessageCodec implements NettyMessageCodec {
         }
     }
 
-    private Map<String, MessageHeader<?>> readHeaders(ByteBuf buffer) {
+    private Map<String, MessageHeader<?>> readHeaders(ByteBuf buffer) throws Exception {
         Map<String, MessageHeader<?>> headerMap = new HashMap<>();
         int size = NettyVarIntCoder.readVarInt32(buffer);
+        // 帧内声明不可信：每个头至少占 1 字节，计数以当前窗口可读长度为上界
+        if (size < 0 || size > buffer.readableBytes()) {
+            throw NetCodecException.causeDecodeError("header count {} beyond readable {}", size, buffer.readableBytes());
+        }
         for (int index = 0; index < size; index++) {
+            MessageHeader<?> header;
             try {
-                MessageHeader<?> header = this.messageHeaderCodec.decode(buffer);
-                if (header != null) {
-                    headerMap.put(header.getKey(), header);
-                }
+                header = this.messageHeaderCodec.decode(buffer);
+            } catch (NetCodecException e) {
+                throw e;
             } catch (Throwable e) {
-                LOGGER.warn("decode header exception", e);
+                // 单头失败即整帧失败：吞掉继续会造成声明计数与实际字节错位，污染后续体解析
+                throw NetCodecException.causeDecodeError(e, "decode header {} failed", index);
             }
+            if (header == null) {
+                throw NetCodecException.causeDecodeError("header is null at index {}", index);
+            }
+            headerMap.put(header.getKey(), header);
         }
         return headerMap;
     }
 
     private Object readBody(ByteBuf buffer, boolean relay) throws Exception {
-        Object body;
         int length = NettyVarIntCoder.readVarInt32(buffer);
+        // 先校验后分配：帧层只限定整窗大小，窗口内声明的攻击者数据不得驱动越窗分配（未认证远程 DoS 防线）
+        if (length < 0 || length > buffer.readableBytes()) {
+            throw NetCodecException.causeDecodeError("body length {} beyond readable {}", length, buffer.readableBytes());
+        }
         ByteBuf bodyBuff = buffer.alloc().heapBuffer(length);
-        buffer.readBytes(bodyBuff, length);
-        if (relay) {
-            // 不释放, 等待转发后释放
-            body = new ByteBufMessageBody(bodyBuff);
-        } else {
-            try {
-                body = this.messageBodyCodec.decode(bodyBuff);
-            } finally {
+        try {
+            buffer.readBytes(bodyBuff, length);
+            if (relay) {
+                ByteBufMessageBody messageBody = new ByteBufMessageBody(bodyBuff);
+                bodyBuff = null; // 不释放, 所有权移交 messageBody, 等待转发后释放
+                return messageBody;
+            }
+            return this.messageBodyCodec.decode(bodyBuff);
+        } finally {
+            if (bodyBuff != null) {
                 ReferenceCountUtil.release(bodyBuff);
             }
         }
-        return body;
     }
 
-    private void writeHeaders(ByteBuf buffer, List<MessageHeader<?>> headers) {
+    private void writeHeaders(ByteBuf buffer, List<MessageHeader<?>> headers) throws Exception {
         NettyVarIntCoder.writeVarInt32(headers.size(), buffer);
         for (MessageHeader<?> header : headers) {
             try {
                 messageHeaderCodec.encode(header, buffer);
+            } catch (NetCodecException e) {
+                throw e;
             } catch (Throwable e) {
-                LOGGER.warn("encode header {} exception", header, e);
+                // 任一头失败即整帧失败：声明计数与实际编码数不一致会让对端按声明数错位解析
+                throw NetCodecException.causeEncodeFailed(e, "encode header {} failed", header.getKey());
             }
         }
     }

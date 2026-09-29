@@ -34,7 +34,8 @@ public class RandomRelayAllotStrategy implements RelayLinkAllotStrategy, ServeIn
         if (size == 1) {
             return values.get(0);
         }
-        return values.get(ThreadLocalRandom.current().nextInt() % size);
+        // 全值域 nextInt() 约半数取负，%size 后为负下标——必须用有界重载
+        return values.get(ThreadLocalRandom.current().nextInt(size));
     }
 
     @Override

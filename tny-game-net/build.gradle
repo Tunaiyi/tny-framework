@@ -11,6 +11,7 @@ dependencies {
     api project(":tny-game-codec-jprotobuf")
 
     testImplementation project(":tny-game-net-test")
+    testImplementation project(":tny-game-common-lang")
 
 }
 

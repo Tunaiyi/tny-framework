@@ -26,7 +26,7 @@ import static com.tny.game.net.command.plugins.filter.FilterCode.*;
 
 public class TextCheckFilter extends AbstractParamFilter<TextCheck, String> {
 
-    private List<WordsFilter> wordsFilters;
+    private List<WordsFilter> wordsFilters = ImmutableList.of();
 
     private ResultCode lengthIllegalCode = NetResultCode.SERVER_ILLEGAL_PARAMETERS;
 

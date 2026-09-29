@@ -11,6 +11,7 @@
 
 package com.tny.game.net.netty4.relay.codec;
 
+import com.tny.game.net.exception.*;
 import com.tny.game.net.netty4.network.codec.*;
 import com.tny.game.net.netty4.relay.codec.arguments.*;
 import com.tny.game.net.relay.packet.*;
@@ -40,6 +41,7 @@ public class RelayPacketV1Encoder implements RelayPacketEncoder, RelayPacketCode
 
     @Override
     public void encodeObject(ChannelHandlerContext ctx, RelayPacket<?> relay, ByteBuf out) {
+        int frameStart = out.writerIndex();
         try {
             // 包头
             out.writeBytes(RELAY_MAGIC);
@@ -70,7 +72,10 @@ public class RelayPacketV1Encoder implements RelayPacketEncoder, RelayPacketCode
             // 返回写入末尾
             out.resetWriterIndex();
         } catch (Exception e) {
-            LOGGER.error("编码 relay packet {} 异常", relay, e);
+            // 编码失败整帧回退（零字节上线）并以异常终结本次写回执；
+            // 吞掉写出的 4 字节零长度脏帧会被对端解码错误放大器化为整条链路断开（载荷释放契约见中继组）
+            out.writerIndex(frameStart);
+            throw NetCodecException.causeEncodeFailed(e, "encode relay packet {} failed", relay);
         }
     }
 

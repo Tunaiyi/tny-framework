@@ -35,7 +35,8 @@ public class MessageTimeoutCheckerPlugin implements CommandPlugin<Long> {
 
     @Override
     public void execute(Tunnel tunnel, Message message, RpcInvokeContext context, Long attribute) throws Exception {
-        if (attribute <= 0) {
+        // 注解 attribute 缺省为 null（"@null"），拆箱比较会 NPE → fail-closed 误拦整个协议；未声明即不检查
+        if (attribute == null || attribute <= 0) {
             return;
         }
         // 耗时 = 当前时刻 - 消息请求时间（客户端时钟），超过阈值判定超时。

@@ -36,21 +36,28 @@ public class ContactAuthenticateService implements ContactAuthenticator {
     public void authenticate(MessageDispatcherContext dispatcherContext, RpcEnterContext context,
             Class<? extends AuthenticationValidator> validatorClass)
             throws AuthFailedException {
+        var validator = getValidator(dispatcherContext, validatorClass);
+        if (validator == null) {
+            throw new AuthFailedException(NetResultCode.SERVER_ERROR, "{} is null", validatorClass);
+        }
+        authenticate(dispatcherContext, context, validator);
+    }
+
+    @Override
+    public void authenticate(MessageDispatcherContext dispatcherContext, RpcEnterContext context,
+            AuthenticationValidator validator)
+            throws AuthFailedException {
         var tunnel = context.netTunnel();
-        var message = context.getMessage();
-        var networkContext = context.networkContext();
-        if (!tunnel.isAuthenticated()) {
-            var validator = getValidator(dispatcherContext, validatorClass);
-            if (validator == null) {
-                throw new AuthFailedException(NetResultCode.SERVER_ERROR, "{} is null", validatorClass);
-            }
-            Certificate certificate = validator.validate(tunnel, message);
-            // 是否需要做登录校验,判断是否已经登录
-            if (certificate != null && certificate.isAuthenticated()) {
-                SessionKeeper sessionKeeper = this.sessionKeeperManager
-                        .loadKeeper(certificate.getContactType(), tunnel.getAccessMode());
-                sessionKeeper.online(certificate, tunnel);
-            }
+        if (validator == null || tunnel.isAuthenticated()) {
+            // 三级解析皆无校验器：安全跳过，由调用链后续未登录判定兜底
+            return;
+        }
+        Certificate certificate = validator.validate(tunnel, context.getMessage());
+        // 是否需要做登录校验,判断是否已经登录
+        if (certificate != null && certificate.isAuthenticated()) {
+            SessionKeeper sessionKeeper = this.sessionKeeperManager
+                    .loadKeeper(certificate.getContactType(), tunnel.getAccessMode());
+            sessionKeeper.online(certificate, tunnel);
         }
     }
 

@@ -81,7 +81,8 @@ public class NettyRelayPacketHandler extends ChannelDuplexHandler {
                     RelayTransport transporter = channel.attr(NettyRelayAttrKeys.RELAY_TRANSPORTER).get();
                     var openPacket = (LinkOpenPacket) packet;
                     this.relayMonitor.onLinkOpen(transporter, openPacket);
-                    this.relayPacketProcessor.onLinkOpen(transporter, openPacket);
+                    // 统一经类型表分派（原直调绕过 invoker，机制形同虚设）
+                    packetType.handle(this.relayPacketProcessor, transporter, openPacket);
                 } else {
                     if (packetType.isHandleByLink()) { // link 处理
                         NetRelayLink link = channel.attr(NettyRelayAttrKeys.RELAY_LINK).get();
@@ -94,7 +95,7 @@ public class NettyRelayPacketHandler extends ChannelDuplexHandler {
                 release(packet);
                 if (ex.getCode().getLevel() == ResultLevel.ERROR) {
                     channel.close();
-                    LOGGER.warn("[RelayLink] 读取消息 ## 通道 {} ==> {} 时断开链接 # RelayLink 为空", channel.localAddress(), channel.remoteAddress(),
+                    LOGGER.warn("[RelayLink] 读取消息 ## 通道 {} ==> {} 时断开链接 # 协议错误", channel.localAddress(), channel.remoteAddress(),
                             ex);
                 } else {
                     LOGGER.warn("[RelayLink] 读取消息 ## 通道 {} ==> {} 接受转发包{}异常", channel.localAddress(), channel.remoteAddress(), packet,

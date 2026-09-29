@@ -18,7 +18,7 @@ import java.util.function.Supplier;
 
 public class EmptyImmutableMap<K, V> implements Map<K, V> {
 
-    private Map<K, V> map = ImmutableMap.of();
+    private volatile Map<K, V> map = ImmutableMap.of();
 
     private Supplier<Map<K, V>> creator;
 
@@ -30,10 +30,19 @@ public class EmptyImmutableMap<K, V> implements Map<K, V> {
     }
 
     private Map<K, V> getWriter() {
-        if (this.map instanceof ImmutableMap) {
-            this.map = this.creator != null ? this.creator.get() : new HashMap<>();
+        Map<K, V> current = this.map;
+        if (!(current instanceof ImmutableMap)) {
+            return current;
         }
-        return this.map;
+        // 首写竞态：双检锁下唯一换表，输家复用胜者新表——并发首写不再各建各表互相覆盖
+        synchronized (this) {
+            current = this.map;
+            if (current instanceof ImmutableMap) {
+                current = this.creator != null ? this.creator.get() : new HashMap<>();
+                this.map = current;
+            }
+            return current;
+        }
     }
 
     private Map<K, V> getReader() {

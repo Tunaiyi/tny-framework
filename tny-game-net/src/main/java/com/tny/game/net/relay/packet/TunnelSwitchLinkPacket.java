@@ -27,7 +27,9 @@ public class TunnelSwitchLinkPacket extends BaseTunnelPacket<TunnelVoidArguments
     }
 
     public TunnelSwitchLinkPacket(int id, TunnelVoidArguments arguments, long time) {
-        super(id, RelayPacketType.TUNNEL_CONNECT, time, arguments);
+        // 原硬编码 TUNNEL_CONNECT——工厂（唯一线上路径）产出的切换包被对端解释为"隧道建立"，
+        // 故障转移销毁业务会话；类型修正要求网关/业务服成对升级（release-note）
+        super(id, RelayPacketType.TUNNEL_SWITCH_LINK, time, arguments);
     }
 
     @Override

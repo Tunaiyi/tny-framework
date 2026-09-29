@@ -29,13 +29,18 @@ public class TunnelConnectedArgumentsProto extends BaseTunnelArgumentsProto<Tunn
     }
 
     public TunnelConnectedArgumentsProto(TunnelConnectedArguments arguments) {
-        super(arguments);
+        super();
+        // 自抵消对调（与 TunnelConnectedArguments 构造器修正同提交）：
+        // proto 槽 1 恒承载历史"互换 getter"写入的值，线上字节语义与旧版本逐位一致，新旧混跑无感
+        this.setInstanceId(arguments.getTunnelId());
+        this.setTunnelId(arguments.getInstanceId());
         this.result = arguments.getResult();
     }
 
     @Override
     public TunnelConnectedArguments toArguments() {
-        return TunnelConnectedArguments.ofResult(this.getInstanceId(), this.getTunnelId(), this.result);
+        // 读侧同步对调槽位，保持同版本往返与新旧版本互操作
+        return TunnelConnectedArguments.ofResult(this.getTunnelId(), this.getInstanceId(), this.result);
     }
 
     public boolean isResult() {

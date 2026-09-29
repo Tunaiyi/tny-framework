@@ -48,7 +48,10 @@ public class SpringBootRelayBootstrapProperties {
 
     public SpringBootRelayBootstrapProperties setServer(SpringNettyRelayServerBootstrapSetting server) {
         this.server = server;
-        this.server.setName("default");
+        if (server != null) {
+            // `server: ~` 空值绑定不得 NPE 击穿配置装配
+            server.setName("default");
+        }
         return this;
     }
 
@@ -58,7 +61,9 @@ public class SpringBootRelayBootstrapProperties {
 
     public SpringBootRelayBootstrapProperties setClient(SpringNettyRelayClientBootstrapSetting client) {
         this.client = client;
-        this.client.setName("default");
+        if (client != null) {
+            client.setName("default");
+        }
         return this;
     }
 

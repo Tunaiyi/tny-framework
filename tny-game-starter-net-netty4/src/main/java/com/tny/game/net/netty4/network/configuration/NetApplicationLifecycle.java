@@ -64,8 +64,9 @@ public class NetApplicationLifecycle implements ApplicationLauncher, Application
 
     @Override
     public void stop() {
-        this.running = false;
+        // 原实现先置 false 再判 if(running)——关闭主体恒不可达（net-guide-lifecycle 停机契约）
         if (this.running) {
+            this.running = false;
             NetApplication application = this.applicationContext.getBean(NetApplication.class);
             ApplicationContext context = application.getApplicationContext();
             LOGGER.info("NetApplication {} stopping ... ", context.getApplicationName());

@@ -62,40 +62,6 @@ public class NetLogger {
     public static final ProcessWatcher MESSAGE_EXE_INVOKE_AFTER_PLUGINS_WATCHER = ProcessWatcher.of(
             RpcInvokeCommand.class + ".command_exe_invoke-after_plugins", TrackPrintOption.CLOSE);//.schedule(15, TimeUnit.SECONDS);
 
-    private static class WatcherAttribute {
-
-        private final AttrKey<ProcessTracer> key;
-
-        private final ProcessWatcher watcher;
-
-        private WatcherAttribute(ProcessWatcher watcher, AttrKey<ProcessTracer> key) {
-            this.key = key;
-            this.watcher = watcher;
-        }
-
-    }
-
-    public static void trace(WatcherAttribute attribute, Message message) {
-        if (attribute.watcher.isSchedule()) {
-            ProcessTracer tracer = attribute.watcher.trace();
-            message.attributes().setAttribute(attribute.key, tracer);
-        }
-    }
-
-    public static void traceDone(WatcherAttribute attribute, Message message) {
-        if (message == null) {
-            return;
-        }
-        Attributes attributes = message.attributes();
-        if (!attributes.isEmpty()) {
-            ProcessTracer tracer = attributes.getAttribute(attribute.key);
-            if (tracer != null) {
-                tracer.done();
-            }
-        }
-
-    }
-
     public static final String CODER = "netCoder";
 
     public static final String CHECKER = "com.tny.game.net.checker";
@@ -147,6 +113,10 @@ public class NetLogger {
     }
 
     public static void logReceive(NetRelayLink link, RelayPacket<?> packet) {
+        if (link == null) {
+            // 未识别链路的观测不得以 NPE 顶替协议错误处置（relay-link 契约）
+            return;
+        }
         Logger logger = getRelayPacketReceiveLogger(link.getService(), packet);
         if (logger != null && logger.isDebugEnabled()) {
             logger.debug("#{} [接收] << LinkPacket : {}", link, packet);
@@ -154,6 +124,9 @@ public class NetLogger {
     }
 
     public static void logSend(NetRelayLink link, RelayPacket<?> packet) {
+        if (link == null) {
+            return;
+        }
         Logger logger = getRelayPacketSendLogger(link.getService(), packet);
         if (logger != null && logger.isDebugEnabled()) {
             logger.debug("#{} [发送] >> LinkPacket : {}", link, packet);

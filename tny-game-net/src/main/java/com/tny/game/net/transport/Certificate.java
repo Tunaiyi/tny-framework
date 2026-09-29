@@ -54,18 +54,17 @@ public interface Certificate extends ConnectIdentity, Serializable {
      * @return 比 other 新返回 true, 否则返回 false
      */
     default boolean isNewerThan(Certificate other) {
-        if (this.isAuthenticated() && !other.isAuthenticated()) {
-            return true;
-        }
-        if (!this.isAuthenticated() && other.isAuthenticated()) {
-            return true;
+        if (this.isAuthenticated() != other.isAuthenticated()) {
+            // 已认证即较新；未认证方不得同时判定为更新（两方向互斥）
+            return this.isAuthenticated();
         }
         Optional<Instant> thisInstant = this.getAuthenticateAt();
-        Optional<Instant> otherInstant = this.getAuthenticateAt();
+        Optional<Instant> otherInstant = other.getAuthenticateAt();
         if (thisInstant.isPresent() && otherInstant.isPresent()) {
             return thisInstant.get().isAfter(otherInstant.get());
         }
-        return true;
+        // 时刻不可比：新旧无从判定，两方向都保守为否（等值时刻亦落此语义）
+        return false;
     }
 
     /**
@@ -75,14 +74,12 @@ public interface Certificate extends ConnectIdentity, Serializable {
      * @return 比 other 旧返回 true, 否则返回 false
      */
     default boolean isOlderThan(Certificate other) {
-        if (!this.isAuthenticated() && other.isAuthenticated()) {
-            return true;
-        }
-        if (this.isAuthenticated() && !other.isAuthenticated()) {
-            return true;
+        if (this.isAuthenticated() != other.isAuthenticated()) {
+            // 未认证即较旧；与 isNewerThan 方向严格互斥
+            return !this.isAuthenticated();
         }
         Optional<Instant> thisInstant = this.getAuthenticateAt();
-        Optional<Instant> otherInstant = this.getAuthenticateAt();
+        Optional<Instant> otherInstant = other.getAuthenticateAt();
         if (thisInstant.isPresent() && otherInstant.isPresent()) {
             return thisInstant.get().isBefore(otherInstant.get());
         }

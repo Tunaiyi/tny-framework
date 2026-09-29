@@ -38,7 +38,8 @@ public class PollingRelayAllotStrategy implements RelayLinkAllotStrategy, ServeI
         if (size == 1) {
             return values.get(0);
         }
-        return values.get(counter.incrementAndGet() % size);
+        // int 计数溢出转负后 % 为负下标：floorMod 恒落 [0, size)
+        return values.get(Math.floorMod(counter.incrementAndGet(), size));
     }
 
     @Override

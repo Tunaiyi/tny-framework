@@ -64,15 +64,20 @@ public abstract class AbstractAttributes implements Attributes {
     }
 
     private Map<AttrKey<?>, Object> getMap() {
-        if (this.attributeMap != null) {
-            return this.attributeMap;
-        } else {
-            if (this.attributeMap != null) {
-                return this.attributeMap;
-            }
-            this.attributeMap = new HashMap<>();
+        Map<AttrKey<?>, Object> map = this.attributeMap;
+        if (map != null) {
+            return map;
         }
-        return this.attributeMap;
+        this.writeLock();
+        try {
+            map = this.attributeMap;
+            if (map == null) {
+                this.attributeMap = map = new HashMap<>();
+            }
+            return map;
+        } finally {
+            this.writeUnlock();
+        }
     }
 
     @Override
@@ -100,22 +105,35 @@ public abstract class AbstractAttributes implements Attributes {
     @Override
     @SuppressWarnings("unchecked")
     public <T> T computeIfAbsent(AttrKey<? extends T> key, T value) {
-        Map<AttrKey<?>, Object> map = this.getMap();
-        return (T) map.computeIfAbsent(key, k -> value);
+        // 与 getAttribute/setAttribute 同一把锁：消除"锁路径 vs 无锁路径"双轨混用（属性容器并发安全契约）
+        this.writeLock();
+        try {
+            return (T) this.getMap().computeIfAbsent(key, k -> value);
+        } finally {
+            this.writeUnlock();
+        }
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <T> T computeIfAbsent(AttrKey<? extends T> key, Supplier<T> value) {
-        Map<AttrKey<?>, Object> map = this.getMap();
-        return (T) map.computeIfAbsent(key, k -> value.get());
+        this.writeLock();
+        try {
+            return (T) this.getMap().computeIfAbsent(key, k -> value.get());
+        } finally {
+            this.writeUnlock();
+        }
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <T> T setIfAbsent(AttrKey<? extends T> key, T value) {
-        Map<AttrKey<?>, Object> map = this.getMap();
-        return (T) map.putIfAbsent(key, value);
+        this.writeLock();
+        try {
+            return (T) this.getMap().putIfAbsent(key, value);
+        } finally {
+            this.writeUnlock();
+        }
     }
 
     @Override

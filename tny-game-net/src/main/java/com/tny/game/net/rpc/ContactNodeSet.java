@@ -24,9 +24,12 @@ import java.util.*;
  **/
 public class ContactNodeSet implements RpcInvokeNodeSet, RpcInvokeNode {
 
+    private static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(ContactNodeSet.class);
+
     private final ContactType contactType;
 
-    private SessionKeeper keeper;
+    // volatile：绑定完成对任意路由线程立即可见（net-rpc-registry"接入绑定的安全发布"）
+    private volatile SessionKeeper keeper;
 
     private final List<ContactNodeSet> remoterList;
 
@@ -36,9 +39,14 @@ public class ContactNodeSet implements RpcInvokeNodeSet, RpcInvokeNode {
     }
 
     void bind(SessionKeeper keeper) {
-        if (this.keeper == null) {
-            this.keeper = keeper;
+        synchronized (this) {
+            if (this.keeper == null) {
+                this.keeper = keeper;
+                return;
+            }
         }
+        // 重复绑定：先到者保留、后到忽略并告警（不得静默）
+        LOGGER.warn("ContactType {} 已绑定 keeper，忽略第二次绑定 {}", contactType, keeper);
     }
 
     public ContactType getContactType() {
@@ -77,7 +85,12 @@ public class ContactNodeSet implements RpcInvokeNodeSet, RpcInvokeNode {
 
     @Override
     public RpcAccess getAccess(long accessId) {
-        Session session = keeper.getSession(accessId);
+        SessionKeeper current = this.keeper;
+        if (current == null) {
+            // 未绑定：返回空由调用方按服务不可用处置，不得内部异常顶替
+            return null;
+        }
+        Session session = current.getSession(accessId);
         if (session != null) {
             return RpcAccessor.of(session);
         }
@@ -86,7 +99,8 @@ public class ContactNodeSet implements RpcInvokeNodeSet, RpcInvokeNode {
 
     @Override
     public boolean isActive() {
-        return true;
+        // 活性按真实绑定判定（原恒 true 违反 RpcInvokeNode 契约）
+        return this.keeper != null;
     }
 
 }

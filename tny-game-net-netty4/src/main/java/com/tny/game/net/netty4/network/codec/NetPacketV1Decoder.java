@@ -67,9 +67,10 @@ public class NetPacketV1Decoder extends NetPacketV1Codec implements NetPacketDec
             }
             //            payloadLength = in.readInt();
             payloadLength = NettyVarIntCoder.readFixed32(in);
-            if (payloadLength > config.getMaxPayloadLength()) {
+            // readFixed32 按有符号拼装，负值声明必须在下界即拦截，不得穿透到窗口消费
+            if (payloadLength < 0 || payloadLength > config.getMaxPayloadLength()) {
                 in.skipBytes(in.readableBytes());
-                throw NetCodecException.causeDecodeError("decode message failed, because payloadLength {} > maxPayloadLength {}",
+                throw NetCodecException.causeDecodeError("decode message failed, because payloadLength {} out of bounds [0, {}]",
                         payloadLength, config.getMaxPayloadLength());
             }
             marker.record(option, payloadLength);
@@ -108,13 +109,23 @@ public class NetPacketV1Decoder extends NetPacketV1Codec implements NetPacketDec
             if (config.isVerifyEnable() && !verifyEnable) {
                 throw NetCodecException.causeDecodeError("packet need verify!");
             }
+            if (verifyEnable && !config.isVerifyEnable()) {
+                // 反方向同样拒绝：本地无机密校验器却按位消费校验码，将以猜测长度啃穿帧窗口
+                throw NetCodecException.causeDecodeError("packet declares verify but verify is disabled by config");
+            }
             boolean encryptEnable = isOption(option, DATA_PACK_OPTION_ENCRYPT);
             if (config.isEncryptEnable() && !encryptEnable) {
                 throw NetCodecException.causeDecodeError("packet need encrypt!");
             }
+            if (encryptEnable && !config.isEncryptEnable()) {
+                throw NetCodecException.causeDecodeError("packet declares encrypt but encrypt is disabled by config");
+            }
             boolean wasteBytesEnable = isOption(option, DATA_PACK_OPTION_WASTE_BYTES);
             if (config.isWasteBytesEnable() && !wasteBytesEnable) {
                 throw NetCodecException.causeDecodeError("packet need waste bytes!");
+            }
+            if (wasteBytesEnable && !config.isWasteBytesEnable()) {
+                throw NetCodecException.causeDecodeError("packet declares waste bytes but waste bytes is disabled by config");
             }
             //        // 检测时间
             //        packager.checkPacketTime(time);
@@ -122,6 +133,11 @@ public class NetPacketV1Decoder extends NetPacketV1Codec implements NetPacketDec
             NettyWasteReader reader = new NettyWasteReader(packageContext, wasteBytesEnable, config);
             int verifyLength = verifyEnable ? this.verifier.getCodeLength() : 0;
             int bodyLength = payloadLength - verifyLength - (in.readerIndex() - index);
+            // 已耗头与校验码长度已超出帧窗口声明：负体长必须在分配器前拒绝（帧内声明不可信）
+            if (bodyLength < 0) {
+                throw NetCodecException.causeDecodeError("payloadLength {} less than consumed head {} + verify {}",
+                        payloadLength, in.readerIndex() - index, verifyLength);
+            }
             // 读取废字节中的 bodyBytes
             bodyBuffer = in.alloc().heapBuffer(bodyLength);
             logger.debug("in payloadIndex start {}", in.readerIndex());

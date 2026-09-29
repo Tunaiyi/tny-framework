@@ -13,6 +13,7 @@ package com.tny.game.net.relay.link;
 import com.tny.game.common.event.*;
 import com.tny.game.common.notifier.*;
 import com.tny.game.net.application.*;
+import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.relay.link.listener.*;
 import com.tny.game.net.relay.packet.*;
@@ -191,11 +192,16 @@ public abstract class BaseRelayLink implements NetRelayLink {
 
     @Override
     public MessageWriteFuture relay(RelayTunnel from, Message message, MessageWriteFuture awaiter) {
-        return this.transport.write(new TunnelRelayPacket(createPacketId(), from.getInstanceId(), from.getId(), message), awaiter);
+        RelayPacket<?> packet = new TunnelRelayPacket(createPacketId(), from.getInstanceId(), from.getId(), message);
+        return writePacket(packet, awaiter);
     }
 
     @Override
     public MessageWriteFuture relay(RelayTunnel from, MessageAllocator allocator, MessageFactory factory, MessageContent content) {
+        if (!canForward()) {
+            // 链路终结：不进入消息装配（省一次分配），回执以失败完成
+            return dropPacket(null, content.getWriteFuture());
+        }
         return this.transport.write(
                 () -> new TunnelRelayPacket(createPacketId(), from.getInstanceId(), from.getId(), allocator.allocate(factory, content)),
                 content.getWriteFuture());
@@ -204,8 +210,33 @@ public abstract class BaseRelayLink implements NetRelayLink {
     @Override
     public <P extends RelayPacket<A>, A extends RelayPacketArguments> MessageWriteFuture write(RelayPacketFactory<P, A> factory, A arguments,
             boolean promise) {
-        return this.transport.write(factory.createPacket(createPacketId(), arguments, System.currentTimeMillis()),
-                promise ? new MessageWriteFuture() : null);
+        RelayPacket<?> packet = factory.createPacket(createPacketId(), arguments, System.currentTimeMillis());
+        return writePacket(packet, promise ? new MessageWriteFuture() : null);
+    }
+
+    private boolean canForward() {
+        return !this.status.isCloseStatus() && isActive();
+    }
+
+    private MessageWriteFuture writePacket(RelayPacket<?> packet, MessageWriteFuture awaiter) {
+        if (!canForward()) {
+            return dropPacket(packet, awaiter);
+        }
+        return this.transport.write(packet, awaiter);
+    }
+
+    /**
+     * 链路终结时的中继提交：载荷恰好终结释放一次、丢弃留痕、回执失败完成
+     * （relay-link"中继载荷在早退路径终结释放"契约；不得拖到运行时自动回收时点）。
+     */
+    private MessageWriteFuture dropPacket(RelayPacket<?> packet, MessageWriteFuture awaiter) {
+        MessageWriteFuture future = awaiter != null ? awaiter : new MessageWriteFuture();
+        if (packet != null) {
+            RelayPacket.release(packet);
+            LOGGER.warn("[RelayLink] {} 链路已终结，丢弃转发包 {} [{}]", this, packet.getId(), packet.getType());
+        }
+        future.completeExceptionally(new TunnelDisconnectedException("relay link closed, packet dropped"));
+        return future;
     }
 
     @Override

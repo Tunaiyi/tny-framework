@@ -42,6 +42,8 @@ public class ParamFilterPlugin implements VoidInvokeCommandPlugin {
         filters.add(ShortRangeLimitParamFilter.getInstance());
         filters.add(TextLengthLimitFilter.getInstance());
         filters.add(TextPatternLimitFilter.getInstance());
+        // @TextCheck 此前无默认注册（注解静默失效，message-checking 契约）；词表经 setWordsFilters 注入
+        filters.add(new TextCheckFilter());
         this.addParamFilters(filters);
     }
 
@@ -51,7 +53,21 @@ public class ParamFilterPlugin implements VoidInvokeCommandPlugin {
     }
 
     protected void addParamFilter(ParamFilter filter) {
-        this.filterMap.put(filter.getClass(), filter);
+        // 原以 filter.getClass() 建 key，与查询侧（注解类）永不相交——注册的过滤器不可达
+        this.filterMap.put(filter.getAnnotationClass(), filter);
+    }
+
+    /**
+     * 启动期覆盖校验：被业务使用的校验注解必须有对应检查器，缺失即 fail-fast
+     * （message-checking"注解与检查器覆盖关系启动期校验"契约）。
+     */
+    public void checkCoverage(Set<Class<?>> usedAnnotationClasses) {
+        List<Class<?>> missing = usedAnnotationClasses.stream()
+                .filter(ann -> !this.filterMap.containsKey(ann))
+                .collect(Collectors.toList());
+        if (!missing.isEmpty()) {
+            throw new IllegalStateException("参数校验注解缺少对应检查器: " + missing);
+        }
     }
 
     @Override

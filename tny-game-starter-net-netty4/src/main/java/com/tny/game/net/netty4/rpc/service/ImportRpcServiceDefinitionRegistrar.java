@@ -31,17 +31,18 @@ public class ImportRpcServiceDefinitionRegistrar extends ImportConfigurationBean
 
     @Override
     public void registerBeanDefinitions(@Nonnull AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
-        RpcRemoteInstanceFactory factory = beanFactory.getBean(RpcRemoteInstanceFactory.class);
+        // BFPP 解析期不再 getBean：代理实例依赖图延迟到 bean 创建阶段解析，
+        // 保证 @PostConstruct/@Autowired/AOP 与集合依赖完备（net-boot-integration"装配期不产生半初始化单例"）
         for (Class<?> serviceClass : RpcServiceLoader.getServiceClasses()) {
-            registerRpcInstance(registry, factory, serviceClass);
+            registerRpcInstance(registry, serviceClass);
         }
     }
 
-    private <T> void registerRpcInstance(BeanDefinitionRegistry registry, RpcRemoteInstanceFactory factory, Class<T> serviceClass) {
+    private <T> void registerRpcInstance(BeanDefinitionRegistry registry, Class<T> serviceClass) {
         LOGGER.debug("Register RpcService instance : {}", serviceClass);
         String beanName = BeanNameUtils.lowerCamelName(serviceClass);
         BeanDefinition definition = BeanDefinitionBuilder
-                .genericBeanDefinition(serviceClass, () -> factory.create(serviceClass))
+                .genericBeanDefinition(serviceClass, () -> beanFactory.getBean(RpcRemoteInstanceFactory.class).create(serviceClass))
                 .getBeanDefinition();
         definition.setAttribute(CONFIGURATION_CLASS_ATTRIBUTE, CONFIGURATION_CLASS_LITE);
         registry.registerBeanDefinition(beanName, definition);

@@ -49,7 +49,7 @@ public class CommonTunnelConnector implements TunnelConnector, TunnelUnavailable
 
     private final ClientConnectorSetting setting;
 
-    private volatile ScheduledFuture<?> retryFuture;
+    private final AtomicReference<ScheduledFuture<?>> retryFuture = new AtomicReference<>();
 
     private final AtomicBoolean autoRetry = new AtomicBoolean(false);
 
@@ -116,15 +116,12 @@ public class CommonTunnelConnector implements TunnelConnector, TunnelUnavailable
     }
 
 
-    private void stopReconnect() {
-        retryFuture = null;
-    }
-
     private void resetScheduleReconnect() {
-        if (retryFuture != null) {
-            retryFuture.cancel(true);
-            retryFuture = null;
+        ScheduledFuture<?> future = retryFuture.getAndSet(null);
+        if (future != null) {
+            future.cancel(true);
         }
+        autoRetry.set(false);
         autoRetryTimes.set(0);
     }
 
@@ -132,15 +129,15 @@ public class CommonTunnelConnector implements TunnelConnector, TunnelUnavailable
         if (!status.compareAndSet(expected.id(), TunnelConnectorStatus.DISCONNECT.id())) {
             return;
         }
-        if (!retry) {
-            return;
-        }
+        // 本次尝试结束：先释放调度锁再决定续排，同步失败竞态不再让链条熄火；
+        // 续排与否统一由 setting.isAutoReconnect()（scheduleReconnect 内检）决定（net-tunnel 契约）
+        autoRetry.set(false);
         scheduleReconnect();
     }
 
     @Override
     public void reconnect() {
-        this.doReconnect(false);
+        this.doReconnect(true);
     }
 
     private void doReconnect(boolean retry) {
@@ -148,20 +145,15 @@ public class CommonTunnelConnector implements TunnelConnector, TunnelUnavailable
                 .whenComplete((result, cause) -> {
                     if (result != null) {
                         resetScheduleReconnect();
-                        return;
-                    }
-                    if (retry) {
-                        autoRetry.set(false);
                     }
                 });
     }
 
     private void autoReconnect() {
-        try {
-            doReconnect(true);
-        } finally {
-            stopReconnect();
-        }
+        // 本周期任务已在执行：先清句柄与调度锁，失败回调才能重新武装下一周期
+        retryFuture.set(null);
+        autoRetry.set(false);
+        doReconnect(true);
     }
 
     private void scheduleReconnect() {
@@ -171,15 +163,24 @@ public class CommonTunnelConnector implements TunnelConnector, TunnelUnavailable
         if (!setting.isAutoReconnect()) {
             return;
         }
-        var maxRetryTimes = getMaxRetryTimes();// 失败
+        var maxRetryTimes = getMaxRetryTimes();
         var retryTimes = autoRetryTimes.get();
         if (maxRetryTimes > 0 && retryTimes >= maxRetryTimes) { // 继续重试
             autoRetryTimes.set(0);
             return;
         }
-        if (retryFuture == null && this.autoRetry.compareAndSet(false, true)) {
-            retryTimes = autoRetryTimes.getAndIncrement();
-            retryFuture = executor.schedule(this::autoReconnect, getInterval(retryTimes), TimeUnit.MILLISECONDS);
+        if (maxRetryTimes <= 0 && retryTimes > 0 && retryTimes % 10 == 0) {
+            // 无上限重试的周期性留痕（net-tunnel"无上限重试"契约）
+            LOGGER.info("auto reconnect to {} still retrying, times {}", url, retryTimes);
+        }
+        if (this.autoRetry.compareAndSet(false, true)) {
+            var armedTimes = autoRetryTimes.getAndIncrement();
+            try {
+                retryFuture.set(executor.schedule(this::autoReconnect, getInterval(armedTimes), TimeUnit.MILLISECONDS));
+            } catch (Throwable e) {
+                autoRetry.set(false);
+                LOGGER.error("schedule reconnect to {} failed", url, e);
+            }
         }
     }
 
@@ -207,8 +208,14 @@ public class CommonTunnelConnector implements TunnelConnector, TunnelUnavailable
         if (StringUtils.isEmpty(intervals)) {
             return setting.getRetryIntervals();
         }
-        String[] data = StringUtils.split(intervals, ",");
-        return Stream.of(data).map(Long::parseLong).filter(i -> i > 0).collect(Collectors.toList());
+        try {
+            String[] data = StringUtils.split(intervals, ",");
+            return Stream.of(data).map(Long::parseLong).filter(i -> i > 0).collect(Collectors.toList());
+        } catch (RuntimeException e) {
+            // URL 参数非法不得打断重连调度链（net-tunnel 契约），回退配置值并留痕
+            LOGGER.warn("url {} retry_intervals '{}' invalid, fallback to setting: {}", url, intervals, e.getMessage());
+            return setting.getRetryIntervals();
+        }
     }
 
     private int getMaxRetryTimes() {

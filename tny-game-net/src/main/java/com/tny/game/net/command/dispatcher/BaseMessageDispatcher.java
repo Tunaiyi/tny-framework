@@ -15,6 +15,7 @@ import com.tny.game.expr.*;
 import com.tny.game.net.application.*;
 import com.tny.game.net.command.auth.*;
 import com.tny.game.net.command.listener.*;
+import com.tny.game.net.command.plugins.filter.*;
 import com.tny.game.net.exception.*;
 import com.tny.game.net.message.*;
 import org.slf4j.*;
@@ -22,6 +23,7 @@ import org.slf4j.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static com.tny.game.common.utils.ObjectAide.*;
 import static com.tny.game.common.utils.StringAide.*;
 
 /**
@@ -132,6 +134,20 @@ public abstract class BaseMessageDispatcher implements MessageDispatcher {
      */
     protected void addControllers(Collection<Object> objects) {
         objects.forEach(this::addController);
+    }
+
+    /**
+     * 启动期参数校验注解覆盖校验（message-checking 契约）：
+     * 已注册控制器使用的校验注解若无对应检查器，立即失败而非带病上线静默放行。
+     */
+    protected void checkParamFilterCoverage() {
+        ParamFilterPlugin filterPlugin = as(this.context.getPlugin(ParamFilterPlugin.class));
+        if (filterPlugin == null) {
+            return;
+        }
+        Set<Class<?>> usedAnnotations = new HashSet<>();
+        this.methodHolder.values().forEach(modeMap -> modeMap.values().forEach(holder -> usedAnnotations.addAll(holder.getParamAnnotationClass())));
+        filterPlugin.checkCoverage(usedAnnotations);
     }
 
     /**

@@ -110,6 +110,18 @@ public class RpcServiceNode implements RpcInvokeNode, RpcForwardNode {
         return !orderAccessPoints.isEmpty();
     }
 
+    /**
+     * 接入点是否已清空（写锁内判定，供注册表收缩摘除僵尸节点）。
+     */
+    public boolean isEmpty() {
+        readLock();
+        try {
+            return this.remoteServiceAccessMap.isEmpty();
+        } finally {
+            readUnlock();
+        }
+    }
+
     protected void addSession(Session session) {
         writeLock();
         try {
@@ -117,7 +129,8 @@ public class RpcServiceNode implements RpcInvokeNode, RpcForwardNode {
             RpcAccessIdentify nodeId = session.getIdentifyToken(RpcAccessIdentify.class);
             this.remoteServiceAccessMap.put(nodeId.getContactId(), new RpcRemoteServiceAccess(session));
             this.orderAccessPoints = ImmutableList.sortedCopyOf(Comparator.comparing(RpcAccess::getAccessId), remoteServiceAccessMap.values());
-            if (!activate && !this.remoteServiceAccessMap.isEmpty()) {
+            // 跃迁语义：空→非空才通知激活（原条件写反：首次激活不通知、冗余加入反而通知）
+            if (activate) {
                 service.onNodeActivate(this);
             }
         } finally {
@@ -139,7 +152,8 @@ public class RpcServiceNode implements RpcInvokeNode, RpcForwardNode {
             }
             if (this.remoteServiceAccessMap.remove(nodeId.getContactId(), accessPoint)) {
                 this.orderAccessPoints = ImmutableList.sortedCopyOf(Comparator.comparing(RpcAccess::getAccessId), remoteServiceAccessMap.values());
-                if (activate && this.remoteServiceAccessMap.isEmpty()) {
+                // 跃迁语义：非空→空才通知失活（原 activate 取值于移除前恒 false，onNodeUnactivated 不可达）
+                if (this.remoteServiceAccessMap.isEmpty()) {
                     service.onNodeUnactivated(this);
                 }
             }

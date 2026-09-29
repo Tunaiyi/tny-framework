@@ -49,7 +49,10 @@ public class SpringBootNetBootstrapProperties implements SpringBootNetBootstrapS
 
     public SpringBootNetBootstrapProperties setServer(SpringNettyNetServerBootstrapSetting server) {
         this.server = server;
-        this.server.setName("default");
+        if (server != null) {
+            // `server: ~` 空值绑定不得 NPE 击穿配置装配
+            server.setName("default");
+        }
         return this;
     }
 
@@ -60,7 +63,9 @@ public class SpringBootNetBootstrapProperties implements SpringBootNetBootstrapS
 
     public SpringBootNetBootstrapProperties setClient(SpringNettyNetClientBootstrapSetting client) {
         this.client = client;
-        this.client.setName("default");
+        if (client != null) {
+            client.setName("default");
+        }
         return this;
     }
 

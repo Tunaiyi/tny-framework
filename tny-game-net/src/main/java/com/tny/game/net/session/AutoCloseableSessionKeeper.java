@@ -32,15 +32,40 @@ public abstract class AutoCloseableSessionKeeper extends AbstractSessionKeeper {
     /* 离线session */
     private final Queue<NetSession> offlineSessionQueue = new ConcurrentLinkedQueue<>();
 
+    // 周期清理句柄：随 keeper 终结必须可取消（net-session"清理任务可终结"契约）
+    private volatile ScheduledFuture<?> scanFuture;
+
 
     public AutoCloseableSessionKeeper(ContactType contactType, SessionKeeperSetting setting) {
         super(contactType);
         this.setting = setting;
         if (isDelayClose()) {
-            sessionScanExecutor.scheduleAtFixedRate(this::clearInvalidedSession,
+            this.scanFuture = sessionScanExecutor.scheduleAtFixedRate(this::clearInvalidedSessionQuietly,
                     setting.getClearInterval(), setting.getClearInterval(), TimeUnit.MILLISECONDS);
         }
 
+    }
+
+    /**
+     * 终结本 keeper 的周期清理任务（幂等）；由会话管理器 onClosed 路径调用。
+     */
+    public void shutdownScan() {
+        ScheduledFuture<?> future = this.scanFuture;
+        if (future != null) {
+            this.scanFuture = null;
+            future.cancel(false);
+        }
+    }
+
+    /**
+     * 任务体外层兜底：单轮异常不得终止后续轮次（scheduleAtFixedRate 静默自杀防线）。
+     */
+    private void clearInvalidedSessionQuietly() {
+        try {
+            clearInvalidedSession();
+        } catch (Throwable e) {
+            LOG.error("clear invalided session round failed, next rounds continue", e);
+        }
     }
 
     @Override

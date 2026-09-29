@@ -77,6 +77,9 @@ public abstract class BaseNetSession extends BaseCommunicator implements NetSess
     /* 发送消息过滤器 */
     private volatile MessageHandleFilter sendFilter = MessageHandleFilter.allHandleFilter();
 
+    // future holder 终结标志：销毁后 respondFutureMonitor() 恒 null，请求不复活注册（net-tunnel 写回执契约）
+    private volatile boolean futureHolderDestroyed;
+
 
     private final SessionEvents buses = new SessionEvents();
 
@@ -112,11 +115,17 @@ public abstract class BaseNetSession extends BaseCommunicator implements NetSess
     }
 
     private RespondFutureMonitor respondFutureMonitor() {
+        if (this.futureHolderDestroyed) {
+            return null;
+        }
         if (this.respondFutureMonitor != null) {
             return this.respondFutureMonitor;
         }
         statusLock.lock();
         try {
+            if (this.futureHolderDestroyed) {
+                return null;
+            }
             if (this.respondFutureMonitor != null) {
                 return this.respondFutureMonitor;
             }
@@ -130,7 +139,13 @@ public abstract class BaseNetSession extends BaseCommunicator implements NetSess
         if (respondFuture == null) {
             return;
         }
-        respondFutureMonitor().putFuture(messageId, respondFuture);
+        RespondFutureMonitor monitor = respondFutureMonitor();
+        if (monitor == null) {
+            // 关闭竞态：holder 已终结不再复活注册；future 以会话关闭失败完成，调用方不悬挂
+            respondFuture.completeExceptionally(new SessionClosedException("session {} closed, request dropped", getIdentify()));
+            return;
+        }
+        monitor.putFuture(messageId, respondFuture);
     }
 
     private MessageRespondFuture pollFuture(Message message) {
@@ -184,6 +199,10 @@ public abstract class BaseNetSession extends BaseCommunicator implements NetSess
                 return this.commandBox.addCommand(rpcContext);
             } else {
                 cause = new RpcRejectReceiveException(rejectMessage(true, filter, message, tunnel));
+                if (future != null && !future.isDone()) {
+                    // 过滤拒收不得让已登记的请求 future 悬置：显式取消完成（net-tunnel 回执闭环契约）
+                    future.completeExceptionally(cause);
+                }
             }
         } catch (Throwable e) {
             LOGGER.error("", e);
@@ -250,6 +269,10 @@ public abstract class BaseNetSession extends BaseCommunicator implements NetSess
             tunnel = tunnel();
         }
         for (Message message : this.getSentMessages(filter)) {
+            // 重发路径同受发送过滤器约束（过滤器语义不得在重发链失效）
+            if (this.sendFilter != null && !this.sendFilter.filter(this, message).isHandleable()) {
+                continue;
+            }
             tunnel.write(message, null);
         }
     }
@@ -263,6 +286,10 @@ public abstract class BaseNetSession extends BaseCommunicator implements NetSess
             tunnel = tunnel();
         }
         for (Message message : this.getSentMessages(fromId, bound)) {
+            // 重发路径同受发送过滤器约束（过滤器语义不得在重发链失效）
+            if (this.sendFilter != null && !this.sendFilter.filter(this, message).isHandleable()) {
+                continue;
+            }
             tunnel.write(message, null);
         }
     }
@@ -276,6 +303,10 @@ public abstract class BaseNetSession extends BaseCommunicator implements NetSess
             tunnel = tunnel();
         }
         for (Message message : this.getSentMessages(fromId, toId, bound)) {
+            // 重发路径同受发送过滤器约束（过滤器语义不得在重发链失效）
+            if (this.sendFilter != null && !this.sendFilter.filter(this, message).isHandleable()) {
+                continue;
+            }
             tunnel.write(message, null);
         }
     }
@@ -351,6 +382,11 @@ public abstract class BaseNetSession extends BaseCommunicator implements NetSess
     }
 
     protected void setOffline() {
+        // 幂等短路：已下线/已关闭不再重复转换与派发——通道断开与会话关闭两条入口并发时，
+        // 下线事件恰好一次；下线回调内主动 close 亦不再递归放大（net-session"下线转换幂等"契约）
+        if (this.status == SessionStatus.OFFLINE || this.status == SessionStatus.CLOSE) {
+            return;
+        }
         this.offlineTime = System.currentTimeMillis();
         this.status = SessionStatus.OFFLINE;
         buses.offlineEvent().notify(this);
@@ -401,7 +437,9 @@ public abstract class BaseNetSession extends BaseCommunicator implements NetSess
 
 
     private void destroyFutureHolder() {
+        this.futureHolderDestroyed = true;
         RespondFutureMonitor.removeHolder(this);
+        this.respondFutureMonitor = null;
     }
 
     @Override

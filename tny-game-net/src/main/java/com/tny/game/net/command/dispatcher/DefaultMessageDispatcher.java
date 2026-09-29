@@ -42,6 +42,8 @@ public class DefaultMessageDispatcher extends BaseMessageDispatcher implements A
         this.context.addAuthProvider(UnitLoader.getLoader(AuthenticationValidator.class).getAllUnits());
         this.context.addControllerPlugin(UnitLoader.getLoader(CommandPlugin.class).getAllUnits());
         this.context.addCommandListener(UnitLoader.getLoader(MessageCommandListener.class).getAllUnits());
+        // 控制器注册完成后校验注解-检查器覆盖关系（message-checking 契约）
+        this.checkParamFilterCoverage();
     }
 
 }

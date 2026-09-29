@@ -58,7 +58,10 @@ public abstract class RpcHandleCommand implements RpcCommand {
             return future;
         } finally {
             try {
-                if (this.isDone()) {
+                // "至多一次"由上下文 CAS 终态机保证；"至少一次"由本守卫补全：
+                // 异常且未达终态时强制走 onDone(cause)→onException→收尾，请求不得无终答悬挂
+                // （command-execution"每个请求恰好收到一个终答"契约）
+                if (this.isDone() || cause != null) {
                     onDone(cause);
                 }
             } finally {

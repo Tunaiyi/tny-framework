@@ -16,7 +16,9 @@ import com.tny.game.net.session.*;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.ReentrantLock;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.stream.Collectors;
 
 /**
@@ -33,7 +35,10 @@ public class RpcServiceNodeSet implements RpcInvokeNodeSet, RpcForwardNodeSet {
 
     private volatile List<RpcServiceNode> orderRemoteNodes = ImmutableList.of();
 
-    private final AtomicInteger version = new AtomicInteger(0);
+    // 快照发布锁：重建-赋值原子化，消除并发变更下"旧快照晚发布覆盖新快照"（net-rpc-registry 发布原子性）
+    private static final Logger LOGGER = LoggerFactory.getLogger(RpcServiceNodeSet.class);
+
+    private final ReentrantLock publishLock = new java.util.concurrent.locks.ReentrantLock();
 
     public RpcServiceNodeSet(RpcServiceType serviceType) {
         this.serviceType = serviceType;
@@ -68,14 +73,6 @@ public class RpcServiceNodeSet implements RpcInvokeNodeSet, RpcForwardNodeSet {
         return node.getAccess(accessId);
     }
 
-    public int getVersion() {
-        return version.get();
-    }
-
-    private void updateVersion() {
-        version.incrementAndGet();
-    }
-
     @Override
     public RpcAccess findForwardAccess(RpcAccessPoint accessPoint) {
         RpcServiceNode remoteNode = remoteNodeMap.get(accessPoint.getServerId());
@@ -86,27 +83,46 @@ public class RpcServiceNodeSet implements RpcInvokeNodeSet, RpcForwardNodeSet {
         if (access != null) {
             return access;
         }
-        return remoteNode.anyGet();
+        RpcAccess fallback = remoteNode.anyGet();
+        if (fallback != null) {
+            // 降级回退必须留痕（net-rpc-registry"路由回退有边界且留痕"）
+            LOGGER.warn("指定接入 {} 未命中，降级选中同节点[{}]的其他接入 accessId {}", accessPoint.getContactId(),
+                    accessPoint.getServerId(), fallback.getAccessId());
+        }
+        return fallback;
     }
 
     protected void addSession(Session session) {
         RpcServiceNode node = loadOrCreate(session);
         node.addSession(session);
-        refreshNodes(node);
+        publishSnapshot();
     }
 
     protected void removeSession(Session session) {
-        RpcServiceNode node = loadOrCreate(session);
+        var opt = session.identifyToken(RpcAccessIdentify.class);
+        if (opt.isEmpty()) {
+            LOGGER.warn("移除接入点事件缺少 RpcAccessIdentify token，忽略：{}", session);
+            return;
+        }
+        int serverId = opt.get().getServerId();
+        RpcServiceNode node = remoteNodeMap.get(serverId);
+        if (node == null) {
+            // 陌生节点的移除事件：忽略留痕，不得为不存在节点建空壳（僵尸复活防线）
+            return;
+        }
         node.removeSession(session);
-        refreshNodes(node);
+        if (node.isEmpty()) {
+            remoteNodeMap.remove(serverId, node);
+        }
+        publishSnapshot();
     }
 
     protected void onNodeActivate(RpcServiceNode rpcNode) {
-        refreshNodes(rpcNode);
+        publishSnapshot();
     }
 
     protected void onNodeUnactivated(RpcServiceNode rpcNode) {
-        refreshNodes(rpcNode);
+        publishSnapshot();
     }
 
     private RpcServiceNode loadOrCreate(Session session) {
@@ -118,12 +134,13 @@ public class RpcServiceNodeSet implements RpcInvokeNodeSet, RpcForwardNodeSet {
         return remoteNodeMap.computeIfAbsent(nodeId.getServerId(), (serverId) -> new RpcServiceNode(serverId, this));
     }
 
-    private void refreshNodes(RpcServiceNode rpcNode) {
-        RpcServiceNode currentNode = remoteNodeMap.get(rpcNode.getNodeId());
-        if (currentNode == rpcNode) {
-            orderRemoteNodes = ImmutableList.sortedCopyOf(Comparator.comparing(RpcInvokeNode::getNodeId),
-                    remoteNodeMap.values().stream().filter(RpcInvokeNode::isActive).collect(Collectors.toList()));
-            this.updateVersion();
+    private void publishSnapshot() {
+        this.publishLock.lock();
+        try {
+            this.orderRemoteNodes = ImmutableList.sortedCopyOf(Comparator.comparing(RpcInvokeNode::getNodeId),
+                    this.remoteNodeMap.values().stream().filter(RpcInvokeNode::isActive).collect(Collectors.toList()));
+        } finally {
+            this.publishLock.unlock();
         }
     }
 

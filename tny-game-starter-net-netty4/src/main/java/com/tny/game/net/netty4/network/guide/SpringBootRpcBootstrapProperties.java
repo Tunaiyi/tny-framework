@@ -49,7 +49,10 @@ public class SpringBootRpcBootstrapProperties implements SpringBootNetBootstrapS
 
     public SpringBootRpcBootstrapProperties setServer(SpringNettyRpcServerBootstrapSetting server) {
         this.server = server;
-        this.server.setName("default");
+        if (server != null) {
+            // `server: ~` 空值绑定不得 NPE 击穿配置装配
+            server.setName("default");
+        }
         return this;
     }
 
@@ -60,7 +63,9 @@ public class SpringBootRpcBootstrapProperties implements SpringBootNetBootstrapS
 
     public SpringBootRpcBootstrapProperties setClient(SpringNettyRpcClientBootstrapSetting client) {
         this.client = client;
-        this.client.setName("rpc");
+        if (client != null) {
+            client.setName("rpc");
+        }
         return this;
     }
 

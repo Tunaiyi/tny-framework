@@ -52,9 +52,10 @@ public class RpcAccessIdentify implements RpcAccessPoint {
     }
 
     public RpcAccessIdentify(long id) {
-        this.serviceType = parseServiceType(id);
+        this.serviceType = checkParsedServiceType(id);
         this.serverId = parseServerId(id);
         this.id = id;
+        checkRoundTrip(id);
     }
 
     public static RpcAccessIdentify parse(long id) {
@@ -62,7 +63,9 @@ public class RpcAccessIdentify implements RpcAccessPoint {
     }
 
     public static long formatId(RpcServiceType serviceType, int serverId, int index) {
-        return ((long) serviceType.id() * RPC_SERVICE_TYPE_SIZE) + (serverId * RPC_SERVER_INDEX_SIZE) + index;
+        checkIndex(index);
+        checkServerId(serverId);
+        return ((long) serviceType.id() * RPC_SERVICE_TYPE_SIZE) + ((long) serverId * RPC_SERVER_INDEX_SIZE) + index;
     }
 
     private static int parseIndex(long id) {
@@ -77,8 +80,35 @@ public class RpcAccessIdentify implements RpcAccessPoint {
         return RpcServiceTypes.of((int) (id / RPC_SERVICE_TYPE_SIZE));
     }
 
-    private void checkIndex(int index) {
-        Asserts.checkArgument(index < RPC_SERVER_INDEX_SIZE, "index {} 必须 <= {}", index, RPC_SERVER_INDEX_SIZE);
+    /**
+     * 严格解析：未注册的服务类型数字（灰度新版本/异环境串网）必须以可诊断异常拒绝，
+     * 不得静默构造出 serviceType==null 的半成品身份（后续 getContactType/NPE 或错路由）。
+     */
+    private static RpcServiceType checkParsedServiceType(long id) {
+        Asserts.checkArgument(id >= 0, "identify id {} 不得为负", id);
+        RpcServiceType serviceType = parseServiceType(id);
+        if (serviceType == null) {
+            throw new IllegalArgumentException("unknown rpc service type in identify id " + id);
+        }
+        return serviceType;
+    }
+
+    /**
+     * 回代校验：拆分字段重组后必须与原 id 逐位相等——杜绝负 index 借位导致的
+     * serverId 静默 -1 / index 变 9999 的身份漂移。
+     */
+    private void checkRoundTrip(long id) {
+        long rebuilt = formatId(this.serviceType, this.serverId, parseIndex(id));
+        Asserts.checkArgument(rebuilt == id, "identify id {} 拼位不自洽（回代为 {}）", id, rebuilt);
+    }
+
+    private static void checkIndex(int index) {
+        Asserts.checkArgument(index >= 0 && index < RPC_SERVER_INDEX_SIZE, "index {} 必须在 [0, {}) 内", index, RPC_SERVER_INDEX_SIZE);
+    }
+
+    private static void checkServerId(int serverId) {
+        // 容量上界 10^11 大于 int 取值域，int 类型天然封顶，仅需下界校验
+        Asserts.checkArgument(serverId >= 0, "serverId {} 不得为负", serverId);
     }
 
     public long getId() {
@@ -120,9 +150,10 @@ public class RpcAccessIdentify implements RpcAccessPoint {
     }
 
     protected RpcAccessIdentify setId(long id) {
-        this.id = id;
-        this.serviceType = parseServiceType(id);
+        this.serviceType = checkParsedServiceType(id);
         this.serverId = parseServerId(id);
+        this.id = id;
+        checkRoundTrip(id);
         return this;
     }
 

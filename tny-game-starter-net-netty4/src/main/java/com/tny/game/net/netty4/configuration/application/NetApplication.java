@@ -74,11 +74,6 @@ public class NetApplication {
         this.servers.forEach(ServerGuide::open);
         runPoint(this.afterStartServer);
 
-        // if (this.applicationContext.getBeanNamesForType(TelnetServer.class).length > 0) {
-        //     TelnetServer telnetServer = this.applicationContext.getBean(TelnetServer.class);
-        //     if (telnetServer != null)
-        //         telnetServer.start();
-        // }
         //            this.processor.onPostStart(false);
         //            ShutdownHook.register(() -> this.servers.forEach(guide -> {
         //                TransactionManager.open();

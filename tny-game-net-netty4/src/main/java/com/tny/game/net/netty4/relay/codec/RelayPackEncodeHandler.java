@@ -53,8 +53,11 @@ public class RelayPackEncodeHandler extends MessageToByteEncoder<Object> impleme
         if (msg instanceof RelayPacket) {
             try {
                 this.encoder.encodeObject(ctx, (RelayPacket<?>) msg, out);
-            } catch (Throwable exception) {
-                handleOnDecodeError(LOGGER, ctx, exception, closeOnError);
+            } catch (Exception | Error exception) {
+                handleOnEncodeError(LOGGER, ctx, exception, closeOnError);
+                // 编码失败不得吞掉（原误调 handleOnDecodeError 且静默返回）：
+                // 异常穿透使零字节上线、本次写回执失败（与消息侧编码契约同型）
+                throw exception;
             }
             return;
         }

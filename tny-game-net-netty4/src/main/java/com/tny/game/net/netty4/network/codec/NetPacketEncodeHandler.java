@@ -57,8 +57,12 @@ public class NetPacketEncodeHandler extends MessageToByteEncoder<Object> impleme
             if (msg instanceof Message) {
                 try {
                     this.encoder.encodeObject(ctx, (Message) msg, out);
-                } catch (Throwable e) {
+                } catch (Exception | Error e) {
+                    // 编码失败不得吞掉（残帧上线 + 假成功会毒化对端流，net-protocol 编码契约）：
+                    // 先按 closeOnError / ResultLevel 分级决定通道去留（与原契约正交），再抛出——
+                    // MessageToByteEncoder 整体丢弃 out（零字节上线），写回执以编码异常失败完成。
                     handleOnEncodeError(LOGGER, ctx, e, closeOnError);
+                    throw e;
                 }
                 return;
             }

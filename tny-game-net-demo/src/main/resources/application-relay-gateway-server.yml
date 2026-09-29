@@ -26,7 +26,7 @@ tny:
                 - abcdefghijklmn
                 - opqrstuvwxyz
             tunnel-factory: "relayTunnelFactory"
-            message-handler: "relayMessageHandler"
+            # message-handler 死键已删：真实配置项为 message-handler-factory（relay 链路由 relay pack 管线承接，无需覆写）
       relay:
         client:
           channel:

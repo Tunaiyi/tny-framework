@@ -19,7 +19,6 @@ public interface NetConfigs {
     long CONNECT_TIMEOUT_DEFAULT_VALUE = 5000L;
 
     String CONNECT_ASYNC_URL_PARAM = "connect_async";
-    boolean CONNECT_ASYNC_DEFAULT_VALUE = false;
 
     String AUTO_RECONNECT_PARAM = "auto_reconnect";
     boolean AUTO_RECONNECT_DEFAULT_VALUE = true;

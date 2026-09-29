@@ -39,6 +39,9 @@ public class NettyClientRelayExplorer extends BaseClientRelayExplorer<NettyRemot
 
     private final ClientRelayContext clientRelayContext;
 
+    // 心跳任务句柄：随视图终结必须取消（relay-cluster-view"周期任务可终结"契约）
+    private final java.util.List<java.util.concurrent.ScheduledFuture<?>> heartbeatFutures = new java.util.concurrent.CopyOnWriteArrayList<>();
+
     public NettyClientRelayExplorer(ClientRelayContext clientRelayContext, List<NettyRemoteServeClusterContext> clusterContexts) {
         super(clientRelayContext);
         this.clientRelayContext = clientRelayContext;
@@ -55,7 +58,8 @@ public class NettyClientRelayExplorer extends BaseClientRelayExplorer<NettyRemot
 
     @Override
     public void putInstance(ServeNode node) {
-        NettyRemoteServeCluster cluster = this.clusterOf(node.getService());
+        // 集群匹配键与注册表键空间统一（serveName）：双名配置不再静默失联（relay-cluster-view 契约）
+        NettyRemoteServeCluster cluster = this.clusterOf(node.getServeName());
         if (cluster != null) {
             addInstance(node, cluster);
         }
@@ -63,7 +67,7 @@ public class NettyClientRelayExplorer extends BaseClientRelayExplorer<NettyRemot
 
     @Override
     public void removeInstance(ServeNode node) {
-        NettyRemoteServeCluster cluster = this.clusterOf(node.getService());
+        NettyRemoteServeCluster cluster = this.clusterOf(node.getServeName());
         if (cluster != null) {
             cluster.unregisterInstance(node.getId());
         }
@@ -74,7 +78,7 @@ public class NettyClientRelayExplorer extends BaseClientRelayExplorer<NettyRemot
      */
     @Override
     public void updateInstance(ServeNode node, List<ServeNodeChangeStatus> statuses) {
-        NettyRemoteServeCluster cluster = this.clusterOf(node.getService());
+        NettyRemoteServeCluster cluster = this.clusterOf(node.getServeName());
         if (cluster != null) {
             if (statuses.contains(ServeNodeChangeStatus.URL_CHANGE)) {
                 cluster.unregisterInstance(node.getId());
@@ -92,8 +96,13 @@ public class NettyClientRelayExplorer extends BaseClientRelayExplorer<NettyRemot
         NettyServeInstanceConnectMonitor connectMonitor = new NettyServeInstanceConnectMonitor(clientRelayContext, context, executorService);
         NetRelayServeInstance instance = new NettyRelayServeInstance(cluster, node, connectMonitor);
         var setting = context.getSetting();
+        // 先注册判重后启动：同标识并发注册的落选方不再留下已启动的孤儿连接器（relay-cluster-view 契约）
+        RelayServeInstance registered = cluster.registerInstance(instance);
+        if (registered != instance) {
+            LOGGER.warn("instance {} 已在集群 {} 注册，忽略重复添加（不启动第二套连接器）", node.getId(), cluster.getServeName());
+            return;
+        }
         connectMonitor.start(instance, setting.getConnectionSize());
-        cluster.registerInstance(instance);
     }
 
     @Override
@@ -110,13 +119,15 @@ public class NettyClientRelayExplorer extends BaseClientRelayExplorer<NettyRemot
             var setting = clusterContext.getSetting();
             long heartbeatInterval = setting.getConnectionHeartbeatInterval();
             if (heartbeatInterval > 0) {
-                executorService.scheduleWithFixedDelay(cluster::heartbeat, heartbeatInterval, heartbeatInterval, TimeUnit.MILLISECONDS);
+                heartbeatFutures.add(executorService.scheduleWithFixedDelay(cluster::heartbeat, heartbeatInterval, heartbeatInterval, TimeUnit.MILLISECONDS));
             }
         }
     }
 
     @Override
     public void onClosed() {
+        heartbeatFutures.forEach(future -> future.cancel(false));
+        heartbeatFutures.clear();
         for (NetRemoteServeCluster cluster : clusters()) {
             cluster.close();
         }

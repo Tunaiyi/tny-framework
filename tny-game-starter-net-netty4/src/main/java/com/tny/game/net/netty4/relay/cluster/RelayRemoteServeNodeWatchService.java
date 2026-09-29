@@ -30,7 +30,8 @@ public class RelayRemoteServeNodeWatchService implements AppPrepareStart, AppClo
 
     public static final Logger LOGGER = LoggerFactory.getLogger(RelayRemoteServeNodeWatchService.class);
 
-    private final Set<ServeInstanceWatcher> watchers = new ConcurrentHashSet<>();
+    // 按集群去重：prepareStart 可被生命周期链重复驱动，匿名 watcher 无 equals 会重复订阅（net-boot-integration）
+    private final java.util.concurrent.ConcurrentHashMap<RemoteServeCluster, ServeInstanceWatcher> watchers = new java.util.concurrent.ConcurrentHashMap<>();
 
     private final NetClientRelayExplorer localRelayExplorer;
 
@@ -43,9 +44,8 @@ public class RelayRemoteServeNodeWatchService implements AppPrepareStart, AppClo
 
     @Override
     public void onClosed() {
-        for (ServeInstanceWatcher watcher : watchers) {
-            watcher.stop();
-        }
+        watchers.values().forEach(ServeInstanceWatcher::stop);
+        watchers.clear();
     }
 
     @Override
@@ -55,7 +55,7 @@ public class RelayRemoteServeNodeWatchService implements AppPrepareStart, AppClo
             var setting = context.getSetting();
             if (setting.isDiscovery()) {
                 ServeInstanceWatcher watcher = new ServeInstanceWatcher(cluster);
-                if (watchers.add(watcher)) {
+                if (watchers.putIfAbsent(cluster, watcher) == null) {
                     watcher.start();
                 }
             }

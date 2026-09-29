@@ -110,7 +110,8 @@ public class RpcMessageAide {
         }
         for (MessageHeader<?> header : headers) {
             if (header.isTransitive()) {
-                content.withHeader(header);
+                // 拷贝后传递：共享可变 tracing 属性表会跨请求串扰
+                content.withHeader(header instanceof RpcTracingHeader tracing ? tracing.copy() : header);
             }
         }
         return content;

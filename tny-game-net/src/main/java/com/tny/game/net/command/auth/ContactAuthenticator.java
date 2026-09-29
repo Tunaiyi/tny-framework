@@ -24,4 +24,16 @@ public interface ContactAuthenticator {
     void authenticate(MessageDispatcherContext dispatcherContext, RpcEnterContext rpcContext,
             Class<? extends AuthenticationValidator> validatorClass) throws AuthFailedException;
 
+    /**
+     * 以已解析的校验器实例执行鉴权（协议级/全局兜底注册的校验器按协议号登记，不得再按类名二次查找）；
+     * validator 为 null 时安全跳过（由调用链后续未登录判定兜底）。
+     * 默认实现回退到类签名，保证仅实现类签名的下游实现兼容。
+     */
+    default void authenticate(MessageDispatcherContext dispatcherContext, RpcEnterContext rpcContext,
+            AuthenticationValidator validator) throws AuthFailedException {
+        if (validator != null) {
+            authenticate(dispatcherContext, rpcContext, validator.getClass());
+        }
+    }
+
 }

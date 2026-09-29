@@ -18,6 +18,7 @@ import com.tny.game.net.session.*;
 import org.slf4j.*;
 
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.*;
 
 import static com.tny.game.common.utils.ObjectAide.*;
@@ -46,6 +47,9 @@ public abstract class BaseNetTunnel<S extends NetSession> extends BaseCommunicat
     private final NetworkContext context;
 
     private final TunnelEvents buses = new TunnelEvents();
+
+    // 失活通知（会话回调 + 事件）跨 disconnect/close/嵌套路径全隧道至多一次（net-tunnel"事件全序且单次"契约）
+    private final AtomicBoolean unactivatedNotified = new AtomicBoolean(false);
 
     private volatile TunnelStatus status = TunnelStatus.INIT;
     
@@ -189,7 +193,12 @@ public abstract class BaseNetTunnel<S extends NetSession> extends BaseCommunicat
                 }
                 // 会话切换互斥由本方法的 statusLock 提供；bind 是 resetSession 唯一切换入口，
                 // 未来多步实现须经本入口进入以保持互斥（net-tunnel 规格 R1 约束）
-                return resetSession(session);
+                boolean switched = resetSession(session);
+                if (switched) {
+                    // 换绑新会话：失活通知资格对新会话重新开放
+                    this.unactivatedNotified.set(false);
+                }
+                return switched;
             }
         } finally {
             statusLock.unlock();
@@ -237,14 +246,13 @@ public abstract class BaseNetTunnel<S extends NetSession> extends BaseCommunicat
             this.doDisconnect();
             this.status = TunnelStatus.SUSPEND;
             session = this.session;
-            this.onDisconnected();
         } finally {
             statusLock.unlock();
         }
-        if (session != null) { // 避免死锁
-            session.onUnactivated(this);
-        }
-        buses.unactivatedEvent().notify(this);
+        // onDisconnected 与 close() 同为"锁内改状态、锁外回调"编排：
+        // 客户端实现会在其中触达 close/session——持锁嵌套即成隧道锁×会话锁 ABBA（net-tunnel 契约）
+        this.onDisconnected();
+        notifyUnactivated(session);
     }
 
     @Override
@@ -266,11 +274,20 @@ public abstract class BaseNetTunnel<S extends NetSession> extends BaseCommunicat
         } finally {
             statusLock.unlock();
         }
+        // 关闭前保证失活先行（事件全序）；断开链路已通知时此处幂等跳过
+        notifyUnactivated(session);
+        buses.closeEvent().notify(this);
+        return true;
+    }
+
+    private void notifyUnactivated(NetSession session) {
+        if (!this.unactivatedNotified.compareAndSet(false, true)) {
+            return;
+        }
         if (session != null) { // 避免死锁
             session.onUnactivated(this);
         }
-        buses.closeEvent().notify(this);
-        return true;
+        buses.unactivatedEvent().notify(this);
     }
 
     @Override

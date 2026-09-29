@@ -35,6 +35,8 @@ public final class SpringBootMessageDispatcher extends DefaultMessageDispatcher 
         super.prepareStart();
         final Map<String, Object> handlerMap = this.applicationContext.getBeansWithAnnotation(RpcController.class);
         this.addControllers(handlerMap.values());
+        // 控制器注册完成后校验注解-检查器覆盖关系（message-checking 契约，启动即失败）
+        this.checkParamFilterCoverage();
     }
 
 }

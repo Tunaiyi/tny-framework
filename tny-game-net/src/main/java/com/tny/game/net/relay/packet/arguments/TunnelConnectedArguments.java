@@ -44,7 +44,9 @@ public class TunnelConnectedArguments extends BaseTunnelPacketArguments {
     }
 
     private TunnelConnectedArguments(long instanceId, long tunnelId, boolean result) {
-        super(tunnelId, instanceId);
+        // 原 super(tunnelId, instanceId) 与父类形参序颠倒：本地 getter 互换值。
+        // 修复与 TunnelConnectedArgumentsProto 的槽位读写对调同提交落地——线上字节语义逐位不变（组 12 自抵消）
+        super(instanceId, tunnelId);
         this.result = result;
     }
 

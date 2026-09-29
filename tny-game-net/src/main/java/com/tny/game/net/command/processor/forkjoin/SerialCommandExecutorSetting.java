@@ -25,6 +25,9 @@ public class SerialCommandExecutorSetting {
 
     private boolean enable = true;
 
+    // 异步命令兜底时限（毫秒）：业务返回的 CompletionStage 超期未完成即错误应答并推进串行队列
+    private long commandTimeout = 3000L;
+
     public int getThreads() {
         return this.threads;
     }
@@ -36,6 +39,15 @@ public class SerialCommandExecutorSetting {
 
     public boolean isEnable() {
         return this.enable;
+    }
+
+    public long getCommandTimeout() {
+        return commandTimeout;
+    }
+
+    public SerialCommandExecutorSetting setCommandTimeout(long commandTimeout) {
+        this.commandTimeout = commandTimeout;
+        return this;
     }
 
     public SerialCommandExecutorSetting setEnable(boolean enable) {

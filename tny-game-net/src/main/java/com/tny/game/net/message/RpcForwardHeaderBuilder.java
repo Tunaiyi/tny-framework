@@ -54,12 +54,13 @@ public class RpcForwardHeaderBuilder extends MessageHeaderBuilder<RpcForwardHead
     }
 
     public RpcForwardHeaderBuilder setFromForwarder(RpcAccessPoint fromService) {
-        header().setFrom(fromService);
+        // 原误调 setFrom/setTo：覆盖语义寻址字段并丢失转发者信息
+        header().setFromForwarder(fromService);
         return this;
     }
 
     public RpcForwardHeaderBuilder setToForwarder(RpcAccessPoint toServicer) {
-        header().setTo(toServicer);
+        header().setToForwarder(toServicer);
         return this;
     }
 

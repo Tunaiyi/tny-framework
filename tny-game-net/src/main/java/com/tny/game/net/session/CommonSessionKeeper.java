@@ -62,13 +62,15 @@ public class CommonSessionKeeper extends AutoCloseableSessionKeeper {
             }
         }
         NetSession session = newTunnel.getSession();
+        // 先接管后终结：新会话 online 失败（已被销毁/凭证被拒）时旧会话原样存活，
+        // 调用方收到明确失败；接管成功才关闭旧会话（net-session"顶号先接管后终结"契约）
+        session.online(certificate);
+        session.setSendMessageCachedSize(setting.getSession().getSendMessageCachedSize());
         if (oldSession != null) {
             if (!oldSession.isClosed()) {
                 oldSession.close();
             }
         }
-        session.online(certificate);
-        session.setSendMessageCachedSize(setting.getSession().getSendMessageCachedSize());
         resetSession(session.getIdentify(), session);
         this.monitorSession();
         return session;

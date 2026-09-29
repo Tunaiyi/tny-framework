@@ -257,7 +257,8 @@ public final class MethodControllerHolder extends ControllerHolder {
 
     @Override
     public boolean isActiveByScope(String scope) {
-        return this.scopes != null ? super.isActiveByAppType(scope) : this.classController.isActiveByScope(scope);
+        // 原误调 super.isActiveByAppType(scope)：作用域声明恒放行（每请求热路径）
+        return this.scopes != null ? super.isActiveByScope(scope) : this.classController.isActiveByScope(scope);
     }
 
     @Override

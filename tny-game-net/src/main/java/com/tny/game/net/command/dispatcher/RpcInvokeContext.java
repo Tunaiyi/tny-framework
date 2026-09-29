@@ -35,11 +35,26 @@ public class RpcInvokeContext {
 
     private boolean intercept = false;
 
+    /**
+     * 异步命令兜底时限：取会话执行器工厂配置，链路任一环节缺省回落 3000ms。
+     */
+    private static long resolveCommandTimeout(RpcEnterContext rpcContext) {
+        try {
+            var factory = rpcContext.networkContext().getCommandExecutorFactory();
+            if (factory != null) {
+                return factory.getCommandTimeoutMillis();
+            }
+        } catch (Throwable ignored) {
+            // 装配不全的最小上下文（含测试桩）回落默认
+        }
+        return 3000L;
+    }
+
     public RpcInvokeContext(MethodControllerHolder controller, RpcEnterContext rpcContext, NetAppContext appContext) {
         this.appContext = appContext;
         this.controller = controller;
         this.rpcContext = rpcContext;
-        this.promise = new MessageCommandPromise(getName(), 3000);
+        this.promise = new MessageCommandPromise(getName(), resolveCommandTimeout(rpcContext));
         var message = rpcContext.getMessage();
         this.forward = message.getHeader(MessageHeaderConstants.RPC_FORWARD_HEADER);
     }

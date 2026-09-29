@@ -11,5 +11,4 @@ public interface TunnelEventWatches {
 
     EventListen<TunnelCloseListener> closeWatch();
 
-    EventListen<TunnelReceiveListener> receiveWatch();
 }

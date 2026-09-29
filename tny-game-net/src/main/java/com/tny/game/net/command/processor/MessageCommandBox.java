@@ -57,6 +57,7 @@ public class MessageCommandBox implements Executor {
                 rpcContext.complete();
                 return new RunnableCommand(tunnel::pong);
             default:
+                LOGGER.warn("unknown message mode {} absorbed on channel {}", message.getMode(), rpcContext.netTunnel());
         }
         rpcContext.complete();
         return null;
@@ -64,6 +65,10 @@ public class MessageCommandBox implements Executor {
 
     private boolean doAddCommand(RpcEnterContext rpcContext) {
         var command = createCommand(rpcContext);
+        if (command == null) {
+            // 未知模式已在 createCommand 内完成告警与上下文终结；null 命令不得入执行队列（三层 NPE 防线）
+            return true;
+        }
         executor.executeCommand(command);
         return true;
     }

@@ -41,7 +41,8 @@ public class NettyClientGuide extends NettyBootstrap<NettyNetClientBootstrapSett
     /* 实例排他持有（net-guide-lifecycle）：懒建、close 释放、可重建 */
     private volatile EventLoopGroup workerGroup;
 
-    private Bootstrap bootstrap = null;
+    // volatile：DCL 快路径在 synchronized 外读（对齐 server 侧既有修复）
+    private volatile Bootstrap bootstrap = null;
 
     private final Set<NetTunnel> tunnels = new ConcurrentHashSet<>();
 
@@ -67,10 +68,16 @@ public class NettyClientGuide extends NettyBootstrap<NettyNetClientBootstrapSett
             if (this.bootstrap != null) {
                 return this.bootstrap;
             }
-            this.bootstrap = new Bootstrap();
+            Bootstrap bootstrap = new Bootstrap();
             NettyMessageHandler messageHandler = new NettyMessageHandler(this.getContext());
-            this.bootstrap.group(ensureWorkerGroup()).channel(EPOLL ? EpollSocketChannel.class : NioSocketChannel.class)
-                    .option(ChannelOption.SO_REUSEADDR, true).option(ChannelOption.TCP_NODELAY, true).option(ChannelOption.SO_KEEPALIVE, true)
+            long connectTimeout = setting.getConnector().getConnectTimeout();
+            bootstrap.group(ensureWorkerGroup()).channel(EPOLL ? EpollSocketChannel.class : NioSocketChannel.class)
+                    .option(ChannelOption.SO_REUSEADDR, true).option(ChannelOption.TCP_NODELAY, true).option(ChannelOption.SO_KEEPALIVE, true);
+            if (connectTimeout > 0 && connectTimeout <= Integer.MAX_VALUE) {
+                // 连接超时有界（net-tunnel 契约）：黑洞地址下不得穿透到 OS 级分钟超时
+                bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, (int) connectTimeout);
+            }
+            bootstrap
                     .handler(new ChannelInitializer<>() {
 
                         @Override
@@ -87,16 +94,22 @@ public class NettyClientGuide extends NettyBootstrap<NettyNetClientBootstrapSett
                         }
 
                     });
-            return this.bootstrap;
+            this.bootstrap = bootstrap; // 构建完成后经 volatile 字段安全发布
+            return bootstrap;
         }
 
     }
 
     @Override
     public CompletionStageFuture<NetTunnel> connectAsync(URL url, TunnelUnavailableWatch watch) {
-        ClientConnectorSetting setting = getSetting().getConnector();
         var future = new CompleteStageFuture<NetTunnel>();
-        var channelFuture = connectAsync(url, setting.getConnectTimeout());
+        if (isClosed()) {
+            // 关闭后拒绝新建：重连竞态不得产生"关而不掉"的活连接
+            future.completeExceptionally(new TunnelException("client {} closed, connect {} rejected!", this.setting.getName(), url));
+            return future;
+        }
+        Asserts.checkNotNull(url, "url is null");
+        var channelFuture = this.getBootstrap().connect(new InetSocketAddress(url.getHost(), url.getPort()));
         channelFuture.addListener(f -> {
             if (f.isSuccess()) {
                 var context = getContext();
@@ -112,6 +125,10 @@ public class NettyClientGuide extends NettyBootstrap<NettyNetClientBootstrapSett
                 });
                 tunnel.open();
                 tunnels.add(tunnel);
+                if (isClosed()) {
+                    // close() 快照可能恰未含本条：入组后复查自愈
+                    tunnel.close();
+                }
                 future.complete(tunnel);
             } else {
                 if (f.cause() != null) {
@@ -122,11 +139,6 @@ public class NettyClientGuide extends NettyBootstrap<NettyNetClientBootstrapSett
             }
         });
         return future;
-    }
-
-    private ChannelFuture connectAsync(URL url, long connectTimeout) throws NetException {
-        Asserts.checkNotNull(url, "url is null");
-        return this.getBootstrap().connect(new InetSocketAddress(url.getHost(), url.getPort()));
     }
 
 
@@ -141,6 +153,7 @@ public class NettyClientGuide extends NettyBootstrap<NettyNetClientBootstrapSett
             this.tunnels.forEach(Tunnel::close);
             EventLoopGroup shuttingDownWorkerGroup = this.workerGroup;
         this.workerGroup = null;
+        this.bootstrap = null; // 构建器固化旧组引用必须随组失效；重开经 DCL 重建（net-guide-lifecycle）
         if (shuttingDownWorkerGroup != null) {
             shuttingDownWorkerGroup.shutdownGracefully();
         }

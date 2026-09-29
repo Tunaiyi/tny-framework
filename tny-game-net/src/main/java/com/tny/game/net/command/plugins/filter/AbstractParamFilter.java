@@ -47,6 +47,12 @@ public abstract class AbstractParamFilter<A extends Annotation, P> implements Pa
         for (A an : annotations) {
             if (an != null) {
                 P param = (P) holder.getParameterValue(index, as(tunnel), message, body);
+                if (param == null) {
+                    // 空可选值放行（message-checking 契约）：取值类检查不做 null 比较，
+                    // 必填参数的缺失由参数装配环节处置
+                    index++;
+                    continue;
+                }
                 ResultCode result = this.doFilter(holder, tunnel, message, index, an, param);
                 if (result != NetResultCode.SUCCESS) {
                     return result;

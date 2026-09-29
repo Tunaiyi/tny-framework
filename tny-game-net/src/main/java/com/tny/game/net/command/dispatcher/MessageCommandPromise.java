@@ -49,6 +49,13 @@ public class MessageCommandPromise {
         return System.currentTimeMillis() > this.timeout;
     }
 
+    /**
+     * @return 兜底时限剩余毫秒；未配置返回 -1
+     */
+    public long remainingTimeoutMillis() {
+        return this.timeout < 0 ? -1L : Math.max(0L, this.timeout - System.currentTimeMillis());
+    }
+
     public boolean isSuccess() {
         return this.done && this.cause == null;
     }

@@ -66,7 +66,15 @@ public class CommonServerBootstrapSetting extends CommonNetBootstrapSetting impl
         if (StringUtils.isNoneBlank(address)) {
             this.bindAddressValue = address;
             String[] hostPort = StringUtils.split(address, ":");
-            this.bindAddress = new InetSocketAddress(hostPort[0], NumberUtils.toInt(hostPort[1]));
+            // 配置笔误以可诊断异常拒绝（段数/端口界），不再 AIOOBE/静默 0 端口深入启动栈
+            if (hostPort.length != 2) {
+                throw new IllegalArgumentException("bind address '" + address + "' 必须为 host:port 形式（不支持 IPv6 字面量）");
+            }
+            int port = NumberUtils.toInt(hostPort[1], -1);
+            if (port < 0 || port > 0xFFFF) {
+                throw new IllegalArgumentException("bind address '" + address + "' 端口非法: " + hostPort[1]);
+            }
+            this.bindAddress = new InetSocketAddress(hostPort[0], port);
         }
     }
 

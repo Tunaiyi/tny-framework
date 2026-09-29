@@ -111,7 +111,9 @@ class NettyRelayLinkConnector implements RelayConnectCallback {
         if (this.status == RelayConnectionStatus.CLOSE) {
             NettyRelayServeInstance.LOGGER.warn("Server [{}-{}-{}] Connector is closed",
                     instance.getServeName(), instance.getId(), this.linkKey);
-            transport.close();
+            if (transport != null) {
+                transport.close();
+            }
             return;
         }
         if (result && transport.isActive()) {
@@ -121,7 +123,7 @@ class NettyRelayLinkConnector implements RelayConnectCallback {
         } else {
             this.status = RelayConnectionStatus.DISCONNECT;
             NettyRelayServeInstance.LOGGER.warn("Server [{}-{}-{}] connect to {} failed {} times",
-                    instance.getServeName(), instance.getId(), this.linkKey, url, times, cause.getCause());
+                    instance.getServeName(), instance.getId(), this.linkKey, url, times, cause);
             onReconnected();
         }
     }

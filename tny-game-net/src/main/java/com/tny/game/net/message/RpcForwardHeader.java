@@ -16,7 +16,6 @@ import com.tny.game.codec.typeprotobuf.*;
 import com.tny.game.codec.typeprotobuf.annotation.*;
 import com.tny.game.net.application.*;
 
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static com.tny.game.common.utils.ObjectAide.*;
 
@@ -109,7 +108,6 @@ public class RpcForwardHeader extends MessageHeader<RpcForwardHeader> {
     }
 
     protected RpcForwardHeader setFrom(RpcServicer fromService) {
-        var list = new ConcurrentLinkedQueue<RpcForwardHeader>();
         this.from = toForwardPoint(fromService);
         return this;
     }
@@ -130,12 +128,13 @@ public class RpcForwardHeader extends MessageHeader<RpcForwardHeader> {
     }
 
     protected RpcForwardHeader setFromForwarder(RpcServicer fromService) {
-        this.fromForwarder = toForwardPoint(fromForwarder);
+        // 原实现以字段自引用代替参数（复制粘贴），转发者信息恒 null
+        this.fromForwarder = toForwardPoint(fromService);
         return this;
     }
 
-    protected RpcForwardHeader setToForwarder(RpcServicer fromService) {
-        this.toForwarder = toForwardPoint(toForwarder);
+    protected RpcForwardHeader setToForwarder(RpcServicer toService) {
+        this.toForwarder = toForwardPoint(toService);
         return this;
     }
 

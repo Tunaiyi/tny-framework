@@ -105,6 +105,15 @@ public class RpcTracingHeader extends MessageHeader<RpcTracingHeader> {
         return attributes.put(key, value);
     }
 
+    /**
+     * 传递性传播副本：请求与响应消息不得别名共享同一可变属性表（header 容器并发契约）。
+     */
+    public RpcTracingHeader copy() {
+        RpcTracingHeader copy = new RpcTracingHeader();
+        copy.attributes.putAll(this.attributes);
+        return copy;
+    }
+
     public String remove(Object key) {
         return attributes.remove(key);
     }

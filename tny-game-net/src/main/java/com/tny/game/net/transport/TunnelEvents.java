@@ -34,9 +34,6 @@ public class TunnelEvents extends EventWatches<TunnelListener> implements Tunnel
     private static final VoidBindEvent<TunnelCloseListener, Tunnel> CLOSE_EVENT =
             Events.ofEvent(TunnelCloseListener.class, TunnelCloseListener::onClose);
 
-    private static final A1BindEvent<TunnelReceiveListener, Tunnel, RpcEnterContext> RECEIVE_EVENT =
-            Events.ofEvent(TunnelReceiveListener.class, TunnelReceiveListener::onReceive);
-
     public static VoidBindEvent<TunnelActivateListener, Tunnel> globalActivateEvent() {
         return ACTIVATE_EVENT;
     }
@@ -49,17 +46,11 @@ public class TunnelEvents extends EventWatches<TunnelListener> implements Tunnel
         return CLOSE_EVENT;
     }
 
-    public static A1BindEvent<TunnelReceiveListener, Tunnel, RpcEnterContext> globalReceiveEvent() {
-        return RECEIVE_EVENT;
-    }
-
     private final VoidBindEvent<TunnelActivateListener, Tunnel> activateEvent;
 
     private final VoidBindEvent<TunnelUnactivatedListener, Tunnel> unactivatedEvent;
 
     private final VoidBindEvent<TunnelCloseListener, Tunnel> closeEvent;
-
-    private final A1BindEvent<TunnelReceiveListener, Tunnel, RpcEnterContext> receiveEvent;
 
 
     public VoidBindEvent<TunnelActivateListener, Tunnel> ActivateEvent() {
@@ -74,20 +65,15 @@ public class TunnelEvents extends EventWatches<TunnelListener> implements Tunnel
         return closeEvent;
     }
 
-    public A1BindEvent<TunnelReceiveListener, Tunnel, RpcEnterContext> ReceiveEvent() {
-        return receiveEvent;
-    }
-
     protected TunnelEvents() {
         activateEvent = ACTIVATE_EVENT.forkChild();
         unactivatedEvent = UNACTIVATED_EVENT.forkChild();
         closeEvent = CLOSE_EVENT.forkChild();
-        receiveEvent = RECEIVE_EVENT.forkChild();
     }
 
     @Override
     protected Stream<EventListen<? extends TunnelListener>> eventStream() {
-        return Stream.of(activateEvent, unactivatedEvent, receiveEvent, closeEvent);
+        return Stream.of(activateEvent, unactivatedEvent, closeEvent);
     }
 
     VoidBindEvent<TunnelActivateListener, Tunnel> activateEvent() {
@@ -100,10 +86,6 @@ public class TunnelEvents extends EventWatches<TunnelListener> implements Tunnel
 
     VoidBindEvent<TunnelCloseListener, Tunnel> closeEvent() {
         return this.closeEvent;
-    }
-
-    A1BindEvent<TunnelReceiveListener, Tunnel, RpcEnterContext> receiveEvent() {
-        return this.receiveEvent;
     }
 
     @Override
@@ -121,8 +103,4 @@ public class TunnelEvents extends EventWatches<TunnelListener> implements Tunnel
         return closeEvent;
     }
 
-    @Override
-    public EventListen<TunnelReceiveListener> receiveWatch() {
-        return receiveEvent;
-    }
 }

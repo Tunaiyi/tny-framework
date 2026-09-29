@@ -118,6 +118,7 @@ public abstract class AbstractSessionKeeper implements NetSessionKeeper {
 
     @Override
     public void send2All(MessageContent context) {
+        checkMulticastContent(context);
         for (Session session : this.sessionMap.values())
             session.send(context);
     }
@@ -214,12 +215,24 @@ public abstract class AbstractSessionKeeper implements NetSessionKeeper {
     }
 
     private void doSendMultiId(Stream<Long> identifies, MessageContent context) {
+        checkMulticastContent(context);
         identifies.forEach(identify -> {
             Session session = this.getSession(identify);
             if (session != null) {
                 session.send(context);
             }
         });
+    }
+
+    /**
+     * 多播禁用 RequestContent：同一请求 future/响应会被多个接收方共享污染（一次响应完成全部等待方）。
+     * 单目标请求请用 sendTo(long identify, ...)；多目标请逐目标构造内容（ContactService.toPush 先例）。
+     */
+    private static void checkMulticastContent(MessageContent context) {
+        // 判别=已装配响应等待（DefaultMessageContent 全量继承 RequestContent，类型判别不可用）
+        if (context instanceof RequestContent request && request.getRespondFuture() != null) {
+            throw new IllegalArgumentException("多播发送不接受携带响应等待的 RequestContent，响应语义要求每目标独立内容实例");
+        }
     }
 
     protected void monitorSession() {

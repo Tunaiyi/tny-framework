@@ -72,10 +72,18 @@ public class NettyChannelMessageTransport extends NettyChannelConnection impleme
                     tracer.done();
                 } catch (Throwable e) {
                     LOGGER.error("", e);
+                    if (awaiter != null) {
+                        awaiter.completeExceptionally(e);
+                    }
                 }
             });
         } catch (Throwable e) {
+            // 提交被拒（event-loop 终止/关闭竞态）：写回执与响应等待必须以失败终结，不得悬挂
             LOGGER.error("", e);
+            if (awaiter != null) {
+                awaiter.completeExceptionally(e);
+            }
+            content.cancel(e);
         }
         return awaiter;
     }

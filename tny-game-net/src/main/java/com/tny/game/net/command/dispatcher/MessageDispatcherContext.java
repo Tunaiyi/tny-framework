@@ -56,6 +56,21 @@ public interface MessageDispatcherContext {
      */
     AuthenticationValidator getValidator(Class<? extends AuthenticationValidator> validatorClass);
 
+    /**
+     * 鉴权校验器单点解析：方法级 → 协议级 → 全局兜底（command-execution"鉴权校验器可注册且按维度生效"）。
+     *
+     * @param methodLevelValidator 方法/类显式声明的校验器类，无声明传 null
+     * @param protocol             协议号
+     * @return 解析到的校验器，三级皆无返回 null（调用方按未登录拒绝）
+     */
+    default AuthenticationValidator resolveValidator(Class<? extends AuthenticationValidator> methodLevelValidator, Object protocol) {
+        if (methodLevelValidator != null) {
+            return getValidator(methodLevelValidator);
+        }
+        // 协议级查找自带全局兜底
+        return getValidator(protocol);
+    }
+
     Collection<MessageCommandListener> getCommandListener();
 
     void addCommandListener(MessageCommandListener listener);

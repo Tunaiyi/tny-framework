@@ -49,6 +49,8 @@ public abstract class NetPacketV1Codec implements AppPrepareStart {
 
     @Override
     public void prepareStart() {
+        // 安全配置完备性先于单元解析：缺密钥部署以明确原因启动失败（net-protocol 契约）
+        this.config.checkSecurityConfig();
         MessageBodyCodec<Object> bodyCoder = UnitLoader.getLoader(MessageBodyCodec.class).checkUnit(this.config.getMessageBodyCodec());
         MessageHeaderCodec messageHeaderCodec = UnitLoader.getLoader(MessageHeaderCodec.class).checkUnit(this.config.getMessageHeaderCodec());
         MessageRelayStrategy messageRelayStrategy;

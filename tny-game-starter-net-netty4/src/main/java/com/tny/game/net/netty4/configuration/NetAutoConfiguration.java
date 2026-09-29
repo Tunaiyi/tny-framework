@@ -74,6 +74,7 @@ public class NetAutoConfiguration {
     }
 
     @Bean
+    @ConditionalOnMissingBean
     public CommandExecutorFactory defaultCommandExecutorFactory() {
         return new DefaultCommandExecutorFactory();
     }

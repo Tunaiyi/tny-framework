@@ -115,7 +115,10 @@ public class NettyMessageHandler extends ChannelDuplexHandler {
         if (object instanceof NetMessage) {
             try {
                 NetMessage message = as(object);
-                RpcMessageAide.ignoreHeaders(message, bootstrapSetting.getReadIgnoreHeaders());
+                // 心跳为跨连接共享单例：忽略头清理不得触碰其可变面（net-protocol"心跳不产生共享状态变更"）
+                if (message.getMode() != MessageMode.PING && message.getMode() != MessageMode.PONG) {
+                    RpcMessageAide.ignoreHeaders(message, bootstrapSetting.getReadIgnoreHeaders());
+                }
                 NetTunnel tunnel = channel.attr(NettyNetAttrKeys.TUNNEL).get();
                 if (tunnel != null) {
                     tunnel.receive(message);
@@ -134,9 +137,6 @@ public class NettyMessageHandler extends ChannelDuplexHandler {
     @Override
     public void write(ChannelHandlerContext context, Object msg, ChannelPromise promise) {
         try (ProcessTracer ignored = MESSAGE_ENCODE_WATCHER.trace()) {
-            if (msg instanceof NettyMessageBearer) {
-                msg = ((NettyMessageBearer) msg).message();
-            }
             if (msg instanceof NetMessage message) {
                 RpcMessageAide.ignoreHeaders(message, bootstrapSetting.getWriteIgnoreHeaders());
                 Channel channel = context.channel();
