@@ -1,5 +1,5 @@
 plugins {
-    id 'org.ajoberstar.grgit' version '4.0.2' apply false
+    id 'org.ajoberstar.grgit' version '4.1.1' apply false
     id 'org.springframework.boot' version "${springBootVersion}" apply false
     id "io.spring.dependency-management" version "1.1.0" apply false
     id "com.baidu.jprotobuf" version "1.2.1" apply false
@@ -79,6 +79,13 @@ configure(gradleProjects) {
     apply plugin: 'java-gradle-plugin'
     apply from: "${rootDir}/gradle/publish.gradle"
 
+    // 构建可复现：Groovy/插件模块编译与 javaProjects 对齐钉定 Java 21 toolchain（align-groovy-build-jdk-21）
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(javaVersion.toInteger())
+        }
+    }
+
     configurations {
         all {
             resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
@@ -117,8 +124,15 @@ configure(javaProjects) {
 
 //    ext.springBoot = name.endsWith("-demo") || name.endsWith("-suite") || name.contains("-starter-")
 
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = JavaVersion.toVersion(javaVersion)
+    targetCompatibility = JavaVersion.toVersion(javaVersion)
+
+    // 构建可复现：编译/测试/javadoc 钉在 Java 21 toolchain，与 daemon 所在 JVM 解耦（align-build-jdk-21）
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(javaVersion.toInteger())
+        }
+    }
 
     task createProject {
         doLast {
