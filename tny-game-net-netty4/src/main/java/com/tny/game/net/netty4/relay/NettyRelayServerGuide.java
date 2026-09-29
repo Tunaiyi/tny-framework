@@ -34,9 +34,11 @@ public class NettyRelayServerGuide extends NettyServerBootstrap<NettyRelayServer
 
     private static final boolean EPOLL = isEpoll();
 
-    private static final EventLoopGroup parentGroup = createLoopGroup(EPOLL, 1, "Sever-Boss-LoopGroup");
+    /* 实例排他持有（net-guide-lifecycle）：懒建、close 释放、可重建 */
+    private volatile EventLoopGroup parentGroup;
 
-    private static final EventLoopGroup childGroup = createLoopGroup(EPOLL, Runtime.getRuntime().availableProcessors() * 2, "Sever-Child-LoopGroup");
+    /* 实例排他持有（net-guide-lifecycle）：懒建、close 释放、可重建 */
+    private volatile EventLoopGroup childGroup;
 
     private volatile ServerBootstrap bootstrap;
 
@@ -99,8 +101,16 @@ public class NettyRelayServerGuide extends NettyServerBootstrap<NettyRelayServer
                 LOGGER.error("NettyRelayServer [ {} ] | {} close exception", this.setting.getName(), address, e);
             }
         });
-        parentGroup.shutdownGracefully();
-        childGroup.shutdownGracefully();
+        EventLoopGroup shuttingDownParentGroup = this.parentGroup;
+        this.parentGroup = null;
+        if (shuttingDownParentGroup != null) {
+            shuttingDownParentGroup.shutdownGracefully();
+        }
+        EventLoopGroup shuttingDownChildGroup = this.childGroup;
+        this.childGroup = null;
+        if (shuttingDownChildGroup != null) {
+            shuttingDownChildGroup.shutdownGracefully();
+        }
         NettyRelayServerGuide.this.fireServerClosed();
         NettyRelayServerGuide.LOGGER.info("#NettyRelayServer [ {} ] | 服务器已关闭!!!", this.setting.getName());
         return true;
@@ -158,7 +168,7 @@ public class NettyRelayServerGuide extends NettyServerBootstrap<NettyRelayServer
             this.bootstrap = new ServerBootstrap();
             RelayPacketProcessor relayPacketProcessor = new RelayPacketServerProcessor(this.localRelayExplorer, this.getContext());
             NettyRelayPacketHandler relayMessageHandler = new NettyRelayPacketHandler(setting, relayPacketProcessor);
-            init(this.bootstrap, parentGroup, childGroup, EPOLL);
+            init(this.bootstrap, ensureParentGroup(), ensureChildGroup(), EPOLL);
             this.bootstrap.childHandler(new ChannelInitializer<>() {
 
                 @Override
@@ -191,4 +201,32 @@ public class NettyRelayServerGuide extends NettyServerBootstrap<NettyRelayServer
         new NettyChannelRelayTransport(NetAccessMode.SERVER, channel, this.getContext());
     }
 
+
+    EventLoopGroup ensureParentGroup() {
+        EventLoopGroup group = this.parentGroup;
+        if (group != null && !group.isShuttingDown()) {
+            return group;
+        }
+        synchronized (this) {
+            group = this.parentGroup;
+            if (group == null || group.isShuttingDown()) {
+                group = this.parentGroup = createLoopGroup(EPOLL, 1, "Sever-Boss-LoopGroup-" + this.setting.getName());
+            }
+            return group;
+        }
+    }
+
+    EventLoopGroup ensureChildGroup() {
+        EventLoopGroup group = this.childGroup;
+        if (group != null && !group.isShuttingDown()) {
+            return group;
+        }
+        synchronized (this) {
+            group = this.childGroup;
+            if (group == null || group.isShuttingDown()) {
+                group = this.childGroup = createLoopGroup(EPOLL, Runtime.getRuntime().availableProcessors() * 2, "Sever-Child-LoopGroup-" + this.setting.getName());
+            }
+            return group;
+        }
+    }
 }

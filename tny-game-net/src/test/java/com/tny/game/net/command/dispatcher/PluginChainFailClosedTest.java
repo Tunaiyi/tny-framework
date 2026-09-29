@@ -60,7 +60,7 @@ class PluginChainFailClosedTest {
         AtomicInteger invocations = new AtomicInteger();
         PluginChain chain = new PluginChain(holder(new CountingPlugin(invocations)));
         RpcInvokeContext context = context();
-        context.doneAndIntercept(com.tny.game.net.application.NetResultCode.SERVER_NO_SUCH_PROTOCOL);
+        context.doneAndIntercept(NetResultCode.SERVER_NO_SUCH_PROTOCOL);
 
         chain.execute(tunnel, message(3L, System.currentTimeMillis()), context);
 
@@ -75,7 +75,7 @@ class PluginChainFailClosedTest {
         }
 
         @Override
-        public void execute(com.tny.game.net.transport.Tunnel tunnel, Message message, RpcInvokeContext context, Object attribute) {
+        public void execute(Tunnel tunnel, Message message, RpcInvokeContext context, Object attribute) {
             throw new RuntimeException("fixture plugin failure");
         }
     }
@@ -93,7 +93,7 @@ class PluginChainFailClosedTest {
         }
 
         @Override
-        public void execute(com.tny.game.net.transport.Tunnel tunnel, Message message, RpcInvokeContext context, Object attribute) {
+        public void execute(Tunnel tunnel, Message message, RpcInvokeContext context, Object attribute) {
             counter.incrementAndGet();
         }
     }

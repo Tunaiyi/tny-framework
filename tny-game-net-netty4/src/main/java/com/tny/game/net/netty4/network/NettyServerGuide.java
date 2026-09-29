@@ -32,9 +32,11 @@ public class NettyServerGuide extends NettyServerBootstrap<NettyNetServerBootstr
 
     private static final boolean EPOLL = isEpoll();
 
-    private static final EventLoopGroup parentGroup = createLoopGroup(EPOLL, 1, "Sever-Boss-LoopGroup");
+    /* IO 线程组实例排他持有（net-guide-lifecycle 规格）：懒建、close 释放、重启可重建——
+       原 static 共享导致同 JVM 多实例 close 互相扼杀且无法复活 */
+    private volatile EventLoopGroup parentGroup;
 
-    private static final EventLoopGroup childGroup = createLoopGroup(EPOLL, Runtime.getRuntime().availableProcessors() * 2, "Sever-Child-LoopGroup");
+    private volatile EventLoopGroup childGroup;
 
     private volatile ServerBootstrap bootstrap;
 
@@ -79,7 +81,7 @@ public class NettyServerGuide extends NettyServerBootstrap<NettyNetServerBootstr
 
     @Override
     public boolean isBound() {
-        return false;
+        return this.channels.values().stream().anyMatch(Channel::isOpen); // D2：真实监听状态
     }
 
     @Override
@@ -95,8 +97,16 @@ public class NettyServerGuide extends NettyServerBootstrap<NettyNetServerBootstr
                 LOGGER.error("NettyServer [ {} ] | {} close exception", this.setting.getName(), address, e);
             }
         });
-        parentGroup.shutdownGracefully();
-        childGroup.shutdownGracefully();
+        EventLoopGroup parent = this.parentGroup;
+        EventLoopGroup child = this.childGroup;
+        this.parentGroup = null;
+        this.childGroup = null;
+        if (parent != null) {
+            parent.shutdownGracefully();
+        }
+        if (child != null) {
+            child.shutdownGracefully();
+        }
         NettyServerGuide.this.fireServerClosed();
         NettyServerGuide.LOGGER.info("#NettyServer [ {} ] | 服务器已关闭!!!", this.setting.getName());
         return true;
@@ -130,21 +140,56 @@ public class NettyServerGuide extends NettyServerBootstrap<NettyNetServerBootstr
         return address.getAddress().getHostAddress() + ":" + address.getPort();
     }
 
+    EventLoopGroup ensureParentGroup() {
+        EventLoopGroup group = this.parentGroup;
+        if (group != null && !group.isShuttingDown()) {
+            return group;
+        }
+        synchronized (this) {
+            group = this.parentGroup;
+            if (group == null || group.isShuttingDown()) {
+                group = this.parentGroup = createLoopGroup(EPOLL, 1, "Sever-Boss-LoopGroup-" + this.setting.getName());
+            }
+            return group;
+        }
+    }
+
+    EventLoopGroup ensureChildGroup() {
+        EventLoopGroup group = this.childGroup;
+        if (group != null && !group.isShuttingDown()) {
+            return group;
+        }
+        synchronized (this) {
+            group = this.childGroup;
+            if (group == null || group.isShuttingDown()) {
+                group = this.childGroup = createLoopGroup(EPOLL, Runtime.getRuntime().availableProcessors() * 2, "Sever-Child-LoopGroup-" + this.setting.getName());
+            }
+            return group;
+        }
+    }
+
     private void bind(final InetSocketAddress address) {
         String addressString = toAddressString(address);
-        Channel channel = this.channels.get(addressString);
-        if (channel != null) {
-            if (channel.close().awaitUninterruptibly(30000L)) {
-                this.channels.remove(addressString, channel);
-            }
+        // 重绑：无条件摘除并尽力关闭旧监听通道（关闭耗时不参与是否摘除的判定，D3）
+        Channel oldChannel = this.channels.remove(addressString);
+        if (oldChannel != null) {
+            oldChannel.close().awaitUninterruptibly(30000L);
         }
         LOGGER.info("#NettyServer [ {} ] | 正在打开监听{}端口", this.setting.getName(), address);
         ChannelFuture channelFuture = this.bootstrap().bind(address);
-        if (channelFuture.awaitUninterruptibly(30000L)) {
+        boolean bound = channelFuture.awaitUninterruptibly(30000L) && channelFuture.isSuccess();
+        if (bound) {
             this.channels.put(addressString, channelFuture.channel());
             LOGGER.info("#NettyServer [ {} ] | {}端口已监听", this.setting.getName(), address);
         } else {
-            LOGGER.info("#NettyServer [ {} ] | {}端口监听失败", this.setting.getName(), address);
+            // 失败/超时：回收半开通道防资源残留（net-guide-lifecycle 规格）
+            Throwable cause = channelFuture.cause();
+            channelFuture.channel().close();
+            if (cause != null) {
+                LOGGER.error("#NettyServer [ {} ] | {}端口监听失败: {}", this.setting.getName(), address, cause.getMessage(), cause);
+            } else {
+                LOGGER.error("#NettyServer [ {} ] | {}端口监听超时", this.setting.getName(), address);
+            }
         }
     }
 
@@ -163,7 +208,7 @@ public class NettyServerGuide extends NettyServerBootstrap<NettyNetServerBootstr
             NettyTunnelFactory tunnelFactory = UnitLoader.getLoader(NettyTunnelFactory.class)
                     .checkUnit(channelSetting.getTunnelFactory());
             var messageHandler = nettyMessageHandlerFactory.create(this.getContext());
-            init(this.bootstrap, parentGroup, childGroup, EPOLL);
+            init(this.bootstrap, ensureParentGroup(), ensureChildGroup(), EPOLL);
             this.bootstrap.childHandler(new ChannelInitializer<>() {
 
                 @Override

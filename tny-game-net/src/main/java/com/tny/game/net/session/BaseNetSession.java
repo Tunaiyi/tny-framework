@@ -86,11 +86,7 @@ public abstract class BaseNetSession extends BaseCommunicator implements NetSess
         this.context = context;
         this.certificate = certificate;
         var commandExecutorFactory = context.getCommandExecutorFactory();
-        if (sendMessageCachedSize > 0) {
-            this.sentMessageQueue = new MessageQueue(sendMessageCachedSize);
-        } else {
-            this.sentMessageQueue = new MessageQueue(0);
-        }
+        this.sentMessageQueue = new MessageQueue(sendMessageCachedSize); // MessageQueue 自行处理 <=0 为禁用
         this.commandBox = new MessageCommandBox(commandExecutorFactory.create(this));
         this.updateTunnel(tunnel);
     }

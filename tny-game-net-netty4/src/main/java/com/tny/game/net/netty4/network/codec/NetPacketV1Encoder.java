@@ -83,8 +83,9 @@ public class NetPacketV1Encoder extends NetPacketV1Codec implements NetPacketEnc
             // 计算废字节
             NettyWasteWriter wasteWriter = new NettyWasteWriter(packager, config);
             payloadLength += wasteWriter.getTotalWasteByteSize();
-            // 包头
-            bodyBuffer = out.alloc().buffer(counter.allot());
+            // 包头：必须堆缓冲——下方 verifier/crypto 以 array()/arrayOffset() 访问
+            //（与 NetPacketV1Decoder.readPayload 的 heapBuffer 对称；direct buffer 上 array() 必炸）
+            bodyBuffer = out.alloc().heapBuffer(counter.allot());
             this.messageCodec.encode(as(message), bodyBuffer);
             byte[] verifyCodeBytes = new byte[0];
             if (config.isVerifyEnable()) {
@@ -92,8 +93,10 @@ public class NetPacketV1Encoder extends NetPacketV1Codec implements NetPacketEnc
                 payloadLength += this.verifier.getCodeLength();
                 verifyCodeBytes = this.verifier.generate(packager, bodyBuffer.array(), bodyBuffer.arrayOffset(), bodyBuffer.readableBytes());
             }
-            logger.debug("sendMessage : accessId {} | number {} | randCode {} | packLength {} | wasteBitSize {} | verify {}", accessId, number,
-                    packager.getPacketCode(), payloadLength, wasteWriter.getWasteBitSize(), config.isVerifyEnable());
+            if (logger.isDebugEnabled()) { // 热路径避免参数装配开销
+                logger.debug("sendMessage : accessId {} | number {} | randCode {} | packLength {} | wasteBitSize {} | verify {}", accessId, number,
+                        packager.getPacketCode(), payloadLength, wasteWriter.getWasteBitSize(), config.isVerifyEnable());
+            }
             // 加密
             if (config.isEncryptEnable()) {
                 // TODO 是否需要重新创建 buffer
@@ -107,7 +110,10 @@ public class NetPacketV1Encoder extends NetPacketV1Codec implements NetPacketEnc
             // payloadLength += NettyVarintCoder.varint32Size(body.length);
             payloadLength += bodyBuffer.readableBytes();
             if (payloadLength > config.getMaxPayloadLength()) {
-                logger.warn("encode message {} failed payloadLength {} > maxPayloadLength {}", message, payloadLength, PAYLOAD_BYTES_MAX_SIZE);
+                // 超限本地拒绝（net-protocol 规格）：写出会毒化对端连接（对端解码超限即断链），
+                // 且发送方无感知——改为抛编码异常使本次写回执失败，通道保持健康（D2）
+                throw new NetPacketEncodeException("encode rejected: payload {} > maxPayloadLength {}",
+                        payloadLength, config.getMaxPayloadLength());
             }
             // 写入包长度
             //        out.writeInt(payloadLength);

@@ -16,6 +16,7 @@ import com.tny.game.net.command.plugins.CommandPlugin;
 import com.tny.game.net.message.*;
 
 import java.lang.reflect.Field;
+import java.util.*;
 
 /**
  * 测试支撑：绕过 javassist/注解/表达式装配链，直接构造可断言的 RpcInvokeContext 与消息桩。
@@ -126,8 +127,8 @@ public final class RpcContextFixture {
         }
 
         @Override
-        public <T extends MessageHeader<?>> java.util.List<T> getHeaders(Class<T> headerClass) {
-            return java.util.List.of();
+        public <T extends MessageHeader<?>> List<T> getHeaders(Class<T> headerClass) {
+            return List.of();
         }
 
         @Override
@@ -136,13 +137,13 @@ public final class RpcContextFixture {
         }
 
         @Override
-        public java.util.List<MessageHeader<?>> getAllHeaders() {
-            return java.util.List.of();
+        public List<MessageHeader<?>> getAllHeaders() {
+            return List.of();
         }
 
         @Override
-        public java.util.Map<String, MessageHeader<?>> getAllHeaderMap() {
-            return java.util.Map.of();
+        public Map<String, MessageHeader<?>> getAllHeaderMap() {
+            return Map.of();
         }
 
         @Override

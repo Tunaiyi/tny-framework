@@ -38,7 +38,8 @@ public class NettyClientGuide extends NettyBootstrap<NettyNetClientBootstrapSett
 
     private static final boolean EPOLL = isEpoll();
 
-    private static final EventLoopGroup workerGroup = createLoopGroup(EPOLL, 1, "Client-Work-LoopGroup");
+    /* 实例排他持有（net-guide-lifecycle）：懒建、close 释放、可重建 */
+    private volatile EventLoopGroup workerGroup;
 
     private Bootstrap bootstrap = null;
 
@@ -68,7 +69,7 @@ public class NettyClientGuide extends NettyBootstrap<NettyNetClientBootstrapSett
             }
             this.bootstrap = new Bootstrap();
             NettyMessageHandler messageHandler = new NettyMessageHandler(this.getContext());
-            this.bootstrap.group(workerGroup).channel(EPOLL ? EpollSocketChannel.class : NioSocketChannel.class)
+            this.bootstrap.group(ensureWorkerGroup()).channel(EPOLL ? EpollSocketChannel.class : NioSocketChannel.class)
                     .option(ChannelOption.SO_REUSEADDR, true).option(ChannelOption.TCP_NODELAY, true).option(ChannelOption.SO_KEEPALIVE, true)
                     .handler(new ChannelInitializer<>() {
 
@@ -138,7 +139,11 @@ public class NettyClientGuide extends NettyBootstrap<NettyNetClientBootstrapSett
     public boolean close() {
         if (this.closed.compareAndSet(false, true)) {
             this.tunnels.forEach(Tunnel::close);
-            workerGroup.shutdownGracefully();
+            EventLoopGroup shuttingDownWorkerGroup = this.workerGroup;
+        this.workerGroup = null;
+        if (shuttingDownWorkerGroup != null) {
+            shuttingDownWorkerGroup.shutdownGracefully();
+        }
             return true;
         }
         return false;
@@ -150,4 +155,18 @@ public class NettyClientGuide extends NettyBootstrap<NettyNetClientBootstrapSett
         return connectAsync(url, watch).get();
     }
 
+
+    EventLoopGroup ensureWorkerGroup() {
+        EventLoopGroup group = this.workerGroup;
+        if (group != null && !group.isShuttingDown()) {
+            return group;
+        }
+        synchronized (this) {
+            group = this.workerGroup;
+            if (group == null || group.isShuttingDown()) {
+                group = this.workerGroup = createLoopGroup(EPOLL, 1, "Client-Work-LoopGroup-" + this.setting.getName());
+            }
+            return group;
+        }
+    }
 }

@@ -89,6 +89,9 @@ public class NetPacketV1Decoder extends NetPacketV1Codec implements NetPacketDec
         ByteBuf bodyBuffer = null;
         try {
             NetTunnel tunnel = channel.attr(NettyNetAttrKeys.TUNNEL).get();
+            if (tunnel == null) { // 绑定失败窗口到达的包：可诊断拒绝而非 NPE（D4）
+                throw NetCodecException.causeDecodeError("no session tunnel ready on channel, packet rejected");
+            }
             // 获取打包器
             int index = in.readerIndex();
             long accessId = NettyVarIntCoder.readVarInt64(in);
@@ -137,7 +140,8 @@ public class NetPacketV1Decoder extends NetPacketV1Codec implements NetPacketDec
             if (verifyEnable) {
                 byte[] verifyCode = new byte[verifyLength];
                 in.readBytes(verifyCode);
-                if (this.verifier.verify(packageContext, bodyBuffer.array(), bodyBuffer.arrayOffset(), bodyBuffer.readableBytes(), verifyCode)) {
+                // CodecVerifier.verify 契约：true=校验通过（CRC64 以 equals 判定）——不通过才拒绝
+                if (!this.verifier.verify(packageContext, bodyBuffer.array(), bodyBuffer.arrayOffset(), bodyBuffer.readableBytes(), verifyCode)) {
                     throw NetCodecException.causeVerify("packet verify failed");
                 }
             }

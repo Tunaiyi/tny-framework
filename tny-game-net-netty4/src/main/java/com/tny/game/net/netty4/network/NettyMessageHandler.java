@@ -17,6 +17,7 @@ import com.tny.game.common.runtime.*;
 import com.tny.game.net.application.*;
 import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.message.*;
+import com.tny.game.net.netty4.network.codec.NetPacketEncodeException;
 import com.tny.game.net.rpc.*;
 import com.tny.game.net.transport.*;
 import io.netty.channel.*;
@@ -68,6 +69,11 @@ public class NettyMessageHandler extends ChannelDuplexHandler {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        if (cause instanceof NetPacketEncodeException) {
+            // 编码方向失败仅影响本次写回执（netty 已 tryFailure）——不透传管道，保持通道健康（D2）
+            LOGGER.warn("[Tunnel] encode rejected, write future failed, channel kept: {}", cause.getMessage());
+            return;
+        }
         if (this == ctx.pipeline().last()) {
             Channel channel = ctx.channel();
             if (cause instanceof ClosedChannelException) {

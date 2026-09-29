@@ -10,6 +10,7 @@
  */
 package com.tny.game.net.command.plugins;
 
+import com.tny.game.common.context.AttrKeys;
 import com.tny.game.net.application.*;
 import com.tny.game.net.command.dispatcher.*;
 import com.tny.game.net.message.*;
@@ -78,7 +79,7 @@ class MessageSequenceCheckerPluginTest {
 
         void assertWatermark(int expected, String message) {
             Object value = this.session.attributes().getAttribute(
-                    com.tny.game.common.context.AttrKeys.key(MessageSequenceCheckerPlugin.class, "CHECK_MESSAGE_ID"), 0);
+                    AttrKeys.key(MessageSequenceCheckerPlugin.class, "CHECK_MESSAGE_ID"), 0);
             assertEquals(expected, value, message);
         }
     }
