@@ -1,3 +1,11 @@
 {
-  "permissions": {}
+  "permissions": {
+    "allow": [
+      "Bash"
+    ],
+    "deny": [
+      "Bash(rm:*)",
+      "Bash(sudo:*)"
+    ]
+  }
 }
