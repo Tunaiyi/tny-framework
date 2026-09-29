@@ -61,11 +61,13 @@ public class NettyRelayPacketHandler extends ChannelDuplexHandler {
             Channel channel = ctx.channel();
             if (channel.isActive()) {
                 LOGGER.info("[RelayLink] 接受连接 ## 通道 {} ==> {} 链接服务器", channel.localAddress(), channel.remoteAddress());
-                super.channelRegistered(ctx);
             } else {
                 LOGGER.info("[RelayLink] 无效连接 ## 通道 {} ==> {}", channel.localAddress(), channel.remoteAddress());
             }
         }
+        // 事件传播与日志解耦，且按语义广播 channelActive（fix-relay-handler-issues D2：
+        // 原实现误广播 channelRegistered 且被日志开关吞掉）
+        super.channelActive(ctx);
     }
 
     @Override
@@ -88,6 +90,8 @@ public class NettyRelayPacketHandler extends ChannelDuplexHandler {
                     }
                 }
             } catch (ResultCodeRuntimeException ex) {
+                // 异常即未移交成功：包体引用由本处理环节终结释放（D1，先于通道关闭）
+                release(packet);
                 if (ex.getCode().getLevel() == ResultLevel.ERROR) {
                     channel.close();
                     LOGGER.warn("[RelayLink] 读取消息 ## 通道 {} ==> {} 时断开链接 # RelayLink 为空", channel.localAddress(), channel.remoteAddress(),
@@ -115,14 +119,17 @@ public class NettyRelayPacketHandler extends ChannelDuplexHandler {
             if (msg instanceof RelayPacket) {
                 packet = (RelayPacket<?>) msg;
             }
-            if (packet != null) {
-                var channel = ctx.channel();
-                NetRelayLink link = channel.attr(NettyRelayAttrKeys.RELAY_LINK).get();
-                if (link != null) {
-                    relayMonitor.onWritePacket(link, packet);
-                }
-                ctx.write(packet, promise);
+            if (packet == null) {
+                // 非中继包对象原样穿透（D3）：本环节无权静默吞弃或悬挂写回执
+                ctx.write(msg, promise);
+                return;
             }
+            var channel = ctx.channel();
+            NetRelayLink link = channel.attr(NettyRelayAttrKeys.RELAY_LINK).get();
+            if (link != null) {
+                relayMonitor.onWritePacket(link, packet);
+            }
+            ctx.write(packet, promise);
         }
     }
 
@@ -174,8 +181,8 @@ public class NettyRelayPacketHandler extends ChannelDuplexHandler {
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         if (evt instanceof IdleStateEvent event) {
             Channel channel = ctx.channel();
-            Tunnel tunnel = channel.attr(NettyNetAttrKeys.TUNNEL).get();
-            if (tunnel != null) {
+            NetRelayLink relayLink = channel.attr(NettyRelayAttrKeys.RELAY_LINK).get();
+            if (relayLink != null) {
                 String op = "空闲超时";
                 switch (event.state()) {
                     case READER_IDLE:
@@ -183,6 +190,7 @@ public class NettyRelayPacketHandler extends ChannelDuplexHandler {
                         break;
                     case WRITER_IDLE:
                         op = "写空闲超时";
+                        break;
                     default:
                         break;
                 }
