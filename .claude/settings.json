@@ -7,5 +7,6 @@
       "Bash(rm:*)",
       "Bash(sudo:*)"
     ]
-  }
+  },
+  "model": "sonnet"
 }
