@@ -142,17 +142,19 @@ public abstract class BaseNetTunnel<S extends NetSession> extends BaseCommunicat
 
     private boolean doReceive(NetMessage message) {
         S session = this.session;
+        if (session == null) { // 未绑定显式拒绝（net-tunnel 规格）：先于上下文创建，拒绝不计入统计
+            LOGGER.warn("[Tunnel] 通道 {} 会话未绑定，拒绝消息 id {} protocol {}",
+                    getId(), message.getId(), message.getProtocolId());
+            return false;
+        }
         var rpcContext = RpcTransactionContext.createEnter(this, message, true);
         var rpcMonitor = this.context.getRpcMonitor();
         rpcMonitor.onReceive(rpcContext);
-        while (true) {
-            if (session.isClosed()) {
-                return false;
-            }
-            if (session.receive(rpcContext)) {
-                return true;
-            }
+        if (session.isClosed()) {
+            return false;
         }
+        // 线性单路径：receive 恒返回 true 或抛异常（全仓实现核实），原 while(true) 重试枝不可达且诱发误读
+        return session.receive(rpcContext);
     }
 
     @Override
