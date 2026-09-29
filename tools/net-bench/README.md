@@ -27,3 +27,12 @@ JMH 经 annotation processor 生成 `META-INF/BenchmarkList` 后由 JavaExec 裸
 ## 新增基准
 
 放 `com.tny.game.bench.net` 包下，`@Benchmark` 注解即可（processor 自动登记）。跨包访问 protected 成员的装配（如 codec 注入）参照 `PacketCodecBenchmark.inject` 的反射模式。
+
+## 分配画像（P3 裁决数据源）
+
+```bash
+# gc profiler：每操作真实分配字节（JIT 逃逸分析消化后的净值）。
+# 注意：-PjmhArgs 必须用单引号包裹——双引号在部分 shell 下会把尾引号注入参数
+#（实测 ClassNotFoundException: gc" 事故）。
+./gradlew :tools:net-bench:bench -PjmhArgs='PacketCodec|MessageQueue|RespondFuture -f 2 -wi 3 -i 5 -w 500ms -r 1s -prof gc'
+```
