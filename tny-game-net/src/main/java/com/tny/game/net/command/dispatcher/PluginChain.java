@@ -10,6 +10,7 @@
  */
 package com.tny.game.net.command.dispatcher;
 
+import com.tny.game.net.application.*;
 import com.tny.game.net.message.*;
 import com.tny.game.net.transport.*;
 import org.slf4j.*;
@@ -34,7 +35,9 @@ public class PluginChain {
         try {
             this.plugin.invokePlugin(tunnel, message, context);
         } catch (Throwable e) {
-            LOGGER.error("invoke plugin {} exception", this.plugin.getClass(), e);
+            // fail-closed：校验插件抛异常视同校验失败，拦截消息不回退放行（message-checking 规格）
+            LOGGER.error("invoke plugin {} exception, message intercepted", this.plugin.getClass(), e);
+            context.doneAndIntercept(NetResultCode.SERVER_ERROR);
         }
         if (this.next == null || context.isIntercept()) {
             return;

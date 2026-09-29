@@ -38,9 +38,10 @@ public class MessageTimeoutCheckerPlugin implements CommandPlugin<Long> {
         if (attribute <= 0) {
             return;
         }
-        // 是否需要做超时判断
+        // 耗时 = 当前时刻 - 消息请求时间（客户端时钟），超过阈值判定超时。
+        // 注意：依赖客户端时钟，超前可能误拦、滞后可能放松——业务按容忍度配置阈值（fix-message-checker-plugins design R2）
         MessageHead head = message.getHead();
-        if (System.currentTimeMillis() + attribute > head.getTime()) {
+        if (System.currentTimeMillis() - head.getTime() > attribute) {
             DISPATCHER_LOG.warn("调用 {} 业务方法失败, 消息超时!", context.getName());
             context.doneAndIntercept(NetResultCode.REQUEST_TIMEOUT);
         }

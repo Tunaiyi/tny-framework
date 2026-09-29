@@ -29,16 +29,15 @@ public class MessageSequenceCheckerPlugin implements VoidCommandPlugin {
         if (!tunnel.isAuthenticated()) {
             return;
         }
-        Session session = null;
-        if (tunnel instanceof Session) {
-            session = (Session) tunnel;
-        } else if (tunnel instanceof Tunnel) {
-            session = ((Tunnel) tunnel).getSession();
+        Session session = tunnel.getSession();
+        if (session == null) { // 未绑定会话按豁免处理（与未认证同路径）
+            return;
         }
         Integer lastHandledId = session.attributes().getAttribute(CHECK_MESSAGE_ID, 0);
         MessageHead head = message.getHead();
         if (head.getId() > lastHandledId) {
-            session.attributes().setAttribute(CHECK_MESSAGE_ID, lastHandledId);
+            // 水位推进为本次放行消息的编号（原实现误写旧值导致防重放永不生效）
+            session.attributes().setAttribute(CHECK_MESSAGE_ID, head.getId() > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) head.getId());
         } else {
             LOGGER.warn("message [{}] is handled, the id of the last message handled is {}", message, lastHandledId);
             context.doneAndIntercept(NetResultCode.MESSAGE_HANDLED);
