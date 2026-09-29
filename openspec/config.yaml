@@ -1,0 +1,64 @@
+schema: spec-driven
+
+context: |
+  Language: zh
+  All artifacts must be written in zh.
+  Keep OpenSpec structural headings and SHALL/MUST keywords in English.
+
+  项目：TnyFramework，Java 游戏服务器框架，Gradle 多模块（50+ 模块），当前 5.7.x 维护分支。
+  - 技术栈：Java 21、Spring Boot 3.2.1、Netty 4.1.104、JUnit 5。
+  - 模块命名 tny-game-*，包名 com.tny.game.*。分层：基础设施（common-lang/io/reflect/digest/
+    lifecycle/scheduler、scanning、loader）→ 网络（net、net-netty4）→ 编解码（codec、
+    codec-jackson/jprotobuf/protoex）→ 数据（data、data-mongodb、data-redisson）→
+    表达式（expr 及各引擎）→ 业务（actor、basics、boot）→ 分布式（rpc、namnspace、
+    namnspace-etcd）→ Spring 集成（starter-*）。
+  - 架构原则：抽象与实现分离。抽象模块（net、codec、data、expr）MUST NOT 依赖具体实现模块；
+    实现模块依赖抽象模块，多实现可插拔。
+  - 每个源文件必须携带 Mulan PSL v2 版权头（Copyright (c) 2020 Tunaiyi），新建文件同样必须。
+  - 构建/测试命令：编译 ./gradlew :模块名:compileJava；单模块测试 ./gradlew :模块名:test；
+    全量构建 ./gradlew clean build。
+  - 发布：maven-publish 推送到 Nexus（gradle/publish.gradle），groupId 为 com.tny.game；
+    下游业务工程依赖已发布 API，公共接口的兼容性是硬约束。
+  - 非活跃范围：obsolete/ 目录与 settings.gradle 中已注释的模块禁止修改、禁止作为
+    依赖目标、禁止出现在方案的实现路径中。
+  - 现状：测试覆盖薄弱（约 51 个 *Test.java），核心链路（Lifecycle、MessageDispatcher）
+    缺测试。变更涉及的 Scenario 必须补对应测试，逐步还债。
+  - 设计方法论：docs/design/object-design-principles.md（原则卷 P1-P13）与
+    docs/design/patterns-in-tny.md（模式地图卷）。涉及代码结构的设计必须遵循。
+
+rules:
+  proposal:
+    - 涉及公共 API（tny-game-net、tny-game-codec、tny-game-data、tny-game-expr、
+      tny-game-common-* 等抽象模块的接口/抽象类/报文协议格式）的变更必须标注 BREAKING。
+    - Impact 一节必须列出受影响的下游模块与对应 starter 模块。
+    - 新增抽象接口时，Capabilities 或 Impact 中必须列出它同时服务的
+      已有/已确认场景（原则卷 P10 三次法则）；仅服务单一当前场景的，默认改用具体类。
+  specs:
+    - 每条 Requirement 至少包含两个 Scenario：正常路径与错误路径。
+    - 只写外部可观察的行为契约；禁止出现类名、框架选型、实现步骤。
+    - 网络报文与编解码相关的 Requirement 必须包含向后兼容 Scenario（旧版本客户端报文）。
+    - 纯内部重构且不改变外部行为时使用 skip_specs，不得为通过校验虚构需求。
+  design:
+    - 生成前必须通读 docs/design/object-design-principles.md 与
+      docs/design/patterns-in-tny.md，并按模式卷第二节决策表检索既有先例。
+    - Decisions 每条决定必须标注所依据的原则编号（P1-P13）或模式先例类名；
+      偏离原则时写明"P# 例外，理由：…"。同类问题已有框架内解法而另起炉灶，
+      须按模式卷 M1 条款说明旧先例为何不适用。
+    - 生成前必须用 codegraph impact / codegraph callers 分析关键符号的爆炸半径，
+      并将结果摘要写入文档（本仓库已建 codegraph 索引）。
+    - Decisions 每条决定需给出被否决的备选方案与否决理由。
+    - 涉及公共 API 变更的 design.md 必须包含 Compatibility Impact 小节。
+  tasks:
+    - 涉及公共 API 或协议行为的变更必须包含 JUnit 5 测试任务，且测试任务排在实现任务之前。
+    - 新增测试放入对应模块 src/test/java，包路径与被测类一致，类名以 Test 结尾。
+    - 每个任务组末尾附一条验证任务：运行 ./gradlew :受影响模块:test 并确认通过。
+
+operations:
+  apply:
+    guidance:
+      - 每完成一个任务组，运行受影响模块的测试，将结果摘要记入变更目录。
+      - 禁止顺带修改未在规格差量中声明的行为；确有需要时停止实现，回到提案更新差量。
+  archive:
+    guidance:
+      - 归档前确认已执行 /opsx:verify 且无 CRITICAL 问题。
+      - 归档摘要用一段话说明本次变更对 specs 账本的净影响。

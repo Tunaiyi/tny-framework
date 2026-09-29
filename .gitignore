@@ -17,3 +17,8 @@
 .gradle
 *.ipr
 *.iws
+
+# CodeGraph local index cache
+.codegraph/
+# Qoder local analysis artifacts
+.qoder/better-harness/
