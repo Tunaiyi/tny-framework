@@ -79,7 +79,19 @@ public interface SessionKeeper {
     /**
      * 发送给所有在线的用户 <br>
      */
-    void send2AllOnline(MessageContent context);
+    /**
+     * 全体广播：投递大管家当前注册的全部会话（含离线保留会话——离线消息进入其重发窗口供恢复补收，
+     * 有意的必达设计，契约见 net-session 规格"全体广播覆盖全部注册会话且离线消息入窗"）。
+     */
+    void send2All(MessageContent context);
+
+    /**
+     * @deprecated 名称误标"仅在线"，实际投递全部注册会话；请改用 {@link #send2All(MessageContent)}（桥接保留，行为一致）。
+     */
+    @Deprecated
+    default void send2AllOnline(MessageContent context) {
+        send2All(context);
+    }
 
     /**
      * 使指定identify的session关闭

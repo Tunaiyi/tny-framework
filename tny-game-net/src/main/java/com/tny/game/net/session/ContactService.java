@@ -251,7 +251,7 @@ public class ContactService {
      */
     public void push2Online(ContactType contactType, Protocol protocol, ResultCode resultCode, Object body) {
         Optional<SessionKeeper> keeperOpt = this.sessionKeeperManager.getKeeper(contactType);
-        keeperOpt.ifPresent(k -> k.send2AllOnline(toPush(protocol, resultCode, body)));
+        keeperOpt.ifPresent(k -> k.send2All(toPush(protocol, resultCode, body)));
     }
 
     /**

@@ -117,7 +117,7 @@ public abstract class AbstractSessionKeeper implements NetSessionKeeper {
     }
 
     @Override
-    public void send2AllOnline(MessageContent context) {
+    public void send2All(MessageContent context) {
         for (Session session : this.sessionMap.values())
             session.send(context);
     }
