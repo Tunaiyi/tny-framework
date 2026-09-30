@@ -12,9 +12,9 @@
 - [x] 2.1 新增 `tny-game-protobuf/src/test/java/com/tny/game/protobuf/format/FormatGoldenTest.java`：五格式类 × `print/printToString` 输出快照钉桩——覆盖全标量类型、repeated（含 packed 与 JavaProps 下标形态）、unknown fields、extension/MessageSet 特判分支、嵌套消息；专列现状差异用例：Html 值渲染不转义、JavaProps ENUM 不加引号、CouchDB `_id/_rev` 映射（重构前必须绿，作为行为账）
 - [x] 2.2 新增 `FormatMergeRoundTripTest.java`：五类 print→merge 往返等价（含转义特殊字符集：`\uXXXX`、八进制、`\n\r\t\\"`、高位字节；Xml 尖括号 vs Json/Props 花括号 consume 差异），重构前绿
 - [x] 2.3 按 D2 实现：转义/unescape/八进制十六进制/digitValue/parse*Integer、Generator 基础设施段收敛到包私有共享工具（Xml 1014-1063≈Json 1187-1234 等实测岛；default 分支八进制 vs \uXXXX 差异参数化保留）
-- [ ] 2.4 按 D2 实现：`printFieldValue` 类型 switch 收敛为"装饰策略参数化"单实现（引号器+转义器入参），`print(Message,gen)/printField/printSingleField` 字段遍历骨架按模板方法收敛；四类 public 静态签名逐字不动
-- [ ] 2.5 按 D2 实现：merge 解析层 Tokenizer 共享（正则/括号差异参数化，design Open Question 按"能过即收"渐进）；`printUnknownFields` 四 for 循环等类内自克隆并表
-- [ ] 2.6 验证：`./gradlew :tny-game-protobuf:test` 全绿（golden+round-trip 零改动期望值）；`./gradlew :tny-game-oplog:test` 通过（printFiles 唯一外部消费面回归）
+- [x] 2.4 按 D2 实现：`printFieldValue` 类型 switch 收敛为"装饰策略参数化"单实现（引号器+转义器入参），`print(Message,gen)/printField/printSingleField` 字段遍历骨架按模板方法收敛；四类 public 静态签名逐字不动
+- [x] 2.5 按 D2 实现：merge 解析层 Tokenizer 共享（正则/括号差异参数化，design Open Question 按"能过即收"渐进）；`printUnknownFields` 四 for 循环等类内自克隆并表
+- [x] 2.6 验证：`./gradlew :tny-game-protobuf:test` 全绿（golden+round-trip 零改动期望值）；`./gradlew :tny-game-oplog:test` 通过（printFiles 唯一外部消费面回归）
 
 ## 3. lang 双 future（~250 行逐字克隆）
 
