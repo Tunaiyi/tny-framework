@@ -83,6 +83,14 @@ public class BytesAide {
                        | (((long) data[startAt + 3] & 0xff) << 24)
                        | (((long) data[startAt + 4] & 0xff) << 32)
                        | (((long) data[startAt + 5] & 0xff) << 40);
+            case 7:
+                return (((long) data[startAt] & 0xff))
+                       | (((long) data[startAt + 1] & 0xff) << 8)
+                       | (((long) data[startAt + 2] & 0xff) << 16)
+                       | (((long) data[startAt + 3] & 0xff) << 24)
+                       | (((long) data[startAt + 4] & 0xff) << 32)
+                       | (((long) data[startAt + 5] & 0xff) << 40)
+                       | (((long) data[startAt + 6] & 0xff) << 48);
             default:
                 return (((long) data[startAt] & 0xff))
                        | (((long) data[startAt + 1] & 0xff) << 8)
@@ -208,7 +216,7 @@ public class BytesAide {
      * @return
      */
     public static int bytes2UnsignedInt(byte b) {
-        return b & 0xfff;
+        return b & 0xff;
     }
 
     public static String toBinaryString(byte n) {
@@ -277,10 +285,16 @@ public class BytesAide {
         return xor(data, 0, data.length, keyBytes);
     }
 
+    /**
+     * 对窗口 {@code [offset, offset+length)} 的每个字节叠加各键流（XOR 自逆，加密=解密）。
+     * 键流相位以窗口内相对位置计算——同一消息在底层数组的不同窗口起点下必须产生相同结果
+     * （net-protocol"全窗口覆盖与相对键流相位"契约；fix-xor-crypto-scope）。
+     */
     public static byte[] xor(byte[] data, int offset, int length, byte[]... keyBytes) {
-        for (int i = offset; i < length; i++) {
+        for (int rel = 0; rel < length; rel++) {
+            int i = offset + rel;
             for (byte[] keys : keyBytes) {
-                data[i] = (byte) (data[i] ^ keys[i % keys.length]);
+                data[i] = (byte) (data[i] ^ keys[rel % keys.length]);
             }
         }
         return data;
