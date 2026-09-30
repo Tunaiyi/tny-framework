@@ -29,3 +29,12 @@ tasks.register('bench', JavaExec) {
         args project.property('jmhArgs').toString().split(/\s+/).findAll { !it.isEmpty() }
     }
 }
+
+// 裁决跑快照：冻结运行时 classpath 到独立目录，脱离 build/ 活目录
+// （多会话并行时 Gradle 重建会毒死 JMH fork 的类加载，实测丢臂）
+tasks.register('benchCpSnapshot', Copy) {
+    group = 'benchmark'
+    from sourceSets.main.runtimeClasspath
+    into '/tmp/verdictcp'
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
