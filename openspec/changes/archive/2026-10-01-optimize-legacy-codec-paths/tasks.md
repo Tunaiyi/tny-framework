@@ -19,7 +19,7 @@
 
 - [x] 3.1 矩阵 `legacy` 组合复跑（`-f 2 -wi 3 -i 5 -w 500ms -r 1s`），结果**只回录** `tools/net-bench/crypto-bench-2026-09-30.md`（不设通过线，设计决策 4）。
 - [x] 3.2 `tny-game-net/…/codec/security-generations_readme.md` 性能注记一行：默认档经本变更 ≈2× 提速、能力仍为混淆级、升级指引不变（防"变快了所以不换"的误读）。
-- [ ] 3.3 终验：三模块全量回归 + `openspec validate optimize-legacy-codec-paths`（skip_specs 变更按 CLI 要求通过）。
+- [x] 3.3 终验：三模块全量回归 + `openspec validate optimize-legacy-codec-paths`（skip_specs 变更按 CLI 要求通过）。
 
 ## 4. 提交与归档衔接
 - [x] 4.1 按依赖序拣件提交：认证代次文件（`add-mac-generation-siphash` 清单）→ 快筛代次文件 → 本变更文件（XOrCodecCrypto/CRC64CodecVerifier/两护栏测试/参数化微基准/文档/openspec 目录）；4.2 全部入库后 `/opsx:archive` 本变更。
