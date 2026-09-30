@@ -141,26 +141,13 @@ public final class Protobuf2HtmlFormat {
             generator.print("[<span style=\"");
             generator.print(FIELD_NAME_STYLE);
             generator.print("\">");
-            // We special-case MessageSet elements for compatibility with proto1.
-            if (field.getContainingType().getOptions().getMessageSetWireFormat()
-                && (field.getType() == FieldDescriptor.Type.MESSAGE) && (field.isOptional())
-                // object equality
-                && (field.getExtensionScope() == field.getMessageType())) {
-                generator.print(field.getMessageType().getFullName());
-            } else {
-                generator.print(field.getFullName());
-            }
+            generator.print(FormatValueRenderer.extensionPrintName(field));
             generator.print("</span>]");
         } else {
             generator.print("<span style=\"");
             generator.print(FIELD_NAME_STYLE);
             generator.print("\">");
-            if (field.getType() == FieldDescriptor.Type.GROUP) {
-                // Groups must be serialized with their original capitalization.
-                generator.print(field.getMessageType().getName());
-            } else {
-                generator.print(field.getName());
-            }
+            generator.print(FormatValueRenderer.fieldPrintName(field));
             generator.print("</span>");
         }
 
@@ -184,53 +171,39 @@ public final class Protobuf2HtmlFormat {
         generator.print("<span style=\"");
         generator.print(FIELD_VALUE_STYLE);
         generator.print("\">");
-        switch (field.getType()) {
-            case INT32:
-            case INT64:
-            case SINT32:
-            case SINT64:
-            case SFIXED32:
-            case SFIXED64:
-            case FLOAT:
-            case DOUBLE:
-            case BOOL:
-                // Good old toString() does what we want for these types.
-                generator.print(value.toString());
-                break;
+        FormatValueRenderer.renderFieldValue(field, value, new FormatValueRenderer.ValueSink() {
 
-            case UINT32:
-            case FIXED32:
-                generator.print(FormatTextSupport.unsignedToString((Integer) value));
-                break;
-
-            case UINT64:
-            case FIXED64:
-                generator.print(FormatTextSupport.unsignedToString((Long) value));
-                break;
-
-            case STRING:
-                generator.print("\"");
-                generator.print(value.toString());
-                generator.print("\"");
-                break;
-
-            case BYTES: {
-                generator.print("\"");
-                generator.print(FormatTextSupport.escapeBytesOctal((ByteString) value));
-                generator.print("\"");
-                break;
+            @Override
+            public void printRaw(CharSequence text) throws IOException {
+                generator.print(text);
             }
 
-            case ENUM: {
-                generator.print(((EnumValueDescriptor) value).getName());
-                break;
+            @Override
+            public void printString(String value) throws IOException {
+                // 现状：Html 的 STRING 值原样输出不转义（仅外层引号），禁止顺手修
+                generator.print("\"");
+                generator.print(value);
+                generator.print("\"");
             }
 
-            case MESSAGE:
-            case GROUP:
-                print((Message) value, generator);
-                break;
-        }
+            @Override
+            public void printBytes(ByteString value) throws IOException {
+                generator.print("\"");
+                generator.print(FormatTextSupport.escapeBytesOctal(value));
+                generator.print("\"");
+            }
+
+            @Override
+            public void printEnum(EnumValueDescriptor value) throws IOException {
+                generator.print(value.getName());
+            }
+
+            @Override
+            public void printMessage(Message value) throws IOException {
+                print(value, generator);
+            }
+
+        });
         generator.print("</span>");
     }
 

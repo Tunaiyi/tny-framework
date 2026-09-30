@@ -128,25 +128,11 @@ public final class Protobuf2XmlFormat {
     private static void printSingleField(FieldDescriptor field, Object value, XmlGenerator generator) throws IOException {
         if (field.isExtension()) {
             generator.print("<extension type=\"");
-            // We special-case MessageSet elements for compatibility with
-            // proto1.
-            if (field.getContainingType().getOptions().getMessageSetWireFormat()
-                && (field.getType() == FieldDescriptor.Type.MESSAGE) && (field.isOptional())
-                // object equality
-                && (field.getExtensionScope() == field.getMessageType())) {
-                generator.print(field.getMessageType().getFullName());
-            } else {
-                generator.print(field.getFullName());
-            }
+            generator.print(FormatValueRenderer.extensionPrintName(field));
             generator.print("\">");
         } else {
             generator.print("<");
-            if (field.getType() == FieldDescriptor.Type.GROUP) {
-                // Groups must be serialized with their original capitalization.
-                generator.print(field.getMessageType().getName());
-            } else {
-                generator.print(field.getName());
-            }
+            generator.print(FormatValueRenderer.fieldPrintName(field));
             generator.print(">");
         }
 
@@ -154,12 +140,7 @@ public final class Protobuf2XmlFormat {
 
         if (!field.isExtension()) {
             generator.print("</");
-            if (field.getType() == FieldDescriptor.Type.GROUP) {
-                // Groups must be serialized with their original capitalization.
-                generator.print(field.getMessageType().getName());
-            } else {
-                generator.print(field.getName());
-            }
+            generator.print(FormatValueRenderer.fieldPrintName(field));
             generator.print(">");
         } else {
             generator.print("</extension>");
@@ -168,49 +149,34 @@ public final class Protobuf2XmlFormat {
     }
 
     private static void printFieldValue(FieldDescriptor field, Object value, XmlGenerator generator) throws IOException {
-        switch (field.getType()) {
-            case INT32:
-            case INT64:
-            case SINT32:
-            case SINT64:
-            case SFIXED32:
-            case SFIXED64:
-            case FLOAT:
-            case DOUBLE:
-            case BOOL:
-                // Good old toString() does what we want for these types.
-                generator.print(value.toString());
-                break;
+        FormatValueRenderer.renderFieldValue(field, value, new FormatValueRenderer.ValueSink() {
 
-            case UINT32:
-            case FIXED32:
-                generator.print(FormatTextSupport.unsignedToString((Integer) value));
-                break;
-
-            case UINT64:
-            case FIXED64:
-                generator.print(FormatTextSupport.unsignedToString((Long) value));
-                break;
-
-            case STRING:
-                generator.print(FormatTextSupport.escapeTextLegacy((String) value));
-                break;
-
-            case BYTES: {
-                generator.print(FormatTextSupport.escapeBytesOctal((ByteString) value));
-                break;
+            @Override
+            public void printRaw(CharSequence text) throws IOException {
+                generator.print(text);
             }
 
-            case ENUM: {
-                generator.print(((EnumValueDescriptor) value).getName());
-                break;
+            @Override
+            public void printString(String value) throws IOException {
+                generator.print(FormatTextSupport.escapeTextLegacy(value));
             }
 
-            case MESSAGE:
-            case GROUP:
-                print((Message) value, generator);
-                break;
-        }
+            @Override
+            public void printBytes(ByteString value) throws IOException {
+                generator.print(FormatTextSupport.escapeBytesOctal(value));
+            }
+
+            @Override
+            public void printEnum(EnumValueDescriptor value) throws IOException {
+                generator.print(value.getName());
+            }
+
+            @Override
+            public void printMessage(Message value) throws IOException {
+                print(value, generator);
+            }
+
+        });
     }
 
     private static void printUnknownFields(UnknownFieldSet unknownFields, XmlGenerator generator) throws IOException {
@@ -283,390 +249,19 @@ public final class Protobuf2XmlFormat {
     // =================================================================
     // Parsing
 
-    /**
-     * Represents a stream of tokens parsed from a {@code String}.
-     * <p>
-     * <p>
-     * The Java standard library provides many classes that you might think would be useful for
-     * implementing this, but aren't. For example:
-     * <p>
-     * <ul>
-     * <li>{@code java.io.StreamTokenizer}: This almost does what we want -- or, at least, something
-     * that would get us close to what we want -- except for one fatal flaw: It automatically
-     * un-escapes strings using Java escape sequences, which do not include all the escape sequences
-     * we need to support (e.g. '\x').
-     * <li>{@code java.util.Scanner}: This seems like a great way at least to parse regular
-     * expressions out of a stream (so we wouldn't have to load the entire input into a single
-     * string before parsing). Sadly, {@code Scanner} requires that tokens be delimited with some
-     * delimiter. Thus, although the text "foo:" should parse to two tokens ("foo" and ":"), {@code
-     * Scanner} would recognize it only as a single token. Furthermore, {@code Scanner} provides no
-     * way to inspect the contents of delimiters, making it impossible to keep track of line and
-     * column numbers.
-     * </ul>
-     * <p>
-     * <p>
-     * Luckily, Java's regular expression support does manage to be useful to us. (Barely: We need
-     * {@code Matcher.usePattern()}, which is new in Java 1.5.) So, we can use that, at least.
-     * Unfortunately, this implies that we need to have the entire input in one contiguous string.
-     */
-    private static final class Tokenizer {
+    // We use possesive quantifiers (*+ and ++) because otherwise the Java
+    // regex matcher has stack overflows on large inputs.
+    private static final Pattern WHITESPACE =
+            Pattern.compile("(\\s|(#.*$))++", Pattern.MULTILINE);
 
-        private final CharSequence text;
-
-        private final Matcher matcher;
-
-        private String currentToken;
-
-        // The character index within this.text at which the current token begins.
-        private int pos = 0;
-
-        // The line and column numbers of the current token.
-        private int line = 0;
-
-        private int column = 0;
-
-        // The line and column numbers of the previous token (allows throwing
-        // errors *after* consuming).
-        private int previousLine = 0;
-
-        private int previousColumn = 0;
-
-        // We use possesive quantifiers (*+ and ++) because otherwise the Java
-        // regex matcher has stack overflows on large inputs.
-        private static final Pattern WHITESPACE =
-                Pattern.compile("(\\s|(#.*$))++", Pattern.MULTILINE);
-
-        private static final Pattern TOKEN = Pattern.compile(
-                "extension|" + "[a-zA-Z_\\s;@][0-9a-zA-Z_\\s;@+-]*+|" +        // an identifier with special handling for 'extension'
-                "[.]?[0-9+-][0-9a-zA-Z_.+-]*+|" +             // a number
-                "</|" +                                       // an '</' closing element marker
-                "[\\\\0-9]++|" +                              // a \000 byte sequence for bytes handling
-                "\"([^\"\n\\\\]|\\\\.)*+(\"|\\\\?$)|" +       // a double-quoted string
-                "\'([^\'\n\\\\]|\\\\.)*+(\'|\\\\?$)",         // a single-quoted string
-                Pattern.MULTILINE);
-
-        private static Pattern DOUBLE_INFINITY = Pattern.compile("-?inf(inity)?",
-                Pattern.CASE_INSENSITIVE);
-
-        private static Pattern FLOAT_INFINITY = Pattern.compile("-?inf(inity)?f?",
-                Pattern.CASE_INSENSITIVE);
-
-        private static Pattern FLOAT_NAN = Pattern.compile("nanf?", Pattern.CASE_INSENSITIVE);
-
-        /**
-         * Construct a tokenizer that parses tokens from the given text.
-         */
-        public Tokenizer(CharSequence text) {
-            this.text = text;
-            this.matcher = WHITESPACE.matcher(text);
-            skipWhitespace();
-            nextToken();
-        }
-
-        /**
-         * Are we at the end of the input?
-         */
-        public boolean atEnd() {
-            return this.currentToken.length() == 0;
-        }
-
-        /**
-         * Advance to the next token.
-         */
-        public void nextToken() {
-            this.previousLine = this.line;
-            this.previousColumn = this.column;
-
-            // Advance the line counter to the current position.
-            while (this.pos < this.matcher.regionStart()) {
-                if (this.text.charAt(this.pos) == '\n') {
-                    ++this.line;
-                    this.column = 0;
-                } else {
-                    ++this.column;
-                }
-                ++this.pos;
-            }
-
-            // Match the next token.
-            if (this.matcher.regionStart() == this.matcher.regionEnd()) {
-                // EOF
-                this.currentToken = "";
-            } else {
-                this.matcher.usePattern(TOKEN);
-                if (this.matcher.lookingAt()) {
-                    this.currentToken = this.matcher.group();
-                    this.matcher.region(this.matcher.end(), this.matcher.regionEnd());
-                } else {
-                    // Take one character.
-                    this.currentToken = String.valueOf(this.text.charAt(this.pos));
-                    this.matcher.region(this.pos + 1, this.matcher.regionEnd());
-                }
-
-                skipWhitespace();
-            }
-        }
-
-        /**
-         * Skip over any whitespace so that the matcher region starts at the next token.
-         */
-        private void skipWhitespace() {
-            this.matcher.usePattern(WHITESPACE);
-            if (this.matcher.lookingAt()) {
-                this.matcher.region(this.matcher.end(), this.matcher.regionEnd());
-            }
-        }
-
-        /**
-         * If the next token exactly matches {@code token}, consume it and return {@code true}.
-         * Otherwise, return {@code false} without doing anything.
-         */
-        public boolean tryConsume(String token) {
-            if (this.currentToken.equals(token)) {
-                nextToken();
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        /**
-         * If the next token exactly matches {@code token}, consume it. Otherwise, throw a
-         * {@link ParseException}.
-         */
-        public void consume(String token) throws ParseException {
-            if (!tryConsume(token)) {
-                throw parseException("Expected \"" + token + "\".");
-            }
-        }
-
-        /**
-         * Returns {@code true} if the next token is an integer, but does not consume it.
-         */
-        public boolean lookingAtInteger() {
-            if (this.currentToken.length() == 0) {
-                return false;
-            }
-
-            char c = this.currentToken.charAt(0);
-            return (('0' <= c) && (c <= '9')) || (c == '-') || (c == '+');
-        }
-
-        /**
-         * If the next token is an identifier, consume it and return its value. Otherwise, throw a
-         * {@link ParseException}.
-         */
-        public String consumeIdentifier() throws ParseException {
-            for (int i = 0; i < this.currentToken.length(); i++) {
-                char c = this.currentToken.charAt(i);
-                if ((('a' <= c) && (c <= 'z')) || (('A' <= c) && (c <= 'Z'))
-                    || (('0' <= c) && (c <= '9')) || (c == '_') || (c == '.') || (c == '"')) {
-                    // OK
-                } else {
-                    throw parseException("Expected identifier. -" + c);
-                }
-            }
-
-            String result = this.currentToken;
-            // Need to clean-up result to remove quotes of any kind
-            result = result.replaceAll("\"|'", "");
-            nextToken();
-            return result;
-        }
-
-        /**
-         * If the next token is a 32-bit signed integer, consume it and return its value. Otherwise,
-         * throw a {@link ParseException}.
-         */
-        public int consumeInt32() throws ParseException {
-            try {
-                int result = FormatTextSupport.parseInt32(this.currentToken);
-                nextToken();
-                return result;
-            } catch (NumberFormatException e) {
-                throw integerParseException(e);
-            }
-        }
-
-        /**
-         * If the next token is a 32-bit unsigned integer, consume it and return its value.
-         * Otherwise, throw a {@link ParseException}.
-         */
-        public int consumeUInt32() throws ParseException {
-            try {
-                int result = FormatTextSupport.parseUInt32(this.currentToken);
-                nextToken();
-                return result;
-            } catch (NumberFormatException e) {
-                throw integerParseException(e);
-            }
-        }
-
-        /**
-         * If the next token is a 64-bit signed integer, consume it and return its value. Otherwise,
-         * throw a {@link ParseException}.
-         */
-        public long consumeInt64() throws ParseException {
-            try {
-                long result = FormatTextSupport.parseInt64(this.currentToken);
-                nextToken();
-                return result;
-            } catch (NumberFormatException e) {
-                throw integerParseException(e);
-            }
-        }
-
-        /**
-         * If the next token is a 64-bit unsigned integer, consume it and return its value.
-         * Otherwise, throw a {@link ParseException}.
-         */
-        public long consumeUInt64() throws ParseException {
-            try {
-                long result = FormatTextSupport.parseUInt64(this.currentToken);
-                nextToken();
-                return result;
-            } catch (NumberFormatException e) {
-                throw integerParseException(e);
-            }
-        }
-
-        /**
-         * If the next token is a double, consume it and return its value. Otherwise, throw a
-         * {@link ParseException}.
-         */
-        public double consumeDouble() throws ParseException {
-            // We need to parse infinity and nan separately because
-            // Double.parseDouble() does not accept "inf", "infinity", or "nan".
-            if (DOUBLE_INFINITY.matcher(this.currentToken).matches()) {
-                boolean negative = this.currentToken.startsWith("-");
-                nextToken();
-                return negative ? Double.NEGATIVE_INFINITY : Double.POSITIVE_INFINITY;
-            }
-            if (this.currentToken.equalsIgnoreCase("nan")) {
-                nextToken();
-                return Double.NaN;
-            }
-            try {
-                double result = Double.parseDouble(this.currentToken);
-                nextToken();
-                return result;
-            } catch (NumberFormatException e) {
-                throw floatParseException(e);
-            }
-        }
-
-        /**
-         * If the next token is a float, consume it and return its value. Otherwise, throw a
-         * {@link ParseException}.
-         */
-        public float consumeFloat() throws ParseException {
-            // We need to parse infinity and nan separately because
-            // Float.parseFloat() does not accept "inf", "infinity", or "nan".
-            if (FLOAT_INFINITY.matcher(this.currentToken).matches()) {
-                boolean negative = this.currentToken.startsWith("-");
-                nextToken();
-                return negative ? Float.NEGATIVE_INFINITY : Float.POSITIVE_INFINITY;
-            }
-            if (FLOAT_NAN.matcher(this.currentToken).matches()) {
-                nextToken();
-                return Float.NaN;
-            }
-            try {
-                float result = Float.parseFloat(this.currentToken);
-                nextToken();
-                return result;
-            } catch (NumberFormatException e) {
-                throw floatParseException(e);
-            }
-        }
-
-        /**
-         * If the next token is a boolean, consume it and return its value. Otherwise, throw a
-         * {@link ParseException}.
-         */
-        public boolean consumeBoolean() throws ParseException {
-            if (this.currentToken.equals("true")) {
-                nextToken();
-                return true;
-            } else if (this.currentToken.equals("false")) {
-                nextToken();
-                return false;
-            } else {
-                throw parseException("Expected \"true\" or \"false\".");
-            }
-        }
-
-        /**
-         * If the next token is a string, consume it and return its (unescaped) value. Otherwise,
-         * throw a {@link ParseException}.
-         */
-        public String consumeString() throws ParseException {
-            return consumeByteString().toStringUtf8();
-        }
-
-        /**
-         * If the next token is a string, consume it, unescape it as a
-         * {@link com.googlecode.protobuf.format.ByteString}, and return it. Otherwise, throw a
-         * {@link ParseException}.
-         */
-        public ByteString consumeByteString() throws ParseException {
-            // In XML String values inside TEXT node don't need to be wrapped in quotes
-            /*char quote = currentToken.length() > 0 ? currentToken.charAt(0) : '\0';
-            if ((quote != '\"') && (quote != '\'')) {
-                throw parseException("Expected string.");
-            }
-
-            if ((currentToken.length() < 2)
-                || (currentToken.charAt(currentToken.length() - 1) != quote)) {
-                throw parseException("String missing ending quote.");
-            }*/
-
-            try {
-                String escaped = this.currentToken; //.substring(1, currentToken.length() - 1);
-                ByteString result = FormatTextSupport.unescapeBytes(escaped, false);
-                nextToken();
-                return result;
-            } catch (FormatTextSupport.InvalidEscapeSequence e) {
-                throw parseException(e.getMessage());
-            }
-        }
-
-        /**
-         * Returns a {@link ParseException} with the current line and column numbers in the
-         * description, suitable for throwing.
-         */
-        public ParseException parseException(String description) {
-            // Note: People generally prefer one-based line and column numbers.
-            return new ParseException((this.line + 1) + ":" + (this.column + 1) + ": " + description);
-        }
-
-        /**
-         * Returns a {@link ParseException} with the line and column numbers of the previous token
-         * in the description, suitable for throwing.
-         */
-        public ParseException parseExceptionPreviousToken(String description) {
-            // Note: People generally prefer one-based line and column numbers.
-            return new ParseException((this.previousLine + 1) + ":" + (this.previousColumn + 1) + ": "
-                                      + description);
-        }
-
-        /**
-         * Constructs an appropriate {@link ParseException} for the given {@code
-         * NumberFormatException} when trying to parse an integer.
-         */
-        private ParseException integerParseException(NumberFormatException e) {
-            return parseException("Couldn't parse integer: " + e.getMessage());
-        }
-
-        /**
-         * Constructs an appropriate {@link ParseException} for the given {@code
-         * NumberFormatException} when trying to parse a float or double.
-         */
-        private ParseException floatParseException(NumberFormatException e) {
-            return parseException("Couldn't parse number: " + e.getMessage());
-        }
-
-    }
+    private static final Pattern TOKEN = Pattern.compile(
+            "extension|" + "[a-zA-Z_\\s;@][0-9a-zA-Z_\\s;@+-]*+|" +        // an identifier with special handling for 'extension'
+            "[.]?[0-9+-][0-9a-zA-Z_.+-]*+|" +             // a number
+            "</|" +                                       // an '</' closing element marker
+            "[\\\\0-9]++|" +                              // a \000 byte sequence for bytes handling
+            "\"([^\"\n\\\\]|\\\\.)*+(\"|\\\\?$)|" +       // a double-quoted string
+            "\'([^\'\n\\\\]|\\\\.)*+(\'|\\\\?$)",         // a single-quoted string
+            Pattern.MULTILINE);
 
     /**
      * Thrown when parsing an invalid text format message.
@@ -721,7 +316,17 @@ public final class Protobuf2XmlFormat {
     public static void merge(CharSequence input,
             ExtensionRegistry extensionRegistry,
             Message.Builder builder) throws ParseException {
-        Tokenizer tokenizer = new Tokenizer(input);
+        try {
+            mergeInternal(new FormatTokenizerCore(input, TOKEN, FormatTokenizerCore.Kind.XML),
+                          extensionRegistry, builder);
+        } catch (FormatTokenizerCore.Failure f) {
+            throw new ParseException(f.getMessage());
+        }
+    }
+
+    private static void mergeInternal(FormatTokenizerCore tokenizer,
+            ExtensionRegistry extensionRegistry,
+            Message.Builder builder) throws FormatTokenizerCore.Failure {
 
         // Need to first consume the outer object name element
         consumeOpeningElement(tokenizer);
@@ -733,21 +338,21 @@ public final class Protobuf2XmlFormat {
         consumeClosingElement(tokenizer);
     }
 
-    private static String consumeOpeningElement(Tokenizer tokenizer) throws ParseException {
+    private static String consumeOpeningElement(FormatTokenizerCore tokenizer) throws FormatTokenizerCore.Failure {
         tokenizer.consume("<");
         String openingElement = tokenizer.consumeIdentifier();
         tokenizer.consume(">");
         return openingElement;
     }
 
-    private static void consumeClosingElement(Tokenizer tokenizer) throws ParseException {
+    private static void consumeClosingElement(FormatTokenizerCore tokenizer) throws FormatTokenizerCore.Failure {
         tokenizer.tryConsume("</");
         //tokenizer.consume("/");
         tokenizer.nextToken();
         tokenizer.consume(">");
     }
 
-    private static String consumeExtensionIdentifier(Tokenizer tokenizer) throws ParseException {
+    private static String consumeExtensionIdentifier(FormatTokenizerCore tokenizer) throws FormatTokenizerCore.Failure {
         tokenizer.consume("type");
         tokenizer.consume("=");
         return tokenizer.consumeIdentifier();
@@ -757,9 +362,9 @@ public final class Protobuf2XmlFormat {
      * Parse a single field from {@code tokenizer} and merge it into {@code builder}. If a ',' is
      * detected after the field ends, the next field will be parsed automatically
      */
-    private static void mergeField(Tokenizer tokenizer,
+    private static void mergeField(FormatTokenizerCore tokenizer,
             ExtensionRegistry extensionRegistry,
-            Message.Builder builder) throws ParseException {
+            Message.Builder builder) throws FormatTokenizerCore.Failure {
         FieldDescriptor field;
         Descriptors.Descriptor type = builder.getDescriptorForType();
         ExtensionRegistry.ExtensionInfo extension = null;
@@ -777,13 +382,13 @@ public final class Protobuf2XmlFormat {
             extension = extensionRegistry.findImmutableExtensionByName(name.toString());
 
             if (extension == null) {
-                throw tokenizer.parseExceptionPreviousToken("Extension \""
+                throw new FormatTokenizerCore.Failure(tokenizer.previousTokenErrorMessage("Extension \""
                                                             + name
-                                                            + "\" not found in the ExtensionRegistry.");
+                                                            + "\" not found in the ExtensionRegistry."));
             } else if (extension.descriptor.getContainingType() != type) {
-                throw tokenizer.parseExceptionPreviousToken("Extension \"" + name
+                throw new FormatTokenizerCore.Failure(tokenizer.previousTokenErrorMessage("Extension \"" + name
                                                             + "\" does not extend message type \""
-                                                            + type.getFullName() + "\".");
+                                                            + type.getFullName() + "\"."));
             }
 
             field = extension.descriptor;
@@ -811,9 +416,9 @@ public final class Protobuf2XmlFormat {
             }
 
             if (field == null) {
-                throw tokenizer.parseExceptionPreviousToken("Message type \"" + type.getFullName()
+                throw new FormatTokenizerCore.Failure(tokenizer.previousTokenErrorMessage("Message type \"" + type.getFullName()
                                                             + "\" has no field named \"" + name
-                                                            + "\".");
+                                                            + "\"."));
             }
         }
 
@@ -831,11 +436,11 @@ public final class Protobuf2XmlFormat {
         consumeClosingElement(tokenizer);
     }
 
-    private static Object handleValue(Tokenizer tokenizer,
+    private static Object handleValue(FormatTokenizerCore tokenizer,
             ExtensionRegistry extensionRegistry,
             Message.Builder builder,
             FieldDescriptor field,
-            ExtensionRegistry.ExtensionInfo extension) throws ParseException {
+            ExtensionRegistry.ExtensionInfo extension) throws FormatTokenizerCore.Failure {
 
         Object value = null;
         if (field.getJavaType() == FieldDescriptor.JavaType.MESSAGE) {
@@ -847,7 +452,7 @@ public final class Protobuf2XmlFormat {
         return value;
     }
 
-    private static Object handlePrimitive(Tokenizer tokenizer, FieldDescriptor field) throws ParseException {
+    private static Object handlePrimitive(FormatTokenizerCore tokenizer, FieldDescriptor field) throws FormatTokenizerCore.Failure {
         Object value = null;
         switch (field.getType()) {
             case INT32:
@@ -899,19 +504,19 @@ public final class Protobuf2XmlFormat {
                     int number = tokenizer.consumeInt32();
                     value = enumType.findValueByNumber(number);
                     if (value == null) {
-                        throw tokenizer.parseExceptionPreviousToken("Enum type \""
+                        throw new FormatTokenizerCore.Failure(tokenizer.previousTokenErrorMessage("Enum type \""
                                                                     + enumType.getFullName()
                                                                     + "\" has no value with number "
-                                                                    + number + ".");
+                                                                    + number + "."));
                     }
                 } else {
                     String id = tokenizer.consumeIdentifier();
                     value = enumType.findValueByName(id);
                     if (value == null) {
-                        throw tokenizer.parseExceptionPreviousToken("Enum type \""
+                        throw new FormatTokenizerCore.Failure(tokenizer.previousTokenErrorMessage("Enum type \""
                                                                     + enumType.getFullName()
                                                                     + "\" has no value named \""
-                                                                    + id + "\".");
+                                                                    + id + "\"."));
                     }
                 }
 
@@ -925,11 +530,11 @@ public final class Protobuf2XmlFormat {
         return value;
     }
 
-    private static Object handleObject(Tokenizer tokenizer,
+    private static Object handleObject(FormatTokenizerCore tokenizer,
             ExtensionRegistry extensionRegistry,
             Message.Builder builder,
             FieldDescriptor field,
-            ExtensionRegistry.ExtensionInfo extension) throws ParseException {
+            ExtensionRegistry.ExtensionInfo extension) throws FormatTokenizerCore.Failure {
 
         Object value;
         Message.Builder subBuilder;
@@ -944,7 +549,7 @@ public final class Protobuf2XmlFormat {
 
         while (!tokenizer.tryConsume(endToken)) {
             if (tokenizer.atEnd()) {
-                throw tokenizer.parseException("Expected \"" + endToken + "\".");
+                throw new FormatTokenizerCore.Failure(tokenizer.errorMessage("Expected \"" + endToken + "\"."));
             }
             mergeField(tokenizer, extensionRegistry, subBuilder);
         }

@@ -128,31 +128,22 @@ public class Protobuf2JavaPropsFormat {
             throws IOException {
         if (field.isExtension()) {
             generator.print("[");
-            // We special-case MessageSet elements for compatibility with proto1.
-            if (field.getContainingType().getOptions().getMessageSetWireFormat()
-                && (field.getType() == Descriptors.FieldDescriptor.Type.MESSAGE)
-                && (field.isOptional())
-                // object equality
-                && (field.getExtensionScope() == field.getMessageType())) {
-                generator.print(field.getMessageType().getFullName());
-            } else {
-                generator.print(field.getFullName());
-            }
+            generator.print(FormatValueRenderer.extensionPrintName(field));
             generator.print("]");
         } else {
             if (field.getType() != Descriptors.FieldDescriptor.Type.GROUP &&
                 field.getType() != Descriptors.FieldDescriptor.Type.MESSAGE) {
                 // The field is a primitive value, no need to unwind the path.
-                generator.print(createFieldNameCollectionIndex(field.getName(), collectionIndex));
+                generator.print(createFieldNameCollectionIndex(FormatValueRenderer.fieldPrintName(field), collectionIndex));
             }
         }
 
         if (field.getType() == Descriptors.FieldDescriptor.Type.GROUP) {
             // Groups must be serialized with their original capitalization.
-            generator.indent(createFieldNameCollectionIndex(field.getMessageType().getName(), collectionIndex));
+            generator.indent(createFieldNameCollectionIndex(FormatValueRenderer.fieldPrintName(field), collectionIndex));
         } else if (field.getType() == Descriptors.FieldDescriptor.Type.MESSAGE) {
             //generator.print(" {\n");
-            generator.indent(createFieldNameCollectionIndex(field.getName(), collectionIndex));
+            generator.indent(createFieldNameCollectionIndex(FormatValueRenderer.fieldPrintName(field), collectionIndex));
         } else {
             generator.print("=");
         }
@@ -160,10 +151,10 @@ public class Protobuf2JavaPropsFormat {
         printFieldValue(field, value, generator);
 
         if (field.getType() == Descriptors.FieldDescriptor.Type.MESSAGE) {
-            generator.outdent(createFieldNameCollectionIndex(field.getName(), collectionIndex));
+            generator.outdent(createFieldNameCollectionIndex(FormatValueRenderer.fieldPrintName(field), collectionIndex));
             //generator.print("");
         } else if (field.getType() == Descriptors.FieldDescriptor.Type.GROUP) {
-            generator.outdent(createFieldNameCollectionIndex(field.getMessageType().getName(), collectionIndex));
+            generator.outdent(createFieldNameCollectionIndex(FormatValueRenderer.fieldPrintName(field), collectionIndex));
             //generator.print("");
         } else {
             generator.print("\n");
@@ -184,51 +175,39 @@ public class Protobuf2JavaPropsFormat {
             final Object value,
             final JavaPropsGenerator generator)
             throws IOException {
-        switch (field.getType()) {
-            case INT32:
-            case INT64:
-            case SINT32:
-            case SINT64:
-            case SFIXED32:
-            case SFIXED64:
-            case FLOAT:
-            case DOUBLE:
-            case BOOL:
-                // Good old toString() does what we want for these types.
-                generator.print(value.toString());
-                break;
+        FormatValueRenderer.renderFieldValue(field, value, new FormatValueRenderer.ValueSink() {
 
-            case UINT32:
-            case FIXED32:
-                generator.print(FormatTextSupport.unsignedToString((Integer) value));
-                break;
+            @Override
+            public void printRaw(CharSequence text) throws IOException {
+                generator.print(text);
+            }
 
-            case UINT64:
-            case FIXED64:
-                generator.print(FormatTextSupport.unsignedToString((Long) value));
-                break;
-
-            case STRING:
+            @Override
+            public void printString(String value) throws IOException {
                 generator.print("\"");
-                generator.print(FormatTextSupport.escapeTextLegacy((String) value));
+                generator.print(FormatTextSupport.escapeTextLegacy(value));
                 generator.print("\"");
-                break;
+            }
 
-            case BYTES:
+            @Override
+            public void printBytes(ByteString value) throws IOException {
                 generator.print("\"");
-                generator.print(FormatTextSupport.escapeBytesOctal((ByteString) value));
+                generator.print(FormatTextSupport.escapeBytesOctal(value));
                 generator.print("\"");
-                break;
+            }
 
-            case ENUM:
-                generator.print(((Descriptors.EnumValueDescriptor) value).getName());
-                break;
+            @Override
+            public void printEnum(Descriptors.EnumValueDescriptor value) throws IOException {
+                // 现状：JavaProps 的 ENUM 不加引号，禁止顺手修
+                generator.print(value.getName());
+            }
 
-            case MESSAGE:
-            case GROUP:
-                print((Message) value, generator);
-                break;
-        }
+            @Override
+            public void printMessage(Message value) throws IOException {
+                print(value, generator);
+            }
+
+        });
     }
 
     private static void printUnknownFields(final UnknownFieldSet unknownFields,
@@ -237,41 +216,49 @@ public class Protobuf2JavaPropsFormat {
         for (final Map.Entry<Integer, UnknownFieldSet.Field> entry :
                 unknownFields.asMap().entrySet()) {
             final UnknownFieldSet.Field field = entry.getValue();
+            final String key = entry.getKey().toString();
 
             for (final long value : field.getVarintList()) {
-                generator.print(entry.getKey().toString());
-                generator.print("=");
-                generator.print(FormatTextSupport.unsignedToString(value));
-                generator.print("\n");
+                printUnknownValue(key, FormatTextSupport.unsignedToString(value), generator);
             }
             for (final int value : field.getFixed32List()) {
-                generator.print(entry.getKey().toString());
-                generator.print("=");
-                generator.print(String.format((Locale) null, "0x%08x", value));
-                generator.print("\n");
+                printUnknownValue(key, String.format((Locale) null, "0x%08x", value), generator);
             }
             for (final long value : field.getFixed64List()) {
-                generator.print(entry.getKey().toString());
-                generator.print("=");
-                generator.print(String.format((Locale) null, "0x%016x", value));
-                generator.print("\n");
+                printUnknownValue(key, String.format((Locale) null, "0x%016x", value), generator);
             }
             for (final ByteString value : field.getLengthDelimitedList()) {
-                generator.print(entry.getKey().toString());
-                generator.print("=\"");
-                generator.print(FormatTextSupport.escapeBytesOctal(value));
-                generator.print("\"\n");
+                printUnknownQuoted(key, FormatTextSupport.escapeBytesOctal(value), generator);
             }
             for (final UnknownFieldSet value : field.getGroupList()) {
                 //generator.print(entry.getKey().toString());
                 //generator.print("={\n");
-                generator.indent(entry.getKey().toString());
+                generator.indent(key);
                 printUnknownFields(value, generator);
-                generator.outdent(entry.getKey().toString());
+                generator.outdent(key);
                 //generator.print("}\n");
                 generator.print("\n");
             }
         }
+    }
+
+    // 类内自克隆并表：varint/fixed32/fixed64 三个 for 循环只差取值表达式，输出形态逐字同现状
+    private static void printUnknownValue(final String key, final CharSequence value,
+            final JavaPropsGenerator generator)
+            throws IOException {
+        generator.print(key);
+        generator.print("=");
+        generator.print(value);
+        generator.print("\n");
+    }
+
+    private static void printUnknownQuoted(final String key, final CharSequence value,
+            final JavaPropsGenerator generator)
+            throws IOException {
+        generator.print(key);
+        generator.print("=\"");
+        generator.print(value);
+        generator.print("\"\n");
     }
 
 
@@ -349,417 +336,12 @@ public class Protobuf2JavaPropsFormat {
     // =================================================================
     // Parsing
 
-    /**
-     * Represents a stream of tokens parsed from a {@code String}.
-     * <p>
-     * <p>The Java standard library provides many classes that you might think
-     * would be useful for implementing this, but aren't.  For example:
-     * <p>
-     * <ul>
-     * <li>{@code java.io.StreamTokenizer}:  This almost does what we want -- or,
-     * at least, something that would get us close to what we want -- except
-     * for one fatal flaw:  It automatically un-escapes strings using Java
-     * escape sequences, which do not include all the escape sequences we
-     * need to support (e.g. '\x').
-     * <li>{@code java.util.Scanner}:  This seems like a great way at least to
-     * parse regular expressions out of a stream (so we wouldn't have to load
-     * the entire input into a single string before parsing).  Sadly,
-     * {@code Scanner} requires that tokens be delimited with some delimiter.
-     * Thus, although the text "foo:" should parse to two tokens ("foo" and
-     * ":"), {@code Scanner} would recognize it only as a single token.
-     * Furthermore, {@code Scanner} provides no way to inspect the contents
-     * of delimiters, making it impossible to keep track of line and column
-     * numbers.
-     * </ul>
-     * <p>
-     * <p>Luckily, Java's regular expression support does manage to be useful to
-     * us.  (Barely:  We need {@code Matcher.usePattern()}, which is new in
-     * Java 1.5.)  So, we can use that, at least.  Unfortunately, this implies
-     * that we need to have the entire input in one contiguous string.
-     */
-    private static final class Tokenizer {
-
-        private final CharSequence text;
-
-        private final Matcher matcher;
-
-        private String currentToken;
-
-        // The character index within this.text at which the current token begins.
-        private int pos = 0;
-
-        // The line and column numbers of the current token.
-        private int line = 0;
-
-        private int column = 0;
-
-        // The line and column numbers of the previous token (allows throwing
-        // errors *after* consuming).
-        private int previousLine = 0;
-
-        private int previousColumn = 0;
-
-        // We use possesive quantifiers (*+ and ++) because otherwise the Java
-        // regex matcher has stack overflows on large inputs.
-        private static final Pattern WHITESPACE =
-                Pattern.compile("(\\s|(#.*$))++", Pattern.MULTILINE);
-
-        private static final Pattern TOKEN = Pattern.compile(
-                "[a-zA-Z_][0-9a-zA-Z_+-]*+|" +                // an identifier
-                "[.]?[0-9+-][0-9a-zA-Z_.+-]*+|" +             // a number
-                "\"([^\"\n\\\\]|\\\\.)*+(\"|\\\\?$)|" +       // a double-quoted string
-                "\'([^\'\n\\\\]|\\\\.)*+(\'|\\\\?$)",         // a single-quoted string
-                Pattern.MULTILINE);
-
-        private static final Pattern DOUBLE_INFINITY = Pattern.compile(
-                "-?inf(inity)?",
-                Pattern.CASE_INSENSITIVE);
-
-        private static final Pattern FLOAT_INFINITY = Pattern.compile(
-                "-?inf(inity)?f?",
-                Pattern.CASE_INSENSITIVE);
-
-        private static final Pattern FLOAT_NAN = Pattern.compile(
-                "nanf?",
-                Pattern.CASE_INSENSITIVE);
-
-        /**
-         * Construct a tokenizer that parses tokens from the given text.
-         */
-        private Tokenizer(final CharSequence text) {
-            this.text = text;
-            this.matcher = WHITESPACE.matcher(text);
-            skipWhitespace();
-            nextToken();
-        }
-
-        /**
-         * Are we at the end of the input?
-         */
-        public boolean atEnd() {
-            return this.currentToken.length() == 0;
-        }
-
-        /**
-         * Advance to the next token.
-         */
-        public void nextToken() {
-            this.previousLine = this.line;
-            this.previousColumn = this.column;
-
-            // Advance the line counter to the current position.
-            while (this.pos < this.matcher.regionStart()) {
-                if (this.text.charAt(this.pos) == '\n') {
-                    ++this.line;
-                    this.column = 0;
-                } else {
-                    ++this.column;
-                }
-                ++this.pos;
-            }
-
-            // Match the next token.
-            if (this.matcher.regionStart() == this.matcher.regionEnd()) {
-                // EOF
-                this.currentToken = "";
-            } else {
-                this.matcher.usePattern(TOKEN);
-                if (this.matcher.lookingAt()) {
-                    this.currentToken = this.matcher.group();
-                    this.matcher.region(this.matcher.end(), this.matcher.regionEnd());
-                } else {
-                    // Take one character.
-                    this.currentToken = String.valueOf(this.text.charAt(this.pos));
-                    this.matcher.region(this.pos + 1, this.matcher.regionEnd());
-                }
-
-                skipWhitespace();
-            }
-        }
-
-        /**
-         * Skip over any whitespace so that the matcher region starts at the next
-         * token.
-         */
-        private void skipWhitespace() {
-            this.matcher.usePattern(WHITESPACE);
-            if (this.matcher.lookingAt()) {
-                this.matcher.region(this.matcher.end(), this.matcher.regionEnd());
-            }
-        }
-
-        /**
-         * If the next token exactly matches {@code token}, consume it and return
-         * {@code true}.  Otherwise, return {@code false} without doing anything.
-         */
-        public boolean tryConsume(final String token) {
-            if (this.currentToken.equals(token)) {
-                nextToken();
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        /**
-         * If the next token exactly matches {@code token}, consume it.  Otherwise,
-         * throw a {@link ParseException}.
-         */
-        public void consume(final String token) throws ParseException {
-            if (!tryConsume(token)) {
-                throw parseException("Expected \"" + token + "\".");
-            }
-        }
-
-        /**
-         * Returns {@code true} if the next token is an integer, but does
-         * not consume it.
-         */
-        public boolean lookingAtInteger() {
-            if (this.currentToken.length() == 0) {
-                return false;
-            }
-
-            final char c = this.currentToken.charAt(0);
-            return ('0' <= c && c <= '9') ||
-                   c == '-' || c == '+';
-        }
-
-        /**
-         * If the next token is an identifier, consume it and return its value.
-         * Otherwise, throw a {@link ParseException}.
-         */
-        public String consumeIdentifier() throws ParseException {
-            for (int i = 0; i < this.currentToken.length(); i++) {
-                final char c = this.currentToken.charAt(i);
-                if (('a' <= c && c <= 'z') ||
-                    ('A' <= c && c <= 'Z') ||
-                    ('0' <= c && c <= '9') ||
-                    (c == '_') //|| (c == '.')
-                ) {
-                    // OK
-                } else {
-                    throw parseException("Expected identifier.");
-                }
-            }
-
-            final String result = this.currentToken;
-            nextToken();
-            return result;
-        }
-
-        /**
-         * If the next token is a 32-bit signed integer, consume it and return its
-         * value.  Otherwise, throw a {@link ParseException}.
-         */
-        public int consumeInt32() throws ParseException {
-            try {
-                final int result = FormatTextSupport.parseInt32(this.currentToken);
-                nextToken();
-                return result;
-            } catch (NumberFormatException e) {
-                throw integerParseException(e);
-            }
-        }
-
-        /**
-         * If the next token is a 32-bit unsigned integer, consume it and return its
-         * value.  Otherwise, throw a {@link ParseException}.
-         */
-        public int consumeUInt32() throws ParseException {
-            try {
-                final int result = FormatTextSupport.parseUInt32(this.currentToken);
-                nextToken();
-                return result;
-            } catch (NumberFormatException e) {
-                throw integerParseException(e);
-            }
-        }
-
-        /**
-         * If the next token is a 64-bit signed integer, consume it and return its
-         * value.  Otherwise, throw a {@link ParseException}.
-         */
-        public long consumeInt64() throws ParseException {
-            try {
-                final long result = FormatTextSupport.parseInt64(this.currentToken);
-                nextToken();
-                return result;
-            } catch (NumberFormatException e) {
-                throw integerParseException(e);
-            }
-        }
-
-        /**
-         * If the next token is a 64-bit unsigned integer, consume it and return its
-         * value.  Otherwise, throw a {@link ParseException}.
-         */
-        public long consumeUInt64() throws ParseException {
-            try {
-                final long result = FormatTextSupport.parseUInt64(this.currentToken);
-                nextToken();
-                return result;
-            } catch (NumberFormatException e) {
-                throw integerParseException(e);
-            }
-        }
-
-        /**
-         * If the next token is a double, consume it and return its value.
-         * Otherwise, throw a {@link ParseException}.
-         */
-        public double consumeDouble() throws ParseException {
-            // We need to parse infinity and nan separately because
-            // Double.parseDouble() does not accept "inf", "infinity", or "nan".
-            if (DOUBLE_INFINITY.matcher(this.currentToken).matches()) {
-                final boolean negative = this.currentToken.startsWith("-");
-                nextToken();
-                return negative ? Double.NEGATIVE_INFINITY : Double.POSITIVE_INFINITY;
-            }
-            if (this.currentToken.equalsIgnoreCase("nan")) {
-                nextToken();
-                return Double.NaN;
-            }
-            try {
-                final double result = Double.parseDouble(this.currentToken);
-                nextToken();
-                return result;
-            } catch (NumberFormatException e) {
-                throw floatParseException(e);
-            }
-        }
-
-        /**
-         * If the next token is a float, consume it and return its value.
-         * Otherwise, throw a {@link ParseException}.
-         */
-        public float consumeFloat() throws ParseException {
-            // We need to parse infinity and nan separately because
-            // Float.parseFloat() does not accept "inf", "infinity", or "nan".
-            if (FLOAT_INFINITY.matcher(this.currentToken).matches()) {
-                final boolean negative = this.currentToken.startsWith("-");
-                nextToken();
-                return negative ? Float.NEGATIVE_INFINITY : Float.POSITIVE_INFINITY;
-            }
-            if (FLOAT_NAN.matcher(this.currentToken).matches()) {
-                nextToken();
-                return Float.NaN;
-            }
-            try {
-                final float result = Float.parseFloat(this.currentToken);
-                nextToken();
-                return result;
-            } catch (NumberFormatException e) {
-                throw floatParseException(e);
-            }
-        }
-
-        /**
-         * If the next token is a boolean, consume it and return its value.
-         * Otherwise, throw a {@link ParseException}.
-         */
-        public boolean consumeBoolean() throws ParseException {
-            if (this.currentToken.equals("true")) {
-                nextToken();
-                return true;
-            } else if (this.currentToken.equals("false")) {
-                nextToken();
-                return false;
-            } else {
-                throw parseException("Expected \"true\" or \"false\".");
-            }
-        }
-
-        /**
-         * If the next token is a string, consume it and return its (unescaped)
-         * value.  Otherwise, throw a {@link ParseException}.
-         */
-        public String consumeString() throws ParseException {
-            return consumeByteString().toStringUtf8();
-        }
-
-        /**
-         * If the next token is a string, consume it, unescape it as a
-         * {@link ByteString}, and return it.  Otherwise, throw a
-         * {@link ParseException}.
-         */
-        public ByteString consumeByteString() throws ParseException {
-            List<ByteString> list = new ArrayList<>();
-            consumeByteString(list);
-            while (this.currentToken.startsWith("'") || this.currentToken.startsWith("\"")) {
-                consumeByteString(list);
-            }
-            return ByteString.copyFrom(list);
-        }
-
-        /**
-         * Like {@link #consumeByteString()} but adds each token of the string to
-         * the given list.  String literals (whether bytes or text) may come in
-         * multiple adjacent tokens which are automatically concatenated, like in
-         * C or Python.
-         */
-        private void consumeByteString(List<ByteString> list) throws ParseException {
-            final char quote = this.currentToken.length() > 0 ? this.currentToken.charAt(0)
-                                                              : '\0';
-            if (quote != '\"' && quote != '\'') {
-                throw parseException("Expected string.");
-            }
-
-            if (this.currentToken.length() < 2 ||
-                this.currentToken.charAt(this.currentToken.length() - 1) != quote) {
-                throw parseException("String missing ending quote.");
-            }
-
-            try {
-                final String escaped =
-                        this.currentToken.substring(1, this.currentToken.length() - 1);
-                final ByteString result = FormatTextSupport.unescapeBytes(escaped, false);
-                nextToken();
-                list.add(result);
-            } catch (FormatTextSupport.InvalidEscapeSequence e) {
-                throw parseException(e.getMessage());
-            }
-        }
-
-        /**
-         * Returns a {@link ParseException} with the current line and column
-         * numbers in the description, suitable for throwing.
-         */
-        public ParseException parseException(final String description) {
-            // Note:  People generally prefer one-based line and column numbers.
-            return new ParseException(
-                    (this.line + 1) + ":" + (this.column + 1) + ": " + description);
-        }
-
-        /**
-         * Returns a {@link ParseException} with the line and column numbers of
-         * the previous token in the description, suitable for throwing.
-         */
-        public ParseException parseExceptionPreviousToken(
-                final String description) {
-            // Note:  People generally prefer one-based line and column numbers.
-            return new ParseException(
-                    (this.previousLine + 1) + ":" + (this.previousColumn + 1) + ": " + description);
-        }
-
-        /**
-         * Constructs an appropriate {@link ParseException} for the given
-         * {@code NumberFormatException} when trying to parse an integer.
-         */
-        private ParseException integerParseException(
-                final NumberFormatException e) {
-            return parseException("Couldn't parse integer: " + e.getMessage());
-        }
-
-        /**
-         * Constructs an appropriate {@link ParseException} for the given
-         * {@code NumberFormatException} when trying to parse a float or double.
-         */
-        private ParseException floatParseException(final NumberFormatException e) {
-            return parseException("Couldn't parse number: " + e.getMessage());
-        }
-
-    }
+    private static final Pattern TOKEN = Pattern.compile(
+            "[a-zA-Z_][0-9a-zA-Z_+-]*+|" +                // an identifier
+            "[.]?[0-9+-][0-9a-zA-Z_.+-]*+|" +             // a number
+            "\"([^\"\n\\\\]|\\\\.)*+(\"|\\\\?$)|" +       // a double-quoted string
+            "\'([^\'\n\\\\]|\\\\.)*+(\'|\\\\?$)",         // a single-quoted string
+            Pattern.MULTILINE);
 
     /**
      * Thrown when parsing an invalid text format message.
@@ -823,11 +405,16 @@ public class Protobuf2JavaPropsFormat {
             final ExtensionRegistry extensionRegistry,
             final Message.Builder builder)
             throws ParseException {
-        final Tokenizer tokenizer = new Tokenizer(input);
-        final Map<String, Message> subMessages = new HashMap<>();
+        try {
+            final FormatTokenizerCore tokenizer =
+                    new FormatTokenizerCore(input, TOKEN, FormatTokenizerCore.Kind.PROPS);
+            final Map<String, Message> subMessages = new HashMap<>();
 
-        while (!tokenizer.atEnd()) {
-            mergeField(tokenizer, extensionRegistry, subMessages, builder);
+            while (!tokenizer.atEnd()) {
+                mergeField(tokenizer, extensionRegistry, subMessages, builder);
+            }
+        } catch (FormatTokenizerCore.Failure f) {
+            throw new ParseException(f.getMessage());
         }
     }
 
@@ -835,10 +422,10 @@ public class Protobuf2JavaPropsFormat {
      * Parse a single field from {@code tokenizer} and merge it into
      * {@code builder}.
      */
-    private static void mergeField(final Tokenizer tokenizer,
+    private static void mergeField(final FormatTokenizerCore tokenizer,
             final ExtensionRegistry extensionRegistry,
             final Map<String, Message> subMessages,
-            final Message.Builder builder) throws ParseException {
+            final Message.Builder builder) throws FormatTokenizerCore.Failure {
         Descriptors.FieldDescriptor field;
         final Descriptors.Descriptor type = builder.getDescriptorForType();
         ExtensionRegistry.ExtensionInfo extension = null;
@@ -855,12 +442,12 @@ public class Protobuf2JavaPropsFormat {
             extension = extensionRegistry.findImmutableExtensionByName(name.toString());
 
             if (extension == null) {
-                throw tokenizer.parseExceptionPreviousToken(
-                        "Extension \"" + name + "\" not found in the ExtensionRegistry.");
+                throw new FormatTokenizerCore.Failure(tokenizer.previousTokenErrorMessage(
+                        "Extension \"" + name + "\" not found in the ExtensionRegistry."));
             } else if (extension.descriptor.getContainingType() != type) {
-                throw tokenizer.parseExceptionPreviousToken(
+                throw new FormatTokenizerCore.Failure(tokenizer.previousTokenErrorMessage(
                         "Extension \"" + name + "\" does not extend message type \"" +
-                        type.getFullName() + "\".");
+                        type.getFullName() + "\"."));
             }
 
             tokenizer.consume("]");
@@ -890,9 +477,9 @@ public class Protobuf2JavaPropsFormat {
             }
 
             if (field == null) {
-                throw tokenizer.parseExceptionPreviousToken(
+                throw new FormatTokenizerCore.Failure(tokenizer.previousTokenErrorMessage(
                         "Message type \"" + type.getFullName() +
-                        "\" has no field named \"" + name + "\".");
+                        "\" has no field named \"" + name + "\"."));
             }
         }
 
@@ -980,17 +567,17 @@ public class Protobuf2JavaPropsFormat {
                         final int number = tokenizer.consumeInt32();
                         value = enumType.findValueByNumber(number);
                         if (value == null) {
-                            throw tokenizer.parseExceptionPreviousToken(
+                            throw new FormatTokenizerCore.Failure(tokenizer.previousTokenErrorMessage(
                                     "Enum type \"" + enumType.getFullName() +
-                                    "\" has no value with number " + number + '.');
+                                    "\" has no value with number " + number + '.'));
                         }
                     } else {
                         final String id = tokenizer.consumeIdentifier();
                         value = enumType.findValueByName(id);
                         if (value == null) {
-                            throw tokenizer.parseExceptionPreviousToken(
+                            throw new FormatTokenizerCore.Failure(tokenizer.previousTokenErrorMessage(
                                     "Enum type \"" + enumType.getFullName() +
-                                    "\" has no value named \"" + id + "\".");
+                                    "\" has no value named \"" + id + "\"."));
                         }
                     }
 
