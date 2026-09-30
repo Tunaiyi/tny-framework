@@ -29,7 +29,7 @@ class TunnelUnboundRejectionTest {
     /** ① 未绑定 receive：必须返回 false 且不抛 NPE（当前实现 NPE，本用例应红） */
     @Test
     void unboundReceiveIsRejectedWithoutCrash() {
-        TestTunnel tunnel = new TestTunnel();
+        TestTunnelFixture tunnel = new TestTunnelFixture(TestTunnelFixture.ActivePolicy.NOT_CLOSED, 7100, 7000);
         NetMessage message = RpcContextFixture.message(1L, System.currentTimeMillis());
 
         boolean accepted = assertDoesNotThrow(() -> tunnel.receive(message),
@@ -40,7 +40,7 @@ class TunnelUnboundRejectionTest {
     /** ② 拒绝不损伤通道：绑定会话后消息正常受理（当前前置拒绝即 NPE，本用例应红） */
     @Test
     void channelUnharmedAfterRejection() {
-        TestTunnel tunnel = new TestTunnel();
+        TestTunnelFixture tunnel = new TestTunnelFixture(TestTunnelFixture.ActivePolicy.NOT_CLOSED, 7100, 7000);
         assertDoesNotThrow(() -> tunnel.receive(RpcContextFixture.message(1L, System.currentTimeMillis())),
                 "前置：首次未绑定拒绝不得抛异常（当前应红）");
 
@@ -49,69 +49,6 @@ class TunnelUnboundRejectionTest {
         assertTrue(tunnel.receive(RpcContextFixture.message(2L, System.currentTimeMillis())),
                 "绑定后消息应正常受理");
         assertEquals(1, ((CountingSession) tunnel.getSession()).handled.get(), "会话恰好收到一次投递");
-    }
-
-    /** 会话未绑定的最简通道 */
-    private static final class TestTunnel extends BaseNetTunnel<NetSession> {
-        TestTunnel() {
-            super(1L, NetAccessMode.SERVER, new com.tny.game.net.application.NetBootstrapContext());
-        }
-
-        @Override
-        protected boolean resetSession(NetSession newSession) {
-            this.session = newSession;
-            return true;
-        }
-
-        @Override
-        protected boolean onOpen() {
-            return true;
-        }
-
-        @Override
-        protected void onOpened() {
-        }
-
-        @Override
-        protected void onClose() {
-        }
-
-        @Override
-        protected void onClosed() {
-        }
-
-        @Override
-        protected void onDisconnected() {
-        }
-
-        @Override
-        protected void doDisconnect() {
-        }
-
-        @Override
-        public boolean isActive() {
-            return !isClosed();
-        }
-
-        @Override
-        public MessageWriteFuture write(MessageAllocator allocator, MessageContent content) {
-            return null;
-        }
-
-        @Override
-        public MessageWriteFuture write(Message message, MessageWriteFuture promise) {
-            return promise;
-        }
-
-        @Override
-        public InetSocketAddress getRemoteAddress() {
-            return new InetSocketAddress(7100);
-        }
-
-        @Override
-        public InetSocketAddress getLocalAddress() {
-            return new InetSocketAddress(7000);
-        }
     }
 
     /** 记录型会话（receive 受理计数，行为对齐生产 session.receive 恒 true/throw 的核实语义） */

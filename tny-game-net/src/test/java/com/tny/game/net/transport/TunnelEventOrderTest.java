@@ -28,71 +28,12 @@ import static org.mockito.Mockito.*;
  */
 class TunnelEventOrderTest {
 
-    private static class TestTunnel extends BaseNetTunnel<NetSession> {
-
-        TestTunnel() {
-            super(1L, NetAccessMode.SERVER, new NetBootstrapContext());
-        }
-
-        @Override
-        protected boolean resetSession(NetSession newSession) {
-            this.session = newSession;
-            return true;
-        }
-
-        @Override
-        protected boolean onOpen() {
-            return true;
-        }
-
-        @Override
-        protected void onOpened() {
-        }
-
-        @Override
-        protected void onClose() {
-        }
-
-        @Override
-        protected void onClosed() {
-        }
-
-        @Override
-        protected void onDisconnected() {
-        }
-
-        @Override
-        protected void doDisconnect() {
-        }
-
-        @Override
-        public boolean isActive() {
-            return getStatus() == TunnelStatus.OPEN;
-        }
-
-        @Override
-        public InetSocketAddress getRemoteAddress() {
-            return new InetSocketAddress(7300);
-        }
-
-        @Override
-        public InetSocketAddress getLocalAddress() {
-            return new InetSocketAddress(7301);
-        }
-
-        @Override
-        public MessageWriteFuture write(MessageAllocator allocator, MessageContent content) throws com.tny.game.net.exception.NetException {
-            return null;
-        }
-
-        @Override
-        public MessageWriteFuture write(Message message, MessageWriteFuture promise) {
-            return promise;
-        }
-    }
-
     /** 复现客户端形态：onDisconnected 内再 close（原双通知/倒序触发点） */
-    private static class ClientLikeTunnel extends TestTunnel {
+    private static class ClientLikeTunnel extends TestTunnelFixture {
+        ClientLikeTunnel() {
+            super(TestTunnelFixture.ActivePolicy.STATUS_OPEN, 7300, 7301);
+        }
+
         @Override
         protected void onDisconnected() {
             this.close();
@@ -101,7 +42,7 @@ class TunnelEventOrderTest {
 
     private final List<String> sequence = Collections.synchronizedList(new ArrayList<>());
 
-    private <T extends TestTunnel> T recording(T tunnel, NetSession session) {
+    private <T extends TestTunnelFixture> T recording(T tunnel, NetSession session) {
         tunnel.events().activateWatch().addListener(ignored -> sequence.add("activated"));
         tunnel.events().unactivatedWatch().addListener(ignored -> sequence.add("unactivated"));
         tunnel.events().closeWatch().addListener(ignored -> sequence.add("closed"));
@@ -116,7 +57,7 @@ class TunnelEventOrderTest {
     @DisplayName("正常路径：激活→失活→关闭各一次")
     void normalCloseSequence() {
         NetSession session = mock(NetSession.class);
-        TestTunnel tunnel = recording(new TestTunnel(), session);
+        TestTunnelFixture tunnel = recording(new TestTunnelFixture(TestTunnelFixture.ActivePolicy.STATUS_OPEN, 7300, 7301), session);
         assertTrue(tunnel.bind(session));
         assertTrue(tunnel.open());
 

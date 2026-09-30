@@ -30,13 +30,13 @@ import static org.mockito.Mockito.*;
  */
 class ResendFilterConsistencyTest {
 
-    private static final class CapturingTunnel extends BaseNetTunnel<NetSession> {
+    private static final class CapturingTunnel extends TestTunnelFixture {
 
         final AtomicInteger directWrites = new AtomicInteger();
         final MessageFactory factory = messageFactory();
 
         CapturingTunnel() {
-            super(1L, NetAccessMode.SERVER, new NetBootstrapContext());
+            super(TestTunnelFixture.ActivePolicy.STATUS_OPEN, 7500, 7501);
         }
 
         static MessageFactory messageFactory() {
@@ -45,42 +45,6 @@ class ResendFilterConsistencyTest {
             when(message.getId()).thenReturn(7L);
             when(factory.create(anyLong(), any(MessageContent.class))).thenReturn(message);
             return factory;
-        }
-
-        @Override
-        protected boolean resetSession(NetSession newSession) {
-            this.session = newSession;
-            return true;
-        }
-
-        @Override
-        protected boolean onOpen() {
-            return true;
-        }
-
-        @Override
-        protected void onOpened() {
-        }
-
-        @Override
-        protected void onClose() {
-        }
-
-        @Override
-        protected void onClosed() {
-        }
-
-        @Override
-        protected void onDisconnected() {
-        }
-
-        @Override
-        protected void doDisconnect() {
-        }
-
-        @Override
-        public boolean isActive() {
-            return getStatus() == TunnelStatus.OPEN;
         }
 
         @Override
@@ -98,16 +62,6 @@ class ResendFilterConsistencyTest {
         public MessageWriteFuture write(Message message, MessageWriteFuture promise) {
             directWrites.incrementAndGet();
             return promise;
-        }
-
-        @Override
-        public InetSocketAddress getRemoteAddress() {
-            return new InetSocketAddress(7500);
-        }
-
-        @Override
-        public InetSocketAddress getLocalAddress() {
-            return new InetSocketAddress(7501);
         }
     }
 

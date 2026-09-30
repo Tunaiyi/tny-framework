@@ -41,60 +41,14 @@ class RequestResponseClosureTest {
     }
 
     /** 关闭竞态注入隧道：写入中途等待外部关闭完成后才装配消息（命中 putFuture×destroy 窗口） */
-    private static final class RacingTunnel extends BaseNetTunnel<NetSession> {
+    private static final class RacingTunnel extends TestTunnelFixture {
 
         final CountDownLatch inWrite = new CountDownLatch(1);
         final CountDownLatch proceed = new CountDownLatch(1);
         final MessageFactory factory = messageFactory();
 
         RacingTunnel() {
-            super(1L, NetAccessMode.SERVER, new NetBootstrapContext());
-        }
-
-        @Override
-        protected boolean resetSession(NetSession newSession) {
-            this.session = newSession;
-            return true;
-        }
-
-        @Override
-        protected boolean onOpen() {
-            return true;
-        }
-
-        @Override
-        protected void onOpened() {
-        }
-
-        @Override
-        protected void onClose() {
-        }
-
-        @Override
-        protected void onClosed() {
-        }
-
-        @Override
-        protected void onDisconnected() {
-        }
-
-        @Override
-        protected void doDisconnect() {
-        }
-
-        @Override
-        public boolean isActive() {
-            return getStatus() == TunnelStatus.OPEN;
-        }
-
-        @Override
-        public InetSocketAddress getRemoteAddress() {
-            return new InetSocketAddress(7400);
-        }
-
-        @Override
-        public InetSocketAddress getLocalAddress() {
-            return new InetSocketAddress(7401);
+            super(TestTunnelFixture.ActivePolicy.STATUS_OPEN, 7400, 7401);
         }
 
         @Override
@@ -111,11 +65,6 @@ class RequestResponseClosureTest {
                 future.complete(null);
             }
             return future;
-        }
-
-        @Override
-        public MessageWriteFuture write(Message message, MessageWriteFuture promise) {
-            return promise;
         }
     }
 

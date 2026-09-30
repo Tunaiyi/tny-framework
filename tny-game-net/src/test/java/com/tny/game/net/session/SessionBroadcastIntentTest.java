@@ -181,47 +181,12 @@ class SessionBroadcastIntentTest {
         }
     }
 
-    static final class TestTunnel extends BaseNetTunnel<NetSession> {
+    static final class TestTunnel extends TestTunnelFixture {
         final List<Message> writes = Collections.synchronizedList(new ArrayList<>());
 
         TestTunnel() {
-            super(1L, NetAccessMode.SERVER, new NetBootstrapContext());
-        }
-
-        @Override
-        protected boolean resetSession(NetSession newSession) {
-            this.session = newSession;
-            return true;
-        }
-
-        @Override
-        protected boolean onOpen() {
-            return true;
-        }
-
-        @Override
-        protected void onOpened() {
-        }
-
-        @Override
-        protected void onClose() {
-        }
-
-        @Override
-        protected void onClosed() {
-        }
-
-        @Override
-        protected void onDisconnected() {
-        }
-
-        @Override
-        protected void doDisconnect() {
-        }
-
-        @Override
-        public boolean isActive() {
-            return false; // 让 open() 走完整激活流程置位 OPEN（write 门控用 isOpen）
+            // NEVER：isActive 恒 false，让 open() 走完整激活流程置位 OPEN（write 门控用 isOpen）
+            super(TestTunnelFixture.ActivePolicy.NEVER, 7100, 7000);
         }
 
         @Override
@@ -242,16 +207,6 @@ class SessionBroadcastIntentTest {
             }
             writes.add(message);
             return promise;
-        }
-
-        @Override
-        public InetSocketAddress getRemoteAddress() {
-            return new InetSocketAddress(7100);
-        }
-
-        @Override
-        public InetSocketAddress getLocalAddress() {
-            return new InetSocketAddress(7000);
         }
     }
 

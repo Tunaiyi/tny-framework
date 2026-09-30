@@ -95,70 +95,24 @@ class SessionResendSafetyTest {
     }
 
     /** 最小可测隧道（close/disconnect 走 BaseNetTunnel 真实双检锁路径） */
-    private static final class TestTunnel extends BaseNetTunnel<NetSession> {
+    private static final class TestTunnel extends TestTunnelFixture {
         private final AtomicInteger writes;
 
         TestTunnel(AtomicInteger writes) {
-            super(1L, NetAccessMode.SERVER, new NetBootstrapContext());
+            super(TestTunnelFixture.ActivePolicy.NOT_CLOSED, 7100, 7000);
             this.writes = writes;
         }
 
         @Override
-        protected boolean resetSession(NetSession newSession) {
-            this.session = newSession;
-            return true;
-        }
-
-        @Override
-        protected boolean onOpen() {
-            return true;
-        }
-
-        @Override
-        protected void onOpened() {
-        }
-
-        @Override
-        protected void onClose() {
-        }
-
-        @Override
-        protected void onClosed() {
-        }
-
-        @Override
-        protected void onDisconnected() {
-        }
-
-        @Override
-        protected void doDisconnect() {
-        }
-
-        @Override
-        public boolean isActive() {
-            return !isClosed();
-        }
-
-        @Override
-        public MessageWriteFuture write(MessageAllocator allocator, MessageContent content) throws NetException {
+        public MessageWriteFuture write(MessageAllocator allocator, MessageContent content) {
             writes.incrementAndGet();
             return null;
         }
 
         @Override
-        public MessageWriteFuture write(Message message, MessageWriteFuture promise) throws NetException {
+        public MessageWriteFuture write(Message message, MessageWriteFuture promise) {
             writes.incrementAndGet();
             return promise;
-        }
-
-        @Override
-        public InetSocketAddress getRemoteAddress() {
-            return new InetSocketAddress(7100);
-        }
-
-        @Override
-        public InetSocketAddress getLocalAddress() {
-            return new InetSocketAddress(7000);
         }
     }
 

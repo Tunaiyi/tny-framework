@@ -66,53 +66,17 @@ class SessionOfflineOnceTest {
     }
 
     /** 与 SessionResendSafetyTest 同款最小隧道：close/disconnect 走 BaseNetTunnel 真实路径 */
-    private static final class TestTunnel extends BaseNetTunnel<NetSession> {
+    private static final class TestTunnel extends TestTunnelFixture {
 
         final AtomicInteger writes;
 
         TestTunnel(AtomicInteger writes) {
-            super(1L, NetAccessMode.SERVER, new NetBootstrapContext());
+            super(TestTunnelFixture.ActivePolicy.NOT_CLOSED, 7100, 7101);
             this.writes = writes;
         }
 
         @Override
-        protected boolean resetSession(NetSession newSession) {
-            this.session = newSession;
-            return true;
-        }
-
-        @Override
-        protected boolean onOpen() {
-            return true;
-        }
-
-        @Override
-        protected void onOpened() {
-        }
-
-        @Override
-        protected void onClose() {
-        }
-
-        @Override
-        protected void onClosed() {
-        }
-
-        @Override
-        protected void onDisconnected() {
-        }
-
-        @Override
-        protected void doDisconnect() {
-        }
-
-        @Override
-        public boolean isActive() {
-            return !isClosed();
-        }
-
-        @Override
-        public MessageWriteFuture write(MessageAllocator allocator, MessageContent content) throws com.tny.game.net.exception.NetException {
+        public MessageWriteFuture write(MessageAllocator allocator, MessageContent content) {
             writes.incrementAndGet();
             return null;
         }
@@ -121,16 +85,6 @@ class SessionOfflineOnceTest {
         public MessageWriteFuture write(Message message, MessageWriteFuture promise) {
             writes.incrementAndGet();
             return promise;
-        }
-
-        @Override
-        public java.net.InetSocketAddress getRemoteAddress() {
-            return new java.net.InetSocketAddress(7100);
-        }
-
-        @Override
-        public java.net.InetSocketAddress getLocalAddress() {
-            return new java.net.InetSocketAddress(7101);
         }
     }
 
