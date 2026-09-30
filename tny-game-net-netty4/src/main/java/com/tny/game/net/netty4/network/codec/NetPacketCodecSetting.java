@@ -11,6 +11,9 @@
 
 package com.tny.game.net.netty4.network.codec;
 
+import com.tny.game.net.codec.cryptoloy.XorTileCodecCrypto;
+import com.tny.game.net.codec.verifier.SipHash24CodecVerifier;
+
 import com.tny.game.net.codec.*;
 import com.tny.game.net.codec.cryptoloy.*;
 import com.tny.game.net.codec.verifier.*;
@@ -32,11 +35,11 @@ public class NetPacketCodecSetting extends DataPackCodecOptions {
     // 消息转发策略
     private String messageRelayStrategy = null;
 
-    // 消息体验证器
-    private String verifier = lowerCamelName(CRC64CodecVerifier.class);
+    // 消息体验证器：默认键控认证代次（default-to-mac-generation）；legacy 经显式点名保留为逃生舱
+    private String verifier = lowerCamelName(SipHash24CodecVerifier.class);
 
-    // 消息体加密器
-    private String crypto = lowerCamelName(XOrCodecCrypto.class);
+    // 消息体加密器：默认与 legacy 键流逐字节等价的快速引擎；旧件显式点名可用
+    private String crypto = lowerCamelName(XorTileCodecCrypto.class);
 
     private boolean closeOnError = false;
 
