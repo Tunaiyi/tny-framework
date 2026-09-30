@@ -16,7 +16,6 @@ import com.tny.game.common.lifecycle.unit.annotation.*;
 import com.tny.game.net.codec.*;
 import org.slf4j.*;
 
-import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 import static com.tny.game.common.digest.binary.BytesAide.*;
@@ -59,14 +58,28 @@ public class CRC64CodecVerifier implements CodecVerifier {
         return true;
     }
 
+    /** 与 {@code CRC64} 内部初始值同值（其私有不可见）——值等价由 Crc64ValueGoldenTest 三金样锁定。 */
+    private static final long INITIAL_CRC = 0xFFFFFFFFFFFFFFFFL;
+
+    private static final ThreadLocal<byte[]> NUMBER_SCRATCH = ThreadLocal.withInitial(() -> new byte[4]);
+    private static final ThreadLocal<byte[]> CODE_SCRATCH = ThreadLocal.withInitial(() -> new byte[4]);
+
+    /**
+     * 链式复用生产自身逐字节循环入口（optimize-legacy-codec-paths 2.2）：
+     * 与 varargs-ByteBuffer 版逐语句同循环、同分段顺序，输出逐字节不变；
+     * 消除每包 6 个临时对象（两个 int2Bytes 数组 + 四个 ByteBuffer 包装）。
+     */
     private byte[] doGenerate(DataPackageContext packager, byte[] body, int offset, int length) {
-        byte[] numberBytes = BytesAide.int2Bytes(packager.getPacketNumber());
-        byte[] codeBytes = BytesAide.int2Bytes(packager.getPacketCode());
-        return BytesAide.long2Bytes(CRC64.crc64Long(
-                ByteBuffer.wrap(numberBytes),
-                ByteBuffer.wrap(body, offset, length),
-                ByteBuffer.wrap(packager.getAccessKeyBytes()),
-                ByteBuffer.wrap(codeBytes)));
+        byte[] numberBytes = NUMBER_SCRATCH.get();
+        byte[] codeBytes = CODE_SCRATCH.get();
+        BytesAide.int2Bytes(packager.getPacketNumber(), numberBytes, 0);
+        BytesAide.int2Bytes(packager.getPacketCode(), codeBytes, 0);
+        byte[] accessKey = packager.getAccessKeyBytes();
+        long crc = CRC64.crc64Long(INITIAL_CRC, numberBytes, 0, 4);
+        crc = CRC64.crc64Long(crc, body, offset, length);
+        crc = CRC64.crc64Long(crc, accessKey, 0, accessKey.length);
+        crc = CRC64.crc64Long(crc, codeBytes, 0, 4);
+        return BytesAide.long2Bytes(crc);
     }
 
 }
