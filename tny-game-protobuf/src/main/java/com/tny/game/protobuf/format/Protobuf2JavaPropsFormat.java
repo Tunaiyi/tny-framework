@@ -3,8 +3,6 @@ package com.tny.game.protobuf.format;
 import com.google.protobuf.*;
 
 import java.io.IOException;
-import java.math.BigInteger;
-import java.nio.CharBuffer;
 import java.util.*;
 import java.util.regex.*;
 
@@ -202,23 +200,23 @@ public class Protobuf2JavaPropsFormat {
 
             case UINT32:
             case FIXED32:
-                generator.print(unsignedToString((Integer) value));
+                generator.print(FormatTextSupport.unsignedToString((Integer) value));
                 break;
 
             case UINT64:
             case FIXED64:
-                generator.print(unsignedToString((Long) value));
+                generator.print(FormatTextSupport.unsignedToString((Long) value));
                 break;
 
             case STRING:
                 generator.print("\"");
-                generator.print(escapeText((String) value));
+                generator.print(FormatTextSupport.escapeTextLegacy((String) value));
                 generator.print("\"");
                 break;
 
             case BYTES:
                 generator.print("\"");
-                generator.print(escapeBytes((ByteString) value));
+                generator.print(FormatTextSupport.escapeBytesOctal((ByteString) value));
                 generator.print("\"");
                 break;
 
@@ -243,7 +241,7 @@ public class Protobuf2JavaPropsFormat {
             for (final long value : field.getVarintList()) {
                 generator.print(entry.getKey().toString());
                 generator.print("=");
-                generator.print(unsignedToString(value));
+                generator.print(FormatTextSupport.unsignedToString(value));
                 generator.print("\n");
             }
             for (final int value : field.getFixed32List()) {
@@ -261,7 +259,7 @@ public class Protobuf2JavaPropsFormat {
             for (final ByteString value : field.getLengthDelimitedList()) {
                 generator.print(entry.getKey().toString());
                 generator.print("=\"");
-                generator.print(escapeBytes(value));
+                generator.print(FormatTextSupport.escapeBytesOctal(value));
                 generator.print("\"\n");
             }
             for (final UnknownFieldSet value : field.getGroupList()) {
@@ -276,30 +274,6 @@ public class Protobuf2JavaPropsFormat {
         }
     }
 
-    /**
-     * Convert an unsigned 32-bit integer to a string.
-     */
-    private static String unsignedToString(final int value) {
-        if (value >= 0) {
-            return Integer.toString(value);
-        } else {
-            return Long.toString(((long) value) & 0x00000000FFFFFFFFL);
-        }
-    }
-
-    /**
-     * Convert an unsigned 64-bit integer to a string.
-     */
-    private static String unsignedToString(final long value) {
-        if (value >= 0) {
-            return Long.toString(value);
-        } else {
-            // Pull off the most-significant bit so that BigInteger doesn't think
-            // the number is negative, then set it again using setBit().
-            return BigInteger.valueOf(value & 0x7FFFFFFFFFFFFFFFL)
-                    .setBit(63).toString();
-        }
-    }
 
     /**
      * An inner class for writing text to the output stream.
@@ -580,7 +554,7 @@ public class Protobuf2JavaPropsFormat {
          */
         public int consumeInt32() throws ParseException {
             try {
-                final int result = parseInt32(this.currentToken);
+                final int result = FormatTextSupport.parseInt32(this.currentToken);
                 nextToken();
                 return result;
             } catch (NumberFormatException e) {
@@ -594,7 +568,7 @@ public class Protobuf2JavaPropsFormat {
          */
         public int consumeUInt32() throws ParseException {
             try {
-                final int result = parseUInt32(this.currentToken);
+                final int result = FormatTextSupport.parseUInt32(this.currentToken);
                 nextToken();
                 return result;
             } catch (NumberFormatException e) {
@@ -608,7 +582,7 @@ public class Protobuf2JavaPropsFormat {
          */
         public long consumeInt64() throws ParseException {
             try {
-                final long result = parseInt64(this.currentToken);
+                final long result = FormatTextSupport.parseInt64(this.currentToken);
                 nextToken();
                 return result;
             } catch (NumberFormatException e) {
@@ -622,7 +596,7 @@ public class Protobuf2JavaPropsFormat {
          */
         public long consumeUInt64() throws ParseException {
             try {
-                final long result = parseUInt64(this.currentToken);
+                final long result = FormatTextSupport.parseUInt64(this.currentToken);
                 nextToken();
                 return result;
             } catch (NumberFormatException e) {
@@ -739,10 +713,10 @@ public class Protobuf2JavaPropsFormat {
             try {
                 final String escaped =
                         this.currentToken.substring(1, this.currentToken.length() - 1);
-                final ByteString result = unescapeBytes(escaped);
+                final ByteString result = FormatTextSupport.unescapeBytes(escaped, false);
                 nextToken();
                 list.add(result);
-            } catch (InvalidEscapeSequenceException e) {
+            } catch (FormatTextSupport.InvalidEscapeSequence e) {
                 throw parseException(e.getMessage());
             }
         }
@@ -837,26 +811,7 @@ public class Protobuf2JavaPropsFormat {
         // we would not have to read to one big String.  Alas, none of these is
         // the case.  Oh well.
 
-        merge(toStringBuilder(input), extensionRegistry, builder);
-    }
-
-    private static final int BUFFER_SIZE = 4096;
-
-    // TODO(chrisn): See if working around java.io.Reader#read(CharBuffer)
-    // overhead is worthwhile
-    private static StringBuilder toStringBuilder(final Readable input)
-            throws IOException {
-        final StringBuilder text = new StringBuilder();
-        final CharBuffer buffer = CharBuffer.allocate(BUFFER_SIZE);
-        while (true) {
-            final int n = input.read(buffer);
-            if (n == -1) {
-                break;
-            }
-            buffer.flip();
-            text.append(buffer, 0, n);
-        }
-        return text;
+        merge(FormatTextSupport.toStringBuilder(input), extensionRegistry, builder);
     }
 
     /**
@@ -1058,356 +1013,6 @@ public class Protobuf2JavaPropsFormat {
         } else {
             builder.setField(field, value);
         }
-    }
-
-    // =================================================================
-    // Utility functions
-    //
-    // Some of these methods are package-private because Descriptors.java uses
-    // them.
-
-    /**
-     * Escapes bytes in the format used in protocol buffer text format, which
-     * is the same as the format used for C string literals.  All bytes
-     * that are not printable 7-bit ASCII characters are escaped, as well as
-     * backslash, single-quote, and double-quote characters.  Characters for
-     * which no defined short-hand escape sequence is defined will be escaped
-     * using 3-digit octal sequences.
-     */
-    static String escapeBytes(final ByteString input) {
-        final StringBuilder builder = new StringBuilder(input.size());
-        for (int i = 0; i < input.size(); i++) {
-            final byte b = input.byteAt(i);
-            switch (b) {
-                // Java does not recognize \a or \v, apparently.
-                case 0x07:
-                    builder.append("\\a");
-                    break;
-                case '\b':
-                    builder.append("\\b");
-                    break;
-                case '\f':
-                    builder.append("\\f");
-                    break;
-                case '\n':
-                    builder.append("\\n");
-                    break;
-                case '\r':
-                    builder.append("\\r");
-                    break;
-                case '\t':
-                    builder.append("\\t");
-                    break;
-                case 0x0b:
-                    builder.append("\\v");
-                    break;
-                case '\\':
-                    builder.append("\\\\");
-                    break;
-                case '\'':
-                    builder.append("\\\'");
-                    break;
-                case '"':
-                    builder.append("\\\"");
-                    break;
-                default:
-                    if (b >= 0x20) {
-                        builder.append((char) b);
-                    } else {
-                        builder.append('\\');
-                        builder.append((char) ('0' + ((b >>> 6) & 3)));
-                        builder.append((char) ('0' + ((b >>> 3) & 7)));
-                        builder.append((char) ('0' + (b & 7)));
-                    }
-                    break;
-            }
-        }
-        return builder.toString();
-    }
-
-    /**
-     * Un-escape a byte sequence as escaped using
-     * {@link #escapeBytes(ByteString)}.  Two-digit hex escapes (starting with
-     * "\x") are also recognized.
-     */
-    static ByteString unescapeBytes(final CharSequence input)
-            throws InvalidEscapeSequenceException {
-        final byte[] result = new byte[input.length()];
-        int pos = 0;
-        for (int i = 0; i < input.length(); i++) {
-            char c = input.charAt(i);
-            if (c == '\\') {
-                if (i + 1 < input.length()) {
-                    ++i;
-                    c = input.charAt(i);
-                    if (isOctal(c)) {
-                        // Octal escape.
-                        int code = digitValue(c);
-                        if (i + 1 < input.length() && isOctal(input.charAt(i + 1))) {
-                            ++i;
-                            code = code * 8 + digitValue(input.charAt(i));
-                        }
-                        if (i + 1 < input.length() && isOctal(input.charAt(i + 1))) {
-                            ++i;
-                            code = code * 8 + digitValue(input.charAt(i));
-                        }
-                        result[pos++] = (byte) code;
-                    } else {
-                        switch (c) {
-                            case 'a':
-                                result[pos++] = 0x07;
-                                break;
-                            case 'b':
-                                result[pos++] = '\b';
-                                break;
-                            case 'f':
-                                result[pos++] = '\f';
-                                break;
-                            case 'n':
-                                result[pos++] = '\n';
-                                break;
-                            case 'r':
-                                result[pos++] = '\r';
-                                break;
-                            case 't':
-                                result[pos++] = '\t';
-                                break;
-                            case 'v':
-                                result[pos++] = 0x0b;
-                                break;
-                            case '\\':
-                                result[pos++] = '\\';
-                                break;
-                            case '\'':
-                                result[pos++] = '\'';
-                                break;
-                            case '"':
-                                result[pos++] = '\"';
-                                break;
-
-                            case 'x':
-                                // hex escape
-                                int code = 0;
-                                if (i + 1 < input.length() && isHex(input.charAt(i + 1))) {
-                                    ++i;
-                                    code = digitValue(input.charAt(i));
-                                } else {
-                                    throw new InvalidEscapeSequenceException(
-                                            "Invalid escape sequence: '\\x' with no digits");
-                                }
-                                if (i + 1 < input.length() && isHex(input.charAt(i + 1))) {
-                                    ++i;
-                                    code = code * 16 + digitValue(input.charAt(i));
-                                }
-                                result[pos++] = (byte) code;
-                                break;
-
-                            default:
-                                throw new InvalidEscapeSequenceException(
-                                        "Invalid escape sequence: '\\" + c + '\'');
-                        }
-                    }
-                } else {
-                    throw new InvalidEscapeSequenceException(
-                            "Invalid escape sequence: '\\' at end of string.");
-                }
-            } else {
-                result[pos++] = (byte) c;
-            }
-        }
-
-        return ByteString.copyFrom(result, 0, pos);
-    }
-
-    /**
-     * Thrown by {@link Protobuf2JavaPropsFormat#unescapeBytes(CharSequence)} and
-     * {@link Protobuf2JavaPropsFormat#unescapeText(String)} when an invalid escape sequence is seen.
-     */
-    static class InvalidEscapeSequenceException extends IOException {
-
-        private static final long serialVersionUID = -8164033650142593304L;
-
-        InvalidEscapeSequenceException(final String description) {
-            super(description);
-        }
-
-    }
-
-    /**
-     * Like {@link #escapeBytes(ByteString)}, but escapes a text string.
-     * Non-ASCII characters are first encoded as UTF-8, then each byte is escaped
-     * individually as a 3-digit octal escape.  Yes, it's weird.
-     */
-    static String escapeText(final String input) {
-        return escapeBytes(ByteString.copyFromUtf8(input));
-    }
-
-    /**
-     * Un-escape a text string as escaped using {@link #escapeText(String)}.
-     * Two-digit hex escapes (starting with "\x") are also recognized.
-     */
-    static String unescapeText(final String input)
-            throws InvalidEscapeSequenceException {
-        return unescapeBytes(input).toStringUtf8();
-    }
-
-    /**
-     * Is this an octal digit?
-     */
-    private static boolean isOctal(final char c) {
-        return '0' <= c && c <= '7';
-    }
-
-    /**
-     * Is this a hex digit?
-     */
-    private static boolean isHex(final char c) {
-        return ('0' <= c && c <= '9') ||
-               ('a' <= c && c <= 'f') ||
-               ('A' <= c && c <= 'F');
-    }
-
-    /**
-     * Interpret a character as a digit (in any base up to 36) and return the
-     * numeric value.  This is like {@code Character.digit()} but we don't accept
-     * non-ASCII digits.
-     */
-    private static int digitValue(final char c) {
-        if ('0' <= c && c <= '9') {
-            return c - '0';
-        } else if ('a' <= c && c <= 'z') {
-            return c - 'a' + 10;
-        } else {
-            return c - 'A' + 10;
-        }
-    }
-
-    /**
-     * Parse a 32-bit signed integer from the text.  Unlike the Java standard
-     * {@code Integer.parseInt()}, this function recognizes the prefixes "0x"
-     * and "0" to signify hexidecimal and octal numbers, respectively.
-     */
-    static int parseInt32(final String text) throws NumberFormatException {
-        return (int) parseInteger(text, true, false);
-    }
-
-    /**
-     * Parse a 32-bit unsigned integer from the text.  Unlike the Java standard
-     * {@code Integer.parseInt()}, this function recognizes the prefixes "0x"
-     * and "0" to signify hexidecimal and octal numbers, respectively.  The
-     * result is coerced to a (signed) {@code int} when returned since Java has
-     * no unsigned integer type.
-     */
-    static int parseUInt32(final String text) throws NumberFormatException {
-        return (int) parseInteger(text, false, false);
-    }
-
-    /**
-     * Parse a 64-bit signed integer from the text.  Unlike the Java standard
-     * {@code Integer.parseInt()}, this function recognizes the prefixes "0x"
-     * and "0" to signify hexidecimal and octal numbers, respectively.
-     */
-    static long parseInt64(final String text) throws NumberFormatException {
-        return parseInteger(text, true, true);
-    }
-
-    /**
-     * Parse a 64-bit unsigned integer from the text.  Unlike the Java standard
-     * {@code Integer.parseInt()}, this function recognizes the prefixes "0x"
-     * and "0" to signify hexidecimal and octal numbers, respectively.  The
-     * result is coerced to a (signed) {@code long} when returned since Java has
-     * no unsigned long type.
-     */
-    static long parseUInt64(final String text) throws NumberFormatException {
-        return parseInteger(text, false, true);
-    }
-
-    private static long parseInteger(final String text,
-            final boolean isSigned,
-            final boolean isLong)
-            throws NumberFormatException {
-        int pos = 0;
-
-        boolean negative = false;
-        if (text.startsWith("-", pos)) {
-            if (!isSigned) {
-                throw new NumberFormatException("Number must be positive: " + text);
-            }
-            ++pos;
-            negative = true;
-        }
-
-        int radix = 10;
-        if (text.startsWith("0x", pos)) {
-            pos += 2;
-            radix = 16;
-        } else if (text.startsWith("0", pos)) {
-            radix = 8;
-        }
-
-        final String numberText = text.substring(pos);
-
-        long result = 0;
-        if (numberText.length() < 16) {
-            // Can safely assume no overflow.
-            result = Long.parseLong(numberText, radix);
-            if (negative) {
-                result = -result;
-            }
-
-            // Check bounds.
-            // No need to check for 64-bit numbers since they'd have to be 16 chars
-            // or longer to overflow.
-            if (!isLong) {
-                if (isSigned) {
-                    if (result > Integer.MAX_VALUE || result < Integer.MIN_VALUE) {
-                        throw new NumberFormatException(
-                                "Number out of range for 32-bit signed integer: " + text);
-                    }
-                } else {
-                    if (result >= (1L << 32) || result < 0) {
-                        throw new NumberFormatException(
-                                "Number out of range for 32-bit unsigned integer: " + text);
-                    }
-                }
-            }
-        } else {
-            BigInteger bigValue = new BigInteger(numberText, radix);
-            if (negative) {
-                bigValue = bigValue.negate();
-            }
-
-            // Check bounds.
-            if (!isLong) {
-                if (isSigned) {
-                    if (bigValue.bitLength() > 31) {
-                        throw new NumberFormatException(
-                                "Number out of range for 32-bit signed integer: " + text);
-                    }
-                } else {
-                    if (bigValue.bitLength() > 32) {
-                        throw new NumberFormatException(
-                                "Number out of range for 32-bit unsigned integer: " + text);
-                    }
-                }
-            } else {
-                if (isSigned) {
-                    if (bigValue.bitLength() > 63) {
-                        throw new NumberFormatException(
-                                "Number out of range for 64-bit signed integer: " + text);
-                    }
-                } else {
-                    if (bigValue.bitLength() > 64) {
-                        throw new NumberFormatException(
-                                "Number out of range for 64-bit unsigned integer: " + text);
-                    }
-                }
-            }
-
-            result = bigValue.longValue();
-        }
-
-        return result;
     }
 
 }
