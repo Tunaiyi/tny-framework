@@ -181,6 +181,23 @@ public class NetAutoConfiguration {
         return new XOrCodecCrypto();
     }
 
+    /** 认证代次默认件（default-to-mac-generation）：bean 名必须等于 lowerCamelName 推导的 unit 名 */
+    @Bean
+    public SipHash24CodecVerifier sipHash24CodecVerifier() {
+        return new SipHash24CodecVerifier();
+    }
+
+    @Bean
+    public XorTileCodecCrypto xorTileCodecCrypto() {
+        return new XorTileCodecCrypto();
+    }
+
+    /** 补既有缝隙：Noop 校验器此前无 bean 注册，显式配 "noopCodecVerifier" 的部署经 UnitLoadInitiator 不可达 */
+    @Bean
+    public NoopCodecVerifier noopCodecVerifier() {
+        return new NoopCodecVerifier();
+    }
+
     @Bean
     public NoneCodecCrypto noneCodecCrypto() {
         return new NoneCodecCrypto();
