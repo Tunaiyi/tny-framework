@@ -16,7 +16,7 @@
 ## 3. 自然红取证与定罪（design D3）
 
 - [x] 3.1 建立取卷节奏：此后每轮 5.7.x push 后查 unit 结论；红即 fetch 案卷，登记至本 change `diagnosis.md`（新建，格式沿 stabilize it-diagnosis.md 取证时间线表）。验证：`diagnosis.md` 首行含登记规则与 run 账链接。
-- [ ] 3.2 拿到首个自然红案卷（或连续 5 轮零红 → 记录"就绪竞态假设暂未复现"并跳到 5 组收口、把 §6 unit 登记簿以"观察位"结转）：按 D3 三签名列归因表，定罪到支 a/b/c 之一。验证：`diagnosis.md` 定罪栏填毕，签名证据（栈/日志摘录）+ 判据引用一一对应。
+- [x] 3.2 拿到首个自然红案卷（或连续 5 轮零红 → 记录"就绪竞态假设暂未复现"并跳到 5 组收口、把 §6 unit 登记簿以"观察位"结转）：按 D3 三签名列归因表，定罪到支 a/b/c 之一。验证：`diagnosis.md` 定罪栏填毕，签名证据（栈/日志摘录）+ 判据引用一一对应。
 
 ## 4. 根治实施（仅在 3.2 定罪后执行；未定罪则整组跳过并在验证注明）
 
@@ -33,3 +33,5 @@
 
 - [ ] 6.1 `release-note.md`（设施向：unit 电路生效声明、根治内容与定罪案卷号、门禁语义零变化声明）。
 - [ ] 6.2 账与记忆结转：stabilize `it-diagnosis.md` §3"另案"登记与 memory `docker-it-rerun-discipline` 关联条目更新为已收口/移交到位。验证：`openspec validate fix-ci-unit-flakes` 通过；全仓 `./gradlew test`（本地，OrbStack 在位）绿。
+
+> 3.2 完成注记：首案卷=run#38（支 c 跨线：tny-game-actor 墙钟时序测试，判决与处方见 diagnosis.md 定罪栏案#1；本案不动刀）。
