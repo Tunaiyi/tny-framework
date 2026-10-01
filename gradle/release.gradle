@@ -1,0 +1,168 @@
+// 发布快速通道（工具新增，语义契约仍以 openspec capability release-versioning 与
+// docs/release-process.md 为准）：releaseCut 保证"标签先于制品"的顺序由脚本固化，
+// releaseMergeBack 保证 hotfix/正式版合回开发线不再靠人记忆。
+// 与发布门禁的关系：本脚本负责"做对"，门禁负责"做错时拦住"，二者互不替代。
+// 约定：git 可执行文件可用 -PgitExe 覆盖（本机 PATH 二进制与守护进程架构不匹配时传 /usr/bin/git）；
+// 本机运行 gradle 需 JAVA_HOME 指向 JDK 21（JDK 25 与 Gradle 8.5 不兼容）。
+
+def git = rootProject.ext
+
+def runGit = { List args ->
+    def exe = (project.findProperty('gitExe') ?: 'git').toString()
+    def probe = providers.exec {
+        commandLine ([exe] + args)
+        workingDir = rootDir
+        // 由调用方按 exit 码分支处理（无上游的 rev-parse 等命令合法地非零退出）
+        ignoreExitValue = true
+    }
+    def result = probe.result.get()
+    [exit: result.exitValue, out: probe.standardOutput.asText.get(), err: probe.standardError.asText.get()]
+}
+
+def resolveRemote = { String branch ->
+    def up = runGit(['rev-parse', '--abbrev-ref', '--symbolic-full-name', "${branch}@{upstream}"]).out.trim()
+    if (up.contains('/') && !up.startsWith('fatal')) {
+        return up.substring(0, up.indexOf('/'))
+    }
+    def remotes = runGit(['remote']).out.readLines().findAll { !it.trim().isEmpty() }
+    remotes.size() == 1 ? remotes[0].trim() : null
+}
+
+def trackedDirty = {
+    // 只拦跟踪文件的未提交变更；未跟踪文件不进提交对象，切分支/推送不受其影响
+    runGit(['status', '--porcelain']).out.readLines().findAll { !it.startsWith('?? ') }
+}
+
+def requireCleanTree = { String action, boolean preview ->
+    def dirty = trackedDirty()
+    if (dirty.isEmpty()) {
+        return
+    }
+    if (preview) {
+        logger.lifecycle("[dryRun][warn] 跟踪文件有未提交变更，真实执行将被阻断：\n" + dirty.join('\n'))
+    } else {
+        throw new GradleException("${action} 要求跟踪文件无未提交变更，当前脏项：\n" + dirty.join('\n'))
+    }
+}
+
+tasks.register('releaseCut') {
+    group = 'release'
+    description = 'Cut <V>.release and annotated tag v<V> from a source ref, push both (tag-before-artifact). Needs -PreleaseVersion=N.M.K, optional -PreleaseFrom=<branch|tag|commit>, -PdryRun for preview.'
+    doLast {
+        def v = project.findProperty('releaseVersion')?.toString()
+        if (v == null || v.isEmpty()) {
+            throw new GradleException("releaseCut 需要 -PreleaseVersion=<主>.<次>.<补丁>，例如 -PreleaseVersion=5.7.8")
+        }
+        if (!(v ==~ /\d+\.\d+\.\d+/)) {
+            throw new GradleException("版本号 '${v}' 不符合裸三段号形态 <主>.<次>.<补丁>")
+        }
+        def legacyFile = rootProject.file("gradle/released-legacy.txt")
+        def legacy = legacyFile.exists() ? legacyFile.readLines().findAll { !it.trim().isEmpty() && !it.trim().startsWith("#") } : []
+        if (legacy.contains(v)) {
+            throw new GradleException("版本 '${v}' 已以 -RELEASE 后缀形态发布（见 gradle/released-legacy.txt），禁止裸号复用同号，请提高补丁号")
+        }
+        def targetBranch = "${v}.release"
+        def tagName = "v" + v
+        def current = git.branchName.toString()
+        def from = project.findProperty('releaseFrom')?.toString()
+        if (from == null) {
+            if (current ==~ /\d+\.\d+\.x/) {
+                from = current
+            } else if (current ==~ /\d+\.\d+\.\d+\.release/) {
+                from = current
+            } else {
+                throw new GradleException("无法从当前分支 '${current}' 推断发布来源，请用 -PreleaseFrom=<分支|标签|提交> 显式指定（首发从开发线如 5.7.x，hotfix 从上一个发布分支）")
+            }
+        }
+        if (git.grgiter.branch.list().any { it.name == targetBranch }) {
+            throw new GradleException("本地已存在分支 '${targetBranch}'，同号发布禁止重复切支")
+        }
+        if (git.grgiter.tag.list().any { it.name == tagName }) {
+            throw new GradleException("本地已存在标签 '${tagName}'，同号发布禁止重复建标")
+        }
+        def remoteName = resolveRemote(current)
+        if (remoteName == null) {
+            throw new GradleException("无法确定推送目标的远端：当前分支 '${current}' 没有上游，且仓库远端数量不是 1")
+        }
+        def remoteRefs = runGit(['ls-remote', remoteName]).out
+        if (remoteRefs.contains("refs/heads/${targetBranch}")) {
+            throw new GradleException("远端 '${remoteName}' 已存在分支 '${targetBranch}'")
+        }
+        if (remoteRefs.contains("refs/tags/${tagName}")) {
+            throw new GradleException("远端 '${remoteName}' 已存在标签 '${tagName}'（或存在前缀撞名，请核对后处理）")
+        }
+        def preview = project.hasProperty('dryRun')
+        requireCleanTree("releaseCut", preview)
+
+        def plan = """releaseCut 计划：
+  来源        ${from}
+  发布分支    ${targetBranch}（切自来源并检出）
+  附注标签    ${tagName}（指向新分支头，随分支推送——标签先于制品由顺序固化）
+  推送远端    ${remoteName}
+后续步骤：  ./gradlew publish   然后  ./gradlew releaseMergeBack"""
+        if (preview) {
+            logger.lifecycle("[dryRun] 未做任何变更\n" + plan)
+            return
+        }
+        logger.lifecycle(plan)
+        git.grgiter.branch.create(name: targetBranch, startPoint: from, checkoutOnCreate: true)
+        git.grgiter.tag.create(name: tagName, message: "release ${v} from ${targetBranch}")
+        git.grgiter.push(remote: remoteName, refs: ["refs/heads/${targetBranch}", "refs/tags/${tagName}"])
+        logger.lifecycle("releaseCut 完成：${targetBranch} 与 ${tagName} 已推送。发布顺序：标签已在远端 → 现在执行 ./gradlew publish（门禁将核对标签存证），成功后执行 ./gradlew releaseMergeBack。")
+    }
+}
+
+tasks.register('releaseMergeBack') {
+    group = 'release'
+    description = 'After ./gradlew publish succeeded, merge the current <V>.release back into its dev line N.M.x and push (hotfix backflow; the line never regresses).'
+    doLast {
+        def current = git.branchName.toString()
+        if (!(current ==~ /\d+\.\d+\.\d+\.release/)) {
+            throw new GradleException("releaseMergeBack 必须在发布分支形态（如 5.7.8.release）上执行，当前分支 '${current}'")
+        }
+        def v = git.parseBranchVersion(current)
+        def parts = v.split(/\./)
+        def line = "${parts[0]}.${parts[1]}.x"
+        def lineBranch = git.grgiter.branch.list().find { it.name == line }
+        def remoteName = resolveRemote(current) ?: resolveRemote(line)
+        if (remoteName == null) {
+            throw new GradleException("无法确定推送目标的远端：发布分支与开发线都没有上游，且仓库远端数量不是 1")
+        }
+        if (lineBranch == null) {
+            def remoteRefs = runGit(['ls-remote', remoteName, "refs/heads/${line}"]).out
+            if (!remoteRefs.contains("refs/heads/${line}")) {
+                throw new GradleException("开发线 '${line}' 本地与远端均不存在，hotfix 无法回流——请确认版本线或手动处理")
+            }
+            runGit(['fetch', remoteName, "refs/heads/${line}:refs/remotes/${remoteName}/${line}"])
+        }
+        def preview = project.hasProperty('dryRun')
+        requireCleanTree("releaseMergeBack", preview)
+        if (!git.grgiter.tag.list().any { it.name == "v" + v }) {
+            logger.warn("提示：本地未见标签 v${v}，请确认发布切支（releaseCut）与发布均已完成")
+        }
+        def plan = """releaseMergeBack 计划：
+  检出 ${line}（本地缺失时基于 ${remoteName}/${line} 建立）
+  git merge --no-ff ${current} -m "merge ${current} (release ${v}) into ${line}"
+  git push ${remoteName} refs/heads/${line}
+  前提确认：./gradlew publish 已成功（本任务无法核对制品仓，顺序由发布者保证）"""
+        if (preview) {
+            logger.lifecycle("[dryRun] 未做任何变更\n" + plan)
+            return
+        }
+        logger.lifecycle(plan)
+        def co = (lineBranch != null) ? runGit(['switch', line])
+                : runGit(['switch', '-c', line, "${remoteName}/${line}"])
+        if (co.exit != 0) {
+            throw new GradleException("检出开发线 '${line}' 失败：${co.err}")
+        }
+        def mg = runGit(['merge', '--no-ff', '-m', "merge ${current} (release ${v}) into ${line}", current])
+        if (mg.exit != 0) {
+            throw new GradleException("合并 ${current} 到 ${line} 失败（可能有冲突）。请手工解决冲突后完成合并，再执行：git push ${remoteName} refs/heads/${line}")
+        }
+        def ps = runGit(['push', remoteName, "refs/heads/${line}"])
+        if (ps.exit != 0) {
+            throw new GradleException("推送 ${line} 失败：${ps.err}\n合并已在本地完成，请处理后重试推送")
+        }
+        logger.lifecycle("releaseMergeBack 完成：${line} 已包含 release ${v} 的全部提交并推送，可切回开发线继续。")
+    }
+}

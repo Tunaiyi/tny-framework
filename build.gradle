@@ -8,6 +8,8 @@ plugins {
 
 apply from: "${rootDir}/gradle/dependency.gradle"
 apply from: "${rootDir}/gradle/git.gradle"
+// 发布快速通道：releaseCut / releaseMergeBack（语义契约见 docs/release-process.md）
+apply from: "${rootDir}/gradle/release.gradle"
 
 ext {
     moduleProjects = subprojects.findAll { it.name.startsWith("tny-game-") }

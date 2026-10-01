@@ -67,3 +67,10 @@
 1. 正式发布仓（maven-releases）禁止重复部署同一版本坐标，保证裸号正式版不可变。
 2. 快照仓（maven-snapshots）配置按天数的保留清理策略：滚动快照坐标 `N.M.x-SNAPSHOT`
    每夜构建追加一份时间戳产物且永不互相顶替，无保留策略则磁盘无界增长。
+
+## 快速通道（Gradle 任务）
+
+上述四则流程中的切支+打标签+推送由根任务 `releaseCut` 固化顺序，合回由 `releaseMergeBack`
+固化（均在 `gradle/release.gradle`；两任务支持 `-PdryRun` 预览，本机执行注意 JDK 21 与
+`-PgitExe` 两个环境前置，详见任务脚本头部注释）。`./gradlew publish` 仍按原流程独立执行，
+门禁校验不因使用快速通道而减免。

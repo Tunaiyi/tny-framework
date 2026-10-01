@@ -119,6 +119,9 @@ def validatePublishConsistency = { gateTask ->
             def probe = providers.exec {
                 commandLine ([gitExe.toString()] + args)
                 workingDir = rootDir
+                // 非零退出（网络不可达、无上游的 rev-parse 等）不抛出，输出按空处理，
+                // 走"标签不在远端"的 fail-closed 拒绝文案
+                ignoreExitValue = true
             }
             probe.standardOutput.asText.get()
         }
