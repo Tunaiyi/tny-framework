@@ -47,3 +47,5 @@
 ## Open Questions
 
 - etcd 用 b 形态（Testcontainers）时镜像版本钉法（`quay.io/coreos/etcd`  tag 策略）——实施期按仓内既有容器先例对齐，不影响任务划分。
+
+> **组 5 决策承载指引（2026-10-02 verify 回填）**：组 5（integration 间歇红根治，2026-10-01 复档增补）的决策实体不在本文件——三签名判决表见 `handoff-ci-integration-remediation.md` §2，定罪（支②时序断言超预算）与两改（`TcpSessionResendIT` 有界轮询 + `maxParallelForks=1`）的完整决策记录见 `it-diagnosis.md` §5 与 `verification.md` §4，范围界定见 proposal「追记」。本文件 D1–D3 与 Non-Goals 仅约束组 1–4；组 5 自有边界（交接 §5：不动 unit、不引 GitHub services、不复活二进制托管）。
