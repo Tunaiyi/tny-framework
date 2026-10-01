@@ -19,7 +19,7 @@ jobs:
     services:
       # 既有 tny-game-namnspace-etcd 单测静态依赖本地 etcd:2379（非本变更引入），CI 须提供
       etcd:
-        image: quay.io/coreos/etcd:v3.5.11   # gcr.io 仓库已停更（etcd 官方迁 quay.io），runner 拉不到即 Initialize containers 失败
+        image: registry.k8s.io/etcd:3.5.15-0   # gcr.io/etcd-development 与 quay v3.5.11 均已不可用（run#11 实证 Failed to initialize），k8s 官方 etcd 镜像 manifest 本地实证存在
         ports: [ '2379:2379' ]
         options: >-
           --health-cmd "etcdctl endpoint health || exit 1"
@@ -57,7 +57,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       etcd:
-        image: quay.io/coreos/etcd:v3.5.11   # gcr.io 仓库已停更（etcd 官方迁 quay.io），runner 拉不到即 Initialize containers 失败
+        image: registry.k8s.io/etcd:3.5.15-0   # gcr.io/etcd-development 与 quay v3.5.11 均已不可用（run#11 实证 Failed to initialize），k8s 官方 etcd 镜像 manifest 本地实证存在
         ports: [ '2379:2379' ]
     steps:
       - uses: actions/checkout@v4
