@@ -13,6 +13,7 @@
 | #35 | f3bebdcb | ❌ **PROBE 计划内红** | 电路自证空弹（非病灶） | 五件齐备已固化 `probe-evidence/`：docker-ps(容器 Up 2min、0.0.0.0:2379 映射✓)、etcd 日志、console-tail(31KB，PROBE 断言栈清晰)、失败 XML、env(Temurin 21.0.12.1) |
 | #36-#37 | 9979a681 / edd52dbd | revert 恢复轮 | 探针撤销 | — |
 | **#38** | b72d6103（纯 docs 提交） | ❌ **首个自然红** | 电路实战首录；改动面零测试相关 | 已固化 `natural-red-1/`（TypeStageTest XML+栈、etcd 日志健康、env）|
+| #39 | a1f04f26 | ✅ 全 job 绿 | **负半程自证轮**：绿→ci-unit-diag tip 不变（49694f16）→"绿时不投递"实证 | 零投递=预期 |
 
 ## 探针结论（tasks 2.2 验证记录）
 
@@ -38,3 +39,10 @@
 
 #16 ❌ / #19 ❌ / #22 ❌ —— 改动面均不碰 unit 通道，机制推断为 services etcd 就绪竞态
 （编译缓存全命中时"分钟级裕量"塌缩）；**该假设在本案取证前仅为嫌疑，不得据以动手术。**
+
+## IT 计数终局（tasks 5.1）
+
+run#18（stabilize 根治推送）起算：#18-#27 十轮（stabilize §6 原账）+ #28-#39 各 push 轮
+integration job 全绿、ci-it-diag 自 run#17 唯一案卷后零新投递（tip 恒 889e0942）。
+**10/10 定案：stabilize 组 5 根治有效，门禁阶段二书面生效（见 handoff 终裁注记）。**
+本案 unit 的"10 轮零红"计数独立于本账，自 etcd 假设或案 #1 处方落地后另起。

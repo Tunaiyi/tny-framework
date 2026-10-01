@@ -26,8 +26,8 @@
 
 ## 5. IT 尾款账目收口（design D4）
 
-- [ ] 5.1 读 stabilize 归档体 §6 登记簿推进至 10/10（只记账不施工：每轮查 integration 结论 + `ci-it-diag` 无新投递即计数）。验证：本 change 记录终局行 `10/10 定案`。
-- [ ] 5.2 门禁阶段二书面定案：在 `handoff-ci-integration-remediation.md` 补"阶段二生效：保持硬门禁/不降级/不重试"终裁行（文档在归档体，允许追加终裁注记，不改历史正文）。验证：注记含日期与 run 号。
+- [x] 5.1 读 stabilize 归档体 §6 登记簿推进至 10/10（只记账不施工：每轮查 integration 结论 + `ci-it-diag` 无新投递即计数）。验证：本 change 记录终局行 `10/10 定案`。
+- [x] 5.2 门禁阶段二书面定案：在 `handoff-ci-integration-remediation.md` 补"阶段二生效：保持硬门禁/不降级/不重试"终裁行（文档在归档体，允许追加终裁注记，不改历史正文）。验证：注记含日期与 run 号。
 
 ## 6. 收口
 
