@@ -88,6 +88,11 @@ configure(subprojects) {
 
     repositories {
         mavenLocal()
+        // 实证链（run#4/#5，2026-10-01）：tnydev 证书修复后 runner 冷缓存仍全红，而大陆侧
+        // Linux 容器冷缓存同版本全绿→失败为 runner（海外出口）特异性：本列表无全局权威源，
+        // 海外到国内镜像族（tencent/tnydev/aliyun）超时即 Gradle 致命。central 前置补权威源，
+        // 国内镜像保留其后作大陆侧加速。若此后仍红，则证伪本假设、归因需 runner 日志。
+        mavenCentral()
         maven { url "https://mirrors.cloud.tencent.com/nexus/repository/maven-public/" }
         maven { url "https://m2.tnydev.com/repository/maven-public/" }
         maven { url "https://maven.aliyun.com/repository/public" }
