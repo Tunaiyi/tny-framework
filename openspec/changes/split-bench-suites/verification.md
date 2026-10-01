@@ -38,3 +38,15 @@
 - **6.3** 双向负向皆验：① 未归族新类（临时 `UnclassifiedScratchBenchmark` 放域根）→ `jmhSuiteVerify` 红并点名 → 移出还原绿（临时类现存于 /tmp，rm 被权限拦截改用 mv）；② 族正则漂移（3.2 已验，Aead/Crypto 点名）。
 - **6.5** `openspec validate --strict` 通过。
 - **6.2/6.4 阻塞点（外部）**：workflow_dispatch 首验与自然 push 观察需要——(a) 授权提交并推送本批改动（当前全部未提交），(b) GitHub Actions UI 手动触发 `bench-routine` 或等首个合入 push。本机无 gh CLI。
+
+## 首验证据补充（verify 轮，2026-10-01）
+
+- 本次 push（0a668033）即触发执行通道首跑：**bot 回写 commit `43a5e966`**（`chore(bench): routine benchmark results [skip ci]`，08:55:19Z；push 08:37:05Z → **端到端 ≈18min05s**，`[skip ci]` 防自触发实证）。
+- 产物 `bench-20261001-routine.json`（远端 blob 读取）：**37 组合、fork2/wi5/i10 D3 参数、族分布 routine 36 + devtest 探针 1**，FQCN 即新族主键——6.4 数据点与时长核对完成，README 预算节已回填。
+- 待核（6.2 余项）：远端 **gh-pages 分支尚未可见**（`git ls-remote` 无此分支）——`Store benchmark result & trend` 步骤结果需经 GitHub MCP（待 OAuth 授权）或 Actions UI 确认；run 链接需 UI 补录。
+
+## 6.2 终核（2026-10-01 22:4x）
+
+- 执行→产物→回写→防循环 四段实证齐备（commit 43a5e966、37 组合 D3 产物、无自触发）。
+- **曲线步骤未起线**：距回写 ~6h 远端仍无 gh-pages → `Store benchmark result & trend` 步骤失败被 `continue-on-error` 吞——恰为 design 风险条预想的降级面（信号面缺失，产物面不受影响）。归因需 Actions UI 看该 run 末步骤日志（本机 GitHub MCP OAuth 回调链修复中，无 Actions API 工具）。
+- 结论：6.2 保持未勾（run 链接与曲线证据缺口）；下一步：①用户重启会话走修好的 --service-ports OAuth 接线，或 UI 直接看 run 日志；②曲线归因后决定修 action 配置或按 design 接受降级并注记。

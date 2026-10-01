@@ -26,8 +26,12 @@ description: 初始化/重建/排障本机的 MCP 环境（GitHub MCP、Docker M
 
 ```bash
 claude mcp add github -s user -- \
-  docker compose -f <repo>/docker/docker-compose.mcp.yaml --profile stdio run --rm -T --name tny-mcp-github mcp-github-stdio
+  docker compose -f <repo>/docker/docker-compose.mcp.yaml --profile stdio run --rm -T --service-ports --name tny-mcp-github mcp-github-stdio
 # 固定名必须用 run --name：compose 的 run 忽略服务级 container_name（实测 v5.5.1）
+# ⚠ 必须带 --service-ports：compose run 默认不映射服务级 ports（实测 v5.1.2，2026-10-01 事故），
+#   缺它则容器 8085 不出宿主、OAuth 回调无处落地；勿用宿主转发器补位（容器 IP 随重启漂移、
+#   server 端 pending flow 单例——对 /callback 发探测假请求会提前关监听，真回调即被拒）。
+# 注册命令变更后需重启会话才生效（会话持有启动时快照的命令）。
 
 - 首次调用返回授权 URL → 浏览器登录授权 → 回调 localhost:8085 进容器 → 重试调用即通。token 仅内存：重启电脑/Docker 后每会话重新授权一次。
 - ⚠ 为什么不用远程端点（`https://api.githubcopilot.com/mcp/`）：GitHub OAuth 服务器不支持 DCR（动态客户端注册），Claude Code 拿不到 client_id，报 `Incompatible auth server: does not support dynamic client registration`。

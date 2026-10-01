@@ -84,7 +84,8 @@ com.tny.game.bench.net/
 - 定义在 `build.gradle` 的 `benchRoutineClasses`/`benchFacilityProbe`/`benchRoutineAlgoArms`
   （单一事实；**族子包正则**——目录与声明由 `jmhSuiteVerify` 对账）。
 - 规模：**37 参数组合**（6 臂 × 2 键形 × 2 尺寸 = 24 + PacketCodec 2 + MessageQueue 6 + RespondFuture 4
-  + Smoke 探针 1），本地预算 ~13→~18 分钟（CI 共享 runner 预估 25~40 分钟，实测后回填本节）。
+  + Smoke 探针 1）。**CI 实测（2026-10-01 首跑，commit 43a5e966）**：push→回写端到端 ≈18 分钟
+  （含排队/checkout/编译，D3 计时本体占其中约三分之二）——快于预估区间 25~40 分钟，夜间/合入通道时长可接受。
 - 触发：push（main/5.7.x）+ 夜间定时 + 手动（`build.yml` 的 `bench-routine` job）；PR 不触发计时。
 
 ## 产物与引用约定（spec：结果产物结构化可对比）
