@@ -70,7 +70,9 @@ tasks.register('integrationTest', Test) {
         environment 'DOCKER_HOST', dockerHost
     }
 
-    maxParallelForks = 2
+    // CI 降并发换确定性（stabilize 组 5 判决表②，run#17 案卷定罪"时序断言超预算"的配套支臂）：
+    // 4 核 runner 上并行 fork 放大尾延迟窗口；本地多核环境同样受此约束（双端一致性验收 5.5）
+    maxParallelForks = 1
     shouldRunAfter tasks.named('test')
 
     testLogging {

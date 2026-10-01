@@ -17,11 +17,13 @@ import com.tny.game.net.session.*;
 import com.tny.game.net.transport.*;
 import org.junit.jupiter.api.*;
 
+import java.time.*;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.*;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.awaitility.Awaitility.*;
 
 /**
  * 断线重连补发（specs R3"断线重连后未确认消息补发"，追溯 {@code session-resend} 规格；
@@ -94,10 +96,15 @@ class TcpSessionResendIT {
             List<Long> sentIds = cached.stream().map(Message::getId).collect(Collectors.toList());
             assertThat(idsOf(initialDelivery)).as("首轮三条消息 id 序列").isEqualTo(sentIds);
 
-            // 服务端断开：已认证会话应转离线保活（不被 close），缓存留存供补发
+            // 服务端断开：已认证会话应转离线保活（不被 close），缓存留存供补发。
+            // 断开传播是异步事件链（server close → 客户端 channelInactive → onUnactivated 转离线），
+            // 即时读对 runner 尾延迟敏感（stabilize 组 5 判决表②：run#17 电路案卷定罪于此）——
+            // 改有界轮询 + 绝对上限，超时仍判红不挂死
             harness.shutdownServer();
-            assertThat(session.isClosed()).as("已认证会话断线后未被 close（离线保活）").isFalse();
-            assertThat(session.isOffline()).as("断线后进入离线态").isTrue();
+            await().atMost(Duration.ofSeconds(10)).untilAsserted(() -> {
+                assertThat(session.isClosed()).as("已认证会话断线后未被 close（离线保活）").isFalse();
+                assertThat(session.isOffline()).as("断线后进入离线态").isTrue();
+            });
 
             // 服务端重启、客户端以新连接重连
             harness.restartServer();
