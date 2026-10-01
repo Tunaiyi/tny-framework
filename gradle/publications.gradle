@@ -53,43 +53,130 @@ def publishesToSharedRepository = { candidate ->
     if (taskName == "publish" || taskName == "publishAllPublications" || taskName == "publishMavenJavaPublicationToMavenRepository") {
         return true
     }
-    return taskName.startsWith("publish") && !taskName.startsWith("publishToMavenLocal")
+    // 排除尾缀 ToMavenLocal 的全部本地发布任务（publishToMavenLocal 与其依赖的
+    // publishMavenJavaPublicationToMavenLocal 整条链）；原判断只排了前者，链上后者会误挂门禁，
+    // 使"本地坐标直通"的上游意图落空（7.1 端到端空跑实测暴露）。门禁只约束共享仓发布。
+    return taskName.startsWith("publish") && !taskName.endsWith("ToMavenLocal")
 }
 
-// 版本后缀必须与分支命名约定（.release）及目标仓库类型（snapshot/release）一致；仅断言，不改变仓库选择逻辑
+// 发布资格由分支形态白名单决定（规格：openspec change adopt-plain-ga-versioning / release-versioning）。
+// 开发线 <主>.<次>.x 只允许 <主>.<次>.x-SNAPSHOT 快照进快照仓；发布分支 <主>.<次>.<补丁>.release 只允许
+// 裸三段号正式版进 release 仓；名单外分支（含 feature 分支与主干历史分支）执行发布任务一律拒绝。
+// 仅断言，不改变仓库选择逻辑（仓库路由仍按版本后缀在 publishing.repositories 处决定）。
 def validatePublishConsistency = { gateTask ->
     def git = rootProject.ext
     def version = project.version == null ? "" : project.version.toString()
-    def snapshotSuffix = git.SNAPSHOT_PACK_SUFFIX
-    def releaseSuffix = git.RELEASE_PACK_SUFFIX
-    def releaseVersionSuffix = git.RELEASE_VERSION_SUFFIX
     def currentBranch = git.branchName.toString()
-    boolean snapshotVersion = version.endsWith(snapshotSuffix)
-    boolean releaseVersion = !snapshotVersion && version.endsWith(releaseSuffix)
-    boolean releaseBranch = currentBranch.toLowerCase().endsWith(releaseVersionSuffix)
+    boolean devBranch = currentBranch ==~ /\d+\.\d+\.x/
+    boolean releaseBranch = currentBranch ==~ /\d+\.\d+\.\d+\.release/
     def problems = []
-    if (releaseVersion && !releaseBranch) {
-        problems << "版本 '${version}' 以 ${releaseSuffix} 结尾，但当前分支 '${currentBranch}' 不符合 ${releaseVersionSuffix} 命名约定，分支名与版本后缀不一致"
-    } else if (snapshotVersion && releaseBranch) {
-        problems << "当前分支 '${currentBranch}' 符合 ${releaseVersionSuffix} 发布约定，但版本 '${version}' 以 ${snapshotSuffix} 结尾，分支名与版本后缀不一致"
+    if (devBranch) {
+        def expected = currentBranch + git.SNAPSHOT_PACK_SUFFIX
+        if (version != expected) {
+            problems << "开发线 '${currentBranch}' 的发布版本为 '${version}'，不符合快照形态 '${expected}'；裸号正式版必须经由发布分支产生"
+        }
+    } else if (releaseBranch) {
+        def expected = git.parseBranchVersion(currentBranch)
+        if (version != expected) {
+            problems << "发布分支 '${currentBranch}' 的发布版本为 '${version}'，不符合裸号形态 '${expected}'"
+        }
+    } else if (currentBranch.endsWith(git.RELEASE_VERSION_SUFFIX)) {
+        problems << "发布分支 '${currentBranch}' 以 ${git.RELEASE_VERSION_SUFFIX} 结尾，但不符合三段号加 ${git.RELEASE_VERSION_SUFFIX} 的命名形态（例如 5.7.8.release）；发布分支出现第四段等其他形态一律拒绝"
+    } else {
+        problems << "当前分支 '${currentBranch}' 不属于可发布形态。发布仅允许在开发线形态（<主>.<次>.x，例如 5.7.x）或发布分支形态（<主>.<次>.<补丁>.release，例如 5.7.8.release）的分支上执行"
     }
     def repoUrls = publishing.repositories.withType(MavenArtifactRepository).collect { repository ->
         repository.url == null ? "" : repository.url.toString()
     }.findAll { repoUrl -> repoUrl.startsWith("http") }
-    repoUrls.each { repoUrl ->
-        def lowered = repoUrl.toLowerCase()
-        if (snapshotVersion && (lowered.contains("releases") || lowered.contains("-release/"))) {
-            problems << "版本 '${version}' 以 ${snapshotSuffix} 结尾，但发布目标仓库 '${repoUrl}' 是 release 仓库，版本后缀与目标仓库类型不一致"
-        } else if (releaseVersion && lowered.contains("snapshots")) {
-            problems << "版本 '${version}' 以 ${releaseSuffix} 结尾，但发布目标仓库 '${repoUrl}' 是 SNAPSHOT 仓库，版本后缀与目标仓库类型不一致"
+    if (devBranch || releaseBranch) {
+        repoUrls.each { repoUrl ->
+            def lowered = repoUrl.toLowerCase()
+            if (devBranch && (lowered.contains("releases") || lowered.contains("-release/"))) {
+                problems << "开发线版本 '${version}' 的发布目标仓库 '${repoUrl}' 是 release 仓库，快照必须发布到快照仓库"
+            } else if (releaseBranch && lowered.contains("snapshots")) {
+                problems << "发布分支版本 '${version}' 的发布目标仓库 '${repoUrl}' 是 SNAPSHOT 仓库，正式版必须发布到 release 仓库"
+            }
         }
     }
+    // 历史后缀形态占用的版本号不得复用：以 -RELEASE 发布过的号列入 gradle/released-legacy.txt，
+    // Maven 排序将 "RELEASE" 限定符与裸号等价特判，同号双形态共存必然乱序（规格：同号黑名单需求）。
+    if (releaseBranch) {
+        def legacyFile = rootProject.file("gradle/released-legacy.txt")
+        def legacyVersions = legacyFile.exists() ? legacyFile.readLines().findAll { !it.trim().isEmpty() && !it.trim().startsWith("#") } : []
+        def targetVersion = git.parseBranchVersion(currentBranch)
+        if (legacyVersions.contains(targetVersion)) {
+            problems << "版本 '${targetVersion}' 已以 -RELEASE 后缀形态发布并记录于 gradle/released-legacy.txt，禁止以裸号形态复用同号"
+        }
+        // 发布标签前置存证校验（规格：发布标签是正式版发布的前置存证；决策 D3）。
+        // 存证源就是远端（规格原文要求"远程仓库已存在"），用 git ls-remote 读取：
+        // 附注标签产生 "refs/tags/NAME" 与 "refs/tags/NAME^{}"（解引用到目标提交）两行，轻量标签没有 "^{}" 行。
+        // 全仓发布逐模块校验会重复联网，结果按"分支+提交+标签"在根工程记忆化，一次构建只查一次远端。
+        // 远端不可达时输出为空，按"标签不存在"拒绝发布，属 fail-closed，网络恢复后重试即可。
+        // git 可执行文件默认取 PATH 上的 git；个别机器 PATH 二进制与守护进程架构不匹配时可用 -PgitExe=/path/to/git 覆盖。
+        def tagName = "v" + targetVersion
+        def gitExe = project.findProperty("gitExe") ?: "git"
+        def runGit = { List args ->
+            def probe = providers.exec {
+                commandLine ([gitExe.toString()] + args)
+                workingDir = rootDir
+            }
+            probe.standardOutput.asText.get()
+        }
+        def cacheKey = "${currentBranch}|${git.commitId}|${tagName}"
+        def memoKey = "publishTagCheckMemo"
+        if (!rootProject.ext.has(memoKey)) {
+            rootProject.ext[memoKey] = [:]
+        }
+        def memo = rootProject.ext[memoKey]
+        if (!memo.containsKey(cacheKey)) {
+            def findings = []
+            def remoteName = null
+            // 当前分支配置了上游则取上游远端，否则仅当仓库只配置一个远端才采用
+            try {
+                def upstream = runGit(['rev-parse', '--abbrev-ref', '--symbolic-full-name', '@{upname}']).trim()
+                if (upstream.contains('/')) {
+                    remoteName = upstream.substring(0, upstream.indexOf('/'))
+                }
+            } catch (Exception ignored) {
+                // 分支无上游时输出为空/异常，走单远端兜底
+            }
+            if (remoteName == null) {
+                def remotes = runGit(['remote']).readLines().findAll { !it.trim().isEmpty() }
+                if (remotes.size() == 1) {
+                    remoteName = remotes[0].trim()
+                }
+            }
+            if (remoteName == null) {
+                findings << "无法确定用于核对发布标签 '${tagName}' 的远端：当前分支没有配置上游远端，且仓库远端数量不是 1"
+            } else {
+                def refMap = runGit(['ls-remote', '--tags', remoteName, "refs/tags/${tagName}*"])
+                        .readLines()
+                        .collect { it.split('\t') }
+                        .findAll { it.length == 2 }
+                        .collectEntries { [(it[1].trim()): it[0].trim()] }
+                def baseRef = refMap["refs/tags/${tagName}"]
+                def peeledRef = refMap["refs/tags/${tagName}^{}"]
+                if (baseRef == null) {
+                    findings << "发布标签 '${tagName}' 在远端 '${remoteName}' 不存在（或远端此刻不可达）：请先在发布分支 HEAD 创建同名附注标签并推送远端，再执行发布"
+                } else {
+                    if (peeledRef == null) {
+                        findings << "远端标签 '${tagName}' 是轻量标签（无解引用记录），须以 git tag -a 创建附注标签并重新推送"
+                    }
+                    def tagTarget = peeledRef != null ? peeledRef : baseRef
+                    if (tagTarget != git.commitId) {
+                        findings << "远端标签 '${tagName}' 指向 '${tagTarget}'，与当前构建提交 '${git.commitId}' 不一致"
+                    }
+                }
+            }
+            memo[cacheKey] = findings
+        }
+        problems.addAll(memo[cacheKey])
+    }
     if (!problems.isEmpty()) {
-        def hasBranchMismatch = problems.any { message -> message.contains("分支名与版本后缀不一致") }
-        def hint = hasBranchMismatch
-                ? "请切换到与版本后缀 '${version}' 匹配的分支后再发布（release 版本分支需以 ${releaseVersionSuffix} 结尾）。"
-                : "请检查 RELEASE_REPOSITORY_URL / SNAPSHOT_REPOSITORY_URL 配置是否与版本后缀 '${version}' 匹配。"
-        throw new GradleException("发布被阻断（任务 ${gateTask.path}）：\n- " + problems.join("\n-") + "\n" + hint)
+        def hint = (devBranch || releaseBranch)
+                ? "请检查版本派生（gradle/git.gradle）与 RELEASE_REPOSITORY_URL / SNAPSHOT_REPOSITORY_URL 配置是否与当前分支形态匹配。"
+                : "请切换到开发线形态或发布分支形态的分支后再发布。"
+        throw new GradleException("发布被阻断（任务 ${gateTask.path}）：\n- " + problems.join("\n- ") + "\n" + hint)
     }
 }
 
