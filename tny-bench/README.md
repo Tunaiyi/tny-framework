@@ -76,24 +76,32 @@ com.tny.game.bench.net/
 | 结果格式 | JSON（`build/reports/bench/bench-result.json`） |
 | 缺省选择面 | 常规族 ∪ 设施探针（见上），非全量 |
 
-## 执行面（CI 执行通道的固定选择面）
+## 执行面（CI 执行通道，两个规模）
 
-- 常规族 4 类 ∪ 设施探针 Smoke，经 JMH `-p algo=<六臂>` **参数域覆写**选 `prod_*` 臂
-  （实测：include 正则不匹配参数串，`:prod_` 式过滤 0 选中；`-p` 的 JMH 1.37 语义是覆写值域而非过滤，
-  对未声明该字段的基准无排除效应）。
-- 定义在 `build.gradle` 的 `benchRoutineClasses`/`benchFacilityProbe`/`benchRoutineAlgoArms`
-  （单一事实；**族子包正则**——目录与声明由 `jmhSuiteVerify` 对账）。
-- 规模：**37 参数组合**（6 臂 × 2 键形 × 2 尺寸 = 24 + PacketCodec 2 + MessageQueue 6 + RespondFuture 4
-  + Smoke 探针 1）。**CI 实测（2026-10-01 首跑，commit 43a5e966）**：push→回写端到端 ≈18 分钟
-  （含排队/checkout/编译，D3 计时本体占其中约三分之二）——快于预估区间 25~40 分钟，夜间/合入通道时长可接受。
-- 触发：push（main/5.7.x）+ 夜间定时 + 手动（`build.yml` 的 `bench-routine` job）；PR 不触发计时。
+选择面的单一事实在 `build.gradle`：族清单 `benchRoutineClasses`/`benchDevSuiteClasses`/`benchFacilityProbe`
+（族子包正则，目录与声明由 `jmhSuiteVerify` 对账）与规模清单 `benchQuickRun`（速览子集声明）。
+
+| 规模 | 成员 | 组合数 | 谁在用 |
+|---|---|---|---|
+| 速览 quick | 全管线、发送队列、RPC 配对三类加设施探针（加密装配矩阵除外） | 13 | 触及框架源码的合入（CI push 经内容门禁放行，传 `-PbenchScope=quick`） |
+| 完整 full | 常规族全部，矩阵臂经 `-p algo` 选 `prod_*` 六臂 | 37 | 夜间定时、手动触发、本地缺省直接执行 `./gradlew :tny-bench:jmh` |
+
+- 触发规则（`build.yml` 的 `bench-scope-gate` 内容门禁）：push 仅在改动触及模块源码目录、任一构建脚本、
+  根 `gradle.properties`、`gradle/libs.versions.toml` 或 `tny-bench/` 时以速览规模计时；纯文档、规格案卷、
+  流水线脚本的合入**不计时也不回写**；定时与手动恒完整规模；PR 永不计时（基准编译与族校验由
+  `bench-compile` 全触发承担）。矩阵级退化最迟在下一次夜间完整运行显现，属既定裁决而非漏洞。
+- 时长预算（实测）：完整规模约十八至二十一分钟（commit 43a5e966 首跑与 00e4c9da 二跑实证）；
+  速览规模按同参数比例推算约七至九分钟，待首个实况合入回填。
+- 曲线序列分组：github-action-benchmark 的分组键为"Routine 规模 (分支)"，
+  main 与 5.7.x、速览与完整互不混线，劣化告警只在同组近期序列内比较。
 
 ## 产物与引用约定（spec：结果产物结构化可对比）
 
-- 新产物一律入 `results/bench-<yyyymmdd>-routine.json`，JMH 自述完整参数/JVM/OS 环境头；同日期覆盖
-  （同日多次执行以曲线端逐次累积为准，入库产物是当日快照）。
-- **变更工件引用基准数字时 MUST 写明结果文件路径（含日期）与参数指纹**，例：
-  `数据源：results/bench-20261001-routine.json（-f2 -wi5 -i10 -w500ms -r1s，JDK21/aarch64）`。
+- 产物文件名同时携带日期与规模：完整规模入 `results/bench-<yyyymmdd>-routine.json`，
+  速览规模入 `results/bench-<yyyymmdd>-quick.json`（`benchRoutineExport` 依 `-PbenchScope` 自动区分）。
+  JMH 自述完整参数/JVM/OS 环境头；同日期覆盖限定在同一规模之内，逐版对比要求同规模成立。
+- **变更工件引用基准数字时 MUST 写明结果文件路径（含日期与规模）与参数指纹**，例：
+  `数据源：results/bench-20261001-routine.json（完整规模，-f2 -wi5 -i10 -w500ms -r1s，JDK21/aarch64）`。
 - 曲线告警（CI `bench-routine` job，github-action-benchmark，tool=jmh）仅作信号；**回归判定由人按"同窗对比"终裁**——
   夜间 runner 与本地机器不同窗，跨机数字只能提示方向，不能定案。
 - 曲线 bname 主键含 FQCN：族分置（routine/devtest）自本变更起为新主键；此前无历史点位（迁移窗口实证）。
@@ -123,3 +131,6 @@ com.tny.game.bench.net/
   （引号注入事故、快照补丁面、参数转抄成本 → 插件 fork 类路径固化 + 参数入块）。
 - 2026-10-01 `split-bench-suites`：「锚集」隐式口径退役为「常规族/开发测试族/共享支撑件」三结构；
   执行通道触发面由仅夜间扩展至 push+夜间+手动；`benchAnchorExport`→`benchRoutineExport`。
+- 2026-10-02 `refine-bench-routine-triggering`：执行通道加内容门禁（非行为性合入不计时不回写）；
+  计时拆为速览与完整两个规模（`-PbenchScope=quick` 与缺省完整）；曲线序列按"分支乘规模"分组；
+  产物文件名增加规模标识。

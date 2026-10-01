@@ -123,11 +123,57 @@ jobs:
       - name: Compile benchmarks, verify family lists & suite classification
         run: ./gradlew :tny-bench:jmhCompileGeneratedClasses :tny-bench:jmhList :tny-bench:jmhSuiteVerify -q
 
+  # 内容门禁（refine-bench-routine-triggering D1）：判定本次进入受监控分支的改动是否可能改变
+  # 框架代码行为。只有框架改动才放行计时；纯文档、规格案卷、流水线脚本的合入不计时也不回写。
+  # 定时与手动触发恒放行且规模完整；PR 事件一律不放行（执行通道从不跑 PR，评审职责归 bench-compile）。
+  bench-scope-gate:
+    name: Bench scope gate (content-based triggering)
+    runs-on: ubuntu-latest
+    outputs:
+      run: ${{ steps.judge.outputs.run }}
+      scope: ${{ steps.judge.outputs.scope }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # push 事件需要比对前序提交才能列出本次改动文件，仅此场合拉全历史，其余事件浅克隆重
+          fetch-depth: ${{ github.event_name == 'push' && '0' || '1' }}
+      - name: Decide whether to run timed benchmarks and with which suite
+        id: judge
+        run: |
+          event="${{ github.event_name }}"
+          if [ "$event" = "schedule" ] || [ "$event" = "workflow_dispatch" ]; then
+            echo "定时或手动触发：恒放行，执行完整规模。"
+            echo "run=true" >> "$GITHUB_OUTPUT"
+            echo "scope=full" >> "$GITHUB_OUTPUT"
+          elif [ "$event" != "push" ]; then
+            echo "PR 等非 push 事件：执行通道不运行。"
+            echo "run=false" >> "$GITHUB_OUTPUT"
+            echo "scope=full" >> "$GITHUB_OUTPUT"
+          else
+            before="${{ github.event.before }}"
+            if ! git cat-file -e "${before}^{commit}" 2>/dev/null; then
+              echo "前序提交不可达（例如 force push 改写历史），按安全侧放行完整规模，宁可多跑不漏检。"
+              echo "run=true" >> "$GITHUB_OUTPUT"
+              echo "scope=full" >> "$GITHUB_OUTPUT"
+            elif git diff --name-only "$before" "${{ github.sha }}" \
+                 | grep -qE '(^|/)src/|(^|/)build\.gradle$|^gradle\.properties$|^gradle/libs\.versions\.toml$|^tny-bench/'; then
+              echo "改动触及模块源码、构建脚本、版本配置或基准模块：以速览规模放行计时。"
+              echo "run=true" >> "$GITHUB_OUTPUT"
+              echo "scope=quick" >> "$GITHUB_OUTPUT"
+            else
+              echo "改动仅涉及文档、案卷或流水线脚本等非行为性文件：跳过计时与回写。"
+              echo "run=false" >> "$GITHUB_OUTPUT"
+              echo "scope=full" >> "$GITHUB_OUTPUT"
+            fi
+          fi
+
   bench-routine:
-    name: Routine benchmarks (timed, push + nightly curve, human verdict)
-    # 执行通道（spec：CI 双通道修订）：push/定时/手动触发计时跑常规族（含设施探针）——
-    # 每次框架优化合入即得数据点；PR 不触发（评审通道零计时职责不动）。
-    if: github.event_name == 'push' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    name: Routine benchmarks (quick on qualifying merges, full nightly, human verdict)
+    # 执行通道（差量契约见 refine-bench-routine-triggering）：门禁决定放行与规模——
+    # 框架改动合入跑速览（十三组合，约七至九分钟），定时与手动跑完整（三十七组合），
+    # 非行为性改动整个作业跳过。告警语义不变：信号非门禁，人裁决终裁。
+    needs: bench-scope-gate
+    if: needs.bench-scope-gate.outputs.run == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -138,8 +184,13 @@ jobs:
           distribution: temurin
           java-version: '21'
       - uses: gradle/actions/setup-gradle@v3
-      - name: Run routine suite (benchRoutineExport, params declared in tny-bench/build.gradle)
-        run: ./gradlew :tny-bench:benchRoutineExport
+      - name: Run routine suite (benchRoutineExport, suite chosen by gate)
+        run: |
+          if [ "${{ needs.bench-scope-gate.outputs.scope }}" = "quick" ]; then
+            ./gradlew :tny-bench:benchRoutineExport -PbenchScope=quick
+          else
+            ./gradlew :tny-bench:benchRoutineExport
+          fi
       - uses: actions/upload-artifact@v4
         with:
           name: bench-routine-results
@@ -163,6 +214,9 @@ jobs:
         uses: benchmark-action/github-action-benchmark@v1
         continue-on-error: true
         with:
+          # 序列分组键（refine-bench-routine-triggering D3）：分支与规模共同成组，
+          # main 与 5.7.x、速览与完整互不混线，告警只在同组近期序列内比较。
+          name: Routine ${{ needs.bench-scope-gate.outputs.scope }} (${{ github.ref_name }})
           tool: 'jmh'
           output-file-path: tny-bench/build/reports/bench/bench-result.json
           gh-pages-branch: gh-pages

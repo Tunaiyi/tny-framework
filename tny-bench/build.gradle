@@ -25,6 +25,10 @@ ext {
     // 覆写参数域而非过滤，对未声明该字段的基准无排除效应，实测证实）。臂属选择面问题，不属族属问题（D1）。
     benchRoutineAlgoArms = ['prod_crc64_xortile', 'prod_siphash24_xortile', 'prod_crc32_xortile',
                             'prod_siphash24_xorprod', 'prod_crc32_xorprod', 'prod_siphash24_chacha']
+    // 速览规模（refine-bench-routine-triggering D2）：常规族去掉加密装配矩阵类再并入设施探针，
+    // 供框架合入的 push 场合计时；矩阵级退化由夜间与手动的完整规模兜底。
+    // 前瞻负向断言保持"族全集减矩阵"语义——常规族日后新增类自动进速览，无需二次维护本清单。
+    benchQuickRun = ['.*\\.bench\\.net\\.(?!routine\\.PipelineCryptoMatrixBenchmark)(routine|devtest\\.SmokeBenchmark).*']
 }
 
 dependencies {
@@ -49,8 +53,12 @@ jmh {
         includes = ['.*']
     } else if (project.hasProperty('benchInclude')) {
         includes = [project.property('benchInclude').toString()]   // 单正则语义（JMH 位置参数）
+    } else if (project.hasProperty('benchScope') && project.property('benchScope').toString() == 'quick') {
+        // 速览规模：合入计时用（CI push 传 -PbenchScope=quick）；矩阵类不在选择面，algo 参数域无的放矢不必设置
+        includes = benchQuickRun
     } else {
-        // 常规族 ∪ 设施探针：两单元素清单自拼 | 成单正则（插件逗号拼接语义）
+        // 缺省即完整规模（本地直接执行、夜间定时、手动触发）：常规族并设施探针，
+        // 两单元素清单自拼竖线成单正则（插件逗号拼接语义），六臂参数域覆写沿用。
         includes = [(benchRoutineClasses + benchFacilityProbe).join('|')]
         benchmarkParameters = [algo: objects.listProperty(String).value(benchRoutineAlgoArms)]
     }
@@ -166,7 +174,10 @@ tasks.register('benchRoutineExport') {
             throw new GradleException("常规族运行声明完成但结果文件缺失：${src}（spec：产物缺失可发现）")
         }
         def dateStr = new java.text.SimpleDateFormat('yyyyMMdd').format(new Date())
-        def dest = file("${projectDir}/results/bench-${dateStr}-routine.json")
+        // 产物规模标识（refine-bench-routine-triggering D2/差量产物条款）：
+        // 速览与完整各自成文件，同日期覆盖限定同规模，逐版对比要求同规模成立。
+        def scopeSuffix = (project.hasProperty('benchScope') && project.property('benchScope').toString() == 'quick') ? 'quick' : 'routine'
+        def dest = file("${projectDir}/results/bench-${dateStr}-${scopeSuffix}.json")
         dest.parentFile.mkdirs()
         ant.copy(file: src, tofile: dest, overwrite: true)
         logger.lifecycle("benchRoutineExport: ${dest}")
