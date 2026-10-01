@@ -8,8 +8,9 @@
  * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-package com.tny.game.bench.net;
+package com.tny.game.bench.net.devtest;
 
+import com.tny.game.bench.net.shared.AeadRfc7539;
 import org.openjdk.jmh.annotations.*;
 
 import java.util.concurrent.TimeUnit;

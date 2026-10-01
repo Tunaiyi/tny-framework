@@ -8,8 +8,9 @@
  * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-package com.tny.game.bench.net;
+package com.tny.game.bench.net.devtest;
 
+import com.tny.game.bench.net.shared.Crc64Slicing;
 import com.tny.game.common.digest.binary.*;
 import com.tny.game.net.codec.verifier.*;
 import org.openjdk.jmh.annotations.*;
@@ -35,8 +36,6 @@ import java.util.zip.CRC32C;
 @OutputTimeUnit(TimeUnit.SECONDS)
 @State(Scope.Thread)
 public class CryptoAlgorithmMicroBenchmark {
-
-    static final long CRC64_INITIAL = 0xFFFFFFFFFFFFFFFFL;
 
     @Param({"96", "1024"})
     private int size;
@@ -107,11 +106,11 @@ public class CryptoAlgorithmMicroBenchmark {
         for (int round = 0; round < 64; round++) {
             int off = random.nextInt(8);
             int len = 1 + random.nextInt(Math.max(1, body.length - off));
-            long expected = slicing.updateSlow(CRC64_INITIAL, num4, 0, 4);
+            long expected = slicing.updateSlow(Crc64Slicing.CRC64_INITIAL, num4, 0, 4);
             expected = slicing.updateSlow(expected, body, off, len);
             expected = slicing.updateSlow(expected, accessKey, 0, 16);
             expected = slicing.updateSlow(expected, code4, 0, 4);
-            long actual = slicing.update(CRC64_INITIAL, num4, 0, 4);
+            long actual = slicing.update(Crc64Slicing.CRC64_INITIAL, num4, 0, 4);
             actual = slicing.update(actual, body, off, len);
             actual = slicing.update(actual, accessKey, 0, 16);
             actual = slicing.update(actual, code4, 0, 4);
@@ -247,7 +246,7 @@ public class CryptoAlgorithmMicroBenchmark {
         int code = number * 31 + 7;
         BytesAide.int2Bytes(number, num4, 0);
         BytesAide.int2Bytes(code, code4, 0);
-        long crc = CRC64.crc64Long(CRC64_INITIAL, num4, 0, 4);
+        long crc = CRC64.crc64Long(Crc64Slicing.CRC64_INITIAL, num4, 0, 4);
         crc = CRC64.crc64Long(crc, body, 0, body.length);
         crc = CRC64.crc64Long(crc, accessKey, 0, 16);
         crc = CRC64.crc64Long(crc, code4, 0, 4);
@@ -261,7 +260,7 @@ public class CryptoAlgorithmMicroBenchmark {
         int code = number * 31 + 7;
         BytesAide.int2Bytes(number, num4, 0);
         BytesAide.int2Bytes(code, code4, 0);
-        long crc = slicing.update(CRC64_INITIAL, num4, 0, 4);
+        long crc = slicing.update(Crc64Slicing.CRC64_INITIAL, num4, 0, 4);
         crc = slicing.update(crc, body, 0, body.length);
         crc = slicing.update(crc, accessKey, 0, 16);
         crc = slicing.update(crc, code4, 0, 4);
@@ -365,57 +364,4 @@ public class CryptoAlgorithmMicroBenchmark {
         return counter++;
     }
 
-    /**
-     * 与生产 CRC64 同多项式（ECMA-182 反射）的 slicing-by-8 原型。
-     * 8 张表：t[0] 即逐字节表，t[k][i] = (t[k-1][i] >>> 8) ^ t[0][t[k-1][i] & 0xFF]。
-     */
-    static final class Crc64Slicing {
-        private final long[][] tables = new long[8][256];
-
-        Crc64Slicing() {
-            long poly = 0x95AC9329AC4BC9B5L;
-            for (int i = 0; i < 256; i++) {
-                long part = i;
-                for (int j = 0; j < 8; j++) {
-                    part = ((part & 1) != 0) ? (part >>> 1) ^ poly : part >>> 1;
-                }
-                tables[0][i] = part;
-            }
-            for (int i = 0; i < 256; i++) {
-                long c = tables[0][i];
-                for (int k = 1; k < 8; k++) {
-                    c = (c >>> 8) ^ tables[0][(int) c & 0xFF];
-                    tables[k][i] = c;
-                }
-            }
-        }
-
-        /** 本表语义（标准 CRC64，逻辑右移）下的逐字节参照实现 */
-        long updateSlow(long crc, byte[] data, int off, int len) {
-            for (int i = off, end = off + len; i < end; i++) {
-                crc = tables[0][((int) crc ^ data[i]) & 0xFF] ^ (crc >>> 8);
-            }
-            return crc;
-        }
-
-        long update(long crc, byte[] data, int off, int len) {
-            int i = off;
-            int end = off + len;
-            for (; i + 8 <= end; i += 8) {
-                crc ^= le64(data, i);
-                crc = tables[7][(int) crc & 0xFF] ^ tables[6][(int) (crc >>> 8) & 0xFF]
-                        ^ tables[5][(int) (crc >>> 16) & 0xFF] ^ tables[4][(int) (crc >>> 24) & 0xFF]
-                        ^ tables[3][(int) (crc >>> 32) & 0xFF] ^ tables[2][(int) (crc >>> 40) & 0xFF]
-                        ^ tables[1][(int) (crc >>> 48) & 0xFF] ^ tables[0][(int) (crc >>> 56) & 0xFF];
-            }
-            for (; i < end; i++) {
-                crc = tables[0][((int) crc ^ data[i]) & 0xFF] ^ (crc >>> 8);
-            }
-            return crc;
-        }
-
-        private static long le64(byte[] b, int i) {
-            return CryptoAlgorithmMicroBenchmark.le64(b, i);
-        }
-    }
 }

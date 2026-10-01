@@ -8,8 +8,11 @@
  * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-package com.tny.game.bench.net;
+package com.tny.game.bench.net.routine;
 
+import com.tny.game.bench.net.shared.AeadRfc7539;
+import com.tny.game.bench.net.shared.Crc64Slicing;
+import com.tny.game.bench.net.shared.SipHash64;
 import com.tny.game.common.digest.binary.*;
 import com.tny.game.net.codec.*;
 import com.tny.game.net.codec.cryptoloy.*;
@@ -286,7 +289,7 @@ public class PipelineCryptoMatrixBenchmark {
 
     /** slicing-by-8 CRC64：与生产同多项式同混入序列，校验码仍 8B（帧格式零变化） */
     static final class SlicingBy8CodecVerifier implements CodecVerifier {
-        private final CryptoAlgorithmMicroBenchmark.Crc64Slicing slicing = new CryptoAlgorithmMicroBenchmark.Crc64Slicing();
+        private final Crc64Slicing slicing = new Crc64Slicing();
 
         @Override
         public int getCodeLength() {
@@ -299,7 +302,7 @@ public class PipelineCryptoMatrixBenchmark {
             int code = packager.getPacketCode();
             byte[] numberBytes = BytesAide.int2Bytes(number);
             byte[] codeBytes = BytesAide.int2Bytes(code);
-            long crc = CryptoAlgorithmMicroBenchmark.CRC64_INITIAL;
+            long crc = Crc64Slicing.CRC64_INITIAL;
             crc = slicing.update(crc, numberBytes, 0, 4);
             crc = slicing.update(crc, body, offset, length);
             crc = slicing.update(crc, packager.getAccessKeyBytes(), 0, packager.getAccessKeyBytes().length);
@@ -565,7 +568,7 @@ public class PipelineCryptoMatrixBenchmark {
             long k0 = K0 ^ Integer.rotateLeft(packager.getPacketNumber(), 21);
             long k1 = K1 ^ Long.rotateLeft(packager.getPacketCode() & 0xffffffffL, 17)
                     ^ packager.getAccessKeyBytes()[0];
-            long mac = VerifyAlgorithmsMicroBenchmark.sipHash64(k0, k1, body, offset, length);
+            long mac = SipHash64.sipHash64(k0, k1, body, offset, length);
             BytesAide.long2Bytes(mac, out8, 0);
             return out8;
         }

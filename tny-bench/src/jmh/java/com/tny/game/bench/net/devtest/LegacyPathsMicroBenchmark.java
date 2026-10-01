@@ -8,7 +8,7 @@
  * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-package com.tny.game.bench.net;
+package com.tny.game.bench.net.devtest;
 
 import com.tny.game.common.digest.binary.*;
 import com.tny.game.net.codec.*;

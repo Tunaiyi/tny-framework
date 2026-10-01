@@ -8,7 +8,7 @@
  * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-package com.tny.game.bench.net;
+package com.tny.game.bench.net.shared;
 
 import java.util.Arrays;
 
@@ -20,7 +20,7 @@ import java.util.Arrays;
  * 声明：数组版 ChaCha + 通用 26-bit limb Poly（正确性优先）；生产实现可换 donna 展开版，
  * 本基准数字是**上界成本**（只会比生产优化更快，不会更慢）。
  */
-final class AeadRfc7539 {
+public final class AeadRfc7539 {
 
     private final int[] st = new int[16];
     private final int[] x = new int[16];
@@ -36,7 +36,7 @@ final class AeadRfc7539 {
     private final long[] acc = new long[5];
     private final long[] gg = new long[5];
 
-    AeadRfc7539(byte[] key32) {
+    public AeadRfc7539(byte[] key32) {
         st[0] = 0x61707865;
         st[1] = 0x3320646e;
         st[2] = 0x79622d32;
@@ -47,7 +47,7 @@ final class AeadRfc7539 {
     }
 
     /** 设置本帧 12B nonce（调用方从连接计数器构造，Noise 形态）。 */
-    void setNonce(byte[] nonce12) {
+    public void setNonce(byte[] nonce12) {
         System.arraycopy(nonce12, 0, this.nonce, 0, 12);
     }
 
@@ -104,7 +104,7 @@ final class AeadRfc7539 {
     // ==================== AEAD seal / open ====================
 
     /** 密封：密文写入 ctOut，tag 写入内部 scratch（{@link #tag()} 取 16B）。 */
-    void seal(byte[] in, int off, int len, byte[] aad, int aOff, int aLen, byte[] ctOut) {
+    public void seal(byte[] in, int off, int len, byte[] aad, int aOff, int aLen, byte[] ctOut) {
         block(0);
         System.arraycopy(blockOut, 0, polyKey, 0, 32);
         initPoly();
@@ -113,7 +113,7 @@ final class AeadRfc7539 {
     }
 
     /** 仅认证：对给定密文段计算 tag（管线解码侧 tag 晚于解密到达时分步使用）。 */
-    void auth(byte[] ct, int len, byte[] aad, int aOff, int aLen) {
+    public void auth(byte[] ct, int len, byte[] aad, int aOff, int aLen) {
         block(0);
         System.arraycopy(blockOut, 0, polyKey, 0, 32);
         initPoly();
@@ -121,12 +121,12 @@ final class AeadRfc7539 {
     }
 
     /** 原地解密（流密码对称，配合 {@link #auth} 先验后放）。 */
-    void decryptInPlace(byte[] data, int off, int len) {
+    public void decryptInPlace(byte[] data, int off, int len) {
         xorKeyStream(data, off, len, data, off);
     }
 
     /** 打开：先算期望 tag（覆盖密文），再原地解密，比对 tag。 */
-    boolean openAndDecrypt(byte[] ct, int off, int len, byte[] aad, int aOff, int aLen, byte[] expectedTag) {
+    public boolean openAndDecrypt(byte[] ct, int off, int len, byte[] aad, int aOff, int aLen, byte[] expectedTag) {
         block(0);
         System.arraycopy(blockOut, 0, polyKey, 0, 32);
         initPoly();
@@ -149,7 +149,7 @@ final class AeadRfc7539 {
         return ctScratch;
     }
 
-    byte[] tag() {
+    public byte[] tag() {
         return tag;
     }
 
@@ -296,7 +296,7 @@ final class AeadRfc7539 {
      *  注：实测发现 JDK 的 Poly1305 mac 输入用"AAD 前置"旧草案布局（aad‖ct‖lens），
      *  与 RFC 7539（ct‖aad‖lens）tag 不同——故 tag 不能拿 JDK 当锚，只能用规范向量。
      */
-    static void selfTest() throws Exception {
+    public static void selfTest() throws Exception {
         byte[] key = new byte[32];
         byte[] nonce = new byte[12];
         for (int i = 0; i < 32; i++) key[i] = (byte) i;

@@ -8,8 +8,9 @@
  * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-package com.tny.game.bench.net;
+package com.tny.game.bench.net.devtest;
 
+import com.tny.game.bench.net.shared.SipHash64;
 import com.tny.game.common.digest.binary.*;
 import org.openjdk.jmh.annotations.*;
 
@@ -142,7 +143,7 @@ public class VerifyAlgorithmsMicroBenchmark {
     @Benchmark
     public long sipHash24Keyed() {
         tick();
-        return sipHash64(sipK0, sipK1, body, 0, body.length)
+        return SipHash64.sipHash64(sipK0, sipK1, body, 0, body.length)
                 ^ ((num4[0] & 0xFFL) * 0x94D049BB133111EBL);
     }
 
@@ -231,50 +232,6 @@ public class VerifyAlgorithmsMicroBenchmark {
         val = xxRound(0, val);
         acc ^= val;
         return acc * P1 + P4;
-    }
-
-    static long sipHash64(long k0, long k1, byte[] in, int off, int len) {
-        long v0 = 0x736f6d6570736575L ^ k0;
-        long v1 = 0x646f72616e646578L ^ k1;
-        long v2 = 0x6c7967656e657261L ^ k0;
-        long v3 = 0x7465646279746573L ^ k1;
-        int left = len & ~7;
-        int i = off;
-        for (int n = 0; n < left; n += 8, i += 8) {
-            long m = le64(in, i);
-            v3 ^= m;
-            v0 += v1; v1 = Long.rotateLeft(v1, 13); v1 ^= v0; v0 = Long.rotateLeft(v0, 41);
-            v2 += v3; v3 = Long.rotateLeft(v3, 16); v3 ^= v2;
-            v0 += v3; v3 = Long.rotateLeft(v3, 21); v3 ^= v0;
-            v2 += v1; v1 = Long.rotateLeft(v1, 17); v1 ^= v2; v2 = Long.rotateLeft(v2, 32);
-            v0 += v1; v1 = Long.rotateLeft(v1, 13); v1 ^= v0; v0 = Long.rotateLeft(v0, 41);
-            v2 += v3; v3 = Long.rotateLeft(v3, 16); v3 ^= v2;
-            v0 += v3; v3 = Long.rotateLeft(v3, 21); v3 ^= v0;
-            v2 += v1; v1 = Long.rotateLeft(v1, 17); v1 ^= v2; v2 = Long.rotateLeft(v2, 32);
-            v0 ^= m;
-        }
-        long m = ((long) len) << 56;
-        for (int j = 0; j < (len & 7); j++) {
-            m |= (in[off + left + j] & 0xFFL) << (8 * j);
-        }
-        v3 ^= m;
-        v0 += v1; v1 = Long.rotateLeft(v1, 13); v1 ^= v0; v0 = Long.rotateLeft(v0, 41);
-        v2 += v3; v3 = Long.rotateLeft(v3, 16); v3 ^= v2;
-        v0 += v3; v3 = Long.rotateLeft(v3, 21); v3 ^= v0;
-        v2 += v1; v1 = Long.rotateLeft(v1, 17); v1 ^= v2; v2 = Long.rotateLeft(v2, 32);
-        v0 += v1; v1 = Long.rotateLeft(v1, 13); v1 ^= v0; v0 = Long.rotateLeft(v0, 41);
-        v2 += v3; v3 = Long.rotateLeft(v3, 16); v3 ^= v2;
-        v0 += v3; v3 = Long.rotateLeft(v3, 21); v3 ^= v0;
-        v2 += v1; v1 = Long.rotateLeft(v1, 17); v1 ^= v2; v2 = Long.rotateLeft(v2, 32);
-        v0 ^= m;
-        v2 ^= 0xFF;
-        for (int d = 0; d < 4; d++) {
-            v0 += v1; v1 = Long.rotateLeft(v1, 13); v1 ^= v0; v0 = Long.rotateLeft(v0, 41);
-            v2 += v3; v3 = Long.rotateLeft(v3, 16); v3 ^= v2;
-            v0 += v3; v3 = Long.rotateLeft(v3, 21); v3 ^= v0;
-            v2 += v1; v1 = Long.rotateLeft(v1, 17); v1 ^= v2; v2 = Long.rotateLeft(v2, 32);
-        }
-        return v0 ^ v1 ^ v2 ^ v3;
     }
 
     private static long le64(byte[] b, int i) {

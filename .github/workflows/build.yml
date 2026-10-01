@@ -6,7 +6,7 @@ on:
     branches: [ main, '5.7.x' ]
   schedule:
     - cron: '37 18 * * *'   # nightly（UTC18:37 错峰）
-  workflow_dispatch: {}     # 手动触发（bench-nightly 首验用，benchmark-harness 4.2）
+  workflow_dispatch: {}     # 手动触发（bench-routine 首验/补跑用）
 
 env:
   # Gradle 8.5 daemon 须运行于 JDK ≤21；toolchain 另钉 JDK 21（见 README 构建环境注记）
@@ -109,14 +109,16 @@ jobs:
           distribution: temurin
           java-version: '21'
       - uses: gradle/actions/setup-gradle@v3
-      # 职责边界（spec：CI 双通道）：仅编译与枚举清单，零计时——PR 不因基准数字变红，
-      # 但基准源码编译破裂与"锚集不可枚举/空匹配"必红（jmhList 对空列表显式判红）。
-      - name: Compile benchmarks and verify enumerable list
-        run: ./gradlew :tny-bench:jmhCompileGeneratedClasses :tny-bench:jmhList -q
+      # 职责边界（spec：CI 双通道 + 二分分类契约）：两族编译 + 按族枚举 + 目录↔声明双向对账，零计时——
+      # PR 不因基准数字变红，但编译破裂、族清单空面、未归族基准必红（jmhList/jmhSuiteVerify 显式判红）。
+      - name: Compile benchmarks, verify family lists & suite classification
+        run: ./gradlew :tny-bench:jmhCompileGeneratedClasses :tny-bench:jmhList :tny-bench:jmhSuiteVerify -q
 
-  bench-nightly:
-    name: Anchor benchmarks (nightly curve, human verdict)
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+  bench-routine:
+    name: Routine benchmarks (timed, push + nightly curve, human verdict)
+    # 执行通道（spec：CI 双通道修订）：push/定时/手动触发计时跑常规族（含设施探针）——
+    # 每次框架优化合入即得数据点；PR 不触发（评审通道零计时职责不动）。
+    if: github.event_name == 'push' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -127,19 +129,19 @@ jobs:
           distribution: temurin
           java-version: '21'
       - uses: gradle/actions/setup-gradle@v3
-      - name: Run anchor set (benchAnchorExport, params declared in tny-bench/build.gradle)
-        run: ./gradlew :tny-bench:benchAnchorExport
+      - name: Run routine suite (benchRoutineExport, params declared in tny-bench/build.gradle)
+        run: ./gradlew :tny-bench:benchRoutineExport
       - uses: actions/upload-artifact@v4
         with:
-          name: bench-anchor-results
+          name: bench-routine-results
           path: tny-bench/results/*.json
           if-no-files-found: error
-      - name: Commit anchor result into results/
+      - name: Commit routine result into results/
         run: |
-          git config user.name "bench-nightly[bot]"
-          git config user.email "bench-nightly@users.noreply.github.com"
+          git config user.name "bench-routine[bot]"
+          git config user.email "bench-routine@users.noreply.github.com"
           git add -f tny-bench/results/
-          git diff --cached --quiet || git commit -m "chore(bench): nightly anchor results [skip ci]"
+          git diff --cached --quiet || git commit -m "chore(bench): routine benchmark results [skip ci]"
           git push
       # 历史曲线=信号非门禁（spec：回归判定人裁决）：告警级 alert-threshold，
       # gh-pages 未启用/私有仓场景 continue-on-error 降级（design 风险条）。
