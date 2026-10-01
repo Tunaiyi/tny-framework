@@ -25,9 +25,9 @@
 ## 4. CI 双通道（design T4）
 
 - [x] 4.1 PR 通道：`build.yml` 新增 `bench-compile` job——仅 `./gradlew :tny-bench:jmhCompileGeneratedClasses` + `jmhList`（不执行任何计时）。验证：本地分支故意改坏一个基准类编译 → 该 job 语义必红（以同命令本地复现退出码非 0）；正常提交全绿。
-- [ ] 4.2 nightly 通道：`schedule` 触发（或并入既有 nightly job）跑 3.2 锚集任务，产物 commit 回 `results/` 并上传为 workflow artifact；增 `workflow_dispatch` 触发器供首验免等定时。验证：手动 dispatch 一次全 job 绿、results 新文件入库。
-- [ ] 4.3 历史曲线：nightly 接 `benchmark-action/github-action-benchmark@v1`（`tool: jmh`，数据落 gh-pages），`alert-threshold` 设 Comment/告警级（不阻断）；该步失败 `continue-on-error` 降级（gh-pages 未启用/私有仓场景，design 风险条）。验证：首验 dispatch 运行中曲线步行为记录在案——成功则 Pages 有图，失败则 job 仍绿且告警可见（两种都属 spec"人裁决"合同面）。
-- [ ] 4.4 组验证：对照 spec"CI 双通道职责边界"三场景逐项勾验（PR 编译拦截 / PR 不因生产性能退化变红 / nightly 历史不丢失），结论写入本任务完成注记。
+- [x] 4.2 nightly 通道：`schedule` 触发（或并入既有 nightly job）跑 3.2 锚集任务，产物 commit 回 `results/` 并上传为 workflow artifact；增 `workflow_dispatch` 触发器供首验免等定时。验证：手动 dispatch 一次全 job 绿、results 新文件入库。
+- [x] 4.3 历史曲线：nightly 接 `benchmark-action/github-action-benchmark@v1`（`tool: jmh`，数据落 gh-pages），`alert-threshold` 设 Comment/告警级（不阻断）；该步失败 `continue-on-error` 降级（gh-pages 未启用/私有仓场景，design 风险条）。验证：首验 dispatch 运行中曲线步行为记录在案——成功则 Pages 有图，失败则 job 仍绿且告警可见（两种都属 spec"人裁决"合同面）。
+- [x] 4.4 组验证：对照 spec"CI 双通道职责边界"三场景逐项勾验（PR 编译拦截 / PR 不因生产性能退化变红 / nightly 历史不丢失），结论写入本任务完成注记。
 
 ## 5. 文档同步
 
@@ -38,7 +38,7 @@
 
 - [x] 6.1 全仓 `./gradlew build --continue`（或既有 CI unit 通道等价命令）通过；确认发布制品清单/装配线不含 tny-bench（2.4 断言在配置期即证明）。
 - [x] 6.2 受影响面回归：`./gradlew :tny-game-net:test :tny-game-net-netty4:test :tny-game-starter-net-netty4:test --tests "*Codec*" --tests "*MacGeneration*" --tests "*Crc32*"` 全绿（基准搬迁不应触及；红则说明搬迁越界，回查）。
-- [ ] 6.3 `openspec validate promote-netbench-to-tny-bench` 通过；design Open Question（曲线告警阈值）挂首份 nightly 数据后补记结论（不改任务分解）。
+- [x] 6.3 `openspec validate promote-netbench-to-tny-bench` 通过；design Open Question（曲线告警阈值）挂首份 nightly 数据后补记结论（不改任务分解）。
 
 > **实施注记（apply 会话 2026-10-01）**：
 > - 锚集选择机制修正（原任务书写 `:prod_` include 正则——实测 JMH 1.37 include 不匹配参数串）：生产臂经
@@ -50,3 +50,12 @@
 >   nightly 历史不丢失——results/ 同日覆盖 + action-benchmark 追加，曲线侧挂推送首验。
 > - 5.2 命令逐条实跑：jmhList(3)/jmhList -PbenchAll(31)/jmh 缺省=benchAnchorExport(27,12min)/benchInclude 子集/
 >   benchAll-fast 枚举(135 展开)/benchGc(secondary gc.alloc.rate 实证；开关后需 --rerun-tasks 避输入缓存遮蔽，已注记 README)。
+
+> **终裁记录（2026-10-02 01:4x CST，run#4/#5 workflow_dispatch + gh-pages 7394ce2a + 5.7.x c65b007b）**：
+> 4.2 由 bench-routine（并行会话演化自 bench-nightly：push/schedule/dispatch 三触发 + benchRoutineExport
+> 扩至 5 族 37 用例）满足——两次 dispatch 全绿、results/bench-20261001-routine.json 与 anchor 件均已
+> bot 回提交入库；4.3 曲线步实证成功形态（gh-pages dev/bench/data.js 存在、"add Benchmark (jmh) result"
+> 提交两枚、continue-on-error 降级护栏在位）；4.4 三场景齐——PR 编译拦截（电路前科+本地红演练）、
+> 性能退化不误红（bench-routine 独立 job 构造保证）、历史不丢失（data.js 累计 4 点）；
+> 6.3 validate 前已绿，Open Question 随 design 补记闭合。schedule 通道今晚 02:37 CST 为第二次自然验证，
+> 不构成欠账。**本 change 20/20 终局。**

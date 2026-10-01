@@ -55,4 +55,4 @@ P2/P3（域间以子包为扩展缝，无抽象可提取——基准类之间零
 
 ## Open Questions
 
-- 曲线告警的具体阈值百分比（-5%? -10%?）——待首次 nightly 基线跑后按实测噪声带定，不影响 spec/任务分解。
+- 曲线告警阈值：**150% 起步定案**（workflow alert-threshold: '150%'，comment-on-alert: true / fail-on-alert: false——告警仅提示不阻断，人裁决合同不变。依据：首两枚 dispatch 结果入曲线的带宽 + runner 与本机跨机不可比（D3 同窗纪律），保守带宽滤噪；待 ≥3 个 schedule 基线点后按实测再收紧。
