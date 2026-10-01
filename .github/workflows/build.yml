@@ -19,7 +19,7 @@ jobs:
     services:
       # 既有 tny-game-namnspace-etcd 单测静态依赖本地 etcd:2379（非本变更引入），CI 须提供
       etcd:
-        image: quay.io/coreos/etcd:v3.5.11   # runner 可拉性 run#11 e2e 实证（当时 e2e 无 options 即 success）
+        image: gcr.io/etcd-development/etcd:v3.5.11   # root 运行且 runner 可拉（run#10 e2e 实证）；quay coreos 版为非 root 用户，services 挂载下 etcd 起不来致 health 恒败
         ports: [ '2379:2379' ]
         options: >-
           --health-cmd="etcdctl endpoint health"
@@ -57,7 +57,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       etcd:
-        image: quay.io/coreos/etcd:v3.5.11   # runner 可拉性 run#11 e2e 实证（当时 e2e 无 options 即 success）
+        image: gcr.io/etcd-development/etcd:v3.5.11   # root 运行且 runner 可拉（run#10 e2e 实证）；quay coreos 版为非 root 用户，services 挂载下 etcd 起不来致 health 恒败
         ports: [ '2379:2379' ]
     steps:
       - uses: actions/checkout@v4
