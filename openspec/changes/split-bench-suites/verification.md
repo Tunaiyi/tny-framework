@@ -68,3 +68,8 @@
 - 用户贴 run 日志：bot commit `4bb98df` 已生成但 `git push` 被拒（fetch first）——**回写竞态实锤**（执行窗 ≈21min 内分支前进即死；stabilize 案卷 run#18 同款）。Store 步骤因 job 中止**从未执行**——token 修复至今未被验证。
 - 修复（本变更差量内：回写步骤系 bench-nightly→bench-routine 迁移所写）：commit 后 `fetch + rebase -X theirs origin/$GITHUB_REF_NAME + push HEAD:refspec`；同日期产物冲突取当轮新结果。
 - 疑点登记（销 6.2 时顺带核）：第四轮 diff 为 1258+/1258−，与首轮产物 2861 行体量差异大——第五轮闭环时核对远端最新产物**条目数=37** 与参数头，若缩水需查 jmh 任务缓存复用。
+
+## 更正：gh-pages「已生成」系误判（00:1x）
+
+- `git ls-remote ... gh-pages` 无匹配时同样 exit 0（输出为空），`&& echo` 判定式踩空——实际 gh-pages **仍未生成**，fetch 复核证伪。
+- 三轮 run 死因重新对表：f49fa5fe 轮回写侥幸成功但 workflow 无 token → Store 失败被吞；ba82cf06 轮（含 token）死于回写竞态、Store 未执行；**e36ee1d6 轮（token+rebase 双修复齐备）才是首验**，~00:33 回写 + Store，00:47 自动核查生效。
