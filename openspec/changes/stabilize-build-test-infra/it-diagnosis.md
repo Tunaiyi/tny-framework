@@ -10,7 +10,8 @@
 | #16 | cbb83ba7（电路上线） | **❌（新事实，见 §3）** | ✅ | ✅ | ✅（本轮 IT 绿，电路 skipped=正常） | 静默待命 |
 | #17 | 0a668033（bench 线 split-bench-suites 实施提交） | ✅ | ✅ | ✅ | **❌——电路首投递**（`TcpSessionResendIT` 即时断言抢跑，§5 定罪依据） | **已投递案卷** |
 | #18 | ae80463d（组 5 根治支②推送） | ✅ | ✅ | ✅ | **✅ 根治后首验零复现（数据点 #1）** | 无新投递（预期） |
-| #19 | f1acdc9b（bench 线收尾 docs 推送） | 进行中 | 进行中 | 进行中 | 进行中（数据点 #2 待开奖） | — |
+| #19 | f1acdc9b（bench 线收尾 docs 推送） | ❌（unit 回红，另案） | ✅ | ✅ | ✅（数据点 2） | 无投递 |
+| #20 | 2cee4213（案卷回填 docs 推送） | ✅ | ✅ | ✅ | ✅（数据点 3） | 无投递 |
 
 - `git fetch github ci-it-diag` → `couldn't find remote ref`：电路至今**没有在任何一次红中投递过案卷**（#16 IT 恰绿）。5.1 验收（红后 3 分钟可取卷）尚未自证。
 - 历史红点（交接 §1）：#10 ✓、#11 ✗、#15 ✗，失败均在 `Integration tests (include docker lane)` 测试执行步，非编译、非 docker 能力。
@@ -42,8 +43,9 @@
 
 - **CI 同签名零复现计数**（目标 ≥10 次自然 push；每轮必查 `ci-it-diag` 有无新投递）：
   - run#18（ae80463d 根治推送）：integration ✅ e2e ✅（1/10）。run 级红主犯=bench 线 `Routine benchmarks` 回写步（"Commit routine result into results/"失败，归 split-bench-suites 线处置）；
-  - run#19（f1acdc9b bench docs）：integration ✅ e2e ✅（2/10）。run 级红主犯=**unit 回红**（间歇第二实锤：#16❌ #17✅ #18✅ #19❌——§3 已登记，边界不动 unit，另案）；
-  - `ci-it-diag` 至今仅 #17 一卷，根治后零新投递。
+  - run#19（f1acdc9b bench docs）：integration ✅ e2e ✅（2/10）。run 级红主犯=**unit 回红**（间歇登记簿：#16❌ #17✅ #18✅ #19❌ #20✅——§3 在册，边界不动 unit，另案）；
+  - run#20（2cee4213 案卷回填 docs 推送）：**全 run success**（integration/e2e/unit/bench 皆绿，3/10）；
+  - `ci-it-diag` 至今仅 #17 一卷，根治后 3 轮零新投递。计数 **3/10**（后续含 PR 事件与在途自然 push，不为凑数制造 push）。
 - **本地（OrbStack）5 轮 `integrationTest -PincludeDocker --rerun`**：**5/5 全绿**（每轮 rc=0、BUILD SUCCESSFUL，约 2.3 min/轮，串行窗口查过并发）。非空跑实证：最新轮 20 结果文件、**61 个真实用例、failures=0、skipped=0**（etcd 档 36 例 + Mongodb/Redisson/DataAccess + integration-test 23 例全执行）——与 CI integration/e2e 恒绿结论一致。**5.5 本地端达成**。
 - **无 docker 环境显性 skip 探针**：✅ `-PdockerHost=unix:///tmp/no-such-docker.sock` 下 docker 档用例（MongodbDataAccessIT、RedissonDataAccessIT）显性 `SKIPPED`（testLogging 有 skipped 事件），非静默绿。
 - **CI 5 轮一致**：由自然 push 流继续积累（当前 2/10），不制造无意义 push 刷数。
