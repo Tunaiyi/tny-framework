@@ -166,9 +166,11 @@ public final class Protobuf2HtmlFormat {
 
             @Override
             public void printString(String value) throws IOException {
-                // 现状：Html 的 STRING 值原样输出不转义（仅外层引号），禁止顺手修
+                // fix-registered-defects 2.3（design D4）：STRING 值接入统一转义表（FormatTextSupport.escapeTextHtml），
+                // 值内标记分隔符（尖括号/引号/反斜杠）与换行以转义序列承载，整体结构不被值内字符破坏；
+                // 其余形态转义策略不受影响（装饰差异仍按形态参数化承载）
                 generator.print("\"");
-                generator.print(value);
+                generator.print(FormatTextSupport.escapeTextHtml(value));
                 generator.print("\"");
             }
 

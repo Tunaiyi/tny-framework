@@ -450,9 +450,29 @@ final class FormatTokenizerCore implements FormatValueReader.Scanner<FormatToken
         }
 
         // In XML String values inside TEXT node don't need to be wrapped in quotes
+        // fix-registered-defects 3.1：原单 token 通道覆盖不住 Xml 打印产物中的转义特殊字符集
+        // （`\"` `\'` `\\` 与八进制/短转义混段时词法碎片化），改为从当前 token 起点按原文直读到
+        // 元素闭合标记 `</`，再统一走 unescapeBytes 还原——打印产物对转义字符集读回闭合，
+        // 且原文直读同时保住值内裸空格/控制序列边界（token 拼接时代的静默丢失面）。
+        int start = this.pos;
+        int end = -1;
+        for (int k = start; k + 1 < this.text.length(); k++) {
+            if (this.text.charAt(k) == '<' && this.text.charAt(k + 1) == '/') {
+                end = k;
+                break;
+            }
+        }
+        if (end < 0) {
+            throw new Failure(errorMessage("Expected \"</\"."));
+        }
+        if (end == start) {
+            // 空值元素：currentToken 已是 "</"，无需重扫
+            return ByteString.EMPTY;
+        }
         try {
-            String escaped = this.currentToken;
+            String escaped = this.text.subSequence(start, end).toString();
             ByteString result = FormatTextSupport.unescapeBytes(escaped, false);
+            this.matcher.region(end, this.matcher.regionEnd());
             nextToken();
             return result;
         } catch (FormatTextSupport.InvalidEscapeSequence e) {

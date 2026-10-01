@@ -21,11 +21,12 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * 重构前行为钉桩（golden 快照）：五格式类 × printToString（及 printFiles/Collection/printFieldToString
+ * 行为账目（golden 快照）：五格式类 × printToString（及 printFiles/Collection/printFieldToString
  * 与 print(UF)/printToString(UF) 公开渲染面）的输出快照。期望字符串为收敛前现实现捕获输出，
- * 重构后期望值一字不改仍须全绿。现状差异专列：Html 的 STRING 值不转义（原样 toString）、
- * JavaProps 的 ENUM 不加引号、CouchDB 的 _id/_rev 字段名覆写、Xml 与 Json 的 escapeBytes
- * default 分支八进制 vs \\uXXXX 差异。
+ * 未点名称期望值一字不改仍须全绿。差异专列：Html 的 STRING 值经 fix-registered-defects 2.3 接入
+ * 统一转义表（P_HTML_ESCAPES 格已翻为"值内标记/换行以转义序列承载且结构不破坏"期望，其余 Html 格
+ * 因值集无需转义而逐字不变）、JavaProps 的 ENUM 不加引号、CouchDB 的 _id/_rev 字段名覆写、
+ * Xml 与 Json 的 escapeBytes default 分支八进制 vs \\uXXXX 差异。
  */
 public class FormatGoldenTest {
 
@@ -189,7 +190,7 @@ public class FormatGoldenTest {
 
     private static final String GOLDEN_HTML_MSGSET = "<html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\" /><title>tny.protobuf.test.TestMessageSet</title></head><body><div style=\"color: black; font-size: 14px; font-family: sans-serif; font-weight: bolder; margin-bottom: 10px;\">message : tny.protobuf.test.TestMessageSet</div>[<span style=\"font-weight: bold; color: #669966;font-size: 14px; font-family: sans-serif;\">tny.protobuf.test.MsgSetExt</span>] <span style=\"color: red;\">{</span><br/><div style=\"margin-left: 25px\"><span style=\"color: #3300FF;font-size: 13px; font-family: sans-serif;\"><span style=\"font-weight: bold; color: #669966;font-size: 14px; font-family: sans-serif;\">m</span>: <span style=\"color: #3300FF;font-size: 13px; font-family: sans-serif;\">7</span><br/></span></div><span style=\"color: red;\">}</span><br/></body></html>";
 
-    private static final String GOLDEN_HTML_ESCAPES = "<html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\" /><title>tny.protobuf.test.AllTypes</title></head><body><div style=\"color: black; font-size: 14px; font-family: sans-serif; font-weight: bolder; margin-bottom: 10px;\">message : tny.protobuf.test.AllTypes</div><span style=\"font-weight: bold; color: #669966;font-size: 14px; font-family: sans-serif;\">opt_string</span>: <span style=\"color: #3300FF;font-size: 13px; font-family: sans-serif;\">\"<br/>nr\ttv \u0001\u001b\u0007 vk é😀\"</span><br/><span style=\"font-weight: bold; color: #669966;font-size: 14px; font-family: sans-serif;\">opt_bytes</span>: <span style=\"color: #3300FF;font-size: 13px; font-family: sans-serif;\">\"\\a\\b\\v\\f\\000\\001\\037 !\\\"\\'\\\\\u007f\\200\\377Az~\"</span><br/></body></html>";
+    private static final String GOLDEN_HTML_ESCAPES = "<html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\" /><title>tny.protobuf.test.AllTypes</title></head><body><div style=\"color: black; font-size: 14px; font-family: sans-serif; font-weight: bolder; margin-bottom: 10px;\">message : tny.protobuf.test.AllTypes</div><span style=\"font-weight: bold; color: #669966;font-size: 14px; font-family: sans-serif;\">opt_string</span>: <span style=\"color: #3300FF;font-size: 13px; font-family: sans-serif;\">\"q\\\"a'p\\\\bs\\nnr\\ttv \\u0001\\u001b\\u0007 vk é\\ud83d\\ude00\"</span><br/><span style=\"font-weight: bold; color: #669966;font-size: 14px; font-family: sans-serif;\">opt_bytes</span>: <span style=\"color: #3300FF;font-size: 13px; font-family: sans-serif;\">\"\\a\\b\\v\\f\\000\\001\\037 !\\\"\\'\\\\\u007f\\200\\377Az~\"</span><br/></body></html>";
 
     private static final String GOLDEN_HTML_DOC = "<html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\" /><title>tny.protobuf.test.Doc</title></head><body><div style=\"color: black; font-size: 14px; font-family: sans-serif; font-weight: bolder; margin-bottom: 10px;\">message : tny.protobuf.test.Doc</div><span style=\"font-weight: bold; color: #669966;font-size: 14px; font-family: sans-serif;\">id</span>: <span style=\"color: #3300FF;font-size: 13px; font-family: sans-serif;\">\"doc-1\"</span><br/><span style=\"font-weight: bold; color: #669966;font-size: 14px; font-family: sans-serif;\">rev</span>: <span style=\"color: #3300FF;font-size: 13px; font-family: sans-serif;\">\"1-abc\"</span><br/><span style=\"font-weight: bold; color: #669966;font-size: 14px; font-family: sans-serif;\">version</span>: <span style=\"color: #3300FF;font-size: 13px; font-family: sans-serif;\">42</span><br/></body></html>";
 

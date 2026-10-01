@@ -173,8 +173,10 @@ public class MapConvertAccessContractTest {
     }
 
     /**
-     * 已知参数差异的精确消息钉：ObjectMap 侧 float.class 打印为 "float"，Wrapper 侧 Float.class 打印为
-     * "class java.lang.Float"。原样搬入共享引擎后仍须逐字相等。
+     * fix-registered-defects D8 翻转（task 5.1）：原钉桩"ObjectMap 侧 float.class 尾段 'float' vs Wrapper 侧
+     * Float.class 尾段 'class java.lang.Float' 逐字分叉"翻到 object-access-conversion 差量承诺方向——
+     * 共享引擎侧原始类参数统一装箱归一 + ObjectMap 门面 float.class→Float.class 后，
+     * 两实现对同输入产出逐字相同的装箱形态消息尾段（BREAKING：措辞向，ObjectMap 侧尾段由 "float" 变 "class java.lang.Float"）。
      */
     @Test
     void floatDefChannelMessageDriftPinned() {
@@ -183,10 +185,11 @@ public class MapConvertAccessContractTest {
         WrapperObjectMap wrapper = new WrapperObjectMap(map);
 
         ClassCastException directEx = assertThrows(ClassCastException.class, () -> direct.getFloat("boolVal", -1f));
-        assertEquals("class java.lang.Boolean can not convert to float", directEx.getMessage(),
-                     "ObjectMap 侧 float.class 差异参数原样保留（禁止顺手修）");
+        assertEquals("class java.lang.Boolean can not convert to class java.lang.Float", directEx.getMessage(),
+                     "ObjectMap 侧尾段已归一为装箱形态（D8 翻转：此前 '…to float'）");
         ClassCastException wrapperEx = assertThrows(ClassCastException.class, () -> wrapper.getFloat("boolVal", -1f));
         assertEquals("class java.lang.Boolean can not convert to class java.lang.Float", wrapperEx.getMessage());
+        assertEquals(directEx.getMessage(), wrapperEx.getMessage(), "两侧同输入失败消息尾段逐字相等（装箱形态）");
     }
 
     @Test

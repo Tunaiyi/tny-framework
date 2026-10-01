@@ -150,6 +150,17 @@ public final class FormatTestFixtures {
         return b.build();
     }
 
+    /**
+     * fix-registered-defects 2.1 矩阵专用：\\u 四位权展开逐位取值样本
+     * （0x0F 仅末位、0xF0/0x8F/0xF8/0xFF 覆盖 16³/16²/16¹/16⁰ 各位权，Json/Couch 打印为 \\uffXX 形态）。
+     */
+    public AllTypes unicodeWeights() {
+        AllTypes.Builder b = AllTypes.newBuilder();
+        b.setOptBytes(ByteString.copyFrom(new byte[]{
+                0x0F, (byte) 0xF0, (byte) 0x8F, (byte) 0xF8, (byte) 0xFF, 0x7F}));
+        return b.build();
+    }
+
     public Doc doc() {
         return Doc.newBuilder().setId("doc-1").setRev("1-abc").setVersion(42).build();
     }

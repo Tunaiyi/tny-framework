@@ -29,23 +29,50 @@ public class NumberAideTest {
     // 含现状可疑语义（sub 的 one==null 返回 other、混合类型结果恒按 one 窄化折叠等）——禁止顺手修。
     // ==================================================================================
 
+    // ==================================================================================
+    // fix-registered-defects D1 翻转（task 4.1）：五算子 null 操作数=零元语义（P4：运算通道内 null 无独立
+    // 身份，视作缺席操作数即零）。原钉桩"五方法 one==null 一律返回 other"整体翻到规格承诺方向：
+    // sub 空被减数取零后取反（BREAKING：此前返回 other 原值）；divide/mod 除数侧落零（null 视零后、及显式零）
+    // =受控失败（BREAKING：此前返回 other、浮点通道返 Infinity/NaN 伪值）；add 兼容格（结果=另一操作数原值）逐字保留。
+    // ==================================================================================
+
     @Test
     void nullCombinationsSharedAcrossOperators() {
         Integer five = 5;
-        // 现状：五方法 null 处理完全一致——one==null 返回 other（注意 sub：不是取反！可疑现状禁止顺手修）
+        // add 零元兼容格（矩阵证据：LocalNum 委托面依赖 add(null,5)=5）——逐字保留
         assertSame(five, NumberAide.add(null, five));
-        assertSame(five, NumberAide.sub(null, five));
-        assertSame(five, NumberAide.multiply(null, five));
-        assertSame(five, NumberAide.divide(null, five));
-        assertSame(five, NumberAide.mod(null, five));
         assertSame(five, NumberAide.add(five, null));
+        // sub：空被减数取零后取反（BREAKING：此前直接返回 5）；空减数 5−0=5（兼容格保留）
+        assertEquals(-5, NumberAide.sub(null, five).intValue(), "空被减数=0−5，取反对侧值");
         assertSame(five, NumberAide.sub(five, null));
-        assertSame(five, NumberAide.multiply(five, null));
-        assertSame(five, NumberAide.divide(five, null));
-        assertSame(five, NumberAide.mod(five, null));
+        // multiply：空操作数=乘的零元 → 0（BREAKING：此前返回 5）
+        assertEquals(0, NumberAide.multiply(null, five).intValue());
+        assertEquals(0, NumberAide.multiply(five, null).intValue());
+        // divide：空被除数（视零）÷5=0；空除数（视零后）→ 当场受控失败（此前返回 5）
+        assertEquals(0, NumberAide.divide(null, five).intValue());
+        assertThrows(ArithmeticException.class, () -> NumberAide.divide(five, null));
+        // mod：与 divide 同形
+        assertEquals(0, NumberAide.mod(null, five).intValue());
+        assertThrows(ArithmeticException.class, () -> NumberAide.mod(five, null));
+        // 双空：add/sub/multiply 无落型通道维持返 null；divide/mod 除数侧空值零化后仍须显式失败
         assertNull(NumberAide.add(null, null));
         assertNull(NumberAide.sub(null, null));
-        assertNull(NumberAide.mod(null, null));
+        assertNull(NumberAide.multiply(null, null));
+        assertThrows(ArithmeticException.class, () -> NumberAide.divide(null, null));
+        assertThrows(ArithmeticException.class, () -> NumberAide.mod(null, null));
+        // 零除数矩阵（显式零，全通道）：受控失败方向对齐既有高精度路径，不得返 Infinity/NaN 伪值
+        assertThrows(ArithmeticException.class, () -> NumberAide.divide(7, 0));
+        assertThrows(ArithmeticException.class, () -> NumberAide.mod(7, 0));
+        assertThrows(ArithmeticException.class, () -> NumberAide.divide(7L, 0L));
+        assertThrows(ArithmeticException.class, () -> NumberAide.mod(7L, 0L));
+        assertThrows(ArithmeticException.class, () -> NumberAide.divide(1.0f, 0.0f));
+        assertThrows(ArithmeticException.class, () -> NumberAide.mod(1.0f, 0.0f));
+        assertThrows(ArithmeticException.class, () -> NumberAide.divide(1.0d, 0.0d));
+        assertThrows(ArithmeticException.class, () -> NumberAide.mod(1.0d, 0.0d));
+        assertThrows(ArithmeticException.class, () -> NumberAide.divide(BigDecimal.ONE, BigDecimal.ZERO),
+                   "BigDecimal 除零：DECIMAL128 受控失败（既有格方向保持）");
+        assertThrows(ArithmeticException.class, () -> NumberAide.mod(BigDecimal.ONE, BigDecimal.ZERO),
+                   "BigDecimal remainder 零除数同形失败");
     }
 
     @Test
@@ -88,17 +115,40 @@ public class NumberAideTest {
         assertEquals(1.5d, NumberAide.<Number>mod(7.5d, 3d).doubleValue(), 0d);
     }
 
+    // ==================================================================================
+    // fix-registered-defects D2 翻转（task 4.3）：窄类型提升照 JLS 二元数值提升（P6 与平台语义对齐）。
+    // 原钉桩"运算按 int 进行、结果恒 as(one) 折叠回首操作数原宽"翻到承诺方向：byte/short 参与二元运算
+    // 先提升至 int 通道，落型按提升后宽度（BREAKING：add((byte)100,(short)300) 由 -112/Byte → 400/Integer；
+    // short×short 同宽亦 Integer，不再按首操作数回折）；含 long 参与者走 long 通道、落型 Long（BREAKING：
+    // 此前 add((byte)100, 300L) 折叠回 byte 溢出 -112）。既有纯值断言格（不依赖落型）逐字保留。
+    // ==================================================================================
+
     @Test
     void shortByteBranchesNarrowToFirstOperand() {
-        Number shortResult = NumberAide.<Short>multiply((short) 3, (short) 4);
-        assertInstanceOf(Short.class, shortResult);
+        Number shortResult = NumberAide.<Number>multiply((short) 3, (short) 4);
+        assertInstanceOf(Integer.class, shortResult, "short×short 提升 int 通道（BREAKING：此前折叠回 Short）");
         assertEquals(12, shortResult.intValue());
-        // 现状短路段：运算按 int 进行、结果 as(one) 窄化——100+300 折叠回 byte 溢出为 -112（可疑现状禁止顺手修）
         Number byteOne = NumberAide.<Number>add((byte) 100, (short) 300);
-        assertInstanceOf(Byte.class, byteOne);
-        assertEquals(-112, byteOne.byteValue());
+        assertInstanceOf(Integer.class, byteOne, "窄×窄混合提升 int 通道，不按首操作数回折（BREAKING）");
+        assertEquals(400, byteOne.intValue(), "原溢出折叠 -112 → 数值真值 400");
+        // 新增同宽超界格：byte+byte 超字节值域、short+short 超短整值域，均提升通道表示且真值正确
+        Number byteSum = NumberAide.<Number>add((byte) 100, (byte) 100);
+        assertInstanceOf(Integer.class, byteSum);
+        assertEquals(200, byteSum.intValue(), "此前回折 byte 溢出 -56");
+        Number shortSum = NumberAide.<Number>add((short) 32000, (short) 32000);
+        assertInstanceOf(Integer.class, shortSum);
+        assertEquals(64000, shortSum.intValue(), "此前回折 short 溢出 -1536");
+        // 新增 long 混合格：含长整参与者按既有优先级通道提升，落型进 long 通道
+        Number longMix = NumberAide.<Number>add((byte) 100, 300L);
+        assertInstanceOf(Long.class, longMix, "窄×long 混合走 long 通道（BREAKING：此前折叠回 byte 溢出 -112）");
+        assertEquals(400L, longMix.longValue());
+        Number longMix2 = NumberAide.<Number>add(1000L, (short) 300);
+        assertInstanceOf(Long.class, longMix2);
+        assertEquals(1300L, longMix2.longValue());
+        // 既有纯值断言格保留（值不变；<Number> 见证补位——D2 后落型为 Integer，
+        // 原按推断 N=Byte 的调用点会 checkcast 失败，属 BREAKING 公告的调用面影响）
         assertEquals(3, NumberAide.<Number>add((byte) 1, 2).intValue());
-        assertEquals((byte) 1, NumberAide.mod((byte) 7, (byte) 2).byteValue());
+        assertEquals((byte) 1, NumberAide.<Number>mod((byte) 7, (byte) 2).byteValue());
     }
 
     @Test

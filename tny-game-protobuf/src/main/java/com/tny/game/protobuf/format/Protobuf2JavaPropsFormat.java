@@ -430,6 +430,18 @@ public class Protobuf2JavaPropsFormat {
 
             field = extension.descriptor;
         } else {
+            final String leading = tokenizer.currentToken();
+            if (!leading.isEmpty() && Character.isDigit(leading.charAt(0))) {
+                // fix-registered-defects 3.2（design D3）：unknown fields 族内统一显式拒绝——
+                // 打印的数字键名路径前缀（如 995.2=42）取前导数字段作首个未知编号入失败信息
+                // （原状为词法错位 "Expected identifier."；protobuf 字段名不可能以数字开头）
+                int digits = 0;
+                while (digits < leading.length() && Character.isDigit(leading.charAt(digits))) {
+                    digits++;
+                }
+                throw new FormatTokenizerCore.Failure(
+                        tokenizer.errorMessage("Unknown field number: " + leading.substring(0, digits) + "."));
+            }
             final String name = tokenizer.consumeIdentifier();
             field = type.findFieldByName(name);
 
@@ -470,7 +482,14 @@ public class Protobuf2JavaPropsFormat {
 
         if (field.getJavaType() == Descriptors.FieldDescriptor.JavaType.MESSAGE) {
 
-            tokenizer.consume(".");
+            if (extension == null) {
+                tokenizer.consume(".");
+            } else {
+                // fix-registered-defects 3.3：扩展字段（含 MessageSet 特判）打印产物为 `[全名]键名=值`——
+                // `]` 后无点号分隔。读回按打印形态原样闭合（点号可选），打印与读回命名对称；
+                // 非扩展路径仍照既有全名+点号规则 consume(".")，既有绿格零波及
+                tokenizer.tryConsume(".");
+            }
             //endToken = "}";
 
             final Message.Builder subBuilder;

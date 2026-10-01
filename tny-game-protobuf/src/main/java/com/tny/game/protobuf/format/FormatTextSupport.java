@@ -26,7 +26,8 @@ import java.text.StringCharacterIterator;
  * <li>{@link #escapeBytes(ByteString, LowByteMode)}：非可打印 ASCII 低位字节 default 分支——Xml/Html/JavaProps
  * 走三-digit 八进制（{@link LowByteMode#OCTAL}），Json 走 \\uXXXX（{@link LowByteMode#UNICODE}）。</li>
  * <li>{@link #unescapeBytes(CharSequence, boolean)}：{@code \\uXXXX} 识别仅 Json 开启（unicodeEscape=true，
- * 含其现状四位还原公式）；关闭时 {@code \\u} 与其余非法转义一致抛错。</li>
+ * fix-registered-defects 2.2 修正为 16³/16²/16¹/16⁰ 四位权展开还原，字节往返无损，残缺转义受控失败）；
+ * 关闭时 {@code \\u} 与其余非法转义一致抛错。</li>
  * <li>escapeText/unescapeText：Json 为 JSON 语义（{@link #escapeTextJson}/{@link #unescapeTextJson}），
  * Xml/Html/JavaProps 为字节八进制语义（{@link #escapeTextLegacy}/{@link #unescapeTextLegacy}），两套现状并列保留。</li>
  * </ul>
@@ -144,7 +145,8 @@ final class FormatTextSupport {
      * {@link #escapeBytes(ByteString, LowByteMode)}. Two-digit hex escapes (starting with "\x") are
      * also recognized.
      *
-     * @param unicodeEscape Json 现状识别 \\uXXXX（其还原公式为既有形态，原样保留）；Xml/Html/JavaProps 现状不识别
+     * @param unicodeEscape Json 形态识别 \\uXXXX（fix-registered-defects 2.2 已修正为 16³/16²/16¹/16⁰ 权展开，
+     *                      往返逐字节保真）；Xml/Html/JavaProps 形态不识别 \\u（残缺转义受控失败）
      */
     static ByteString unescapeBytes(CharSequence input, boolean unicodeEscape) throws InvalidEscapeSequence {
         byte[] result = new byte[input.length()];
@@ -221,9 +223,15 @@ final class FormatTextSupport {
                                     throw new InvalidEscapeSequence("Invalid escape sequence: '\\" + c
                                                                     + "'");
                                 }
+                                // fix-registered-defects 2.2：\\uXXXX 四位按权展开 16³/16²/16¹/16⁰ 还原
+                                // （原 16*3/16*2/16*1 系数为在册钉桩缺陷，往返对高位字节有损）；
+                                // 残缺转义改受控失败（消息与 unescapeTextJson 现状逐字一致），不再越界崩溃。
+                                if (i + 4 >= input.length()) {
+                                    throw new InvalidEscapeSequence("Invalid escape sequence: '\\u' at end of string.");
+                                }
                                 // UTF8 escape
-                                code = (16 * 3 * digitValue(input.charAt(i + 1))) +
-                                       (16 * 2 * digitValue(input.charAt(i + 2))) +
+                                code = (16 * 16 * 16 * digitValue(input.charAt(i + 1))) +
+                                       (16 * 16 * digitValue(input.charAt(i + 2))) +
                                        (16 * digitValue(input.charAt(i + 3))) +
                                        digitValue(input.charAt(i + 4));
                                 i = i + 4;
@@ -309,6 +317,41 @@ final class FormatTextSupport {
                 appendEscapedUnicode(builder, c);
             } else {
                 // Anything else can be printed as-is
+                builder.append(c);
+            }
+        }
+        return builder.toString();
+    }
+
+    /**
+     * fix-registered-defects 2.3（design D4）：Html 形态 STRING 值接入统一转义表——JSON 短转义行
+     * （\\b \\f \\n \\r \\t \\\\ \\"）+ 尖括号标记分隔符行（\\&lt; 族以 \\< \\&gt; 序列承载），
+     * 控制字符 \\uXXXX、代理对 \\uXXXX\\uXXXX，其余原样。值内标记/换行以转义序列承载后，
+     * 文本结构不再被值内字符破坏（HtmlGenerator 的 &lt;br/&gt;/&lt;div&gt; 装饰层原样保留——
+     * 族内统一策略与形态各自语法不冲突，装饰差异仍参数化承载于各形态 Sink）。
+     */
+    static String escapeTextHtml(String input) {
+        StringBuilder builder = new StringBuilder(input.length());
+        CharacterIterator iter = new StringCharacterIterator(input);
+        for (char c = iter.first(); c != CharacterIterator.DONE; c = iter.next()) {
+            String escaped = shortEscapeSequence(c, JSON_ESCAPE_ROWS);
+            if (escaped != null) {
+                builder.append(escaped);
+            } else if (c == '<') {
+                builder.append("\\<");
+            } else if (c == '>') {
+                builder.append("\\>");
+            } else if (c >= 0x0000 && c <= 0x001F) {
+                builder.append(unicodeEscaped(c));
+            } else if (Character.isHighSurrogate(c)) {
+                builder.append(unicodeEscaped(c));
+                c = iter.next();
+                if (c == CharacterIterator.DONE) {
+                    throw new IllegalArgumentException(
+                            "invalid unicode string: unexpected high surrogate pair value without corresponding low value.");
+                }
+                builder.append(unicodeEscaped(c));
+            } else {
                 builder.append(c);
             }
         }

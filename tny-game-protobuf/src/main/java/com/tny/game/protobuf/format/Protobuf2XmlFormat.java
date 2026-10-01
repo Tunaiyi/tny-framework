@@ -379,6 +379,16 @@ public final class Protobuf2XmlFormat {
 
             field = extension.descriptor;
         } else {
+            if (tokenizer.currentToken().startsWith("unknown-field")) {
+                // fix-registered-defects 3.2（design D3）：unknown fields 族内统一显式拒绝——
+                // 打印形态 <unknown-field index="NNN"> 自带编号，失败信息含该编号
+                // （原状为词法错位 "Expected identifier. --"）
+                tokenizer.nextToken();
+                tokenizer.consume("=");
+                String number = tokenizer.consumeIdentifier();
+                throw new FormatTokenizerCore.Failure(
+                        tokenizer.errorMessage("Unknown field number: " + number + "."));
+            }
             String name = tokenizer.consumeIdentifier();
             field = type.findFieldByName(name);
 

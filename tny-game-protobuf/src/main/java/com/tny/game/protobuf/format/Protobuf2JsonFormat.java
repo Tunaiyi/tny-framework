@@ -612,6 +612,22 @@ public class Protobuf2JsonFormat {
             Pattern.CASE_INSENSITIVE);
 
     /**
+     * fix-registered-defects 3.2：名字文本是否为纯数字（即打印产物中的未知字段编号键）。
+     */
+    private static boolean isFieldNumberText(String name) {
+        if (name.isEmpty()) {
+            return false;
+        }
+        for (int i = 0; i < name.length(); i++) {
+            char c = name.charAt(i);
+            if (c < '0' || c > '9') {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * Parse a single field from {@code tokenizer} and merge it into {@code builder}. If a ',' is
      * detected after the field ends, the next field will be parsed automatically
      */
@@ -663,12 +679,14 @@ public class Protobuf2JsonFormat {
             field = extension.descriptor;
         }
 
-        // Disabled throwing exception if field not found, since it could be a different version.
         if (field == null) {
+            if (isFieldNumberText(name)) {
+                // fix-registered-defects 3.2（design D3）：未知字段编号族内统一显式拒绝——
+                // 失败信息含该编号（原状为 handleMissingField 静默丢弃）
+                throw tokenizer.parseExceptionPreviousToken("Unknown field number: " + name + ".");
+            }
+            // 非编号的未知名字段维持既有旁路通道（不在本差量承诺面，禁止顺手扩大）
             handleMissingField(tokenizer, extensionRegistry, builder);
-            //throw tokenizer.parseExceptionPreviousToken("Message type \"" + type.getFullName()
-            //                                            + "\" has no field named \"" + name
-            //                                            + "\".");
         }
 
         if (field != null) {

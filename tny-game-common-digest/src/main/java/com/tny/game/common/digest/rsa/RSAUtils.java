@@ -48,40 +48,53 @@ public class RSAUtils {
     }
 
     /**
-     * 使用模和指数生成RSA公钥
+     * 使用模和指数生成RSA公钥。
+     * 失败方向与 {@link #toPublicKey(String)} 对表：非法输入当场显式失败，不返回空引用。
      *
      * @param modulus  模
      * @param exponent 指数
-     * @return
+     * @return 重建的公钥
+     * @throws IllegalArgumentException 数值文本非法或模/指数非有效密钥材料（cause 透传原始失败）
      */
     public static RSAPublicKey getPublicKey(String modulus, String exponent) {
+        BigInteger mod = parseKeyComponent(modulus, "RSA 公钥重建失败：模不是合法数值文本（环节：BigInteger 解析）");
+        BigInteger exp = parseKeyComponent(exponent, "RSA 公钥重建失败：指数不是合法数值文本（环节：BigInteger 解析）");
         try {
-            BigInteger mod = new BigInteger(modulus);
-            BigInteger exp = new BigInteger(exponent);
             RSAPublicKeySpec keySpec = new RSAPublicKeySpec(mod, exp);
             return (RSAPublicKey) newKeyFactory().generatePublic(keySpec);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+            throw new IllegalArgumentException("RSA 公钥重建失败：模/指数不是有效密钥材料（环节：generatePublic）", e);
         }
     }
 
     /**
-     * 使用模和指数生成RSA私钥
+     * 使用模和指数生成RSA私钥。
+     * 失败方向与 {@link #toPrivateKey(String)} 对表：非法输入当场显式失败，不返回空引用。
      *
      * @param modulus  模
      * @param exponent 指数
-     * @return
+     * @return 重建的私钥
+     * @throws IllegalArgumentException 数值文本非法或模/指数非有效密钥材料（cause 透传原始失败）
      */
     public static RSAPrivateKey getPrivateKey(String modulus, String exponent) {
+        BigInteger mod = parseKeyComponent(modulus, "RSA 私钥重建失败：模不是合法数值文本（环节：BigInteger 解析）");
+        BigInteger exp = parseKeyComponent(exponent, "RSA 私钥重建失败：指数不是合法数值文本（环节：BigInteger 解析）");
         try {
-            BigInteger mod = new BigInteger(modulus);
-            BigInteger exp = new BigInteger(exponent);
             RSAPrivateKeySpec keySpec = new RSAPrivateKeySpec(mod, exp);
             return (RSAPrivateKey) newKeyFactory().generatePrivate(keySpec);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+            throw new IllegalArgumentException("RSA 私钥重建失败：模/指数不是有效密钥材料（环节：generatePrivate）", e);
+        }
+    }
+
+    /**
+     * 密钥分量的数值文本解析——失败显式抛并指明环节，不回空（消息不带入密钥材料本身）。
+     */
+    private static BigInteger parseKeyComponent(String value, String failureMessage) {
+        try {
+            return new BigInteger(value);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException(failureMessage, e);
         }
     }
 

@@ -206,22 +206,34 @@ public class NumberAide {
 
     /**
      * add/sub/multiply/divide/mod 五段同形骨架的唯一分派器（reduce-code-duplication D8：私有分派器 + 运算符 lambda）。
-     * 方法体逐字搬运自原五段克隆（null 处理/BigDecimal 优先/BigInteger/7 路 isAssignableFrom 基本类型分派/结果
-     * as(x, one) 折叠回第一操作数类型），零行为变更；现状可疑语义原样保留、禁止顺手修：
+     * fix-registered-defects D1 翻转 null 操作数语义——运算通道内 null 无独立身份，一律视作该运算的数值零元
+     * （numeric-hash-integrity 差量"空操作数按零元语义统一参与算术分派"）：
      * <ul>
-     * <li>{@code one == null} 返回 other——sub/divide/mod 亦不取反/不抛（NumberAideTest.nullCombinations 钉桩）；</li>
-     * <li>混合类型运算通道由 findClass 决定、结果却恒按 {@code one} 窄化折叠（add(Integer,Long) 得 Integer，
-     * add(byte 100, short 300) 溢出为 -112）；</li>
-     * <li>未知数值形态兜底 double 通道后 as(x, one) 显式受控失败（fix 轮现状）。</li>
+     * <li>被减数为空：取零后继续（0−other，即另一操作数的相反数；BREAKING，此前直接返回另一操作数原值）；</li>
+     * <li>加法空操作数外显结果与差量前一致（0+x=x），既有兼容格逐字保留；</li>
+     * <li>除/模的除数侧为空（零化后）或显式零：当场受控失败，不得返回 Infinity/NaN 或静默原值（D1 除零显式失败，
+     * 浮点通道见 {@link NumberOperation#explicitZeroDivisor} 守门，int/long 通道 JVM 同源抛出，
+     * BigDecimal/BigInteger 既有高精度路径本已受控失败）；</li>
+     * <li>双空：divide/mod 除数空值零化仍零 → 显式失败；add/sub/multiply 无落型通道，维持返回 null（现状兼容）。</li>
      * </ul>
+     * D2 落型（fix-registered-defects）：findClass 已把 byte/short 统一归并进 int 通道，结果落型按提升后宽度——
+     * 首操作数为窄类型（Byte/Short）时不再 as(x, one) 按原宽回折（BREAKING：add((byte)100,(short)300)
+     * 由 -112/Byte → 400/Integer，同宽超界亦 Integer，混 long 走 Long 通道）；非窄首操作数的折叠面零改动
+     * （add(Integer,Long) 现状 Integer 落型由既有绿格钉住，不在本差量承诺面）。
      */
     @SuppressWarnings("unchecked")
     private static <N extends Number> N operate(N one, N other, NumberOperation operation) {
-        if (one == null) {
-            return other;
+        if (one == null && other == null) {
+            if (operation.explicitZeroDivisor) {
+                // 双空时除数侧零化后仍为零元：与单侧空除数同方向受控失败
+                throw new ArithmeticException("/ by zero");
+            }
+            return null;
         }
-        if (other == null) {
-            return one;
+        if (one == null) {
+            one = (N) zeroLike(other);
+        } else if (other == null) {
+            other = (N) zeroLike(one);
         }
         if (one instanceof BigDecimal || other instanceof BigDecimal) {
             return (N) operation.bigDecimal.apply(toBigDecimal(one), toBigDecimal(other));
@@ -230,29 +242,41 @@ public class NumberAide {
             return (N) operation.bigInteger.apply(toBigInteger(one), toBigInteger(other));
         }
         Class<?> numClass = findClass(one.getClass(), other.getClass());
+        boolean narrowFirstOperand = Byte.class == one.getClass() || Short.class == one.getClass();
         if (numClass.isAssignableFrom(Integer.class)) {
-            return as(operation.integer.applyAsInt(one.intValue(), other.intValue()), one);
+            int value = operation.integer.applyAsInt(one.intValue(), other.intValue());
+            return narrowFirstOperand ? (N) Integer.valueOf(value) : as(value, one);
         }
         if (numClass.isAssignableFrom(Long.class)) {
-            return as(operation.longValue.applyAsLong(one.longValue(), other.longValue()), one);
+            long value = operation.longValue.applyAsLong(one.longValue(), other.longValue());
+            return narrowFirstOperand ? (N) Long.valueOf(value) : as(value, one);
         }
         if (numClass.isAssignableFrom(Float.class)) {
-            return as(operation.floatValue.apply(one.floatValue(), other.floatValue()), one);
+            // D1 除零显式失败：IEEE 浮点通道 0 除数静默产出 Infinity/NaN 伪值，守门改抛（对齐高精度路径方向）
+            float divisor = other.floatValue();
+            if (operation.explicitZeroDivisor && divisor == 0F) {
+                throw new ArithmeticException("/ by zero");
+            }
+            float value = operation.floatValue.apply(one.floatValue(), divisor);
+            return narrowFirstOperand ? (N) Float.valueOf(value) : as(value, one);
         }
         if (numClass.isAssignableFrom(Double.class)) {
-            return as(operation.doubleValue.applyAsDouble(one.doubleValue(), other.doubleValue()), one);
+            // D1 除零显式失败：同上，double 通道
+            double divisor = other.doubleValue();
+            if (operation.explicitZeroDivisor && divisor == 0D) {
+                throw new ArithmeticException("/ by zero");
+            }
+            double value = operation.doubleValue.applyAsDouble(one.doubleValue(), divisor);
+            return narrowFirstOperand ? (N) Double.valueOf(value) : as(value, one);
         }
-        if (numClass.isAssignableFrom(Short.class)) {
-            return as(operation.integer.applyAsInt(one.shortValue(), other.shortValue()), one);
-        }
-        if (numClass.isAssignableFrom(Byte.class)) {
-            return as(operation.integer.applyAsInt(one.byteValue(), other.byteValue()), one);
-        }
+        // 原 Short/Byte 通道分支被 findClass int 通道提升（D2）并入前路，不可达后删除；
+        // 末段兜底照遗留登记第 5 项逐字保留（未知 Number 实现经 findClass Double 兜底走前路显式受控失败）
         return as(operation.doubleValue.applyAsDouble(one.doubleValue(), other.doubleValue()), one);
     }
 
     /**
-     * 基本类型通道的 int 形态运算（Integer/Short/Byte 三路共用，短/字窄化即原实现 int 提升语义）。
+     * 基本类型通道的六形态运算表。D2 后 integer 形态服务 int 通道（byte/short 已由 findClass 提升并入，
+     * 不再作为独立通道形态存在）。
      */
     private static final class NumberOperation {
 
@@ -268,15 +292,23 @@ public class NumberAide {
 
         private final DoubleBinaryOperator doubleValue;
 
+        /**
+         * D1 除零守门标记：divide/mod 为 true——浮点通道零除数不得产出 Infinity/NaN 伪值，
+         * 双空操作数时除数侧零化后亦须当场受控失败。
+         */
+        private final boolean explicitZeroDivisor;
+
         private NumberOperation(BinaryOperator<BigDecimal> bigDecimal, BinaryOperator<BigInteger> bigInteger,
                                 IntBinaryOperator integer, LongBinaryOperator longValue,
-                                FloatBinaryOperator floatValue, DoubleBinaryOperator doubleValue) {
+                                FloatBinaryOperator floatValue, DoubleBinaryOperator doubleValue,
+                                boolean explicitZeroDivisor) {
             this.bigDecimal = bigDecimal;
             this.bigInteger = bigInteger;
             this.integer = integer;
             this.longValue = longValue;
             this.floatValue = floatValue;
             this.doubleValue = doubleValue;
+            this.explicitZeroDivisor = explicitZeroDivisor;
         }
     }
 
@@ -291,27 +323,56 @@ public class NumberAide {
 
     private static final NumberOperation ADD = new NumberOperation(BigDecimal::add, BigInteger::add,
             (one, other) -> one + other, (one, other) -> one + other, (one, other) -> one + other,
-            (one, other) -> one + other);
+            (one, other) -> one + other, false);
 
     private static final NumberOperation SUBTRACT = new NumberOperation(BigDecimal::subtract, BigInteger::subtract,
             (one, other) -> one - other, (one, other) -> one - other, (one, other) -> one - other,
-            (one, other) -> one - other);
+            (one, other) -> one - other, false);
 
     private static final NumberOperation MULTIPLY = new NumberOperation(BigDecimal::multiply, BigInteger::multiply,
             (one, other) -> one * other, (one, other) -> one * other, (one, other) -> one * other,
-            (one, other) -> one * other);
+            (one, other) -> one * other, false);
 
     private static final NumberOperation DIVIDE = new NumberOperation(
             // 现状 BigDecimal 除法定标 DECIMAL128（NumberAideTest 钉桩）
             (one, other) -> one.divide(other, MathContext.DECIMAL128), BigInteger::divide,
             (one, other) -> one / other, (one, other) -> one / other, (one, other) -> one / other,
-            (one, other) -> one / other);
+            (one, other) -> one / other, true);
 
     private static final NumberOperation MOD = new NumberOperation(
             // remainder 与 Java % 语义一致（截断取余）——BigDecimal/BigInteger/基本类型三路现状同源
             BigDecimal::remainder, BigInteger::remainder,
             (one, other) -> one % other, (one, other) -> one % other, (one, other) -> one % other,
-            (one, other) -> one % other);
+            (one, other) -> one % other, true);
+
+    /**
+     * D1 零元载体：按对侧操作数的类型通道构造数值零（null 操作数即以此参与运算）。
+     * 未知数值形态（AtomicLong 等非八个标准装箱类型）兜底 int 零，随后 findClass 走 Integer 通道。
+     */
+    private static Number zeroLike(Number present) {
+        if (present instanceof BigDecimal) {
+            return BigDecimal.ZERO;
+        }
+        if (present instanceof BigInteger) {
+            return BigInteger.ZERO;
+        }
+        if (present instanceof Double) {
+            return Double.valueOf(0D);
+        }
+        if (present instanceof Float) {
+            return Float.valueOf(0F);
+        }
+        if (present instanceof Long) {
+            return Long.valueOf(0L);
+        }
+        if (present instanceof Short) {
+            return Short.valueOf((short) 0);
+        }
+        if (present instanceof Byte) {
+            return Byte.valueOf((byte) 0);
+        }
+        return Integer.valueOf(0);
+    }
 
     public static boolean less(Number one, Number other) {
         if (isHighPrecision(one) || isHighPrecision(other)) {
@@ -483,6 +544,11 @@ public class NumberAide {
         for (Class<?> clazz : NUM_CLASSES) {
             for (Class<?> findClass : classes) {
                 if (clazz.isAssignableFrom(findClass)) {
+                    // D2 提升（fix-registered-defects）：byte/short 参与二元运算先提升至 int 通道（JLS 二元数值提升），
+                    // 优先级仅在"是否需要更高精度通道"上参与，不再以窄通道身份回折落型
+                    if (Byte.class == findClass || Short.class == findClass) {
+                        return Integer.class;
+                    }
                     return findClass;
                 }
             }

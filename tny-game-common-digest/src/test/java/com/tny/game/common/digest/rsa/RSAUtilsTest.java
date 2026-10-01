@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * RSA 工具契约（回归修复：分段加解密块大小原用 getOutputSize 推算，多块数据必抛
  * IllegalBlockSizeException；共享静态 KeyFactory 非线程安全改为逐次创建）。
- * 另按现状钉桩受控失败方向：非法密钥文本（解析上抛 / 重建返 null 两套入口）、密文结构与篡改、
+ * 另钉桩受控失败方向：非法密钥文本（全部入口统一显式失败，D7 翻转后不再返 null）、密文结构与篡改、
  * 签名值篡改、多组密钥对交叉、容器未注册回查。
  */
 class RSAUtilsTest {
@@ -181,9 +181,11 @@ class RSAUtilsTest {
     }
 
     /**
-     * 非法密钥文本的受控失败——两套入口方向不同（按现状钉桩，不产出"看似可用"的错误密钥）：
+     * 非法密钥文本的受控失败——全部入口同一失败方向（D7 翻转：原"模/指数重建吞异常返 null"
+     * 半段改显式失败断言，与 toPrivateKey/toPublicKey 侧对表，不再方向分裂）：
      * PKCS#8/X.509 文本解析（toPrivateKey/toPublicKey）上抛 InvalidKeySpecException；
-     * 模/指数重建（getPublicKey/getPrivateKey）catch Exception 后 printStackTrace 返回 null。
+     * 模/指数重建（getPublicKey/getPrivateKey）对非法数字文本/非法编码显式抛
+     * IllegalArgumentException（cause 透传 NumberFormatException/InvalidKeySpecException 方向）。
      */
     @Test
     void illegalKeyTextFailsUnderControl() {
@@ -192,9 +194,16 @@ class RSAUtilsTest {
         assertThrows(InvalidKeySpecException.class, () -> RSAUtils.toPublicKey("!!!"));
         // 合法 Base64 但非密钥结构 → 同样是 InvalidKeySpecException（不是返回 null）
         assertThrows(InvalidKeySpecException.class, () -> RSAUtils.toPrivateKey("ABC"));
-        // 模/指数入口：非法数值吞异常返 null（该入口不抛受检异常，调用方必须判空）
-        assertNull(RSAUtils.getPublicKey("非数字", "x"), "模非法时公钥重建必须返回空");
-        assertNull(RSAUtils.getPrivateKey("非数字", "x"), "模非法时私钥重建必须返回空");
+        // 模/指数入口·非法数字文本：当场显式失败并指明失败环节，不得返空
+        IllegalArgumentException pubNumberFailure =
+                assertThrows(IllegalArgumentException.class, () -> RSAUtils.getPublicKey("非数字", "x"));
+        assertTrue(pubNumberFailure.getMessage().contains("公钥"), "消息应指明失败环节: " + pubNumberFailure.getMessage());
+        IllegalArgumentException priNumberFailure =
+                assertThrows(IllegalArgumentException.class, () -> RSAUtils.getPrivateKey("非数字", "x"));
+        assertTrue(priNumberFailure.getMessage().contains("私钥"), "消息应指明失败环节: " + priNumberFailure.getMessage());
+        // 模/指数入口·非法编码（合法数值但非有效密钥材料，如零模数）：同样显式失败，不返空
+        assertThrows(IllegalArgumentException.class, () -> RSAUtils.getPublicKey("0", "3"));
+        assertThrows(IllegalArgumentException.class, () -> RSAUtils.getPrivateKey("0", "3"));
     }
 
     /**

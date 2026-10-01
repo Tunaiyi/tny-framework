@@ -36,14 +36,15 @@ public final class DemandTypes extends ClassImporter {
         EnumRegistrySupport.register(holder, value);
     }
 
-    //    现状差异钉桩（禁止顺手修，见 verification-group6 遗留登记）：本类 check 双通道委托宽松 of 通道，
-    //    未命中返回 null；兄弟门面 check 为严格通道（未命中抛 NPE）。收敛仅统一代码形态，不统一语义。
+    //    严格校验通道（fix-registered-defects tasks 6.1 转正，design D6/差量 enumeration-facade-semantics
+    //    「严格校验通道不得降级为宽松空返」）：原委托宽松 of 通道的现状差异在册禁修期结束，
+    //    接入兄弟门面同源的 EnumRegistrySupport.check 严格通道——未注册身份显式失败且携带身份信息。
     public static <T extends DemandType> T check(String key) {
-        return EnumRegistrySupport.of(holder, key);
+        return EnumRegistrySupport.check(holder, key, "DemandType");
     }
 
     public static <T extends DemandType> T check(int id) {
-        return EnumRegistrySupport.of(holder, id);
+        return EnumRegistrySupport.check(holder, id, "DemandType");
     }
 
     public static <T extends DemandType> T of(int id) {

@@ -357,17 +357,20 @@ class EnumRegistryFamilyContractTest {
     // ---- 现状差异钉桩 ----
 
     /**
-     * DemandTypes.check 委托宽松通道的现状差异钉桩：兄弟门面 check 未命中抛 NPE，
-     * 本类 check(String/int) 走 of 通道返回 null——"禁止顺手修"，统一即行为变更。
+     * DemandTypes.check 严格通道契约（fix-registered-defects tasks 6.1，design D6——原状差异钉桩翻转：
+     * 未注册身份由委托宽松 of 返 null 改显式失败，对齐兄弟门面既有严格通道与差量
+     * enumeration-facade-semantics「严格校验通道不得降级为宽松空返」）。
      */
     @Test
     void demandTypesCheckIsLenientLikeOf_DivergencePinnedNotFixed() {
         assertSame(ProbeDemandType.PROBE_DEMAND_TYPE_A, DemandTypes.check("PROBE_DEMAND_TYPE_A"));
         assertSame(ProbeDemandType.PROBE_DEMAND_TYPE_A, DemandTypes.check(907001));
-        assertNull(DemandTypes.check("MISS_DEMAND_TYPE"),
-                "现状：check(String) 委托 of 通道，未命中返回 null 而非抛（可疑语义，钉桩在册禁修）");
-        assertNull(DemandTypes.check(990007),
-                "现状：check(int) 委托 of 通道，未命中返回 null 而非抛（可疑语义，钉桩在册禁修）");
+        assertEquals("获取 MISS_DEMAND_TYPE DemandType 不存在",
+                assertThrows(NullPointerException.class, () -> DemandTypes.check("MISS_DEMAND_TYPE")).getMessage(),
+                "翻转（6.1）：check(String) 未注册身份显式失败且携带身份信息，对齐兄弟门面严格模板");
+        assertEquals("获取 ID为 990007 的 DemandType 不存在",
+                assertThrows(NullPointerException.class, () -> DemandTypes.check(990007)).getMessage(),
+                "翻转（6.1）：check(int) 未注册身份显式失败且携带身份信息，对齐兄弟门面严格模板");
         // 其余六件套与严格族一致
         assertSame(ProbeDemandType.PROBE_DEMAND_TYPE_A, DemandTypes.of("PROBE_DEMAND_TYPE_A"));
         assertSame(ProbeDemandType.PROBE_DEMAND_TYPE_A, DemandTypes.of(907001));
@@ -379,7 +382,8 @@ class EnumRegistryFamilyContractTest {
         assertSame(DemandTypes.enumerator(), DemandTypes.enumerator());
     }
 
-    /** ItemTypes 别名扩展：ofAlias 命中/无分隔符/未命中消息/空串越界现状；ofModelId/ofItemId 截断分支现状 */
+    /** ItemTypes 别名扩展：ofAlias 命中/无分隔符/未命中消息现状＋空串/纯分隔符受控失败（6.2 翻转正解）；
+     *  ofModelId 段取整现状＋ofItemId 单一商式归位（6.3 翻转，差量 enumeration-facade-semantics） */
     @Test
     void itemTypesAliasAndIdTruncationExtensions() {
         assertSame(ProbeItemType.PROBE_ITEM_A, ItemTypes.ofAlias("PROBE_HEAD$777"), "别名前缀+后缀应取前缀");
@@ -388,19 +392,32 @@ class EnumRegistryFamilyContractTest {
         assertEquals("获取 别名前缀 NO_HEAD 的 ItemType 不存在",
                 assertThrows(NullPointerException.class, () -> ItemTypes.ofAlias("NO_HEAD$x")).getMessage(),
                 "ofAlias 现状严格消息模板");
-        assertThrows(IndexOutOfBoundsException.class, () -> ItemTypes.ofAlias(""),
-                "现状钉桩：空串 split 后 heads[0] 下标越界（可疑语义在册，禁止顺手修）");
+        // 翻转（6.2，差量「空标识符查找显式失败不越界」）：空串/纯分隔符拆前判非法，受控失败且信息含输入描述
+        IllegalArgumentException emptyAlias = assertThrows(IllegalArgumentException.class, () -> ItemTypes.ofAlias(""),
+                "翻转（6.2）：空串别名改受控失败，越界栈不得再出现");
+        assertTrue(emptyAlias.getMessage().contains("\"\""),
+                "受控失败消息须含输入描述: " + emptyAlias.getMessage());
+        IllegalArgumentException sepOnlyAlias = assertThrows(IllegalArgumentException.class, () -> ItemTypes.ofAlias("$"),
+                "翻转（6.2）：纯分隔符输入拆后无段，同改受控失败（现状亦 heads[0] 越界）");
+        assertTrue(sepOnlyAlias.getMessage().contains("$"),
+                "受控失败消息须含输入描述: " + sepOnlyAlias.getMessage());
         // ofModelId：modelId/ID_TAIL_SIZE*ID_TAIL_SIZE 向下取整到百万段
         assertSame(ProbeItemType.PROBE_ITEM_TRUNK, ItemTypes.ofModelId(9000123), "9000123→9000000 段命中");
         assertSame(ProbeItemType.PROBE_ITEM_ZERO, ItemTypes.ofModelId(9999), "亚百万段取整为 0");
         assertNull(ItemTypes.ofModelId(10000000), "10000000→10000000 段未注册返回 null");
-        // ofItemId 现状截断链语义：每级 /10^k 商恒 < ID_TAIL_SIZE(1e6)，经 ofModelId 百万段取整后全部落入 0 段——
-        // 即任意 long 现状态均解析为 id=0 的 ItemType（可疑但属行为账，钉桩在册禁修，见 verification-group6 遗留登记）
-        assertSame(ProbeItemType.PROBE_ITEM_ZERO, ItemTypes.ofItemId(9999L));
-        assertSame(ProbeItemType.PROBE_ITEM_ZERO, ItemTypes.ofItemId(10000L), "10000 落入下一级 /10 → 1000 → 取整 0");
-        assertSame(ProbeItemType.PROBE_ITEM_ZERO, ItemTypes.ofItemId(900000000000L), "/1e8 → 9000 → ofModelId(9000) → 0 段");
-        assertSame(ProbeItemType.PROBE_ITEM_ZERO, ItemTypes.ofItemId(9000000000000000L), "/1e12 → 9000 → 0 段");
-        assertSame(ProbeItemType.PROBE_ITEM_ZERO, ItemTypes.ofItemId(9000000000000000000L), "≥1e17 兜底 /1e14 → 90000 → 0 段");
+        // 翻转（6.3，差量「道具位号解析按模型段商式单一规则收敛」）：单一商式段基址还原——全局号取商至首位、
+        // 首位×ID_TAIL_SIZE 还原段基址后交 ofModelId；同模型序列号恒归位模型条目，未注册段按宽松 of 通道返 null。
+        // 原状「每级 /10^k 商恒 < ID_TAIL_SIZE → 任意输入恒落 0 段」的五分支钉桩全部按承诺方向翻正
+        assertSame(ProbeItemType.PROBE_ITEM_TRUNK, ItemTypes.ofItemId(9999L),
+                "翻转（6.3）：9999 首位 9 → 段基址 9000000 归位 TRUNK（TRUNK.itemIdOf(999) 实产样本）");
+        assertNull(ItemTypes.ofItemId(10000L),
+                "翻转（6.3）：10000 首位 1 → 段基址 1000000 未注册 → 宽松 of 通道语义返 null");
+        assertSame(ProbeItemType.PROBE_ITEM_TRUNK, ItemTypes.ofItemId(900000000000L),
+                "翻转（6.3）：9e11 首位 9 → 段基址 9000000 归位 TRUNK");
+        assertSame(ProbeItemType.PROBE_ITEM_TRUNK, ItemTypes.ofItemId(9000000000000000L),
+                "翻转（6.3）：9e15 首位 9 → 段基址 9000000 归位 TRUNK");
+        assertSame(ProbeItemType.PROBE_ITEM_TRUNK, ItemTypes.ofItemId(9000000000000000000L),
+                "翻转（6.3）：9e18 首位 9 → 段基址 9000000 归位 TRUNK");
     }
 
     /** Actions.getAll() 异名现状：本类只有 getAll 无 all（兄弟均为 all），且返回集合含已注册值 */

@@ -158,10 +158,10 @@ public class ObjectMap extends HashMap<String, Object> implements TypeMap {
 
     @Override
     public float getFloat(String key, float defaultValue) {
-        // D4 遗留登记（禁止顺手修）：recon 期现状为 float.class 致值存在必抛 CCE；基线树经 ObjectAide.convertTo
-        // 基本类型分支消化为正常返回。缺陷实参原样保留（与 Wrapper 侧 Float.class 的差异由参数承载，单一事实源），
-        // 不可转换格 CCE 消息尾段 "float" vs "class java.lang.Float" 分叉已由 MapConvertAccessContractTest 逐字钉死。
-        return asObject(key, defaultValue, float.class);
+        // fix-registered-defects D8（task 5.2）：原缺陷实参 float.class 改入 Float.class 与 Wrapper 侧同参；
+        // 共享引擎入口另有原始类装箱归一双保险（单一事实源）。CCE 消息尾段分叉按 object-access-conversion
+        // 差量归一为装箱形态，MapConvertAccessContractTest.floatDefChannelMessageDriftPinned 翻转钉桩。
+        return asObject(key, defaultValue, Float.class);
     }
 
     /**

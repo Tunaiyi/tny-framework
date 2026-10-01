@@ -21,11 +21,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 /**
- * 重构前行为钉桩（round-trip）：五类 print → merge 往返现状账目。
- * 现状：Xml/Props 对 unknown fields 与 Xml 对转义特殊字符集（\\uXXXX/八进制/\\n\\r\\t\\"\\\\/高位字节）
- * 抛 ParseException（异常消息逐字钉死）；Json/CouchDB 的 unknown fields 被静默丢弃；
- * Json/CouchDB 的 BYTES 高位字节经 \\uffXX 的 \\u 还原公式为现状有损（合并后重打印快照钉死）；
- * Props 的 MessageSet 扩展往返不对称（抛 "Expected \".\"."）。以上现状一律保持，禁止顺手修。
+ * 行为账目（round-trip，fix-registered-defects 翻转后）：四类可读回形态 print → merge 契约。
+ * <ul>
+ * <li>2.1 翻转：Json/Couch 的 BYTES 高位字节 \\uffXX 按四位权展开（16³/16²/16¹/16⁰）还原，往返逐字节相等
+ * 且二次打印逐字一致（全形态矩阵另见 FormatEscapeFidelityTest）。</li>
+ * <li>3.1 翻转：Xml 对转义特殊字符集（八进制/短转义/高位字节）打印产物读回闭合，成功且值等。</li>
+ * <li>3.2 翻转：unknown fields 全形态统一显式拒绝且失败信息可定位首个未知编号（原 Xml/Props 词法错位、
+ * 原 Json/Couch 静默丢弃；样例面见 FormatUnknownFieldRejectionTest）。</li>
+ * <li>3.3 翻转：Props MessageSet 扩展打印与读回命名对称，产物原样读回往返闭合（原 "Expected \".\"."）。</li>
+ * </ul>
+ * 其余既有格期望值零改动，禁止顺手修。
  */
 public class FormatMergeRoundTripTest {
 
@@ -65,15 +70,13 @@ public class FormatMergeRoundTripTest {
         assertEquals(fx.special(), mergeRoundTrip("XML", fx.special()));
         assertEquals(fx.negSpecial(), mergeRoundTrip("XML", fx.negSpecial()));
         assertEquals(fx.negZero(), mergeRoundTrip("XML", fx.negZero()));
-        // UNKNOWN：现状往返不闭合，抛异常并逐字钉死消息
+        // UNKNOWN（3.2 翻转）：统一显式拒绝并定位首个未知编号 995（原词法错位 "Expected identifier. --"）
         Protobuf2XmlFormat.ParseException pe1 = assertThrows(Protobuf2XmlFormat.ParseException.class,
                 () -> mergeRoundTrip("XML", fx.withUnknown()));
-        assertEquals("1:42: Expected identifier. --", pe1.getMessage());
+        assertUnknownNumberLocated(pe1.getMessage());
         assertEquals(fx.msgSet(), mergeRoundTrip("XML", fx.msgSet()));
-        // ESCAPES：现状往返不闭合，抛异常并逐字钉死消息
-        Protobuf2XmlFormat.ParseException pe2 = assertThrows(Protobuf2XmlFormat.ParseException.class,
-                () -> mergeRoundTrip("XML", fx.escapes()));
-        assertEquals("1:25: Expected \">\".", pe2.getMessage());
+        // ESCAPES（3.1 翻转）：打印产物对转义特殊字符集（引号/反斜杠族）词法闭合，读回成功且值逐字节等
+        assertEquals(fx.escapes(), mergeRoundTrip("XML", fx.escapes()));
         assertEquals(fx.doc(), mergeRoundTrip("XML", fx.doc()));
         assertEquals(fx.empty(), mergeRoundTrip("XML", fx.empty()));
     }
@@ -84,15 +87,16 @@ public class FormatMergeRoundTripTest {
         assertEquals(fx.special(), mergeRoundTrip("JSON", fx.special()));
         assertEquals(fx.negSpecial(), mergeRoundTrip("JSON", fx.negSpecial()));
         assertEquals(fx.negZero(), mergeRoundTrip("JSON", fx.negZero()));
-        // UNKNOWN：现状往返不闭合但不抛异常，重打印结果快照钉死
-        Message mJSON_UNKNOWN = mergeRoundTrip("JSON", fx.withUnknown());
-        assertNotEquals(fx.withUnknown(), mJSON_UNKNOWN);
-        assertEquals(RT_JSON_UNKNOWN_PRINT, Protobuf2JsonFormat.printToString(mJSON_UNKNOWN));
+        // UNKNOWN（3.2 翻转）：静默丢弃改统一显式拒绝，失败信息定位首个未知编号 995
+        Protobuf2JsonFormat.ParseException je1 = assertThrows(Protobuf2JsonFormat.ParseException.class,
+                () -> mergeRoundTrip("JSON", fx.withUnknown()));
+        assertUnknownNumberLocated(je1.getMessage());
         assertEquals(fx.msgSet(), mergeRoundTrip("JSON", fx.msgSet()));
-        // ESCAPES：现状往返不闭合但不抛异常，重打印结果快照钉死
+        // ESCAPES（2.1 翻转）：\\uffXX 四位权展开还原公式修正后，往返逐字节相等且二次打印逐字一致
         Message mJSON_ESCAPES = mergeRoundTrip("JSON", fx.escapes());
-        assertNotEquals(fx.escapes(), mJSON_ESCAPES);
-        assertEquals(RT_JSON_ESCAPES_PRINT, Protobuf2JsonFormat.printToString(mJSON_ESCAPES));
+        assertEquals(fx.escapes(), mJSON_ESCAPES);
+        assertEquals(Protobuf2JsonFormat.printToString(fx.escapes()),
+                Protobuf2JsonFormat.printToString(mJSON_ESCAPES));
         assertEquals(fx.doc(), mergeRoundTrip("JSON", fx.doc()));
         assertEquals(fx.empty(), mergeRoundTrip("JSON", fx.empty()));
     }
@@ -103,14 +107,12 @@ public class FormatMergeRoundTripTest {
         assertEquals(fx.special(), mergeRoundTrip("PROPS", fx.special()));
         assertEquals(fx.negSpecial(), mergeRoundTrip("PROPS", fx.negSpecial()));
         assertEquals(fx.negZero(), mergeRoundTrip("PROPS", fx.negZero()));
-        // UNKNOWN：现状往返不闭合，抛异常并逐字钉死消息
+        // UNKNOWN（3.2 翻转）：统一显式拒绝并定位首个未知编号 995（原词法错位 "2:1: Expected identifier."）
         Protobuf2JavaPropsFormat.ParseException pe1 = assertThrows(Protobuf2JavaPropsFormat.ParseException.class,
                 () -> mergeRoundTrip("PROPS", fx.withUnknown()));
-        assertEquals("2:1: Expected identifier.", pe1.getMessage());
-        // MSGSET：现状往返不闭合，抛异常并逐字钉死消息
-        Protobuf2JavaPropsFormat.ParseException pe2 = assertThrows(Protobuf2JavaPropsFormat.ParseException.class,
-                () -> mergeRoundTrip("PROPS", fx.msgSet()));
-        assertEquals("1:30: Expected \".\".", pe2.getMessage());
+        assertUnknownNumberLocated(pe1.getMessage());
+        // MSGSET（3.3 翻转）：打印短名路径与读回命名归一，往返闭合且值等（原 "1:30: Expected \".\"."）
+        assertEquals(fx.msgSet(), mergeRoundTrip("PROPS", fx.msgSet()));
         assertEquals(fx.escapes(), mergeRoundTrip("PROPS", fx.escapes()));
         assertEquals(fx.doc(), mergeRoundTrip("PROPS", fx.doc()));
         assertEquals(fx.empty(), mergeRoundTrip("PROPS", fx.empty()));
@@ -122,25 +124,26 @@ public class FormatMergeRoundTripTest {
         assertEquals(fx.special(), mergeRoundTrip("COUCH", fx.special()));
         assertEquals(fx.negSpecial(), mergeRoundTrip("COUCH", fx.negSpecial()));
         assertEquals(fx.negZero(), mergeRoundTrip("COUCH", fx.negZero()));
-        // UNKNOWN：现状往返不闭合但不抛异常，重打印结果快照钉死
-        Message mCOUCH_UNKNOWN = mergeRoundTrip("COUCH", fx.withUnknown());
-        assertNotEquals(fx.withUnknown(), mCOUCH_UNKNOWN);
-        assertEquals(RT_COUCH_UNKNOWN_PRINT, Protobuf2CouchDBFormat.printToString(mCOUCH_UNKNOWN));
+        // UNKNOWN（3.2 翻转）：与 Json 同读回通道，静默丢弃改统一显式拒绝并定位首个未知编号 995
+        Protobuf2CouchDBFormat.ParseException ce1 = assertThrows(Protobuf2CouchDBFormat.ParseException.class,
+                () -> mergeRoundTrip("COUCH", fx.withUnknown()));
+        assertUnknownNumberLocated(ce1.getMessage());
         assertEquals(fx.msgSet(), mergeRoundTrip("COUCH", fx.msgSet()));
-        // ESCAPES：现状往返不闭合但不抛异常，重打印结果快照钉死
+        // ESCAPES（2.1 翻转）：继承 Json 还原通道，公式修正后往返逐字节相等且二次打印逐字一致
         Message mCOUCH_ESCAPES = mergeRoundTrip("COUCH", fx.escapes());
-        assertNotEquals(fx.escapes(), mCOUCH_ESCAPES);
-        assertEquals(RT_COUCH_ESCAPES_PRINT, Protobuf2CouchDBFormat.printToString(mCOUCH_ESCAPES));
+        assertEquals(fx.escapes(), mCOUCH_ESCAPES);
+        assertEquals(Protobuf2CouchDBFormat.printToString(fx.escapes()),
+                Protobuf2CouchDBFormat.printToString(mCOUCH_ESCAPES));
         assertEquals(fx.doc(), mergeRoundTrip("COUCH", fx.doc()));
         assertEquals(fx.empty(), mergeRoundTrip("COUCH", fx.empty()));
     }
 
-    private static final String RT_JSON_UNKNOWN_PRINT = "{\"opt_string\": \"known\"}";
-
-    private static final String RT_JSON_ESCAPES_PRINT = "{\"opt_string\": \"q\\\"a'p\\\\bs\\nnr\\ttv \\u0001\\u001b\\u0007 vk é\\ud83d\\ude00\",\"opt_bytes\": \"\\a\\b\\v\\f\\u0000\\u0001\\u001f !\\\"\\'\\\\\u007f0\\uffafAz~\"}";
-
-    private static final String RT_COUCH_UNKNOWN_PRINT = "{\"opt_string\": \"known\"}";
-
-    private static final String RT_COUCH_ESCAPES_PRINT = "{\"opt_string\": \"q\\\"a'p\\\\bs\\nnr\\ttv \\u0001\\u001b\\u0007 vk é\\ud83d\\ude00\",\"opt_bytes\": \"\\a\\b\\v\\f\\u0000\\u0001\\u001f !\\\"\\'\\\\\u007f0\\uffafAz~\"}";
+    /**
+     * 3.2 差量承诺面（design D3 裁"拒绝"，失败消息最小组合为 编号+位置，格式不承诺对外稳定——钉"可定位首个未知编号"）：
+     * 失败消息 MUST 含首个未知编号 995（five-form 样例格式见 FormatUnknownFieldRejectionTest 统一钉桩）。
+     */
+    private static void assertUnknownNumberLocated(String message) {
+        assertTrue(message.contains("995"), message);
+    }
 
 }
