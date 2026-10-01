@@ -1,0 +1,44 @@
+# tny-framework 开发机 MCP 容器栈（与同目录 docker-compose.yaml 的应用基础设施栈分离；两文件统一收纳于仓库 docker/ 目录）。
+#
+# 两类服务的形态差异来自二进制实测（2026-10-01）：
+#   - github-mcp-server 支持 `http` 子命令 → 可常驻，多客户端(Claude Code/Cursor/…)共享一个端点；
+#   - docker-mcp(l337) 仅 stdio → 不能常驻，做成 compose run 按需服务，
+#     由 MCP 宿主以 `docker compose ... run --rm -T` 方式拉起（等价 docker run -i）。
+# 另注：docker mcp gateway 是宿主进程（~/.docker/cli-plugins/docker-mcp），不是容器，不在本文件内。
+#
+# 用法（现网接线，2026-10-01 起 stdio 双服务均走本文件的 compose run 形态，配置单一来源）：
+#   claude mcp add github -s user -- docker compose -f <本文件绝对路径> --profile stdio run --rm -T --name tny-mcp-github mcp-github-stdio
+#   claude mcp add docker -s user -- docker compose -f <本文件绝对路径> --profile stdio run --rm -T --name tny-mcp-docker mcp-docker
+# 注①：--name 固定容器名（run 忽略服务级 container_name，实测 v5.5.1）；副作用=单实例，
+#      多会话并行或 claude mcp list 外部探测在会话容器在役时会撞名，属预期非故障。
+# 注②：曾评估并移除常驻 http 服务（mcp-github, serve profile, :8082）：
+#      实测其授权链 authorization_servers=GitHub 本体 → Claude Code 走它必撞 DCR 死路，
+#      仅当自备 PAT 或多客户端共享端点需求出现时再恢复（定义见本文件 git 历史）。
+#
+name: tny-mcp
+
+services:
+  mcp-docker:
+    image: ghcr.io/l337-org/docker-mcp-server:2.2.6
+    profiles: ["stdio"]
+    # stdio 型：stdin 必须是 MCP 管道 → 只随 compose run 使用，不参与 up
+    # 固定名由注册命令的 run --name tny-mcp-docker 实现（compose 已知行为：run 忽略服务级
+    # container_name，只认 --name）。⚠ 固定名=单实例：多会话并行/健康探测二次 spawn 会撞名。
+    stdin_open: true
+    volumes:
+      # VM 侧 docker socket（OrbStack 架构下容器与 daemon 同 VM，此路径可用；
+      # 与 Claude 现状入口 claude mcp add docker 完全等价）
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  mcp-github-stdio:
+    image: ghcr.io/github/github-mcp-server:latest
+    profiles: ["stdio"]
+    # Claude Code 的 github 正解接线 = 本服务经 compose run（stdio+OAuth，见 §1 注释的 DCR 边界）
+    # 固定名由注册命令 run --name tny-mcp-github 提供（run 忽略服务级 container_name）
+    stdin_open: true
+    command: ["stdio"]
+    environment:
+      GITHUB_OAUTH_CALLBACK_PORT: "8085"
+    ports:
+      # OAuth 回调端口（注册为 localhost:8085/callback，宿主与容器端口必须一致）
+      - "127.0.0.1:8085:8085"
