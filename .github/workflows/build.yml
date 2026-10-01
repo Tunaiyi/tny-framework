@@ -141,8 +141,13 @@ jobs:
           git config user.name "bench-routine[bot]"
           git config user.email "bench-routine@users.noreply.github.com"
           git add -f tny-bench/results/
-          git diff --cached --quiet || git commit -m "chore(bench): routine benchmark results [skip ci]"
-          git push
+          if git diff --cached --quiet; then echo "no result change to commit"; exit 0; fi
+          git commit -m "chore(bench): routine benchmark results [skip ci]"
+          # 回写竞态防御：执行窗 ~21min 内分支可前进（run#18 与第四轮 4bb98df 实证 push 被拒）。
+          # rebase 到最新远端再推；同日期产物冲突取新（-X theirs=重放侧=本次运行结果）。
+          git fetch origin "$GITHUB_REF_NAME"
+          git rebase -X theirs "origin/$GITHUB_REF_NAME" || { git rebase --abort; exit 1; }
+          git push origin "HEAD:refs/heads/$GITHUB_REF_NAME"
       # 历史曲线=信号非门禁（spec：回归判定人裁决）：告警级 alert-threshold，
       # gh-pages 未启用/私有仓场景 continue-on-error 降级（design 风险条）。
       - name: Store benchmark result & trend

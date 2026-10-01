@@ -62,3 +62,9 @@
 - 报错原文：`Error: 'auto-push' is enabled but 'github-token' is not set.`——新版 github-action-benchmark 在 auto-push 下要求显式传 token，不隐式取 GITHUB_TOKEN。
 - 修复：`build.yml` Store 步骤 `with` 增 `github-token: ${{ secrets.GITHUB_TOKEN }}`（job 级 contents:write 本已具备）。
 - 第三轮验证：修复 commit 的 push 即触发下一轮 bench-routine，核 gh-pages 起线后销 6.2。
+
+## 第四轮日志与回写竞态修复（00:0x）
+
+- 用户贴 run 日志：bot commit `4bb98df` 已生成但 `git push` 被拒（fetch first）——**回写竞态实锤**（执行窗 ≈21min 内分支前进即死；stabilize 案卷 run#18 同款）。Store 步骤因 job 中止**从未执行**——token 修复至今未被验证。
+- 修复（本变更差量内：回写步骤系 bench-nightly→bench-routine 迁移所写）：commit 后 `fetch + rebase -X theirs origin/$GITHUB_REF_NAME + push HEAD:refspec`；同日期产物冲突取当轮新结果。
+- 疑点登记（销 6.2 时顺带核）：第四轮 diff 为 1258+/1258−，与首轮产物 2861 行体量差异大——第五轮闭环时核对远端最新产物**条目数=37** 与参数头，若缩水需查 jmh 任务缓存复用。
