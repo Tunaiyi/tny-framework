@@ -44,9 +44,13 @@
 - **CI 同签名零复现计数**（目标 ≥10 次自然 push；每轮必查 `ci-it-diag` 有无新投递）：
   - run#18（ae80463d 根治推送）：integration ✅ e2e ✅（1/10）。run 级红主犯=bench 线 `Routine benchmarks` 回写步（"Commit routine result into results/"失败，归 split-bench-suites 线处置）；
   - run#19（f1acdc9b bench docs）：integration ✅ e2e ✅（2/10）。run 级红主犯=**unit 回红**（间歇登记簿：#16❌ #17✅ #18✅ #19❌ #20✅——§3 在册，边界不动 unit，另案）；
-  - run#20（2cee4213 案卷回填 docs 推送）：**全 run success**（integration/e2e/unit/bench 皆绿，3/10）；
-  - `ci-it-diag` 至今仅 #17 一卷，根治后 3 轮零新投递。计数 **3/10**（后续含 PR 事件与在途自然 push，不为凑数制造 push）。
+  - run#20（2cee4213 案卷回填 docs 推送）：**全 run success**（3/10）；
+  - run#21（f49fa5fe 案卷对表推送）：integration ✅ e2e ✅ unit ✅（4/10）。run 级红主犯=bench `Routine benchmarks` 回写步**复发**（"Commit routine result into results/"——bench 线其后经 9d528000"Store 步骤归因终案/预建 gh-pages 空分支"根治，#23 起 success 实证）；
+  - run#22（ba82cf06 bench）：integration ✅ e2e ✅（5/10）。主犯=**unit 第三红**（登记簿：#16❌ #17✅ #18✅ #19❌ #20✅ #21✅ #22❌ #23✅ #24✅ #25✅）；
+  - run#23/#24/#25（e36ee1d6/f7551afb/9d528000）：**全 run success**（6/10、7/10、8/10）；
+  - run#26（aa5fb7f1）在途=第 9 个数据点；两条 dynamic run 属 bench 线独立 workflow，不计 IT 账。
+  - `ci-it-diag` 至今仅 #17 一卷，**根治后 8 轮零新投递**（支②签名零复现 8 次，含 e2e docker 通道全绿）。计数 **8/10**，还差 2 个自然事件（不为凑数制造 push）。
 - **本地（OrbStack）5 轮 `integrationTest -PincludeDocker --rerun`**：**5/5 全绿**（每轮 rc=0、BUILD SUCCESSFUL，约 2.3 min/轮，串行窗口查过并发）。非空跑实证：最新轮 20 结果文件、**61 个真实用例、failures=0、skipped=0**（etcd 档 36 例 + Mongodb/Redisson/DataAccess + integration-test 23 例全执行）——与 CI integration/e2e 恒绿结论一致。**5.5 本地端达成**。
 - **无 docker 环境显性 skip 探针**：✅ `-PdockerHost=unix:///tmp/no-such-docker.sock` 下 docker 档用例（MongodbDataAccessIT、RedissonDataAccessIT）显性 `SKIPPED`（testLogging 有 skipped 事件），非静默绿。
-- **CI 5 轮一致**：由自然 push 流继续积累（当前 2/10），不制造无意义 push 刷数。
+- **CI 5 轮一致**：✅ **已满足**（IT job 级连绿 8 轮 ≥5，与本地 5/5 结论一致；unit 间歇与 bench 回写红均另有主犯、不属本项病源）。零复现总账仍差 2 个自然事件。
 - **5.4 门禁**：硬门禁全程未降级（`Fail job` 步骤与电路原样在位；run#18/#19 的 run 级红证明门禁仍在拦事）；阶段二撤降级条款无对象可撤。
