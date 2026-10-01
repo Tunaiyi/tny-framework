@@ -152,6 +152,9 @@ jobs:
           tool: 'jmh'
           output-file-path: tny-bench/build/reports/bench/bench-result.json
           gh-pages-branch: gh-pages
+          # action 的 auto-push 要求显式授 token（缺它报 "'auto-push' is enabled but 'github-token'
+          # is not set"，run#2/#3 实证）；job 级 contents: write 已就位。
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           alert-threshold: '150%'
           comment-on-alert: true
           fail-on-alert: false

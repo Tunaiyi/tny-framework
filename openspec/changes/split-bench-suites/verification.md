@@ -50,3 +50,15 @@
 - 执行→产物→回写→防循环 四段实证齐备（commit 43a5e966、37 组合 D3 产物、无自触发）。
 - **曲线步骤未起线**：距回写 ~6h 远端仍无 gh-pages → `Store benchmark result & trend` 步骤失败被 `continue-on-error` 吞——恰为 design 风险条预想的降级面（信号面缺失，产物面不受影响）。归因需 Actions UI 看该 run 末步骤日志（本机 GitHub MCP OAuth 回调链修复中，无 Actions API 工具）。
 - 结论：6.2 保持未勾（run 链接与曲线证据缺口）；下一步：①用户重启会话走修好的 --service-ports OAuth 接线，或 UI 直接看 run 日志；②曲线归因后决定修 action 配置或按 design 接受降级并注记。
+
+## 23:07 第二轮 CI 核查（cron）
+
+- 第二轮 `bench-routine`（push f1acdc9b 触发）：回写 commit `065db998`（bot，15:05:10Z，端到端 ≈21min）——执行链两轮稳定复现 ✓✓。
+- **gh-pages 两轮均未生成** → `Store benchmark result & trend` 稳定失败、被 continue-on-error 吞。归因需 run 日志（GitHub MCP 无 Actions API），已向用户索取步骤日志。
+- 候选归因（待日志确认）：action 首次建分支推送路径 / jmh 输出解析 / GITHUB_TOKEN scope 边缘。
+
+## 曲线失败归因与修复（用户提供 run 日志）
+
+- 报错原文：`Error: 'auto-push' is enabled but 'github-token' is not set.`——新版 github-action-benchmark 在 auto-push 下要求显式传 token，不隐式取 GITHUB_TOKEN。
+- 修复：`build.yml` Store 步骤 `with` 增 `github-token: ${{ secrets.GITHUB_TOKEN }}`（job 级 contents:write 本已具备）。
+- 第三轮验证：修复 commit 的 push 即触发下一轮 bench-routine，核 gh-pages 起线后销 6.2。
