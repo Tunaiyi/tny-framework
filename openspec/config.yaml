@@ -4,6 +4,8 @@ context: |
   Language: zh
   All artifacts must be written in zh.
   Keep OpenSpec structural headings and SHALL/MUST keywords in English.
+  文字规则：工件正文必须用人类能直接读懂的完整句子——语义明确、语句通顺，
+  禁止符号缩写与会话内私设代号（详见项目根 CLAUDE.md《AI 生成内容的文字规则》）。
 
   项目：TnyFramework，Java 游戏服务器框架，Gradle 多模块（50+ 模块），当前 5.7.x 维护分支。
   - 技术栈：Java 21、Spring Boot 3.2.1、Netty 4.1.104、JUnit 5。
