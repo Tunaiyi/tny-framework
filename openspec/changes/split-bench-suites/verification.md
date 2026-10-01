@@ -79,3 +79,9 @@
 - 第二轮日志（token 修复后）：action 第一步即 `git fetch <repo> gh-pages:gh-pages`，**分支不存在直接 exit 128**——该版本 auto-push 无自建分支路径；token 本身已生效（fetch 带认证头走到分支查找）。
 - 处置：本地 `commit-tree` 空树法预建孤儿分支 `gh-pages`（未触碰共享工作区）。三轮修复至此齐备：显式 token（ba82cf06）→ 回写 rebase（e36ee1d6，第五轮 00e4c9da 实证生效）→ 预建分支（本轮）。
 - 触发轮：本次 verification commit 的 push = 首个全条件 run；预期 bot 回写后 Store 走通并推首个 benchmark-data.json。
+
+## 终验：gh-pages 曲线全链走通（第六轮，commit 9d528000 触发）
+
+- action 日志：fetch 命中预建分支 → 缺 data.js 自动 empty default（B 案免）→ 生成 `dev/bench/data.js`(254 行)+`dev/bench/index.html`(281 行，**页面壳自带，可视化无需追加变更**) → push `c2f528b..7f51dc2` ✓ → "run successfully"。
+- 数据核对：曲线 1 轮 × **37 序列条目全起线**，分布 Matrix 24 / MQ 6 / PacketCodec 2 / RespondFuture 4 / Smoke 探针 1，族口径 net.routine 36 + net.devtest 1——与本地 jmhList/benchFast 对账一致；第四轮"1258 行"体量疑点就此消解（diff 折叠显示，非数据缺失）。
+- **6.2 销账**：run 证据（本轮日志）、commit sha（7f51dc2 / 00e4c9da）、曲线页（https://tunaiyi.github.io/tny-framework/dev/bench/）三处证据齐备。三轮修复链（token→rebase→预建分支）全部由 run 日志实证驱动，无一头猜错存活。

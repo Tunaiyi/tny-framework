@@ -37,7 +37,7 @@
 ## 6. 首验、回填与收口
 
 - [x] 6.1 本地 `jmh -PbenchFast` 全选择面快跑记录（37 组合确认 + 时长基线），给出 CI 预算区间（D5 预估 25~40 min 的对照）。
-- [ ] 6.2 `workflow_dispatch` 触发 `bench-routine` 全链首验：产物 `results/bench-<日期>-routine.json` 落盘、回写 commit 带 `[skip ci]` 无自触发、gh-pages 曲线以新 bname 主键起线。验证：三处各留可核对证据（run 链接、commit sha、curve 页面）。
+- [x] 6.2 `workflow_dispatch` 触发 `bench-routine` 全链首验：产物 `results/bench-<日期>-routine.json` 落盘、回写 commit 带 `[skip ci]` 无自触发、gh-pages 曲线以新 bname 主键起线。验证：三处各留可核对证据（run 链接、commit sha、curve 页面）。
 - [x] 6.3 负向验证评审通道：功能分支临时新建一个无 @Benchmark 归族的探针类 → `bench-compile` 完备性红且点名；再搬一个 routine 类而不改清单 → 双向对账红；两处验后还原转绿。
 - [x] 6.4 首个自然 push（框架优化合入）后核对执行通道自动运行的数据点与实测时长，回填 README 预算小节（D5 实证闭环）。
 - [x] 6.5 收口：`openspec validate split-bench-suites --strict` 通过；`codegraph_reindex_workspace` 增量重建后抽查移包类新位置可检索；差量与账本核对，备 /opsx:verify 与归档。
