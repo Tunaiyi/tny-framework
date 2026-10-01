@@ -19,11 +19,18 @@ jobs:
     services:
       # 既有 tny-game-namnspace-etcd 单测静态依赖本地 etcd:2379（非本变更引入），CI 须提供
       etcd:
-        image: gcr.io/etcd-development/etcd:v3.5.11   # root 运行且 runner 可拉（run#10 e2e 实证）；quay coreos 版为非 root 用户，services 挂载下 etcd 起不来致 health 恒败
+        image: gcr.io/etcd-development/etcd:v3.5.11
+        # 雷②修复：etcd 默认只绑容器内 localhost，宿主映射端口拒连——services 原生 env
+        # 直通 ETCD_* 参数（官方 flag→env 映射），令其监听 0.0.0.0。
+        env:
+          ETCD_LISTEN_CLIENT_URLS: http://0.0.0.0:2379
+          ETCD_ADVERTISE_CLIENT_URLS: http://0.0.0.0:2379
         ports: [ '2379:2379' ]
-        options: >-
-          --health-cmd="etcdctl endpoint health"
-          --health-interval=10s --health-timeout=5s --health-retries=5
+        # 雷③定案：不设 options/healthcheck。run#10-14 全矩阵证明同镜像下"带 options 的
+        # unit 恒败于 Initialize、无 options 的 e2e 恒绿"——YAML 折叠把 --health-cmd 的引号
+        # 变字面字符、空格拆参喂 docker 产生垃圾 args（官方示例的 health-cmd 均为无空格
+        # 单词，恰为反证），等号形式亦不幸存。就绪性由时序天然保证：容器裸起 ~1s，
+        # 首个 etcd 请求发生在 checkout+setup+编译之后（分钟级裕量）。
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
