@@ -16,6 +16,8 @@ jobs:
   unit:
     name: Unit tests (no Docker)
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     services:
       # 既有 tny-game-namnspace-etcd 单测静态依赖本地 etcd:2379（非本变更引入），CI 须提供
       etcd:
@@ -41,7 +43,32 @@ jobs:
         with:
           cache-disabled: 'false'
       - name: Unit tests
-        run: ./gradlew test --continue
+        id: ut
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          ./gradlew test --continue --console=plain 2>&1 | tee /tmp/unit-console.log
+      # fix-ci-unit-flakes D1 诊断电路（与 ci-it-diag 同型三件套）：红时投递四件案卷——
+      # ①etcd services 容器状态+日志（本案头号嫌疑人）②gradle 输出尾部 ③失败用例 XML ④环境自述。
+      # 取卷：git fetch github ci-unit-diag && git show FETCH_HEAD:unitdiag/console-tail.txt
+      # 采集步全部 || true 降级——电路自身永不因取证失败而更红。
+      - name: Exfil unit failure evidence to ci-unit-diag
+        if: steps.ut.outcome == 'failure'
+        run: |
+          git checkout --orphan ci-unit-diag
+          mkdir -p unitdiag
+          docker ps -a > unitdiag/docker-ps.txt 2>&1 || true
+          for c in $(docker ps -aq --filter ancestor=gcr.io/etcd-development/etcd:v3.5.11 2>/dev/null); do docker logs --tail 200 "$c" > "unitdiag/etcd-$c.log" 2>&1 || true; done
+          tail -c 200000 /tmp/unit-console.log > unitdiag/console-tail.txt
+          find . -path "*/build/test-results/test/*.xml" -print0 2>/dev/null | xargs -0 grep -l "<failure\|<error" 2>/dev/null | while read -r f; do cp "$f" unitdiag/; done
+          { java -version; uname -a; } > unitdiag/env.txt 2>&1 || true
+          git add -f unitdiag
+          git -c user.name="ci-unit-diag" -c user.email="ci-unit-diag@users.noreply.github.com" commit -m "unit diag run ${{ github.run_id }}"
+          git push -f origin ci-unit-diag
+      # 硬门禁语义零变化（design Non-Goals：不降级、不重试）
+      - name: Fail job when unit tests failed (gate preserved)
+        if: steps.ut.outcome == 'failure'
+        run: exit 1
 
   integration:
     name: Integration tests (real transport + containers, starter 装配与剧本覆盖)
@@ -80,24 +107,6 @@ jobs:
       - name: Fail job when IT failed (gate preserved)
         if: steps.it.outcome == 'failure'
         run: exit 1
-
-  e2e:
-    name: Full lane with containers (docker-tagged ITs)
-    if: github.event_name == 'push' || github.event_name == 'schedule'
-    runs-on: ubuntu-latest
-    services:
-      etcd:
-        image: gcr.io/etcd-development/etcd:v3.5.11   # root 运行且 runner 可拉（run#10 e2e 实证）；quay coreos 版为非 root 用户，services 挂载下 etcd 起不来致 health 恒败
-        ports: [ '2379:2379' ]
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '21'
-      - uses: gradle/actions/setup-gradle@v3
-      - name: "Integration tests (include docker - Redis/Mongo via Testcontainers)"
-        run: ./gradlew integrationTest -PincludeDocker --continue
 
   bench-compile:
     name: Bench compile check (no timings)
