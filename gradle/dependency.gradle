@@ -1,10 +1,9 @@
 ext.vers = [
 
         jmock         : "2.12.0",
-        junit         : "5.8.2",
-        junit_platform: "1.9.2",
         junirocketmqt5: "5.4.2",
-        mockito       : "3.9.0",
+        // junit/mockito/junit-platform 版本改由 Spring Boot BOM 统一接管（add-integration-testing D4），
+        // 此处不再钉版本，防止双头管理压住与 JDK 21 兼容的版本。
 
 
         spring_batch  : "5.1.0",
@@ -33,6 +32,8 @@ ext.libs = [
         log4j_core                           : "org.apache.logging.log4j:log4j-core",
         log4j_jul                            : "org.apache.logging.log4j:log4j-jul",
         log4j_slf4j_impl                     : "org.apache.logging.log4j:log4j-slf4j-impl",
+        // slf4j 2.x 时代的 log4j2 provider（add-integration-testing：集成测试需真实日志后端做告警捕获断言）
+        log4j_slf4j2_impl                    : "org.apache.logging.log4j:log4j-slf4j2-impl",
         log4j_web                            : "org.apache.logging.log4j:log4j-web",
         checkerframework                     : "org.checkerframework:checker-qual:3.42.0",
         errorprone                           : "com.google.errorprone:error_prone_annotations:2.24.1",
@@ -134,12 +135,12 @@ ext.libs = [
 
         joda_time                            : "joda-time:joda-time:2.10.2",
 
-        junit_jupiter                        : "org.junit.jupiter:junit-jupiter:$vers.junit",
-        junit_jupiter_api                    : "org.junit.jupiter:junit-jupiter-api:$vers.junit",
-        junit_jupiter_engine                 : "org.junit.jupiter:junit-jupiter-engine:$vers.junit",
-        junit_vintage_engine                 : "org.junit.vintage:junit-vintage-engine:$vers.junit",
-        junit_platform_launcher              : "org.junit.platform:junit-platform-launcher:$vers.junit_platform",
-        junit_platform_commons               : "org.junit.platform:junit-platform-commons:$vers.junit_platform",
+        junit_jupiter                        : "org.junit.jupiter:junit-jupiter",
+        junit_jupiter_api                    : "org.junit.jupiter:junit-jupiter-api",
+        junit_jupiter_engine                 : "org.junit.jupiter:junit-jupiter-engine",
+        junit_vintage_engine                 : "org.junit.vintage:junit-vintage-engine",
+        junit_platform_launcher              : "org.junit.platform:junit-platform-launcher",
+        junit_platform_commons               : "org.junit.platform:junit-platform-commons",
 
         byte_buddy                           : "net.bytebuddy:byte-buddy:1.14.11",
         byte_buddy_agent                     : "net.bytebuddy:byte-buddy-agent:1.14.11",
@@ -236,7 +237,15 @@ ext.libs = [
 
 
         jmock_junit5                         : "org.jmock:jmock-junit5:${vers.jmock}",
-        mockito_junit_jupiter                : 'org.mockito:mockito-junit-jupiter:3.11.2',
+        mockito_junit_jupiter                : 'org.mockito:mockito-junit-jupiter',
+
+        // 集成测试域支撑（add-integration-testing）：assertj/awaitility 版本由 Boot BOM 管理
+        assertj                              : "org.assertj:assertj-core",
+        awaitility                           : "org.awaitility:awaitility",
+        testcontainers_bom                   : "org.testcontainers:testcontainers-bom:${testcontainersVersion}",
+        testcontainers_core                  : "org.testcontainers:testcontainers",
+        testcontainers_junit                 : "org.testcontainers:junit-jupiter",
+        testcontainers_mongodb               : "org.testcontainers:mongodb",
 
         poi                                  : "org.apache.poi:poi",
         poi_ooxml                            : "org.apache.poi:poi-ooxml",

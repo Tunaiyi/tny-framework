@@ -6,7 +6,8 @@ apply from: "${rootDir}/gradle/publications.gradle"
 
 dependencies {
     constraints {
-        parent.moduleProjects.sort { "$it.name" }.each {
+        // 集成测试专用模块不进入 BOM 约束面（add-integration-testing design D3）
+        parent.moduleProjects.findAll { it.name != "tny-game-integration-test" }.sort { "$it.name" }.each {
             api it
         }
     }

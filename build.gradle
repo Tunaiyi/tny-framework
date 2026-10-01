@@ -144,7 +144,7 @@ configure(javaProjects) {
     apply from: "${rootDir}/gradle/publications.gradle"
     apply from: "${rootDir}/gradle/tny-module.gradle"
     apply from: "${rootDir}/gradle/dependency-sources.gradle"
-    // 两级验证通道：integrationTest source set 与任务（add-integration-testing design D1）
+    // 两级验证通道：integration source set 与 integrationTest 任务（add-integration-testing design D1）
     apply from: "${rootDir}/gradle/integration-test.gradle"
 
 //    ext.springBoot = name.endsWith("-demo") || name.endsWith("-suite") || name.contains("-starter-")

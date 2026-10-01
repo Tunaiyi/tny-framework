@@ -24,8 +24,11 @@ import static org.mockito.Mockito.*;
  * 引导器生命周期（net-guide-lifecycle 规格）——资源排他层验证。
  * <p>
  * 策略披露：完整 Socket E2E 需 NetBootstrap.prepareStart 的全 unit 装配链（多个默认实现无 @Unit
- * 不可注册），CI 成本高收益低；本测试钉修复根因（实例排他/可重建/isBound 真值），
- * 连接受理端到端行为移交 demo 手动验收（步骤见变更 release-note）。
+ * 不可注册），CI 成本高收益低；本测试钉修复根因（实例排他/可重建/isBound 真值）。
+ * <p>
+ * 连接受理端到端行为已由集成测试通道自动化钉住（add-integration-testing）：
+ * {@code :tny-game-integration-test:integrationTest} 的 {@code TcpGuideLifecycleIT}
+ * 以真实 TCP 覆盖 close 释放/同实例重启再受理，不再依赖 demo 手动验收。
  */
 class GuideLifecycleTest {
 
