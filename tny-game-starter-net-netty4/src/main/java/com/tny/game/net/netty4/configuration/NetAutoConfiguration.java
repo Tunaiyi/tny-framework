@@ -192,6 +192,12 @@ public class NetAutoConfiguration {
         return new XorTileCodecCrypto();
     }
 
+    /** 快筛代次件（add-crc32-verify-tier，仅校验侧，crypto 正交任选）：bean 名必须等于 lowerCamelName 推导的 unit 名 */
+    @Bean
+    public Crc32CodecVerifier crc32CodecVerifier() {
+        return new Crc32CodecVerifier();
+    }
+
     /** 补既有缝隙：Noop 校验器此前无 bean 注册，显式配 "noopCodecVerifier" 的部署经 UnitLoadInitiator 不可达 */
     @Bean
     public NoopCodecVerifier noopCodecVerifier() {

@@ -31,7 +31,8 @@ import static org.mockito.Mockito.*;
 
 /**
  * default-to-mac-generation 1.1：算法代次默认装配契约（net-protocol"校验与加密算法代次的默认装配"）。
- * 走真实 prepareStart→UnitLoader 解析路径：默认落认证代次 (a)、逃生舱显式点名 (b)、未启用零影响 (c)。
+ * 走真实 prepareStart→UnitLoader 解析路径：默认落认证代次 (a)、逃生舱显式点名 (b)、快筛点名锚 (b2，
+ * crc32CodecVerifier 装配洞回归)、未启用零影响 (c)。
  * (a) 组在默认翻转前必红、翻转后必绿；(b)(c) 全程绿（回归护栏）。fail-fast 由既有 NetPacketCodecConfigGuardTest 认领。
  */
 class MacGenerationDefaultTest {
@@ -43,6 +44,7 @@ class MacGenerationDefaultTest {
     private static final String TILE_CRYPTO_UNIT   = com.tny.game.common.lifecycle.unit.UnitNames.lowerCamelName(XorTileCodecCrypto.class);
     private static final String CRC64_UNIT         = com.tny.game.common.lifecycle.unit.UnitNames.lowerCamelName(CRC64CodecVerifier.class);
     private static final String XOR_LEGACY_UNIT    = com.tny.game.common.lifecycle.unit.UnitNames.lowerCamelName(XOrCodecCrypto.class);
+    private static final String CRC32_UNIT         = com.tny.game.common.lifecycle.unit.UnitNames.lowerCamelName(Crc32CodecVerifier.class);
 
     @BeforeAll
     static void registerUnits() {
@@ -50,6 +52,7 @@ class MacGenerationDefaultTest {
         UnitLoader.register(TILE_CRYPTO_UNIT, new XorTileCodecCrypto());
         UnitLoader.register(CRC64_UNIT, new CRC64CodecVerifier());
         UnitLoader.register(XOR_LEGACY_UNIT, new XOrCodecCrypto());
+        UnitLoader.register(CRC32_UNIT, new Crc32CodecVerifier());
         UnitLoader.register("bench-default-header", new DefaultMessageHeaderCodec());
         UnitLoader.register("bench-utf8-body", new MessageBodyCodec<String>() {
             @Override
@@ -147,6 +150,15 @@ class MacGenerationDefaultTest {
         encoder.prepareStart();
         assertInstanceOf(CRC64CodecVerifier.class, encoder.verifier);
         assertInstanceOf(XOrCodecCrypto.class, encoder.crypto);
+    }
+
+    /** (b2) 快筛代次点名锚（crc32CodecVerifier Spring bean 装配洞的回归护栏）：显式点名 → prepareStart 真实 checkUnit 解析出实例 */
+    @Test
+    void explicitCrc32NameStillResolve() {
+        NetPacketV1Encoder encoder = new NetPacketV1Encoder(newEnabledSetting()
+                .setVerifier(CRC32_UNIT));
+        encoder.prepareStart();
+        assertInstanceOf(Crc32CodecVerifier.class, encoder.verifier);
     }
 
     /** (c) 未启用校验与加密：帧不携带校验尾，且与 legacy/认证装配无关（默认翻转零可观察） */

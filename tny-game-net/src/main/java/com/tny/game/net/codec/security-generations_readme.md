@@ -15,7 +15,7 @@
 
 | verifier \ crypto | `xOrCodecCrypto`(升级后) | `xorTileCodecCrypto` |
 |---|---|---|
-| `crc64CodecVerifier`(链式) | **0.88 \| 0.86**（默认 legacy，混淆级） | 0.87 \| 0.90（纯 crypto 升级**不提速**——税在算法本体） |
+| `cRC64CodecVerifier`(链式，unit 真名首字母小写见上表) | **0.88 \| 0.86**（显式点名逃生舱，默认已翻认证代次，混淆级） | 0.87 \| 0.90（纯 crypto 升级**不提速**——税在算法本体） |
 | `sipHash24CodecVerifier` | 1.32 \| 1.37（键形 8-对齐时最优） | **1.27 \| 1.37 ★默认认证推荐**（键形无条件、零 wire 变更） |
 | `crc32CodecVerifier` | 1.49 \| 1.50 | **1.55 \| 1.69 ★快筛推荐**（4B 尾，两端同批） |
 
@@ -23,7 +23,7 @@
 
 **帧长限定（E2/尺寸维终裁，crypto-bench §十）**：上表为 ~96B 小帧口径。大帧形态（body≥512B）格局变化剧烈——
 快筛对认证的领先扩至 ~1.9x；敏感档（sipHash24+真流加密）从"小帧 -6~8%"**反转**为大帧 2.4x 优于默认档；
-而默认 legacy 档 1KB 总税 -85.5%，**大 body 链路一律禁用 legacy**，优先快筛（内网）或认证+流加密（对外）。
+而 legacy 档（显式点名逃生舱）1KB 总税 -85.5%，**大 body 链路一律禁用 legacy**，优先快筛（内网）或认证+流加密（对外）。
 默认档升级实测幅度（v2/v1 同窗配对）：+6~9%（96B），非提案预期的 15~43%。
 
 ## 快筛档错配症状预告（4B 尾特有）
@@ -45,11 +45,26 @@ decoder:
   crypto: "xorTileCodecCrypto"
 ```
 
+快筛档（内网/高扇出；crypto 正交任选，示例配键流逐字节等价的 `xorTileCodecCrypto`）：
+
+```yaml
+encoder:
+  security-keys: ["..."]
+  verifier: "crc32CodecVerifier"   # 4B 尾——两端必须同批切换，错配症状见上「错配症状预告」
+  crypto: "xorTileCodecCrypto"
+decoder:
+  security-keys: ["..."]
+  verifier: "crc32CodecVerifier"
+  crypto: "xorTileCodecCrypto"
+```
+
 ## 切换约束（必读）
 
-- **同一链路两端必须同批切换**：帧布局与校验码长度不变（8B），但校验码内容语义不同——
-  单端切换会使该链路全部启用校验的报文被对端按既有"校验不通过终止连接处理"契约拒绝
-  （表现为 `PACKET_VERIFY_FAILED` 断连，属预期保护，不是缺陷）。
+- **同一链路两端必须同批切换**：认证代次内（`cRC64CodecVerifier`↔`sipHash24CodecVerifier`）
+  帧布局与校验码长度不变（8B）、仅校验码内容语义不同——单端切换会使该链路全部启用校验的
+  报文被对端按既有"校验不通过终止连接处理"契约拒绝（表现为 `PACKET_VERIFY_FAILED` 断连，
+  属预期保护，不是缺陷）；**快筛档不适用本条**：启用即帧尾 4B、帧长随之缩短，
+  错配症状见上「快筛档错配症状预告」。
 - `xorTileCodecCrypto` 可**单独**启用（键流与 `xOrCodecCrypto` 逐字节等价，零 wire 影响，
   等价性由 `XorTileCodecCryptoEquivalenceTest` 钉死）；`sipHash24CodecVerifier` 必须两端同批。
 - 跨端（C#）：认证代次启用前，对端需移植 SipHash-2-4（公开规范 + 官方 64 向量表，

@@ -56,6 +56,7 @@ class CodecGenerationAssemblyTest {
         expected.put(UnitNames.lowerCamelName(SipHash24CodecVerifier.class), SipHash24CodecVerifier.class);
         expected.put(UnitNames.lowerCamelName(XorTileCodecCrypto.class), XorTileCodecCrypto.class);
         expected.put(UnitNames.lowerCamelName(CRC64CodecVerifier.class), CRC64CodecVerifier.class);
+        expected.put(UnitNames.lowerCamelName(Crc32CodecVerifier.class), Crc32CodecVerifier.class);
         expected.put(UnitNames.lowerCamelName(XOrCodecCrypto.class), XOrCodecCrypto.class);
         for (Map.Entry<String, Class<?>> e : expected.entrySet()) {
             Method m = NetAutoConfiguration.class.getDeclaredMethod(e.getKey());
