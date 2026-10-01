@@ -173,7 +173,11 @@ tasks.register('benchRoutineExport') {
         if (!src.exists()) {
             throw new GradleException("常规族运行声明完成但结果文件缺失：${src}（spec：产物缺失可发现）")
         }
-        def dateStr = new java.text.SimpleDateFormat('yyyyMMdd').format(new Date())
+        // 日期统一钉 UTC（实况教训：runner 时区为 UTC，本地 Asia/Shanghai 差一日，
+        // 速览首跑产物落成 bench-20261001-quick.json 与本地日期口径错位——与回写提交时间戳同基准）。
+        def dateFormat = new java.text.SimpleDateFormat('yyyyMMdd')
+        dateFormat.timeZone = TimeZone.getTimeZone('UTC')
+        def dateStr = dateFormat.format(new Date())
         // 产物规模标识（refine-bench-routine-triggering D2/差量产物条款）：
         // 速览与完整各自成文件，同日期覆盖限定同规模，逐版对比要求同规模成立。
         def scopeSuffix = (project.hasProperty('benchScope') && project.property('benchScope').toString() == 'quick') ? 'quick' : 'routine'

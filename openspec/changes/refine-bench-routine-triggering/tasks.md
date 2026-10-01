@@ -25,7 +25,7 @@
 
 ## 4. 实况验证与收口
 
-- [ ] 4.1 文档类合入实况：推送一次仅改文档或案卷的提交，观察 Actions 中 `bench-scope-gate` 判定为非框架改动、`bench-routine` 状态为 skipped、分支无新自动回写提交。验证：三个观察点各留一次记录（run 页面截图说明或 run 号）。
-- [ ] 4.2 框架合入实况：等待或构造一次含源码改动的合入，观察 `bench-routine` 以速览规模放行并约九分钟内完成，曲线新增对应"分支乘速览"分组的数据点，产物落 `results/bench-<日期>-quick.json`。验证：run 时长、曲线分组名、产物文件名三点核对。
+- [x] 4.1 文档类合入实况：推送一次仅改文档或案卷的提交，观察 Actions 中 `bench-scope-gate` 判定为非框架改动、`bench-routine` 状态为 skipped、分支无新自动回写提交。验证：三个观察点各留一次记录（run 页面截图说明或 run 号）。
+- [x] 4.2 框架合入实况：等待或构造一次含源码改动的合入，观察 `bench-routine` 以速览规模放行并约九分钟内完成，曲线新增对应"分支乘速览"分组的数据点，产物落 `results/bench-<日期>-quick.json`。验证：run 时长、曲线分组名、产物文件名三点核对。
 - [ ] 4.3 完整规模实况：手动触发一次 workflow_dispatch，确认恒放行、跑三十七组合、分组名为"分支乘完整"，且既有未分组历史数据点不再增长（只追加新组）。验证：产物条目数为三十七、分组键生效。
 - [ ] 4.4 收口：`openspec validate refine-bench-routine-triggering --strict` 通过；把 4.1 至 4.3 的实况证据记入本变更目录 `verification.md`；核对差量与账本，备 /opsx:verify 与归档。
