@@ -1,0 +1,127 @@
+plugins {
+    id 'java'
+    id 'me.champeau.jmh' version '0.7.3'
+}
+
+// 刻意不叫 tny-game-*：不落根构建 moduleProjects 装配线，零发布（openspec capability: benchmark-harness）。
+// 引用根 gradle.properties 单一事实来源；不进装配线故需自备 toolchain/编码。
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(javaVersion.toInteger())
+    }
+}
+compileJmhJava.options.encoding = "${encoding}"
+
+// nightly 锚集（design T4）：设施自检 Smoke ∪ 管线级 PacketCodec ∪ 矩阵生产装配臂。
+ext {
+    // 单一 alternation 正则：插件会把 includes 列表逗号拼接成单个 JMH 位置参数（实测），
+    // 而 JMH 位置参数语义为"一个正则"——多正则必须自拼 |。
+    // include 正则不匹配参数串（实测：`:prod_` 分支 0 选中）——生产臂筛选走 -p（JMH 1.37 的 -p 语义是
+    // 覆写参数域而非过滤，对未声明该字段的基准无排除效应，实测证实）。
+    benchAnchorRun = ['.*(SmokeBenchmark|PacketCodecBenchmark|PipelineCryptoMatrixBenchmark).*']
+    benchAnchorAlgoArms = ['prod_crc64_xortile', 'prod_siphash24_xortile', 'prod_crc32_xortile',
+                           'prod_siphash24_xorprod', 'prod_crc32_xorprod', 'prod_siphash24_chacha']
+    // 清单面：-l 按基名匹配不展开参数组合，列类级即证明"锚集可枚举"。
+    benchAnchorClasses = ['.*(SmokeBenchmark|PacketCodecBenchmark|PipelineCryptoMatrixBenchmark).*']
+}
+
+dependencies {
+    jmhImplementation project(':tny-game-net')
+    jmhImplementation project(':tny-game-net-netty4')
+    jmhImplementation project(':tny-game-net-test')
+    jmhImplementation libs.mockito_junit_jupiter   // 基准装配复用 mock ctx（版本由根 BOM 管理）
+}
+
+// D3 基线纪律入库（原 D2 裸 JavaExec 已废，见 openspec/changes/promote-netbench-to-tny-bench design T2）：
+// 缺省执行 = 锚集 + 下列参数，可复现；全量矩阵以 -PbenchAll 显式打开。
+jmh {
+    jmhVersion = '1.37'                       // Central 冻结版；插件按此自动接线 core+annprocess
+    fork = 2                                  // D3：-f ≥ 2
+    warmupIterations = 5
+    iterations = 10
+    warmup = '500ms'
+    timeOnIteration = '1s'
+    resultFormat = 'json'
+    resultsFile = project.layout.buildDirectory.file('reports/bench/bench-result.json').get().asFile
+    if (project.hasProperty('benchAll')) {
+        includes = ['.*']
+    } else if (project.hasProperty('benchInclude')) {
+        includes = [project.property('benchInclude').toString()]   // 单正则语义（JMH 位置参数）
+    } else {
+        includes = benchAnchorRun
+        benchmarkParameters = [algo: objects.listProperty(String).value(benchAnchorAlgoArms)]
+    }
+    if (project.hasProperty('benchGc')) {
+        profilers = ['gc']            // 分配画像（P3 裁决数据源）
+    }
+    if (project.hasProperty('benchParams')) {
+        // 参数过滤经 JMH -p（include 正则不匹配参数串，实测证实）；分号分隔多字段。
+        Map map = [:]
+        project.property('benchParams').toString().split(';').each { kv ->
+            def (k, v) = kv.split('=', 2)
+            map[k] = objects.listProperty(String).value([v])   // MapProperty<String,ListProperty<String>> 实型
+        }
+        benchmarkParameters = map
+    }
+    if (project.hasProperty('benchFast')) {
+        // 选择面探针：只验证"哪些 benchmark 会被选中"，不出可信数字。
+        fork = 1
+        warmupIterations = 0
+        iterations = 1
+        warmup = '100ms'
+        timeOnIteration = '100ms'
+    }
+}
+
+// 列清单（锚集定义与 jmh 运行同源 ext）：CI PR 通道用它证明"清单可枚举"。
+// BenchmarkList 由插件 jmhRunBytecodeGenerator 产出于 generatedResourcesDir（非注解处理器阶段）。
+tasks.register('jmhList', JavaExec) {
+    group = 'benchmark'
+    description = 'List JMH benchmarks honoring anchor filters. 全量清单：-PbenchAll'
+    dependsOn 'jmhCompileGeneratedClasses'
+    mainClass = 'org.openjdk.jmh.Main'
+    args '-l'
+    def listFile = new File(temporaryDir, 'jmhList.txt')
+    doFirst {
+        def gen = tasks.named('jmhRunBytecodeGenerator').get()
+        classpath = sourceSets.jmh.runtimeClasspath + files(gen.generatedResourcesDir)
+        if (!project.hasProperty('benchAll')) {
+            args project.hasProperty('benchInclude') ? [project.property('benchInclude').toString()] : project.benchAnchorClasses
+        }
+        standardOutput = new FileOutputStream(listFile)
+    }
+    finalizedBy 'jmhListVerify'
+    ext.listFile = listFile
+}
+
+// 空匹配不可静默绿（spec：名称过滤无匹配不误报绿——JMH -l 空列表退 0，此处显式判红）
+tasks.register('jmhListVerify') {
+    group = 'benchmark'
+    def listTask = tasks.named('jmhList')
+    doLast {
+        def f = listTask.get().listFile
+        def n = f.exists() ? f.readLines().count { it.startsWith('com.') } : 0
+        if (n == 0) {
+            throw new GradleException("jmhList 过滤后无任何匹配（JMH -l 空列表不报错，此处显式判红）：检查 benchAnchorClasses 与 -PbenchAll")
+        }
+        logger.lifecycle("jmhList: ${n} 个基名条目")
+    }
+}
+
+// 锚集落盘（tasks 3.2）：跑默认锚集后把 JSON 复制为 results/bench-<yyyymmdd>-anchor.json（日期执行期生成）。
+tasks.register('benchAnchorExport') {
+    group = 'benchmark'
+    description = 'Run default anchor benchmarks and archive JSON result into results/ with a date fingerprint.'
+    dependsOn 'jmh'
+    doLast {
+        def src = jmh.resultsFile.get().asFile
+        if (!src.exists()) {
+            throw new GradleException("锚集运行声明完成但结果文件缺失：${src}（spec：产物缺失可发现）")
+        }
+        def dateStr = new java.text.SimpleDateFormat('yyyyMMdd').format(new Date())
+        def dest = file("${projectDir}/results/bench-${dateStr}-anchor.json")
+        dest.parentFile.mkdirs()
+        ant.copy(file: src, tofile: dest, overwrite: true)
+        logger.lifecycle("benchAnchorExport: ${dest}")
+    }
+}

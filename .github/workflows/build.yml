@@ -1,0 +1,126 @@
+name: build
+
+on:
+  pull_request:
+  push:
+    branches: [ main, '5.7.x' ]
+  schedule:
+    - cron: '37 18 * * *'   # nightly（UTC18:37 错峰）
+  workflow_dispatch: {}     # 手动触发（bench-nightly 首验用，benchmark-harness 4.2）
+
+env:
+  # Gradle 8.5 daemon 须运行于 JDK ≤21；toolchain 另钉 JDK 21（见 README 构建环境注记）
+  GRADLE_OPTS: -Dorg.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8
+
+jobs:
+  unit:
+    name: Unit tests (no Docker)
+    runs-on: ubuntu-latest
+    services:
+      # 既有 tny-game-namnspace-etcd 单测静态依赖本地 etcd:2379（非本变更引入），CI 须提供
+      etcd:
+        image: gcr.io/etcd-development/etcd:v3.5.11
+        ports: [ '2379:2379' ]
+        options: >-
+          --health-cmd "etcdctl endpoint health || exit 1"
+          --health-interval 10s --health-timeout 5s --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v3
+        with:
+          cache-disabled: 'false'
+      - name: Unit tests
+        run: ./gradlew test --continue
+
+  integration:
+    name: Integration tests (real transport + containers, starter 装配与剧本覆盖)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v3
+      # docker 档并入 PR 通道（add-starter-net-integration-tests 决策：GH runner 自带 docker，
+      # starter 装配/中继剧本/数据容器 IT 需要 PR 反馈；时长代价 +2~4min）
+      - name: Integration tests (include docker lane)
+        run: ./gradlew integrationTest -PincludeDocker --continue
+
+  e2e:
+    name: Full lane with containers (docker-tagged ITs)
+    if: github.event_name == 'push' || github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    services:
+      etcd:
+        image: gcr.io/etcd-development/etcd:v3.5.11
+        ports: [ '2379:2379' ]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v3
+      - name: "Integration tests (include docker - Redis/Mongo via Testcontainers)"
+        run: ./gradlew integrationTest -PincludeDocker --continue
+
+  bench-compile:
+    name: Bench compile check (no timings)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v3
+      # 职责边界（spec：CI 双通道）：仅编译与枚举清单，零计时——PR 不因基准数字变红，
+      # 但基准源码编译破裂与"锚集不可枚举/空匹配"必红（jmhList 对空列表显式判红）。
+      - name: Compile benchmarks and verify enumerable list
+        run: ./gradlew :tny-bench:jmhCompileGeneratedClasses :tny-bench:jmhList -q
+
+  bench-nightly:
+    name: Anchor benchmarks (nightly curve, human verdict)
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v3
+      - name: Run anchor set (benchAnchorExport, params declared in tny-bench/build.gradle)
+        run: ./gradlew :tny-bench:benchAnchorExport
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bench-anchor-results
+          path: tny-bench/results/*.json
+          if-no-files-found: error
+      - name: Commit anchor result into results/
+        run: |
+          git config user.name "bench-nightly[bot]"
+          git config user.email "bench-nightly@users.noreply.github.com"
+          git add -f tny-bench/results/
+          git diff --cached --quiet || git commit -m "chore(bench): nightly anchor results [skip ci]"
+          git push
+      # 历史曲线=信号非门禁（spec：回归判定人裁决）：告警级 alert-threshold，
+      # gh-pages 未启用/私有仓场景 continue-on-error 降级（design 风险条）。
+      - name: Store benchmark result & trend
+        uses: benchmark-action/github-action-benchmark@v1
+        continue-on-error: true
+        with:
+          tool: 'jmh'
+          output-file-path: tny-bench/build/reports/bench/bench-result.json
+          gh-pages-branch: gh-pages
+          alert-threshold: '150%'
+          comment-on-alert: true
+          fail-on-alert: false
+          auto-push: true

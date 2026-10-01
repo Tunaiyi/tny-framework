@@ -13,7 +13,28 @@ ext {
     moduleProjects = subprojects.findAll { it.name.startsWith("tny-game-") }
     javaProjects = moduleProjects - project(":tny-game-bom")
     javaProjects = javaProjects.findAll { !it.name.endsWith("-gradle") }
+    // 集成测试模块：仅测试代码，不走发布/javaProjects 公共配置（add-integration-testing design D3）
+    javaProjects = javaProjects - project(":tny-game-integration-test")
     gradleProjects = moduleProjects.findAll { it.name.endsWith("-gradle") }
+}
+
+// benchmark-harness 零发布合同（openspec capability: benchmark-harness）：
+// 基准模块 :tny-bench 不入装配线，且任何发布模块（tny-game-*）不得声明对其依赖——
+// 基准模块不被发布坐标传递，故按声明面扫描即覆盖可达路径；违例在配置期报出违例模块。
+gradle.projectsEvaluated {
+    def bench = project(':tny-bench')
+    if (moduleProjects.contains(bench)) {
+        throw new GradleException("零发布合同违例：:tny-bench 命中 tny-game-* 装配线谓词")
+    }
+    moduleProjects.each { p ->
+        p.configurations.each { cfg ->
+            cfg.dependencies.withType(ProjectDependency).each { d ->
+                if (d.dependencyProject == bench) {
+                    throw new GradleException("零发布合同违例：${p.path} 的配置 ${cfg.name} 依赖 :tny-bench（基准模块禁止被发布模块引用，见 benchmark-harness 规格）")
+                }
+            }
+        }
+    }
 }
 
 configure(subprojects) {
@@ -33,6 +54,7 @@ configure(subprojects) {
             mavenBom("io.netty:netty-bom:${nettyVersion}")
             mavenBom("org.slf4j:slf4j-parent:${slf4jVersion}")
             mavenBom("com.fasterxml.jackson:jackson-bom:${jacksonVersion}")
+            mavenBom("org.testcontainers:testcontainers-bom:${testcontainersVersion}")
         }
 
         dependencies {
@@ -122,6 +144,8 @@ configure(javaProjects) {
     apply from: "${rootDir}/gradle/publications.gradle"
     apply from: "${rootDir}/gradle/tny-module.gradle"
     apply from: "${rootDir}/gradle/dependency-sources.gradle"
+    // 两级验证通道：integrationTest source set 与任务（add-integration-testing design D1）
+    apply from: "${rootDir}/gradle/integration-test.gradle"
 
 //    ext.springBoot = name.endsWith("-demo") || name.endsWith("-suite") || name.contains("-starter-")
 
@@ -166,7 +190,10 @@ configure(javaProjects) {
     }
 
     test {
-        useJUnitPlatform()
+        // 单元通道排除集成用例（integrationTest 任务专跑，add-integration-testing design D1）
+        useJUnitPlatform {
+            excludeTags 'integration'
+        }
     }
 
     task sourcesJar(type: Jar, dependsOn: classes) {

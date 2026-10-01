@@ -1,3 +1,5 @@
+> **历史口径数据**：本文命令为 tny-bench 插件接线前（旧 `tools/net-bench` + `-PjmhArgs` 裸跑时代）实录，不回改；现行运行入口见 `tny-bench/README.md`（openspec: promote-netbench-to-tny-bench）。
+
 # 校验/加密算法基准 2026-09-30
 
 环境：**JDK 25（Azul Zulu 25+36，macOS aarch64）**——注意与 `baseline-2026-09-29.md`（Corretto 21）不同 JVM；

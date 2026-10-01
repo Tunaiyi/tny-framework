@@ -81,5 +81,5 @@ decoder:
 | 密钥提取（设备沦陷/逆向客户端） | ❌ 不覆盖 | 任何端侧密码学的公共天花板——泄露半径收敛待 R2 |
 | 被动流量分析 | △ 同 legacy | xorTile 键流等价（混淆定位不变）；更强保密待 chacha 流档（需先实测） |
 
-性能锚（96B 全管线，JDK25 aarch64，`tools/net-bench/crypto-bench-2026-09-30.md`）：
+性能锚（96B 全管线，JDK25 aarch64，`tny-bench/crypto-bench-2026-09-30.md（历史口径数据）`）：
 legacy 0.909M → 认证代次 1.314M（+45%；内联原型上界 1.563M，差值=ThreadLocal+契约分配，可收回）。

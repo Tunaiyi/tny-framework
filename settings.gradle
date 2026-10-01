@@ -59,6 +59,8 @@ include 'tny-game-starter-basics'
 include 'tny-game-net'
 include 'tny-game-net-demo'
 include 'tny-game-net-test'
+// 集成测试专用叶子模块：不发布、不入 BOM（add-integration-testing design D3）
+include 'tny-game-integration-test'
 
 include 'tny-game-protoex'
 include 'tny-game-protobuf'
@@ -97,7 +99,7 @@ include 'tny-game-starter-data'
 include 'tny-game-tester'
 
 // 基准设施：刻意不以 tny-game- 开头，不落入发布/模块装配线（optimize-net-hot-path D1）
-include ':tools:net-bench'
+include 'tny-bench'
 
 
 //include 'tny-game-test-lua'
