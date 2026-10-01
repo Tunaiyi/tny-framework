@@ -19,11 +19,11 @@ jobs:
     services:
       # 既有 tny-game-namnspace-etcd 单测静态依赖本地 etcd:2379（非本变更引入），CI 须提供
       etcd:
-        image: registry.k8s.io/etcd:3.5.15-0   # gcr.io/etcd-development 与 quay v3.5.11 均已不可用（run#11 实证 Failed to initialize），k8s 官方 etcd 镜像 manifest 本地实证存在
+        image: quay.io/coreos/etcd:v3.5.11   # runner 可拉性 run#11 e2e 实证（当时 e2e 无 options 即 success）
         ports: [ '2379:2379' ]
         options: >-
-          --health-cmd "etcdctl endpoint health || exit 1"
-          --health-interval 10s --health-timeout 5s --health-retries 5
+          --health-cmd="etcdctl endpoint health"
+          --health-interval=10s --health-timeout=5s --health-retries=5
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -57,7 +57,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       etcd:
-        image: registry.k8s.io/etcd:3.5.15-0   # gcr.io/etcd-development 与 quay v3.5.11 均已不可用（run#11 实证 Failed to initialize），k8s 官方 etcd 镜像 manifest 本地实证存在
+        image: quay.io/coreos/etcd:v3.5.11   # runner 可拉性 run#11 e2e 实证（当时 e2e 无 options 即 success）
         ports: [ '2379:2379' ]
     steps:
       - uses: actions/checkout@v4
