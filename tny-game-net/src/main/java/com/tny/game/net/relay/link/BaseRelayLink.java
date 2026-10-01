@@ -220,9 +220,25 @@ public abstract class BaseRelayLink implements NetRelayLink {
 
     private MessageWriteFuture writePacket(RelayPacket<?> packet, MessageWriteFuture awaiter) {
         if (!canForward()) {
+            if (isHandshakeOnFreshTransport(packet)) {
+                return this.transport.write(packet, awaiter);
+            }
             return dropPacket(packet, awaiter);
         }
         return this.transport.write(packet, awaiter);
+    }
+
+    /**
+     * 建立握手定向放行：LINK_OPEN 首包必须能在 INIT + 传输就绪时出网——
+     * open()（INIT→OPEN）由 LINK_OPENED 响应驱动，若首包也被"须为 OPEN"的转发判定吞没，
+     * 静态集群（discovery:false）链路将结构性死锁（fix-relay-static-link-open）。
+     * 豁免仅限握手包型与 INIT 状态，其余包裹在就绪前仍走早退纪律。
+     */
+    private boolean isHandshakeOnFreshTransport(RelayPacket<?> packet) {
+        return packet != null
+                && packet.getType() == RelayPacketType.LINK_OPEN
+                && this.status == RelayLinkStatus.INIT
+                && isConnected();
     }
 
     /**
@@ -233,7 +249,7 @@ public abstract class BaseRelayLink implements NetRelayLink {
         MessageWriteFuture future = awaiter != null ? awaiter : new MessageWriteFuture();
         if (packet != null) {
             RelayPacket.release(packet);
-            LOGGER.warn("[RelayLink] {} 链路已终结，丢弃转发包 {} [{}]", this, packet.getId(), packet.getType());
+            LOGGER.warn("[RelayLink] {} 链路不可转发（状态 {}），丢弃转发包 {} [{}]", this, this.status, packet.getId(), packet.getType());
         }
         future.completeExceptionally(new TunnelDisconnectedException("relay link closed, packet dropped"));
         return future;
