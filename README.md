@@ -540,6 +540,52 @@ cd tny-framework
 ./gradlew publishToMavenLocal
 ```
 
+### 测试：单元与集成两级通道
+
+框架采用两级验证通道（JUnit 5 标签隔离），日常开发只跑快的单元/无容器集成，重用例按需触发：
+
+```bash
+# 单元测试（排除集成用例，快，无需 Docker）
+./gradlew test
+
+# 集成测试·无容器档：真实 TCP 网络链路（@Tag("integration") 且非 @Tag("docker")）
+./gradlew integrationTest
+
+# 集成测试·容器档：追加 Testcontainers 数据访问与 starter 装配/多应用中继剧本用例（需 Docker；CI PR 通道同此档）
+./gradlew integrationTest -PincludeDocker
+
+# 单模块集成测试
+./gradlew :tny-game-net-netty4:integrationTest
+```
+
+约定：
+- 集成用例类名以 `IT` 结尾，置于各模块 `src/integration/java`（源集 `integration`，任务入口 `integrationTest`），标注 `@Tag("integration")`。
+- 依赖 Docker 的容器用例叠加 `@Tag("docker")`，仅在 `-PincludeDocker` 下纳入；缺 Docker 环境自动判定为 skip（不算失败）。
+- `./gradlew check` 行为不变（只跑单元测试，不触发集成通道、不拉起 Docker）。
+- 跨模块网络链路、数据访问与 **Spring Boot starter 官方装配形态**（含 demo 应用子进程的多应用中继剧本）集成测试集中在 `tny-game-integration-test`（该模块不发布、不入 BOM）。
+
+### 部署拓扑矩阵（tny-game-integration-test · 容器档）
+
+跨应用业务链路按**部署形态矩阵**验证，全部拓扑以 yml 声明（`src/integration/resources/it-topo/`，Java 侧仅进程编排与端口注入）：
+
+| 族 | 拓扑 | IT 类 | 验收结局 |
+|---|---|---|---|
+| R 网络中继 | T1 客户端直连业务服 | `SpringAssemblyGameServerIT` | 端到端连通（回归锚） |
+| R | T4 中继端点与业务共进程 | `RelayLoginScenarioIT` | 端到端连通 + Mongo 落库（回归锚） |
+| R | T2 独立中继作中间跳（三进程） | `RelayOneHopIndependentIT` | 装配与链路可验；业务调用可定位失败（中间跳本地终止，架构缺席经移交） |
+| R | T3 中继两跳级联（四进程） | `RelayTwoHopCascadeIT` | 同 T2；断链定位=首跳、次跳派发面干净 |
+| F RPC 转发 | F1 一跳转发链（caller→转发应用→终端） | `RpcForwardOneHopIT` | 终端回执原路返回（连通达成）；含同型身份歧义隔离对照对 |
+| F | F2 两跳转发级联 | `RpcForwardTwoHopIT` | 连通或断链跳点可定位（现实证：跳二本地终止 + 回程咽错假成功，均入移交记录） |
+
+```bash
+# 全矩阵一次合跑（互不串扰判据；需 Docker）
+./gradlew :tny-game-integration-test:integrationTest -PincludeDocker --tests "*Relay*" --tests "*RpcForward*"
+
+# 单拓扑复跑：把 --tests 过滤换成对应 IT 类名通配（如 "*RpcForward*" / "*RelayTwoHop*"）
+```
+
+框架侧中转/两跳语义落地（见 openspec 移交记录）后，各双分支用例的**连通分支自动激活**，测试零修改。
+
 ### 使用示例
 
 #### 1. 添加依赖

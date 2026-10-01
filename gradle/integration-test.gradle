@@ -1,0 +1,80 @@
+/*
+ * Copyright (c) 2020 Tunaiyi
+ * Tny Framework is licensed under Mulan PSL v2.
+ * You can use this software according to the terms and conditions of the Mulan PSL v2.
+ * You may obtain a copy of Mulan PSL v2 at:
+ *          http://license.coscl.org.cn/MulanPSL2
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * See the Mulan PSL v2 for more details.
+ */
+// 两级验证通道约定（add-integration-testing design D1；rename-integration-source-set D1）：
+// 为 java 模块提供 integration source set 与命令入口任务 integrationTest（目录名与命令解耦：
+// 主 spec 钉的是任务命令，源集名属实现细节）；
+// 用例约定标 @Tag("integration")（类名 *IT），依赖容器的叠加 @Tag("docker")；
+// -PincludeDocker 未开启时 docker 用例不进入执行集；开启但容器环境不可用时，
+// 由用例侧 @Testcontainers(disabledWithoutDocker = true) 判定为 skip（不算失败）。
+// 本任务不挂 check（门禁由 CI 三档显式调用，design D7）。
+
+sourceSets {
+    integration {
+        compileClasspath += sourceSets.main.output + sourceSets.test.output
+        runtimeClasspath += sourceSets.main.output + sourceSets.test.output
+    }
+}
+
+configurations {
+    integrationImplementation.extendsFrom implementation
+    integrationImplementation.extendsFrom testImplementation
+    integrationRuntimeOnly.extendsFrom runtimeOnly
+    integrationRuntimeOnly.extendsFrom testRuntimeOnly
+}
+
+dependencies {
+    integrationImplementation libs.assertj
+    integrationImplementation libs.awaitility
+    integrationImplementation libs.testcontainers_junit
+}
+
+tasks.register('integrationTest', Test) {
+    description = 'Integration tests (@Tag("integration"); docker cases need -PincludeDocker)'
+    group = 'verification'
+
+    testClassesDirs = sourceSets.integration.output.classesDirs
+    classpath = sourceSets.integration.runtimeClasspath
+
+    useJUnitPlatform {
+        includeTags 'integration'
+        if (!project.hasProperty('includeDocker')) {
+            excludeTags 'docker'
+        }
+    }
+
+    // docker 端点透传（macOS OrbStack/Docker Desktop 不提供 /var/run/docker.sock，
+    // testcontainers 默认探测会判"无 Docker"→ skip）：-PdockerHost > 环境变量 > 标准私有 socket 探测定
+    def resolveDockerHost = {
+        if (project.hasProperty('dockerHost')) {
+            return project.property('dockerHost')
+        }
+        def fromEnv = System.getenv('DOCKER_HOST')
+        if (fromEnv) {
+            return fromEnv
+        }
+        def home = System.getProperty('user.home')
+        def candidates = ["$home/.orbstack/run/docker.sock", "$home/.docker/run/docker.sock"]
+        def hit = candidates.find { new File(it).exists() }
+        return hit ? "unix://$hit" : null
+    }
+    def dockerHost = resolveDockerHost()
+    if (dockerHost) {
+        environment 'DOCKER_HOST', dockerHost
+    }
+
+    maxParallelForks = 2
+    shouldRunAfter tasks.named('test')
+
+    testLogging {
+        events 'failed', 'skipped'
+        exceptionFormat 'full'
+    }
+}
