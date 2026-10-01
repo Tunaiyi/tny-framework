@@ -9,13 +9,13 @@
 
 ## 2. 电路自证探针（design D2）
 
-- [ ] 2.1 推一次性探针提交：新增独立测试类（不碰存量）必然失败断言，类顶注释与提交信息标 `PROBE fix-ci-unit-flakes 2.1`。验证：push 成功记录 commit sha。
-- [ ] 2.2 等待该轮 run unit 红后 ≤5 分钟：`git fetch github ci-unit-diag`（443 别名）→ 案卷四件齐（etcd 容器日志/gradle 尾/失败 XML/环境），README 或文件名含 `PROBE`。验证：逐项 `git show FETCH_HEAD:<file>` 存在且非空；缺 (a) 项则按降级语义记录并核查 docker 可见性原因。
-- [ ] 2.3 回滚探针提交（revert，勿改写历史）。验证：`ci-unit-diag` 保留探针案卷（自然红覆盖前可 fetch 到）；后续轮次 unit 恢复原语义。
+- [x] 2.1 推一次性探针提交：新增独立测试类（不碰存量）必然失败断言，类顶注释与提交信息标 `PROBE fix-ci-unit-flakes 2.1`。验证：push 成功记录 commit sha。
+- [x] 2.2 等待该轮 run unit 红后 ≤5 分钟：`git fetch github ci-unit-diag`（443 别名）→ 案卷四件齐（etcd 容器日志/gradle 尾/失败 XML/环境），README 或文件名含 `PROBE`。验证：逐项 `git show FETCH_HEAD:<file>` 存在且非空；缺 (a) 项则按降级语义记录并核查 docker 可见性原因。
+- [x] 2.3 回滚探针提交（revert，勿改写历史）。验证：`ci-unit-diag` 保留探针案卷（自然红覆盖前可 fetch 到）；后续轮次 unit 恢复原语义。
 
 ## 3. 自然红取证与定罪（design D3）
 
-- [ ] 3.1 建立取卷节奏：此后每轮 5.7.x push 后查 unit 结论；红即 fetch 案卷，登记至本 change `diagnosis.md`（新建，格式沿 stabilize it-diagnosis.md 取证时间线表）。验证：`diagnosis.md` 首行含登记规则与 run 账链接。
+- [x] 3.1 建立取卷节奏：此后每轮 5.7.x push 后查 unit 结论；红即 fetch 案卷，登记至本 change `diagnosis.md`（新建，格式沿 stabilize it-diagnosis.md 取证时间线表）。验证：`diagnosis.md` 首行含登记规则与 run 账链接。
 - [ ] 3.2 拿到首个自然红案卷（或连续 5 轮零红 → 记录"就绪竞态假设暂未复现"并跳到 5 组收口、把 §6 unit 登记簿以"观察位"结转）：按 D3 三签名列归因表，定罪到支 a/b/c 之一。验证：`diagnosis.md` 定罪栏填毕，签名证据（栈/日志摘录）+ 判据引用一一对应。
 
 ## 4. 根治实施（仅在 3.2 定罪后执行；未定罪则整组跳过并在验证注明）
