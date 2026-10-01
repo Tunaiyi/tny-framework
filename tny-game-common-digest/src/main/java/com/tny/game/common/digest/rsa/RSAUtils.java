@@ -24,8 +24,6 @@ import static com.tny.game.common.utils.StringAide.*;
 
 public class RSAUtils {
 
-    private static final KeyFactory keyFactory;
-
     public static final String KEY_ALGORITHM = "RSA";
 
     /**
@@ -42,12 +40,11 @@ public class RSAUtils {
 
     public static final String SIGN_SHA1_ALGORITHMS = "SHA1WithRSA";
 
-    static {
-        try {
-            keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
+    /**
+     * KeyFactory 实例按 JCA 规范非线程安全，逐次创建而非共享静态实例。
+     */
+    private static KeyFactory newKeyFactory() throws NoSuchAlgorithmException {
+        return KeyFactory.getInstance(KEY_ALGORITHM);
     }
 
     /**
@@ -62,7 +59,7 @@ public class RSAUtils {
             BigInteger mod = new BigInteger(modulus);
             BigInteger exp = new BigInteger(exponent);
             RSAPublicKeySpec keySpec = new RSAPublicKeySpec(mod, exp);
-            return (RSAPublicKey) keyFactory.generatePublic(keySpec);
+            return (RSAPublicKey) newKeyFactory().generatePublic(keySpec);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -81,7 +78,7 @@ public class RSAUtils {
             BigInteger mod = new BigInteger(modulus);
             BigInteger exp = new BigInteger(exponent);
             RSAPrivateKeySpec keySpec = new RSAPrivateKeySpec(mod, exp);
-            return (RSAPrivateKey) keyFactory.generatePrivate(keySpec);
+            return (RSAPrivateKey) newKeyFactory().generatePrivate(keySpec);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -104,9 +101,9 @@ public class RSAUtils {
      * @param key 私钥字符串
      * @return 返回私钥
      */
-    public static RSAPrivateKey toPrivateKey(String key) throws InvalidKeySpecException {
+    public static RSAPrivateKey toPrivateKey(String key) throws InvalidKeySpecException, NoSuchAlgorithmException {
         byte[] data = Base64.decodeBase64(key);
-        return (RSAPrivateKey) keyFactory.generatePrivate(new PKCS8EncodedKeySpec(data));
+        return (RSAPrivateKey) newKeyFactory().generatePrivate(new PKCS8EncodedKeySpec(data));
     }
 
     /**
@@ -115,9 +112,9 @@ public class RSAUtils {
      * @param key 公钥字符串
      * @return 返回公钥
      */
-    public static RSAPublicKey toPublicKey(String key) throws InvalidKeySpecException {
+    public static RSAPublicKey toPublicKey(String key) throws InvalidKeySpecException, NoSuchAlgorithmException {
         byte[] data = Base64.decodeBase64(key);
-        return (RSAPublicKey) keyFactory.generatePublic(new X509EncodedKeySpec(data));
+        return (RSAPublicKey) newKeyFactory().generatePublic(new X509EncodedKeySpec(data));
     }
 
     /**
@@ -135,9 +132,9 @@ public class RSAUtils {
 
     public static byte[] decrypt(byte[] data, Key key)
             throws Exception {
-        Cipher cipher = Cipher.getInstance(keyFactory.getAlgorithm());
+        Cipher cipher = Cipher.getInstance(KEY_ALGORITHM);
         cipher.init(Cipher.DECRYPT_MODE, key);
-        return decryptByCipher(data, cipher);
+        return decryptByCipher(data, cipher, keySizeBytes(key));
     }
 
     /**
@@ -156,9 +153,24 @@ public class RSAUtils {
 
     public static byte[] encrypt(byte[] data, Key key)
             throws Exception {
-        Cipher cipher = Cipher.getInstance(keyFactory.getAlgorithm());
+        Cipher cipher = Cipher.getInstance(KEY_ALGORITHM);
         cipher.init(Cipher.ENCRYPT_MODE, key);
-        return encryptByCipher(data, cipher);
+        return encryptByCipher(data, cipher, keySizeBytes(key));
+    }
+
+    /**
+     * 密钥模数所需字节数——分段块大小的可靠来源（不依赖 provider 的 getBlockSize/getOutputSize 推算）。
+     */
+    private static int keySizeBytes(Key key) {
+        BigInteger modulus;
+        if (key instanceof RSAPublicKey publicKey) {
+            modulus = publicKey.getModulus();
+        } else if (key instanceof RSAPrivateKey privateKey) {
+            modulus = privateKey.getModulus();
+        } else {
+            throw new IllegalArgumentException("非RSA密钥: " + key.getAlgorithm());
+        }
+        return (modulus.bitLength() + 7) / 8;
     }
 
     /**
@@ -332,38 +344,46 @@ public class RSAUtils {
         return getKeyPair(KEY_SIZE);
     }
 
-    private static byte[] encryptByCipher(byte[] data, Cipher cipher)
-            throws IllegalBlockSizeException, BadPaddingException, IOException, NoSuchAlgorithmException {
-        int maxEncryptBlock = cipher.getOutputSize(data.length) - 11;
+    /**
+     * PKCS1 填充每块占用 11 字节，明文块上限 = 密钥字节数 - 11。
+     * （原实现用 getOutputSize(data.length)-11 推算，数据跨块时块长超过密钥上限，
+     * doFinal 必抛 IllegalBlockSizeException。）
+     */
+    private static byte[] encryptByCipher(byte[] data, Cipher cipher, int keySizeBytes)
+            throws IllegalBlockSizeException, BadPaddingException, IOException {
+        int maxEncryptBlock = keySizeBytes - 11;
         try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
             return getBytes(data, cipher, maxEncryptBlock, out);
         }
     }
 
-    private static byte[] getBytes(byte[] data, Cipher cipher, int maxEncryptBlock, ByteArrayOutputStream out)
+    private static byte[] getBytes(byte[] data, Cipher cipher, int block, ByteArrayOutputStream out)
             throws IllegalBlockSizeException, BadPaddingException {
         int inputLen = data.length;
         int offSet = 0;
         int i = 0;
         byte[] cache;
         while (inputLen - offSet > 0) {
-            if (inputLen - offSet > maxEncryptBlock) {
-                cache = cipher.doFinal(data, offSet, maxEncryptBlock);
+            if (inputLen - offSet > block) {
+                cache = cipher.doFinal(data, offSet, block);
             } else {
                 cache = cipher.doFinal(data, offSet, inputLen - offSet);
             }
             out.write(cache, 0, cache.length);
             i++;
-            offSet = i * maxEncryptBlock;
+            offSet = i * block;
         }
         return out.toByteArray();
     }
 
-    private static byte[] decryptByCipher(byte[] data, Cipher cipher) throws IllegalBlockSizeException, BadPaddingException, IOException {
-        int maxDecryptBlock = cipher.getOutputSize(data.length);
+    /**
+     * 密文按密钥模数字节数整块切分（原实现用 getOutputSize(data.length) 推算会得到大于密钥块的长度）。
+     */
+    private static byte[] decryptByCipher(byte[] data, Cipher cipher, int keySizeBytes)
+            throws IllegalBlockSizeException, BadPaddingException, IOException {
         // 对数据分段解密
         try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
-            return getBytes(data, cipher, maxDecryptBlock, out);
+            return getBytes(data, cipher, keySizeBytes, out);
         }
     }
 

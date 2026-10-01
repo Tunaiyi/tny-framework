@@ -135,5 +135,33 @@ final class FormatValueRenderer {
         }
         return field.getName();
     }
+    /**
+     * Appendable 单一打印动作（{@link #printToStringVia} 入侧，D2 收口）。
+     */
+    interface AppendablePrint {
+
+        void print(Appendable output) throws IOException;
+
+    }
+
+    /**
+     * 五类 printToString(Message)/printToString(UnknownFieldSet)（外加 Props 的 printFieldToString）
+     * try/catch StringBuilder 模板的单实现（D2 收口：该族方法体逐字相同、零现状差异表达——上批
+     * "需引入函数参数、收益为负"的止步按收口判据重判：参数化装饰正是本变更 D2 已采用的
+     * {@link ValueSink} 先例形态）。Props 现状源码将异常串写作两段拼接，运行时字符串与本常量逐字
+     * 相同，视为同一现状；StringBuilder 构造、调用顺序、包装异常类型与消息均不变；lambda 调用哪个
+     * print 重载仍由各门面类自身静态解析决定（CouchDB 的门面 lambda 解析到 CouchDB 自有 print，
+     * _id/_rev 覆写链不受影响）。
+     */
+    static String printToStringVia(AppendablePrint print) {
+        try {
+            StringBuilder text = new StringBuilder();
+            print.print(text);
+            return text.toString();
+        } catch (IOException e) {
+            throw new RuntimeException("Writing to a StringBuilder threw an IOException (should never happen).",
+                    e);
+        }
+    }
 
 }

@@ -48,6 +48,10 @@ public class WeightCounter<V> {
         if (weightNums.isEmpty()) {
             return proMap;
         }
+        if (allWeight <= 0) {
+            // 原实现 perNum=allPro/0=Infinity → (int)(0*Infinity) 全挤 key=0 互相覆盖
+            throw new IllegalArgumentException("权重总和必须为正: " + allWeight);
+        }
         WeightNum<V> lastOne = weightNums.get(weightNums.size() - 1);
         float perNum = (float) allPro / allWeight;
         int stepPro = 0;

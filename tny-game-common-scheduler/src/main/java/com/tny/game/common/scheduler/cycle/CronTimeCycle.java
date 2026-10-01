@@ -42,7 +42,12 @@ public class CronTimeCycle implements TimeCycle {
 
     @Override
     public Instant getTimeAfter(Instant instant) {
-        return Instant.ofEpochMilli(this.expression.getTimeAfter(new Date(instant.toEpochMilli())).getTime());
+        Date after = this.expression.getTimeAfter(new Date(instant.toEpochMilli()));
+        if (after == null) {
+            // 无未来触发点（如固定年份已过）：显式异常交由上层按方案隔离，原实现裸 NPE 连坐整条调度链
+            throw new IllegalStateException("cron 表达式 [" + this.expression.getCronExpression() + "] 无未来触发时间");
+        }
+        return Instant.ofEpochMilli(after.getTime());
     }
 
 }

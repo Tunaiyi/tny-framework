@@ -16,10 +16,11 @@ import org.apache.commons.lang3.EnumUtils;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 public class ResultCodes {
 
-    private static final Map<Integer, ResultCode> codeMap = new HashMap<>();
+    private static final ConcurrentMap<Integer, ResultCode> codeMap = new ConcurrentHashMap<>();
 
     private static final Map<Integer, UnknownResultCode> unknownCodeMap = new ConcurrentHashMap<>();
 
@@ -36,12 +37,11 @@ public class ResultCodes {
     }
 
     public static void registerCode(ResultCode code) {
-        ResultCode old = codeMap.put(code.getCode(), code);
+        // 原实现先 put 后检查：冲突时旧码已被顶掉才抛异常，注册表留下污染状态
+        ResultCode old = codeMap.putIfAbsent(code.getCode(), code);
         if (old != null && old != code) {
-            IllegalArgumentException e = new IllegalArgumentException(StringAide.format("{}.{} 与 {}.{} id 都为 {}",
+            throw new IllegalArgumentException(StringAide.format("{}.{} 与 {}.{} id 都为 {}",
                     code.getClass(), code, old.getClass(), old, old.getCode()));
-            e.printStackTrace();
-            throw e;
         }
     }
 

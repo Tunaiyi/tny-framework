@@ -30,9 +30,11 @@ import java.util.regex.Pattern;
  * 相邻引号串自动拼接。</li>
  * <li>失败消息（"line:col: desc" 前缀）逐字保持；外壳捕获 {@link Failure} 后按各自 public
  * ParseException 类型重新构造，异常类型与消息文本对调用方完全不变。</li>
+ * <li>本类同时实现 {@link FormatValueReader.Scanner}（Xml/JavaProps 的现状扫描面即本类本身，
+ * 消费操作直通；包私有类型上的 public 方法对包外不可命名，不构成发布面变更）。</li>
  * </ul>
  */
-final class FormatTokenizerCore {
+final class FormatTokenizerCore implements FormatValueReader.Scanner<FormatTokenizerCore.Failure> {
 
     /**
      * 三种现状词法/值消费形态。
@@ -184,7 +186,7 @@ final class FormatTokenizerCore {
     /**
      * Returns {@code true} if the next token is an integer, but does not consume it.
      */
-    boolean lookingAtInteger() {
+    public    boolean lookingAtInteger() {
         if (this.currentToken.length() == 0) {
             return false;
         }
@@ -232,7 +234,7 @@ final class FormatTokenizerCore {
      * If the next token is an identifier, consume it and return its value. Otherwise, failure.
      * PROPS 现状：字符集不含点号、不剥引号、消息无尾随字符；XML/JSON 现状：允许点号并剥除引号。
      */
-    String consumeIdentifier() throws Failure {
+    public    String consumeIdentifier() throws Failure {
         if (this.kind == Kind.PROPS) {
             for (int i = 0; i < this.currentToken.length(); i++) {
                 final char c = this.currentToken.charAt(i);
@@ -272,7 +274,7 @@ final class FormatTokenizerCore {
     /**
      * If the next token is a 32-bit signed integer, consume it and return its value.
      */
-    int consumeInt32() throws Failure {
+    public    int consumeInt32() throws Failure {
         try {
             int result = FormatTextSupport.parseInt32(this.currentToken);
             nextToken();
@@ -285,7 +287,7 @@ final class FormatTokenizerCore {
     /**
      * If the next token is a 32-bit unsigned integer, consume it and return its value.
      */
-    int consumeUInt32() throws Failure {
+    public    int consumeUInt32() throws Failure {
         try {
             int result = FormatTextSupport.parseUInt32(this.currentToken);
             nextToken();
@@ -298,7 +300,7 @@ final class FormatTokenizerCore {
     /**
      * If the next token is a 64-bit signed integer, consume it and return its value.
      */
-    long consumeInt64() throws Failure {
+    public    long consumeInt64() throws Failure {
         try {
             long result = FormatTextSupport.parseInt64(this.currentToken);
             nextToken();
@@ -311,7 +313,7 @@ final class FormatTokenizerCore {
     /**
      * If the next token is a 64-bit unsigned integer, consume it and return its value.
      */
-    long consumeUInt64() throws Failure {
+    public    long consumeUInt64() throws Failure {
         try {
             long result = FormatTextSupport.parseUInt64(this.currentToken);
             nextToken();
@@ -324,7 +326,7 @@ final class FormatTokenizerCore {
     /**
      * If the next token is a double, consume it and return its value.
      */
-    double consumeDouble() throws Failure {
+    public    double consumeDouble() throws Failure {
         // We need to parse infinity and nan separately because
         // Double.parseDouble() does not accept "inf", "infinity", or "nan".
         if (DOUBLE_INFINITY.matcher(this.currentToken).matches()) {
@@ -348,7 +350,7 @@ final class FormatTokenizerCore {
     /**
      * If the next token is a float, consume it and return its value.
      */
-    float consumeFloat() throws Failure {
+    public    float consumeFloat() throws Failure {
         // We need to parse infinity and nan separately because
         // Float.parseFloat() does not accept "inf", "infinity", or "nan".
         if (FLOAT_INFINITY.matcher(this.currentToken).matches()) {
@@ -372,7 +374,7 @@ final class FormatTokenizerCore {
     /**
      * If the next token is a boolean, consume it and return its value.
      */
-    boolean consumeBoolean() throws Failure {
+    public    boolean consumeBoolean() throws Failure {
         if (this.currentToken.equals("true")) {
             nextToken();
             return true;
@@ -387,7 +389,7 @@ final class FormatTokenizerCore {
     /**
      * If the next token is a string, consume it and return its (unescaped) value.
      */
-    String consumeString() throws Failure {
+    public    String consumeString() throws Failure {
         if (this.kind == Kind.JSON) {
             char quote = this.currentToken.length() > 0 ? this.currentToken.charAt(0) : '\0';
             if ((quote != '\"') && (quote != '\'')) {
@@ -416,7 +418,7 @@ final class FormatTokenizerCore {
      * XML 现状：TEXT 节点无引号包裹，整 token 走八进制字节反转义；JSON 现状：带引号 + 识别 \\uXXXX；
      * PROPS 现状：带引号且相邻字面量自动拼接（C/Python 风格）。
      */
-    ByteString consumeByteString() throws Failure {
+    public    ByteString consumeByteString() throws Failure {
         if (this.kind == Kind.PROPS) {
             List<ByteString> list = new ArrayList<>();
             consumeByteString(list);
@@ -484,6 +486,11 @@ final class FormatTokenizerCore {
         } catch (FormatTextSupport.InvalidEscapeSequence e) {
             throw new Failure(errorMessage(e.getMessage()));
         }
+    }
+
+    @Override
+    public Failure positionedEnumFailure(String description) {
+        return new Failure(previousTokenErrorMessage(description));
     }
 
     /**

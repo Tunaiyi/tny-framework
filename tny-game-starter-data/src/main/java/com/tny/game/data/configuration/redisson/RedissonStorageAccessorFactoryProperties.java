@@ -11,6 +11,7 @@
 
 package com.tny.game.data.configuration.redisson;
 
+import com.tny.game.data.configuration.*;
 import org.springframework.boot.context.properties.*;
 
 import java.util.*;
@@ -22,40 +23,33 @@ import java.util.*;
  * @date : 2021/9/29 4:59 下午
  */
 @ConfigurationProperties(prefix = "tny.data.storage-accessor.redisson-accessor")
-public class RedissonStorageAccessorFactoryProperties {
+public class RedissonStorageAccessorFactoryProperties
+        extends AbstractStorageAccessorFactoryProperties<RedissonStorageAccessorFactorySetting> {
 
-    private boolean enable = true;
-
-    @NestedConfigurationProperty
-    private RedissonStorageAccessorFactorySetting accessor = new RedissonStorageAccessorFactorySetting();
-
-    private Map<String, RedissonStorageAccessorFactorySetting> accessors = new HashMap<>();
-
-    public boolean isEnable() {
-        return enable;
+    public RedissonStorageAccessorFactoryProperties() {
+        super(new RedissonStorageAccessorFactorySetting());
     }
 
+    @Override
     public RedissonStorageAccessorFactoryProperties setEnable(boolean enable) {
-        this.enable = enable;
+        super.setEnable(enable);
         return this;
     }
 
+    @Override
     public RedissonStorageAccessorFactorySetting getAccessor() {
-        return accessor;
+        return super.getAccessor();
     }
 
+    @Override
     public RedissonStorageAccessorFactoryProperties setAccessor(RedissonStorageAccessorFactorySetting accessor) {
-        this.accessor = accessor;
+        super.setAccessor(accessor);
         return this;
     }
 
-    public Map<String, RedissonStorageAccessorFactorySetting> getAccessors() {
-        return accessors;
-    }
-
-    public RedissonStorageAccessorFactoryProperties setAccessors(
-            Map<String, RedissonStorageAccessorFactorySetting> accessors) {
-        this.accessors = accessors;
+    @Override
+    public RedissonStorageAccessorFactoryProperties setAccessors(Map<String, RedissonStorageAccessorFactorySetting> accessors) {
+        super.setAccessors(accessors);
         return this;
     }
 

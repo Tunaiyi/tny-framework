@@ -97,6 +97,9 @@ public class StandardThreadExecutor extends ThreadPoolExecutor {
         if (count > maxSubmittedTaskCount) {
             submittedTasksCount.decrementAndGet();
             getRejectedExecutionHandler().rejectedExecution(command, this);
+            // 拒绝即终结本次提交（原无 return：CallerRuns 当场执行后仍入队=双执行；
+            // Discard 丢弃后仍入队=容量防线与计数双双失效）
+            return;
         }
 
         try {
@@ -108,6 +111,7 @@ public class StandardThreadExecutor extends ThreadPoolExecutor {
 
                 getRejectedExecutionHandler().rejectedExecution(command, this);
             }
+            return;
         }
     }
 

@@ -67,7 +67,10 @@ public class JSsistMethodAccessor implements MethodAccessor {
     public Object invoke(Object obj, Object... args) throws InvocationTargetException {
         try {
             return this.methodInvoker.invoke(obj, args);
-        } catch (Throwable e) {
+        } catch (Error e) {
+            // Error 原样透传（与 cglib FastMethod 语义统一）：折叠成目标异常会吞掉 OOM/断言级信号
+            throw e;
+        } catch (Exception e) {
             throw new InvocationTargetException(e, MessageFormat.format("反射调用 {0} 异常", this.method));
         }
     }

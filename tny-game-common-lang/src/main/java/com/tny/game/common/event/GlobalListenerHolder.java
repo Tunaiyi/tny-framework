@@ -59,7 +59,8 @@ public class GlobalListenerHolder {
         for (Class<?> clazz : getAllClasses(listener.getClass())) {
             List<Object> listeners = as(this.listenerMap.get(clazz));
             if (listeners != null) {
-                listeners.add(listener);
+                // 原实现误写 add：移除变追加（复制粘贴缺陷）
+                listeners.remove(listener);
             }
         }
     }
@@ -85,12 +86,8 @@ public class GlobalListenerHolder {
 
     @SuppressWarnings("unchecked")
     private <T> List<Object> getOrCreate(Class<T> clazz) {
-        List<?> listeners = this.listenerMap.get(clazz);
-        if (listeners == null) {
-            listeners = new CopyOnWriteArrayList<>();
-            this.listenerMap.put(clazz, listeners);
-        }
-        return (List<Object>) listeners;
+        // 原子创建（原 check-then-act 并发首注册各建各表互相覆盖）
+        return (List<Object>) this.listenerMap.computeIfAbsent(clazz, k -> new CopyOnWriteArrayList<>());
     }
 
 }

@@ -38,7 +38,8 @@ public abstract class SchedulerBackup implements Serializable {
     protected SchedulerBackup(TimeTaskScheduler scheduler) {
         this.stopTime = scheduler.getStopTime();
         TimeTaskQueue queue = scheduler.getTimeTaskQueue();
-        this.timeTaskQueue = queue.getTimeTaskList();
+        // 获取时刻不可变快照（原持活视图：备份对象跨线程序列化读到继续演化的队列）
+        this.timeTaskQueue = new ArrayList<>(queue.getTimeTaskList());
     }
 
     /**
@@ -59,7 +60,9 @@ public abstract class SchedulerBackup implements Serializable {
 
     @Override
     public String toString() {
-        return "SchedulerBackup [stopTime=" + new Date(this.stopTime) + ", timeTaskQueueSize=" + this.timeTaskQueue.size() + "]";
+        // 空/持久化默认形态（timeTaskQueue 为 null，无任何任务内容）报零任务数而非 -1 哨兵（契约：空备份报零计数）
+        return "SchedulerBackup [stopTime=" + new Date(this.stopTime) + ", timeTaskQueueSize="
+               + (this.timeTaskQueue == null ? 0 : this.timeTaskQueue.size()) + "]";
     }
 
 }

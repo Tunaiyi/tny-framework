@@ -44,10 +44,15 @@ public class FrequencySwitchQueueCommandBox<C extends Command, CB extends Comman
     protected Queue<C> acceptQueue() {
         while (true) {
             if (this.lock.tryLock()) {
-                Queue<C> accQueue = this.queue;
-                this.queue = accQueue != this.toQueue ? this.toQueue : this.fromQueue;
-                this.queue = accQueue;
-                return accQueue;
+                try {
+                    // 原实现把翻转结果覆写回原队列——切换恒为无操作，
+                    // 未完成命令回投同轮即被再次取到
+                    Queue<C> accQueue = this.queue;
+                    this.queue = accQueue != this.toQueue ? this.toQueue : this.fromQueue;
+                    return accQueue;
+                } finally {
+                    this.lock.unlock();
+                }
             } else {
                 Thread.yield();
             }
@@ -59,10 +64,6 @@ public class FrequencySwitchQueueCommandBox<C extends Command, CB extends Comman
         this.queue.clear();
         this.toQueue.clear();
         this.fromQueue.clear();
-    }
-
-    @Override
-    public void submit() {
     }
 
     @Override
@@ -97,10 +98,6 @@ public class FrequencySwitchQueueCommandBox<C extends Command, CB extends Comman
         }
         long finishTime = System.currentTimeMillis();
         this.runUseTime = finishTime - startTime;
-    }
-
-    @Override
-    public void wakeUp(CommandBox<?> commandBox) {
     }
 
 }

@@ -43,6 +43,13 @@ public class UnitLoader<T> {
     }
 
     public static void register(String name, Object unit) {
+        forEachLoader(unit, loader -> loader.put(name, unit));
+    }
+
+    /**
+     * 遍历该 unit 应注册的全部 loader（@UnitInterface 继承链 + @Unit.unitInterfaces）。
+     */
+    private static void forEachLoader(Object unit, java.util.function.Consumer<UnitLoader<Object>> action) {
         Class<?> unitClass = unit.getClass();
         Set<Class<?>> unitClasses = ReflectAide.getDeepClasses(unitClass);
         Set<Class<?>> registerInterfaces = new HashSet<>();
@@ -55,7 +62,7 @@ public class UnitLoader<T> {
                 continue;
             }
             UnitLoader<Object> loader = as(getLoader(clazz));
-            loader.put(name, unit);
+            action.accept(loader);
         }
         Unit unitAnnotation = unitClass.getAnnotation(Unit.class);
         if (unitAnnotation != null) {
@@ -64,10 +71,21 @@ public class UnitLoader<T> {
                     continue;
                 }
                 UnitLoader<Object> loader = as(getLoader(unitInterface));
-                loader.put(name, unit);
+                action.accept(loader);
             }
         }
         Asserts.checkArgument(!registerInterfaces.isEmpty(), "register {} unit, but unit is not instance of UnitInterface", unit);
+    }
+
+    /**
+     * 写入前的整体验证（类型 + 同名冲突）。原实现边写边校验：中途失败时前面的名字/接口
+     * 已落入全局 unitLoaders，留下半注册状态且重试必炸"same name"。
+     */
+    private void validate(String name, Object unit) {
+        Asserts.checkInstanceOf(unit, this.unitInterface, "UnitLoader [{}] loading unit, Unit {} is not instance of {}",
+                this.unitInterface, unit, this.unitInterface);
+        Asserts.checkArgument(!this.unitMap.containsKey(name),
+                "UnitLoader [{}] loading unit, Unit {} have the same name {}", this.unitInterface, unit, name);
     }
 
     public static Set<String> register(Object unit) {
@@ -80,6 +98,10 @@ public class UnitLoader<T> {
         }
         names.add(unitClass.getSimpleName());
         names.add(unitClass.getName());
+        // 先整体预校验再逐名写入（消除部分注册无回滚问题）
+        for (String name : names) {
+            forEachLoader(unit, loader -> loader.validate(name, unit));
+        }
         for (String name : names)
             register(name, unit);
         return names;

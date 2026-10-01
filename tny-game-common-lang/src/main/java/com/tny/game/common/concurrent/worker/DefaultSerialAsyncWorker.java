@@ -140,8 +140,22 @@ class DefaultSerialAsyncWorker extends AbstractAsyncWorker implements SerialAsyn
         this.tryLoop();
     }
 
-    private void resumeLoop() {
+    /**
+     * 当前 WAITING 所等待的内层 future（归属校验用）：
+     * 旧任务迟到完成不得唤醒正在等待新任务的环（否则串行序被并发执行破坏）。
+     */
+    private volatile CompletableFuture<?> waitingInner;
+
+    private void resumeLoop(CompletableFuture<?> inner) {
+        boolean owned = this.waitingInner == inner;
+        if (!owned && !isHasTask()) {
+            // 迟到/异己完成且队列无任务：不得唤醒（否则会并发跑掉别的任务的位）
+            return;
+        }
+        // 非所属完成但队列有任务：必须唤醒——嵌套 await 链中父任务的内层依赖排队子任务
+        // （AsyncWorkerTest 形态），旧无条件唤醒正是救链机制，不能矫枉过正成死锁
         if (this.status.compareAndSet(WAITING, RUN)) {
+            this.waitingInner = null;
             masterExecutor.execute(this::loop);
         }
     }
@@ -156,11 +170,23 @@ class DefaultSerialAsyncWorker extends AbstractAsyncWorker implements SerialAsyn
                     if (task == null) {
                         break;
                     }
+                    var queuedFuture = task.getFuture();
+                    if (queuedFuture != null && queuedFuture.isDone()) {
+                        // 排队期间外层已超时完成：调用方已脱身，副作用不得再执行，直接丢弃
+                        continue;
+                    }
                     var current = task.execute();
                     if (current == null || current.isDone()) {
                         continue;
                     }
+                    this.waitingInner = current;
                     status.set(WAITING);
+                    // 竞态补偿：内层恰在完成检查之后、置 WAITING 之前完成时，
+                    // 其回调的 CAS(WAITING→RUN) 已失败，不补查本环将永久 WAITING、整条命令队列停摆
+                    if (current.isDone() && status.compareAndSet(WAITING, RUN)) {
+                        this.waitingInner = null;
+                        continue;
+                    }
                     return;
                 } catch (Throwable e) {
                     LOGGER.error("", e);
@@ -289,8 +315,22 @@ class DefaultSerialAsyncWorker extends AbstractAsyncWorker implements SerialAsyn
 
     private abstract class SerialExecuteTask<T> extends AsyncExecuteTask<T> {
 
+        /**
+         * 本任务的内层 future（execute 后记录）：超时发生时用于唤醒挂在"本任务"上的环。
+         */
+        private volatile CompletableFuture<T> innerFuture;
+
         private SerialExecuteTask(long timeout, TimeUnit unit) {
             super(timeout, unit);
+        }
+
+        @Override
+        protected void afterTimeout() {
+            // 调用方已超时脱身：唤醒挂起在本任务内层上的环，串行队列必须继续
+            CompletableFuture<T> inner = this.innerFuture;
+            if (inner != null) {
+                resumeLoop(inner);
+            }
         }
 
         public abstract CompletableFuture<T> doExecute();
@@ -305,10 +345,11 @@ class DefaultSerialAsyncWorker extends AbstractAsyncWorker implements SerialAsyn
                     return null;
                 }
                 if (resumeLoop) {
+                    this.innerFuture = current;
                     current.whenComplete((v, c) -> {
                         EXECUTOR_THREAD_LOCAL.set(DefaultSerialAsyncWorker.this);
                         complete(v, c);
-                        resumeLoop();
+                        resumeLoop(current);
                     });
                 } else {
                     current.whenComplete(this::complete);

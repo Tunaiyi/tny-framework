@@ -80,6 +80,8 @@ class DefaultTimeTrigger<C extends TimeCycle> implements TimeTrigger<C> {
         if (this.nextTime != null) {
             this.nextTime = null;
             this.speedMills = 0;
+            // 停止即终结本轮：滞留的挂起时刻会让下次 start 后的 resume 以陈旧锚点整体后推（B2）
+            this.suspendTime = null;
             return true;
         }
         return false;
@@ -134,12 +136,17 @@ class DefaultTimeTrigger<C extends TimeCycle> implements TimeTrigger<C> {
             throw new NullPointerException("timeCycle is null");
         }
         if (endTime != null) {
-            Asserts.checkArgument(endTime.isAfter(startTime));
+            // 原实现 endTime.isAfter(null) NPE；且 startTime==null 时把 this.startTime 覆盖为 null
+            Instant checkStartTime = startTime != null ? startTime : this.startTime;
+            Asserts.checkArgument(endTime.isAfter(checkStartTime));
             this.endTime = endTime;
             this.reset();
         }
-        this.startTime = startTime;
-        setup(timeCycle, startTime, false);
+        if (startTime != null) {
+            this.startTime = startTime;
+        }
+        this.suspendTime = null;
+        setup(timeCycle, this.startTime, false);
     }
 
     private void setup(C timeCycle, Instant time, boolean stop) {
@@ -214,10 +221,10 @@ class DefaultTimeTrigger<C extends TimeCycle> implements TimeTrigger<C> {
             return false;
         }
         long suspendMills = Math.max(time.toEpochMilli() - suspendTime.toEpochMilli(), 0);
-        this.nextTime = nextTime.plusMillis((int) suspendMills);
+        this.nextTime = nextTime.plusMillis(suspendMills);
         Instant endTime = this.endTime;
         if (endTime != null) {
-            this.endTime = endTime.plusMillis((int) suspendMills);
+            this.endTime = endTime.plusMillis(suspendMills);
         }
         this.suspendTime = null;
         return true;
@@ -225,8 +232,12 @@ class DefaultTimeTrigger<C extends TimeCycle> implements TimeTrigger<C> {
 
     @Override
     public boolean suspend(Instant time) {
-        if (!isWorking() && time.plusMillis((int) this.getSpeedMills())
-                .isAfter(this.getNextTime())) {
+        Instant nextTime = this.nextTime;
+        if (nextTime == null) {
+            // 已结束/未启动的 trigger 无挂起语义（原实现 getNextTime()==null 时 isAfter NPE）
+            return false;
+        }
+        if (!isWorking() && time.plusMillis(this.getSpeedMills()).isAfter(nextTime)) {
             return false;
         }
         this.suspendTime = time;
@@ -240,11 +251,12 @@ class DefaultTimeTrigger<C extends TimeCycle> implements TimeTrigger<C> {
         }
         Instant nextTime = this.nextTime;
         Instant endTime = this.endTime;
-        this.nextTime = nextTime.plusMillis((int) timeMillis);
+        this.nextTime = nextTime.plusMillis(timeMillis);
         if (endTime != null) {
-            this.endTime = endTime.plusMillis((int) timeMillis);
+            this.endTime = endTime.plusMillis(timeMillis);
         }
-        return false;
+        // 原实现成功路径也 return false，调用方无法判断生效（B3）
+        return true;
     }
 
 }

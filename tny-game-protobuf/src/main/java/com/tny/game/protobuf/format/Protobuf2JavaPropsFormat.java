@@ -49,15 +49,7 @@ public class Protobuf2JavaPropsFormat {
      * returns it.
      */
     public static String printToString(final Message message) {
-        try {
-            final StringBuilder text = new StringBuilder();
-            print(message, text);
-            return text.toString();
-        } catch (IOException e) {
-            throw new RuntimeException(
-                    "Writing to a StringBuilder threw an IOException (should never " +
-                    "happen).", e);
-        }
+        return FormatValueRenderer.printToStringVia(output -> print(message, output));
     }
 
     /**
@@ -65,15 +57,7 @@ public class Protobuf2JavaPropsFormat {
      * returns it.
      */
     public static String printToString(final UnknownFieldSet fields) {
-        try {
-            final StringBuilder text = new StringBuilder();
-            print(fields, text);
-            return text.toString();
-        } catch (IOException e) {
-            throw new RuntimeException(
-                    "Writing to a StringBuilder threw an IOException (should never " +
-                    "happen).", e);
-        }
+        return FormatValueRenderer.printToStringVia(output -> print(fields, output));
     }
 
     private static void print(final Message message,
@@ -96,15 +80,7 @@ public class Protobuf2JavaPropsFormat {
 
     public static String printFieldToString(final Descriptors.FieldDescriptor field,
             final Object value) {
-        try {
-            final StringBuilder text = new StringBuilder();
-            printField(field, value, text);
-            return text.toString();
-        } catch (IOException e) {
-            throw new RuntimeException(
-                    "Writing to a StringBuilder threw an IOException (should never " +
-                    "happen).", e);
-        }
+        return FormatValueRenderer.printToStringVia(output -> printField(field, value, output));
     }
 
     private static void printField(final Descriptors.FieldDescriptor field,
@@ -517,76 +493,7 @@ public class Protobuf2JavaPropsFormat {
         } else {
             tokenizer.consume("=");
 
-            switch (field.getType()) {
-                case INT32:
-                case SINT32:
-                case SFIXED32:
-                    value = tokenizer.consumeInt32();
-                    break;
-
-                case INT64:
-                case SINT64:
-                case SFIXED64:
-                    value = tokenizer.consumeInt64();
-                    break;
-
-                case UINT32:
-                case FIXED32:
-                    value = tokenizer.consumeUInt32();
-                    break;
-
-                case UINT64:
-                case FIXED64:
-                    value = tokenizer.consumeUInt64();
-                    break;
-
-                case FLOAT:
-                    value = tokenizer.consumeFloat();
-                    break;
-
-                case DOUBLE:
-                    value = tokenizer.consumeDouble();
-                    break;
-
-                case BOOL:
-                    value = tokenizer.consumeBoolean();
-                    break;
-
-                case STRING:
-                    value = tokenizer.consumeString();
-                    break;
-
-                case BYTES:
-                    value = tokenizer.consumeByteString();
-                    break;
-
-                case ENUM:
-                    final Descriptors.EnumDescriptor enumType = field.getEnumType();
-
-                    if (tokenizer.lookingAtInteger()) {
-                        final int number = tokenizer.consumeInt32();
-                        value = enumType.findValueByNumber(number);
-                        if (value == null) {
-                            throw new FormatTokenizerCore.Failure(tokenizer.previousTokenErrorMessage(
-                                    "Enum type \"" + enumType.getFullName() +
-                                    "\" has no value with number " + number + '.'));
-                        }
-                    } else {
-                        final String id = tokenizer.consumeIdentifier();
-                        value = enumType.findValueByName(id);
-                        if (value == null) {
-                            throw new FormatTokenizerCore.Failure(tokenizer.previousTokenErrorMessage(
-                                    "Enum type \"" + enumType.getFullName() +
-                                    "\" has no value named \"" + id + "\"."));
-                        }
-                    }
-
-                    break;
-
-                case MESSAGE:
-                case GROUP:
-                    throw new RuntimeException("Can't get here.");
-            }
+            value = FormatValueReader.readPrimitive(field, tokenizer);
         }
 
         if (field.isRepeated()) {

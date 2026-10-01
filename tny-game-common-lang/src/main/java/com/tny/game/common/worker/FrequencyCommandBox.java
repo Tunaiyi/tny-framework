@@ -32,24 +32,25 @@ public class FrequencyCommandBox<C extends Command, CB extends CommandBox<C>> ex
     }
 
     @Override
-    public void submit() {
-    }
-
-    @Override
     protected void doProcess() {
         Queue<C> queue = this.acceptQueue();
         long startTime = System.currentTimeMillis();
-        int currentSize = queue.size();
+        // poll 原子出队构造轮次（弱一致迭代器并发下可能重复扫过同一命令致重复执行——改快照物化）；
+        // 轮初存量上界 + 未完成回投队尾：天然只被下一轮快照取走；runSize=完成数供自驱闭环判进展
+        final int roundLimit = queue.size();
         this.runSize = 0;
-        for (C cmd : queue) {
-            currentSize++;
-            if (this.runSize > currentSize) {
+        int scanned = 0;
+        while (scanned < roundLimit) {
+            C cmd = queue.poll();
+            if (cmd == null) {
                 break;
             }
+            scanned++;
             executeCommand(cmd);
-            this.runSize++;
             if (cmd.isDone()) {
-                queue.remove(cmd);
+                this.runSize++;
+            } else {
+                queue.add(cmd);
             }
         }
         for (CommandBox<?> commandBox : boxes()) {
@@ -58,10 +59,6 @@ public class FrequencyCommandBox<C extends Command, CB extends CommandBox<C>> ex
         }
         long finishTime = System.currentTimeMillis();
         this.runUseTime = finishTime - startTime;
-    }
-
-    @Override
-    public void wakeUp(CommandBox<?> commandBox) {
     }
 
 }

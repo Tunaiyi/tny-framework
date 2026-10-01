@@ -12,6 +12,7 @@
 package com.tny.game.basics.item;
 
 import com.tny.game.basics.item.behavior.*;
+import com.tny.game.basics.utlis.*;
 import com.tny.game.common.enums.*;
 import com.tny.game.common.io.config.*;
 
@@ -32,39 +33,40 @@ public final class Actions extends ClassImporter {
     }
 
     static void register(Action value) {
-        holder.register(value);
+        EnumRegistrySupport.register(holder, value);
     }
 
     public static <T extends Action> T check(String key) {
-        return holder.check(key, "获取 {} Action 不存在", key);
+        return EnumRegistrySupport.check(holder, key, "Action");
     }
 
     public static <T extends Action> T check(int id) {
-        return holder.check(id, "获取 ID为 {} 的 Action 不存在", id);
+        return EnumRegistrySupport.check(holder, id, "Action");
     }
 
     public static <T extends Action> T of(int id) {
-        return holder.of(id);
+        return EnumRegistrySupport.of(holder, id);
     }
 
     public static <T extends Action> T of(String key) {
-        return holder.of(key);
+        return EnumRegistrySupport.of(holder, key);
     }
 
     public static <T extends Action> Optional<T> option(int id) {
-        return holder.option(id);
+        return EnumRegistrySupport.option(holder, id);
     }
 
     public static <T extends Action> Optional<T> option(String key) {
-        return holder.option(key);
+        return EnumRegistrySupport.option(holder, key);
     }
 
+    //    异名薄委托保留（D5）：兄弟门面为 all()，本类历史名为 getAll()，不得借收敛改名
     public static Collection<Action> getAll() {
-        return holder.allValues();
+        return EnumRegistrySupport.all(holder);
     }
 
     public static Enumerator<Action> enumerator() {
-        return holder;
+        return EnumRegistrySupport.enumerator(holder);
     }
 
 }

@@ -17,6 +17,7 @@ import org.slf4j.*;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.*;
 
 public abstract class FileLoader implements Reloadable, NoticeReload {
 
@@ -24,11 +25,11 @@ public abstract class FileLoader implements Reloadable, NoticeReload {
 
     private final String modelPath;
 
-    private final Set<Reloadable> loadAfterList = new HashSet<>();
+    private final Set<Reloadable> loadAfterList = ConcurrentHashMap.newKeySet();
 
-    private boolean load = false;
+    private volatile boolean load = false;
 
-    private boolean deleted = false;
+    private volatile boolean deleted = false;
 
     protected FileLoader(String modelPath) {
         this.modelPath = modelPath;
@@ -43,7 +44,12 @@ public abstract class FileLoader implements Reloadable, NoticeReload {
         if (input == null) {
             throw new FileNotFoundException(this.modelPath);
         }
-        this.readConfig(input, false);
+        // doLoad 契约不保证关闭流，基类统一负责（原实现每次 load 泄漏一个 fd）
+        try {
+            this.readConfig(input, false);
+        } finally {
+            closeQuietly(input);
+        }
         this.load = true;
     }
 
@@ -60,7 +66,11 @@ public abstract class FileLoader implements Reloadable, NoticeReload {
             if (input == null) {
                 throw new FileNotFoundException(this.modelPath);
             }
-            this.readConfig(input, true);
+            try {
+                this.readConfig(input, true);
+            } finally {
+                closeQuietly(input);
+            }
             for (Reloadable loader : this.loadAfterList)
                 loader.reload();
         } catch (Exception e) {
@@ -88,6 +98,14 @@ public abstract class FileLoader implements Reloadable, NoticeReload {
     }
 
     protected abstract void doLoad(InputStream inputStream, boolean reload) throws Exception;
+
+    private static void closeQuietly(InputStream input) {
+        try {
+            input.close();
+        } catch (IOException e) {
+            LOG.warn("关闭模型文件 {} 输入流异常", e.getMessage());
+        }
+    }
 
     /**
      * @author KGTny

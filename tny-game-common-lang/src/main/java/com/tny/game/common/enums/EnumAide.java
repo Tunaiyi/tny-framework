@@ -77,7 +77,9 @@ public class EnumAide {
                     Object[] inter = (Object[]) method.invoke(null);
                     Map<String, Object> builder = new HashMap<>();
                     for (Object e : inter) {
-                        builder.put(e.toString(), e);
+                        // 以常量声明名为索引：自定义显示文本不得劫持名字查找（BREAKING：显示文本不再是合法名字）；
+                        // 原 e.toString() 建键会使覆写显示文本的枚举按名查不中、同显示文本常量互相覆盖
+                        builder.put(((Enum<?>) e).name(), e);
                     }
                     return Collections.unmodifiableMap(builder);
                 } catch (Throwable e) {

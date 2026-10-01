@@ -175,12 +175,25 @@ public abstract class AbstractAsyncWorker implements AsyncWorker {
                 task.execute();
                 var future = task.getFuture();
                 if (future != null) {
-                    return future.whenComplete((v, c) -> EXECUTOR_THREAD_LOCAL.set(this));
+                    // 仅在工作器自身线程上恢复身份；外部完成线程不 set（原实现永久污染该线程的 current()）
+                    return future.whenComplete((v, c) -> {
+                        if (isInWorker()) {
+                            EXECUTOR_THREAD_LOCAL.set(this);
+                        }
+                    });
                 }
+                // Runnable 型内联任务无外层 future：给一个已完成句柄（原返回 null，调用方链式 .thenXxx 直接 NPE）
+                return CompletableFuture.completedFuture(null);
             } catch (Throwable e) {
                 LOGGER.error("", e);
+                // 异常必须进 future（原实现吞异常并返回 null：既无 NPE 也无异常可消费）
+                CompletableFuture<T> result = task.getFuture();
+                if (result == null) {
+                    return CompletableFuture.failedFuture(e);
+                }
+                result.completeExceptionally(e); // 任务内部已先行完成时为无害 no-op
+                return result;
             }
-            return null;
         }
         return this.addQueue(task);
     }
@@ -297,6 +310,15 @@ public abstract class AbstractAsyncWorker implements AsyncWorker {
                 return;
             }
             future.completeExceptionally(new TimeoutException());
+            // 超时只完成外层：串行型 worker 的续环挂在内层 future 上，
+            // 需要 afterTimeout 钩子把"外层已超时脱身"通知回环调度，否则环永久 WAITING
+            afterTimeout();
+        }
+
+        /**
+         * 外层 future 因超时被异常完成后的回调（默认无操作）。
+         */
+        protected void afterTimeout() {
         }
 
     }

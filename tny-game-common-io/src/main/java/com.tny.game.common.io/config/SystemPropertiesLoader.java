@@ -32,6 +32,19 @@ public class SystemPropertiesLoader extends FileAlterationListenerAdaptor {
         roadProperties(file, true);
     }
 
+    /** JVM 关键属性命名空间守卫：文件装载不得静默覆盖运行时根基属性 */
+    private static final String[] PROTECTED_PREFIXES = {
+            "java.", "javax.", "jdk.", "sun.", "com.sun.", "os.", "user.",
+            "file.separator", "path.separator", "line.separator"};
+
+    private static final java.util.concurrent.CopyOnWriteArrayList<String> LAST_REJECTED =
+            new java.util.concurrent.CopyOnWriteArrayList<>();
+
+    /** 最近一次装载被拒绝的保护键（可观测性：静默丢弃不可追踪） */
+    public static List<String> lastRejectedKeys() {
+        return Collections.unmodifiableList(new ArrayList<>(LAST_REJECTED));
+    }
+
     private static void roadProperties(final String file, boolean listen)
             throws IOException {
         InputStream inputStream = null;
@@ -42,16 +55,35 @@ public class SystemPropertiesLoader extends FileAlterationListenerAdaptor {
             } else {
                 inputStream = FileIOAide.openInputStream(file);
             }
+            if (inputStream == null) {
+                throw new IOException("系统属性文件不可读: " + file);
+            }
             Properties properties = new Properties();
             properties.load(inputStream);
+            LAST_REJECTED.clear();
             for (Entry<Object, Object> entry : properties.entrySet()) {
-                System.setProperty(entry.getKey().toString(), entry.getValue().toString());
+                String key = entry.getKey().toString();
+                if (isProtected(key)) {
+                    LAST_REJECTED.add(key);
+                    LOG.warn("#SystemPropertiesLoader# 拒绝装载保护属性 {}（JVM 关键命名空间不可被配置文件覆盖）", key);
+                    continue;
+                }
+                System.setProperty(key, entry.getValue().toString());
             }
         } finally {
             if (inputStream != null) {
                 inputStream.close();
             }
         }
+    }
+
+    private static boolean isProtected(String key) {
+        for (String prefix : PROTECTED_PREFIXES) {
+            if (key.startsWith(prefix)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static class PropertiesFileListener extends

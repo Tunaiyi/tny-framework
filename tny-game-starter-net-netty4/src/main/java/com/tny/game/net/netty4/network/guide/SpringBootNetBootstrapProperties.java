@@ -11,7 +11,6 @@
 
 package com.tny.game.net.netty4.network.guide;
 
-import com.google.common.collect.ImmutableMap;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.*;
 
@@ -28,70 +27,56 @@ import java.util.*;
 //@Order(HIGHEST_PRECEDENCE)
 @ConfigurationProperties(prefix = "tny.net.bootstrap.network")
 @ConditionalOnMissingBean(SpringBootNetBootstrapProperties.class)
-public class SpringBootNetBootstrapProperties implements SpringBootNetBootstrapSettings {
+public class SpringBootNetBootstrapProperties
+        extends AbstractSpringBootBootstrapProperties<SpringNettyNetServerBootstrapSetting, SpringNettyNetClientBootstrapSetting>
+        implements SpringBootNetBootstrapSettings {
 
-    @NestedConfigurationProperty
-    private SpringNettyNetServerBootstrapSetting server;
-
-    @NestedConfigurationProperty
-    private SpringNettyNetClientBootstrapSetting client;
-
-    //    @NestedConfigurationProperty
-    private Map<String, SpringNettyNetServerBootstrapSetting> servers = ImmutableMap.of();
-
-    //    @NestedConfigurationProperty
-    private Map<String, SpringNettyNetClientBootstrapSetting> clients = ImmutableMap.of();
+    public SpringBootNetBootstrapProperties() {
+        // 现状：Net 侧 client 默认名为 default
+        super("default");
+    }
 
     @Override
     public SpringNettyNetServerBootstrapSetting getServer() {
-        return this.server;
+        return super.getServer();
     }
 
+    @Override
     public SpringBootNetBootstrapProperties setServer(SpringNettyNetServerBootstrapSetting server) {
-        this.server = server;
-        if (server != null) {
-            // `server: ~` 空值绑定不得 NPE 击穿配置装配
-            server.setName("default");
-        }
+        super.setServer(server);
         return this;
     }
 
     @Override
     public SpringNettyNetClientBootstrapSetting getClient() {
-        return this.client;
+        return super.getClient();
     }
 
+    @Override
     public SpringBootNetBootstrapProperties setClient(SpringNettyNetClientBootstrapSetting client) {
-        this.client = client;
-        if (client != null) {
-            client.setName("default");
-        }
+        super.setClient(client);
         return this;
     }
 
     @Override
     public Map<String, SpringNettyNetServerBootstrapSetting> getServers() {
-        return Collections.unmodifiableMap(this.servers);
+        return super.getServers();
     }
 
+    @Override
     public SpringBootNetBootstrapProperties setServers(Map<String, SpringNettyNetServerBootstrapSetting> servers) {
-        if (servers != null) {
-            servers.forEach((name, setting) -> setting.setName(name));
-            this.servers = servers;
-        }
+        super.setServers(servers);
         return this;
     }
 
     @Override
     public Map<String, SpringNettyNetClientBootstrapSetting> getClients() {
-        return Collections.unmodifiableMap(this.clients);
+        return super.getClients();
     }
 
+    @Override
     public SpringBootNetBootstrapProperties setClients(Map<String, SpringNettyNetClientBootstrapSetting> clients) {
-        if (clients != null) {
-            clients.forEach((name, setting) -> setting.setName(name));
-            this.clients = clients;
-        }
+        super.setClients(clients);
         return this;
     }
 

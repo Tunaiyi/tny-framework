@@ -31,7 +31,14 @@ public class DefaultTimeTaskHandlerHolder implements TimeTaskHandlerHolder {
     private final Map<String, TimeTaskHandler> handlerHashMap = new ConcurrentHashMap<>();
 
     public DefaultTimeTaskHandlerHolder(List<TimeTaskHandler> handlers) {
-        handlers.forEach(handler -> this.handlerHashMap.put(handler.getName(), handler));
+        handlers.forEach(handler -> {
+            // 重名显式冲突（原静默覆盖：任务方案引用的处理器实际被顶替）
+            TimeTaskHandler old = this.handlerHashMap.putIfAbsent(handler.getName(), handler);
+            if (old != null) {
+                throw new IllegalStateException("时间任务处理器重名: " + handler.getName()
+                        + " (" + old.getClass().getName() + " vs " + handler.getClass().getName() + ")");
+            }
+        });
     }
 
     @Override

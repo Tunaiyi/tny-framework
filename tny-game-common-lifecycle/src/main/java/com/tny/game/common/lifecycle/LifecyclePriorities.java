@@ -49,7 +49,8 @@ public final class LifecyclePriorities {
     public static LifecyclePriority lower(LifecyclePriority priority, int order) {
         Asserts.checkArgument(order > 0, "order {} must > 0", order);
         var priorityValue = priority.getOrder() - order;
-        Asserts.checkArgument(priorityValue >= 0, "{} is lowest", priorityValue);
+        // lowest()==1，0 不是合法档位（原 >=0 放行产出低于 lowest 的 0 级）
+        Asserts.checkArgument(priorityValue >= 1, "{} is lowest", priority.getOrder());
         return of(priorityValue);
     }
 
@@ -59,9 +60,10 @@ public final class LifecyclePriorities {
 
     public static LifecyclePriority higher(LifecyclePriority priority, int order) {
         Asserts.checkArgument(order > 0, "order {} must > 0", order);
-        var priorityValue = priority.getOrder() + order;
-        Asserts.checkArgument(priorityValue < Integer.MAX_VALUE, "order {} must <= {}", priorityValue, Integer.MAX_VALUE);
-        return of(priorityValue);
+        // 原先加后检：highest()+1 溢出为 MIN_VALUE（负数），检查放行后产出"最后执行"的假最高级
+        Asserts.checkArgument(priority.getOrder() <= Integer.MAX_VALUE - order,
+                "{} 已是最高，无法更高", priority.getOrder());
+        return of(priority.getOrder() + order);
     }
 
     public static LifecyclePriority higher(LifecyclePriority priority) {

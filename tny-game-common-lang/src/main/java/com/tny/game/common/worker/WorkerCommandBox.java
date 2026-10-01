@@ -50,11 +50,9 @@ public abstract class WorkerCommandBox<C extends Command, CB extends CommandBox<
 
     @Override
     public boolean isOnCurrentThread() {
+        // 原实现丢弃委托结果恒 false，"当前线程直执行"优化永不可达
         CommandBoxWorker worker = this.worker;
-        if (worker != null) {
-            worker.isOnCurrentThread();
-        }
-        return false;
+        return worker != null && worker.isOnCurrentThread();
     }
 
     protected Collection<CB> boxes() {
@@ -66,13 +64,17 @@ public abstract class WorkerCommandBox<C extends Command, CB extends CommandBox<
     }
 
     protected Queue<CB> createAndGetBox() {
-        if (this.commandBoxList != null) {
-            return this.commandBoxList;
+        Queue<CB> boxes = this.commandBoxList;
+        if (boxes != null) {
+            return boxes;
         }
         synchronized (this) {
-            this.commandBoxList = new ConcurrentLinkedQueue<>();
+            // 双检：原实现进锁即无条件新建覆盖，并发首建丢子盒
+            if (this.commandBoxList == null) {
+                this.commandBoxList = new ConcurrentLinkedQueue<>();
+            }
+            return this.commandBoxList;
         }
-        return this.commandBoxList;
     }
 
     @Override

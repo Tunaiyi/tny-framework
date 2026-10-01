@@ -14,6 +14,8 @@ package com.tny.game.common.io.word;
 import com.google.common.collect.ImmutableList;
 import com.tny.game.common.io.config.*;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.*;
 
 import java.io.*;
 import java.util.*;
@@ -26,13 +28,15 @@ import java.util.*;
  */
 public class LocalWordsFilter extends FileLoader implements WordsFilter {
 
+    private static final Logger LOG = LoggerFactory.getLogger(LocalWordsFilter.class);
+
     /**
      * 敏感词ROOT节点
      *
      * @uml.property name="rootNode"
      * @uml.associationEnd
      */
-    private Node rootNode = null;
+    private volatile Node rootNode = null;
 
     /**
      * 屏蔽符号
@@ -41,7 +45,9 @@ public class LocalWordsFilter extends FileLoader implements WordsFilter {
 
     public LocalWordsFilter(String file, String filterChar) {
         super(file);
-        this.maskChar = filterChar.charAt(0);
+        if (StringUtils.isNotBlank(filterChar)) {
+            this.maskChar = filterChar.charAt(0);
+        }
     }
 
     @Override
@@ -158,12 +164,17 @@ public class LocalWordsFilter extends FileLoader implements WordsFilter {
     }
 
     @Override
-    protected void doLoad(InputStream inputStream, boolean reload) {
-        List<String> badWords = ImmutableList.of();
+    protected void doLoad(InputStream inputStream, boolean reload) throws IOException {
+        List<String> badWords;
         try {
             badWords = IOUtils.readLines(inputStream, "UTF-8");
         } catch (IOException e) {
-            e.printStackTrace();
+            if (reload && this.rootNode != null) {
+                // 热更读取失败：保留旧词表（fail-closed），不得清空导致敏感词整体失效
+                LOG.error("#词表热更#读取 {} 失败，保留当前词表", getPath(), e);
+                return;
+            }
+            throw e;
         }
         Node node = new Node('R');
         for (String str : badWords) {

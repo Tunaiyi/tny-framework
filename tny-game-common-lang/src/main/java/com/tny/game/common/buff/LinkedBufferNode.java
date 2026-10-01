@@ -117,7 +117,9 @@ public class LinkedBufferNode {
             throw new IOException("bufferNode is sealed!");
         }
         this.buffer.put(data, offset, length);
-        return data.length;
+        // 原返回 data.length：窗口写虚报字节数，污染上层 LinkedBuffer.size
+        // （protoex 线格式用 size 写长度前缀 → 报文损坏）
+        return length;
     }
 
     public boolean hasNext() {

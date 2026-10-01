@@ -8,7 +8,6 @@ dependencies {
     api project(":tny-game-common-lifecycle")
     api project(":tny-game-common-io")
     api libs.quartz_scheduler
-    api libs.xstream
 
 
 }

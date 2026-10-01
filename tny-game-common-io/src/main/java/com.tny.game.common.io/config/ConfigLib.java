@@ -26,6 +26,10 @@ public class ConfigLib {
 
     private static final ConcurrentMap<String, PropertiesConfig> configMap = new ConcurrentHashMap<>();
 
+    /**
+     * 读取属性文件。IO 失败/流不可用时返回 null（原实现返回空 Properties，
+     * 会让 reload 用空表把在役配置整体清空——fail-open 事故源）。
+     */
     private static Properties createProperties(String path, FileAlterationListener listener) {
         Properties properties = new Properties();
         InputStream inputStream = null;
@@ -36,11 +40,13 @@ public class ConfigLib {
                 inputStream = FileIOAide.openInputStream(path);
             }
             if (inputStream == null) {
-                throw new NullPointerException(MessageFormat.format("＃初始化 ConfigLib＃打开 {0} inputStream 为 null", path));
+                LOG.error("#ConfigLib#打开 {} inputStream 为 null", path);
+                return null;
             }
             properties.load(new InputStreamReader(inputStream, "UTF-8"));
         } catch (IOException e) {
             LOG.error("#ConfigLib#初始化#读取 {} inputStream 抛出异常", path, e);
+            return null;
         } finally {
             if (inputStream != null) {
                 try {
@@ -53,6 +59,16 @@ public class ConfigLib {
         return properties;
     }
 
+    /** 导入装载栈（线程内 DFS 环检测）：互引用文件在解析期显式失败而非无限互递归 */
+    private static final ThreadLocal<Deque<String>> LOADING = ThreadLocal.withInitial(ArrayDeque::new);
+
+    static void checkImportCycle(String path) {
+        Deque<String> stack = LOADING.get();
+        if (stack.contains(path)) {
+            throw new IllegalArgumentException("配置导入成环: " + String.join(" -> ", stack) + " -> " + path);
+        }
+    }
+
     public static Config getConfig(String path, ConfigFormatter... formatter) {
         PropertiesConfig config = configMap.get(path);
         if (config != null) {
@@ -63,11 +79,23 @@ public class ConfigLib {
         Config old;
         if (file != null && file.exists()) {
             LOG.info("ConfigLib 读取 {} 配置文件", path);
-            Properties properties = createProperties(path, new ConfigFileListener(path));
-            config = new PropertiesConfig(properties, formatter);
+            // 先读内容不挂监听；胜出者再挂——并发首载失败方不留孤儿监听器（reload 双跑根因）
+            Properties properties = createProperties(path, null);
+            config = new PropertiesConfig(properties != null ? properties : new Properties(), formatter);
             old = configMap.putIfAbsent(path, config);
+            if (old == null) {
+                FileIOAide.addFileListener(path, new ConfigFileListener(path));
+            }
             LOG.info("ConfigLib 读取 {} 配置文件完成 | 耗时 {} ms", path, System.currentTimeMillis() - now);
+        } else if (FileIOAide.resourceExists(path)) {
+            // 归档形态（jar 等）：loadFile 定位不了文件 ≠ 资源缺失——走流通道读真实内容
+            // （原缺陷：误判"不存在"交付空表的假成功面；监听不可用须显式告警而非静默）
+            LOG.warn("ConfigLib {} 为非文件形态资源（如归档包内），热更监听不可用；按内容流读取交付", path);
+            Properties properties = createProperties(path, null);
+            config = new PropertiesConfig(properties != null ? properties : new Properties(), formatter);
+            old = configMap.putIfAbsent(path, config);
         } else {
+            // 资源确实不存在：空配置保持"文件缺失"合法语义（现契约不变）
             config = new PropertiesConfig(new HashMap<>(), formatter);
             old = configMap.putIfAbsent(path, config);
         }
@@ -79,11 +107,34 @@ public class ConfigLib {
         if (config != null) {
             return config;
         }
+        checkImportCycle(path);
         long now = System.currentTimeMillis();
         LOG.info("ConfigLib 读取 {} 配置文件", path);
-        Properties properties = createProperties(path, new ConfigFileListener(path));
-        config = new PropertiesConfig(properties, formatter);
+        Deque<String> stack = LOADING.get();
+        stack.push(path);
+        Properties properties;
+        try {
+            properties = createProperties(path, null);
+            if (properties == null) {
+                // 导入/装载来源不可读：首载路径显式失败并携带来源链
+                // （原缺陷：null 属性流被换成空表静默合并——"成功但缺内容"的假成功面）
+                List<String> chain = new ArrayList<>(stack);
+                Collections.reverse(chain);
+                throw new IllegalArgumentException("配置来源不可读: " + path
+                        + "，装载链: " + String.join(" -> ", chain));
+            }
+            // 构造期即解析 import 链——装载栈必须覆盖整个构建（reload 在弹栈后执行则环检测漏一跳）
+            config = new PropertiesConfig(properties, formatter);
+        } finally {
+            stack.pop();
+            if (stack.isEmpty()) {
+                LOADING.remove();
+            }
+        }
         Config old = configMap.putIfAbsent(path, config);
+        if (old == null) {
+            FileIOAide.addFileListener(path, new ConfigFileListener(path));
+        }
         LOG.info("ConfigLib 读取 {} 配置文件完成 | 耗时 {} ms", path, System.currentTimeMillis() - now);
         return old != null ? old : config;
     }
@@ -96,21 +147,33 @@ public class ConfigLib {
         return new PropertiesConfig(config, formatters);
     }
 
-    private static class ConfigFileListener extends FileAlterationListenerAdaptor {
+    /** 热更监听器：包可见以便同包测试直接驱动 onFileChange 双分支断言 */
+    static class ConfigFileListener extends FileAlterationListenerAdaptor {
 
         private final String path;
 
-        private ConfigFileListener(String path) {
+        ConfigFileListener(String path) {
             super();
             this.path = path;
         }
 
         @Override
         public void onFileChange(File file) {
-            PropertiesConfig config = configMap.get(this.path);
             Properties properties = createProperties(this.path, null);
+            if (properties == null) {
+                // 读取失败保留在役配置（fail-safe），不得用空表清空
+                LOG.error("#ConfigLib#热更 {} 失败，保留当前配置", this.path);
+                return;
+            }
+            PropertiesConfig config = configMap.get(this.path);
             if (config != null) {
-                config.reload(properties);
+                try {
+                    config.reload(properties);
+                } catch (Exception e) {
+                    // 热更装载半途失败（如导入指向缺失文件）：换表未发生，保留在役配置并告警
+                    // （与"读取失败保留"契约同向——轮询线程不得被异常打断）
+                    LOG.error("#ConfigLib#热更 {} 失败，保留当前配置", this.path, e);
+                }
             }
         }
 

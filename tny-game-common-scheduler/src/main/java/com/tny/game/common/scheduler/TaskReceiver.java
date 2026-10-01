@@ -92,11 +92,18 @@ public abstract class TaskReceiver {
                             handler.handle(this, executeTime, context);
                         }
                     } catch (Throwable e) {
-                        LOG.error(handler + "#调用时间任务# {} 调用异常 ", handler.getName(), e);
+                        // at-most-once：失败仍推进水位=永久错过，必须含任务时点留痕（可观测性契约）
+                        LOG.error(handler + "#调用时间任务异常# 任务时间 {} 处理器 {} ",
+                                new java.util.Date(event.getTimeTask().getExecuteTime()), handler.getName(), e);
                     }
                 }
                 this.lastHandlerTime = event.getTimeTask().getExecuteTime();
                 this.actualLastHandleTime = System.currentTimeMillis();
+            } catch (Throwable e) {
+                // 事件级失败同样推进并留痕，不阻塞批次后续事件
+                this.lastHandlerTime = event.getTimeTask().getExecuteTime();
+                LOG.error("#时间任务事件处理异常# 任务时间 {}（at-most-once：该事件永久错过）",
+                        new java.util.Date(event.getTimeTask().getExecuteTime()), e);
             } finally {
                 events.poll();
             }

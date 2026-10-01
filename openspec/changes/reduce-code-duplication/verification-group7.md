@@ -51,3 +51,14 @@
    - 本地地址端口分叉：SessionOfflineOnce=7101，SessionResendSafety/TunnelUnboundRejection/SessionBroadcastIntent=7000（经构造参数原样保留；全仓 grep 确认无测试断言这些桩端口值，产品读地址路径仅在 relay link 链路、8 文件用例不经过）。
 5. **SessionOfflineOnceTest 的 writes 计数器只写不读**（三个用例均未断言写出次数）——疑似复制自 SessionResendSafetyTest 的死字段，现状保留不删（删除属行为面外的桩结构变更，超本组"仅脚手架引用替换"授权）。
 6. 工作区存在他案未跟踪文件 `tny-game-net/src/test/java/com/tny/game/net/relay/link/BaseRelayLinkHandshakeTest.java`（本组开工前已在），前后两轮运行均包含且均绿，本组不拥有、未改动。
+
+## 收口压缩（net 主源 · command/plugins 岛）
+
+日期：2026-10-01　分支：5.7.x　范围：`tny-game-net/src/main/java/com/tny/game/net/command/plugins/`（**主源**，区别于本组 D6 仅 test 源集的原范围）。
+
+- **岛**：`VoidCommandPlugin` ↔ `VoidInvokeCommandPlugin` 31 行精确克隆（基线 `dup-after.md:72-73/179-180`，Top25 在册、不在不动清单）。逐字比对：两文件除接口名外字节全同——`getAttributesClass()` 默认返回 `Void.class`、`execute(...)` 默认委托 `this.doExecute(...)`、抽象 `doExecute(Tunnel,Message,RpcInvokeContext) throws Exception` 三段一致。
+- **处置 = SQUEEZED（抽包内共享骨架）**：新增包私有 `VoidCommandPluginSupport extends CommandPlugin<Void>` 承载三段默认体+抽象声明（体逐字搬运，零改写）；两公开接口改为空体 `extends VoidCommandPluginSupport`。
+- **兄弟而非父子**：拒绝"一方继承另一方"——若 `VoidInvokeCommandPlugin extends VoidCommandPlugin`，`ParamFilterPlugin`（唯一 `VoidInvokeCommandPlugin` 实现）会新增 `instanceof VoidCommandPlugin` 关系，且被 `@ConditionalOnClass(VoidCommandPlugin.class)` 侧的 Spring 类型筛选可见 → 行为外溢。共享超接口令二者保持互不为子类型，`instanceof` 语义零变更。
+- **签名冻结自查**：三方法经继承仍为公开可见成员（`getMethod`/调用/实现覆写均不变）；`getDeepClasses` 注册链仅认 `@UnitInterface`（超接口与两公开接口均无该注解，新增祖先为无关注解缺席项，注册键集恒为 {CommandPlugin}）；全仓 grep 证实无 `getDeclaredMethods`/`isAssignableFrom`/`instanceof` 针对此二类型（`CommandPluginHolder` 走实例 `plugin.getAttributesClass()`/`plugin.execute(...)`）。三实现类仅覆写 `doExecute`、不重声明默认体，源码兼容。
+- **验证（--rerun-tasks 串行真绿）**：`./gradlew :tny-game-net:test --rerun-tasks --offline --no-parallel --max-workers=1` → BUILD SUCCESSFUL（EXIT=0，39 actionable 全 executed）；跨模块消费方 `./gradlew :tny-game-starter-basics:compileJava` → BUILD SUCCESSFUL（`TaskReceiverSchedulerPlugin implements VoidCommandPlugin` + `@ConditionalOnClass` 哨兵）。
+- **量化**：两公开文件各 `+1/-30`；31 行冗余克隆岛消除（M1 冗余 −31），实现体单一事实源；工作树净 LOC ≈ −4（重复块换为单份共享骨架+Mulan 头，岛屿去重量为主要收益而非毛行数）。

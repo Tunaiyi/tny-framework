@@ -13,6 +13,7 @@ package com.tny.game.common.io.config;
 
 import com.google.common.collect.ImmutableSet;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.*;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -21,12 +22,14 @@ import java.util.regex.Pattern;
 
 class PropertiesConfig implements Config {
 
+    private static final Logger LOG = LoggerFactory.getLogger(PropertiesConfig.class);
+
     // private static final TypeReference<Set<String>> IMPORT_PATH_TOKEN = new TypeReference<Set<String>>() {
     // };
 
     private List<ConfigFormatter> formatterList = new CopyOnWriteArrayList<>();
 
-    private Map<String, Object> configMap = new ConcurrentHashMap<>();
+    private volatile Map<String, Object> configMap = new ConcurrentHashMap<>();
 
     private List<ConfigReload> reloadList = new CopyOnWriteArrayList<>();
 
@@ -43,7 +46,11 @@ class PropertiesConfig implements Config {
         Map<String, Object> configMap = new ConcurrentHashMap<>();
         Set<String> imports = new HashSet<>();
         for (Entry<?, ?> entry : properties.entrySet()) {
-            if (entry.getKey().equals(IMPORT_KEY)) {
+            String key = entry.getKey().toString();
+            if (entry.getValue() == null) {
+                throw new IllegalArgumentException("配置项 [" + key + "] 的值不允许为 null");
+            }
+            if (key.equals(IMPORT_KEY)) {
                 String value = entry.getValue().toString();
                 if (value.startsWith("[") && value.endsWith("]")) {
                     if (value.length() == 2) {
@@ -53,11 +60,13 @@ class PropertiesConfig implements Config {
                     }
                 }
                 if (StringUtils.isNotBlank(value)) {
-                    imports = ImmutableSet.copyOf(StringUtils.split(value, ","));
+                    imports = ImmutableSet.copyOf(Arrays.stream(StringUtils.split(value, ","))
+                            .map(String::trim)
+                            .filter(StringUtils::isNotBlank)
+                            .toArray(String[]::new));
                 }
             }
             Object value = entry.getValue().toString();
-            String key = entry.getKey().toString();
             for (ConfigFormatter formatter : this.formatterList)
                 if (formatter.isKey(key)) {
                     value = formatter.formatObject(value.toString());
@@ -69,8 +78,14 @@ class PropertiesConfig implements Config {
             subConfig.entrySet().forEach((entry) -> configMap.put(entry.getKey(), entry.getValue()));
         }
         this.configMap = configMap;
-        for (ConfigReload reloadable : this.reloadList)
-            reloadable.reload(this);
+        for (ConfigReload reloadable : this.reloadList) {
+            // 单个监听器异常不得中断其余通知（reload 已换表，通知半途而废会造成静默不一致）
+            try {
+                reloadable.reload(this);
+            } catch (Exception e) {
+                LOG.error("配置 reload 通知监听器 {} 异常", reloadable, e);
+            }
+        }
     }
 
     @Override
@@ -275,6 +290,11 @@ class PropertiesConfig implements Config {
 
     @Override
     public <E extends Enum<E>> E getEnum(String key, E defValue) {
+        if (defValue == null) {
+            // 无枚举类信息可解析，缺省即 null（原实现在此处 NPE）
+            String value = this.getString(key);
+            return StringUtils.isBlank(value) ? null : defValue;
+        }
         E value = this.getEnum(key, defValue.getDeclaringClass());
         return value == null ? defValue : value;
     }

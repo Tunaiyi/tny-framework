@@ -43,7 +43,8 @@ public final class NumberFormatAide {
         }
         long step = 1L;
         NavigableMap<Long, Integer> digitsMap = new TreeMap<>();
-        for (int i = 1; i <= LONG_MAX_DIGITS; i++) {
+        // 原循环到 i==19 时 step*=10 溢出为负数入表（10^19 > Long.MAX_VALUE）
+        for (int i = 1; i < LONG_MAX_DIGITS; i++) {
             step *= 10;
             digitsMap.put(step, i);
         }
@@ -54,10 +55,14 @@ public final class NumberFormatAide {
     }
 
     public static String alignDigits(long hashCode, long maxCode) {
-        int digits = DIGITS_MAP.higherEntry(hashCode).getValue();
-        int maxDigits = DIGITS_MAP.higherEntry(maxCode).getValue();
+        // Long.MAX_VALUE 的 higherEntry 为 null（原实现直接 NPE）
+        Map.Entry<Long, Integer> digitsEntry = DIGITS_MAP.higherEntry(hashCode);
+        int digits = digitsEntry != null ? digitsEntry.getValue() : LONG_MAX_DIGITS;
+        Map.Entry<Long, Integer> maxEntry = DIGITS_MAP.higherEntry(maxCode);
+        int maxDigits = maxEntry != null ? maxEntry.getValue() : LONG_MAX_DIGITS;
         int lack = maxDigits - digits;
-        if (lack == 0) {
+        if (lack <= 0) {
+            // 位数已达标（含 hashCode 位数超出 maxCode 位数的降级场景，原实现负索引越界）
             return String.valueOf(hashCode);
         }
         return ZERO_FILL.get(lack) + hashCode;

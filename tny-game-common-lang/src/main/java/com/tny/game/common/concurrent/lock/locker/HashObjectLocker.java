@@ -33,7 +33,8 @@ public class HashObjectLocker<O> implements ObjectLocker<O> {
     }
 
     private Lock lockOf(O object) {
-        return locks[Math.abs(object.hashCode()) % currentLevel];
+        // Math.abs(Integer.MIN_VALUE) 仍为负 → 负索引越界；floorMod 天然非负
+        return locks[Math.floorMod(object.hashCode(), currentLevel)];
     }
 
     @Override

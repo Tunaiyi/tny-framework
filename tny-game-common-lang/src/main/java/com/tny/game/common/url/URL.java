@@ -205,14 +205,36 @@ public final class URL implements Serializable {
             url = url.substring(i + 1);
         }
         i = url.indexOf(":");
-        if (i >= 0 && i < url.length() - 1) {
-            port = Integer.parseInt(url.substring(i + 1));
+        if (i >= 0) {
+            // 尾冒号（端口段为空）与多冒号裸 IPv6 形态：显式受控失败，不再静默吞冒号/泄漏 NumberFormatException/错切
+            port = parsePortSegment(url, i);
             url = url.substring(0, i);
         }
         if (url.length() > 0) {
             host = url;
         }
         return new URL(protocol, username, password, host, port, path, parameters);
+    }
+
+    /**
+     * 消歧 "host:port" 段的端口：text 为已剥去协议/路径/用户信息的地址段，colonIndex 为首个冒号位置。
+     * 尾冒号、多冒号（裸 IPv6 字面量）、非数字端口一律抛 IllegalArgumentException（受控校验失败，
+     * 不外泄裸 NumberFormatException）。常规单冒号 host:port 行为与修复前一致。
+     */
+    private static int parsePortSegment(String text, int colonIndex) {
+        if (colonIndex == text.length() - 1) {
+            throw new IllegalArgumentException("Invalid address \"" + text + "\", trailing colon without port");
+        }
+        if (text.indexOf(':', colonIndex + 1) >= 0) {
+            throw new IllegalArgumentException(
+                    "Invalid address \"" + text + "\", ambiguous multi-colon host/port (bare IPv6 literal is not supported)");
+        }
+        String portPart = text.substring(colonIndex + 1);
+        try {
+            return Integer.parseInt(portPart);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid address \"" + text + "\", port \"" + portPart + "\" is not a number");
+        }
     }
 
     public static String encode(String value) {
@@ -313,12 +335,13 @@ public final class URL implements Serializable {
     }
 
     public URL setAddress(String address) {
-        int i = address.lastIndexOf(':');
+        // 与 valueOf 同一消歧规则：尾冒号/多冒号裸 IPv6/非数字端口显式受控失败
+        int i = address.indexOf(':');
         String host;
         int port = this.port;
         if (i >= 0) {
+            port = parsePortSegment(address, i);
             host = address.substring(0, i);
-            port = Integer.parseInt(address.substring(i + 1));
         } else {
             host = address;
         }
@@ -356,10 +379,11 @@ public final class URL implements Serializable {
     private String appendDefaultPort(String address, int defaultPort) {
         if (address != null && address.length() > 0
             && defaultPort > 0) {
+            // 与 valueOf 同一消歧规则：尾冒号/多冒号裸 IPv6/非数字端口显式受控失败
             int i = address.indexOf(':');
             if (i < 0) {
                 return address + ":" + defaultPort;
-            } else if (Integer.parseInt(address.substring(i + 1)) == 0) {
+            } else if (parsePortSegment(address, i) == 0) {
                 return address.substring(0, i + 1) + defaultPort;
             }
         }

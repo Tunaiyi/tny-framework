@@ -158,34 +158,34 @@ class BaseDemandTest {
     @Test
     void testIsSatisfy() {
 
-        assertFalse(this.stuffDemand.isSatisfy(this.item.getPlayerId(), MapBuilder.newBuilder(this.ref).build()));
+        assertFalse(this.stuffDemand.isSatisfy(this.item.getPlayerId(), MapBuilder.<String, Object>newBuilder().build()));
 
         this.item.setNumber(101);
-        assertTrue(this.stuffDemand.isSatisfy(this.item.getPlayerId(), MapBuilder.newBuilder(this.ref).build()));
+        assertTrue(this.stuffDemand.isSatisfy(this.item.getPlayerId(), MapBuilder.<String, Object>newBuilder().build()));
 
         this.item.setNumber(100);
-        assertTrue(this.stuffDemand.isSatisfy(this.item.getPlayerId(), MapBuilder.newBuilder(this.ref).build()));
+        assertTrue(this.stuffDemand.isSatisfy(this.item.getPlayerId(), MapBuilder.<String, Object>newBuilder().build()));
 
         this.item.setLevel(4);
-        assertFalse(this.demand.isSatisfy(this.item.getPlayerId(), MapBuilder.newBuilder(this.ref).build()));
+        assertFalse(this.demand.isSatisfy(this.item.getPlayerId(), MapBuilder.<String, Object>newBuilder().build()));
         this.item.setLevel(14);
-        assertTrue(this.demand.isSatisfy(this.item.getPlayerId(), MapBuilder.newBuilder(this.ref).build()));
+        assertTrue(this.demand.isSatisfy(this.item.getPlayerId(), MapBuilder.<String, Object>newBuilder().build()));
         this.item.setLevel(10);
-        assertTrue(this.demand.isSatisfy(this.item.getPlayerId(), MapBuilder.newBuilder(this.ref).build()));
+        assertTrue(this.demand.isSatisfy(this.item.getPlayerId(), MapBuilder.<String, Object>newBuilder().build()));
     }
 
     @Test
     void testCountExpectValue() {
-        assertEquals(100, this.stuffDemand.countExpectValue(this.item.getPlayerId(), MapBuilder.newBuilder(this.ref).build()));
-        assertEquals(10, this.demand.countExpectValue(this.item.getPlayerId(), MapBuilder.newBuilder(this.ref).build()));
+        assertEquals(100, this.stuffDemand.countExpectValue(this.item.getPlayerId(), MapBuilder.<String, Object>newBuilder().build()));
+        assertEquals(10, this.demand.countExpectValue(this.item.getPlayerId(), MapBuilder.<String, Object>newBuilder().build()));
     }
 
     @Test
     void testCountCurrentValue() {
         this.item.setNumber(0);
-        assertEquals(0, this.stuffDemand.countCurrentValue(this.item.getPlayerId(), MapBuilder.newBuilder(this.ref).build()));
+        assertEquals(0, this.stuffDemand.countCurrentValue(this.item.getPlayerId(), MapBuilder.<String, Object>newBuilder().build()));
         this.item.setNumber(101);
-        assertEquals(101, this.stuffDemand.countCurrentValue(this.item.getPlayerId(), MapBuilder.newBuilder(this.ref).build()));
+        assertEquals(101, this.stuffDemand.countCurrentValue(this.item.getPlayerId(), MapBuilder.<String, Object>newBuilder().build()));
     }
 
 }

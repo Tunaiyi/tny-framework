@@ -36,18 +36,37 @@ public abstract class DelayCommand implements Command {
         this.executeTime = executeTime;
     }
 
+    /**
+     * action 内是否已为后续轮次重排（LoopCommand 专用）：
+     * 原实现 finally 无条件 executed=true 会把重排覆写成单轮终止。
+     */
+    private boolean rescheduled = false;
+
     @Override
     public void execute() {
-        if (isCanExecute()) {
+        // 原判据取反（isCanExecute() 为真反而 return）：未到点的新命令被立即执行
+        if (!isCanExecute()) {
             return;
         }
+        this.rescheduled = false;
         try {
             this.action();
         } catch (Exception exception) {
+            if (!this.rescheduled) {
+                this.executed = true;
+            }
             throw new RuntimeException(exception);
-        } finally {
-            executed = true;
         }
+        if (!this.rescheduled) {
+            this.executed = true;
+        }
+    }
+
+    /**
+     * 子类（循环命令）在 action 内完成重排时调用，声明"本轮结束但命令未完"。
+     */
+    protected final void markRescheduled() {
+        this.rescheduled = true;
     }
 
     protected abstract void action();
@@ -86,8 +105,11 @@ public abstract class DelayCommand implements Command {
         return this.executed;
     }
 
+    /**
+     * 可执行 = 尚未结束 且 执行时点已到（原定义 isDone()&&delay<=0 与执行门联合构成判反）。
+     */
     public boolean isCanExecute() {
-        return isDone() && getDelay() <= 0;
+        return !isDone() && getDelay() <= 0;
     }
 
 }

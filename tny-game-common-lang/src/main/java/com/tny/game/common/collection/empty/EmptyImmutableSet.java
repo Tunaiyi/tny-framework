@@ -30,10 +30,19 @@ public class EmptyImmutableSet<V> implements Set<V> {
     }
 
     private Set<V> getWriter() {
-        if (this.set instanceof ImmutableSet) {
-            this.set = this.creator != null ? this.creator.get() : new HashSet<>();
+        Set<V> current = this.set;
+        if (!(current instanceof ImmutableSet)) {
+            return current;
         }
-        return this.set;
+        // 首写竞态：双检锁唯一换表（与 EmptyImmutableMap 模式对齐）
+        synchronized (this) {
+            current = this.set;
+            if (current instanceof ImmutableSet) {
+                current = this.creator != null ? this.creator.get() : new HashSet<>();
+                this.set = current;
+            }
+            return current;
+        }
     }
 
     private Set<V> getReader() {

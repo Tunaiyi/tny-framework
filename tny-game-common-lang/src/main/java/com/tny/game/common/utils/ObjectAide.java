@@ -153,17 +153,53 @@ public class ObjectAide {
         //		throw new ClassCastException(object + "is not " + clazz + "instance");
     }
 
-    @SuppressWarnings("unchecked")
+    /**
+     * 解析引用令牌携带的类型：读取声明 ReferenceType 的直接父层（getGenericSuperclass）的泛型实参，
+     * MUST NOT 从实例实现的接口列表取型（原实现接口列表为空即下标越界、错位即取到无关类型）。
+     * 原始捕获或不可解析形态显式受控失败。
+     */
     private static <T> Class<T> getClassType(ReferenceType<T> referenceType) {
-        Type[] types = referenceType.getClass().getGenericInterfaces();
-        Type subType = ((ParameterizedType) types[0]).getActualTypeArguments()[0];
-        Class<T> clazz = null;
-        if (subType instanceof Class) {
-            clazz = (Class<T>) subType;
-        } else if (subType instanceof ParameterizedType) {
-            clazz = (Class<T>) ((ParameterizedType) subType).getRawType();
+        Class<T> clazz = resolveReferenceTypeClass(referenceType.getClass());
+        if (clazz == null) {
+            // forType(...) 构造的令牌：类层级上是类型变量，只能取构造期已解析的类型
+            clazz = typeToClass(referenceType.getType());
+        }
+        if (clazz == null) {
+            throw new IllegalArgumentException(
+                    format("无法从引用令牌 {} 解析出具体类型（原始捕获或不可解析形态）", referenceType.getType()));
         }
         return clazz;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> Class<T> resolveReferenceTypeClass(Class<?> subclass) {
+        for (Class<?> current = subclass;
+             current != null && current != Object.class && ReferenceType.class.isAssignableFrom(current);
+             current = current.getSuperclass()) {
+            Type genericSuper = current.getGenericSuperclass();
+            if (genericSuper instanceof ParameterizedType) {
+                ParameterizedType parameterizedType = (ParameterizedType) genericSuper;
+                if (parameterizedType.getRawType() == ReferenceType.class) {
+                    return typeToClass(parameterizedType.getActualTypeArguments()[0]);
+                }
+                // 中间泛型层：沿原始类继续上溯
+            } else if (genericSuper instanceof Class && (Class<?>) genericSuper == ReferenceType.class) {
+                // 原始捕获（ReferenceType 层未提供类型实参）
+                return null;
+            }
+        }
+        return null;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> Class<T> typeToClass(Type type) {
+        if (type instanceof Class) {
+            return (Class<T>) type;
+        }
+        if (type instanceof ParameterizedType) {
+            return (Class<T>) ((ParameterizedType) type).getRawType();
+        }
+        return null;
     }
 
     private static <E extends Enum<?>> E enumConvert(Object source, Class<E> clazz) {

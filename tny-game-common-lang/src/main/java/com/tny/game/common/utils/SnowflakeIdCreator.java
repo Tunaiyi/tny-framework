@@ -14,7 +14,9 @@ package com.tny.game.common.utils;
 import org.slf4j.*;
 
 import java.time.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.StampedLock;
+import java.util.function.Supplier;
 
 import static com.tny.game.common.utils.StringAide.*;
 
@@ -49,7 +51,16 @@ public class SnowflakeIdCreator implements IdCreator {
 
     private volatile long lastTimestamp = -1;
 
+    /** 小幅回拨容忍阈值 */
+    private static final long MAX_BACKWARD_MILLIS = 200L;
+
     private final StampedLock lock = new StampedLock();
+
+    /** 时钟源注入缝（测试可控回拨；公共构造保持真实时钟） */
+    private final Supplier<Long> timeSource;
+
+    /** 身份位占用登记：同 (位宽配置, workerID) 双实例同毫秒必撞号，构造期显式冲突 */
+    private static final ConcurrentHashMap<String, SnowflakeIdCreator> RESERVED = new ConcurrentHashMap<>();
 
     public static long parseWorkerId(long id) {
         return parseWorkerId(id, DEFAULT_WORKER_ID_BITS, DEFAULT_SEQUENCE_BITS);
@@ -80,6 +91,13 @@ public class SnowflakeIdCreator implements IdCreator {
     }
 
     public SnowflakeIdCreator(long workerID, long workerIDBits, long sequenceBits) {
+        this(workerID, workerIDBits, sequenceBits, System::currentTimeMillis);
+    }
+
+    /**
+     * 包内注入缝：可控时钟源构造（测试回拨场景），公共签名不变。
+     */
+    SnowflakeIdCreator(long workerID, long workerIDBits, long sequenceBits, Supplier<Long> timeSource) {
         Asserts.checkArgument(workerIDBits + sequenceBits <= 22, "workerIDBits {} + sequenceBits {} > 22", workerIDBits, sequenceBits);
         long maxWorkerID = ~(-1L << workerIDBits);
         Asserts.checkArgument(workerID >= 0 && workerID <= maxWorkerID, "worker ID {} 不在 0 - {} 范围内", workerID, maxWorkerID);
@@ -87,6 +105,12 @@ public class SnowflakeIdCreator implements IdCreator {
         this.workerIdShift = sequenceBits;
         this.timestampShift = sequenceBits + workerIDBits;
         this.workerID = workerID;
+        this.timeSource = timeSource;
+        String identity = workerIDBits + ":" + sequenceBits + ":" + workerID;
+        if (RESERVED.putIfAbsent(identity, this) != null) {
+            throw new IllegalStateException("workerID " + workerID + "（位宽 " + workerIDBits + "/" + sequenceBits
+                                            + "）已被另一实例占用——同毫秒双实例必撞号，显式拒绝");
+        }
     }
 
     @Override
@@ -101,15 +125,21 @@ public class SnowflakeIdCreator implements IdCreator {
                 timestamp = timeGenerate();
                 long delay = timestamp - lastTime;
                 if (delay < 0) {
-                    if (delay < -200) {
-                        try {
-                            Thread.sleep(Math.abs(delay));
-                        } catch (InterruptedException e) {
-                            throw new IllegalArgumentException(format("时间发生回滚, {} milliseconds", lastTime - timestamp, e));
-                        }
-                    } else {
-                        throw new IllegalArgumentException(format("时间发生回滚, {} milliseconds", lastTime - timestamp));
+                    // 回拨处置方向修正（原"小幅抛、大幅持锁长眠且醒后不重取时间"）：
+                    // ≤阈值：释放锁自旋等待追平（不阻塞其他读者、醒后重读时间）；超阈值：显式失败不产号
+                    if (lastTime - timestamp > MAX_BACKWARD_MILLIS) {
+                        throw new IllegalStateException(format("时钟大幅回拨 {} milliseconds，拒绝产号", lastTime - timestamp));
                     }
+                    // 按当前持有票种通用解锁：进入本分支时票种可能是读票（常规）或写票
+                    // （上一轮"降读→排队取写"成功后重入），unlockRead 对写票必抛
+                    // IllegalMonitorStateException 连坐取号线程
+                    this.lock.unlock(lockStamp);
+                    lockStamp = 0;
+                    while (timeGenerate() < lastTime) {
+                        Thread.yield();
+                    }
+                    lockStamp = this.lock.readLock();
+                    continue;
                 }
                 if (lastTime == timestamp) {
                     long writeStamp = this.lock.tryConvertToWriteLock(lockStamp);
@@ -156,43 +186,8 @@ public class SnowflakeIdCreator implements IdCreator {
     }
 
     private long timeGenerate() {
-        return System.currentTimeMillis();
+        return this.timeSource.get();
     }
 
-    public static void main(String[] args) {
-        // System.out.println(Math.pow(2, 13));
-        // SnowflakeIdCreator creator = new SnowflakeIdCreator(0, 1);
-        //
-        // RunningChecker.startPrint(SnowflakeIdCreator.class);
-        // for (int i = 0; i < 1000000; i++) {
-        //     creator.createId();
-        //     // ForkJoinPool.commonPool()
-        //     //         .submit(() -> creator.createID());
-        // }
-        // long cost = RunningChecker.end(SnowflakeIdCreator.class).cost();
-        // System.out.println(cost);
-        // System.out.println(creator.createID());
-        // System.out.println(System.currentTimeMillis());
-        // System.out.println(Long.MAX_VALUE);
-        // UUIDCreator[] creators = new UUIDCreator[]{
-        //         // new UUIDCreator(0, 3),
-        //         // new UUIDCreator(1, 3),
-        //         // new UUIDCreator(2, 3),
-        //         // new UUIDCreator(3, 3),
-        //         // new UUIDCreator(4, 3),
-        //         // new UUIDCreator(5, 3),
-        //         // new UUIDCreator(6, 3),
-        //         // new UUIDCreator(7, 3),
-        // };
-        // RunningChecker.startPrint(UUIDCreator.class);
-        // for (int i = 0; i < 1000000; i++) {
-        //     int index = i;
-        //     ForkJoinPool.commonPool()
-        //             .submit(() -> creators[index % creators.length].createID());
-        // }
-        // long cost = RunningChecker.end(UUIDCreator.class).cost();
-        // System.out.println(cost);
-        // size.forEach(System.out::println);
-    }
 
 }

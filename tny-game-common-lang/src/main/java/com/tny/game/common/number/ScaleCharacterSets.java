@@ -72,9 +72,8 @@ public final class ScaleCharacterSets {
         private DefaultScaleCharacterSet(char[] characters) {
             this.characters = characters.clone();
             this.key = new String(this.characters);
-            if (this.characters.length > 0) {
-                this.length = (byte) this.characters.length;
-            }
+            // 真实长度（曾被 (byte) 截断：256 字符集回绕为 0，超 127 基数静默退化为十进制假成功）
+            this.length = this.characters.length;
         }
 
         @Override

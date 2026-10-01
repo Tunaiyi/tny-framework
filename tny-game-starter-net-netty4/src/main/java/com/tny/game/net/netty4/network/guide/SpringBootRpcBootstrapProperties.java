@@ -11,7 +11,6 @@
 
 package com.tny.game.net.netty4.network.guide;
 
-import com.google.common.collect.ImmutableMap;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.*;
 
@@ -28,70 +27,56 @@ import java.util.*;
 //@Order(HIGHEST_PRECEDENCE)
 @ConfigurationProperties(prefix = "tny.net.bootstrap.rpc")
 @ConditionalOnMissingBean(SpringBootRpcBootstrapProperties.class)
-public class SpringBootRpcBootstrapProperties implements SpringBootNetBootstrapSettings {
+public class SpringBootRpcBootstrapProperties
+        extends AbstractSpringBootBootstrapProperties<SpringNettyRpcServerBootstrapSetting, SpringNettyRpcClientBootstrapSetting>
+        implements SpringBootNetBootstrapSettings {
 
-    @NestedConfigurationProperty
-    private SpringNettyRpcServerBootstrapSetting server;
-
-    @NestedConfigurationProperty
-    private SpringNettyRpcClientBootstrapSetting client;
-
-    //    @NestedConfigurationProperty
-    private Map<String, SpringNettyRpcServerBootstrapSetting> servers = ImmutableMap.of();
-
-    //    @NestedConfigurationProperty
-    private Map<String, SpringNettyRpcClientBootstrapSetting> clients = ImmutableMap.of();
+    public SpringBootRpcBootstrapProperties() {
+        // 现状：Rpc 侧 client 默认名为 rpc（与 Net 的 default 分裂，禁止抹平）
+        super("rpc");
+    }
 
     @Override
     public SpringNettyRpcServerBootstrapSetting getServer() {
-        return this.server;
+        return super.getServer();
     }
 
+    @Override
     public SpringBootRpcBootstrapProperties setServer(SpringNettyRpcServerBootstrapSetting server) {
-        this.server = server;
-        if (server != null) {
-            // `server: ~` 空值绑定不得 NPE 击穿配置装配
-            server.setName("default");
-        }
+        super.setServer(server);
         return this;
     }
 
     @Override
     public SpringNettyRpcClientBootstrapSetting getClient() {
-        return this.client;
+        return super.getClient();
     }
 
+    @Override
     public SpringBootRpcBootstrapProperties setClient(SpringNettyRpcClientBootstrapSetting client) {
-        this.client = client;
-        if (client != null) {
-            client.setName("rpc");
-        }
+        super.setClient(client);
         return this;
     }
 
     @Override
     public Map<String, SpringNettyRpcServerBootstrapSetting> getServers() {
-        return Collections.unmodifiableMap(this.servers);
+        return super.getServers();
     }
 
+    @Override
     public SpringBootRpcBootstrapProperties setServers(Map<String, SpringNettyRpcServerBootstrapSetting> servers) {
-        if (servers != null) {
-            servers.forEach((name, setting) -> setting.setName(name));
-            this.servers = servers;
-        }
+        super.setServers(servers);
         return this;
     }
 
     @Override
     public Map<String, SpringNettyRpcClientBootstrapSetting> getClients() {
-        return Collections.unmodifiableMap(this.clients);
+        return super.getClients();
     }
 
+    @Override
     public SpringBootRpcBootstrapProperties setClients(Map<String, SpringNettyRpcClientBootstrapSetting> clients) {
-        if (clients != null) {
-            clients.forEach((name, setting) -> setting.setName(name));
-            this.clients = clients;
-        }
+        super.setClients(clients);
         return this;
     }
 

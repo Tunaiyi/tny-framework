@@ -12,6 +12,7 @@
 package com.tny.game.basics.item;
 
 import com.tny.game.basics.item.behavior.*;
+import com.tny.game.basics.utlis.*;
 import com.tny.game.common.enums.*;
 import com.tny.game.common.io.config.*;
 
@@ -28,39 +29,39 @@ public final class DemandParams extends ClassImporter {
     }
 
     static void register(DemandParam value) {
-        holder.register(value);
+        EnumRegistrySupport.register(holder, value);
     }
 
     public static <T extends DemandParam> T check(String key) {
-        return holder.check(key, "获取 {} DemandParam 不存在", key);
+        return EnumRegistrySupport.check(holder, key, "DemandParam");
     }
 
     public static <T extends DemandParam> T check(int id) {
-        return holder.check(id, "获取 ID为 {} 的 DemandParam 不存在", id);
+        return EnumRegistrySupport.check(holder, id, "DemandParam");
     }
 
     public static <T extends DemandParam> T of(int id) {
-        return holder.of(id);
+        return EnumRegistrySupport.of(holder, id);
     }
 
     public static <T extends DemandParam> T of(String key) {
-        return holder.of(key);
+        return EnumRegistrySupport.of(holder, key);
     }
 
     public static <T extends DemandParam> Optional<T> option(int id) {
-        return holder.option(id);
+        return EnumRegistrySupport.option(holder, id);
     }
 
     public static <T extends DemandParam> Optional<T> option(String key) {
-        return holder.option(key);
+        return EnumRegistrySupport.option(holder, key);
     }
 
     public static <T extends DemandParam> Collection<T> all() {
-        return holder.allValues();
+        return EnumRegistrySupport.all(holder);
     }
 
     public static Enumerator<DemandParam> enumerator() {
-        return holder;
+        return EnumRegistrySupport.enumerator(holder);
     }
 
 }

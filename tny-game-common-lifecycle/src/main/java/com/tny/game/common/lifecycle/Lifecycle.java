@@ -42,11 +42,17 @@ public abstract class Lifecycle<L extends Lifecycle<?, ?>, P extends LifecycleHa
     }
 
     private static Map<Class<? extends LifecycleHandler>, Lifecycle<?, ?>> map(Class<? extends Lifecycle<?, ?>> lifecycleClass) {
-        Map<Class<? extends LifecycleHandler>, Lifecycle<?, ?>> map = INITIATOR_MAP.get(lifecycleClass);
-        if (map == null) {
-            return ObjectAide.ifNull(INITIATOR_MAP.putIfAbsent(lifecycleClass, map = new HashMap<>()), map);
-        }
-        return map;
+        // 内层原为裸 HashMap（并发 putIfAbsent 数据竞争）；统一原子创建 + 并发安全内表
+        return INITIATOR_MAP.computeIfAbsent(lifecycleClass,
+                k -> new java.util.concurrent.ConcurrentHashMap<>());
+    }
+
+    /**
+     * 幂等写入：已存在则返回既有实例（value() 单例语义），否则放入并返回自身。
+     */
+    static <I extends Lifecycle<?, ?>> I putIfAbsentLifecycle(Class<I> lifecycleClass, I lifecycle) {
+        I old = (I) map(lifecycleClass).putIfAbsent(lifecycle.getHandlerClass(), lifecycle);
+        return old != null ? old : lifecycle;
     }
 
     static void putLifecycle(Class<? extends Lifecycle<?, ?>> lifecycleClass, Lifecycle<?, ?> lifecycle) {
@@ -113,7 +119,26 @@ public abstract class Lifecycle<L extends Lifecycle<?, ?>, P extends LifecycleHa
         return append(of(clazz));
     }
 
+    /**
+     * 追加入口可携带优先级（原恒固定档，无法表达声明顺序）。
+     */
+    public L append(Class<? extends P> clazz, LifecyclePriority priority) {
+        return append(of(clazz, priority));
+    }
+
     protected abstract L of(Class<? extends P> clazz);
+
+    protected L of(Class<? extends P> clazz, LifecyclePriority priority) {
+        throw new UnsupportedOperationException(
+                getClass().getSimpleName() + " 未实现带优先级追加: " + clazz);
+    }
+
+    /**
+     * 清空阶段注册表（仅限测试基座复位全局态）。
+     */
+    public static void resetRegistry() {
+        INITIATOR_MAP.clear();
+    }
 
     @Override
     public int compareTo(Lifecycle o) {

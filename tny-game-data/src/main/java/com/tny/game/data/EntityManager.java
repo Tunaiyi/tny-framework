@@ -12,6 +12,7 @@
 package com.tny.game.data;
 
 import java.util.*;
+import java.util.function.ToIntFunction;
 
 /**
  * <p>
@@ -153,13 +154,7 @@ public interface EntityManager<K extends Comparable<?>, E> {
      * @return 返回实体
      */
     default int insertEntities(Collection<E> entities) {
-        int updateSize = 0;
-        for (E entity : entities) {
-            if (this.insertEntity(entity)) {
-                updateSize++;
-            }
-        }
-        return updateSize;
+        return applyEach(entities, entity -> this.insertEntity(entity) ? 1 : 0);
     }
 
     /**
@@ -177,13 +172,7 @@ public interface EntityManager<K extends Comparable<?>, E> {
      * @return 返回更新成功
      */
     default int updateEntities(Collection<E> entities) {
-        int updateSize = 0;
-        for (E entity : entities) {
-            if (this.updateEntity(entity)) {
-                updateSize++;
-            }
-        }
-        return updateSize;
+        return applyEach(entities, entity -> this.updateEntity(entity) ? 1 : 0);
     }
 
     /**
@@ -201,13 +190,7 @@ public interface EntityManager<K extends Comparable<?>, E> {
      * @return 返回更新成功
      */
     default int saveEntities(Collection<E> entities) {
-        int updateSize = 0;
-        for (E entity : entities) {
-            if (this.saveEntity(entity)) {
-                updateSize++;
-            }
-        }
-        return updateSize;
+        return applyEach(entities, entity -> this.saveEntity(entity) ? 1 : 0);
     }
 
     /**
@@ -225,13 +208,26 @@ public interface EntityManager<K extends Comparable<?>, E> {
      * @return 返回更新成功
      */
     default int deleteEntities(Collection<E> entities) {
-        int deleteSize = 0;
+        return applyEach(entities, entity -> this.deleteEntity(entity) ? 1 : 0);
+    }
+
+    /**
+     * 批量 default 方法共享的逐元素累加骨架（reduce-code-duplication D8：四段同形 for 循实体→计次岛收敛单实现）。
+     * <p>
+     * 行为逐字等价于原四方法体内联循环：按集合迭代序对每个实体调用 {@code counter}、累加返回值、
+     * 空集合返回 0、null 集合按现状在 for-each 处抛 NullPointerException（禁止顺手修）。
+     * 四个批量 default 经 0/1 计数 lambda 传入，累加和即成功条数。
+     *
+     * @param entities 实体集合
+     * @param counter  单实体计次函数（成功 1、失败 0）
+     * @return 返回累加计数
+     */
+    default int applyEach(Collection<E> entities, ToIntFunction<E> counter) {
+        int updateSize = 0;
         for (E entity : entities) {
-            if (this.deleteEntity(entity)) {
-                deleteSize++;
-            }
+            updateSize += counter.applyAsInt(entity);
         }
-        return deleteSize;
+        return updateSize;
     }
 
 }

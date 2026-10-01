@@ -38,7 +38,11 @@ public class TimeTaskScheduler {
      *
      * @uml.property name="executorService"
      */
-    private static ScheduledExecutorService executorService = Executors
+    /**
+     * 执行线程池（原为 static 却被实例方法 reload/shutdown 改写——
+     * 多实例共享同一池，一个实例重启会杀死/替换其他实例的调度线程）。
+     */
+    private volatile ScheduledExecutorService executorService = Executors
             .newScheduledThreadPool(1, new CoreThreadFactory("TimeTaskSchedulerThread"));
 
     /**
@@ -94,7 +98,7 @@ public class TimeTaskScheduler {
 
     private final Lock readLock = this.lock.readLock();
 
-    private final Lock writeLock = this.lock.readLock();
+    private final Lock writeLock = this.lock.writeLock();
 
     private volatile ScheduledFuture<?> scheduledFuture;
 
@@ -155,10 +159,24 @@ public class TimeTaskScheduler {
     }
 
     /**
-     * 关闭调度器 <br>
+     * 关闭调度器：终止状态位 + 取消待执行任务 + 关闭本实例线程池。
+     * （原实现只关池：state 仍为 true，进行中的 run() 会向已关闭的池再排任务而静默炸链。）
      */
     public void shutdown() {
-        this.executorService.shutdown();
+        // 持写锁完成终态翻转与链取消：与 run() 开头的 state 守卫构成原子交接，
+        // 杜绝"检查后-调度前"窗口把新链步排进已关池
+        this.writeLock.lock();
+        try {
+            this.state.set(false);
+            ScheduledFuture<?> scheduledFuture = this.scheduledFuture;
+            if (scheduledFuture != null) {
+                scheduledFuture.cancel(false);
+                this.scheduledFuture = null;
+            }
+        } finally {
+            this.writeLock.unlock();
+        }
+        this.executorService.shutdownNow();
     }
 
     /**
@@ -232,7 +250,7 @@ public class TimeTaskScheduler {
                 this.executorService.shutdownNow();
                 this.stopTime = System.currentTimeMillis();
             }
-            this.executorService = Executors.newScheduledThreadPool(1, new CoreThreadFactory("TimeTaskScheduler"));
+            this.executorService = Executors.newScheduledThreadPool(1, new CoreThreadFactory("TimeTaskSchedulerThread"));
             this.timeTaskTriggers.clear();
             this.start(setting);
         } catch (Exception e) {
@@ -249,19 +267,24 @@ public class TimeTaskScheduler {
     private void initSchedule(TimeTaskSchemesSetting setting) {
         this.timeTaskTriggers.clear();
         NavigableSet<TimeTaskTrigger> timeTaskTriggers = new ConcurrentSkipListSet<>();
-        try {
-            for (TimeTaskScheme model : setting.getTimeTaskSchemeList()) {
-                for (String handlerName : model.getTasks()) {
-                    if (this.handlerHolder.getHandler(handlerName) == null) {
-                        LOG.warn("定时任务模型 {} 处理器不存在", handlerName);
+        // 单方案失败不得连坐：原实现一个 try 包住整个循环，第 N 个方案抛错即放弃整表，
+        // 调度器"启动成功"但永远不产出任务
+        for (TimeTaskScheme model : setting.getTimeTaskSchemeList()) {
+            try {
+                List<String> tasks = model.getTasks();
+                if (tasks != null) {
+                    for (String handlerName : tasks) {
+                        if (this.handlerHolder.getHandler(handlerName) == null) {
+                            LOG.warn("定时任务模型 {} 处理器不存在", handlerName);
+                        }
                     }
                 }
                 timeTaskTriggers.add(new TimeTaskTrigger(model, this.stopTime));
+            } catch (Exception e) {
+                LOG.error("init schedule exception | cron 方案 [{}] 被跳过", model.getCron(), e);
             }
-            this.timeTaskTriggers = timeTaskTriggers;
-        } catch (Exception e) {
-            LOG.error("init schedule exception", e);
         }
+        this.timeTaskTriggers = timeTaskTriggers;
     }
 
     /**
@@ -295,10 +318,59 @@ public class TimeTaskScheduler {
     }
 
     private void executeCreateTimeTaskRunnable() {
+        // 宕机/重启追赶：超窗过期槽位一次快进合并投递（原逐秒回放=百万次即时触发风暴）
+        TimeTask catchUp = fastForwardOverdue(this.timeTaskTriggers, System.currentTimeMillis(),
+                this.catchUpWindowMillis);
+        if (catchUp != null) {
+            LOG.warn("定时任务启动追赶：过期槽位快进合并为一次投递 {}", catchUp);
+            this.timeTaskQueue.put(catchUp);
+        }
         CreateTimeTaskRunnable taskRunnable = this.timeTaskRunnable();
         if (taskRunnable != null) {
             this.execute(taskRunnable);
         }
+    }
+
+    /** 追赶窗口（毫秒）：执行时间点落后 now 超过该值即视为"过期槽位"参与快进 */
+    private long catchUpWindowMillis = 60_000L;
+
+    public long getCatchUpWindowMillis() {
+        return this.catchUpWindowMillis;
+    }
+
+    public void setCatchUpWindowMillis(long catchUpWindowMillis) {
+        Asserts.checkArgument(catchUpWindowMillis > 0, "追赶窗口必须为正: {}", catchUpWindowMillis);
+        this.catchUpWindowMillis = catchUpWindowMillis;
+    }
+
+    /**
+     * 把"下一触发点落后于 now-window"的触发器逐个快进到窗口内，
+     * 其处理器合并为至多一个投递任务；无需快进时返回 null。
+     */
+    static TimeTask fastForwardOverdue(NavigableSet<TimeTaskTrigger> triggers, long nowMillis, long windowMillis) {
+        long deadline = nowMillis - windowMillis;
+        Set<String> mergedHandlers = new LinkedHashSet<>();
+        int fastForwarded = 0;
+        while (!triggers.isEmpty()) {
+            TimeTaskTrigger first = triggers.pollFirst();
+            if (first == null) {
+                break;
+            }
+            if (first.nextFireTime() >= deadline) {
+                triggers.add(first);
+                break;
+            }
+            do {
+                first.trigger();
+            } while (first.nextFireTime() < deadline);
+            triggers.add(first);
+            mergedHandlers.addAll(first.getHandlerList());
+            fastForwarded++;
+        }
+        if (fastForwarded == 0) {
+            return null;
+        }
+        return new TimeTask(new ArrayList<>(mergedHandlers), nowMillis / 1000 * 1000);
     }
 
     private CreateTimeTaskRunnable timeTaskRunnable() {
@@ -325,6 +397,10 @@ public class TimeTaskScheduler {
     }
 
     private void execute(CreateTimeTaskRunnable runnable) {
+        if (!this.state.get()) {
+            // 终态止损：在途链步的尾段调度撞上关闭时，不得向已关池排任务
+            return;
+        }
         long time = runnable.getRemainTime();
         if (LOG.isDebugEnabled()) {
             LOG.debug("时间任务将在 " + time + " 毫秒后执行.");
@@ -371,6 +447,16 @@ public class TimeTaskScheduler {
 
         @Override
         public void run() {
+            // 关闭守卫：持写锁查 state，false 即终止链——不再入队、不再回调、不再排已关池
+            // （shutdown/reload 的终态翻转同样持写锁，构成原子交接）
+            TimeTaskScheduler.this.writeLock.lock();
+            try {
+                if (!TimeTaskScheduler.this.state.get()) {
+                    return;
+                }
+            } finally {
+                TimeTaskScheduler.this.writeLock.unlock();
+            }
             if (this.timeTask != null) {
                 try {
                     TimeTaskScheduler.this.writeLock.lock();

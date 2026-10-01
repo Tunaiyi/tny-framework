@@ -65,18 +65,33 @@ public class TimeTaskQueue implements Serializable {
     public void restore(List<TimeTask> queue) {
         this.handlerList.clear();
         int size = queue.size();
-        if (size > this.maxSize) {
-            this.handlerList.addAll(queue.subList(size - this.maxSize, size));
+        if (this.maxSize > 0 && size > this.maxSize) {
+            // 输入按执行时间降序（队首=最新），保留前 maxSize 条；
+            // 原实现取尾部=最旧、丢最新，与 put 驱逐最旧的方向互相矛盾
+            this.handlerList.addAll(queue.subList(0, this.maxSize));
         } else {
             this.handlerList.addAll(queue);
         }
     }
 
     public void put(TimeTask timeTask) {
-        while (this.handlerList.size() >= this.maxSize) {
-            this.handlerList.pollLast();
+        // maxSize<=0 时原实现 while(size>=maxSize) 恒真且 pollLast 恒 null → 调度线程死循环挂死
+        if (this.maxSize > 0) {
+            while (this.handlerList.size() >= this.maxSize) {
+                if (this.handlerList.pollLast() == null) {
+                    break;
+                }
+            }
         }
-        this.handlerList.add(timeTask);
+        if (!this.handlerList.add(timeTask)) {
+            // 比较器按执行时间去重：同执行时间的新任务整批 handler 会静默丢失，合并进存量任务
+            for (TimeTask exist : this.handlerList) {
+                if (exist.getExecuteTime() == timeTask.getExecuteTime()) {
+                    exist.addHandlers(timeTask.getHandlerList());
+                    break;
+                }
+            }
+        }
     }
 
     public List<TimeTask> getTimeTaskHandlerByLast(long last) {

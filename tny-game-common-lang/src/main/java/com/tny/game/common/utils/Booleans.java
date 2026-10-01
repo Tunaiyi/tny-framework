@@ -12,7 +12,7 @@ public final class Booleans {
         return value != null && value;
     }
 
-    public boolean isFalse(Boolean value) {
+    public static boolean isFalse(Boolean value) {
         return value == null || !value;
     }
 }

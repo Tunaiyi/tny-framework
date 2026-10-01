@@ -160,7 +160,10 @@ public class LinkedBuffer {
     }
 
     public LinkedBuffer append(byte[] data, int offset, int length) {
-        return append(data, offset, 0, length);
+        // 原实现委托四参 append(data, offset, 0, length)：游标停在 0，size 不加、字节静默丢失。
+        // 零拷贝共享节点在当前 toByteArray 协议（从 arrayOffset=0 读到 position）下
+        // 无法表示非零偏移窗口，故委托 write（复制进节点，内容/尺寸均正确）。
+        return this.write(data, offset, length);
     }
 
     public LinkedBuffer append(byte[] data, int offset, int position, int length) {
@@ -228,7 +231,8 @@ public class LinkedBuffer {
 
     private void growth() {
         this.growth(this.nextSize);
-        this.nextSize = (int) (this.initSize * this.growthFactor);
+        // 从上一档复利增长（原实现每次从 initSize 重算，扩容永远同一尺寸）
+        this.nextSize = (int) (this.nextSize * this.growthFactor);
     }
 
     private void growth(int size) {
@@ -254,6 +258,7 @@ public class LinkedBuffer {
     public void release() {
         this.head = null;
         this.tail = null;
+        this.size = 0;
         this.allocator.release();
     }
 

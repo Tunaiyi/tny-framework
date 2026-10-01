@@ -38,10 +38,6 @@ public class TaskReceiverTypes extends ClassImporter {
         holder.register(value);
     }
 
-    public static <T extends TaskReceiverType> T ofAlias(String alias) {
-        String[] heads = StringUtils.split(alias, '$');
-        return holder.check("$" + heads[0], "获取 别名前缀 {} 的 TaskReceiverType 不存在", heads[0]);
-    }
 
     public static <T extends TaskReceiverType> T check(String key) {
         return holder.check(key, "获取 {} TaskReceiverType 不存在", key);

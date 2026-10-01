@@ -80,7 +80,8 @@ public class LockAide {
      * @return 可同时锁定参数对象的锁对象
      */
     public static Lock getWriteLock(Collection<LockEntity<?>> objectCollection) {
-        Collection<ObjectLock> locks = loadLocks(null, objectCollection.toArray(new LockEntity<?>[0]));
+        // 原传 null：beGot 判定 type==READ?:WRITE 恒落写锁
+        Collection<ObjectLock> locks = loadLocks(LockType.WRITE, objectCollection.toArray(new LockEntity<?>[0]));
         return new LinkedLock(new ArrayList<ObjectLock>(locks));
     }
 
@@ -91,7 +92,8 @@ public class LockAide {
      * @return 可同时锁定参数对象的锁对象
      */
     public static LinkedLock getReadLock(Collection<LockEntity<?>> objectCollection) {
-        Collection<ObjectLock> locks = loadLocks(null, objectCollection.toArray(new LockEntity<?>[0]));
+        // 原传 null 使批量读锁实拿写锁——读读并行退化为互斥
+        Collection<ObjectLock> locks = loadLocks(LockType.READ, objectCollection.toArray(new LockEntity<?>[0]));
         return new LinkedLock(new ArrayList<ObjectLock>(locks));
     }
 

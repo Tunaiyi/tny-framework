@@ -148,7 +148,8 @@ class WrapperObjectMap implements MapAccessor {
 
     @Override
     public float getFloat(String key, float defaultValue) {
-        return asObject(key, defaultValue, float.class);
+        // 原传 float.class：基本类型 Class 的 isInstance 恒 false，值存在时必抛 CCE
+        return asObject(key, defaultValue, Float.class);
     }
 
     /**
@@ -167,11 +168,9 @@ class WrapperObjectMap implements MapAccessor {
         return asObject(key, defaultValue, Boolean.class);
     }
 
-    @Override
-    public MapAccessor getMapAccessor(String key, MapAccessor defaultValue) {
-        Object value = this.getObject(key);
-        return MapAccessors.cast(value, defaultValue);
-    }
+    // 收口压缩：getMapAccessor(key, def) 本类覆写体与 MapAccessor 接口 default 逐字同形（仅 this. 前缀之差），
+    // 已删由接口共享既有形态承载——分派 invokeinterface → 接口 default → this.getObject(key) → 本类 getObject
+    // （= as(map.get(key))），与原覆写逐路径等值；MapConvertAccessContractTest.mapAccessorChannelAgrees 钉桩。
 
     @Override
     public Map<String, Object> toMap() {
@@ -180,30 +179,24 @@ class WrapperObjectMap implements MapAccessor {
 
     @Override
     public int size() {
-        return 0;
+        return this.map.size();
     }
 
+    /**
+     * 取值链尾段收敛至共享引擎（reduce-code-duplication D4）：取径差异（本类经 map.get(key) 直取）留在门面，
+     * null 判定/缺省/宽松转换单一事实源；Float.class 实参（fix 轮已修侧）与 ObjectMap 侧 float.class 的差异由参数承载。
+     */
     private <T> T asObject(String key, T defaultValue, Class<T> valueClass) {
-        T value = getObject(key);
-        if (value == null) {
-            return defaultValue;
-        }
-        return as(value, valueClass);
+        // 与同契约非包装实现统一：类型命中直取，错型走宽松转换（数字串/数值窄化/toString）
+        return MapConvertAccessSupport.convertOrNull(this.map.get(key), defaultValue, valueClass);
     }
 
     private <T> T asNotNullObject(String key, Class<T> valueClass) {
-        Object value = getObject(key);
-        if (value == null) {
-            throw new NullPointerException("[" + key + "] value is null");
-        }
-        return as(value, valueClass);
+        return MapConvertAccessSupport.convertRequired(this.map.get(key), key, valueClass);
     }
 
     public <T> void getNotNullToFunction(String key, Function<T, ?> function, Class<T> valueClass) {
-        Object value = getObject(key);
-        if (value != null) {
-            function.apply(as(value, valueClass));
-        }
+        MapConvertAccessSupport.convertIfPresent(this.map.get(key), valueClass, function);
     }
 
 }

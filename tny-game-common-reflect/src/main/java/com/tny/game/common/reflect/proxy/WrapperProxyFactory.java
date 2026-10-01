@@ -46,9 +46,28 @@ public class WrapperProxyFactory {
         if (wrapperClass != null) {
             return (Class<WrapperProxy<T>>) wrapperClass;
         }
+        // 整体加锁（原无同步：并发首建双 toClass 同名类 → LinkageError/双产物）
+        synchronized (targetClass) {
+            wrapperClass = WRAPPER_CLASS_MAP.get(targetClass);
+            if (wrapperClass != null) {
+                return (Class<WrapperProxy<T>>) wrapperClass;
+            }
+            return createWrapperProxyClass(targetClass);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> Class<WrapperProxy<T>> createWrapperProxyClass(Class<?> targetClass) {
         ClassPool pool = ClassPool.getDefault();
         try {
-            String proxyClassName = targetClass.getPackage().getName() + PROXY_CLASS_NAME + targetClass.getSimpleName();
+            // 匿名/本地/无包名类不可生成（原 getPackage() NPE 被吞、静默返回 null）。
+            // JDK9+ 起默认包类的 getPackage() 返回非 null 空名 Package（仅数组/原始类型/primitive 才为 null），
+            // 只查 null 会让"无包名"分支永不触发、失败以 ClassFormatError 从代理名拼装处泄漏——空包名同判不可代理。
+            Package targetPackage = targetClass.getPackage();
+            if (targetPackage == null || targetPackage.getName().isEmpty() || targetClass.isAnonymousClass() || targetClass.isLocalClass()) {
+                throw new IllegalStateException("目标类不可代理（匿名/本地/无包名）: " + targetClass.getName());
+            }
+            String proxyClassName = targetPackage.getName() + PROXY_CLASS_NAME + targetClass.getSimpleName();
             /* 获得DProxy类作为代理类的父类 */
             CtClass proxyClass = pool.makeClass(proxyClassName);
             CtClass superclass = pool.get(targetClass.getName());
@@ -68,13 +87,15 @@ public class WrapperProxyFactory {
                 }
                 proxyMethod(pool, proxyClass, method, methodSet);
             }
-            wrapperClass = proxyClass.toClass(targetClass);
+            Class<?> wrapperClass = proxyClass.toClass(targetClass);
             Class<?> old = WRAPPER_CLASS_MAP.putIfAbsent(targetClass, wrapperClass);
             return (Class<WrapperProxy<T>>) (old != null ? old : wrapperClass);
+        } catch (RuntimeException | Error e) {
+            throw e;
         } catch (Exception e) {
-            LOGGER.error("生成 {} 代理类错误", targetClass, e);
+            // 失败显式化（原返回 null，NPE 在远离成因的 createWrapper 处才爆）
+            throw new IllegalStateException("生成 " + targetClass + " 包装代理类失败", e);
         }
-        return null;
     }
 
     private static CtMethod createCtMethod(ClassPool pool, CtClass cc, Method method) throws NotFoundException {

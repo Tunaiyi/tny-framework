@@ -35,11 +35,14 @@ public class FrequencyCommandExecutor implements CommandExecutor {
     /**
      * 当前线程
      */
-    protected Thread currentThread;
+    protected volatile Thread currentThread;
 
     private final Queue<CommandBox<?>> commandBoxQueue = new ConcurrentLinkedQueue<>();
 
-    private ExecutorService executor;
+    private volatile ExecutorService executor;
+
+    /** 终态标志：shutdown 后禁止注册/启动 */
+    private volatile boolean shutdown;
 
     private long nextRunningTime;
 
@@ -70,13 +73,20 @@ public class FrequencyCommandExecutor implements CommandExecutor {
         }
 
         @Override
+        public boolean isShutdown() {
+            // 终态如实上报：关闭后绑定盒的受理显式失败并回滚（停止≠关闭，规格受理诚实）
+            return FrequencyCommandExecutor.this.shutdown;
+        }
+
+        @Override
         public boolean register(CommandBox<?> commandBox) {
             return FrequencyCommandExecutor.this.register(commandBox);
         }
 
         @Override
         public boolean unregister(CommandBox<?> commandBox) {
-            return FrequencyCommandExecutor.this.register(commandBox);
+            // 原实现误写为 register：注销变注册
+            return FrequencyCommandExecutor.this.unregister(commandBox);
         }
 
         @Override
@@ -98,14 +108,24 @@ public class FrequencyCommandExecutor implements CommandExecutor {
     }
 
     @Override
-    public void start() {
-        this.executor = Executors.newSingleThreadExecutor(new CoreThreadFactory(this.name, true));
-        this.executor.execute(() -> {
+    public synchronized void start() {
+        ExecutorService running = this.executor;
+        if (running != null && !running.isShutdown()) {
+            throw new IllegalStateException("执行器 " + this.name + " 已启动，重复启动被拒绝（防旧心跳泄漏）");
+        }
+        // shutdown 后显式 start 视为重启（清终态标志）；关闭后"注册"仍显式失败（规格10）
+        this.shutdown = false;
+        this.working = true;
+        final ExecutorService heartbeat =
+                Executors.newSingleThreadExecutor(new CoreThreadFactory(this.name, true));
+        this.executor = heartbeat;
+        // 原实现循环内读 this.executor 字段——重入启动覆写字段使旧心跳永检新池而泄漏；改捕获本地代际
+        heartbeat.execute(() -> {
             this.nextRunningTime = System.currentTimeMillis();
             this.currentThread = Thread.currentThread();
             while (true) {
                 try {
-                    if (this.executor.isShutdown()) {
+                    if (heartbeat.isShutdown()) {
                         break;
                     }
                     long currentTime = System.currentTimeMillis();
@@ -113,15 +133,23 @@ public class FrequencyCommandExecutor implements CommandExecutor {
                     int currentContinueTime = 0;
                     while (currentTime >= this.nextRunningTime) {
                         for (CommandBox<?> box : this.commandBoxQueue) {
-                            this.worker.wakeUp(box);
-                            // box.getProcessUseTime();
-                            // currentRunSize += box.getProcessSize();
+                            // 心跳必须真实驱动处理（原实现调用空 wakeUp，注册盒永不被处理）；
+                            // 逐盒捕获，单盒异常不连坐其余盒与心跳线程
+                            try {
+                                box.process();
+                                if (box instanceof WorkerCommandBox<?, ?> workerBox) {
+                                    currentRunSize += workerBox.getProcessSize();
+                                }
+                            } catch (Throwable e) {
+                                LOGGER.warn("FrequencyWorker box process exception", e);
+                            }
                         }
                         this.nextRunningTime += 100L;
                         currentContinueTime++;
                         currentTime = System.currentTimeMillis();
                     }
                     if (this.commandBoxQueue.isEmpty() && !this.working) {
+                        heartbeat.shutdown();
                         return;
                     }
 
@@ -153,9 +181,13 @@ public class FrequencyCommandExecutor implements CommandExecutor {
     }
 
     @Override
-    public void shutdown() {
+    public synchronized void shutdown() {
         stop();
-        this.executor.shutdown();
+        this.shutdown = true;
+        ExecutorService heartbeat = this.executor;
+        if (heartbeat != null) {
+            heartbeat.shutdownNow();
+        }
     }
 
     @Override
@@ -200,8 +232,11 @@ public class FrequencyCommandExecutor implements CommandExecutor {
 
     @Override
     public boolean register(CommandBox<?> commandBox) {
-        if (commandBox instanceof WorkerCommandBox) {
-            WorkerCommandBox<?, ?> workerCommandBox = (WorkerCommandBox<?, ?>) commandBox;
+        // 关闭/停止后注册显式失败（不得虚报成功使命令静默滞留，规格10）
+        if (this.shutdown || !this.working) {
+            return false;
+        }
+        if (commandBox instanceof WorkerCommandBox<?, ?> workerCommandBox) {
             if (workerCommandBox.bindWorker(this.worker)) {
                 this.commandBoxQueue.add(workerCommandBox);
                 return true;
@@ -212,8 +247,7 @@ public class FrequencyCommandExecutor implements CommandExecutor {
 
     @Override
     public boolean unregister(CommandBox<?> commandBox) {
-        if (commandBox instanceof WorkerCommandBox) {
-            WorkerCommandBox<?, ?> workerCommandBox = (WorkerCommandBox<?, ?>) commandBox;
+        if (commandBox instanceof WorkerCommandBox<?, ?> workerCommandBox) {
             if (this.commandBoxQueue.remove(workerCommandBox)) {
                 workerCommandBox.unbindWorker();
                 return true;

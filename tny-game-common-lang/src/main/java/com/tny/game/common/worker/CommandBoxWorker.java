@@ -37,4 +37,12 @@ public interface CommandBoxWorker extends CommandBoxProcessor {
      */
     void wakeUp(CommandBox<?> commandBox);
 
+    /**
+     * 下游是否已关闭（终态）。停止≠关闭：默认 false（纯停止走"滞留受理成功"语义）；
+     * 实现关闭终态的执行器必须覆写为 true，绑定盒的受理随之显式失败并回滚，不得虚报滞留。
+     */
+    default boolean isShutdown() {
+        return false;
+    }
+
 }

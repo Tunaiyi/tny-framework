@@ -12,6 +12,7 @@
 package com.tny.game.common.reflect.javassist;
 
 import com.tny.game.common.reflect.*;
+import com.tny.game.common.reflect.exception.MethodNotFoundException;
 import org.slf4j.*;
 
 import java.lang.reflect.*;
@@ -63,6 +64,10 @@ public class JSsistClassAccessor implements ClassAccessor {
             if (!methodName.equals("getClass") && methodName.startsWith("get") ||
                 methodName.startsWith("is") && (returnClazz == boolean.class || returnClazz == Boolean.class)) {
                 String proName = this.getPropertyName(methodName);
+                if (proName == null || proName.isEmpty()) {
+                    // 纯前缀方法（get()/isX 非布尔/set()）不产生属性：拒绝 null/空幽灵键
+                    continue;
+                }
                 JSsistPropertyAccessor accessor = this.getAccessor(accessorMap, proName, returnClazz);
                 if (accessor != null) {
                     accessor.setReader(glibMethod);
@@ -72,6 +77,9 @@ public class JSsistClassAccessor implements ClassAccessor {
                 if (paramClasses.length == 1) {
                     returnClazz = paramClasses[0];
                     String proName = this.getPropertyName(methodName);
+                    if (proName == null || proName.isEmpty()) {
+                        continue;
+                    }
                     JSsistPropertyAccessor accessor = this.getAccessor(accessorMap, proName, returnClazz);
                     if (accessor != null) {
                         accessor.setWriter(glibMethod);
@@ -166,12 +174,15 @@ public class JSsistClassAccessor implements ClassAccessor {
     @Override
     public MethodAccessor getMethod(String name, Class<?>... parameterTypes) {
         for (MethodAccessor method : this.methodMap.values()) {
+            // 名字必须参与匹配（原仅比参数表，同参不同名返回迭代序任意一个）
             Class<?>[] paraClasses = method.getParameterTypes();
-            if (Arrays.equals(paraClasses, parameterTypes)) {
+            if (method.getName().equals(name) && Arrays.equals(paraClasses, parameterTypes)) {
                 return method;
             }
         }
-        return null;
+        // 未命中显式失败（原返回 null：空句柄把失败转嫁给远端消费点，NPE 远离成因）
+        throw new MethodNotFoundException("类 " + this.javaClass.getName() + " 中不存在方法: " + name
+                + " 参数表: " + Arrays.toString(parameterTypes));
     }
 
 }

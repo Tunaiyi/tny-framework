@@ -25,7 +25,8 @@ public class IterableAide {
 
         @Override
         public Object next() {
-            return null;
+            // Iterator 契约：耗尽后必须抛 NoSuchElementException（原返回 null）
+            throw new java.util.NoSuchElementException("EMPTY_ITERATOR");
         }
 
         @Override

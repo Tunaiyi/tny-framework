@@ -44,6 +44,53 @@ final class FormatTextSupport {
     }
 
     /**
+     * 短转义对表（本类内部 escapeBytes/escapeTextJson/unescapeTextJson 三处 switch 克隆的 D2 收口收敛单一事实源）：
+     * 左列实际字符，右列转义序列（其第 2 字符即反转义方向的转义标识字符，Java does not recognize \a or \v,
+     * apparently.——\a/\v 两行即承载此现状）。三处现状使用的子集以"表前缀行数"参数保留，不做统一：
+     * escapeBytes 用全 10 行；escapeTextJson 用 JSON 短转义 7 行；unescapeTextJson 识别 8 行
+     * （含 escapeTextJson 从不产出的单引号行）。
+     */
+    private static final char[] SHORT_ESCAPE_ACTUALS = {
+            '\b', '\f', '\n', '\r', '\t', '\\', '"', '\'', 0x07, 0x0b};
+
+    private static final String[] SHORT_ESCAPE_SEQUENCES = {
+            "\\b", "\\f", "\\n", "\\r", "\\t", "\\\\", "\\\"", "\\'", "\\a", "\\v"};
+
+    /** escapeBytes 现状使用行数：全表。 */
+    private static final int BYTE_ESCAPE_ROWS = SHORT_ESCAPE_ACTUALS.length;
+    /** escapeTextJson 现状使用行数：JSON 短转义 7 行。 */
+    private static final int JSON_ESCAPE_ROWS = 7;
+    /** unescapeTextJson 现状识别行数：JSON 7 行 + 单引号。 */
+    private static final int JSON_UNESCAPE_ROWS = 8;
+    /** 反转义查表未命中哨兵（表内实际字符均 &lt;= 0x5C，不可能与该值冲突）。 */
+    private static final char NO_SHORT_ESCAPE = '\uFFFF';
+
+    /**
+     * 转义方向查表：按实际字符在前 rows 行内查找，命中返回转义序列，未命中返回 null。
+     */
+    private static String shortEscapeSequence(char c, int rows) {
+        for (int i = 0; i < rows; i++) {
+            if (SHORT_ESCAPE_ACTUALS[i] == c) {
+                return SHORT_ESCAPE_SEQUENCES[i];
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 反转义方向查表：按转义标识字符（转义序列的第 2 个字符）在前 rows 行内查找，
+     * 命中返回实际字符（'b' -> '\b'），未命中返回 {@link #NO_SHORT_ESCAPE}。
+     */
+    private static char shortUnescape(char identifier, int rows) {
+        for (int i = 0; i < rows; i++) {
+            if (SHORT_ESCAPE_SEQUENCES[i].charAt(1) == identifier) {
+                return SHORT_ESCAPE_ACTUALS[i];
+            }
+        }
+        return NO_SHORT_ESCAPE;
+    }
+
+    /**
      * Xml/Html/JavaProps 现状：低位/高位字节八进制转义。
      */
     static String escapeBytesOctal(ByteString input) {
@@ -68,51 +115,19 @@ final class FormatTextSupport {
         StringBuilder builder = new StringBuilder(input.size());
         for (int i = 0; i < input.size(); i++) {
             byte b = input.byteAt(i);
-            switch (b) {
-                // Java does not recognize \a or \v, apparently.
-                case 0x07:
-                    builder.append("\\a");
-                    break;
-                case '\b':
-                    builder.append("\\b");
-                    break;
-                case '\f':
-                    builder.append("\\f");
-                    break;
-                case '\n':
-                    builder.append("\\n");
-                    break;
-                case '\r':
-                    builder.append("\\r");
-                    break;
-                case '\t':
-                    builder.append("\\t");
-                    break;
-                case 0x0b:
-                    builder.append("\\v");
-                    break;
-                case '\\':
-                    builder.append("\\\\");
-                    break;
-                case '\'':
-                    builder.append("\\\'");
-                    break;
-                case '"':
-                    builder.append("\\\"");
-                    break;
-                default:
-                    if (b >= 0x20) {
-                        builder.append((char) b);
-                    } else if (lowByteMode == LowByteMode.UNICODE) {
-                        final String unicodeString = unicodeEscaped((char) b);
-                        builder.append(unicodeString);
-                    } else {
-                        builder.append('\\');
-                        builder.append((char) ('0' + ((b >>> 6) & 3)));
-                        builder.append((char) ('0' + ((b >>> 3) & 7)));
-                        builder.append((char) ('0' + (b & 7)));
-                    }
-                    break;
+            String escaped = shortEscapeSequence((char) b, BYTE_ESCAPE_ROWS);
+            if (escaped != null) {
+                builder.append(escaped);
+            } else if (b >= 0x20) {
+                builder.append((char) b);
+            } else if (lowByteMode == LowByteMode.UNICODE) {
+                final String unicodeString = unicodeEscaped((char) b);
+                builder.append(unicodeString);
+            } else {
+                builder.append('\\');
+                builder.append((char) ('0' + ((b >>> 6) & 3)));
+                builder.append((char) ('0' + ((b >>> 3) & 7)));
+                builder.append((char) ('0' + (b & 7)));
             }
         }
         return builder.toString();
@@ -277,46 +292,24 @@ final class FormatTextSupport {
         StringBuilder builder = new StringBuilder(input.length());
         CharacterIterator iter = new StringCharacterIterator(input);
         for (char c = iter.first(); c != CharacterIterator.DONE; c = iter.next()) {
-            switch (c) {
-                case '\b':
-                    builder.append("\\b");
-                    break;
-                case '\f':
-                    builder.append("\\f");
-                    break;
-                case '\n':
-                    builder.append("\\n");
-                    break;
-                case '\r':
-                    builder.append("\\r");
-                    break;
-                case '\t':
-                    builder.append("\\t");
-                    break;
-                case '\\':
-                    builder.append("\\\\");
-                    break;
-                case '"':
-                    builder.append("\\\"");
-                    break;
-                default:
-                    // Check for other control characters
-                    if (c >= 0x0000 && c <= 0x001F) {
-                        appendEscapedUnicode(builder, c);
-                    } else if (Character.isHighSurrogate(c)) {
-                        // Encode the surrogate pair using 2 six-character sequence (\\uXXXX\\uXXXX)
-                        appendEscapedUnicode(builder, c);
-                        c = iter.next();
-                        if (c == CharacterIterator.DONE) {
-                            throw new IllegalArgumentException(
-                                    "invalid unicode string: unexpected high surrogate pair value without corresponding low value.");
-                        }
-                        appendEscapedUnicode(builder, c);
-                    } else {
-                        // Anything else can be printed as-is
-                        builder.append(c);
-                    }
-                    break;
+            String escaped = shortEscapeSequence(c, JSON_ESCAPE_ROWS);
+            if (escaped != null) {
+                builder.append(escaped);
+            } else if (c >= 0x0000 && c <= 0x001F) {
+                // Check for other control characters
+                appendEscapedUnicode(builder, c);
+            } else if (Character.isHighSurrogate(c)) {
+                // Encode the surrogate pair using 2 six-character sequence (\\uXXXX\\uXXXX)
+                appendEscapedUnicode(builder, c);
+                c = iter.next();
+                if (c == CharacterIterator.DONE) {
+                    throw new IllegalArgumentException(
+                            "invalid unicode string: unexpected high surrogate pair value without corresponding low value.");
+                }
+                appendEscapedUnicode(builder, c);
+            } else {
+                // Anything else can be printed as-is
+                builder.append(c);
             }
         }
         return builder.toString();
@@ -347,45 +340,24 @@ final class FormatTextSupport {
                 if (i + 1 < array.length) {
                     ++i;
                     c = array[i];
-                    switch (c) {
-                        case 'b':
-                            builder.append('\b');
-                            break;
-                        case 'f':
-                            builder.append('\f');
-                            break;
-                        case 'n':
-                            builder.append('\n');
-                            break;
-                        case 'r':
-                            builder.append('\r');
-                            break;
-                        case 't':
-                            builder.append('\t');
-                            break;
-                        case '\\':
-                            builder.append('\\');
-                            break;
-                        case '"':
-                            builder.append('\"');
-                            break;
-                        case '\'':
-                            builder.append('\'');
-                            break;
-                        case 'u':
-                            // read the next 4 chars
-                            if (i + 4 < array.length) {
-                                ++i;
-                                int code = Integer.parseInt(new String(array, i, 4), 16);
-                                // this cast is safe because we know how many chars we read
-                                builder.append((char) code);
-                                i += 3;
-                            } else {
-                                throw new InvalidEscapeSequence("Invalid escape sequence: '\\u' at end of string.");
-                            }
-                            break;
-                        default:
+                    if (c == 'u') {
+                        // read the next 4 chars
+                        if (i + 4 < array.length) {
+                            ++i;
+                            int code = Integer.parseInt(new String(array, i, 4), 16);
+                            // this cast is safe because we know how many chars we read
+                            builder.append((char) code);
+                            i += 3;
+                        } else {
+                            throw new InvalidEscapeSequence("Invalid escape sequence: '\\u' at end of string.");
+                        }
+                    } else {
+                        char unescaped = shortUnescape(c, JSON_UNESCAPE_ROWS);
+                        if (unescaped != NO_SHORT_ESCAPE) {
+                            builder.append(unescaped);
+                        } else {
                             throw new InvalidEscapeSequence("Invalid escape sequence: '\\" + c + "'");
+                        }
                     }
                 } else {
                     throw new InvalidEscapeSequence("Invalid escape sequence: '\\' at end of string.");

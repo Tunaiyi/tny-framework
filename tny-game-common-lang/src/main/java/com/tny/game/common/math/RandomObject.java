@@ -35,7 +35,8 @@ public class RandomObject<V> implements Comparable<RandomObject<V>> {
 
     @Override
     public int compareTo(RandomObject<V> o) {
-        return (this.value - o.getValue()) * -1;
+        // 降序（原减法*−1 在极值下溢出翻号）
+        return Integer.compare(o.getValue(), this.value);
     }
 
     @Override

@@ -45,15 +45,10 @@ public class AttrKeys {
 
     @SuppressWarnings("unchecked")
     private static <T> AttrKey<T> loadOrCreate(String full, String key) {
-        AttrKey<T> value = (AttrKey<T>) KEY_MAP.get(key);
-        if (value == null) {
-            value = new DefaultAttributeKey<>(key);
-            AttrKey<?> old = KEY_MAP.putIfAbsent(full, value);
-            if (old != null) {
-                value = (AttrKey<T>) old;
-            }
-        }
-        return value;
+        // 原实现查询用短名 key、写入用全名 full：命名空间劫持（key(Foo,"x") 命中全局 "x"）、
+        // 同 name 双实例（attributes2Map 撞 IllegalStateException）、cache-miss 反复 new。
+        // 统一按全名原子创建：同 (namespace,name) 恒返回同一实例，不同命名空间互不可见。
+        return (AttrKey<T>) KEY_MAP.computeIfAbsent(full, k -> new DefaultAttributeKey<>(key));
     }
 
     public static Map<String, Object> attributes2Map(Attributes attributes) {

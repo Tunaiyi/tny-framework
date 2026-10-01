@@ -57,11 +57,15 @@ public class DateTimeAide {
     public static final DateTimeFormatter DISPLAY_DATE_FORMAT = DateTimeFormatter.ofPattern("MM/dd/yyyy").withZone(ZoneId.systemDefault());
 
     public static ZonedDateTime date(String date) throws ParseException {
-        return ZonedDateTime.parse(date, DATE_FORMAT);
+        return date(date, DATE_FORMAT);
     }
 
     public static ZonedDateTime date(String date, DateTimeFormatter formatter) throws ParseException {
-        return ZonedDateTime.parse(date, DATE_FORMAT);
+        // 原实现：日期串缺时间字段，ZonedDateTime.parse 必抛 DateTimeParseException；
+        // 且带 formatter 的重载忽略了 formatter 参数。按 LocalDate 解析后落到当日零点。
+        LocalDate localDate = LocalDate.parse(date, formatter);
+        ZoneId zone = formatter.getZone() != null ? formatter.getZone() : ZoneId.systemDefault();
+        return localDate.atStartOfDay(zone);
     }
 
     public static ZonedDateTime dateTime(String date) throws ParseException {
@@ -94,7 +98,8 @@ public class DateTimeAide {
     }
 
     public static int date2Int(Instant now) {
-        return date2Int(LocalDate.from(now));
+        // Instant 无时区，LocalDate.from 必抛 DateTimeException；显式取系统时区
+        return date2Int(now.atZone(ZoneId.systemDefault()).toLocalDate());
     }
 
     public static int date2Int(LocalDateTime now) {
@@ -114,7 +119,8 @@ public class DateTimeAide {
                     now.getHour()) * 100) +
                   now.getMinute()) * 100) +
                 now.getSecond()) * 1000 +
-               now.getNano() / 1000;
+               // 末三位是毫秒槽：纳秒必须除以 1e6；原 /1000 得微秒，秒位被高位污染
+               now.getNano() / 1_000_000;
     }
 
     public static LocalDateTime millisLong2Time(long timeInt) {
@@ -125,7 +131,8 @@ public class DateTimeAide {
         int day = (int) ((timeInt = timeInt / 100) % 100);
         int month = (int) ((timeInt = timeInt / 100) % 100);
         int year = (int) (timeInt / 100);
-        return LocalDateTime.of(year, month, day, hour, minute, seconds, millis);
+        // 第 7 参是 nanoOfSecond：毫秒必须换算成纳秒，否则与 time2MillisLong 往返丢失毫秒
+        return LocalDateTime.of(year, month, day, hour, minute, seconds, millis * 1_000_000);
     }
 
     public static long time2Second(LocalDateTime now) {

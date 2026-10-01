@@ -11,6 +11,7 @@
 
 package com.tny.game.basics.item;
 
+import com.tny.game.basics.utlis.*;
 import com.tny.game.common.enums.*;
 import com.tny.game.common.io.config.*;
 import org.apache.commons.lang3.StringUtils;
@@ -40,44 +41,45 @@ public class ItemTypes extends ClassImporter {
     }
 
     static void register(ItemType value) {
-        holder.register(value);
+        EnumRegistrySupport.register(holder, value);
     }
 
+    //    自有扩展保留（D5）：别名前缀查找为 ItemTypes 独有，heads[0] 空串越界现状在册禁修
     public static <T extends ItemType> T ofAlias(String alias) {
         String[] heads = StringUtils.split(alias, '$');
         return holder.checkBySymbol(ALIAS_HEAD_SYMBOL, heads[0], "获取 别名前缀 {} 的 ItemType 不存在", heads[0]);
     }
 
     public static <T extends ItemType> T check(String key) {
-        return holder.check(key, "获取 {} ItemType 不存在", key);
+        return EnumRegistrySupport.check(holder, key, "ItemType");
     }
 
     public static <T extends ItemType> T check(int id) {
-        return holder.check(id, "获取 ID为 {} 的 ItemType 不存在", id);
+        return EnumRegistrySupport.check(holder, id, "ItemType");
     }
 
     public static <T extends ItemType> T of(int id) {
-        return holder.of(id);
+        return EnumRegistrySupport.of(holder, id);
     }
 
     public static <T extends ItemType> T of(String key) {
-        return holder.of(key);
+        return EnumRegistrySupport.of(holder, key);
     }
 
     public static <T extends ItemType> Optional<T> option(int id) {
-        return holder.option(id);
+        return EnumRegistrySupport.option(holder, id);
     }
 
     public static <T extends ItemType> Optional<T> option(String key) {
-        return holder.option(key);
+        return EnumRegistrySupport.option(holder, key);
     }
 
     public static <T extends ItemType> Collection<T> all() {
-        return holder.allValues();
+        return EnumRegistrySupport.all(holder);
     }
 
     public static Enumerator<ItemType> enumerator() {
-        return holder;
+        return EnumRegistrySupport.enumerator(holder);
     }
 
     public static <T extends ItemType> T ofModelId(int modelId) {

@@ -54,15 +54,22 @@ public class InvokerFactory {
             proxyClassNameBuilder.append(declaringClass.getName());
         }
         Class<?> sourceClass = method.getDeclaringClass();
-        int hash = sourceClass.getName().hashCode() ^ method.getName().hashCode();
-        for (Class<?> paramClass : method.getParameterTypes())
-            hash ^= paramClass.getName().hashCode();
+        // 异或对参数顺序不敏感：m(String,int) 与 m(int,String) 生成同名代理类，
+        // 后建者经 Class.forName 命中前者产物后查表为空。改顺序敏感序列散列。
+        StringBuilder signature = new StringBuilder(sourceClass.getName());
+        signature.append('#').append(method.getName());
+        for (Class<?> paramClass : method.getParameterTypes()) {
+            signature.append('#').append(paramClass.getName());
+        }
+        int hash = signature.toString().hashCode();
         proxyClassNameBuilder.append("$");
         proxyClassNameBuilder.append(method.getName());
         proxyClassNameBuilder.append("$");
         proxyClassNameBuilder.append(Math.abs(hash));
         String proxyClassName = proxyClassNameBuilder.toString();
         StringBuilder invokeCode = new StringBuilder();
+        // forName 命中路径的映射结果：null 须在 try/catch 之外抛，避免被外层 catch 折叠成"编译异常"
+        MethodInvoker hitInvoker = null;
         try {
             synchronized (method.getDeclaringClass()) {
                 Class<?> proxyClass;
@@ -123,11 +130,19 @@ public class InvokerFactory {
                     }
                     return invoker;
                 }
-                return INVOKER_MAP.get(method);
+                hitInvoker = INVOKER_MAP.get(method);
             }
         } catch (Throwable e) {
             throw new RuntimeException(MessageFormat.format("编译{0}.{1}异常 \n{2}", method.getDeclaringClass(), method, invokeCode.toString()), e);
         }
+        if (hitInvoker == null) {
+            // 跨加载域遮蔽：派生名 Class.forName 命中但本域映射无该 method 产物（他域/他签名同名产物占用派生名），
+            // 原返回 null 生成幽灵句柄、NPE 在远离成因的消费点才爆——现显式失败并携带代理类名与 declaringClass
+            throw new IllegalStateException(MessageFormat.format(
+                    "代理类 {0} 在本类加载域已存在，但调用器映射中不存在方法条目: {1}#{2}（declaringClass={3}，疑似他域同名产物遮蔽）",
+                    proxyClassName, declaringClass.getName(), method.getName(), declaringClass.getName()));
+        }
+        return hitInvoker;
     }
 
     public static ConstructInvoker newConstructor(Constructor<?> constructor) {
@@ -247,16 +262,5 @@ public class InvokerFactory {
         return Wrapper.isWrapper(toClass);
     }
 
-    public static void main(String[] args) {
-        Method target = null;
-        for (Method method : ReflectAide.getDeepMethod(ContextAttributes.class)) {
-            if (method.getName().equals("getMap")) {
-                target = method;
-                break;
-            }
-        }
-        Attributes attributes = ContextAttributes.create();
-        MethodInvoker invoker = InvokerFactory.newInvoker(target);
-    }
 
 }

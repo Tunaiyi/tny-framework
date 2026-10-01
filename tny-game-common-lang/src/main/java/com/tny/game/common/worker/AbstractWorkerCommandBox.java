@@ -42,7 +42,11 @@ public abstract class AbstractWorkerCommandBox<C extends Command, CB extends Com
         if (!command.isDone()) {
             this.queue.add(command);
             postAcceptIntoQueue(command);
-            this.submit();
+            // 受理结果诚实：下游拒绝时回滚入队并显式失败，不得虚报成功（规格6）
+            if (!submitWithResult()) {
+                this.queue.remove(command);
+                return false;
+            }
         }
         postAccept(command);
         return true;
@@ -127,12 +131,41 @@ public abstract class AbstractWorkerCommandBox<C extends Command, CB extends Com
 
     @Override
     public void submit() {
+        submitWithResult();
+    }
+
+    /**
+     * @return false 仅当已绑定工作器且唤醒被拒（下游关闭/拒绝）；未绑定=滞留待恢复，视为受理成功。
+     */
+    private boolean submitWithResult() {
+        if (isEmpty()) {
+            return true;
+        }
+        if (!this.submit.compareAndSet(false, true)) {
+            // 已有一轮排空承诺负责（排空后的复查闭环保证有限轮次）
+            return true;
+        }
+        CommandBoxWorker worker = this.worker;
+        if (worker == null) {
+            this.submit.set(false);
+            return true;
+        }
+        // 下游已关闭（终态）：受理诚实失败——调用方回滚入队，不得滞留到永不存在的恢复（规格6）
+        if (worker.isShutdown()) {
+            this.submit.set(false);
+            return false;
+        }
+        if (!worker.isWorking()) {
+            // 工作器停止（未关闭）：命令滞留盒内不丢失、不虚报失败；恢复经心跳/重注册再提交（规格5）
+            this.submit.set(false);
+            return true;
+        }
         try {
-            if (!this.isEmpty() && this.submit.compareAndSet(false, true)) {
-                this.worker.wakeUp(this);
-            }
+            worker.wakeUp(this);
+            return true;
         } catch (Exception e) {
             this.submit.set(false);
+            return false;
         }
     }
 
@@ -143,11 +176,16 @@ public abstract class AbstractWorkerCommandBox<C extends Command, CB extends Com
 
     @Override
     public void process() {
-        try {
-            doProcess();
-        } finally {
-            this.submit.set(false);
-        }
+        // 清标志与受理竞态闭环：上一轮有进展且仍有存量（清标志前后新受理）时持标自驱下一轮
+        // ——不丢唤醒且不依赖外部再提交（规格5）；无进展轮次（如全部延迟未到点）停手，
+        // 把驱动权交还唤醒/心跳，避免对未到点命令空转忙等
+        do {
+            try {
+                doProcess();
+            } finally {
+                this.submit.set(false);
+            }
+        } while (this.runSize > 0 && !isEmpty() && this.submit.compareAndSet(false, true));
     }
 
     protected void doProcess() {

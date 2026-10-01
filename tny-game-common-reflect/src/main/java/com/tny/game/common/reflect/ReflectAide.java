@@ -203,7 +203,8 @@ public class ReflectAide {
     }
 
     public static boolean isGetter(Method method) {
-        return checkProperty(method) && checkSetter(method);
+        // 原实现误调 checkSetter：getter 判 false、setter 判 true，语义完全颠倒
+        return checkProperty(method) && checkGetter(method);
     }
 
     public static boolean isSetter(Method method) {
@@ -215,9 +216,19 @@ public class ReflectAide {
     }
 
     private static boolean checkGetter(Method method) {
-        Class<?> returnClazz = method.getReturnType();
         String methodName = method.getName();
-        return methodName.startsWith("get") || methodName.startsWith("is") && (returnClazz == boolean.class || returnClazz == Boolean.class);
+        if (method.getParameterCount() != 0 || method.getReturnType() == void.class) {
+            // getter 形态必须无参且非 void（原实现 getFoo(String) 也算 getter）
+            return false;
+        }
+        if (methodName.startsWith("get")) {
+            return true;
+        }
+        if (methodName.startsWith("is")) {
+            Class<?> returnClazz = method.getReturnType();
+            return returnClazz == boolean.class || returnClazz == Boolean.class;
+        }
+        return false;
     }
 
     private static boolean checkSetter(Method method) {
@@ -265,42 +276,57 @@ public class ReflectAide {
      * @return 返回泛型列表
      */
     public static List<Class<?>> getComponentType(Class<?> clazz, Class<?> genericClass) {
-        List<Class<?>> classes = new ArrayList<>();
-        if (genericClass.isInterface()) {
-            for (Type type : clazz.getGenericInterfaces()) {
-                if (!(type instanceof ParameterizedType)) {
-                    continue;
-                }
-                ParameterizedType paramType = (ParameterizedType) type;
-                if (paramType.getRawType() != genericClass) {
-                    continue;
-                }
-                for (Type t : paramType.getActualTypeArguments()) {
-                    if (t instanceof Class) {
-                        classes.add((Class<?>) t);
-                    } else if (t instanceof ParameterizedType) {
-                        classes.add((Class<?>) ((ParameterizedType) t).getRawType());
-                    }
-                }
+        return getComponentTypeInternal(clazz, genericClass,
+                new java.util.LinkedHashSet<>(), new java.util.HashSet<>());
+    }
+
+    /**
+     * 沿"直接泛型接口 + 父类链"逐层查找目标泛型声明（原只查直接父层：接口经抽象类中转时
+     * 返回空，消费点静默跳过注册）。命中即收集其实际类型参数；visited 防环、结果按发现序去重。
+     */
+    private static List<Class<?>> getComponentTypeInternal(Class<?> clazz, Class<?> genericClass,
+            Set<Class<?>> collected, Set<Class<?>> seen) {
+        if (clazz == null || clazz == Object.class || !seen.add(clazz)) {
+            return new ArrayList<>(collected);
+        }
+        collectTypeArgs(clazz.getGenericInterfaces(), genericClass, collected);
+        collectTypeArgs(new Type[]{clazz.getGenericSuperclass()}, genericClass, collected);
+        for (Type type : clazz.getGenericInterfaces()) {
+            Class<?> raw = rawClass(type);
+            if (raw != null) {
+                getComponentTypeInternal(raw, genericClass, collected, seen);
             }
-        } else {
-            Type type = clazz.getGenericSuperclass();
+        }
+        getComponentTypeInternal(clazz.getSuperclass(), genericClass, collected, seen);
+        return new ArrayList<>(collected);
+    }
+
+    private static Class<?> rawClass(Type type) {
+        if (type instanceof Class) {
+            return (Class<?>) type;
+        }
+        if (type instanceof ParameterizedType) {
+            return (Class<?>) ((ParameterizedType) type).getRawType();
+        }
+        return null;
+    }
+
+    private static void collectTypeArgs(Type[] types, Class<?> genericClass, Set<Class<?>> collected) {
+        for (Type type : types) {
             if (!(type instanceof ParameterizedType)) {
-                return classes;
+                continue;
             }
             ParameterizedType paramType = (ParameterizedType) type;
             if (paramType.getRawType() != genericClass) {
-                return classes;
+                continue;
             }
             for (Type t : paramType.getActualTypeArguments()) {
-                if (t instanceof Class) {
-                    classes.add((Class<?>) t);
-                } else if (t instanceof ParameterizedType) {
-                    classes.add((Class<?>) ((ParameterizedType) t).getRawType());
+                Class<?> raw = rawClass(t);
+                if (raw != null) {
+                    collected.add(raw);
                 }
             }
         }
-        return classes;
     }
 
 }

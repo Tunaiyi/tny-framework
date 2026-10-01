@@ -26,11 +26,10 @@ public class Base62 {
 
     private static final char CODEFLAG = '9';
 
-    private static StringBuilder out = new StringBuilder();
+    // 特例码表：'9' 后随 A/B/C 表示 61/62/63（一次性初始化，避免每次解码重复 put 的线程安全隐患）
+    private static final Map<Character, Integer> CODE_MAP = Map.of('A', 61, 'B', 62, 'C', 63);
 
-    private static Map<Character, Integer> CODE_MAP = new HashMap<>();
-
-    private static void Append(int b) {
+    private static void Append(StringBuilder out, int b) {
         if (b < 61) {
             out.append(CODES.charAt(b));
         } else {
@@ -43,8 +42,8 @@ public class Base62 {
 
     public static String base62Encode(byte[] in) {
 
-        // Reset output StringBuilder
-        out.setLength(0);
+        // 每次编码独立输出缓冲（原静态 StringBuilder 并发调用会互相覆盖结果）
+        StringBuilder out = new StringBuilder((in.length / 3 + 1) * 4);
 
         //
         int b;
@@ -54,33 +53,33 @@ public class Base62 {
 
             // #1 char
             b = (in[i] & 0xFC) >> 2;
-            Append(b);
+            Append(out, b);
 
             b = (in[i] & 0x03) << 4;
             if (i + 1 < in.length) {
 
                 // #2 char
                 b |= (in[i + 1] & 0xF0) >> 4;
-                Append(b);
+                Append(out, b);
 
                 b = (in[i + 1] & 0x0F) << 2;
                 if (i + 2 < in.length) {
 
                     // #3 char
                     b |= (in[i + 2] & 0xC0) >> 6;
-                    Append(b);
+                    Append(out, b);
 
                     // #4 char
                     b = in[i + 2] & 0x3F;
-                    Append(b);
+                    Append(out, b);
 
                 } else {
                     // #3 char, last char
-                    Append(b);
+                    Append(out, b);
                 }
             } else {
                 // #2 char, last char
-                Append(b);
+                Append(out, b);
             }
         }
 
@@ -88,11 +87,6 @@ public class Base62 {
     }
 
     public static byte[] base62Decode(char[] inChars) {
-
-        // Map for special code followed by CODEFLAG '9' and its code index
-        CODE_MAP.put('A', 61);
-        CODE_MAP.put('B', 62);
-        CODE_MAP.put('C', 63);
 
         ArrayList<Byte> decodedList = new ArrayList<>();
 

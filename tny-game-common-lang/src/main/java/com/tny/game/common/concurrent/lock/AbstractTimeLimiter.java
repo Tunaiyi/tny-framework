@@ -47,8 +47,10 @@ public abstract class AbstractTimeLimiter implements TimeLimited {
         long now = System.currentTimeMillis();
         long lastTime = this.last.get();
         while (true) {
-            if (this.last.compareAndSet(lastTime, now <= lastTime ? now + this.interval : -1L)) {
-                return this.last.get() > -1;
+            long next = now <= lastTime ? now + this.interval : -1L;
+            // 判定基于本次原子写入的自身值（原"写后再读全局"会被他人随后的过期写翻转出误判窗）
+            if (this.last.compareAndSet(lastTime, next)) {
+                return next > -1;
             }
             now = System.currentTimeMillis();
             lastTime = this.last.get();

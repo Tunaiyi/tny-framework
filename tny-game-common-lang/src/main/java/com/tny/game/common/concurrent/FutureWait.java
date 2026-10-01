@@ -26,7 +26,9 @@ class FutureWait<R> implements Wait<R> {
 
     private final Future<R> future;
 
-    private byte state = EXECUTE;
+    // 终态判定跨线程立即可见：state 必须 volatile——发布序"先写 value/cause、后写 state"，
+    // 读侧判 SUCCESS/FAILED（volatile 读 state）后读到的值必为完成方发布的最终值
+    private volatile byte state = EXECUTE;
 
     private volatile Throwable cause;
 

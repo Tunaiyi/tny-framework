@@ -23,8 +23,8 @@ public final class PostStarter extends Lifecycle<PostStarter, AppPostStart> {
     public static PostStarter value(Class<? extends AppPostStart> clazz, LifecyclePriority lifeCycleLevel) {
         PostStarter lifecycle = getLifecycle(PostStarter.class, clazz);
         if (lifecycle == null) {
-            lifecycle = new PostStarter(clazz, lifeCycleLevel);
-            putLifecycle(PostStarter.class, lifecycle);
+            // 并发首注册：putIfAbsent 语义返回唯一实例（原 check-then-act 会丢失注册或抛"已经存在"）
+            lifecycle = putIfAbsentLifecycle(PostStarter.class, new PostStarter(clazz, lifeCycleLevel));
         }
         return lifecycle;
     }
@@ -36,6 +36,11 @@ public final class PostStarter extends Lifecycle<PostStarter, AppPostStart> {
     @Override
     protected PostStarter of(Class<? extends AppPostStart> clazz) {
         return value(clazz);
+    }
+
+    @Override
+    protected PostStarter of(Class<? extends AppPostStart> clazz, LifecyclePriority priority) {
+        return value(clazz, priority);
     }
 
 }

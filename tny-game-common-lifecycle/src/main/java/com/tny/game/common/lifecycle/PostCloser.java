@@ -11,7 +11,7 @@
 package com.tny.game.common.lifecycle;
 
 /**
- * 启动后初始化器
+ * 关闭后清理器
  * Created by Kun Yang on 16/7/24.
  */
 public final class PostCloser extends Lifecycle<PostCloser, AppClosed> {
@@ -23,8 +23,8 @@ public final class PostCloser extends Lifecycle<PostCloser, AppClosed> {
     public static PostCloser value(Class<? extends AppClosed> clazz, LifecyclePriority lifeCycleLevel) {
         PostCloser lifecycle = getLifecycle(PostCloser.class, clazz);
         if (lifecycle == null) {
-            lifecycle = new PostCloser(clazz, lifeCycleLevel);
-            putLifecycle(PostCloser.class, lifecycle);
+            // 并发首注册：putIfAbsent 语义返回唯一实例（原 check-then-act 会丢失注册或抛"已经存在"）
+            lifecycle = putIfAbsentLifecycle(PostCloser.class, new PostCloser(clazz, lifeCycleLevel));
         }
         return lifecycle;
     }
@@ -36,6 +36,11 @@ public final class PostCloser extends Lifecycle<PostCloser, AppClosed> {
     @Override
     protected PostCloser of(Class<? extends AppClosed> clazz) {
         return value(clazz);
+    }
+
+    @Override
+    protected PostCloser of(Class<? extends AppClosed> clazz, LifecyclePriority priority) {
+        return value(clazz, priority);
     }
 
 }

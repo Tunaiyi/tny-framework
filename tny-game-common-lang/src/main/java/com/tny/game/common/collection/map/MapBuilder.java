@@ -33,12 +33,9 @@ public class MapBuilder<K, V> {
         return new MapBuilder<>(new HashMap<>());
     }
 
-    public static <K, V> MapBuilder<K, V> newBuilder(MapRef<K, V> ref) {
-        return new MapBuilder<>(new HashMap<>());
-    }
-
     public static <K, V> MapBuilder<K, V> newBuilder(Map<K, V> map) {
-        return new MapBuilder<>(map);
+        // 装载入参内容并隔离：产物与源映射双向不穿透（原直接包装活引用）
+        return new MapBuilder<>(new HashMap<>(map));
     }
 
     public static <K, V> MapBuilder<K, V> newBuilder(Supplier<Map<K, V>> supplier) {

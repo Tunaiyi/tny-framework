@@ -15,82 +15,63 @@ import com.tny.game.common.reflect.*;
 
 import java.lang.reflect.*;
 
+/**
+ * cglib 面属性访问器门面——状态与语义收敛至 {@link PropertyAccessorSupport}（组5），
+ * public/protected 成员与实现关系逐字冻结（薄委托）。
+ */
 public class CGlibPropertyAccessor implements PropertyAccessor {
 
-    private String name;
-
-    private MethodAccessor reader;
-
-    private MethodAccessor writer;
-
-    private Class<?> type;
+    private final PropertyAccessorSupport support = new PropertyAccessorSupport();
 
     @Override
     public String getName() {
-        return this.name;
+        return this.support.getName();
     }
 
     @Override
     public boolean isReadable() {
-        return this.reader != null;
+        return this.support.isReadable();
     }
 
     @Override
     public boolean isWritable() {
-        return this.writer != null;
+        return this.support.isWritable();
     }
 
     @Override
     public Class<?> getPropertyType() {
-        return this.type;
+        return this.support.getPropertyType();
     }
 
     @Override
     public Type getGenericType() {
-        if (this.reader != null) {
-            return this.reader.getJavaMethod().getGenericReturnType();
-        } else if (this.writer != null) {
-            return this.writer.getJavaMethod().getGenericParameterTypes()[0];
-        }
-        return null;
+        return this.support.getGenericType();
     }
 
     @Override
     public Object getPropertyValue(Object instance) throws InvocationTargetException {
-        if (instance == null) {
-            return null;
-        }
-        if (this.reader == null) {
-            throw new UnsupportedOperationException(instance.getClass() + "不支持 [" + this.name + "] 属性 Getter 方法");
-        }
-        return this.reader.invoke(instance, new Object[]{this.type});
+        return this.support.getPropertyValue(instance);
     }
 
     protected void setName(String name) {
-        this.name = name;
+        this.support.setName(name);
     }
 
     protected void setReader(MethodAccessor reader) {
-        this.reader = reader;
+        this.support.setReader(reader);
     }
 
     protected void setWriter(MethodAccessor writer) {
-        this.writer = writer;
+        this.support.setWriter(writer);
     }
 
     protected void setType(Class<?> type) {
-        this.type = type;
+        this.support.setType(type);
     }
 
     @Override
     public void setPropertyValue(Object instance, Object value) throws InvocationTargetException {
-        if (instance == null) {
-            return;
-        }
-        if (this.writer == null) {
-            throw new UnsupportedOperationException(instance.getClass() + "不支持 [" + this.name + "] 属性 Setter 方法");
-        }
-        this.writer.invoke(instance, new Object[]{value});
+        this.support.setPropertyValue(instance, value);
     }
 
 }

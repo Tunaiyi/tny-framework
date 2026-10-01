@@ -51,7 +51,9 @@ public class ConfigBuilder {
     }
 
     public Config build() {
-        return new PropertiesConfig(this.properties, this.formatters.toArray(new ConfigFormatter[this.formatters.size()]));
+        // 防御复制：不把构建器活映射交入配置（后续 put 穿透/并发读竞态）
+        return new PropertiesConfig(new HashMap<>(this.properties),
+                this.formatters.toArray(new ConfigFormatter[this.formatters.size()]));
     }
 
 }

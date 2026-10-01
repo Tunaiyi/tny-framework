@@ -128,14 +128,15 @@ public class StringAide {
     }
 
     /**
-     * 如果 value is blank 返回 value, 否则返回elseValue
+     * 如果 value 非空白返回 value, 否则返回 elseValue（与 Supplier 重载语义一致；
+     * 原实现两分支写反且与另一重载互相矛盾）
      *
      * @param value     值
      * @param elseValue 其他值
-     * @return value is blank 返回 value, 否则返回elseValue
+     * @return value 非空白返回 value, 否则返回 elseValue
      */
     public static String ifNotBlank(String value, String elseValue) {
-        if (isBlank(value)) {
+        if (isNotBlank(value)) {
             return value;
         }
         return elseValue;

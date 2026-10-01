@@ -86,7 +86,7 @@ public abstract class BaseCipher implements AnyCipher {
     @Override
     public String encrypt(String data) throws Exception {
         Cipher cipher = this.encryptCipher.get().getCipher();
-        byte[] encrypted = cipher.doFinal(data.getBytes());
+        byte[] encrypted = cipher.doFinal(data.getBytes(UTF_8));
         return Base64.getUrlEncoder().encodeToString(encrypted);
     }
 

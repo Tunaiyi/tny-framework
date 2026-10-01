@@ -21,6 +21,8 @@ dependencies {
     compileOnly project(":tny-game-net-netty4-codec-jprotobuf")
     compileOnly libs.alibaba_cloud_starter_nacos_discovery
     testImplementation libs.alibaba_cloud_starter_nacos_discovery
+    // 绑定钉桩需运行时构造 SpringNettyChannelSetting（构造器硬引用 jprotobuf codec 类，主源集 compileOnly 不进 test 运行时）
+    testImplementation project(":tny-game-net-netty4-codec-jprotobuf")
 
 }
 

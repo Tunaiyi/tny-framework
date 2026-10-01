@@ -11,6 +11,7 @@
 
 package com.tny.game.basics.mould;
 
+import com.tny.game.basics.utlis.*;
 import com.tny.game.common.enums.*;
 import com.tny.game.common.io.config.*;
 
@@ -26,40 +27,41 @@ public final class Moulds extends ClassImporter {
     private Moulds() {
     }
 
+    //    可见性现状保留（D5）：本类 register 为 public 装载入口（兄弟门面为包私有）
     public static void register(Mould value) {
-        holder.register(value);
+        EnumRegistrySupport.register(holder, value);
     }
 
     public static <T extends Mould> T check(String key) {
-        return holder.check(key, "获取 {} Mould 不存在", key);
+        return EnumRegistrySupport.check(holder, key, "Mould");
     }
 
     public static <T extends Mould> T check(int id) {
-        return holder.check(id, "获取 ID为 {} 的 Mould 不存在", id);
+        return EnumRegistrySupport.check(holder, id, "Mould");
     }
 
     public static <T extends Mould> T of(int id) {
-        return holder.of(id);
+        return EnumRegistrySupport.of(holder, id);
     }
 
     public static <T extends Mould> T of(String key) {
-        return holder.of(key);
+        return EnumRegistrySupport.of(holder, key);
     }
 
     public static <T extends Mould> Optional<T> option(int id) {
-        return holder.option(id);
+        return EnumRegistrySupport.option(holder, id);
     }
 
     public static <T extends Mould> Optional<T> option(String key) {
-        return holder.option(key);
+        return EnumRegistrySupport.option(holder, key);
     }
 
     public static <T extends Mould> Collection<T> all() {
-        return holder.allValues();
+        return EnumRegistrySupport.all(holder);
     }
 
     public static Enumerator<Mould> enumerator() {
-        return holder;
+        return EnumRegistrySupport.enumerator(holder);
     }
 
 }

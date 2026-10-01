@@ -288,15 +288,20 @@ public class HashAide {
 
     /**
      * CRC哈希
+     * <p>
+     * 定义域为文本的 UTF-8 字节序列（逐字节按无符号解释）。
+     * 纯 ASCII 输入与修复前（UTF-16 码元索引）逐位一致；
+     * 非 ASCII 输入此前会越界抛 ArrayIndexOutOfBoundsException，现为有值域（BREAKING：单向扩大）。
      *
      * @param data
      * @return
      */
     public static int crcStringHash32(String data) {
-        int size = data.length();
-        int hash = data.length();
+        byte[] bytes = data.getBytes(CHARSET);
+        int size = bytes.length;
+        int hash = size;
         for (int index = 0; index < size; index++) {
-            hash = (hash >> 8) ^ crcTable[(hash & 0xff) ^ data.charAt(index)];
+            hash = (hash >> 8) ^ crcTable[(hash & 0xff) ^ (bytes[index] & 0xff)];
         }
         return hash;
     }
@@ -450,17 +455,18 @@ public class HashAide {
             hash ^= ((hash >> 16) & 0xffffffff);
         }
 
-        // remaining bytes
+        // remaining bytes（尾字节按无符号 0~255 参与，对齐主循环与 murmur2 的 & 0xff 写法；
+        // 原缺 & 0xff 时高位字节经符号扩展污染折叠值——ASCII 输入结果不变，尾含高位字节的输入哈希值改变 BREAKING）
         int offset = length4 << 2;
         switch (length & 3) {
             case 3:
-                hash += ((bytes[offset + 2] << 16) & 0xffffffff);
-
+                hash += (((bytes[offset + 2] & 0xff) << 16) & 0xffffffff);
+                // fall through
             case 2:
-                hash += ((bytes[offset + 1] << 8) & 0xffffffff);
-
+                hash += (((bytes[offset + 1] & 0xff) << 8) & 0xffffffff);
+                // fall through
             case 1:
-                hash += ((bytes[offset]) & 0xffffffff);
+                hash += ((bytes[offset] & 0xff) & 0xffffffff);
                 hash = ((hash * m) & 0xffffffff);
                 hash ^= ((hash >> r) & 0xffffffff);
         }

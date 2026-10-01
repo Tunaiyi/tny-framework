@@ -11,6 +11,8 @@
 
 package com.tny.game.common.runtime;
 
+import org.slf4j.LoggerFactory;
+
 import org.slf4j.Logger;
 
 import java.time.*;
@@ -29,6 +31,10 @@ public class ProcessTracer implements AutoCloseable {
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS", Locale.getDefault())
             .withZone(ZoneId.systemDefault());
 
+    /** nanoTime 时基 → 墙钟毫秒的换算偏移（类加载期定格；起止日志同用，声明为墙钟估计） */
+    private static final long WALL_CLOCK_OFFSET =
+            System.currentTimeMillis() - TimeUnit.NANOSECONDS.toMillis(System.nanoTime());
+
     private final Object watcher;
 
     private final Object id;
@@ -42,6 +48,11 @@ public class ProcessTracer implements AutoCloseable {
     private final TrackPrintOption printOption;
 
     private final TraceOnDone callback;
+
+    /** 观测目标（登记键）回读，供 RunChecker 结束路径做旁路判定与精确回收 */
+    Object getWatcher() {
+        return this.watcher;
+    }
 
     ProcessTracer(Object watcher, Object id, Logger logger, TrackPrintOption printOption, TraceOnDone callback) {
         super();
@@ -62,7 +73,9 @@ public class ProcessTracer implements AutoCloseable {
             if (this.printOption.isOnStart()) {
                 this.log(LogFragment
                         .message("执行监控 [ {} ] 跟踪执行 < {} > | 开始 [>>] : {}", this.watcher, this.getId(),
-                                FORMATTER.format(Instant.ofEpochMilli(TimeUnit.MICROSECONDS.toMillis(this.startAt))))
+                                // 微秒时值换算墙钟毫秒（与结束侧同一单位与基准）
+                                FORMATTER.format(Instant.ofEpochMilli(
+                                        TimeUnit.MICROSECONDS.toMillis(this.startAt) + WALL_CLOCK_OFFSET)))
                         .append(message, params));
             }
         }
@@ -90,18 +103,33 @@ public class ProcessTracer implements AutoCloseable {
             if (this.printOption.isOnEnd()) {
                 this.log(LogFragment
                         .message("执行监控 [ {} ] 跟踪执行 < {} > | 结束 [!!] : {}", this.watcher, this.getId(),
-                                FORMATTER.format(Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(this.endAt))))
+                                // 原 NANOSECONDS.toMillis(endAt) 把微秒当纳秒：与开始侧差千倍
+                                FORMATTER.format(Instant.ofEpochMilli(
+                                        TimeUnit.MICROSECONDS.toMillis(this.endAt) + WALL_CLOCK_OFFSET)))
                         .append(message, params));
             }
         }
     }
 
+    /** 未开始即结束/未结束等无效态的安全哨兵（读数 0，供 RunChecker 未开始路径返回） */
+    static ProcessTracer notStarted() {
+        ProcessTracer sentinel = new ProcessTracer("N/A", "N/A",
+                LoggerFactory.getLogger(ProcessTracer.class), TrackPrintOption.CLOSE, null);
+        sentinel.startAt = 0;
+        sentinel.endAt = 0;
+        return sentinel;
+    }
+
     public long costMicroTime() {
+        if (this.startAt < 0 || this.endAt < 0) {
+            // 未开始/未结束的差值拼出天文数字=无效观测；显式失败（哨兵实例读 0）
+            throw new IllegalStateException("跟踪未处于完整周期: startAt=" + this.startAt + ", endAt=" + this.endAt);
+        }
         return this.endAt - this.startAt;
     }
 
     public long costMillisTime() {
-        return TimeUnit.MICROSECONDS.toMillis(this.endAt - this.startAt);
+        return TimeUnit.MICROSECONDS.toMillis(costMicroTime());
     }
 
     public ProcessTracer done() {

@@ -16,6 +16,7 @@ import org.quartz.*;
 import org.quartz.impl.triggers.*;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * <p>
@@ -48,6 +49,14 @@ public class TimeTaskTrigger implements Comparable<TimeTaskTrigger> {
 
     private TimeTaskScheme scheme;
 
+    /**
+     * 同刻触发的定序序号：保证 compareTo 全序且不同实例互不相等
+     * （原实现相等返回 -1，破坏 Comparable 契约，跳表取 first/pollFirst 顺序未定义）。
+     */
+    private static final AtomicLong SEQ = new AtomicLong();
+
+    private final long sequence = SEQ.incrementAndGet();
+
     public TimeTaskTrigger(TimeTaskScheme scheme, long stopTime) {
         this.scheme = scheme;
         Date start = stopTime > 0 ? new Date(stopTime) : new Date();
@@ -57,7 +66,8 @@ public class TimeTaskTrigger implements Comparable<TimeTaskTrigger> {
                 .build();
         CronTriggerImpl cronTrigger = (CronTriggerImpl) this.trigger;
         cronTrigger.setNextFireTime(start);
-        this.handlerList = new ArrayList<>(scheme.getTasks());
+        List<String> tasks = scheme.getTasks();
+        this.handlerList = tasks != null ? new ArrayList<>(tasks) : new ArrayList<>();
         this.trigger();
     }
 
@@ -66,7 +76,12 @@ public class TimeTaskTrigger implements Comparable<TimeTaskTrigger> {
      */
     public void trigger() {
         this.trigger.triggered(null);
-        this.fireTime = this.trigger.getNextFireTime().getTime();
+        Date nextFireTime = this.trigger.getNextFireTime();
+        if (nextFireTime == null) {
+            // cron 无未来触发点（如固定年份已过期）：显式失败，交由调度器按方案隔离，不得 NPE 连坐
+            throw new IllegalStateException("cron 方案 [" + this.scheme.getCron() + "] 无未来触发时间");
+        }
+        this.fireTime = nextFireTime.getTime();
     }
 
     /**
@@ -89,8 +104,8 @@ public class TimeTaskTrigger implements Comparable<TimeTaskTrigger> {
 
     @Override
     public int compareTo(TimeTaskTrigger o) {
-        long value = this.fireTime - o.fireTime;
-        return value > 0 ? 1 : -1;
+        int result = Long.compare(this.fireTime, o.fireTime);
+        return result != 0 ? result : Long.compare(this.sequence, o.sequence);
     }
 
     @Override

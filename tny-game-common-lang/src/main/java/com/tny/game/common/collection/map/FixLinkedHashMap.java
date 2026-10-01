@@ -12,6 +12,7 @@
 package com.tny.game.common.collection.map;
 
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class FixLinkedHashMap<K, V> extends LinkedHashMap<K, V> {
 
@@ -24,12 +25,17 @@ public class FixLinkedHashMap<K, V> extends LinkedHashMap<K, V> {
 
     public FixLinkedHashMap(int maxSize) {
         super();
+        // 规格『非正上限构造失败』：非正上限会产出 put 即自驱逐的行为未定义实例，构造显式拒绝
+        if (maxSize <= 0) {
+            throw new IllegalArgumentException("maxSize must be positive, but was: " + maxSize);
+        }
         this.maxSize = maxSize;
     }
 
     @Override
-    protected boolean removeEldestEntry(java.util.Map.Entry<K, V> eldest) {
-        return this.size() >= this.maxSize;
+    protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
+        // 原 >= 使插入后即刻自我驱逐、实际容量恒为 maxSize-1（maxSize=1 放进即空）
+        return this.size() > this.maxSize;
     }
 
     public static void main(String[] args) {

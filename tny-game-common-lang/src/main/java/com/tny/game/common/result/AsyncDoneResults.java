@@ -182,14 +182,5 @@ public class AsyncDoneResults {
         return CompletableFuture.completedFuture(result);
     }
 
-    public static void move(int times) {
-        for (int i = 0; i < times; i++) {
-            System.out.println(i + " 我是杨屁屁");
-        }
-    }
-
-    public static void main(String[] args) {
-        move(10);
-    }
 
 }

@@ -51,13 +51,12 @@ public class LocalNum<N extends Number> extends Number {
     }
 
     public N add(short num) {
-        int value = this.number.shortValue() + num;
-        return this.number = NumberAide.as(value, this.number);
+        // 存储值保持原精度、参数加宽运算（原实现先把存储值截断到窄宽度）
+        return this.add((long) num);
     }
 
     public N add(byte num) {
-        int value = this.number.byteValue() + num;
-        return this.number = NumberAide.as(value, this.number);
+        return this.add((long) num);
     }
 
     public N add(LocalNum<?> num) {
@@ -89,13 +88,11 @@ public class LocalNum<N extends Number> extends Number {
     }
 
     public N sub(short num) {
-        int value = this.number.shortValue() - num;
-        return this.number = NumberAide.as(value, this.number);
+        return this.sub((long) num);
     }
 
     public N sub(byte num) {
-        int value = this.number.byteValue() - num;
-        return this.number = NumberAide.as(value, this.number);
+        return this.sub((long) num);
     }
 
     public N sub(LocalNum<?> num) {
@@ -123,13 +120,11 @@ public class LocalNum<N extends Number> extends Number {
     }
 
     public N multiply(short num) {
-        int value = this.number.shortValue() * num;
-        return this.number = NumberAide.as(value, this.number);
+        return this.multiply((long) num);
     }
 
     public N multiply(byte num) {
-        int value = this.number.byteValue() * num;
-        return this.number = NumberAide.as(value, this.number);
+        return this.multiply((long) num);
     }
 
     public N multiply(LocalNum<?> num) {
@@ -157,8 +152,7 @@ public class LocalNum<N extends Number> extends Number {
     }
 
     public N divide(short num) {
-        int value = this.number.shortValue() / num;
-        return this.number = NumberAide.as(value, this.number);
+        return this.divide((long) num);
     }
 
     public N divide(LocalNum<?> num) {
@@ -166,8 +160,7 @@ public class LocalNum<N extends Number> extends Number {
     }
 
     public N divide(byte num) {
-        int value = this.number.byteValue() / num;
-        return this.number = NumberAide.as(value, this.number);
+        return this.divide((long) num);
     }
 
     public N mod(int num) {
@@ -191,13 +184,11 @@ public class LocalNum<N extends Number> extends Number {
     }
 
     public N mod(short num) {
-        int value = this.number.shortValue() % num;
-        return this.number = NumberAide.as(value, this.number);
+        return this.mod((long) num);
     }
 
     public N mod(byte num) {
-        int value = this.number.byteValue() % num;
-        return this.number = NumberAide.as(value, this.number);
+        return this.mod((long) num);
     }
 
     public N mod(LocalNum<?> num) {

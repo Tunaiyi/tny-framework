@@ -128,11 +128,17 @@ public class MathAide {
     public static <V> V lot(List<?> randomItemList) {
         List<RandomObject<V>> itemList = new ArrayList<>();
         int number = 0;
+        if (randomItemList.size() % 2 != 0) {
+            throw new IllegalArgumentException("成对参数 [权重,值] 长度为奇数: " + randomItemList.size());
+        }
         for (int index = 0; index < randomItemList.size(); index = index + 2) {
             Integer value = (Integer) randomItemList.get(index);
             V object = ObjectAide.as(randomItemList.get(index + 1));
             number += value;
             itemList.add(new RandomObject<>(object, number));
+        }
+        if (number <= 0) {
+            throw new IllegalArgumentException("权重总和必须为正: " + number);
         }
         int value = ThreadLocalRandom.current().nextInt(number);
         for (RandomObject<V> item : itemList) {
@@ -156,15 +162,20 @@ public class MathAide {
     }
 
     public static <V> List<V> randObjects(int number, int times, List<RandomObject<V>> items, V defItem) {
-        List<V> list = new ArrayList<>();
+        List<V> list = new ArrayList<>(times);
         for (int index = 0; index < times; index++) {
             int value = ThreadLocalRandom.current().nextInt(number);
+            V hit = null;
+            boolean matched = false;
             for (RandomObject<V> item : items) {
+                // 每轮恰一：首个累积上界命中即止（原无 break 一次叠加多值、且无条件追加默认值）
                 if (value < item.getValue()) {
-                    list.add(item.getObject());
+                    hit = item.getObject();
+                    matched = true;
+                    break;
                 }
             }
-            list.add(defItem);
+            list.add(matched ? hit : defItem);
         }
         return list;
     }
@@ -231,13 +242,17 @@ public class MathAide {
      * @return
      */
     public static <V> V rand(final int number, List<Object> randomItemList, V defaultObject) {
+        // 文档语义：值即区间上端点（[100:"a",200:"b"] → a:0-99、b:100-199，超出全部端点取默认）。
+        // 原实现的罪不在端点构造而在 Collections.sort——降序排序使最大端点先命中、垄断全部低值区间。
+        if (randomItemList.size() % 2 != 0) {
+            throw new IllegalArgumentException("成对参数 [上界端点,值] 长度为奇数: " + randomItemList.size());
+        }
         List<RandomObject<V>> itemList = new ArrayList<>();
         for (int index = 0; index < randomItemList.size(); index = index + 2) {
-            Integer value = (Integer) randomItemList.get(index);
+            Integer bound = (Integer) randomItemList.get(index);
             V object = ObjectAide.as(randomItemList.get(index + 1));
-            itemList.add(new RandomObject<>(object, value));
+            itemList.add(new RandomObject<>(object, bound));
         }
-        Collections.sort(itemList);
         int value = ThreadLocalRandom.current().nextInt(number);
         for (RandomObject<V> item : itemList) {
             if (value < item.getValue()) {
@@ -343,9 +358,14 @@ public class MathAide {
                 }
             }
             if (prob == null) {
-                prob = sortedMap.lastKey();
+                if (sortedMap.isEmpty()) {
+                    throw new IllegalArgumentException("概率表不能为空");
+                }
+                // 超阈后取最大档的"概率值"（原误取次数键当概率，概率被缩为 3/10000 级）
+                prob = sortedMap.get(sortedMap.lastKey());
             }
-            int randValue = rand(0, 10000);
+            // [0,9999] 均匀：命中概率 = prob/10000（rand(0,10000) 含上界致万分率失真）
+            int randValue = ThreadLocalRandom.current().nextInt(10000);
             drop = randValue < prob;
         } else {
             drop = certainly > 0;
@@ -398,7 +418,8 @@ public class MathAide {
         int certainly = checkCertainly(time, num, extra, currentTime, currentNum);
         boolean drop;
         if (certainly == 0) {
-            int randValue = rand(0, 10000);
+            // [0,9999] 均匀：命中概率 = prob/10000（原 rand(0,10000) 含上界万分率失真，与 Map 版分母对齐）
+            int randValue = ThreadLocalRandom.current().nextInt(10000);
             drop = randValue < prob;
         } else {
             drop = certainly > 0;

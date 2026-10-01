@@ -98,11 +98,8 @@ public class ShutdownHook extends Thread {
 
         @Override
         public int compareTo(CloseResource o) {
-            int value = this.priority = o.priority;
-            if (value == 0) {
-                return 0;
-            }
-            return value > 0 ? 1 : -1;
+            // 原实现 this.priority = o.priority：比较变互相赋值，排序契约尽毁
+            return Integer.compare(this.priority, o.priority);
         }
 
     }

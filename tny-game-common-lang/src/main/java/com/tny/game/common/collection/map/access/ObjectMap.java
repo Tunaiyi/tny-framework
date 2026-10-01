@@ -49,6 +49,8 @@ public class ObjectMap extends HashMap<String, Object> implements TypeMap {
 
     @Override
     public <T> T getObject(String key, T defaultValue) {
+        // 收口复核：本覆写与 MapAccessor 接口 default 逐字同形，但本类为已发布 public 类，删声明即缩公共面
+        // （P11 签名冻结），故保留；其与接口默认实现等价的现状已由 MapConvertAccessContractTest 钉桩。
         T value = getObject(key);
         return value != null ? value : defaultValue;
     }
@@ -156,6 +158,9 @@ public class ObjectMap extends HashMap<String, Object> implements TypeMap {
 
     @Override
     public float getFloat(String key, float defaultValue) {
+        // D4 遗留登记（禁止顺手修）：recon 期现状为 float.class 致值存在必抛 CCE；基线树经 ObjectAide.convertTo
+        // 基本类型分支消化为正常返回。缺陷实参原样保留（与 Wrapper 侧 Float.class 的差异由参数承载，单一事实源），
+        // 不可转换格 CCE 消息尾段 "float" vs "class java.lang.Float" 分叉已由 MapConvertAccessContractTest 逐字钉死。
         return asObject(key, defaultValue, float.class);
     }
 
@@ -181,27 +186,20 @@ public class ObjectMap extends HashMap<String, Object> implements TypeMap {
         return MapAccessors.cast(value, defaultValue);
     }
 
+    /**
+     * 取值链尾段收敛至共享引擎（reduce-code-duplication D4）：取径差异（本类经 getObject(key)，可被子类化覆写）
+     * 留在门面，null 判定/缺省/宽松转换单一事实源。
+     */
     private <T> T asObject(String key, T defaultValue, Class<T> valueClass) {
-        T value = getObject(key);
-        if (value == null) {
-            return defaultValue;
-        }
-        return convertTo(value, valueClass);
+        return MapConvertAccessSupport.convertOrNull(getObject(key), defaultValue, valueClass);
     }
 
     private <T> T asNotNullObject(String key, Class<T> valueClass) {
-        Object value = getObject(key);
-        if (value == null) {
-            throw new NullPointerException("[" + key + "] value is null");
-        }
-        return convertTo(value, valueClass);
+        return MapConvertAccessSupport.convertRequired(getObject(key), key, valueClass);
     }
 
     public <T> void getNotNullToFunction(String key, Function<T, ?> function, Class<T> valueClass) {
-        Object value = getObject(key);
-        if (value != null) {
-            function.apply(convertTo(value, valueClass));
-        }
+        MapConvertAccessSupport.convertIfPresent(getObject(key), valueClass, function);
     }
 
 }

@@ -46,4 +46,30 @@ public class ImmutableEntry<K, V> implements Entry<K, V>, Serializable {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * 内容判等（原按引用致集合去重/查找语义失效）；null 键值正常参与。
+     */
+    @Override
+    public final boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (!(other instanceof Entry)) {
+            return false;
+        }
+        Entry<?, ?> that = (Entry<?, ?>) other;
+        return java.util.Objects.equals(this.key, that.getKey())
+               && java.util.Objects.equals(this.value, that.getValue());
+    }
+
+    @Override
+    public final int hashCode() {
+        return java.util.Objects.hashCode(this.key) ^ java.util.Objects.hashCode(this.value);
+    }
+
+    @Override
+    public String toString() {
+        return this.key + "=" + this.value;
+    }
+
 }

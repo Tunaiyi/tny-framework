@@ -13,6 +13,9 @@ package com.tny.game.common.number;
 
 import com.tny.game.common.utils.*;
 
+import java.math.*;
+import java.util.function.*;
+
 import static com.tny.game.common.utils.StringAide.*;
 
 /**
@@ -88,8 +91,14 @@ public class NumberAide {
             value = source.shortValue();
         } else if (target instanceof Byte) {
             value = source.byteValue();
+        } else if (target instanceof BigDecimal) {
+            value = toBigDecimal(source);
+        } else if (target instanceof BigInteger) {
+            value = toBigInteger(source);
         } else {
-            value = source.intValue();
+            // 原 else 兜底静默折叠 intValue：交回"看似成功实则截断/错型"的实例（BREAKING：显式受控失败）
+            throw new IllegalArgumentException(
+                    format("不支持的数值目标类型 {}（源值 {}）", target == null ? "null" : target.getClass().getName(), source));
         }
         return (N) value;
     }
@@ -113,8 +122,13 @@ public class NumberAide {
             source = source.shortValue();
         } else if (Byte.class == clazz || byte.class == clazz) {
             source = source.byteValue();
+        } else if (BigDecimal.class == clazz) {
+            source = toBigDecimal(source);
+        } else if (BigInteger.class == clazz) {
+            source = toBigInteger(source);
         } else {
-            source = source.intValue();
+            // 原 else 兜底静默折叠 intValue：交回"看似成功实则截断/错型"的实例（BREAKING：显式受控失败）
+            throw new IllegalArgumentException(format("不支持的数值目标类型 {}（源值 {}）", clazz, source));
         }
         return (N) source;
     }
@@ -137,91 +151,19 @@ public class NumberAide {
                 format("{} is not number", source));
     }
 
+    @SuppressWarnings("unchecked")
     public static <N extends Number> N add(N one, N other) {
-        if (one == null) {
-            return other;
-        }
-        if (other == null) {
-            return one;
-        }
-        Class<?> numClass = findClass(one.getClass(), other.getClass());
-        if (numClass.isAssignableFrom(Integer.class)) {
-            return as(one.intValue() + other.intValue(), one);
-        }
-        if (numClass.isAssignableFrom(Long.class)) {
-            return as(one.longValue() + other.longValue(), one);
-        }
-        if (numClass.isAssignableFrom(Float.class)) {
-            return as(one.floatValue() + other.floatValue(), one);
-        }
-        if (numClass.isAssignableFrom(Double.class)) {
-            return as(one.doubleValue() + other.doubleValue(), one);
-        }
-        if (numClass.isAssignableFrom(Short.class)) {
-            return as(one.shortValue() + other.shortValue(), one);
-        }
-        if (numClass.isAssignableFrom(Byte.class)) {
-            return as(one.byteValue() + other.byteValue(), one);
-        }
-        return as(one.doubleValue() + other.doubleValue(), one);
+        return operate(one, other, ADD);
     }
 
+    @SuppressWarnings("unchecked")
     public static <N extends Number> N sub(N one, N other) {
-        if (one == null) {
-            return other;
-        }
-        if (other == null) {
-            return one;
-        }
-        Class<?> numClass = findClass(one.getClass(), other.getClass());
-        if (numClass.isAssignableFrom(Integer.class)) {
-            return as(one.intValue() - other.intValue(), one);
-        }
-        if (numClass.isAssignableFrom(Long.class)) {
-            return as(one.longValue() - other.longValue(), one);
-        }
-        if (numClass.isAssignableFrom(Float.class)) {
-            return as(one.floatValue() - other.floatValue(), one);
-        }
-        if (numClass.isAssignableFrom(Double.class)) {
-            return as(one.doubleValue() - other.doubleValue(), one);
-        }
-        if (numClass.isAssignableFrom(Short.class)) {
-            return as(one.shortValue() - other.shortValue(), one);
-        }
-        if (numClass.isAssignableFrom(Byte.class)) {
-            return as(one.byteValue() - other.byteValue(), one);
-        }
-        return as(one.doubleValue() - other.doubleValue(), one);
+        return operate(one, other, SUBTRACT);
     }
 
+    @SuppressWarnings("unchecked")
     public static <N extends Number> N multiply(N one, N other) {
-        if (one == null) {
-            return other;
-        }
-        if (other == null) {
-            return one;
-        }
-        Class<?> numClass = findClass(one.getClass(), other.getClass());
-        if (numClass.isAssignableFrom(Integer.class)) {
-            return as(one.intValue() * other.intValue(), one);
-        }
-        if (numClass.isAssignableFrom(Long.class)) {
-            return as(one.longValue() * other.longValue(), one);
-        }
-        if (numClass.isAssignableFrom(Float.class)) {
-            return as(one.floatValue() * other.floatValue(), one);
-        }
-        if (numClass.isAssignableFrom(Double.class)) {
-            return as(one.doubleValue() * other.doubleValue(), one);
-        }
-        if (numClass.isAssignableFrom(Short.class)) {
-            return as(one.shortValue() * other.shortValue(), one);
-        }
-        if (numClass.isAssignableFrom(Byte.class)) {
-            return as(one.byteValue() * other.byteValue(), one);
-        }
-        return as(one.doubleValue() * other.doubleValue(), one);
+        return operate(one, other, MULTIPLY);
     }
 
     public static <N extends Number> double divideAsDouble(N one, N other) {
@@ -252,65 +194,129 @@ public class NumberAide {
         return as(one.doubleValue() / other.doubleValue(), Float.class);
     }
 
+    @SuppressWarnings("unchecked")
     public static <N extends Number> N divide(N one, N other) {
-        if (one == null) {
-            return other;
-        }
-        if (other == null) {
-            return one;
-        }
-        Class<?> numClass = findClass(one.getClass(), other.getClass());
-        if (numClass.isAssignableFrom(Integer.class)) {
-            return as(one.intValue() / other.intValue(), one);
-        }
-        if (numClass.isAssignableFrom(Long.class)) {
-            return as(one.longValue() / other.longValue(), one);
-        }
-        if (numClass.isAssignableFrom(Float.class)) {
-            return as(one.floatValue() / other.floatValue(), one);
-        }
-        if (numClass.isAssignableFrom(Double.class)) {
-            return as(one.doubleValue() / other.doubleValue(), one);
-        }
-        if (numClass.isAssignableFrom(Short.class)) {
-            return as(one.shortValue() / other.shortValue(), one);
-        }
-        if (numClass.isAssignableFrom(Byte.class)) {
-            return as(one.byteValue() / other.byteValue(), one);
-        }
-        return as(one.doubleValue() / other.doubleValue(), one);
+        return operate(one, other, DIVIDE);
     }
 
+    @SuppressWarnings("unchecked")
     public static <N extends Number> N mod(N one, N other) {
+        return operate(one, other, MOD);
+    }
+
+    /**
+     * add/sub/multiply/divide/mod 五段同形骨架的唯一分派器（reduce-code-duplication D8：私有分派器 + 运算符 lambda）。
+     * 方法体逐字搬运自原五段克隆（null 处理/BigDecimal 优先/BigInteger/7 路 isAssignableFrom 基本类型分派/结果
+     * as(x, one) 折叠回第一操作数类型），零行为变更；现状可疑语义原样保留、禁止顺手修：
+     * <ul>
+     * <li>{@code one == null} 返回 other——sub/divide/mod 亦不取反/不抛（NumberAideTest.nullCombinations 钉桩）；</li>
+     * <li>混合类型运算通道由 findClass 决定、结果却恒按 {@code one} 窄化折叠（add(Integer,Long) 得 Integer，
+     * add(byte 100, short 300) 溢出为 -112）；</li>
+     * <li>未知数值形态兜底 double 通道后 as(x, one) 显式受控失败（fix 轮现状）。</li>
+     * </ul>
+     */
+    @SuppressWarnings("unchecked")
+    private static <N extends Number> N operate(N one, N other, NumberOperation operation) {
         if (one == null) {
             return other;
         }
         if (other == null) {
             return one;
         }
+        if (one instanceof BigDecimal || other instanceof BigDecimal) {
+            return (N) operation.bigDecimal.apply(toBigDecimal(one), toBigDecimal(other));
+        }
+        if (one instanceof BigInteger || other instanceof BigInteger) {
+            return (N) operation.bigInteger.apply(toBigInteger(one), toBigInteger(other));
+        }
         Class<?> numClass = findClass(one.getClass(), other.getClass());
         if (numClass.isAssignableFrom(Integer.class)) {
-            return as(one.intValue() % other.intValue(), one);
+            return as(operation.integer.applyAsInt(one.intValue(), other.intValue()), one);
         }
         if (numClass.isAssignableFrom(Long.class)) {
-            return as(one.longValue() % other.longValue(), one);
+            return as(operation.longValue.applyAsLong(one.longValue(), other.longValue()), one);
         }
         if (numClass.isAssignableFrom(Float.class)) {
-            return as(one.floatValue() % other.floatValue(), one);
+            return as(operation.floatValue.apply(one.floatValue(), other.floatValue()), one);
         }
         if (numClass.isAssignableFrom(Double.class)) {
-            return as(one.doubleValue() % other.doubleValue(), one);
+            return as(operation.doubleValue.applyAsDouble(one.doubleValue(), other.doubleValue()), one);
         }
         if (numClass.isAssignableFrom(Short.class)) {
-            return as(one.shortValue() % other.shortValue(), one);
+            return as(operation.integer.applyAsInt(one.shortValue(), other.shortValue()), one);
         }
         if (numClass.isAssignableFrom(Byte.class)) {
-            return as(one.byteValue() % other.byteValue(), one);
+            return as(operation.integer.applyAsInt(one.byteValue(), other.byteValue()), one);
         }
-        return as(one.doubleValue() % other.doubleValue(), one);
+        return as(operation.doubleValue.applyAsDouble(one.doubleValue(), other.doubleValue()), one);
     }
+
+    /**
+     * 基本类型通道的 int 形态运算（Integer/Short/Byte 三路共用，短/字窄化即原实现 int 提升语义）。
+     */
+    private static final class NumberOperation {
+
+        private final BinaryOperator<BigDecimal> bigDecimal;
+
+        private final BinaryOperator<BigInteger> bigInteger;
+
+        private final IntBinaryOperator integer;
+
+        private final LongBinaryOperator longValue;
+
+        private final FloatBinaryOperator floatValue;
+
+        private final DoubleBinaryOperator doubleValue;
+
+        private NumberOperation(BinaryOperator<BigDecimal> bigDecimal, BinaryOperator<BigInteger> bigInteger,
+                                IntBinaryOperator integer, LongBinaryOperator longValue,
+                                FloatBinaryOperator floatValue, DoubleBinaryOperator doubleValue) {
+            this.bigDecimal = bigDecimal;
+            this.bigInteger = bigInteger;
+            this.integer = integer;
+            this.longValue = longValue;
+            this.floatValue = floatValue;
+            this.doubleValue = doubleValue;
+        }
+    }
+
+    /**
+     * java.util.function 无 float 二元运算接口，本表驱动所需。
+     */
+    @FunctionalInterface
+    private interface FloatBinaryOperator {
+
+        float apply(float one, float other);
+    }
+
+    private static final NumberOperation ADD = new NumberOperation(BigDecimal::add, BigInteger::add,
+            (one, other) -> one + other, (one, other) -> one + other, (one, other) -> one + other,
+            (one, other) -> one + other);
+
+    private static final NumberOperation SUBTRACT = new NumberOperation(BigDecimal::subtract, BigInteger::subtract,
+            (one, other) -> one - other, (one, other) -> one - other, (one, other) -> one - other,
+            (one, other) -> one - other);
+
+    private static final NumberOperation MULTIPLY = new NumberOperation(BigDecimal::multiply, BigInteger::multiply,
+            (one, other) -> one * other, (one, other) -> one * other, (one, other) -> one * other,
+            (one, other) -> one * other);
+
+    private static final NumberOperation DIVIDE = new NumberOperation(
+            // 现状 BigDecimal 除法定标 DECIMAL128（NumberAideTest 钉桩）
+            (one, other) -> one.divide(other, MathContext.DECIMAL128), BigInteger::divide,
+            (one, other) -> one / other, (one, other) -> one / other, (one, other) -> one / other,
+            (one, other) -> one / other);
+
+    private static final NumberOperation MOD = new NumberOperation(
+            // remainder 与 Java % 语义一致（截断取余）——BigDecimal/BigInteger/基本类型三路现状同源
+            BigDecimal::remainder, BigInteger::remainder,
+            (one, other) -> one % other, (one, other) -> one % other, (one, other) -> one % other,
+            (one, other) -> one % other);
 
     public static boolean less(Number one, Number other) {
+        if (isHighPrecision(one) || isHighPrecision(other)) {
+            return compareExact(one, other) < 0;
+        }
         Class<?> numClass = findClass(one.getClass(), other.getClass());
         if (numClass.isAssignableFrom(Integer.class)) {
             return one.intValue() < other.intValue();
@@ -334,6 +340,9 @@ public class NumberAide {
     }
 
     public static boolean lessEqual(Number one, Number other) {
+        if (isHighPrecision(one) || isHighPrecision(other)) {
+            return compareExact(one, other) <= 0;
+        }
         Class<?> numClass = findClass(one.getClass(), other.getClass());
         if (numClass.isAssignableFrom(Integer.class)) {
             return one.intValue() <= other.intValue();
@@ -357,6 +366,9 @@ public class NumberAide {
     }
 
     public static boolean greater(Number one, Number other) {
+        if (isHighPrecision(one) || isHighPrecision(other)) {
+            return compareExact(one, other) > 0;
+        }
         Class<?> numClass = findClass(one.getClass(), other.getClass());
         if (numClass.isAssignableFrom(Integer.class)) {
             return one.intValue() > other.intValue();
@@ -380,6 +392,9 @@ public class NumberAide {
     }
 
     public static boolean greaterEqual(Number one, Number other) {
+        if (isHighPrecision(one) || isHighPrecision(other)) {
+            return compareExact(one, other) >= 0;
+        }
         Class<?> numClass = findClass(one.getClass(), other.getClass());
         if (numClass.isAssignableFrom(Integer.class)) {
             return one.intValue() >= other.intValue();
@@ -411,6 +426,9 @@ public class NumberAide {
     }
 
     public static boolean equal(Number one, Number other) {
+        if (isHighPrecision(one) || isHighPrecision(other)) {
+            return compareExact(one, other) == 0;
+        }
         Class<?> numClass = findClass(one.getClass(), other.getClass());
         if (numClass.isAssignableFrom(Integer.class)) {
             return one.intValue() == other.intValue();
@@ -434,9 +452,13 @@ public class NumberAide {
     }
 
     public static int compare(Number one, Number other) {
+        if (isHighPrecision(one) || isHighPrecision(other)) {
+            return compareExact(one, other);
+        }
         Class<?> numClass = findClass(one.getClass(), other.getClass());
         if (numClass.isAssignableFrom(Integer.class) || numClass.isAssignableFrom(Short.class) || numClass.isAssignableFrom(Byte.class)) {
-            return one.intValue() - other.intValue();
+            // 原 int 相减在 MAX_VALUE vs MIN_VALUE 等极值下溢出翻号
+            return Integer.compare(one.intValue(), other.intValue());
         }
         if (numClass.isAssignableFrom(Long.class)) {
             long value = one.longValue() - other.longValue();
@@ -454,7 +476,8 @@ public class NumberAide {
         return !equal(one, other);
     }
 
-    private static final Class<?>[] NUM_CLASSES = new Class<?>[]{Double.class, Float.class, Long.class, Integer.class, Short.class, Byte.class};
+    private static final Class<?>[] NUM_CLASSES = new Class<?>[]{BigDecimal.class, BigInteger.class, Double.class, Float.class, Long.class,
+                                                                  Integer.class, Short.class, Byte.class};
 
     private static Class<?> findClass(Class<?>... classes) {
         for (Class<?> clazz : NUM_CLASSES) {
@@ -464,7 +487,48 @@ public class NumberAide {
                 }
             }
         }
-        return NUM_CLASSES[0];
+        // 未知数值形态的兜底仍是 Double（NUM_CLASSES[0] 已让位给高精度类型）
+        return Double.class;
+    }
+
+    private static boolean isHighPrecision(Number number) {
+        return number instanceof BigDecimal || number instanceof BigInteger;
+    }
+
+    private static BigDecimal toBigDecimal(Number number) {
+        if (number instanceof BigDecimal) {
+            return (BigDecimal) number;
+        }
+        if (number instanceof BigInteger) {
+            return new BigDecimal((BigInteger) number);
+        }
+        if (number instanceof Double || number instanceof Float) {
+            return BigDecimal.valueOf(number.doubleValue());
+        }
+        return BigDecimal.valueOf(number.longValue());
+    }
+
+    private static BigInteger toBigInteger(Number number) {
+        if (number instanceof BigInteger) {
+            return (BigInteger) number;
+        }
+        if (number instanceof BigDecimal) {
+            return ((BigDecimal) number).toBigInteger();
+        }
+        if (number instanceof Double || number instanceof Float) {
+            return BigDecimal.valueOf(number.doubleValue()).toBigInteger();
+        }
+        return BigInteger.valueOf(number.longValue());
+    }
+
+    /**
+     * 高精度参与者按数值真值比较，不得经 doubleValue 窄化折叠制造伪相等/伪不等。
+     */
+    private static int compareExact(Number one, Number other) {
+        if (one instanceof BigDecimal || other instanceof BigDecimal) {
+            return toBigDecimal(one).compareTo(toBigDecimal(other));
+        }
+        return toBigInteger(one).compareTo(toBigInteger(other));
     }
 
     /**

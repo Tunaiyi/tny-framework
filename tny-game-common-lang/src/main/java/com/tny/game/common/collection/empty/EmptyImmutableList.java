@@ -30,10 +30,20 @@ public class EmptyImmutableList<V> implements List<V> {
     }
 
     private List<V> getWriter() {
-        if (this.list instanceof ImmutableList) {
-            this.list = this.creator != null ? this.creator.get() : new ArrayList<>();
+        List<V> current = this.list;
+        if (!(current instanceof ImmutableList)) {
+            return current;
         }
-        return this.list;
+        // 首写竞态：双检锁下唯一换表，输家复用胜者新表——并发首写不再各建各表互相覆盖
+        // （与 EmptyImmutableMap 已修复模式对齐）
+        synchronized (this) {
+            current = this.list;
+            if (current instanceof ImmutableList) {
+                current = this.creator != null ? this.creator.get() : new ArrayList<>();
+                this.list = current;
+            }
+            return current;
+        }
     }
 
     private List<V> getReader() {

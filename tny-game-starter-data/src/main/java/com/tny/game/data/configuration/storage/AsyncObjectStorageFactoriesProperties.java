@@ -22,40 +22,33 @@ import java.util.*;
  * @date : 2021/9/28 2:37 下午
  */
 @ConfigurationProperties(prefix = "tny.data.object-storage.async-storage")
-public class AsyncObjectStorageFactoriesProperties {
+public class AsyncObjectStorageFactoriesProperties
+        extends AbstractObjectStorageFactoriesProperties<QueueObjectStorageFactorySetting> {
 
-    private boolean enable = true;
-
-    @NestedConfigurationProperty
-    private QueueObjectStorageFactorySetting storage = new QueueObjectStorageFactorySetting();
-
-    private Map<String, QueueObjectStorageFactorySetting> storages = new HashMap<>();
-
-    public boolean isEnable() {
-        return enable;
+    public AsyncObjectStorageFactoriesProperties() {
+        super(new QueueObjectStorageFactorySetting());
     }
 
+    @Override
     public AsyncObjectStorageFactoriesProperties setEnable(boolean enable) {
-        this.enable = enable;
+        super.setEnable(enable);
         return this;
     }
 
+    @Override
     public QueueObjectStorageFactorySetting getStorage() {
-        return storage;
+        return super.getStorage();
     }
 
+    @Override
     public AsyncObjectStorageFactoriesProperties setStorage(QueueObjectStorageFactorySetting storage) {
-        this.storage = storage;
+        super.setStorage(storage);
         return this;
     }
 
-    public Map<String, QueueObjectStorageFactorySetting> getStorages() {
-        return storages;
-    }
-
-    public AsyncObjectStorageFactoriesProperties setStorages(
-            Map<String, QueueObjectStorageFactorySetting> storages) {
-        this.storages = storages;
+    @Override
+    public AsyncObjectStorageFactoriesProperties setStorages(Map<String, QueueObjectStorageFactorySetting> storages) {
+        super.setStorages(storages);
         return this;
     }
 

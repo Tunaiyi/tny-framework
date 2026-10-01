@@ -81,28 +81,14 @@ public final class Protobuf2XmlFormat {
      * Like {@code print()}, but writes directly to a {@code String} and returns it.
      */
     public static String printToString(Message message) {
-        try {
-            StringBuilder text = new StringBuilder();
-            print(message, text);
-            return text.toString();
-        } catch (IOException e) {
-            throw new RuntimeException("Writing to a StringBuilder threw an IOException (should never happen).",
-                    e);
-        }
+        return FormatValueRenderer.printToStringVia(output -> print(message, output));
     }
 
     /**
      * Like {@code print()}, but writes directly to a {@code String} and returns it.
      */
     public static String printToString(UnknownFieldSet fields) {
-        try {
-            StringBuilder text = new StringBuilder();
-            print(fields, text);
-            return text.toString();
-        } catch (IOException e) {
-            throw new RuntimeException("Writing to a StringBuilder threw an IOException (should never happen).",
-                    e);
-        }
+        return FormatValueRenderer.printToStringVia(output -> print(fields, output));
     }
 
     private static void print(Message message, XmlGenerator generator) throws IOException {
@@ -453,81 +439,7 @@ public final class Protobuf2XmlFormat {
     }
 
     private static Object handlePrimitive(FormatTokenizerCore tokenizer, FieldDescriptor field) throws FormatTokenizerCore.Failure {
-        Object value = null;
-        switch (field.getType()) {
-            case INT32:
-            case SINT32:
-            case SFIXED32:
-                value = tokenizer.consumeInt32();
-                break;
-
-            case INT64:
-            case SINT64:
-            case SFIXED64:
-                value = tokenizer.consumeInt64();
-                break;
-
-            case UINT32:
-            case FIXED32:
-                value = tokenizer.consumeUInt32();
-                break;
-
-            case UINT64:
-            case FIXED64:
-                value = tokenizer.consumeUInt64();
-                break;
-
-            case FLOAT:
-                value = tokenizer.consumeFloat();
-                break;
-
-            case DOUBLE:
-                value = tokenizer.consumeDouble();
-                break;
-
-            case BOOL:
-                value = tokenizer.consumeBoolean();
-                break;
-
-            case STRING:
-                value = tokenizer.consumeString();
-                break;
-
-            case BYTES:
-                value = tokenizer.consumeByteString();
-                break;
-
-            case ENUM: {
-                Descriptors.EnumDescriptor enumType = field.getEnumType();
-
-                if (tokenizer.lookingAtInteger()) {
-                    int number = tokenizer.consumeInt32();
-                    value = enumType.findValueByNumber(number);
-                    if (value == null) {
-                        throw new FormatTokenizerCore.Failure(tokenizer.previousTokenErrorMessage("Enum type \""
-                                                                    + enumType.getFullName()
-                                                                    + "\" has no value with number "
-                                                                    + number + "."));
-                    }
-                } else {
-                    String id = tokenizer.consumeIdentifier();
-                    value = enumType.findValueByName(id);
-                    if (value == null) {
-                        throw new FormatTokenizerCore.Failure(tokenizer.previousTokenErrorMessage("Enum type \""
-                                                                    + enumType.getFullName()
-                                                                    + "\" has no value named \""
-                                                                    + id + "\"."));
-                    }
-                }
-
-                break;
-            }
-
-            case MESSAGE:
-            case GROUP:
-                throw new RuntimeException("Can't get here.");
-        }
-        return value;
+        return FormatValueReader.readPrimitive(field, tokenizer);
     }
 
     private static Object handleObject(FormatTokenizerCore tokenizer,

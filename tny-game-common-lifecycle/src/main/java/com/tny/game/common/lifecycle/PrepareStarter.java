@@ -11,7 +11,7 @@
 package com.tny.game.common.lifecycle;
 
 /**
- * 启动后初始化器
+ * 启动前准备初始化器
  * Created by Kun Yang on 16/7/24.
  */
 public final class PrepareStarter extends Lifecycle<PrepareStarter, AppPrepareStart> {
@@ -23,8 +23,8 @@ public final class PrepareStarter extends Lifecycle<PrepareStarter, AppPrepareSt
     public static PrepareStarter value(Class<? extends AppPrepareStart> clazz, LifecyclePriority lifeCycleLevel) {
         PrepareStarter lifecycle = getLifecycle(PrepareStarter.class, clazz);
         if (lifecycle == null) {
-            lifecycle = new PrepareStarter(clazz, lifeCycleLevel);
-            putLifecycle(PrepareStarter.class, lifecycle);
+            // 并发首注册：putIfAbsent 语义返回唯一实例（原 check-then-act 会丢失注册或抛"已经存在"）
+            lifecycle = putIfAbsentLifecycle(PrepareStarter.class, new PrepareStarter(clazz, lifeCycleLevel));
         }
         return lifecycle;
     }
@@ -36,6 +36,11 @@ public final class PrepareStarter extends Lifecycle<PrepareStarter, AppPrepareSt
     @Override
     protected PrepareStarter of(Class<? extends AppPrepareStart> clazz) {
         return value(clazz);
+    }
+
+    @Override
+    protected PrepareStarter of(Class<? extends AppPrepareStart> clazz, LifecyclePriority priority) {
+        return value(clazz, priority);
     }
 
 }

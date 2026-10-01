@@ -90,14 +90,26 @@ class ObjectLockHolder {
          * @return
          */
         public ObjectReadWriteLock getLock(LockEntity object, LockType lockType) {
+            // 过期重建原子化（原"get→beGot失败→remove→put 覆写并可能返回已死旧锁"
+            // 会让并发获取者各持新旧实例——同实体互斥击穿）
             Comparable<?> identity = object.getIdentity();
-            ObjectReadWriteLock result = this.locks.get(identity);
-            if (result == null || !result.beGot(lockType)) {
-                this.locks.remove(identity, result);
-                result = this.createLock(object);
-                result.beGot(lockType);
+            while (true) {
+                ObjectReadWriteLock existing = this.locks.get(identity);
+                if (existing != null) {
+                    if (existing.beGot(lockType)) {
+                        return existing;
+                    }
+                    // 条件移除：只删自己判定过期的那把，不误删他人刚装好的新条目
+                    this.locks.remove(identity, existing);
+                }
+                ObjectReadWriteLock created = this.locks.computeIfAbsent(identity,
+                        key -> new ObjectReadWriteLock(object));
+                if (created.beGot(lockType)) {
+                    return created;
+                }
+                // 极端窗口（新建即被判定过期/持有）：摘除重试，最终收敛到唯一实例
+                this.locks.remove(identity, created);
             }
-            return result;
         }
 
         /**
@@ -107,12 +119,8 @@ class ObjectLockHolder {
          * @return
          */
         private ObjectReadWriteLock createLock(LockEntity object) {
-            ObjectReadWriteLock result = new ObjectReadWriteLock(object);
-            ObjectReadWriteLock oldLock = this.locks.put(object.getIdentity(), result);
-            if (oldLock == null) {
-                oldLock = result;
-            }
-            return oldLock;
+            // 保留供旧调用形态：改为原子装载（put 覆写会顶掉并发者条目）
+            return this.locks.computeIfAbsent(object.getIdentity(), key -> new ObjectReadWriteLock(object));
         }
 
         /**

@@ -4,7 +4,7 @@
 
 ## 1. 前置确认与基线固化
 
-- [ ] 1.1 确认两归档落库：`openspec/changes/archive/` 下存在 `2026-10-01-fix-common-audit-findings` 与 `2026-10-01-fix-common-dormant-defects`（或当日实际日期前缀），且 `git status` 中两变更目录已不在 changes/ 活跃区——本变更目标文件面（NumberAide、ObjectMap、worker futures）与 wf_51271e24 修复重叠，未归档禁止开工
+- [x] 1.1 确认两归档落库：`openspec/changes/archive/` 下存在 `2026-10-01-fix-common-audit-findings` 与 `2026-10-01-fix-common-dormant-defects`（或当日实际日期前缀），且 `git status` 中两变更目录已不在 changes/ 活跃区——本变更目标文件面（NumberAide、ObjectMap、worker futures）与 wf_51271e24 修复重叠，未归档禁止开工（实测：两目录均在 archive/，dormant 含复验阻断收口 15/15 FIXED 门禁绿后归档；主规格账本已入 21 能力）
 - [x] 1.2 基线可复跑校验：`python3 baseline/dupscan.py && python3 baseline/dupmerge.py` 在当前工作区运行成功，输出与 `baseline/dup-islands.md` 的 M1/M3 冗余行合计一致（2,653/5,609，容差 ±5%，因归档合入产生的漂移需重设基线并在本变更目录注明新基线数字）——实测 M1/M2 零误差（2,653），M3 +37 行（5,646，+0.66% 容差内）；漂移归因首扫与 wf_51271e24 修复交错，已以修复后树重锚基线（`baseline/dup-islands.md` 现为 v2：**收口口径 M1 ≤1,060 / M3 ≤3,387**）
 
 ## 2. protobuf 格式族（golden 先行，最大热点 ~1,400 行）
@@ -18,29 +18,29 @@
 
 ## 3. lang 双 future（~250 行逐字克隆）
 
-- [ ] 3.1 新增 `tny-game-common-lang/src/test/java/com/tny/game/common/worker/FutureStateMachineParityTest.java`：`AbstractFuture` 与 `FutureTask` 各走 cancel（未开始/运行中/已完成三态）、get×2 超时与中断、isDone/isCancelled、done 钩子触发次数、reset 后可重用、await 唤醒路径的语义钉桩（重构前两类各自绿；不假设两实现互等之外的新行为）
-- [ ] 3.2 按 D3 实现：Sync 状态机逐字相同段（tryAcquireShared/tryReleaseShared/innerGet×2/innerSet/innerSetException/innerCancel/reset 等）下沉包私有共享实现；两 public 类构造器/方法签名/implements 关系冻结；FutureTask 独有 callable/RUNNING/innerRun 留本类
-- [ ] 3.3 验证：`./gradlew :tny-game-common-lang:test` 全绿
+- [x] 3.1 新增 `tny-game-common-lang/src/test/java/com/tny/game/common/worker/FutureStateMachineParityTest.java`：`AbstractFuture` 与 `FutureTask` 各走 cancel（未开始/运行中/已完成三态）、get×2 超时与中断、isDone/isCancelled、done 钩子触发次数、reset 后可重用、await 唤醒路径的语义钉桩（重构前两类各自绿；不假设两实现互等之外的新行为）
+- [x] 3.2 按 D3 实现：Sync 状态机逐字相同段（tryAcquireShared/tryReleaseShared/innerGet×2/innerSet/innerSetException/innerCancel/reset 等）下沉包私有共享实现；两 public 类构造器/方法签名/implements 关系冻结；FutureTask 独有 callable/RUNNING/innerRun 留本类
+- [x] 3.3 验证：`./gradlew :tny-game-common-lang:test` 全绿
 
 ## 4. lang 转换链 + NumberAide
 
-- [ ] 4.1 新增 `tny-game-common-lang/src/test/java/com/tny/game/common/collection/map/access/MapConvertAccessContractTest.java`：14 个转换 getter × ObjectMap/WrapperObjectMap 两侧 × {直取命中、可转换值、不可转换失败、null 键缺省、默认值路径} 全矩阵；**`ObjectMap.getFloat(key,def)` 值存在抛 CCE 现状钉桩**（注释注明 float.class 缺陷与"禁止顺手修"依据）；`ObjectMap.getObject(key,def)` 独有方法与 Wrapper `toMap` 不可变语义差异保留用例
-- [ ] 4.2 按 D4 实现：转换取值链收敛共享引擎，`float.class` vs `Float.class` 差异由两侧门面以参数承载（单一事实源+现状语义双保）
-- [ ] 4.3 `NumberAideTest` 补算术等价钉桩：add/sub/multiply/divide/mod × {两侧 null 组合（含 `sub` 的 `one==null` 返回 other 现状）、BigDecimal/BigInteger 混合高精度路径、7 路基本类型 isAssignableFrom 分支}，重构前绿
-- [ ] 4.4 按 D8 实现：五运算符收敛为私有分派器 + 运算符 lambda（表驱动）；公开五方法签名不动；同时收敛 150-169/186-205/222-241/322-342 实测四段
-- [ ] 4.5 验证：`./gradlew :tny-game-common-lang:test` 全绿；`./gradlew :tny-game-basics:test :tny-game-net:test` 通过（NumberAide/ObjectMap 活跃消费面哨兵）
+- [x] 4.1 新增 `tny-game-common-lang/src/test/java/com/tny/game/common/collection/map/access/MapConvertAccessContractTest.java`：14 个转换 getter × ObjectMap/WrapperObjectMap 两侧 × {直取命中、可转换值、不可转换失败、null 键缺省、默认值路径} 全矩阵；**`ObjectMap.getFloat(key,def)` 值存在抛 CCE 现状钉桩**（注释注明 float.class 缺陷与"禁止顺手修"依据）；`ObjectMap.getObject(key,def)` 独有方法与 Wrapper `toMap` 不可变语义差异保留用例（实测钉桩：值存在格现状为经 convertTo 基本类型分支正常返回、不再复现 CCE——recon 期望与现状差异已入遗留登记；差异现观察面为不可转换格 CCE 消息尾段 "float" vs "class java.lang.Float"，逐字钉死；float.class 实参原样保留）
+- [x] 4.2 按 D4 实现：转换取值链收敛共享引擎，`float.class` vs `Float.class` 差异由两侧门面以参数承载（单一事实源+现状语义双保）
+- [x] 4.3 `NumberAideTest` 补算术等价钉桩：add/sub/multiply/divide/mod × {两侧 null 组合（含 `sub` 的 `one==null` 返回 other 现状）、BigDecimal/BigInteger 混合高精度路径、7 路基本类型 isAssignableFrom 分支}，重构前绿
+- [x] 4.4 按 D8 实现：五运算符收敛为私有分派器 + 运算符 lambda（表驱动）；公开五方法签名不动；同时收敛 150-169/186-205/222-241/322-342 实测四段
+- [x] 4.5 验证：`./gradlew :tny-game-common-lang:test` 全绿；`./gradlew :tny-game-basics:test :tny-game-net:test` 通过（NumberAide/ObjectMap 活跃消费面哨兵）
 
 ## 5. reflect 平行对（96+83 行）
 
-- [ ] 5.1 新增 `tny-game-common-reflect/src/test/java/com/tny/game/common/reflect/AccessorPairParityTest.java`：CGlib/JSsist PropertyAccessor 与 CGlibUtils/JavassistAccessors 对同一目标类的属性读写结果一致、varargs 与 `new Object[]{...}` 实参形态等价性、`getPropertyDescriptor/setPropertyDescriptor` protected 注入面行为——重构前绿
-- [ ] 5.2 按侦察 E/D5 先例实现：两对类抽包内共享骨架（落包就近，design Open Question 实施期定）；public 工厂签名、protected setter 保留；`JavassistAccessors` 跨模块消费形态不动
-- [ ] 5.3 验证：`./gradlew :tny-game-common-reflect:test` 全绿；`./gradlew :tny-game-protoex:test :tny-game-net:test :tny-game-data:test` 通过
+- [x] 5.1 新增 `tny-game-common-reflect/src/test/java/com/tny/game/common/reflect/AccessorPairParityTest.java`：CGlib/JSsist PropertyAccessor 与 CGlibUtils/JavassistAccessors 对同一目标类的属性读写结果一致、varargs 与 `new Object[]{...}` 实参形态等价性、`getPropertyDescriptor/setPropertyDescriptor` protected 注入面行为——重构前绿（实测 7/7 绿；仓内无 `getPropertyDescriptor/setPropertyDescriptor` 符号，注入面即 protected setName/setReader/setWriter/setType，按现状钉桩）
+- [x] 5.2 按侦察 E/D5 先例实现：两对类抽包内共享骨架（落包就近，design Open Question 实施期定）；public 工厂签名、protected setter 保留；`JavassistAccessors` 跨模块消费形态不动（Open Question 裁决：落 `com.tny.game.common.reflect` 本包——两对类分居 cglib/javassist 姊妹包，包私有件跨包不可见，就近即契约所在的父包；新增 `PropertyAccessorSupport`/`ClassAccessorCacheSupport` 两个 public final 具体件，不新增抽象/接口、不动任何类层级；invoke 实参写法差经 javap 核验两写法编译为逐字节相同指令，收敛单实现零行为变更）
+- [x] 5.3 验证：`./gradlew :tny-game-common-reflect:test` 全绿（--rerun-tasks 实测 7 类 40 例 0 失败 0 错误，含 AccessorPairParityTest 7/7 期望值零改动 + ProxyAccessorIntegrityTest 17/17 断言零放宽）；`./gradlew :tny-game-protoex:test :tny-game-net:test :tny-game-data:test` 通过（实测 protoex 30、net 167、data 7 例全绿，结果 XML 均为收敛后新运行）
 
 ## 6. 注册表族（9 类 ~366 行）
 
-- [ ] 6.1 新增 `tny-game-basics/src/test/java/com/tny/game/basics/EnumRegistryFamilyContractTest.java`：8 注册表类的 of/check(String)/check(int)/option/all/enumerator 契约矩阵（含非法值失败语义）、`ItemTypes` 别名扩展（ofAlias/ofModelId/ofItemId）、`Moulds.register` public 与 `Actions.getAll()` 异名现状钉桩；scheduler `TaskReceiverTypes` 转发段用例并入 `tny-game-common-scheduler` 侧测试（含其 static 注册块装载现状）
-- [ ] 6.2 按 D5 实现：basics 包内泛型中间层承载转发六件套（形态照 `AbstractExpr` 模板方法先例；`ClassImporter/EnumeratorHolder` 零触碰）；9 类留常量、register 入口（可见性原样）、自有扩展；装载入口 `GameEnumClassLoader::createSelector(Xxx::register)` 不动
-- [ ] 6.3 验证：`./gradlew :tny-game-basics:test :tny-game-common-scheduler:test` 全绿；`./gradlew :tny-game-net:compileJava` 通过（ClassImporter 其他继承点哨兵）
+- [x] 6.1 新增 `tny-game-basics/src/test/java/com/tny/game/basics/EnumRegistryFamilyContractTest.java`：8 注册表类的 of/check(String)/check(int)/option/all/enumerator 契约矩阵（含非法值失败语义）、`ItemTypes` 别名扩展（ofAlias/ofModelId/ofItemId）、`Moulds.register` public 与 `Actions.getAll()` 异名现状钉桩；scheduler `TaskReceiverTypes` 转发段用例并入 `tny-game-common-scheduler` 侧测试（含其 static 注册块装载现状）
+- [x] 6.2 按 D5 实现：basics 包内泛型中间层承载转发六件套（形态照 `AbstractExpr` 模板方法先例；`ClassImporter/EnumeratorHolder` 零触碰）；9 类留常量、register 入口（可见性原样）、自有扩展；装载入口 `GameEnumClassLoader::createSelector(Xxx::register)` 不动
+- [x] 6.3 验证：`./gradlew :tny-game-basics:test :tny-game-common-scheduler:test` 全绿；`./gradlew :tny-game-net:compileJava` 通过（ClassImporter 其他继承点哨兵）
 
 ## 7. net 测试脚手架下沉（~260 行）
 
@@ -50,15 +50,15 @@
 
 ## 8. starter properties + data EntityManager
 
-- [ ] 8.1 新增绑定回归测试：starter-data 三 `*Properties` 与 starter-net-netty4 两 `*Properties` 各一例 Spring `Binder` 绑定用例（属性文件→对象，键集/默认值/嵌套 Setting 现状一致钉桩；测试放对应 starter 模块，无测试目录则新建 src/test）
-- [ ] 8.2 按 D7 实现：提同包 public abstract 父承载访问器样板；子类保留链式 setter 协变覆写、字段初始化器与懒造默认值、类上全部 Spring 注解（`@ConditionalOnMissingBean` 注册点不动）
-- [ ] 8.3 新增 `tny-game-data/src/test/java/com/tny/game/data/EntityManagerBatchTest.java`：`insert/update/save/deleteEntities` 四 default 批量方法行为钉桩（桩实现计次+返回值累加+空集合边界），重构前绿
-- [ ] 8.4 按 D8 实现：四方法体收敛 `default int applyEach(Collection<E>, ToIntFunction<E>)`；4 个 default 与全部抽象方法签名不动
-- [ ] 8.5 验证：`./gradlew :tny-game-data:test :tny-game-starter-data:test :tny-game-starter-net-netty4:test` 全绿；`./gradlew :tny-game-mongodb:compileJava :tny-game-redisson:compileJava` 通过（实现方哨兵）
+- [x] 8.1 新增绑定回归测试：starter-data 三 `*Properties` 与 starter-net-netty4 两 `*Properties` 各一例 Spring `Binder` 绑定用例（属性文件→对象，键集/默认值/嵌套 Setting 现状一致钉桩；测试放对应 starter 模块，无测试目录则新建 src/test）
+- [x] 8.2 按 D7 实现：提同包 public abstract 父承载访问器样板；子类保留链式 setter 协变覆写、字段初始化器与懒造默认值、类上全部 Spring 注解（`@ConditionalOnMissingBean` 注册点不动）
+- [x] 8.3 新增 `tny-game-data/src/test/java/com/tny/game/data/EntityManagerBatchTest.java`：`insert/update/save/deleteEntities` 四 default 批量方法行为钉桩（桩实现计次+返回值累加+空集合边界），重构前绿
+- [x] 8.4 按 D8 实现：四方法体收敛 `default int applyEach(Collection<E>, ToIntFunction<E>)`；4 个 default 与全部抽象方法签名不动
+- [x] 8.5 验证：`./gradlew :tny-game-data:test :tny-game-starter-data:test :tny-game-starter-net-netty4:test` 全绿；`./gradlew :tny-game-mongodb:compileJava :tny-game-redisson:compileJava` 通过（实现方哨兵）
 
 ## 9. 集成门禁与收口
 
-- [ ] 9.1 复扫度量：重跑 `baseline/` 双脚本产出 `baseline/dup-after.md`，对照基线 M1 冗余行 ≤1,060（降 60%）、M3 ≤3,365（降 40%）；不达标回溯最大残余族；**残余若全部属不动清单则如实报口径缩减并记录，禁止为凑指标破 D 裁决**
-- [ ] 9.2 全仓门禁：`./gradlew test -x :tny-game-namnspace-etcd:test` BUILD SUCCESSFUL（排除项沿用既有环境债），结果摘要记入本变更目录 `verification.md`
-- [ ] 9.3 账目收口：更新记忆 `common-modules-audit-2026-09-30`——`ObjectMap.getFloat` 缺陷措辞升级为"单实现上显式参数化现状（钉桩在册）待另案修复"、8 族否决清单入册；本变更目录追加 `release-note.md`（零 BREAKING 声明 + Compatibility Impact 摘要 + 各族删除行数）
-- [ ] 9.4 `openspec validate reduce-code-duplication --strict` 通过
+- [x] 9.1 复扫度量：重跑 `baseline/` 双脚本产出 `baseline/dup-after.md`，对照基线 M1 冗余行 ≤1,060（降 60%）、M3 ≤3,365（降 40%）；不达标回溯最大残余族；**残余若全部属不动清单则如实报口径缩减并记录，禁止为凑指标破 D 裁决**——实测 M1 2,653→1,086（全口径 -59.1%，差 26 行；main/混合口径 -63.2% 达标）；回溯已做：收口压缩批消 340 行（FormatTextSupport 内部 51/protobuf printToString+handlePrimitive 228/Wrapper 覆写 5/Void 插件 31）后残余 main 岛逐岛 JUSTIFIED_KEEP（证据入 verification-group3/4 收口压缩节）；M3 全口径虚增系钉桩测试结构同形（+2,544 测试侧），main/混合口径 3,501→2,198（-37.2%，残余主体为不动清单族）。口径如实报，未破 D 裁决
+- [x] 9.2 全仓门禁：`./gradlew test -x :tny-game-namnspace-etcd:test` BUILD SUCCESSFUL（排除项沿用既有环境债），结果摘要记入本变更目录 `verification.md`——实测 BUILD SUCCESSFUL，19 模块 929 用例 0F/0E/0skip；首跑一次 FAILED 复跑即绿（net-test 并行编译脆弱性另案特征，已登记）
+- [x] 9.3 账目收口：更新记忆 `common-modules-audit-2026-09-30`——`ObjectMap.getFloat` 缺陷措辞升级为"单实现上显式参数化现状（钉桩在册）待另案修复"、8 族否决清单入册；本变更目录追加 `release-note.md`（零 BREAKING 声明 + Compatibility Impact 摘要 + 各族删除行数）——记忆已加"第三轮更新"段（含 20+ 遗留登记指针与否决清单）；release-note 落盘
+- [x] 9.4 `openspec validate reduce-code-duplication --strict` 通过

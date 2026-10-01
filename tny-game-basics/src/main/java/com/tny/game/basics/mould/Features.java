@@ -11,6 +11,7 @@
 
 package com.tny.game.basics.mould;
 
+import com.tny.game.basics.utlis.*;
 import com.tny.game.common.enums.*;
 import com.tny.game.common.io.config.*;
 
@@ -30,40 +31,41 @@ public final class Features extends ClassImporter {
     private Features() {
     }
 
+    //    可见性现状保留（D5）：本类 register 为 public 装载入口（兄弟门面为包私有）
     public static void register(Feature value) {
-        holder.register(value);
+        EnumRegistrySupport.register(holder, value);
     }
 
     public static <T extends Feature> T check(String key) {
-        return holder.check(key, "获取 {} Feature 不存在", key);
+        return EnumRegistrySupport.check(holder, key, "Feature");
     }
 
     public static <T extends Feature> T check(int id) {
-        return holder.check(id, "获取 ID为 {} 的 Feature 不存在", id);
+        return EnumRegistrySupport.check(holder, id, "Feature");
     }
 
     public static <T extends Feature> T of(int id) {
-        return holder.of(id);
+        return EnumRegistrySupport.of(holder, id);
     }
 
     public static <T extends Feature> T of(String key) {
-        return holder.of(key);
+        return EnumRegistrySupport.of(holder, key);
     }
 
     public static <T extends Feature> Optional<T> option(int id) {
-        return holder.option(id);
+        return EnumRegistrySupport.option(holder, id);
     }
 
     public static <T extends Feature> Optional<T> option(String key) {
-        return holder.option(key);
+        return EnumRegistrySupport.option(holder, key);
     }
 
     public static <T extends Feature> Collection<T> all() {
-        return holder.allValues();
+        return EnumRegistrySupport.all(holder);
     }
 
     public static Enumerator<Feature> enumerator() {
-        return holder;
+        return EnumRegistrySupport.enumerator(holder);
     }
 
 }

@@ -28,7 +28,21 @@ public interface ExeAide {
         try {
             runnable.run();
         } catch (Throwable e) {
+            keepInterrupt(e);
             logger.error("run {} exception", runnable.getClass(), e);
+        }
+    }
+
+    /**
+     * 静默/上抛工具统一收口：异常因果链含中断时必须恢复线程中断标志
+     * （取消语义依赖标志传播，吞中断=关停钩子被中断后静默继续）。
+     */
+    static void keepInterrupt(Throwable e) {
+        for (Throwable t = e; t != null; t = t.getCause() == t ? null : t.getCause()) {
+            if (t instanceof InterruptedException) {
+                Thread.currentThread().interrupt();
+                return;
+            }
         }
     }
 
@@ -40,6 +54,7 @@ public interface ExeAide {
         try {
             runnable.run();
         } catch (Throwable e) {
+            keepInterrupt(e);
             logger.error("run {} exception", runnable.getClass(), e);
             throw new ExeUncheckedException(e);
         }
@@ -53,6 +68,7 @@ public interface ExeAide {
         try {
             return Optional.ofNullable(callable.call());
         } catch (Throwable e) {
+            keepInterrupt(e);
             logger.error("run {} exception", callable.getClass(), e);
             return Optional.ofNullable(defReturn);
         }

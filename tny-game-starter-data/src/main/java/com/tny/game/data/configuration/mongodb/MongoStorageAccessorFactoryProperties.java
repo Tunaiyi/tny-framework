@@ -11,6 +11,7 @@
 
 package com.tny.game.data.configuration.mongodb;
 
+import com.tny.game.data.configuration.*;
 import org.springframework.boot.context.properties.*;
 
 import java.util.*;
@@ -22,40 +23,33 @@ import java.util.*;
  * @date : 2021/9/29 4:59 下午
  */
 @ConfigurationProperties(prefix = "tny.data.storage-accessor.mongo-accessor")
-public class MongoStorageAccessorFactoryProperties {
+public class MongoStorageAccessorFactoryProperties
+        extends AbstractStorageAccessorFactoryProperties<MongoStorageAccessorFactorySetting> {
 
-    private boolean enable = true;
-
-    @NestedConfigurationProperty
-    private MongoStorageAccessorFactorySetting accessor = new MongoStorageAccessorFactorySetting();
-
-    private Map<String, MongoStorageAccessorFactorySetting> accessors = new HashMap<>();
-
-    public boolean isEnable() {
-        return enable;
+    public MongoStorageAccessorFactoryProperties() {
+        super(new MongoStorageAccessorFactorySetting());
     }
 
+    @Override
     public MongoStorageAccessorFactoryProperties setEnable(boolean enable) {
-        this.enable = enable;
+        super.setEnable(enable);
         return this;
     }
 
+    @Override
     public MongoStorageAccessorFactorySetting getAccessor() {
-        return accessor;
+        return super.getAccessor();
     }
 
+    @Override
     public MongoStorageAccessorFactoryProperties setAccessor(MongoStorageAccessorFactorySetting accessor) {
-        this.accessor = accessor;
+        super.setAccessor(accessor);
         return this;
     }
 
-    public Map<String, MongoStorageAccessorFactorySetting> getAccessors() {
-        return accessors;
-    }
-
-    public MongoStorageAccessorFactoryProperties setAccessors(
-            Map<String, MongoStorageAccessorFactorySetting> accessors) {
-        this.accessors = accessors;
+    @Override
+    public MongoStorageAccessorFactoryProperties setAccessors(Map<String, MongoStorageAccessorFactorySetting> accessors) {
+        super.setAccessors(accessors);
         return this;
     }
 

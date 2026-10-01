@@ -13,42 +13,21 @@ package com.tny.game.common.reflect.javassist;
 
 import com.tny.game.common.reflect.*;
 
-import java.util.concurrent.*;
-
+/**
+ * javassist 面类访问器工厂——双检缓存骨架收敛至 {@link ClassAccessorCacheSupport}（组5），
+ * 实例化目标以本包 {@code JSsistClassAccessor} 构造器引用作工厂实参；public 工厂签名逐字冻结。
+ * 本面独立缓存实例（原 static 双表语义保留，两面互不复用）；跨模块消费形态（protoex/net/data 静态调用）不动。
+ */
 public class JavassistAccessors {
 
-    private final static ConcurrentMap<Class<?>, ClassAccessor> classMap = new ConcurrentHashMap<>();
+    private final static ClassAccessorCacheSupport CACHE = new ClassAccessorCacheSupport();
 
     public static ClassAccessor getGClass(Class<?> clazz) {
-        ClassAccessor gClass = classMap.get(clazz);
-        if (gClass != null) {
-            return gClass;
-        }
-        synchronized (clazz) {
-            gClass = classMap.get(clazz);
-            if (gClass != null) {
-                return gClass;
-            }
-            gClass = new JSsistClassAccessor(clazz, null);
-            ClassAccessor oldClass = classMap.putIfAbsent(clazz, gClass);
-            return oldClass == null ? gClass : oldClass;
-        }
+        return CACHE.get(clazz, null, JSsistClassAccessor::new);
     }
 
     public static ClassAccessor getGClass(Class<?> clazz, MethodFilter filter) {
-        ClassAccessor gClass = classMap.get(clazz);
-        if (gClass != null) {
-            return gClass;
-        }
-        synchronized (clazz) {
-            gClass = classMap.get(clazz);
-            if (gClass != null) {
-                return gClass;
-            }
-            gClass = new JSsistClassAccessor(clazz, filter);
-            ClassAccessor oldClass = classMap.putIfAbsent(clazz, gClass);
-            return oldClass == null ? gClass : oldClass;
-        }
+        return CACHE.get(clazz, filter, JSsistClassAccessor::new);
     }
 
 }

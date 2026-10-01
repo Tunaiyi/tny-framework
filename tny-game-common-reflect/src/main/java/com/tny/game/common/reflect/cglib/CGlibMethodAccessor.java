@@ -60,7 +60,17 @@ public class CGlibMethodAccessor implements MethodAccessor {
 
     @Override
     public Object invoke(Object obj, Object... args) throws InvocationTargetException {
-        return this.fastMethod.invoke(obj, args);
+        try {
+            return this.fastMethod.invoke(obj, args);
+        } catch (InvocationTargetException e) {
+            // 与 javassist 面统一：cglib FastMethod 把目标 Error 一并折叠，须在边界解包原样透传；
+            // 其余异常保持折叠包装（与 javassist 面包装口径一致）
+            Throwable target = e.getTargetException();
+            if (target instanceof Error) {
+                throw (Error) target;
+            }
+            throw e;
+        }
     }
 
 }

@@ -35,9 +35,9 @@ public class SwitchConcurrentQueue<T> {
 
     public Queue<T> acceptQueue() {
         synchronized (this) {
+            // 原第三行把翻转结果覆写回原队列——切换恒为无操作
             Queue<T> accQueue = this.queue;
             this.queue = accQueue != this.toQueue ? this.toQueue : this.fromQueue;
-            this.queue = accQueue;
             return accQueue;
         }
     }

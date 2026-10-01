@@ -69,6 +69,11 @@ class DefaultSingleAsyncWorker extends AbstractAsyncWorker {
                     if (task == null) {
                         break;
                     }
+                    var queuedFuture = task.getFuture();
+                    if (queuedFuture != null && queuedFuture.isDone()) {
+                        // 排队期间已超时：调用方脱身，不再执行副作用
+                        continue;
+                    }
                     task.execute();
                 } catch (Throwable e) {
                     LOGGER.error("", e);

@@ -66,3 +66,60 @@ design Open Question「merge 解析层收敛深度」按"能过即收"落地：�
 ## 环境备注
 
 `:tny-game-oplog:test` 首跑因 tny-game-common-io/FileMonitor.java 被并行代理在途编辑而编译失败；等待后复跑通过。属并行组工作面，非本组变更引入。
+
+## 收口压缩（终值度量前最后一批，2026-10-01）
+
+零行为变更判据全程执行：`git diff -- tny-game-protobuf/src/test/` 输出 0 行（golden/round-trip 期望值一字未动）；
+`./gradlew :tny-game-protobuf:test --rerun-tasks` BUILD SUCCESSFUL（FormatGoldenTest 8/8、FormatMergeRoundTripTest 4/4）；
+`./gradlew :tny-game-oplog:compileJava --rerun-tasks` 通过（唯一仓外消费面）。
+度量复跑：同口径 `baseline/dupscan.py`+`dupmerge.py` 复扫，本组三个目标岛处置如下。
+
+### 1. FormatTextSupport.java 同文件自克隆（M1 岛"冗余51行×3区域"）——SQUEEZED
+
+- 上批引入债：escapeBytes/escapeTextJson/unescapeTextJson 三处 switch 短转义表互为克隆（71-104/280-304/350-375）。
+- 处置：新增包私有短转义对表 `SHORT_ESCAPE_ACTUALS/SHORT_ESCAPE_SEQUENCES`（10 行，序列第 2 字符即反转义标识符，
+  单一事实源）+ 两个查表方法；三处现状使用子集以**表前缀行数参数**保留（escapeBytes 全 10 行、escapeTextJson 7 行、
+  unescapeTextJson 8 行含从不产出的单引号行——未统一、未抹平）；`\u` 四位还原公式（遗留①）与 octal/unicode
+  default 分支逐字未动。unescapeBytes 不在本岛区域，未触碰。
+- 证据：复扫 M1 岛消失（FormatTextSupport 零命中）；P_*/RT_* ESCAPES golden 与 RT_JSON/COUCH_ESCAPES 快照期望值未改仍绿。
+
+### 2. Protobuf2CouchDBFormat×5 区域"冗余139行"岛——拆分处置
+
+- 2a. printToString(Message)/printToString(UnknownFieldSet) ×5 类（+Props printFieldToString）——**SQUEEZED**。
+  方法体逐字相同、零现状差异表达（Props 源仅将异常串写作两段拼接，运行时字符串逐字相同，视同一致）。
+  上批遗留⑦"需引入函数参数、收益为负"按收口判据重判否决：参数化装饰即本变更 D2 已采认的 ValueSink 先例形态，
+  收敛后各门面降为一行 lambda 委托，哪个 print 重载仍由门面类自身静态解析决定（CouchDB 门面 lambda 解析到
+  CouchDB 自有 print，`_id/_rev` 覆写链与 extends Json 关系逐字未动）。
+  证据：复扫该组合岛 139→54（仅剩 2b/2c）；FormatGoldenTest 的 printToString 断言（含 COUCH 重打印快照）期望值未改仍绿。
+- 2b. merge 三重载样板（CouchDB:50-82 vs Json:549-581，残余 33 行）——**JUSTIFIED_KEEP**。
+  方法体已是一行委托（`merge(input, ExtensionRegistry.getEmptyRegistry(), builder)` /
+  `merge(toStringBuilder(input), …)`，工具段上批已共享）；残余重复=public 冻结签名+javadoc+原注释文本，属窗口内最小可分单元；
+  再并需以回调包装一行委托，收益为负且新增行为风险面（CouchDB merge 的 Tokenizer `_id/_rev` 覆写链不许动）。
+- 2c. print(UnknownFieldSet, Appendable) 包裹骨架与 printToString 委托行（残余 Html/Xml 21 行簇）——**JUSTIFIED_KEEP**。
+  包裹文本（`"<html>"+META_CONTENT` / `"<message>"` / `"{"`、Props 无包裹）即各格式现状差异表达，generator 类型各自私有/受保护；
+  簇内已含 2a 收敛后的委托体，剩余为 javadoc+签名样板，公共签名冻结不许并。
+
+### 3. Protobuf2JavaPropsFormat 89 行岛（Props/Xml/Json handlePrimitive 标量类型分派×3）——SQUEEZED
+
+- 上批"merge 解析层收敛深度止步于机制层"按收口判据续收：三份逐字同构的类型 switch（consumeXxx 调用序列、
+  ENUM 数字/名称双路径校验、`MESSAGE/GROUP → RuntimeException("Can't get here.")`）收敛到新增包私有
+  `FormatValueReader.readPrimitive`（与打印面 FormatValueRenderer.ValueSink 对称的"分派单实现+扫描面参数化"）。
+- 现状差异全部由 Scanner 承载，零抹平：Xml/JavaProps 直传 FormatTokenizerCore 本尊（其包私有类型上新实现
+  `Scanner<Failure>`，public 成员对包外不可命名，非发布面变更）；Json 经 `FormatValueReader.TokenizerScanner`
+  走外壳现状虚分派——`consumeIdentifier` 仍经 Protobuf2JsonFormat.Tokenizer 多态，CouchDB Tokenizer 的
+  `_id/_rev` 覆写链继续参与 ENUM 标识符读取；异常类型各如现状（Json: ParseException 经外壳转换/parseExceptionPreviousToken，
+  Xml/Props: Failure）；Props `consume("=")` 前缀、Json `"null"` 字面量旁路留各格式本方法。
+- 未被 golden 覆盖的 ENUM 失败消息路径以运行时探针核证类型与"行:列: 消息"逐字不变
+  （`1:14: Enum type "tny.protobuf.test.Color" has no value named "PURPLE".` 等，JSON/COUCH/XML/PROPS 四类，
+  `number 99.` 含 Props 现状 `'.'` 字符拼接的运行时等值）；RT_PROPS_MSGSET/RT_XML_ESCAPES 等既有逐字钉桩未改仍绿。
+- 证据：复扫 89 行岛与 FormatTestProtos 无关、主源岛零命中（Props/Xml/Json handlePrimitive 区域全部消失）。
+
+### 度量与账目
+
+- 主源 M1 岛冗余行：279 → 54（残余 54=2b+2c，均 JUSTIFIED_KEEP）；protobuf 模块 M1 总冗余 497→272（差值主体为
+  FormatTestProtos 生成码岛，非本批目标、维持既有"生成码不动"口径）。
+- 原始行账：既有 8 文件 diff +156/−445，新增 FormatValueReader.java 224 行，模块主源净 −65 行；净收益以岛冗余行收敛为准。
+- 公共签名冻结自查：git 声明集比对 HEAD 与工作区，五类 public/protected 面零增删（新增声明仅存在于包私有
+  FormatValueReader/FormatTextSupport 表与 FormatTokenizerCore——包私有持有类型）。
+- 本批未触碰：五个 Generator 内部类（遗留⑧维持 JUSTIFIED_KEEP，语义各不相同无同段可收）、unescapeBytes `\u`
+  缺陷（遗留①）、Html 不转义（遗留②）；未 commit。

@@ -61,6 +61,17 @@ public class TimeTask implements Comparable<TimeTask>, Serializable {
         this.handlerList.addAll(taskModel.getHandlerList());
     }
 
+    /**
+     * 合并处理器列表（同执行时间任务去重时补挂 handler，重复名不叠加）。
+     */
+    public void addHandlers(Collection<String> handlers) {
+        for (String handler : handlers) {
+            if (!this.handlerList.contains(handler)) {
+                this.handlerList.add(handler);
+            }
+        }
+    }
+
     @Override
     public int compareTo(TimeTask handler) {
         long value = handler.executeTime - this.executeTime;

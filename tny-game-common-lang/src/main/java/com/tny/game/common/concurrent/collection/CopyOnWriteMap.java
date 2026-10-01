@@ -332,7 +332,8 @@ public class CopyOnWriteMap<K, V> implements Map<K, V>, Cloneable {
      */
     @Override
     public Set<K> keySet() {
-        return this.internalMap.keySet();
+        // 获取时刻不可变快照（原返回内部代际活视图：视图修改作用于被丢弃旧代=静默丢效果）
+        return Collections.unmodifiableSet(new HashSet<>(this.internalMap.keySet()));
     }
 
     /***
@@ -340,7 +341,7 @@ public class CopyOnWriteMap<K, V> implements Map<K, V>, Cloneable {
      */
     @Override
     public Collection<V> values() {
-        return this.internalMap.values();
+        return Collections.unmodifiableCollection(new ArrayList<>(this.internalMap.values()));
     }
 
     /***
@@ -348,7 +349,10 @@ public class CopyOnWriteMap<K, V> implements Map<K, V>, Cloneable {
      */
     @Override
     public Set<Entry<K, V>> entrySet() {
-        return this.internalMap.entrySet();
+        // 条目同样快照固化（复制 entry 实例，非底表活条目引用）
+        Set<Entry<K, V>> snapshot = new HashSet<>(this.internalMap.size());
+        this.internalMap.forEach((k, v) -> snapshot.add(ImmutableEntry.entry(k, v)));
+        return Collections.unmodifiableSet(snapshot);
     }
 
     @Override

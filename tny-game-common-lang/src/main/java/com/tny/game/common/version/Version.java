@@ -59,11 +59,12 @@ public class Version implements Comparable<Version> {
     }
 
     public String[] getSubVersions(int subLength) {
-        return Arrays.copyOf(this.subVersions, Math.min(subLength, this.subVersions.length - 1));
+        // 原 len-1 上界导致永远取不到最后一段
+        return Arrays.copyOf(this.subVersions, Math.min(subLength, this.subVersions.length));
     }
 
     public String[] getSubVersions(int from, int to) {
-        return Arrays.copyOfRange(this.subVersions, Math.max(from, 0), Math.min(to, this.subVersions.length - 1));
+        return Arrays.copyOfRange(this.subVersions, Math.max(from, 0), Math.min(to, this.subVersions.length));
     }
 
     public int getSubVersionsLength() {

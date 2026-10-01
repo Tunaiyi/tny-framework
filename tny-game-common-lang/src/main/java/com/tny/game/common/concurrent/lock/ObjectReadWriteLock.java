@@ -92,11 +92,17 @@ class ObjectReadWriteLock extends AbstractTimeLimiter implements ObjectLock {
     }
 
     public boolean beGot(LockType type) {
-        if (update()) {
-            this.lockType.set(type == LockType.READ ? LockType.READ : LockType.WRITE);
+        if (!update()) {
+            return false;
+        }
+        LockType wanted = type == LockType.READ ? LockType.READ : LockType.WRITE;
+        // 只升写不降读：本线程已按写锁登记的条目不因随后的读请求被覆写为读
+        //（混合批 WRITE 先登记、READ 后到——降读会纵容他线程读锁与本线程并发进入）
+        if (wanted == LockType.READ && this.lockType.get() == LockType.WRITE) {
             return true;
         }
-        return false;
+        this.lockType.set(wanted);
+        return true;
     }
 
 
@@ -129,7 +135,12 @@ class ObjectReadWriteLock extends AbstractTimeLimiter implements ObjectLock {
 
     @Override
     public void unlock() {
-        this.getCurrentLock().unlock();
+        try {
+            this.getCurrentLock().unlock();
+        } finally {
+            // 释放与持有类型配对完成；清除本线程类型登记，池线程复用不带陈旧类型
+            this.lockType.remove();
+        }
     }
 
     @Override

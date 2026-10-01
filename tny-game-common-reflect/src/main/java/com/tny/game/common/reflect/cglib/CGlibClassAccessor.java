@@ -12,6 +12,7 @@
 package com.tny.game.common.reflect.cglib;
 
 import com.tny.game.common.reflect.*;
+import com.tny.game.common.reflect.exception.MethodNotFoundException;
 import net.sf.cglib.reflect.*;
 
 import java.lang.reflect.*;
@@ -48,6 +49,9 @@ public class CGlibClassAccessor implements ClassAccessor {
             if (!methodName.equals("getClass") && methodName.startsWith("get") ||
                 methodName.startsWith("is") && (returnClazz == boolean.class || returnClazz == Boolean.class)) {
                 String proName = getPropertyName(methodName);
+                if (proName == null || proName.isEmpty()) {
+                    continue;
+                }
                 CGlibPropertyAccessor accessor = getAccessor(accessorMap, proName, returnClazz);
                 if (accessor != null) {
                     accessor.setReader(glibMethod);
@@ -57,6 +61,9 @@ public class CGlibClassAccessor implements ClassAccessor {
                 if (paramClasses.length == 1) {
                     returnClazz = paramClasses[0];
                     String proName = getPropertyName(methodName);
+                    if (proName == null || proName.isEmpty()) {
+                        continue;
+                    }
                     CGlibPropertyAccessor accessor = getAccessor(accessorMap, proName, returnClazz);
                     if (accessor != null) {
                         accessor.setWriter(glibMethod);
@@ -150,12 +157,15 @@ public class CGlibClassAccessor implements ClassAccessor {
     @Override
     public MethodAccessor getMethod(String name, Class<?>... parameterTypes) {
         for (MethodAccessor method : this.methodMap.values()) {
+            // 名字必须参与匹配（原仅比参数表，同参不同名返回迭代序任意一个）
             Class<?>[] paraClasses = method.getParameterTypes();
-            if (Arrays.equals(paraClasses, parameterTypes)) {
+            if (method.getName().equals(name) && Arrays.equals(paraClasses, parameterTypes)) {
                 return method;
             }
         }
-        return null;
+        // 未命中显式失败（与 javassist 面同口径，原返回 null 把失败转嫁给远端消费点）
+        throw new MethodNotFoundException("类 " + this.javaClass.getName() + " 中不存在方法: " + name
+                + " 参数表: " + Arrays.toString(parameterTypes));
     }
 
 }

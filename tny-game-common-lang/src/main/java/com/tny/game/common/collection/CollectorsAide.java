@@ -23,7 +23,8 @@ import java.util.stream.*;
 public class CollectorsAide {
 
     public static <T, K> Collector<T, ?, Map<K, T>> toMap(Function<? super T, ? extends K> keyMapper) {
-        return Collectors.toMap(keyMapper, ObjectAide::self);
+        // 重复键 last-win（与单条注册覆盖语义一致；原实现同类实例重复注册直接 IllegalStateException）
+        return Collectors.toMap(keyMapper, ObjectAide::self, (existing, replacement) -> replacement);
     }
 
 }

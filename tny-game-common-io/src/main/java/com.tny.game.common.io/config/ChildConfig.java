@@ -32,7 +32,7 @@ class ChildConfig implements Config {
     private String subKeyHead;
 
     ChildConfig(String parentKey, String delimiter, Config parent) {
-        Asserts.checkNotNull(StringUtils.isBlank(parentKey), "parentKey 不可为null或为空字符串");
+        Asserts.checkArgument(StringUtils.isNotBlank(parentKey), "parentKey 不可为null或为空字符串");
         Asserts.checkNotNull(parent, "parent 不可为null");
         this.parent = parent;
         this.parentKey = parentKey;
@@ -41,7 +41,7 @@ class ChildConfig implements Config {
     }
 
     private ChildConfig(String parentKey, String subKeyHead, String delimiter, Config parent) {
-        Asserts.checkNotNull(StringUtils.isBlank(parentKey), "parentKey 不可为null或为空字符串");
+        Asserts.checkArgument(StringUtils.isNotBlank(parentKey), "parentKey 不可为null或为空字符串");
         Asserts.checkNotNull(parent, "parent 不可为null");
         this.parent = parent;
         this.parentKey = parentKey;
@@ -57,7 +57,7 @@ class ChildConfig implements Config {
     @Override
     public Config child(String key, String delimiter) {
         Asserts.checkArgument(key.startsWith(this.subKeyHead), "{} 不属于 {} 的子 key", key, this.subKeyHead);
-        String subKey = key.replace(this.subKeyHead, "");
+        String subKey = key.substring(this.subKeyHead.length());
         return new ChildConfig(key, subKey, delimiter, this);
     }
 
@@ -98,7 +98,7 @@ class ChildConfig implements Config {
 
     @Override
     public long getLong(String key) {
-        return 0;
+        return this.parent.getLong(key(key));
     }
 
     @Override
@@ -108,7 +108,7 @@ class ChildConfig implements Config {
 
     @Override
     public double getDouble(String key) {
-        return 0;
+        return this.parent.getDouble(key(key));
     }
 
     @Override
@@ -118,7 +118,7 @@ class ChildConfig implements Config {
 
     @Override
     public float getFloat(String key) {
-        return 0;
+        return this.parent.getFloat(key(key));
     }
 
     @Override
@@ -128,7 +128,7 @@ class ChildConfig implements Config {
 
     @Override
     public boolean getBoolean(String key) {
-        return false;
+        return this.parent.getBoolean(key(key));
     }
 
     @Override
@@ -138,7 +138,7 @@ class ChildConfig implements Config {
 
     @Override
     public byte getByte(String key) {
-        return 0;
+        return this.parent.getByte(key(key));
     }
 
     @Override
@@ -148,7 +148,7 @@ class ChildConfig implements Config {
 
     @Override
     public <O> O getObject(String key) {
-        return null;
+        return this.parent.getObject(key(key));
     }
 
     @Override
@@ -163,7 +163,7 @@ class ChildConfig implements Config {
 
     @Override
     public <E extends Enum<E>> E getEnum(String key, Class<E> enumClass) {
-        return null;
+        return this.parent.getEnum(key(key), enumClass);
     }
 
     @Override
@@ -205,12 +205,23 @@ class ChildConfig implements Config {
 
     @Override
     public <T> Map<String, T> find(String regular) {
-        return this.parent.find(regular);
+        return scoped(this.parent.find(regular));
     }
 
     @Override
     public <T> Map<String, T> find(Pattern regular) {
-        return this.parent.find(regular);
+        return scoped(this.parent.find(regular));
+    }
+
+    /** find 限定本子空间（原透传父级返回全库匹配）；键保持绝对路径（与 entrySet 视图一致） */
+    private <T> Map<String, T> scoped(Map<String, T> found) {
+        Map<String, T> result = new HashMap<>();
+        for (Entry<String, T> entry : found.entrySet()) {
+            if (entry.getKey().startsWith(this.subKeyHead)) {
+                result.put(entry.getKey(), entry.getValue());
+            }
+        }
+        return result;
     }
 
     private String key(String childKey) {

@@ -61,12 +61,19 @@ public interface TimeMeter<C extends TimeCycle> {
 
     default double getProgress(long timeMillis) {
         long duration = this.getDuration();
+        if (duration <= 0) {
+            // 零/负时长（含 -1 未定义语义）必须为有限值，不得输出 NaN/±Inf
+            return 0d;
+        }
         long progressTime = duration - this.countRemainMills(timeMillis);
         return (double) progressTime / duration;
     }
 
     default double getTotalProgress(long timeMillis) {
         long duration = this.getTotalDuration();
+        if (duration <= 0) {
+            return 0d;
+        }
         long progressTime = duration - this.countEndRemainMills(timeMillis);
         return (double) progressTime / duration;
     }

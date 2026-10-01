@@ -12,6 +12,7 @@
 package com.tny.game.basics.item;
 
 import com.tny.game.basics.item.behavior.*;
+import com.tny.game.basics.utlis.*;
 import com.tny.game.common.enums.*;
 import com.tny.game.common.io.config.*;
 
@@ -32,39 +33,41 @@ public final class DemandTypes extends ClassImporter {
     }
 
     static void register(DemandType value) {
-        holder.register(value);
+        EnumRegistrySupport.register(holder, value);
     }
 
+    //    现状差异钉桩（禁止顺手修，见 verification-group6 遗留登记）：本类 check 双通道委托宽松 of 通道，
+    //    未命中返回 null；兄弟门面 check 为严格通道（未命中抛 NPE）。收敛仅统一代码形态，不统一语义。
     public static <T extends DemandType> T check(String key) {
-        return holder.of(key);
+        return EnumRegistrySupport.of(holder, key);
     }
 
     public static <T extends DemandType> T check(int id) {
-        return holder.of(id);
+        return EnumRegistrySupport.of(holder, id);
     }
 
     public static <T extends DemandType> T of(int id) {
-        return holder.of(id);
+        return EnumRegistrySupport.of(holder, id);
     }
 
     public static <T extends DemandType> T of(String key) {
-        return holder.of(key);
+        return EnumRegistrySupport.of(holder, key);
     }
 
     public static <T extends DemandType> Optional<T> option(int id) {
-        return holder.option(id);
+        return EnumRegistrySupport.option(holder, id);
     }
 
     public static <T extends DemandType> Optional<T> option(String key) {
-        return holder.option(key);
+        return EnumRegistrySupport.option(holder, key);
     }
 
     public static <T extends DemandType> Collection<T> all() {
-        return holder.allValues();
+        return EnumRegistrySupport.all(holder);
     }
 
     public static Enumerator<DemandType> enumerator() {
-        return holder;
+        return EnumRegistrySupport.enumerator(holder);
     }
 
 }

@@ -20,14 +20,15 @@ public class Weight<V> {
 
     private V value;
 
-    // private FormulaHolder weight;
+    /** 权重字面量（表达式引擎依赖属上层模块，P1 分层禁止下沉；本类按数值字面量解析） */
+    private String weight;
 
     public Weight() {
     }
 
     public Weight(V value, String weight) {
         this.value = value;
-        // this.weight = MvelFormulaFactory.create(weight, FormulaType.EXPRESSION);
+        this.weight = weight;
     }
 
     // public Weight(V value, FormulaHolder weight) {
@@ -40,16 +41,15 @@ public class Weight<V> {
     }
 
     public WeightNum<V> getWeight(Object... params) {
-        int weightNum = 0;
-        try {
-            // weightNum = this.weight.createFormula()
-            //         .putAll(CollectionAide.attributes2Map(params))
-            //         .execute(Integer.class);
-        } catch (Throwable e) {
-            LOGGER.error("", e);
-            weightNum = 0;
+        // 断链修复：原公式体注释后恒返回 0，下游分桶聚合被 Infinity 挤桶
+        if (this.weight == null || this.weight.trim().isEmpty()) {
+            return new WeightNum<>(this.value, 0);
         }
-        return new WeightNum<V>(this.value, weightNum);
+        try {
+            return new WeightNum<>(this.value, Integer.parseInt(this.weight.trim()));
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("权重必须为整数字面量（表达式支持属上层能力）: " + this.weight, e);
+        }
     }
 
 }

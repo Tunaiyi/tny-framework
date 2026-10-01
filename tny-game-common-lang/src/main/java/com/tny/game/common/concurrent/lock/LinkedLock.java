@@ -47,23 +47,15 @@ public class LinkedLock implements Lock {
      * @throws IllegalArgumentException 锁对象数量为0时抛出
      */
     public LinkedLock(List<ObjectLock> locks) {
-        if (!locks.isEmpty()) {
+        // 原条件写反（!isEmpty 才抛"Lock list is empty"），非空列表反而构造失败
+        if (locks.isEmpty()) {
             throw new IllegalArgumentException("Lock list is empty");
         }
-        if (!locks.isEmpty()) {
-            this.current = locks.remove(0);
-            if (this.current == null) {
-                throw new NullPointerException();
-            }
-            if (!locks.isEmpty()) {
-                this.next = new LinkedLock(locks);
-            } else {
-                this.next = null;
-            }
-        } else {
-            this.current = null;
-            this.next = null;
+        this.current = locks.remove(0);
+        if (this.current == null) {
+            throw new NullPointerException();
         }
+        this.next = locks.isEmpty() ? null : new LinkedLock(locks);
     }
 
     /**
@@ -79,6 +71,8 @@ public class LinkedLock implements Lock {
                 this.next.lock();
             }
         } catch (RuntimeException e) {
+            // javadoc 承诺失败回滚：后续锁失败必须释放已持有的 current（原实现直接重抛，锁泄漏）
+            this.current.unlock();
             throw e;
         }
     }
@@ -106,12 +100,23 @@ public class LinkedLock implements Lock {
      */
     @Override
     public void lockInterruptibly() throws InterruptedException {
-        this.current.lockInterruptibly();
+        try {
+            this.current.lockInterruptibly();
+        } catch (InterruptedException e) {
+            // 首锁等待被中断：无持有需回滚，但中断标志必须恢复
+            Thread.currentThread().interrupt();
+            throw e;
+        }
         try {
             if (this.next != null) {
                 this.next.lockInterruptibly();
             }
-        } catch (InterruptedException | RuntimeException e) {
+        } catch (InterruptedException e) {
+            // 回滚已持有 + 恢复中断标志（异常吞失中断状态=调用方无法感知取消）
+            this.current.unlock();
+            Thread.currentThread().interrupt();
+            throw e;
+        } catch (RuntimeException e) {
             this.current.unlock();
             throw e;
         }
@@ -168,7 +173,15 @@ public class LinkedLock implements Lock {
     public boolean tryLock(long time, TimeUnit unit)
             throws InterruptedException {
         long lastTime = System.currentTimeMillis() + unit.toMillis(time);
-        if (!this.current.tryLock(time, unit)) {
+        boolean acquired;
+        try {
+            acquired = this.current.tryLock(time, unit);
+        } catch (InterruptedException e) {
+            // 首锁限时等待被中断：恢复中断标志后显式失败上抛
+            Thread.currentThread().interrupt();
+            throw e;
+        }
+        if (!acquired) {
             return false;
         }
         long remainTime = lastTime - System.currentTimeMillis();
@@ -179,6 +192,7 @@ public class LinkedLock implements Lock {
             }
         } catch (InterruptedException e) {
             this.current.unlock();
+            Thread.currentThread().interrupt();
             throw e;
         } catch (RuntimeException e) {
             this.current.unlock();

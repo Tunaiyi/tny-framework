@@ -31,22 +31,22 @@ public abstract class LoopCommand extends DelayCommand {
     public void action() {
         try {
             run();
-            long delay = nextInterval();
-            if (delay <= STOP_LOOP) {
-                executed = true;
-            } else {
-                delay(delay);
-                executed = false;
-            }
+            reschedule();
         } catch (Exception e) {
-            long delay = nextInterval();
-            if (delay <= STOP_LOOP) {
-                executed = true;
-            } else {
-                delay(delay);
-                executed = false;
-            }
+            // 异常轮同样重排（规格：异常可观测但循环不得静默停摆），异常继续上抛
+            reschedule();
             throw new RuntimeException(e);
+        }
+    }
+
+    private void reschedule() {
+        long delay = nextInterval();
+        if (delay <= STOP_LOOP) {
+            // 终止信号：标记结束并退出调度
+            this.executed = true;
+        } else {
+            delay(delay);
+            markRescheduled();
         }
     }
 

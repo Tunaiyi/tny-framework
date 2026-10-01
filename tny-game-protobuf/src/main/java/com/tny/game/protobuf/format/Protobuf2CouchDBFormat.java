@@ -39,28 +39,14 @@ public class Protobuf2CouchDBFormat extends Protobuf2JsonFormat {
      * Like {@code print()}, but writes directly to a {@code String} and returns it.
      */
     public static String printToString(Message message) {
-        try {
-            StringBuilder text = new StringBuilder();
-            print(message, text);
-            return text.toString();
-        } catch (IOException e) {
-            throw new RuntimeException("Writing to a StringBuilder threw an IOException (should never happen).",
-                    e);
-        }
+        return FormatValueRenderer.printToStringVia(output -> print(message, output));
     }
 
     /**
      * Like {@code print()}, but writes directly to a {@code String} and returns it.
      */
     public static String printToString(UnknownFieldSet fields) {
-        try {
-            StringBuilder text = new StringBuilder();
-            print(fields, text);
-            return text.toString();
-        } catch (IOException e) {
-            throw new RuntimeException("Writing to a StringBuilder threw an IOException (should never happen).",
-                    e);
-        }
+        return FormatValueRenderer.printToStringVia(output -> print(fields, output));
     }
 
     /**

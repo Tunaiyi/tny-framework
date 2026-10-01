@@ -186,7 +186,10 @@ public class DoneResults {
      * @return DoneResults
      */
     public static <M, S> DoneResult<M> map(DoneResult<S> result, Function<S, M> mapper) {
-        Asserts.checkArgument(result.isFailure(), "code [{}] is success", result.getCode());
+        // 原实现断言反了：只允许失败结果进 map（get() 为 null 喂给 mapper）
+        if (result.isFailure()) {
+            return new DefaultDoneResult<>(result.getCode(), null, result.getMessage());
+        }
         return new DefaultDoneResult<>(result.getCode(), mapper.apply(result.get()), result.getMessage());
     }
 

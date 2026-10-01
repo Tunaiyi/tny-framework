@@ -37,7 +37,34 @@ public class AoperBuilder<T> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AoperBuilder.class);
 
-    private final static ConcurrentMap<Class<?>, Class<?>> AOPER_MAP = new ConcurrentHashMap<>();
+    /** 键=（目标类，注解集内容）：原按类键控使不同注解集的构建互相吞 */
+    private final static ConcurrentMap<AoperBuilder.AopKey, Class<?>> AOPER_MAP = new ConcurrentHashMap<>();
+
+    static final class AopKey {
+
+        private final Class<?> clazz;
+
+        private final Set<Class<? extends Annotation>> annotations;
+
+        AopKey(Class<?> clazz, Set<Class<? extends Annotation>> annotations) {
+            this.clazz = clazz;
+            this.annotations = new java.util.HashSet<>(annotations);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (!(o instanceof AopKey)) {
+                return false;
+            }
+            AopKey that = (AopKey) o;
+            return clazz == that.clazz && annotations.equals(that.annotations);
+        }
+
+        @Override
+        public int hashCode() {
+            return java.util.Objects.hash(clazz, annotations);
+        }
+    }
 
     private final static String PROXY_CLASS_NAME = ".AOPerProxy$$";
 
@@ -85,30 +112,34 @@ public class AoperBuilder<T> {
     }
 
     public T build() {
+        // 失败显式化（原返回 null：NPE 在远离成因的调用点才爆）
         Class<Aoper<T>> aopClass = getAOPerClass(this.clazz, this.aopAnnotationSet);
+        if (aopClass == null) {
+            throw new IllegalStateException("AOP 代理类生成失败: " + this.clazz);
+        }
         try {
-            Aoper<T> aop = Objects.requireNonNull(aopClass).getDeclaredConstructor().newInstance();
+            Aoper<T> aop = aopClass.getDeclaredConstructor().newInstance();
             aop.set$Avice(this.afterReturningAdvice);
             aop.set$Avice(this.beforeAdvice);
             aop.set$Avice(this.throwsAdvice);
             //			aoper.set$Proxyed(target);
             return aop.get$Wraper();
         } catch (Exception e) {
-            LOGGER.error("", e);
+            throw new IllegalStateException("AOP 代理实例化失败: " + this.clazz, e);
         }
-        return null;
     }
 
     @SuppressWarnings("unchecked")
     private static <T> Class<Aoper<T>> getAOPerClass(Class<?> targetClass, Set<Class<? extends Annotation>> aopAnnotationSet) {
-        Class<?> aoperClass = AOPER_MAP.get(targetClass);
+        AopKey cacheKey = new AopKey(targetClass, aopAnnotationSet);
+        Class<?> aoperClass = AOPER_MAP.get(cacheKey);
         if (aoperClass != null) {
             return (Class<Aoper<T>>) aoperClass;
         }
         ClassPool pool = ClassPool.getDefault();
         try {
             synchronized (targetClass) {
-                aoperClass = AOPER_MAP.get(targetClass);
+                aoperClass = AOPER_MAP.get(cacheKey);
                 if (aoperClass != null) {
                     return (Class<Aoper<T>>) aoperClass;
                 }
@@ -149,13 +180,14 @@ public class AoperBuilder<T> {
                 Field methodsField = aoperClass.getDeclaredField("_aoper$METHODS");
                 methodsField.setAccessible(true);
                 methodsField.set(null, aopMethodList.toArray(new Method[0]));
-                Class<?> old = AOPER_MAP.putIfAbsent(targetClass, aoperClass);
+                Class<?> old = AOPER_MAP.putIfAbsent(cacheKey, aoperClass);
                 return (Class<Aoper<T>>) (old != null ? old : aoperClass);
             }
         } catch (Exception e) {
             LOGGER.error("生成 {} 代理类错误", targetClass, e);
+            // 留痕：日志保留、成因随显式异常上抛（原吞异常返回 null，build 抛出的 IllegalStateException 无 cause）
+            throw new IllegalStateException("AOP 代理类生成失败: " + targetClass, e);
         }
-        return null;
     }
 
     protected static boolean proxyMethod(ClassPool pool, CtClass cc, Method method, Set<CtMethod> methodSet)
@@ -307,7 +339,8 @@ public class AoperBuilder<T> {
             return false;
         }
         if (globalAOP != null) {
-            for (Privileges privilege : Privileges.values()) {
+            // 类级注解声明的可见性集合必须生效（原遍历全量枚举，@AOP 值参数形同虚设）
+            for (Privileges privilege : globalAOP.value()) {
                 if (privilege.check(method)) {
                     return true;
                 }

@@ -28,8 +28,18 @@ public class ForkJoinPools {
     private static final Map<String, ForkJoinPool> poolMap = new ConcurrentHashMap<>();
 
     public static ForkJoinPool pool(int threads, String name, boolean asyncMode) {
-        return poolMap.computeIfAbsent(name, (k) -> new ForkJoinPool(threads, new CoreThreadFactory(name),
+        // 键含参数组（net 命令执行器以类简名为键申请不同线程数——静默共用首建池是真实受害路径）
+        String key = name + '#' + threads + '/' + asyncMode;
+        return poolMap.computeIfAbsent(key, (k) -> new ForkJoinPool(threads, new CoreThreadFactory(name),
                 (t, e) -> LOGGER.error("{} 运行异常", name, e), asyncMode));
+    }
+
+    /**
+     * 整体关闭注册表内全部池并清空注册（幂等；关闭后同参数申请将新建）。
+     */
+    public static synchronized void shutdownAll() {
+        poolMap.values().forEach(ForkJoinPool::shutdownNow);
+        poolMap.clear();
     }
 
     public static ForkJoinPool pool(int threads, String name) {

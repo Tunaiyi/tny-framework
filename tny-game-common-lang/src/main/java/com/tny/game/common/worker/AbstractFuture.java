@@ -12,7 +12,6 @@
 package com.tny.game.common.worker;
 
 import java.util.concurrent.*;
-import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 
 /**
  * A cancellable asynchronous computation. This class provides a base
@@ -139,162 +138,20 @@ public class AbstractFuture<V> implements Future<V> {
      * <p>
      * Uses AQS sync state to represent run status
      */
-    private final class Sync extends AbstractQueuedSynchronizer {
+    private final class Sync extends FutureSyncSupport<V> {
 
         private static final long serialVersionUID = -7828117401763700385L;
-
-        /**
-         * State value representing that task ran
-         */
-        private static final int RAN = 2;
-
-        /**
-         * State value representing that task was cancelled
-         */
-        private static final int CANCELLED = 4;
-
-        /**
-         * The result to return from get()
-         */
-        private V result;
-
-        /**
-         * The exception to throw from get()
-         */
-        private Throwable exception;
-
-        /**
-         * The thread running task. When nulled after set/cancel, this indicates
-         * that the results are accessible. Must be volatile, to ensure
-         * visibility upon completion.
-         */
-        private volatile Thread runner;
 
         Sync() {
         }
 
-        private boolean ranOrCancelled(int state) {
-            return (state & (RAN | CANCELLED)) != 0;
-        }
-
         /**
-         * Implements AQS base acquire to succeed if ran or cancelled
+         * 状态机段（innerGet/innerSet/innerCancel/reset 等）逐字收敛至共享实现（D3），
+         * 此处仅保留到门面 protected done() 的转发，动态分派语义与原内部类直调外层方法一致。
          */
         @Override
-        protected int tryAcquireShared(int ignore) {
-            return innerIsDone() ? 1 : -1;
-        }
-
-        /**
-         * Implements AQS base release to always signal after setting final done
-         * status by nulling runner thread.
-         */
-        @Override
-        protected boolean tryReleaseShared(int ignore) {
-            this.runner = null;
-            return true;
-        }
-
-        boolean innerIsCancelled() {
-            return getState() == CANCELLED;
-        }
-
-        boolean innerIsDone() {
-            return ranOrCancelled(getState()) && this.runner == null;
-        }
-
-        V innerGet() throws InterruptedException, ExecutionException {
-            acquireSharedInterruptibly(0);
-            if (getState() == CANCELLED) {
-                throw new CancellationException();
-            }
-            if (this.exception != null) {
-                throw new ExecutionException(this.exception);
-            }
-            return this.result;
-        }
-
-        V innerGet(long nanosTimeout) throws InterruptedException, ExecutionException, TimeoutException {
-            if (!tryAcquireSharedNanos(0, nanosTimeout)) {
-                throw new TimeoutException();
-            }
-            if (getState() == CANCELLED) {
-                throw new CancellationException();
-            }
-            if (this.exception != null) {
-                throw new ExecutionException(this.exception);
-            }
-            return this.result;
-        }
-
-        void innerSet(V v) {
-            for (; ; ) {
-                int s = getState();
-                if (s == RAN) {
-                    return;
-                }
-                if (s == CANCELLED) {
-                    // aggressively release to set runner to null,
-                    // in case we are racing with a cancel request
-                    // that will try to interrupt runner
-                    releaseShared(0);
-                    return;
-                }
-                if (compareAndSetState(s, RAN)) {
-                    this.result = v;
-                    releaseShared(0);
-                    done();
-                    return;
-                }
-            }
-        }
-
-        void innerSetException(Throwable t) {
-            for (; ; ) {
-                int s = getState();
-                if (s == RAN) {
-                    return;
-                }
-                if (s == CANCELLED) {
-                    // aggressively release to set runner to null,
-                    // in case we are racing with a cancel request
-                    // that will try to interrupt runner
-                    releaseShared(0);
-                    return;
-                }
-                if (compareAndSetState(s, RAN)) {
-                    this.exception = t;
-                    this.result = null;
-                    releaseShared(0);
-                    done();
-                    return;
-                }
-            }
-        }
-
-        boolean innerCancel(boolean mayInterruptIfRunning) {
-            for (; ; ) {
-                int s = getState();
-                if (ranOrCancelled(s)) {
-                    return false;
-                }
-                if (compareAndSetState(s, CANCELLED)) {
-                    break;
-                }
-            }
-            if (mayInterruptIfRunning) {
-                Thread r = this.runner;
-                if (r != null) {
-                    r.interrupt();
-                }
-            }
-            releaseShared(0);
-            done();
-            return true;
-        }
-
-        boolean reset() {
-            return compareAndSetState(getState(), 0);
+        protected void done() {
+            AbstractFuture.this.done();
         }
 
     }

@@ -143,7 +143,8 @@ public class WrapperStageFuture<T> implements CompletionStageFuture<T> {
 
     @Override
     public CompletionStage<Void> runAfterBothAsync(CompletionStage<?> other, Runnable action, Executor executor) {
-        return new WrapperStageFuture<>(future().runAfterBothAsync(other, action));
+        // 原实现丢参（走无 executor 重载），指定执行器被静默忽略
+        return new WrapperStageFuture<>(future().runAfterBothAsync(other, action, executor));
     }
 
     @Override
@@ -173,7 +174,8 @@ public class WrapperStageFuture<T> implements CompletionStageFuture<T> {
 
     @Override
     public CompletionStage<Void> acceptEitherAsync(CompletionStage<? extends T> other, Consumer<? super T> action, Executor executor) {
-        return new WrapperStageFuture<>(future().acceptEitherAsync(other, action));
+        // 原实现丢参（走无 executor 重载），指定执行器被静默忽略
+        return new WrapperStageFuture<>(future().acceptEitherAsync(other, action, executor));
     }
 
     @Override
@@ -265,16 +267,13 @@ public class WrapperStageFuture<T> implements CompletionStageFuture<T> {
     }
 
     public boolean await() throws InterruptedException {
-        if (future.isDone()) {
-            return !future.isCompletedExceptionally();
-        }
+        // 等待失败仅报告给本次等待者：绝不向共享 future 回写异常完成（观察者不毒化任务终态）
         try {
             future.get();
             return true;
         } catch (ExecutionException e) {
-            future.completeExceptionally(e);
+            return false;
         }
-        return false;
     }
 
     public boolean await(long timeout, TimeUnit unit) throws InterruptedException {
@@ -282,27 +281,53 @@ public class WrapperStageFuture<T> implements CompletionStageFuture<T> {
             future.get(timeout, unit);
             return true;
         } catch (ExecutionException | TimeoutException e) {
-            future.completeExceptionally(e);
+            return false;
         }
-        return false;
     }
 
     public boolean awaitUninterruptibly() {
+        boolean interrupted = false;
         try {
-            return await();
-        } catch (InterruptedException e) {
-            future.completeExceptionally(e);
+            while (true) {
+                try {
+                    future.get();
+                    return true;
+                } catch (InterruptedException e) {
+                    interrupted = true;
+                } catch (ExecutionException e) {
+                    return false;
+                }
+            }
+        } finally {
+            if (interrupted) {
+                Thread.currentThread().interrupt();
+            }
         }
-        return false;
     }
 
     public boolean awaitUninterruptibly(long timeout, TimeUnit unit) {
+        boolean interrupted = false;
+        long deadline = System.nanoTime() + unit.toNanos(timeout);
         try {
-            return await(timeout, unit);
-        } catch (InterruptedException e) {
-            future.completeExceptionally(e);
+            while (true) {
+                long remaining = deadline - System.nanoTime();
+                if (remaining <= 0) {
+                    return false;
+                }
+                try {
+                    future.get(remaining, TimeUnit.NANOSECONDS);
+                    return true;
+                } catch (InterruptedException e) {
+                    interrupted = true;
+                } catch (ExecutionException | TimeoutException e) {
+                    return false;
+                }
+            }
+        } finally {
+            if (interrupted) {
+                Thread.currentThread().interrupt();
+            }
         }
-        return false;
     }
 
 }

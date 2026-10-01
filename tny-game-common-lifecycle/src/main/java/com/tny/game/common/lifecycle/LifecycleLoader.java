@@ -27,22 +27,33 @@ public final class LifecycleLoader {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LifecycleLoader.class);
 
-    public static final Comparator<Class<?>> LIFECYCLE_COMPARATOR = (one, other) -> {
-        AsLifecycle oneLifecycle = one
-                .getAnnotation(
-                        AsLifecycle.class);
-        AsLifecycle otherLifecycle = other
-                .getAnnotation(
-                        AsLifecycle.class);
-        return otherLifecycle.order() -
-               oneLifecycle.order();
-    };
 
     private static final Set<StaticInitiator> INITIATORS = new ConcurrentSkipListSet<>();
 
     private static final ClassSelector SELECTOR = ClassSelector.create()
             .addFilter(AnnotationClassFilter.ofInclude(AsLifecycle.class))
-            .setHandler(classes -> classes.forEach(LifecycleLoader::register));
+            .setHandler(LifecycleLoader::registerAll);
+
+    /**
+     * 扫描注册入口：单类缺注解/缺初始化方法不再终止整轮（原 forEach 一个坏类炸全表）——
+     * 按类隔离，失败类以一条汇总告警显式留痕。
+     */
+    static void registerAll(Iterable<Class<?>> classes) {
+        List<Class<?>> failed = new ArrayList<>();
+        List<Throwable> causes = new ArrayList<>();
+        for (Class<?> clazz : classes) {
+            try {
+                register(clazz);
+            } catch (Throwable e) {
+                failed.add(clazz);
+                causes.add(e);
+            }
+        }
+        if (!failed.isEmpty()) {
+            LOGGER.error("生命周期扫描注册完成但 {} 个类被跳过: {} | 首个原因: {}",
+                    failed.size(), failed, causes.get(0).toString(), causes.get(0));
+        }
+    }
 
     @ClassSelectorProvider
     private static ClassSelector selector() {
@@ -59,6 +70,13 @@ public final class LifecycleLoader {
 
     public static Set<StaticInitiator> getStaticInitiators() {
         return Collections.unmodifiableSet(INITIATORS);
+    }
+
+    /**
+     * 清空扫描登记（仅限测试基座复位全局态；生产启动路径单次装配不调用）。
+     */
+    public static void reset() {
+        INITIATORS.clear();
     }
 
 }
