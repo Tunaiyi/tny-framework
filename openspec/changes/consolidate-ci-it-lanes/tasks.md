@@ -11,7 +11,7 @@
 ## 2. 验收观察窗（起点=删段推送的那轮 run）
 
 - [ ] 2.1 `workflow_dispatch` 手动一轮：全 job 绿（dispatch 系原 e2e 不跑的超集场景，先验）；`ci-it-diag` 无新投递
-- [ ] 2.2 连续自然 push ≥5 轮 **integration job 级绿**（记账口径循 stabilize 案卷 §6：job 级计数、run 级红主犯另线如实登记；不得以重试转绿计），期间每轮复查 `ci-it-diag` 卷面
+- [ ] 2.2 连续自然 push ≥5 轮 **integration job 级绿**（记账口径循 stabilize 案卷 §6：job 级计数、run 级红主犯另线如实登记；不得以重试转绿计），期间每轮复查 `ci-it-diag` 卷面 ⏳ **在途账 4/5**：#33✅ #34✅ #35✅ #36✅（#35/#36 run 级红主犯=unit 线 `CiCircuitProbeTest` 探针，另线登记），`ci-it-diag` 零新投递；#37/#38 排队中，任一 IT 绿即满格
 - [ ] 2.3 观察期内若 IT 红：`git fetch github ci-it-diag` 取卷对组 5 判决表定罪；本变更专属嫌疑=电路段被误删（`git diff` 该 yml 即可排除/坐实）；若证实为本变更所致，回退=revert 删段提交（单命令，无迁移态）
 
 ## 3. 收口

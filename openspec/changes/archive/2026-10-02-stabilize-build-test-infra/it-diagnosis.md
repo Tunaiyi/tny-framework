@@ -53,6 +53,10 @@
   - run#27（2ebdcbb9 案卷对表推送）：integration ✅（10/10，job 级实查后轮询钉死）；
   - `ci-it-diag` 至今仅 #17 一卷，**根治后 10 轮零新投递**（支②签名零复现达成，含 e2e docker 通道全绿）。
   - **计数达成 ≥10/10（2026-10-02）**；run#28（b05ec659）为第 11 轮在途，属加分不属门槛。验收账本转 `verification.md` §4，组 5 收口。
+
+- **收口后续账（2026-10-02 追记，本变更已归档、只记账不重开）**：
+  - IT 通道 #33→#36 job 级持续全绿（`ci-it-diag` 零新投递）；e2e 通道自 run#33 起被 `consolidate-ci-it-lanes` 合并删除（删段实际载体=共享树吞并提交 `e942a878`，§5 判决表与取卷纪律不受影响——今后红仍投 `ci-it-diag`）；
+  - **unit 间歇登记簿延伸：#33✅ #34✅ #35❌ #36❌**——#35/#36 红源用例为 `CiCircuitProbeTest`（兄弟线 `fix-ci-unit-flakes` 新上线的 unit 电路金丝雀探针，`ci-unit-diag` 首投卷 `04196d9a` 含 etcd 容器日志四件套，疑似有意造红自证投递链路）；unit 门禁 `Fail job` exit 1 步骤运转正常，判读与销账归 `fix-ci-unit-flakes` 线，本案卷仅续账。
 - **本地（OrbStack）5 轮 `integrationTest -PincludeDocker --rerun`**：**5/5 全绿**（每轮 rc=0、BUILD SUCCESSFUL，约 2.3 min/轮，串行窗口查过并发）。非空跑实证：最新轮 20 结果文件、**61 个真实用例、failures=0、skipped=0**（etcd 档 36 例 + Mongodb/Redisson/DataAccess + integration-test 23 例全执行）——与 CI integration/e2e 恒绿结论一致。**5.5 本地端达成**。
 - **无 docker 环境显性 skip 探针**：✅ `-PdockerHost=unix:///tmp/no-such-docker.sock` 下 docker 档用例（MongodbDataAccessIT、RedissonDataAccessIT）显性 `SKIPPED`（testLogging 有 skipped 事件），非静默绿。
 - **CI 5 轮一致**：✅ **已满足**（IT job 级连绿 10 轮 ≥5，与本地 5/5 结论一致；unit 间歇与 bench 回写红均另有主犯、不属本项病源）。
