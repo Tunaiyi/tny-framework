@@ -72,6 +72,8 @@ jobs:
   bench-compile:
     name: Bench compile check (no timings)
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -84,7 +86,22 @@ jobs:
       # 职责边界（spec：CI 双通道）：仅编译与枚举清单，零计时——PR 不因基准数字变红，
       # 但基准源码编译破裂与"锚集不可枚举/空匹配"必红（jmhList 对空列表显式判红）。
       - name: Compile benchmarks and verify enumerable list
-        run: ./gradlew :tny-bench:jmhCompileGeneratedClasses :tny-bench:jmhList -q
+        id: gradle
+        continue-on-error: true
+        run: ./gradlew :tny-bench:jmhCompileGeneratedClasses :tny-bench:jmhList --console=plain --stacktrace > bench-ci.log 2>&1; RC=$?; tail -c 6000 bench-ci.log; exit $RC
+      # 临时诊断回路（根因②排查，run#7 六假设皆证伪后加装；定位后回改删除）：
+      # 失败时将 gradle 日志尾部推送到孤儿分支 ci-diagnostics——日志正文 API 需 admin，
+      # git 通道免授权。contents:write 与 nightly 回提交同款权限模型。
+      - name: Exfil diagnostic to orphan branch
+        if: steps.gradle.outcome == 'failure'
+        run: |
+          git checkout --orphan ci-diagnostics
+          git add bench-ci.log
+          git -c user.name="ci-diag" -c user.email="ci-diag@users.noreply.github.com" commit -m "diag run ${{ github.run_id }} job ${{ github.job }}" --allow-empty
+          git push -f origin ci-diagnostics
+      - name: Fail the job (after diagnostics)
+        if: steps.gradle.outcome == 'failure'
+        run: exit 1
 
   bench-nightly:
     name: Anchor benchmarks (nightly curve, human verdict)
