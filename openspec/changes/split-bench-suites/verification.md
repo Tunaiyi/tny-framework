@@ -73,3 +73,9 @@
 
 - `git ls-remote ... gh-pages` 无匹配时同样 exit 0（输出为空），`&& echo` 判定式踩空——实际 gh-pages **仍未生成**，fetch 复核证伪。
 - 三轮 run 死因重新对表：f49fa5fe 轮回写侥幸成功但 workflow 无 token → Store 失败被吞；ba82cf06 轮（含 token）死于回写竞态、Store 未执行；**e36ee1d6 轮（token+rebase 双修复齐备）才是首验**，~00:33 回写 + Store，00:47 自动核查生效。
+
+## Store 步骤终极归因与预建分支（01:0x）
+
+- 第二轮日志（token 修复后）：action 第一步即 `git fetch <repo> gh-pages:gh-pages`，**分支不存在直接 exit 128**——该版本 auto-push 无自建分支路径；token 本身已生效（fetch 带认证头走到分支查找）。
+- 处置：本地 `commit-tree` 空树法预建孤儿分支 `gh-pages`（未触碰共享工作区）。三轮修复至此齐备：显式 token（ba82cf06）→ 回写 rebase（e36ee1d6，第五轮 00e4c9da 实证生效）→ 预建分支（本轮）。
+- 触发轮：本次 verification commit 的 push = 首个全条件 run；预期 bot 回写后 Store 走通并推首个 benchmark-data.json。
