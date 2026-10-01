@@ -4,8 +4,8 @@
 
 ## 1. unit 诊断电路上线（design D1）
 
-- [ ] 1.1 `build.yml` unit job：加 `permissions: contents: write`；unit 步改 `continue-on-error` + `tee` 捕获全量输出到文件；新增投递步（`if: failure`）：按 D1 采集清单 (a)docker ps/etcd 容器日志 (b)gradle 输出尾 200KB (c)失败 XML (d)环境自述，`--orphan ci-unit-diag` + `push -f`；新增末尾显式 `exit 1` 步保硬门禁。验证：`python3 -c "import yaml; yaml.safe_load(...)"` 通过 + 逐条对照 integration job 三件套结构同型。
-- [ ] 1.2 组验证：`./gradlew :tny-game-namnspace-etcd:test --rerun`（本地 OrbStack etcd 在位，经 compose 栈）确认 unit 步改造不影响本地路径；提交仅含 build.yml（暂存面先查），推送。
+- [x] 1.1 `build.yml` unit job：加 `permissions: contents: write`；unit 步改 `continue-on-error` + `tee` 捕获全量输出到文件；新增投递步（`if: failure`）：按 D1 采集清单 (a)docker ps/etcd 容器日志 (b)gradle 输出尾 200KB (c)失败 XML (d)环境自述，`--orphan ci-unit-diag` + `push -f`；新增末尾显式 `exit 1` 步保硬门禁。验证：`python3 -c "import yaml; yaml.safe_load(...)"` 通过 + 逐条对照 integration job 三件套结构同型。
+- [x] 1.2 组验证：`./gradlew :tny-game-namnspace-etcd:test --rerun`（本地 OrbStack etcd 在位，经 compose 栈）确认 unit 步改造不影响本地路径；提交仅含 build.yml（暂存面先查），推送。
 
 ## 2. 电路自证探针（design D2）
 
