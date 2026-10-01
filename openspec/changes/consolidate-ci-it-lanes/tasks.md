@@ -10,11 +10,11 @@
 
 ## 2. 验收观察窗（起点=删段推送的那轮 run）
 
-- [ ] 2.1 `workflow_dispatch` 手动一轮：全 job 绿（dispatch 系原 e2e 不跑的超集场景，先验）；`ci-it-diag` 无新投递
+- [x] 2.1 `workflow_dispatch` 手动一轮：全 job 绿（dispatch 系原 e2e 不跑的超集场景，先验）；`ci-it-diag` 无新投递 ✅ **口径修订豁免（2026-10-02，用户拍板选项 1）**：dispatch/schedule 物理不可用——GitHub 只为默认分支注册的 workflow 提供 Run workflow 按钮与 cron（本仓 main 无 `.github/workflows/`，API 在册 dispatch total=0、schedule total=0；5.7.x 亦非受保护 release branch）。等价覆盖：push 即非 PR 事件，已被七连观察窗直接验证（#34/#39 全 run success；integration 无 `if:`，事件类型不改变其 job 行为）。UI 无按钮系平台约束非操作失误；强行可用化需改默认分支结构=越本变更边界。
 - [x] 2.2 连续自然 push ≥5 轮 **integration job 级绿**（记账口径循 stabilize 案卷 §6：job 级计数、run 级红主犯另线如实登记；不得以重试转绿计），期间每轮复查 `ci-it-diag` 卷面 ✅ **满格超额（2026-10-02）**：**#33→#39 连续 7 个自然 push，integration job 级全绿**（#33/#34/#39 全 run success；#35/#36 run 级红主犯=unit 线 `CiCircuitProbeTest` 探针，另线登记不扣 IT 分），`ci-it-diag` 七轮零新投递（仍仅 run#17 历史卷）；#40 在途为第 8 轮加分。门槛 5 轮已超验。
-- [ ] 2.3 观察期内若 IT 红：`git fetch github ci-it-diag` 取卷对组 5 判决表定罪；本变更专属嫌疑=电路段被误删（`git diff` 该 yml 即可排除/坐实）；若证实为本变更所致，回退=revert 删段提交（单命令，无迁移态）
+- [x] 2.3 观察期内若 IT 红：`git fetch github ci-it-diag` 取卷对组 5 判决表定罪；本变更专属嫌疑=电路段被误删（`git diff` 该 yml 即可排除/坐实）；若证实为本变更所致，回退=revert 删段提交（单命令，无迁移态）✅ **条件未发生**：观察窗 #33→#39 IT 零红、`ci-it-diag` 零新投递（终查卷面仍仅 run#17=889e0942）；预案留而未用（回退实际形态已因 1.2 勘记降级为手工反向补丁）
 
 ## 3. 收口
 
-- [ ] 3.1 verification.md 验收纪要入本变更目录（观察窗轮次账、dispatch 首验、卷面终查）
-- [ ] 3.2 `openspec validate consolidate-ci-it-lanes --strict` 通过；备 `/opsx:verify` → 归档；**unit 通道在册债（services etcd + 间歇红）移交另案指针，不随本变更销账**
+- [x] 3.1 verification.md 验收纪要入本变更目录（观察窗轮次账、dispatch 首验、卷面终查）✅ 已成文（含 2.1 豁免留痕、nightly 结构性发现、回退预案状态注记）
+- [x] 3.2 `openspec validate consolidate-ci-it-lanes --strict` 通过；备 `/opsx:verify` → 归档；**unit 通道在册债（services etcd + 间歇红）移交另案指针，不随本变更销账** ✅ validate 过；unit 债指针已双写（本 tasks + stabilize 案卷 §6 续账），现由 `fix-ci-unit-flakes` 线在还

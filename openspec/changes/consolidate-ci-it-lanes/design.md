@@ -22,6 +22,7 @@
 同命令同内容的双 job 是"IT 门禁行为"的双落点——一处用卷归因、一处用对照归因，变更原因同一却落点分裂，删除副本即回归单落点。integration 的事件超集 + 电路 + 硬门禁 + `permissions: contents: write` 全在本体，承接无迁移。
 **否决备选**：① 反向合并（删 integration、e2e 承接）——电路、门禁、PR 触发语义都在 integration 侧，迁移需重挂四件设施，改动面扩大且引入"门禁搬迁期空窗"，违背最小化；② 双 job 共存、e2e 转提示级（continue-on-error）——双跑成本与"一红两查"未消除，且降级面违反硬门禁口径；③ 合并为 matrix 双跑（with/without services）——services 消费面已实证为零，matrix 是为不存在的差异造新机制（P10 克制，无第三次重复不抽）。
 **验证**（P13）：合并后连续自然 push ≥5 轮 integration 绿；`workflow_dispatch` 手动一轮全档绿；红场景验证 = 不制造，依电路既有投递史（run#17）+ 若观察期出现红，卷照常到达即电路未受删段影响。
+**验证口径修订（2026-10-02，用户拍板）**：dispatch 先验项豁免——平台只为默认分支的 workflow 注册 Run workflow/cron（本仓 main 无 workflows，API 在册 dispatch=0、schedule=0），该项物理不可达；等价证据=push 非 PR 事件七连绿（#34/#39 全 run success）+ run#33 runner 面四 job 清单直证 e2e 消失。附带结构发现登记：**nightly cron 历史上从未生效**（schedule total=0），若团队需要 nightly 须先修默认分支结构——越本变更边界，另案。
 
 ### D2 不为"第二 runner 参照面"设替代品（M1 先例优先——不另起炉灶；此处为不引入新机制声明）
 
