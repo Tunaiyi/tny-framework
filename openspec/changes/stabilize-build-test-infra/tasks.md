@@ -48,8 +48,8 @@
   - 时序支：断言改"有界轮询 + 绝对上限"；CI 侧降并发（integrationTest `maxParallelForks=1`、剧本串行），时长换确定性；
   - 就绪支：wait 改 `Wait.forLogMessage("...ready to start serving...", 1)`，弃 `forListeningPort`。
   验证：本地按取证纪律复现旧签名、修复后同法消除 ✅ 落地=支②两改（ResendIT 有界轮询 10s 上限 + `maxParallelForks=1`）；时序签名属 CI 尾延迟专属，本地粒度不可复现，修复后本地单跑绿（it-diagnosis §5），终判在 5.5 CI 侧
-- [ ] 5.4 门禁语义收口：阶段一（定罪/根治期间）保持硬门禁（电路内置"红→取卷→exit 1"，不静默）；根治落地后撤任何降级、回硬门禁，并把**"不得以重试转绿作为通过依据"**写入验收。可选兜底 docker 组 1 次 test-retry——仅当与电路同用（重试成功也留案底）才允许存在
-- [ ] 5.5 双端一致性验收：全新 macOS（OrbStack）与 CI runner 双端 `./gradlew integrationTest -PincludeDocker` 连续 5 轮结论一致；无 docker 环境必须显性 skip，**不得静默绿**。同一定罪签名在 ≥10 次连续 push（含 PR 与 push 事件）中零复现（交接验收标准 2/3）
-- [ ] 5.6 收口划账：memory `docker-it-rerun-discipline` 的"另立变更根治"条目更新为已收口（交接验收标准 4）；`openspec validate stabilize-build-test-infra --strict` 通过；验证摘要记本变更目录
+- [x] 5.4 门禁语义收口：阶段一（定罪/根治期间）保持硬门禁（电路内置"红→取卷→exit 1"，不静默）；根治落地后撤任何降级、回硬门禁，并把**"不得以重试转绿作为通过依据"**写入验收。可选兜底 docker 组 1 次 test-retry——仅当与电路同用（重试成功也留案底）才允许存在 ✅ 全程硬门禁零降级（run#18/#21/#22 级红照常拦截，主犯另线登记）；"不得以重试转绿"落为案卷 §6 记账口径；test-retry 未启用（根治在信号源）
+- [x] 5.5 双端一致性验收：全新 macOS（OrbStack）与 CI runner 双端 `./gradlew integrationTest -PincludeDocker` 连续 5 轮结论一致；无 docker 环境必须显性 skip，**不得静默绿**。同一定罪签名在 ≥10 次连续 push（含 PR 与 push 事件）中零复现（交接验收标准 2/3） ✅ 本地 5/5 轮绿（61 真实用例 skipped=0）+ 显性 skip 探针过；CI IT job 级连绿 10 个自然 push（run#18→#27，`ci-it-diag` 根治后零新投递；run#28 第 11 轮在途）
+- [x] 5.6 收口划账：memory `docker-it-rerun-discipline` 的"另立变更根治"条目更新为已收口（交接验收标准 4）；`openspec validate stabilize-build-test-infra --strict` 通过；验证摘要记本变更目录 ✅ memory 已划账；`validate --strict` 通过；验收纪要落 `verification.md` §4
 
 > 边界（交接 §5，勿做）：不动 unit 通道（etcd services 方案刚定案生效，勿再翻烧饼）；不引入 GitHub `services:` 起任何新依赖（机制黑箱，十五轮实证不可调稳）；不复活二进制进程托管路线（redis 无官方预编译、mongo 嵌入式下载器已弃维护；除非将来出现完全无容器运行时的 CI，届时按单依赖另立项）。

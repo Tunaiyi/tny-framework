@@ -47,3 +47,19 @@ split package(`com.tny.game.net.transport` 横跨 net/net-test 二编译单元)�
 - 修改:`tny-game-net-test/build.gradle`(契约注释)、`tny-game-net/build.gradle`(契约注释)、本变更目录四个文档(proposal/design/tasks 无实质改动,tasks 勾选+锁定备注)。
 - 迁移:`tny-game-namnspace-etcd/src/test/.../EtcdNamespaceExplorerTest.java` → `src/integration/.../EtcdNamespaceExplorerIT.java`(git rm + 新增)。
 - 未动:任何产品源码、CI 工作流、README(通道约定已在册)。
+
+## 4. 组 5：integration 间歇红根治验收纪要（2026-10-02，案卷全文见 `it-diagnosis.md`）
+
+| 验证项(任务 5.1-5.5) | 证据 | 结果 |
+|---|---|---|
+| 电路取证自证(5.1) | run#17 红 → `ci-it-diag` 投递 `TcpSessionResendIT` XML + console-tail，取卷即达 | ✅ 交接验收标准 1 |
+| 定罪(5.2) | 三签名扫描：支①③零命中；栈直指 shutdownServer 后零等待即时读 `isOffline()` | ✅ 判决表支② |
+| 根治(5.3) | `TcpSessionResendIT` 有界轮询 `atMost(10s).untilAsserted`；`integration-test.gradle` `maxParallelForks=2→1` | ✅ 两改落地（`ae80463d`） |
+| 门禁(5.4) | 全程硬门禁未降级；run#18/#21/#22 的 run 级红均照常拦截（主犯=bench 回写/unit，另线登记） | ✅ "不得以重试转绿"为 §6 记账口径 |
+| CI 零复现(5.5) | IT job 级连绿 **10 个自然 push**（run#18→#27），`ci-it-diag` 根治后零新投递（run#28 第 11 轮在途） | ✅ 交接验收标准 2 |
+| 双端 5 轮一致(5.5) | 本地 OrbStack 5/5 轮绿（20 结果/61 真实用例/skipped=0，docker 档全执行）；CI 端 ≥5 轮一致达成 | ✅ 交接验收标准 3 |
+| 无 docker 显性 skip | `-PdockerHost=unix:///tmp/no-such-docker.sock` → docker 档用例显式 `SKIPPED`（非静默绿） | ✅（同时补实 §2"未实测项"的同源语义） |
+
+**边界遵守**：unit 通道零改动（其间歇红三次登记：#16/#19/#22，另案）；未引入 GitHub `services:` 新依赖；未复活二进制进程托管；test-retry 兜底未启用（根治在信号源）。
+
+**组 5 文件足迹**：`tny-game-integration-test/src/integration/.../TcpSessionResendIT.java`（断言改造）、`gradle/integration-test.gradle`（降并发）、`.github/workflows/build.yml`（电路，随 `cbb83ba7` 先行上线）、本目录 `handoff-*.md`/`it-diagnosis.md`/本文。
