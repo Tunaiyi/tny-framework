@@ -8,7 +8,9 @@
 |---|---|---|---|---|---|---|
 | #15 | 441c203d | ✅（首次绿） | ✅ | ✅ | ❌（IT 执行步红） | 未上线 |
 | #16 | cbb83ba7（电路上线） | **❌（新事实，见 §3）** | ✅ | ✅ | ✅（本轮 IT 绿，电路 skipped=正常） | 静默待命 |
-| #17 | 0a668033（bench 线 split-bench-suites 实施提交，动 bench-compile 区） | 进行中 | 进行中 | 进行中 | **进行中——本轮是电路二次开奖** | 待触发 |
+| #17 | 0a668033（bench 线 split-bench-suites 实施提交） | ✅ | ✅ | ✅ | **❌——电路首投递**（`TcpSessionResendIT` 即时断言抢跑，§5 定罪依据） | **已投递案卷** |
+| #18 | ae80463d（组 5 根治支②推送） | ✅ | ✅ | ✅ | **✅ 根治后首验零复现（数据点 #1）** | 无新投递（预期） |
+| #19 | f1acdc9b（bench 线收尾 docs 推送） | 进行中 | 进行中 | 进行中 | 进行中（数据点 #2 待开奖） | — |
 
 - `git fetch github ci-it-diag` → `couldn't find remote ref`：电路至今**没有在任何一次红中投递过案卷**（#16 IT 恰绿）。5.1 验收（红后 3 分钟可取卷）尚未自证。
 - 历史红点（交接 §1）：#10 ✓、#11 ✗、#15 ✗，失败均在 `Integration tests (include docker lane)` 测试执行步，非编译、非 docker 能力。
@@ -33,3 +35,16 @@
   2. `gradle/integration-test.gradle`：`maxParallelForks = 2 → 1`（判决表"CI 侧降并发，时长换确定性"支臂）；
   3. 门禁不动硬（电路"红→取卷→exit 1"与 `Fail job` 原样保留）；不加 test-retry 兜底（根治在信号源，兜底非必需，交接 §3 亦仅"可选"）。
 - **验证现状**：本地按纪律（任务级 `--rerun`、查并发窗口、JDK21）单跑定罪用例 `tests=1 failures=0`；**本地时序粒度无法复现 CI 尾延迟窗口**，终判在 5.5：CI 同签名 ≥10 次 push 零复现 + 双端 5 轮一致。电路自证：run#17 完成后即取到卷（5.1 达成，红→取卷 <3 分钟口径成立）。
+
+## §6 验收追踪（5.4/5.5，2026-10-01 14:44Z 起账）
+
+> 计数口径：验收标准钉的是 **integration job 级**同签名零复现；run 级红若主犯是其他 job（unit/bench 回写），不扣 IT 的分，但要如实登记主犯。
+
+- **CI 同签名零复现计数**（目标 ≥10 次自然 push；每轮必查 `ci-it-diag` 有无新投递）：
+  - run#18（ae80463d 根治推送）：integration ✅ e2e ✅（1/10）。run 级红主犯=bench 线 `Routine benchmarks` 回写步（"Commit routine result into results/"失败，归 split-bench-suites 线处置）；
+  - run#19（f1acdc9b bench docs）：integration ✅ e2e ✅（2/10）。run 级红主犯=**unit 回红**（间歇第二实锤：#16❌ #17✅ #18✅ #19❌——§3 已登记，边界不动 unit，另案）；
+  - `ci-it-diag` 至今仅 #17 一卷，根治后零新投递。
+- **本地（OrbStack）5 轮 `integrationTest -PincludeDocker --rerun`**：**5/5 全绿**（每轮 rc=0、BUILD SUCCESSFUL，约 2.3 min/轮，串行窗口查过并发）。非空跑实证：最新轮 20 结果文件、**61 个真实用例、failures=0、skipped=0**（etcd 档 36 例 + Mongodb/Redisson/DataAccess + integration-test 23 例全执行）——与 CI integration/e2e 恒绿结论一致。**5.5 本地端达成**。
+- **无 docker 环境显性 skip 探针**：✅ `-PdockerHost=unix:///tmp/no-such-docker.sock` 下 docker 档用例（MongodbDataAccessIT、RedissonDataAccessIT）显性 `SKIPPED`（testLogging 有 skipped 事件），非静默绿。
+- **CI 5 轮一致**：由自然 push 流继续积累（当前 2/10），不制造无意义 push 刷数。
+- **5.4 门禁**：硬门禁全程未降级（`Fail job` 步骤与电路原样在位；run#18/#19 的 run 级红证明门禁仍在拦事）；阶段二撤降级条款无对象可撤。
