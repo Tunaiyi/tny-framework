@@ -28,3 +28,7 @@
 - **下游**：net-test 的 Mock 类被 `tny-game-net/src/test`（MockNetTunnelCloseTest 等）消费——包重命名波及 import 面，测试源码兼容需逐一核对；无产品消费方（该模块为测试工具模块）。
 - **门禁/CI**：全仓 test 命令去 `-x`；CI 既有 `test --continue` 受益（无 etcd 环境不再受本模块影响——其测试迁入 integration 源集后单测通道为空）。
 - **他案协调**：`rename-integration-source-set`（在途 0/9）与 `add-relay-topology-integration-tests`（8/13）同在 integration 通道附近作业——实施前查工作树终态命名，任务措辞已按名不锁死。
+
+## 追记（2026-10-01，组 5 增补）
+
+本变更曾在十五轮 CI 实验收口后归档；bench 线交接（`handoff-ci-integration-remediation.md`）判定 integration 间歇红与组 1/2 是两个独立病源（组 1/2 治编译期 split package，组 5 治**运行期** IT 子进程对在途干扰的敏感），据此复档并增补任务组 5。原"不引 CI 改动"边界仅约束组 1–4；组 5 的范围明确为：诊断电路取证（已随 `cbb83ba7` 上线）→ 三签名判决表定罪 → 单支根治（类路径快照化／时序断言改造+CI 降并发／Testcontainers wait 策略，三选一）→ 双端一致性验收。仍零产品行为、零公共 API（维持 `skip_specs: true`）。

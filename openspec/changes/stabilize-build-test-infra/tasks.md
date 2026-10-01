@@ -29,3 +29,27 @@
 
 - [x] 4.1 release-note.md（设施向：零产品行为变更声明；net-test 包位移动作与 deprecated 转发有无；etcd 用例新执行通道用法一条命令示例）
 - [x] 4.2 账目划账：记忆 `common-modules-audit-2026-09-30` 中"net-test 并行编译脆弱性另立变更"与"etcd 测试环境债"两条目更新为已收口（含根因更正：非包私有引用而是 split package）；`openspec validate stabilize-build-test-infra --strict` 通过
+
+## 5. integration 间歇红根治（bench 线交接增补，2026-10-01）
+
+> 事实链与决策依据全部在 `handoff-ci-integration-remediation.md`（十五轮 CI 实验终态：unit/bench/e2e
+> 恒绿，仅 integration 时绿时红 #10✓ #11✗ #15✗；能力结论——CI 跑 IT 无环境障碍——由 e2e 恒绿实证），勿重新推导。
+> 诊断电路已随 `cbb83ba7` 常驻 build.yml：integration 红时失败用例 XML + 控制台尾部自动 force-push 到孤儿分支 `ci-it-diag`。
+> 取证纪律沿用 memory `docker-it-rerun-discipline`：本地只用任务级 `--rerun`、禁 `--rerun-tasks`；跑前查并发 gradle 窗口；对照 jar mtime。
+
+- [x] 5.1 电路取证：`git fetch github ci-it-diag` 取案卷（`itdiag/console-tail.txt` + 失败用例 XML，`git ls-tree FETCH_HEAD itdiag/` 逐个查看）。分支不存在（电路刚上线尚无红触发）→ 等待或 re-run 下一次 integration 红再取。验证：**下一次红 3 分钟内能拿到失败用例名 + 异常栈**（电路自证可达，交接验收标准 1）✅ run#17 红后即取卷，见 `it-diagnosis.md` §5
+- [x] 5.2 按交接 §2 三签名判决表定罪（结论 + 证据落本目录 `it-diagnosis.md`）：
+  ① `NoClassDefFoundError`/Spring 上下文半态/`Could not initialize class` 且失败用例每次不同 → **子进程类路径竞态**（demo app 引用 build/libs 活 jar，并行任务窗口内被重写）；
+  ② 超时类断言失败（`expected ... within`/租约 TTL/心跳保活窗口/`Awaitility`）且失败用例相对固定、仅 CI 复现 → **时序断言超预算**（4 核 runner 尾延迟放大 3-10×）；
+  ③ 容器就绪过早放行、连接拒绝集中在首个用例 → **Testcontainers wait 策略**。
+  验证：只定一罪；证据不足回 5.1 补卷，不模糊定罪 ✅ 定支②（时序断言超预算），支①③签名零命中，见 `it-diagnosis.md` §5
+- [x] 5.3 按定罪单线程根治（只落地对应一支，禁止多头齐进）：
+  - 竞态支：IT 子进程类路径**快照化**——integrationTest 执行前把 runtimeClasspath 复制到只读快照目录，子进程 classpath 指快照（同型先例：旧 benchCpSnapshot 思路）；同时核查 integrationTest 对全部上游 jar 任务的 dependsOn 声明完整性；
+  - 时序支：断言改"有界轮询 + 绝对上限"；CI 侧降并发（integrationTest `maxParallelForks=1`、剧本串行），时长换确定性；
+  - 就绪支：wait 改 `Wait.forLogMessage("...ready to start serving...", 1)`，弃 `forListeningPort`。
+  验证：本地按取证纪律复现旧签名、修复后同法消除 ✅ 落地=支②两改（ResendIT 有界轮询 10s 上限 + `maxParallelForks=1`）；时序签名属 CI 尾延迟专属，本地粒度不可复现，修复后本地单跑绿（it-diagnosis §5），终判在 5.5 CI 侧
+- [ ] 5.4 门禁语义收口：阶段一（定罪/根治期间）保持硬门禁（电路内置"红→取卷→exit 1"，不静默）；根治落地后撤任何降级、回硬门禁，并把**"不得以重试转绿作为通过依据"**写入验收。可选兜底 docker 组 1 次 test-retry——仅当与电路同用（重试成功也留案底）才允许存在
+- [ ] 5.5 双端一致性验收：全新 macOS（OrbStack）与 CI runner 双端 `./gradlew integrationTest -PincludeDocker` 连续 5 轮结论一致；无 docker 环境必须显性 skip，**不得静默绿**。同一定罪签名在 ≥10 次连续 push（含 PR 与 push 事件）中零复现（交接验收标准 2/3）
+- [ ] 5.6 收口划账：memory `docker-it-rerun-discipline` 的"另立变更根治"条目更新为已收口（交接验收标准 4）；`openspec validate stabilize-build-test-infra --strict` 通过；验证摘要记本变更目录
+
+> 边界（交接 §5，勿做）：不动 unit 通道（etcd services 方案刚定案生效，勿再翻烧饼）；不引入 GitHub `services:` 起任何新依赖（机制黑箱，十五轮实证不可调稳）；不复活二进制进程托管路线（redis 无官方预编译、mongo 嵌入式下载器已弃维护；除非将来出现完全无容器运行时的 CI，届时按单依赖另立项）。
