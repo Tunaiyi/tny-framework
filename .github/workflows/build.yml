@@ -46,6 +46,8 @@ jobs:
   integration:
     name: Integration tests (real transport + containers, starter 装配与剧本覆盖)
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -56,7 +58,28 @@ jobs:
       # docker 档并入 PR 通道（add-starter-net-integration-tests 决策：GH runner 自带 docker，
       # starter 装配/中继剧本/数据容器 IT 需要 PR 反馈；时长代价 +2~4min）
       - name: Integration tests (include docker lane)
-        run: ./gradlew integrationTest -PincludeDocker --continue
+        id: it
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          ./gradlew integrationTest -PincludeDocker --continue --console=plain 2>&1 | tee /tmp/it-console.log
+      # 诊断电路（run#15 起常驻；匿名 API 拉不到日志正文，git 通道永远可达）：
+      # 红时把失败用例 XML + 控制台尾部 force-push 到孤儿分支 ci-it-diag，取卷：
+      #   git fetch github ci-it-diag && git show FETCH_HEAD:itdiag/console-tail.txt
+      - name: Exfil failing IT evidence to ci-it-diag
+        if: steps.it.outcome == 'failure'
+        run: |
+          git checkout --orphan ci-it-diag
+          mkdir -p itdiag
+          find . -path "*/build/test-results/integrationTest/*.xml" -print0 2>/dev/null | xargs -0 grep -l "<failure\|<error" 2>/dev/null | while read -r f; do cp "$f" itdiag/; done
+          tail -c 200000 /tmp/it-console.log > itdiag/console-tail.txt
+          git add -f itdiag
+          git -c user.name="ci-it-diag" -c user.email="ci-it-diag@users.noreply.github.com" commit -m "it diag run ${{ github.run_id }}"
+          git push -f origin ci-it-diag
+      # 保持硬门禁语义不变（阶段一降级是 stabilize 线的选项，不在本电路里擅自生效）
+      - name: Fail job when IT failed (gate preserved)
+        if: steps.it.outcome == 'failure'
+        run: exit 1
 
   e2e:
     name: Full lane with containers (docker-tagged ITs)
