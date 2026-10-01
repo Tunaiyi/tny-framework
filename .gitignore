@@ -1,6 +1,8 @@
 # Package Files #
 *.class
 *.jar
+# Gradle wrapper jar 必须入库（runner 无本地工作树，缺失即 gradlew ClassNotFound）
+!gradle/wrapper/gradle-wrapper.jar
 *.war
 *.ear
 /log
