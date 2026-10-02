@@ -66,7 +66,10 @@
    （`git ls-remote` 核对，附注标签含 `^{}` 解引用记录），且解引用指向当前构建提交；
    远端不可达按存证缺失拒绝（fail-closed）。校验结果一次构建内记忆化，全仓多模块
    发布只查询一次远端。个别机器 PATH 上的 git 二进制与 Gradle 守护进程架构不匹配时，
-   可用 `-PgitExe=/path/to/git` 指定可用二进制。
+   可用 `-PgitExe=/path/to/git` 指定可用二进制。本项校验评估过改用 grgit（JGit）的
+   ls-remote：JGit 5.13 对附注标签只给"已解引用"标志而不给解引用后的提交号，无法支撑
+   "标签解引用指向当前构建提交"的核对，因此该项定案维持子进程实现（定案记录见
+   openspec/changes/migrate-git-calls-to-grgit/probe-jgit-remote.md）。
 
 ## 制品库运维前置条件（由运维侧执行，不在构建代码内）
 
@@ -74,9 +77,29 @@
 2. 快照仓（maven-snapshots）配置按天数的保留清理策略：滚动快照坐标 `N.M.x-SNAPSHOT`
    每夜构建追加一份时间戳产物且永不互相顶替，无保留策略则磁盘无界增长。
 
+## Central 发布（正式版第二通道）
+
+自 central-publish-tnydev-group 变更起，正式版同时发布到 Maven Central（组号 `com.tnydev.game`）：
+
+- 本地通道：`./gradlew publish`（Nexus，不变）→ `./gradlew publishAggregationToCentralPortal`
+  （nmcp 聚合上传；`centralCheck` 前置校验分支形态与凭据，上传前逐模块校验四件套与签名配对）。
+  凭据：`mavenCentralUsername/mavenCentralPassword`（Portal User Token）用户级属性 +
+  签名三属性同内网通道。快照永不进 Central（非发布分支被 `centralCheck` 拒绝，
+  nmcp 暴露的快照上传任务已全部禁用）。
+- CI 通道：`.github/workflows/publish.yml`——release 事件（按标签推导发布分支）或
+  `workflow_dispatch` 人工触发，两通道分步独立执行、互不回滚。所需 secrets：
+  `MAVEN_CENTRAL_USERNAME/PASSWORD`、`SIGNING_KEY`（armor 私钥）/`SIGNING_KEY_ID`/`SIGNING_PASSWORD`、
+  `NEXUS_USERNAME/PASSWORD`。前置条件：`com.tnydev.game` 命名空间已在 Portal 完成 DNS 验证。
+- 快照通道：开发线 `./gradlew publish` 自动分发**内网快照仓与 Central 快照仓**双目的地（条件=快照版本形态且本机配置 `mavenCentralUsername/Password`，缺凭据机器仅发内网；Central 快照 90 天自动清理，权威归档在内网）。
+- 首版验收：Central 检索到 `com.tnydev.game:tny-game-*:<版本>` 全模块清单后，本流程定版。
+
 ## 快速通道（Gradle 任务）
 
 上述四则流程中的切支+打标签+推送由根任务 `releaseCutAndTag` 固化顺序，合回由 `releaseRebaseBack`
-固化（均在 `gradle/release.gradle`；两任务支持 `-PdryRun` 预览，本机执行注意 JDK 21 与
-`-PgitExe` 两个环境前置，详见任务脚本头部注释）。`./gradlew publish` 仍按原流程独立执行，
-门禁校验不因使用快速通道而减免。
+固化（均在 `gradle/release.gradle`；两任务支持 `-PdryRun` 预览）。通道分界（openspec change
+`migrate-git-calls-to-grgit`）：`releaseCutAndTag` 的全部 git 操作已收敛到 grgit 插件
+（JGit 后端），不依赖本机 git 二进制，因此不需要 `-PgitExe`；`releaseRebaseBack` 仍保留四类
+子进程调用——`rebase`、`rebase --abort`、`rev-list --count`、`push --force-with-lease`——
+原因是 grgit 4.1.1 没有独立变基操作，且其推送只有无条件强推，不能拿弱语义替代 lease；
+本机执行这些子进程调用仍受 JDK 21 与 `-PgitExe` 两个环境前置约束，详见任务脚本头部注释。
+`./gradlew publish` 仍按原流程独立执行，门禁校验不因使用快速通道而减免。

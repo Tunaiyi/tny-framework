@@ -1,5 +1,10 @@
 plugins {
     id 'org.ajoberstar.grgit' version '4.1.1' apply false
+    // nmcp（Gradle 团队维护的 Central Portal 上传器，capability central-publishing D3）：
+    // aggregation 挂根、模块侧 com.gradleup.nmcp 不建 publication 不碰 maven-publish，
+    // 直接消费既有 mavenJava；由 gradle/central.gradle 与 publications.gradle 分别 apply。
+    id 'com.gradleup.nmcp' version '1.6.2' apply false
+    id 'com.gradleup.nmcp.aggregation' version '1.6.2' apply false
     id 'org.springframework.boot' version "${springBootVersion}" apply false
     id "io.spring.dependency-management" version "1.1.0" apply false
     id "com.baidu.jprotobuf" version "1.2.1" apply false
@@ -13,8 +18,8 @@ apply from: "${rootDir}/gradle/release.gradle"
 
 ext {
     // 发布构件组号的单一事实源（central-publishing D2）：模块不得另行声明组号；
-    // central-publish-tnydev-group 任务 2.2 将本值迁移为 com.tnydev.game（待 Central 命名空间验证通过后）。
-    projectGroup = 'com.tny.game'
+    // 2026-10-02 任务 2.2 完成迁移：Central 命名空间验证（任务 1.1）以 tnydev.com DNS TXT 为准，凭证 token 已验证可用。
+    projectGroup = 'com.tnydev.game'
     // 唯一例外：Gradle 插件模块的组号与其插件 id（com.tny.game）同谱系，组号迁移不牵连插件解析链
     // （spec central-publishing"Gradle 插件构件本次不入 Central"）。
     pluginLegacyGroup = 'com.tny.game'
@@ -26,6 +31,10 @@ ext {
     javaProjects = javaProjects - project(":tny-game-integration-test")
     gradleProjects = moduleProjects.findAll { it.name.endsWith("-gradle") }
 }
+
+// Central 通道：centralBundle / centralUpload（capability central-publishing）。
+// 须在 ext 声明块之后加载：任务聚合依赖 moduleProjects 等项目集合。
+apply from: "${rootDir}/gradle/central.gradle"
 
 // 组号对账（central-publishing D2 / spec"制品组号以单一事实源派生"错误路径）：
 // 配置完成后校验全部发布构件组号等于单一声明点值；Gradle 插件模块校验其例外组号。
@@ -123,6 +132,9 @@ configure(subprojects) {
         maven { url "https://mirrors.cloud.tencent.com/nexus/repository/maven-public/" }
         maven { url "https://m2.tnydev.com/repository/maven-public/" }
         maven { url "https://maven.aliyun.com/repository/public" }
+        // 官方 Central 兜底（nmcp 集成实测）：三方镜像缺 xmlutil 1.0.0-rc3 等
+        // 插件传递依赖，镜像列表后追加权威源，避免构建随镜像缓存漂移。
+        mavenCentral()
     }
 
 }

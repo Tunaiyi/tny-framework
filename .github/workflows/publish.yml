@@ -1,0 +1,66 @@
+name: publish
+
+# Central 发布工作流（openspec capability central-publishing；design D3/D4）：
+# 双通道分步独立执行——先内网 Nexus（五重门禁），后 Central 聚合上传（centralCheck 前置）。
+# 一个通道失败不掩盖另一个：两个 run 步骤各自独立报错，已成功通道的产物不回退。
+# 触发：
+#   release.published —— 标签名 v<X.Y.Z> 推导发布分支 <X.Y.Z>.release（标签先于制品，门禁同源校验）
+#   workflow_dispatch —— 直接指定发布分支名，人工闸门（Central 不可撤销，不设 push 自动触发）
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "发布分支名（如 5.7.8.release）"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    name: Publish release to Nexus and Maven Central
+    runs-on: ubuntu-latest
+    steps:
+      - name: Derive release branch
+        id: derive
+        run: |
+          if [ "${{ github.event_name }}" = "release" ]; then
+            echo "branch=${GITHUB_REF_NAME#v}.release" >> "$GITHUB_OUTPUT"
+          else
+            echo "branch=${{ inputs.branch }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v4
+        with:
+          ref: refs/heads/${{ steps.derive.outputs.branch }}
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - uses: gradle/actions/setup-gradle@v3
+
+      # 签名走无点号环境变量（SIGNING_KEY 为 armor 化私钥本体，不落文件）；
+      # 属性类凭据走 ORG_GRADLE_PROJECT_*。均不进命令行与日志（env 注入由 runner 脱敏）。
+      - name: Publish to Nexus (five-fold gate runs inside)
+        env:
+          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+          SIGNING_KEY_ID: ${{ secrets.SIGNING_KEY_ID }}
+          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
+          ORG_GRADLE_PROJECT_NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+          ORG_GRADLE_PROJECT_NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+        run: ./gradlew publish
+
+      - name: Upload bundle to Maven Central (centralCheck preflight inside)
+        env:
+          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+          SIGNING_KEY_ID: ${{ secrets.SIGNING_KEY_ID }}
+          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+        run: ./gradlew publishAggregationToCentralPortal

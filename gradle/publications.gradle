@@ -1,4 +1,12 @@
 apply plugin: "maven-publish"
+// nmcp 模块侧插件（central-publishing D3 定案）：不创建 publication、不碰 maven-publish，
+// 仅把本工程既有 mavenJava 发布件贡献给根聚合（gradle/central.gradle）。
+apply plugin: "com.gradleup.nmcp"
+// GPG 签名（central-publishing 准入四件套之签名；design D3）：凭据走标准
+// signing.keyId / signing.secretKeyRingFile / signing.password 属性（本机或 CI secrets 注入），
+// 仓库零密钥。发布分支形态必签（正式版对 Central 与内网的共同前提）；
+// 快照在无密钥环境（如新克隆的开发机）跳过，不阻塞内网快照通道。
+apply plugin: "signing"
 
 apply from: "$rootDir/gradle/dependency.gradle"
 apply from: "$rootDir/gradle/publish.gradle"
@@ -54,7 +62,43 @@ publishing {
                 password = NEXUS_PASSWORD
             }
         }
+        // Central 快照通道（官方 docs：快照走标准 maven-deploy，无验证、无签名要求、90 天清理；
+        // 2026-10-02 用户开启命名空间 Enable SNAPSHOTs 后接入）。仅快照版本声明本仓——
+        // 正式版若混入快照仓属事故，条件声明从根上排除；缺 Central 凭据的机器不声明该仓，
+        // 本地裸 publish 不因外发通道缺配置而失败。正式版 Central 通道仍由 nmcp 聚合承担。
+        if (version.toString().endsWith('-SNAPSHOT') && project.hasProperty('mavenCentralUsername')) {
+            maven {
+                name = "centralSnapshots"
+                url = "https://central.sonatype.com/repository/maven-snapshots/"
+                credentials {
+                    username = providers.gradleProperty('mavenCentralUsername').get()
+                    password = providers.gradleProperty('mavenCentralPassword').get()
+                }
+            }
+        }
     }
+}
+
+// 签名配置（central-publishing design D3 / spec 准入完整性）：标准三属性存在即签；
+// 发布分支形态必签——正式版对 Central 与内网共用同一签名产物，缺签在准入校验判红；
+// 快照在无密钥环境（如新克隆的开发机）跳过，不阻塞内网快照通道。
+signing {
+    def signingBranch = rootProject.ext.branchName.toString()
+    required = { signingBranch ==~ /\d+\.\d+\.\d+\.release/ }
+    // CI 桥接：无点号环境变量 SIGNING_KEY(_ID/_PASSWORD) 走内存密钥环。
+    // 属性名 signing.keyId 含点，无法经 ORG_GRADLE_PROJECT_* 注入（Gradle 环境桥不接受点号），故专用 env。
+    def memKey = providers.environmentVariable("SIGNING_KEY").orNull
+    def memId = providers.environmentVariable("SIGNING_KEY_ID").orNull
+    def memPass = providers.environmentVariable("SIGNING_PASSWORD").orNull
+    if (memKey && memId) {
+        // 常见误用防线：keyId 是指纹末 8 位十六进制而非邮箱/名称，
+        // 不校验则炸在 onlyIf 谓词的不可读堆栈里（实测教训）。
+        if (!(memId ==~ /(?i)[0-9a-f]{8}/) && !(memId ==~ /(?i)[0-9a-f]{16,40}/)) {
+            throw new GradleException("SIGNING_KEY_ID 应为指纹末 8 位十六进制（形如 502FAACD），当前值 '${memId}' 不是 keyId 形态")
+        }
+        useInMemoryPgpKeys(memId, memKey, memPass ?: "")
+    }
+    sign publishing.publications.mavenJava
 }
 
 // 发布前置门禁：依赖 check（含 test）保证发布前强制跑完测试，并做分支/版本/仓库一致性断言
@@ -190,6 +234,15 @@ def validatePublishConsistency = { gateTask ->
                 ? "请检查版本派生（gradle/git.gradle）与 RELEASE_REPOSITORY_URL / SNAPSHOT_REPOSITORY_URL 配置是否与当前分支形态匹配。"
                 : "请切换到开发线形态或发布分支形态的分支后再发布。"
         throw new GradleException("发布被阻断（任务 ${gateTask.path}）：\n- " + problems.join("\n- ") + "\n" + hint)
+    }
+}
+
+// 快照进 Central 的唯一通道是上方 centralSnapshots 原生仓库（与 Nexus 同经 publish 分发）。
+// nmcp 自带的快照聚合任务（名字含 CentralPortal）保留禁用：两条通道同发会产生双时间戳产物竞争。
+tasks.configureEach { t ->
+    if (t.name.contains("CentralPortalSnapshots")) {
+        t.enabled = false
+        t.description = "（已禁用）快照 Central 分发统一走 centralSnapshots 原生仓，禁用 nmcp 双发路径"
     }
 }
 

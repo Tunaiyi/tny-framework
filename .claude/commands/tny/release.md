@@ -18,16 +18,21 @@ tags: ["release", "versioning", "publish"]
 - `JAVA_HOME` 必须指向 JDK 21（corretto-21.0.12.1 位于 `~/Library/Java/JavaVirtualMachines/`）；
   shell 默认 JDK 25 与 Gradle 8.5 不兼容，报 "Unsupported class file major version"。
 - 本机 PATH 上的 Homebrew git 是 x86_64，Gradle 守护进程 exec 它会报 Bad CPU type；
-  凡涉及 git 子进程的任务追加 `-PgitExe=/usr/bin/git`。
+  仍走 git 子进程的地方追加 `-PgitExe=/usr/bin/git`。按通道分界
+  （openspec change migrate-git-calls-to-grgit）：`releaseCutAndTag` 已全部改走 grgit
+  插件（JGit），预览与真实执行都不需要 `-PgitExe`；`releaseRebaseBack` 的变基族与
+  lease 强推、以及 `publish` 门禁的标签存证核对仍走子进程，这三处要带上该参数。
 
 ## 标准发布（例如 5.7.8，开发线上执行）
 
-1. 预览：`./gradlew releaseCutAndTag -PreleaseVersion=5.7.8 -PdryRun -PgitExe=/usr/bin/git`，
-   核对计划中的来源、分支名、标签名、远端。
+1. 预览：`./gradlew releaseCutAndTag -PreleaseVersion=5.7.8 -PdryRun`（该任务已全走 grgit，
+   无需 `-PgitExe`），核对计划中的来源、分支名、标签名、远端。
 2. 真实切支打标签（**外向动作：会推送分支与标签到远端，先向用户确认**）：
    同上一命令去掉 `-PdryRun`。完成后已处于 `5.7.8.release` 分支，标签 `v5.7.8` 已在远端。
-3. 发布：`./gradlew publish`（需要 Nexus 凭据；门禁核对标签存证/黑名单/形态，
-   任一拒绝即整构建失败且不会留下无存证制品）。
+3. 发布双通道（顺序执行，一败一留，见流程文档 Central 节）：
+   `./gradlew publish`（内网 Nexus，门禁五重校验），随后
+   `./gradlew publishAggregationToCentralPortal`（Maven Central；需要 Portal token
+   属性与签名环境变量；`centralCheck` 与产物完整性校验前置，拒绝即无半成品出网）。
 4. 合回（**外向动作：推送开发线并 lease 强推发布分支，先向用户确认**）：
    `./gradlew releaseRebaseBack -PgitExe=/usr/bin/git`。策略是变基（线性历史）：切支后
    无新提交则自动跳过；冲突时自动 rebase --abort 保持原状并给出人工收尾命令。
