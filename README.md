@@ -1,6 +1,6 @@
 # TnyFramework - 游戏服务器框架
 
-[![License](https://img.shields.io/badge/license-Mulan%20PSL%20v2-blue.svg)](http://license.coscl.org.cn/MulanPSL2)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 [![Java](https://img.shields.io/badge/Java-21-orange.svg)](https://openjdk.java.net/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2.1-green.svg)](https://spring.io/projects/spring-boot)
 [![Netty](https://img.shields.io/badge/Netty-4.1.104-red.svg)](https://netty.io/)
@@ -721,9 +721,11 @@ Starter 层 (starter-*)
 
 ## 许可证
 
-本项目采用 [木兰宽松许可证, 第2版 (Mulan PSL v2)](http://license.coscl.org.cn/MulanPSL2) 开源协议。
+本项目采用 [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0) 开源协议。
 
 Copyright (c) 2020 Tunaiyi
+
+第三方依赖各自的许可证与再分发义务说明见 [THIRD-PARTY-LICENSES.md](THIRD-PARTY-LICENSES.md)。
 
 ---
 

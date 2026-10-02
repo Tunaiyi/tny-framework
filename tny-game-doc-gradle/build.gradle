@@ -1,4 +1,6 @@
-group "com.tny.game"
+// Gradle 插件模块例外组号：插件 id com.tny.game 及其 marker 坐标谱系不随框架主组号迁移
+// （spec central-publishing"Gradle 插件构件本次不入 Central"；例外登记于 design D2）
+group pluginLegacyGroup
 
 apply plugin: "java-gradle-plugin"
 

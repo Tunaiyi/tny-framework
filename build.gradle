@@ -12,12 +12,42 @@ apply from: "${rootDir}/gradle/git.gradle"
 apply from: "${rootDir}/gradle/release.gradle"
 
 ext {
+    // 发布构件组号的单一事实源（central-publishing D2）：模块不得另行声明组号；
+    // central-publish-tnydev-group 任务 2.2 将本值迁移为 com.tnydev.game（待 Central 命名空间验证通过后）。
+    projectGroup = 'com.tny.game'
+    // 唯一例外：Gradle 插件模块的组号与其插件 id（com.tny.game）同谱系，组号迁移不牵连插件解析链
+    // （spec central-publishing"Gradle 插件构件本次不入 Central"）。
+    pluginLegacyGroup = 'com.tny.game'
+
     moduleProjects = subprojects.findAll { it.name.startsWith("tny-game-") }
     javaProjects = moduleProjects - project(":tny-game-bom")
     javaProjects = javaProjects.findAll { !it.name.endsWith("-gradle") }
     // 集成测试模块：仅测试代码，不走发布/javaProjects 公共配置（add-integration-testing design D3）
     javaProjects = javaProjects - project(":tny-game-integration-test")
     gradleProjects = moduleProjects.findAll { it.name.endsWith("-gradle") }
+}
+
+// 组号对账（central-publishing D2 / spec"制品组号以单一事实源派生"错误路径）：
+// 配置完成后校验全部发布构件组号等于单一声明点值；Gradle 插件模块校验其例外组号。
+// 任何模块复制粘贴出第二个组号声明，都会在此判红并列出违例，杜绝半改状态发布。
+gradle.projectsEvaluated {
+    def violations = []
+    moduleProjects.each { m ->
+        // configure-on-demand 下仅校验本次已评估的工程，未评估工程组号尚未派生、不参与对账
+        if (!m.state.executed) {
+            return
+        }
+        if (m == project(":tny-game-doc-gradle")) {
+            if (m.group.toString() != pluginLegacyGroup) {
+                violations << "${m.path}（插件模块例外）组号应为 '${pluginLegacyGroup}'，实际 '${m.group}'"
+            }
+        } else if (m.group.toString() != projectGroup) {
+            violations << "${m.path} 组号应为单一事实源 '${projectGroup}'，实际 '${m.group}'（请删除模块内组号声明，由根构建派生）"
+        }
+    }
+    if (!violations.isEmpty()) {
+        throw new GradleException("发布构件组号与单一事实源对账失败：\n- " + violations.join("\n- "))
+    }
 }
 
 // benchmark-harness 零发布合同（openspec capability: benchmark-harness）：
@@ -85,7 +115,7 @@ configure(subprojects) {
             enabled = false
         }
     }
-    group 'com.tny.game'
+    group projectGroup
     version "${projectVersion}"
 
     repositories {
@@ -156,6 +186,9 @@ configure(javaProjects) {
 
     // 构建可复现：编译/测试/javadoc 钉在 Java 21 toolchain，与 daemon 所在 JVM 解耦（align-build-jdk-21）
     java {
+        // Central 准入补 javadoc 构件（central-publishing spec 四件套）；sources 通道
+        // 本文件后段既有手写 sourcesJar 与 java{withSourcesJar()} 已覆盖，不重复声明。
+        withJavadocJar()
         toolchain {
             languageVersion = JavaLanguageVersion.of(javaVersion.toInteger())
         }
@@ -179,6 +212,16 @@ configure(javaProjects) {
 
     compileJava.dependsOn(processResources)
     [compileJava, compileTestJava, javadoc]*.options*.encoding = "${encoding}"
+
+    // javadoc doclint 降级豁免（central-publishing design D6 实施补记）：
+    // 实测严格 doclint 下每模块百级错误，主因是全仓 920 文件在用的 @date 自定义标签与
+    // 块标签次序类告警，非注释内容缺陷；Central 只强制 javadoc jar 存在不校验质量。
+    // 注册 @date 使日期在 HTML 中正常渲染，doclint 全关保证产出稳定。
+    tasks.withType(Javadoc).configureEach {
+        options.encoding = "${encoding}"
+        options.addBooleanOption('Xdoclint:none', true)
+        options.addStringOption('tag', 'date:a:Date:')
+    }
 
     compileJava {
         options.compilerArgs << '-parameters'

@@ -16,7 +16,7 @@ context: |
     namnspace-etcd）→ Spring 集成（starter-*）。
   - 架构原则：抽象与实现分离。抽象模块（net、codec、data、expr）MUST NOT 依赖具体实现模块；
     实现模块依赖抽象模块，多实现可插拔。
-  - 每个源文件必须携带 Mulan PSL v2 版权头（Copyright (c) 2020 Tunaiyi），新建文件同样必须。
+  - 每个源文件必须携带 Apache License 2.0 许可证头（Copyright (c) 2020 Tunaiyi 起头的标准头注释），新建文件同样必须。
   - 类型引用一律经 import 引入简单名；代码体内禁止内联全限定类名（javadoc 链接除外）。
   - 命名规范：类名 UpperCamelCase；方法/变量/参数 lowerCamelCase；静态常量 UPPER_SNAKE_CASE；
     禁止 snake_case 混入 Java 标识符（Netty 等第三方 API 常量除外）。

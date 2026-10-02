@@ -9,19 +9,29 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             pom {
+                // Central 必填六字段之一组：name/description。仅 BOM 设过 project.description，
+                // 其余模块以模块名为 name、补一句可辨识 description，避免 POM 缺项被 Central 驳回。
                 afterEvaluate {
-                    name = project.description
-                    description = project.description
+                    name = project.description ?: project.name
+                    description = project.description ?: "Tny Game Framework module ${project.name}"
                 }
+                url = "https://github.com/Tunaiyi/tny-framework"
                 organization {
                     name = "Tny Game Framework"
                 }
+                // 2026-10-02 全仓许可证由 Mulan PSL v2 切换为 Apache License 2.0：源文件头注释、
+                // README、LICENSE 与 POM 许可字段四处声明自此一致。
                 licenses {
                     license {
                         name = "Apache License, Version 2.0"
                         url = "https://www.apache.org/licenses/LICENSE-2.0"
                         distribution = "repo"
                     }
+                }
+                scm {
+                    connection = "scm:git:git://github.com/Tunaiyi/tny-framework.git"
+                    developerConnection = "scm:git:ssh://github.com/Tunaiyi/tny-framework.git"
+                    url = "https://github.com/Tunaiyi/tny-framework"
                 }
                 developers {
                     developer {
