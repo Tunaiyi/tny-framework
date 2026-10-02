@@ -2,7 +2,7 @@
 
 ## 1. Central 命名空间验证（前置闸口）
 
-- [ ] 1.1 在 Central Portal 提交 `com.tnydev.game` 命名空间验证：按其指引在 `tnydev.com` 域名添加验证记录并确认生效（验证：Portal 界面显示该命名空间 verified；未通过则停止后续任务并回 proposal 重新定组号）
+- [x] 1.1 在 Central Portal 提交 `com.tnydev.game` 命名空间验证：按其指引在 `tnydev.com` 域名添加验证记录并确认生效（验证：Portal 界面显示该命名空间 verified；未通过则停止后续任务并回 proposal 重新定组号）
 
 ## 2. 组号单一事实源收敛
 
@@ -36,6 +36,6 @@
 
 ## 7. 首版发布验证
 
-- [ ] 7.1 经 `/tny:release` 流程产出首个正式版并按新工作流发布 Central 与内网双仓；在 Central 检索确认该版本全部发布模块可见且 POM 字段完整，将检索证据记入变更目录（验证：Central 版本号可检索、模块数与待发布清单一致；本次发布即本变更的最终验收）
+- [x] 7.1 经 `/tny:release` 流程产出首个正式版并按新工作流发布 Central 与内网双仓；在 Central 检索确认该版本全部发布模块可见且 POM 字段完整，将检索证据记入变更目录（验证：Central 版本号可检索、模块数与待发布清单一致；本次发布即本变更的最终验收）
 
 - [x] 7.2 快照 Central 首探（spec R4 修订验收）：开发线对单模块执行 centralSnapshots 仓库发布任务，随后以 curl 核验 `central.sonatype.com/repository/maven-snapshots/com/tnydev/game/tny-game-common-lang/` 出现 `5.7.x-SNAPSHOT` 目录与时间戳产物，证据记入变更目录

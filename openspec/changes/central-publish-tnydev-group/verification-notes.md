@@ -17,3 +17,9 @@
 - 链路：releaseCutAndTag 真切（CLI 通道修复后）→ 标签 v5.7.8 与分支 5.7.8.release 推送 → Nexus publish 成功（含一次工具链修复引发的标签校正：发布窗口内 retag 至 7a2a287d 并重发覆盖，制品源与标签终对齐）→ Central 聚合上传成功，部署 a297d887-738d-47c6-b0c2-7c73c36416ab 校验通过进入 PUBLISHING（AUTOMATIC）。
 - 中途事故账目：并行会话 docs 提交落上发布分支（已 cherry-pick 回 5.7.x 并复位发布分支）；本会话一次 rebase 目标分支选错（远端未受损，已复位）；migrate 会话 stash 恢复时 release.gradle 冲突（预期内，stash 保留原主处理）。
 - 待收口：repo1.maven.org 复制延迟中（Portal 受理后典型 15 分钟至数小时）；7.1 勾销以 repo1 检索到 5.7.8 全模块为准；4.4 幂等重跑演练顺延至部署 PUBLISHED 后执行，nmcp 通道对重复版本的实际行为为验证期明确报错（design D4 的"等价成功吸收"设想与实现有偏差，届时如实修订）。
+
+## 首发收口与 CI 通道状态（2026-10-02 傍晚）
+
+- 1.1 勾销：Portal 命名空间 Verified（用户界面确认）+ 快照受理先例 + dig 生效记录。
+- 7.1 勾销：部署 a297d887 PUBLISHED；repo1 权威镜像抽查 bom/common-lang/net/starter-net-netty4 全 200，组目录 52 模块齐；tny-game-net POM 的组号、许可证（Apache 2.0 与全仓事实一致）、url、scm 字段核验通过。
+- 用户已配置 GitHub secrets（CI 发布通道就绪）与轮换口令。5.1/5.2 与 4.4 的收口推荐动作：在 GitHub Actions 对 publish.yml 手动运行一次（workflow_dispatch，填分支 5.7.8.release）——预期 Nexus 步骤绿色（内网允许覆盖重发）、Central 步骤以"版本已存在"类校验失败红色收场，一次演练同时验证工作流真实链路（5.1/5.2）与重复版本行为（4.4 实测口径，据此修订 design D4 的"等价成功吸收"表述）。
