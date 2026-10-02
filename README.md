@@ -6,6 +6,8 @@
 [![Netty](https://img.shields.io/badge/Netty-4.1.104-red.svg)](https://netty.io/)
 
 > 一个功能完善、高性能、模块化的 Java 游戏服务器框架
+>
+> 项目主页为 https://tunaiyi.github.io/tny-framework/ ，基准性能趋势页位于 https://tunaiyi.github.io/tny-framework/dev/bench/ （由 CI 自动部署）。
 
 ## 📖 目录
 
