@@ -596,9 +596,9 @@ cd tny-framework
 **Gradle**:
 ```gradle
 dependencies {
-    implementation 'com.tny.game:tny-game-starter-net-netty4:${projectVersion}'
-    implementation 'com.tny.game:tny-game-starter-codec:${projectVersion}'
-    implementation 'com.tny.game:tny-game-starter-data:${projectVersion}'
+    implementation 'com.tnydev.game:tny-game-starter-net-netty4:${projectVersion}'
+    implementation 'com.tnydev.game:tny-game-starter-codec:${projectVersion}'
+    implementation 'com.tnydev.game:tny-game-starter-data:${projectVersion}'
 }
 ```
 
