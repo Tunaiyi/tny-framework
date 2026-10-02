@@ -1,5 +1,5 @@
 
-apply plugin: "maven-publish"
+apply plugin: 'maven-publish'
 
 dependencies {
 
@@ -8,10 +8,10 @@ dependencies {
     // 契约：禁止新增对本包及 tny-game-net 同包非公开成员的跨编译单元引用（历史并行编译破裂根因）。
     // 若并行构建再现"找不到符号"且签名落于本包，即按预案重启包位移 com.tny.game.net.testkit.transport
     // 并配 deprecated 转发一版（本模块属发布面，见 preflight §3）。
-    api project(":tny-game-net")
+    api project(':tny-game-net')
 
-    api libs.junit_jupiter_api
-    api libs.mockito_junit_jupiter
+    api libs.junitJupiterApi
+    api libs.mockitoJunitJupiter
 
 }
 

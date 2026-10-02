@@ -1,0 +1,105 @@
+// git 派生与版本形态（adopt-gradle-official-dsl 约定插件化，前身为 gradle/git.gradle）。
+// 前置约定：grgit 插件由根构建脚本先行应用（第三方插件在 buildSrc 作用域内 apply 会触发
+// 类加载器服务缺失，实测 Gradle 8.5），本插件假定 org.ajoberstar.grgit 扩展已就位。
+// 本插件负责：打开仓库句柄 grgiter、导出分支名/提交号/发布时间等派生值到根工程 ext、
+// 声明发布后缀常量与版本号解析闭包（裸三段号规范出处：openspec change adopt-plain-ga-versioning）。
+// 边界：不做任务注册、不做发布断言（门禁在 tny.publish-gate，快通道在 tny.release）；
+// 对 git 远端的只读查询在此，写操作一律经 tny.release 的 git CLI 通道。
+
+ext {
+
+    RELEASE_VERSION_SUFFIX = '.release'
+    // RELEASE_PACK_SUFFIX 是历史正式版后缀形态专用（2.x 至 5.5 存量制品，见 gradle/released-legacy.txt）；
+    // 新规范下正式版发布派生裸三段号（openspec change adopt-plain-ga-versioning 决策 D1），派生路径不再使用该常量。
+    RELEASE_PACK_SUFFIX = '-RELEASE'
+    SNAPSHOT_PACK_SUFFIX = '-SNAPSHOT'
+
+    grgiter = grgit.open(currentDir: project.getRootDir())
+
+    gitCommitId = {
+        return grgiter.head().id
+    }
+
+    gitCommitDateTime = {
+        return grgiter.head().dateTime
+    }
+
+    gitHeadCommit = {
+        return grgiter.head().dateTime
+    }
+
+    gitBranchName = {
+        return grgiter.branch.current().getName()
+    }
+
+    gitBranchType = {
+        def name = gitBranchName()
+        if (name.toLowerCase().endsWith('.release')) {
+            return 'release'
+        }
+        if (name.toLowerCase().endsWith('.x')) {
+            return 'dev'
+        }
+        return 'test'
+    }
+
+    isConfigChange = { dir ->
+        def status = grgiter.status()
+        def changeConfig = status.unstaged.getAllChanges().findAll { it.startsWith(dir) }
+        return !changeConfig.isEmpty()
+    }
+
+    /**
+     * 获取当前提交可追溯的最近发布标签。仅匹配裸号形态 v<主>.<次>.<补丁>
+     * （新规范见 openspec change adopt-plain-ga-versioning 决策 D6）；
+     * 历史 "v*-RELEASE" 形态的标签不参与匹配，找不到时返回 null。
+     */
+    gitTag = {
+        def tag = grgiter.describe {
+            tags = true
+            match = ['v[0-9]*']
+        }
+        // describe 的 glob 没有负向锚：v3.4.1-RELEASE 与 v9.9.9-rc1 都会命中 "v[0-9]*"，
+        // 因此取回结果后再用严格正则过滤，闭包保证只返回裸号形态（实测教训记入本注释）。
+        // 已知局限：若 HEAD 沿祖先链最近的匹配标签是旧代形态而更远处存在裸号标签，
+        // 本闭包返回 null 而非跳过继续找——旧代与新代标签混存的过渡期才会遇到。
+        if (tag == null || !(tag ==~ /v\d+\.\d+\.\d+/)) {
+            return null
+        }
+        def tags = grgiter.tag.list()
+                .findAll { it.name == tag }
+        if (tags.isEmpty()) {
+            return null
+        }
+        return tags[0]
+    }
+
+    isReleaseVersion = { versionNumber ->
+        return versionNumber.endsWith(RELEASE_VERSION_SUFFIX)
+    }
+
+    parseBranchVersion = { version ->
+        if (isReleaseVersion(version)) {
+            return version.substring(0, version.length() - RELEASE_VERSION_SUFFIX.length())
+        }
+        return version
+    }
+
+    // 正式版派生改为裸三段号（openspec change adopt-plain-ga-versioning 决策 D1）：
+    // 发布分支 N.M.K.release 直接产出 N.M.K，不再追加 RELEASE_PACK_SUFFIX；
+    // RELEASE_PACK_SUFFIX 常量保留，仅用于历史黑名单语义与历史形态说明（gradle/released-legacy.txt）。
+    parseProjectVersion = { version ->
+        if (isReleaseVersion(version)) {
+            return parseBranchVersion(version)
+        }
+        return version + SNAPSHOT_PACK_SUFFIX
+    }
+
+    branchName = gitBranchName()
+    branchVersion = parseBranchVersion(branchName)
+    projectVersion = parseProjectVersion(branchName)
+    commitId = gitCommitId()
+    commitTime = gitCommitDateTime().format('yyyyMMdd_HHmm')
+    buildTime = new Date().format('yyyyMMdd_HHmm', TimeZone.getDefault())
+
+}

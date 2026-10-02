@@ -1,16 +1,16 @@
 
-apply plugin: "maven-publish"
+apply plugin: 'maven-publish'
 
 dependencies {
 
-    api libs.spring_boot_autoconfigure
-    api libs.spring_boot_configuration_processor
+    api libs.springBootAutoconfigure
+    api libs.springBootConfigurationProcessor
 
-    api project(":tny-game-boot")
+    api project(':tny-game-boot')
 
-    implementation libs.log4j_api
-    implementation libs.log4j_core
-    implementation libs.log4j_slf4j_impl
+    implementation libs.log4jApi
+    implementation libs.log4jCore
+    implementation libs.log4jSlf4jImpl
 
 
 }

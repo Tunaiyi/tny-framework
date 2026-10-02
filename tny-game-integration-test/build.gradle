@@ -3,15 +3,18 @@
  * 仅承载跨模块网络链路与全栈场景的集成测试，不参与 maven 发布、不进入 tny-game-bom 约束面。
  * 已自根 build.gradle 的 javaProjects 排除，此处自行装配 java 编译与两级验证通道。
  */
-apply plugin: 'java-library'
-
-// 双重保险：本模块无任何 publication（未 apply publications.gradle），
-// 且禁用 subprojects 层 maven-publish 插件带入的全部 publish 任务（design D3：不发布）。
-tasks.matching { it.name.toLowerCase().startsWith("publish") }.configureEach {
-    enabled = false
+plugins {
+    id 'java-library'
+    // 两级验证通道：integration source set 与 integrationTest 任务（add-integration-testing design D1）
+    id 'tny.integration-test'
+    // 横切角色统一插件（consolidate-module-modes-plugin）
+    id 'tny.module-modes'
 }
 
-apply from: "${rootDir}/gradle/integration-test.gradle"
+// 自述：本工程不发布（声明即禁用本工程 publish 任务，design D3 双重保险语义不变）
+moduleModes {
+    enableUnpublished()
+}
 
 // 对齐根 javaProjects 约定（本模块被排除在外需自带）：排除默认 logging 桥接，
 // 统一 log4j2 绑定，避免 logback/slf4j-simple/log4j2 多绑定冲突（Spring Boot 启动期即炸）
@@ -28,43 +31,18 @@ java {
     }
 }
 
-[compileJava, compileIntegrationJava]*.options*.encoding = "${encoding}"
-
-compileJava {
-    options.compilerArgs << '-parameters'
+tasks.withType(AbstractCompile).configureEach {
+    options.encoding = encoding
 }
 
-compileIntegrationJava {
+tasks.withType(JavaCompile).configureEach {
     options.compilerArgs << '-parameters'
-}
-
-// 子进程隔离 classpath 属性（add-starter-net-integration-tests）：demo 应用子进程禁止复用
-// 测试 JVM 的 classpath——那会把 harness 单元表/@Unit bean 面泄进子进程 Spring 扫描，
-// 同 fork 重用时反向毒化后续 IT（DemoPlayerObjectCodecableCodec 串染事故实证）
-tasks.named('integrationTest') {
-    def demoJar = project(':tny-game-net-demo').tasks.named('jar')
-    // 子进程真实运行形态＝demo 自身 runtime classpath（其 jar 在首位），与测试 JVM 完全切割；
-    // Gradle 8.5 systemProperty 不解包 Provider，故 doFirst 执行期求值（jar 经 dependsOn 已就绪）
-    dependsOn demoJar
-    doFirst {
-        def out = project.sourceSets.integration.output
-        def parts = out.classesDirs.files.collect { it.absolutePath }
-        parts.add(out.resourcesDir.absolutePath)
-        // 受控隔离 classpath＝IT 自身产物 + demo 发布 jar：防在途未编译产物/新类泄入子进程
-        systemProperty 'it.demo.isolatedClasspath',
-                parts.join(File.pathSeparator) + File.pathSeparator +
-                project(':tny-game-net-demo').configurations.runtimeClasspath.asPath +
-                File.pathSeparator + demoJar.flatMap { it.archiveFile }.get().asFile.absolutePath
-    }
-    // 进程级隔离：demo 类装载/DTO scheme 装载会写入 JVM 级静态 codec/单元表（串染同 fork
-    // 后续 IT 的 Spring 装配面，事故实证 DemoPlayerObjectCodecableCodec），每类独占新 JVM 根治
-    forkEvery = 1
 }
 
 dependencies {
 
-    implementation libs.slf4j_api
-    implementation libs.commons_lang3
+    implementation libs.slf4jApi
+    implementation libs.commonsLang3
 
     // 被测栈：网络抽象 + netty4 实现 + TCP 报文体编解码 + 既有测试夹具
     api project(':tny-game-net')
@@ -77,8 +55,8 @@ dependencies {
     integrationImplementation project(':tny-game-starter-net-netty4')
     integrationImplementation project(':tny-game-net-demo')
 
-    integrationImplementation libs.junit_jupiter
-    integrationImplementation libs.mockito_junit_jupiter
+    integrationImplementation libs.junitJupiter
+    integrationImplementation libs.mockitoJunitJupiter
     // 注：本模块 IT classpath 含 Spring Boot（logback 绑定），不再叠加 slf4j-simple 避免双绑定冲突
 
     // P3 容器/全栈档（add-integration-testing 任务 5.1/6.1，design D1 docker 标签隔离）：
@@ -91,17 +69,17 @@ dependencies {
     integrationImplementation project(':tny-game-starter-mongodb')
     integrationImplementation project(':tny-game-data-mongodb')
     integrationImplementation project(':tny-game-mongodb')
-    integrationImplementation 'org.springframework.boot:spring-boot-starter'
-    integrationImplementation 'org.springframework.boot:spring-boot-autoconfigure'
+    integrationImplementation libs.springBootStarter
+    integrationImplementation libs.springBootAutoconfigure
     // 日志 starter（用户指定，坐标与 demo 接线一致）：官方 spring boot log4j2 集成，
     // 替代此前手工拼装 log4j-core + slf4j2 桥的组合
-    integrationImplementation libs.spring_boot_starter_log4j2
-    integrationImplementation libs.testcontainers_junit
-    integrationImplementation libs.testcontainers_mongodb
+    integrationImplementation libs.springBootStarterLog4j2
+    integrationImplementation libs.testcontainersJunit
+    integrationImplementation libs.testcontainersMongodb
     // log4j-core 提至 compile：损坏帧 IT 需编程装配 appender 捕获告警（specs R4"可观察"）；
     // 绑定用 slf4j2 provider（slf4j-api 2.x 不识别 1.x 桥，误用会静默退化 NOP）
-    integrationImplementation libs.log4j_core
-    integrationRuntimeOnly libs.log4j_api
-    integrationRuntimeOnly libs.log4j_slf4j2_impl
+    integrationImplementation libs.log4jCore
+    integrationRuntimeOnly libs.log4jApi
+    integrationRuntimeOnly libs.log4jSlf4j2Impl
 
 }

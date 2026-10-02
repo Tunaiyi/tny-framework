@@ -1,11 +1,11 @@
 
-apply plugin: "maven-publish"
+apply plugin: 'maven-publish'
 
 dependencies {
 
-    api project(":tny-game-net-netty4")
-    api project(":tny-game-protoex")
-    api project(":tny-game-codec-jprotobuf")
+    api project(':tny-game-net-netty4')
+    api project(':tny-game-protoex')
+    api project(':tny-game-codec-jprotobuf')
 
     api libs.jprotobuf
 

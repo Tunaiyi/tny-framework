@@ -1,0 +1,199 @@
+// 发布快速通道约定插件（adopt-gradle-official-dsl 插件化，前身为 gradle/release.gradle；
+// 语义契约仍以 openspec capability release-versioning 与 docs/release-process.md 为准）。
+// 本插件负责：releaseCutAndTag 的切支打标推送（标签先于制品顺序固化）与 releaseRebaseBack 的
+// 变基合回开发线，二者均带 -PdryRun 预览通道。边界：门禁负责做错时拦住，本插件负责做对；
+// git 写操作走 git CLI（grgit 化交 migrate-git-calls-to-grgit 收口）。
+
+def git = rootProject.ext
+
+def runGit = { List args ->
+    def exe = (project.findProperty('gitExe') ?: 'git').toString()
+    def probe = providers.exec {
+        commandLine ([exe] + args)
+        workingDir = rootDir
+        // 由调用方按 exit 码分支处理（无上游的 rev-parse 等命令合法地非零退出）
+        ignoreExitValue = true
+    }
+    def result = probe.result.get()
+    [exit: result.exitValue, out: probe.standardOutput.asText.get(), err: probe.standardError.asText.get()]
+}
+
+def resolveRemote = { String branch ->
+    def up = runGit(['rev-parse', '--abbrev-ref', '--symbolic-full-name', "${branch}@{upstream}"]).out.trim()
+    if (up.contains('/') && !up.startsWith('fatal')) {
+        return up.substring(0, up.indexOf('/'))
+    }
+    def remotes = runGit(['remote']).out.readLines().findAll { !it.trim().isEmpty() }
+    remotes.size() == 1 ? remotes[0].trim() : null
+}
+
+def trackedDirty = {
+    // 只拦跟踪文件的未提交变更；未跟踪文件不进提交对象，切分支/推送不受其影响
+    runGit(['status', '--porcelain']).out.readLines().findAll { !it.startsWith('?? ') }
+}
+
+def requireCleanTree = { String action, boolean preview ->
+    def dirty = trackedDirty()
+    if (dirty.isEmpty()) {
+        return
+    }
+    if (preview) {
+        logger.lifecycle('[dryRun][warn] 跟踪文件有未提交变更，真实执行将被阻断：\n' + dirty.join('\n'))
+    } else {
+        throw new GradleException("${action} 要求跟踪文件无未提交变更，当前脏项：\n" + dirty.join('\n'))
+    }
+}
+
+tasks.register('releaseCutAndTag') {
+    group = 'release'
+    description = 'Cut <V>.release and annotated tag v<V> from a source ref, push both (tag-before-artifact). Needs -PreleaseVersion=N.M.K, optional -PreleaseFrom=<branch|tag|commit>, -PdryRun for preview.'
+    doLast {
+        def v = project.findProperty('releaseVersion')?.toString()
+        if (v == null || v.isEmpty()) {
+            throw new GradleException('releaseCutAndTag 需要 -PreleaseVersion=<主>.<次>.<补丁>，例如 -PreleaseVersion=5.7.8')
+        }
+        if (!(v ==~ /\d+\.\d+\.\d+/)) {
+            throw new GradleException("版本号 '${v}' 不符合裸三段号形态 <主>.<次>.<补丁>")
+        }
+        def legacyFile = rootProject.file('gradle/released-legacy.txt')
+        def legacy = legacyFile.exists() ? legacyFile.readLines().findAll { !it.trim().isEmpty() && !it.trim().startsWith('#') } : []
+        if (legacy.contains(v)) {
+            throw new GradleException("版本 '${v}' 已以 -RELEASE 后缀形态发布（见 gradle/released-legacy.txt），禁止裸号复用同号，请提高补丁号")
+        }
+        def targetBranch = "${v}.release"
+        def tagName = 'v' + v
+        def current = git.branchName.toString()
+        def from = project.findProperty('releaseFrom')?.toString()
+        if (from == null) {
+            if (current ==~ /\d+\.\d+\.x/) {
+                from = current
+            } else if (current ==~ /\d+\.\d+\.\d+\.release/) {
+                from = current
+            } else {
+                throw new GradleException("无法从当前分支 '${current}' 推断发布来源，请用 -PreleaseFrom=<分支|标签|提交> 显式指定（首发从开发线如 5.7.x，hotfix 从上一个发布分支）")
+            }
+        }
+        if (git.grgiter.branch.list().any { it.name == targetBranch }) {
+            throw new GradleException("本地已存在分支 '${targetBranch}'，同号发布禁止重复切支")
+        }
+        if (git.grgiter.tag.list().any { it.name == tagName }) {
+            throw new GradleException("本地已存在标签 '${tagName}'，同号发布禁止重复建标")
+        }
+        def remoteName = resolveRemote(current)
+        if (remoteName == null) {
+            throw new GradleException("无法确定推送目标的远端：当前分支 '${current}' 没有上游，且仓库远端数量不是 1")
+        }
+        def remoteRefs = runGit(['ls-remote', remoteName]).out
+        if (remoteRefs.contains("refs/heads/${targetBranch}")) {
+            throw new GradleException("远端 '${remoteName}' 已存在分支 '${targetBranch}'")
+        }
+        if (remoteRefs.contains("refs/tags/${tagName}")) {
+            throw new GradleException("远端 '${remoteName}' 已存在标签 '${tagName}'（或存在前缀撞名，请核对后处理）")
+        }
+        def preview = project.hasProperty('dryRun')
+        requireCleanTree('releaseCutAndTag', preview)
+
+        def plan = """releaseCutAndTag 计划：
+  来源        ${from}
+  发布分支    ${targetBranch}（切自来源并检出）
+  附注标签    ${tagName}（指向新分支头，随分支推送——标签先于制品由顺序固化）
+  推送远端    ${remoteName}
+后续步骤：  ./gradlew publish   然后  ./gradlew releaseRebaseBack"""
+        if (preview) {
+            logger.lifecycle('[dryRun] 未做任何变更\n' + plan)
+            return
+        }
+        logger.lifecycle(plan)
+        // 写操作走 git CLI（grgit 4.1.1 的 branch.create(Map) 签名不匹配，真实首跑实测暴露；
+        // 与 releaseRebaseBack 段同一通道标准，grgit 化统一交给 migrate-git-calls-to-grgit）
+        def mkBranch = runGit(['switch', '-c', targetBranch, from])
+        if (mkBranch.exit != 0) { throw new GradleException("切发布分支失败：${mkBranch.err}") }
+        def mkTag = runGit(['tag', '-a', tagName, '-m', "release ${v} from ${targetBranch}"])
+        if (mkTag.exit != 0) { throw new GradleException("创建附注标签失败：${mkTag.err}") }
+        def mkPush = runGit(['push', remoteName,
+                             "refs/heads/${targetBranch}:refs/heads/${targetBranch}",
+                             "refs/tags/${tagName}:refs/tags/${tagName}"])
+        if (mkPush.exit != 0) { throw new GradleException("推送分支与标签失败：${mkPush.err}") }
+        logger.lifecycle("releaseCutAndTag 完成：${targetBranch} 与 ${tagName} 已推送。发布顺序：标签已在远端 → 现在执行 ./gradlew publish（门禁将核对标签存证），成功后执行 ./gradlew releaseRebaseBack。")
+    }
+}
+
+tasks.register('releaseRebaseBack') {
+    group = 'release'
+    description = 'After ./gradlew publish succeeded, rebase the release branch commits onto its dev line N.M.x, fast-forward the line and push (linear history; the release branch is force-pushed with lease).'
+    doLast {
+        def current = git.branchName.toString()
+        if (!(current ==~ /\d+\.\d+\.\d+\.release/)) {
+            throw new GradleException("releaseRebaseBack 必须在发布分支形态（如 5.7.8.release）上执行，当前分支 '${current}'")
+        }
+        def v = git.parseBranchVersion(current)
+        def parts = v.split(/\./)
+        def line = "${parts[0]}.${parts[1]}.x"
+        def lineBranch = git.grgiter.branch.list().find { it.name == line }
+        def remoteName = resolveRemote(current) ?: resolveRemote(line)
+        if (remoteName == null) {
+            throw new GradleException('无法确定推送目标的远端：发布分支与开发线都没有上游，且仓库远端数量不是 1')
+        }
+        def baseRef = line
+        if (lineBranch == null) {
+            def remoteRefs = runGit(['ls-remote', remoteName, "refs/heads/${line}"]).out
+            if (!remoteRefs.contains("refs/heads/${line}")) {
+                throw new GradleException("开发线 '${line}' 本地与远端均不存在，hotfix 无法回流——请确认版本线或手动处理")
+            }
+            def ft = runGit(['fetch', remoteName, "refs/heads/${line}:refs/remotes/${remoteName}/${line}"])
+            if (ft.exit != 0) {
+                throw new GradleException("拉取远端开发线失败：${ft.err}")
+            }
+            baseRef = "${remoteName}/${line}"
+        }
+        def preview = project.hasProperty('dryRun')
+        requireCleanTree('releaseRebaseBack', preview)
+        if (!git.grgiter.tag.list().any { it.name == 'v' + v }) {
+            logger.warn("提示：本地未见标签 v${v}，请确认发布切支（releaseCutAndTag）与发布均已完成")
+        }
+        // rebase 策略（开发者要求线性历史）：发布分支独有提交重放到线上后快进开发线；
+        // 代价如实声明——发布分支历史被重写（force-with-lease 推送），标签 v<版本> 继续
+        // 指向"构建发布制品的那个提交"（证据语义不变），但该提交此后不再是开发线的祖先。
+        def ahead = runGit(['rev-list', '--count', "${baseRef}..${current}"]).out.trim()
+        if (ahead == '0') {
+            logger.lifecycle("releaseRebaseBack：发布分支 '${current}' 相对开发线 '${line}' 无新提交（常规发布切支后未再提交的场景），合回无事可做，跳过。")
+            return
+        }
+        def plan = """releaseRebaseBack 计划（rebase 策略）：
+  git rebase ${baseRef}（在 ${current} 上重放 ${ahead} 个领先提交）
+  检出 ${line} 并 git merge --ff-only ${current}
+  git push ${remoteName} refs/heads/${line}
+  git push --force-with-lease ${remoteName} refs/heads/${current}（发布分支历史被重写）
+  注：标签 v${v} 仍指向发布制品构建提交（证据不变），重放后的提交不再是它的延续
+  前提确认：./gradlew publish 已成功（本任务无法核对制品仓，顺序由发布者保证）"""
+        if (preview) {
+            logger.lifecycle('[dryRun] 未做任何变更\n' + plan)
+            return
+        }
+        logger.lifecycle(plan)
+        def rb = runGit(['rebase', baseRef])
+        if (rb.exit != 0) {
+            runGit(['rebase', '--abort'])
+            throw new GradleException("变基 ${current} 到 ${baseRef} 发生冲突，已自动中止（发布分支与开发线均保持原状）。" +
+                    "请手工完成：git rebase ${baseRef} 并解决冲突后，执行 git switch ${line} && git merge --ff-only ${current} && git push ${remoteName} refs/heads/${line} && git push --force-with-lease ${remoteName} refs/heads/${current}")
+        }
+        def co = (lineBranch != null) ? runGit(['switch', line])
+                : runGit(['switch', '-c', line, baseRef])
+        if (co.exit != 0) {
+            throw new GradleException("检出开发线 '${line}' 失败：${co.err}")
+        }
+        def ff = runGit(['merge', '--ff-only', current])
+        if (ff.exit != 0) {
+            throw new GradleException("快进 ${line} 到 ${current} 失败（刚完成的变基不应导致此结果，请检查仓库状态）：${ff.err}")
+        }
+        def ps = runGit(['push', remoteName, "refs/heads/${line}"])
+        if (ps.exit != 0) {
+            throw new GradleException("推送 ${line} 失败：${ps.err}\n本地合回已完成，请处理网络/权限后重试推送")
+        }
+        def psb = runGit(['push', '--force-with-lease', remoteName, "refs/heads/${current}"])
+        if (psb.exit != 0) {
+            logger.warn("开发线 ${line} 已推送；发布分支 ${current} 的 lease 强推被拒（可能有人在此期间推进了该分支）。请人工核实后处理该分支，合回主线不受影响。")
+        }
+        logger.lifecycle("releaseRebaseBack 完成：${ahead} 个提交已变基并入 ${line}（线性历史），${line} 已推送。可切回开发线继续。")
+    }
+}

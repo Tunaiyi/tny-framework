@@ -1,0 +1,118 @@
+// Java 发布模块线装配约定插件（adopt-gradle-official-dsl 插件化，前身为 gradle/java-module.gradle；
+// 成员：根 ext 的 javaProjects 集合）。本插件负责发布模块共有的编译与验证配置：java/java-library 插件、
+// toolchain 钉定、javadoc 与 sources 构件通道、公共依赖、logging 绑定排他、
+// 单元/集成两级测试通道划分、IDEA 输出目录；编码钉定、动态依赖缓存、发布元数据、
+// 门禁与构件接线等共享块与兄弟插件（tny.compile-encoding、tny.cache-policy、
+// tny.publications、tny.publish-gate、tny.tny-module、tny.dependency-sources、
+// tny.integration-test）由根脚本装配线行按序应用。
+// 边界：BOM/仓库/组号版本派生在 tny.subprojects-baseline；发布元数据与签名在 tny.publications；
+// 两级验证通道任务在 tny.integration-test；插件模块线在 tny.plugin-module。
+// 由根脚本 configure(javaProjects) 一行引入。
+
+plugins {
+    id 'idea'
+    id 'java'
+    id 'java-library'
+    id 'maven-publish'
+}
+
+sourceCompatibility = JavaVersion.toVersion(javaVersion)
+targetCompatibility = JavaVersion.toVersion(javaVersion)
+
+// sourcesJar 必须先以本声明注册、再由下方 java 块 withSourcesJar() 复用：
+// 复用路径只把构件挂入 java 组件（发布仍产出 sources jar），不自建则会把任务接入
+// assemble，使 build 执行面偏离历史形态（sweep-gradle-build-style D5 实施修正，实测 51 项差异定罪）。
+tasks.register('sourcesJar', Jar) {
+    dependsOn 'classes'
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    archiveClassifier.set('sources')
+    from sourceSets.main.allSource
+}
+
+// 构建可复现：编译/测试/javadoc 钉在 Java 21 toolchain，与 daemon 所在 JVM 解耦（align-build-jdk-21）
+java {
+    // Central 准入四件套之 javadoc 与 sources 构件（central-publishing spec）：
+    // sources 由上方手写注册与 withSourcesJar 复用共同承载，javadoc 由声明生成同名任务，
+    // 均经 tny.tny-module 的 from components.java 自动挂入发布。
+    withJavadocJar()
+    withSourcesJar()
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(javaVersion.toInteger())
+    }
+}
+
+tasks.register('createProject') {
+    doLast {
+        sourceSets*.java.srcDirs*.each { it.mkdirs() }
+        sourceSets*.resources.srcDirs*.each { it.mkdirs() }
+    }
+}
+
+configurations {
+    all {
+        // 排除 Boot 默认 logback 绑定与 log4j-to-slf4j 反向桥：本框架统一 log4j2 绑定，
+        // 多绑定共存使 Spring Boot 启动期即因 slf4j 双 provider 报错
+        // （差异说明：插件模块线历史上不带此排除，两线共用会扩大行为面，故留本线不并入共享块）
+        exclude module: 'spring-boot-starter-logging'
+        exclude module: 'log4j-to-slf4j'
+    }
+}
+
+tasks.named('compileJava').configure {
+    dependsOn 'processResources'
+}
+
+// javadoc doclint 降级豁免（central-publishing design D6 实施补记）：
+// 实测严格 doclint 下每模块百级错误，主因是全仓 920 文件在用的 @date 自定义标签与
+// 块标签次序类告警，非注释内容缺陷；Central 只强制 javadoc jar 存在不校验质量。
+// 注册 @date 使日期在 HTML 中正常渲染，doclint 全关保证产出稳定。
+tasks.withType(Javadoc).configureEach {
+    options.addBooleanOption('Xdoclint:none', true)
+    options.addStringOption('tag', 'date:a:Date:')
+}
+
+// 编译参数统一按类型钉定：-parameters 与 fork 对 main 与 test 编译同为期望语义（sweep-gradle-build-style D6），
+// 编码由 tny.compile-encoding 共享块承担。
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs << '-parameters'
+    options.fork = true
+}
+
+tasks.named('jar').configure {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    exclude('**.sql', '**.xml', '**.properties')
+}
+
+tasks.named('test').configure {
+    // 单元通道排除集成用例（integrationTest 任务专跑，add-integration-testing design D1）
+    useJUnitPlatform {
+        excludeTags 'integration'
+    }
+}
+
+dependencies {
+    implementation libs.slf4jApi
+    implementation libs.commonsLang3
+
+    testImplementation libs.mockitoJunitJupiter
+    testImplementation libs.junitJupiter
+    testImplementation libs.jmockJunit5
+    testImplementation libs.springTest
+    testImplementation libs.slf4jSimple
+    // 公共测试夹具按 -tester 后缀检索自动挂接（zero-enumeration-shared-scripts D4；当前唯一命中 tny-game-tester）
+    rootProject.ext.moduleProjects.findAll { it.name.endsWith('-tester') }.each {
+        add('testImplementation', it)
+    }
+}
+
+idea {
+    module {
+        inheritOutputDirs = false
+        // 输出目录取 java 插件约定路径（与 compileJava/compileTestJava 的 destinationDir 同值），
+        // 不再点名求值任务属性（gradle-build-style 需求二）。
+        outputDir = file('build/classes/java/main')
+        testOutputDir = file('build/classes/java/test')
+        downloadJavadoc = false
+        downloadSources = true
+    }
+}

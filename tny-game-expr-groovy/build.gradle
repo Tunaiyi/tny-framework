@@ -1,12 +1,12 @@
 
-apply plugin: "maven-publish"
+apply plugin: 'maven-publish'
 
 dependencies {
 
-    api project(":tny-game-expr-jsr223")
-    api project(":tny-game-common-lang")
+    api project(':tny-game-expr-jsr223')
+    api project(':tny-game-common-lang')
     api libs.groovy
-    api libs.groovy_jsr223
+    api libs.groovyJsr223
 
 }
 

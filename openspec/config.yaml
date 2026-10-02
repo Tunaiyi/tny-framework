@@ -24,7 +24,7 @@ context: |
     全量构建 ./gradlew clean build。
   - 构建脚本形态：全部 .gradle 文件的书写形态受 openspec 能力 gradle-build-style 约束，
     其权威文本为 openspec/specs/gradle-build-style/spec.md；修改任何构建文件前先读该规格。
-  - 发布：maven-publish 推送到 Nexus 与 Maven Central（gradle/publish.gradle 与 gradle/central.gradle），
+  - 发布：maven-publish 推送到 Nexus 与 Maven Central（tny.publish 与 tny.central 约定插件），
     组号由根 build.gradle 单一事实源派生为 com.tnydev.game，唯一例外是 Gradle 插件模块沿用 com.tny.game；
     下游业务工程依赖已发布 API，公共接口的兼容性是硬约束。
   - 非活跃范围：obsolete/ 目录与 settings.gradle 中已注释的模块禁止修改、禁止作为

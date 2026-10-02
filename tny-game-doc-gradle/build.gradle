@@ -2,28 +2,28 @@
 // （spec central-publishing"Gradle 插件构件本次不入 Central"；例外登记于 design D2）
 group pluginLegacyGroup
 
-apply plugin: "java-gradle-plugin"
+apply plugin: 'java-gradle-plugin'
 
 gradlePlugin {
     plugins {
         classesScanPlugin {
-            id = "com.tny.game"
+            id = 'com.tny.game'
             displayName = 'Tny Gradle Plagin'
             description = 'Gradle Plagin For Tny Framework '
             implementationClass = 'com.tny.game.gradle.doc.plugin.TnyGamePlugin'
         }
     }
 }
-//pluginBundle {
 //    website = 'https://github.com/Tunaiyi/tny-framework'
 //    vcsUrl = 'https://github.com/Tunaiyi/tny-framework'
 //    tags = ['game', 'code', 'plugins']
-//}
 
 publishing {
     repositories {
         maven {
-            url = version.endsWith('SNAPSHOT') ? SNAPSHOT_REPOSITORY_URL : RELEASE_REPOSITORY_URL
+            // 快照判据与 tny.publications 同源（endsWith('-SNAPSHOT')，centralize-resolution-config D5
+            // 防形态漂移：任何以 SNAPSHOT 结尾的非快照标记不应被误路由到 release 仓）
+            url = version.endsWith('-SNAPSHOT') ? SNAPSHOT_REPOSITORY_URL : RELEASE_REPOSITORY_URL
             credentials {
                 username = NEXUS_USERNAME
                 password = NEXUS_PASSWORD
@@ -31,31 +31,23 @@ publishing {
         }
     }
 }
-//sourceSets {
 //    main {
 //        groovy.srcDirs += ["src/main/groovy"]
-//    }
-//}
 
 dependencies {
     api gradleApi()
-//    api localGroovy()
-    api 'com.funs.game:tools-template:0.0.1-SNAPSHOT'
-    libs.'groovy-all'
-//    api project(":tny-game-net")
-    api(project(":tny-game-doc")) {
+    api libs.toolsTemplate
+    api(project(':tny-game-doc')) {
         exclude group: 'org.codehaus.groovy', module: 'groovy-all'
     }
-    api project(":tny-game-doc-annotation")
-    api project(":tny-game-common-lang")
-    api project(":tny-game-scanning")
-    api libs.commons_io
-    api libs.spring_core
-    api libs.jackson_core
-    api libs.jackson_databind
-    api libs.jackson_annotations
-
-//    api libs.xstream
+    api project(':tny-game-doc-annotation')
+    api project(':tny-game-common-lang')
+    api project(':tny-game-scanning')
+    api libs.commonsIo
+    api libs.springCore
+    api libs.jacksonCore
+    api libs.jacksonDatabind
+    api libs.jacksonAnnotations
 
 }
 

@@ -1,10 +1,10 @@
 
-apply plugin: "maven-publish"
+apply plugin: 'maven-publish'
 
 dependencies {
 
-    api project(":tny-game-common-lang")
-    api libs.cglib_nodep
+    api project(':tny-game-common-lang')
+    api libs.cglibNodep
     api libs.javassist
 
 
@@ -12,6 +12,6 @@ dependencies {
 
 test {
     // 组7 REAL_GAP-3：cglib 3.3.0 在 JDK 17+ 生成 FastClass 须反射 ClassLoader.defineClass，开放 java.base/java.lang
-    jvmArgs "--add-opens", "java.base/java.lang=ALL-UNNAMED"
+    jvmArgs '--add-opens', 'java.base/java.lang=ALL-UNNAMED'
 }
 

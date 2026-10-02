@@ -1,27 +1,21 @@
 
-apply plugin: "maven-publish"
+apply plugin: 'maven-publish'
 
-//sourceSets {
 //    main {
 //        groovy.srcDirs += ["src/main/groovy"]
-//    }
-//}
 
 dependencies {
-    api project(":tny-game-net")
+    api project(':tny-game-net')
     api libs.xstream
-    api project(":tny-game-doc-annotation")
-    api project(":tny-game-common-lang")
-    api project(":tny-game-rpc")
-    api project(":tny-game-scanning")
-    api project(":tny-game-expr-mvel")
-    api libs.jackson_core
+    api project(':tny-game-doc-annotation')
+    api project(':tny-game-common-lang')
+    api project(':tny-game-rpc')
+    api project(':tny-game-scanning')
+    api project(':tny-game-expr-mvel')
+    api libs.jacksonCore
     api libs.guava
-    api libs.jackson_databind
-    api libs.jackson_annotations
-
-//    api libs.mvel
-//    implementation libs.tools_template
+    api libs.jacksonDatabind
+    api libs.jacksonAnnotations
 
 }
 

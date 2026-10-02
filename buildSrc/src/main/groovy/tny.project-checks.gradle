@@ -1,0 +1,51 @@
+// 配置阶段跨工程对账约定插件（adopt-gradle-official-dsl 插件化，前身为 gradle/project-checks.gradle）。
+// 本插件负责且仅负责两项校验：发布构件组号对账（central-publishing D2，gradle.projectsEvaluated
+// 时机不变）与零发布合同（consolidate-module-modes-plugin D2：依赖边就地核对，沿依赖强制评估
+// 被依赖方后读其 tny.module-modes 声明，取代"根清单到齐点名"）。边界：不做装配配置；
+// 组号对账须由根构建脚本在 ext 集合派生之后一行引入。
+
+gradle.projectsEvaluated {
+    def violations = []
+    moduleProjects.each { m ->
+        // configure-on-demand 下仅校验本次已评估的工程，未评估工程组号尚未派生、不参与对账
+        if (!m.state.executed) {
+            return
+        }
+        if (m.name.endsWith('-gradle')) {  // 例外组号按约定后缀判定（settings.gradle 注释），与插件模块线同规则
+            if (m.group.toString() != pluginLegacyGroup) {
+                violations << "${m.path}（插件模块例外）组号应为 '${pluginLegacyGroup}'，实际 '${m.group}'"
+            }
+        } else if (m.group.toString() != projectGroup) {
+            violations << "${m.path} 组号应为单一事实源 '${projectGroup}'，实际 '${m.group}'（请删除模块内组号声明，由根构建派生）"
+        }
+    }
+    if (!violations.isEmpty()) {
+        throw new GradleException('发布构件组号与单一事实源对账失败：\n- ' + violations.join('\n- '))
+    }
+}
+
+// 零发布合同（consolidate-module-modes-plugin D2：依赖边就地核对）：
+// 每个框架成员工程在自身评估收尾时遍历已声明的工程依赖，把被依赖方强制评估到位后核对其
+// enableUnpublished() 声明，命中即报红并列出双方路径。与旧的"根清单 + projectsEvaluated"相比：
+// 按需配置评估下不再有"清单缺员静默漏检"盲区（合法性经探针实证：afterEvaluate 窗口内
+// evaluationDependsOn 可用）；"声明不发布的工程不得属于发布线"的自检随声明即时执行，
+// 见 tny.convention.ModuleModes.enableUnpublished。
+moduleProjects.each { m ->
+    m.afterEvaluate { evaluated ->
+        evaluated.configurations.each { cfg ->
+            cfg.dependencies.withType(ProjectDependency).each { d ->
+                def target = d.dependencyProject
+                if (target == evaluated) {
+                    return
+                }
+                if (!target.state.executed) {
+                    evaluated.evaluationDependsOn(target.path)
+                }
+                if (tny.convention.ModuleModes.enabled(target, tny.convention.ModuleModes.Mode.UNPUBLISHED)) {
+                    throw new GradleException("零发布合同违例：${evaluated.path} 的配置 ${cfg.name} 依赖声明不发布工程 " +
+                            "'${target.path}'（声明处：tny.module-modes enableUnpublished；见 benchmark-harness 规格）")
+                }
+            }
+        }
+    }
+}

@@ -1,10 +1,10 @@
 
-apply plugin: "maven-publish"
+apply plugin: 'maven-publish'
 
 
 dependencies {
 
-    api libs.protobuf_java3
+    api libs.protobufJava3
 
 }
 

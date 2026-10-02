@@ -1,0 +1,152 @@
+/*
+ * Copyright (c) 2020 Tunaiyi
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+// 两级验证通道约定插件（adopt-gradle-official-dsl 插件化，前身为 gradle/integration-test.gradle；
+// merge-demo-isolation-into-integration-test 起并含集成测试专用模块的受控隔离子进程装配）。
+// 本插件为 java 模块提供 integration source set 与命令入口任务 integrationTest；
+// 文件尾部的装配段仅对 -integration-test 后缀的专用模块生效（命名约定见 settings.gradle，
+// 主账本"共享构建脚本禁止枚举具体工程名"需求的成员判定通道之一），其余模块经本插件零动作。
+// 两级验证通道语义出处（add-integration-testing design D1；rename-integration-source-set D1）：
+// 为 java 模块提供 integration source set 与命令入口任务 integrationTest（目录名与命令解耦：
+// 主 spec 钉的是任务命令，源集名属实现细节）；
+// 用例约定标 @Tag("integration")（类名 *IT），依赖容器的叠加 @Tag("docker")；
+// -PincludeDocker 未开启时 docker 用例不进入执行集；开启但容器环境不可用时，
+// 由用例侧 @Testcontainers(disabledWithoutDocker = true) 判定为 skip（不算失败）。
+// 本任务不挂 check（门禁由 CI 三档显式调用，design D7）。
+
+sourceSets {
+    integration {
+        compileClasspath += sourceSets.main.output + sourceSets.test.output
+        runtimeClasspath += sourceSets.main.output + sourceSets.test.output
+    }
+}
+
+configurations {
+    integrationImplementation.extendsFrom implementation
+    integrationImplementation.extendsFrom testImplementation
+    integrationRuntimeOnly.extendsFrom runtimeOnly
+    integrationRuntimeOnly.extendsFrom testRuntimeOnly
+}
+
+dependencies {
+    integrationImplementation libs.assertj
+    integrationImplementation libs.awaitility
+    integrationImplementation libs.testcontainersJunit
+}
+
+tasks.register('integrationTest', Test) {
+    description = 'Integration tests (@Tag("integration"); docker cases need -PincludeDocker)'
+    group = 'verification'
+
+    testClassesDirs = sourceSets.integration.output.classesDirs
+    classpath = sourceSets.integration.runtimeClasspath
+
+    useJUnitPlatform {
+        includeTags 'integration'
+        if (!project.hasProperty('includeDocker')) {
+            excludeTags 'docker'
+        }
+    }
+
+    // docker 端点透传（macOS OrbStack/Docker Desktop 不提供 /var/run/docker.sock，
+    // testcontainers 默认探测会判"无 Docker"→ skip）：-PdockerHost > 环境变量 > 标准私有 socket 探测定
+    def resolveDockerHost = {
+        if (project.hasProperty('dockerHost')) {
+            return project.property('dockerHost')
+        }
+        def fromEnv = providers.environmentVariable('DOCKER_HOST').getOrNull()
+        if (fromEnv) {
+            return fromEnv
+        }
+        def home = providers.systemProperty('user.home').get()
+        // 候选路径取 gradle.properties 逗号清单，空键回退内置 orbstack/docker 默认
+        // （centralize-resolution-config D4：换机调参不改脚本，CI 无键行为不变）
+        def configured = providers.gradleProperty('dockerSocketCandidates').getOrElse('').split(',').collect { it.trim() }.findAll { it }
+        def candidates = configured ?: ["$home/.orbstack/run/docker.sock", "$home/.docker/run/docker.sock"]
+        def hit = candidates.find { new File(it).exists() }
+        return hit ? "unix://$hit" : null
+    }
+    def dockerHost = resolveDockerHost()
+    if (dockerHost) {
+        environment 'DOCKER_HOST', dockerHost
+    }
+
+    // CI 降并发换确定性（stabilize 组 5 判决表②，run#17 案卷定罪"时序断言超预算"的配套支臂）：
+    // 4 核 runner 上并行 fork 放大尾延迟窗口；本地多核环境同样受此约束（双端一致性验收 5.5）
+    maxParallelForks = 1
+    shouldRunAfter tasks.named('test')
+
+    testLogging {
+        events 'failed', 'skipped'
+        exceptionFormat 'full'
+    }
+}
+
+// ---------------------------------------------------------------------------
+// 集成测试专用模块的受控隔离子进程装配（merge-demo-isolation-into-integration-test：
+// 自 tny.demo-isolation 整体迁入，闸门用已成文的 -integration-test 后缀命名约定，
+// 接线体逐行未改）。受控目标＝本工程 integrationImplementation 直接工程依赖 ∩ 声明
+// enableApp() 的应用蓝本（tny.module-modes，就地核对无登记清单），按声明序；交集为空、
+// 目标缺 jar 任务或缺 runtimeClasspath 均在该任务执行前 fail-fast 报红。
+// ---------------------------------------------------------------------------
+if (project.name.endsWith('-integration-test')) {
+    // 子进程隔离 classpath 属性（add-starter-net-integration-tests）：demo 应用子进程禁止复用
+    // 测试 JVM 的 classpath——那会把 harness 单元表/@Unit bean 面泄进子进程 Spring 扫描，
+    // 同 fork 重用时反向毒化后续 IT（DemoPlayerObjectCodecableCodec 串染事故实证）
+    tasks.named('integrationTest') {
+        // 任务依赖由集成运行时类路径配置整体携带：蓝图 jar 是其构件（Test 任务类路径属性本就
+        // 隐式依赖构件生产任务），不逐工程引用 jar 任务；任务图零新增边由验收 dry-run 比对证实
+        // （simplify-demo-isolation-wiring D2）。
+        dependsOn configurations.integrationRuntimeClasspath
+        doFirst {
+            // 就地核对：执行期所有工程已完成评估，直接读依赖对象的角色声明
+            def declared = configurations.integrationImplementation.dependencies
+                    .withType(org.gradle.api.artifacts.ProjectDependency)*.dependencyProject
+            def targets = declared.findAll { tny.convention.ModuleModes.enabled(it, tny.convention.ModuleModes.Mode.APP) }
+            if (targets.isEmpty()) {
+                throw new GradleException('tny.integration-test: 受控隔离目标交集为空——integrationImplementation 的直接工程依赖 ' +
+                        '(' + (declared.isEmpty() ? '无' : declared*.path) + ') 中无任何声明 enableApp() 的应用蓝本。' +
+                        '两个可能成因：本工程未把被测 demo 加入 integrationImplementation；或所声明工程未声明 enableApp()。' +
+                        '该非空约束是 DemoPlayerObjectCodecableCodec 串染事故后的显式防线，交集即审计对象。')
+            }
+            targets.each { target ->
+                if (!target.tasks.names.contains('jar')) {
+                    throw new GradleException("tny.integration-test: 目标工程 '${target.path}' 无 jar 任务，不能作为受控隔离目标（期望：应用 java 线的可发布工程）。")
+                }
+                if (target.configurations.findByName('runtimeClasspath') == null) {
+                    throw new GradleException("tny.integration-test: 目标工程 '${target.path}' 无 runtimeClasspath 配置，不能作为受控隔离目标。")
+                }
+            }
+            def out = project.sourceSets.integration.output
+            def parts = out.classesDirs.files.collect { it.absolutePath }
+            parts.add(out.resourcesDir.absolutePath)
+            // 受控隔离 classpath＝IT 自身产物 + 按声明序各目标的 runtimeClasspath 与其发布 jar：
+            // 防在途未编译产物/新类泄入子进程。每目标无条件串接 rc.asPath（空集双分隔符形态
+            // 与 JVM classpath 容忍度均同历史行为），单目标结果与改造前逐字节等值。
+            def segments = []
+            targets.each { target ->
+                // 子进程真实运行形态＝demo 自身 runtime classpath（其 jar 在各自段首），与测试 JVM 完全切割；
+                // Gradle 8.5 systemProperty 不解包 Provider，故 doFirst 执行期求值（jar 经任务依赖已就绪）
+                segments.add(target.configurations.runtimeClasspath.asPath)
+                segments.add(target.tasks.named('jar').get().archiveFile.get().asFile.absolutePath)
+            }
+            systemProperty 'it.demo.isolatedClasspath',
+                    ([parts.join(File.pathSeparator)] + segments).join(File.pathSeparator)
+        }
+        // 进程级隔离：demo 类装载/DTO scheme 装载会写入 JVM 级静态 codec/单元表（串染同 fork
+        // 后续 IT 的 Spring 装配面，事故实证 DemoPlayerObjectCodecableCodec），每类独占新 JVM 根治
+        forkEvery = 1
+    }
+}

@@ -1,15 +1,15 @@
 
-apply plugin: "maven-publish"
+apply plugin: 'maven-publish'
 
 dependencies {
 
     api libs.xstream
-    api libs.spring_context_support
-    api libs.jackson_dataformat_yaml
-    api libs.javax_annotation_api
-    api project(":tny-game-scanning")
-    api project(":tny-game-expr-groovy")
-    api project(":tny-game-common-io")
+    api libs.springContextSupport
+    api libs.jacksonDataformatYaml
+    api libs.javaxAnnotationApi
+    api project(':tny-game-scanning')
+    api project(':tny-game-expr-groovy')
+    api project(':tny-game-common-io')
 
     testImplementation libs.xpp3
 

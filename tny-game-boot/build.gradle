@@ -1,15 +1,15 @@
 
-apply plugin: "maven-publish"
+apply plugin: 'maven-publish'
 
 dependencies {
 
-    annotationProcessor libs.spring_boot_configuration_processor
+    annotationProcessor libs.springBootConfigurationProcessor
 
-    api libs.spring_boot_autoconfigure
-    api libs.javax_annotation_api
+    api libs.springBootAutoconfigure
+    api libs.javaxAnnotationApi
 
-    api project(":tny-game-common-lifecycle")
-    api project(":tny-game-loader")
+    api project(':tny-game-common-lifecycle')
+    api project(':tny-game-loader')
 
 
 }

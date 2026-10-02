@@ -54,7 +54,7 @@
 ## 发布门禁的五重校验
 
 `./gradlew publish`（以及任何共享仓发布任务）在任何模块上执行前由
-`gradle/publications.gradle` 的门禁任务校验，任一项不通过即整构建失败并列出全部问题：
+`tny.publish-gate` 约定插件的门禁任务校验，任一项不通过即整构建失败并列出全部问题：
 
 1. 分支形态白名单：仅开发线形态与发布分支形态可发布；以 `.release` 结尾但数字段数
    不是三段（例如 `5.7.8.1.release`）给出专门拒绝文案。
@@ -96,7 +96,7 @@
 ## 快速通道（Gradle 任务）
 
 上述四则流程中的切支+打标签+推送由根任务 `releaseCutAndTag` 固化顺序，合回由 `releaseRebaseBack`
-固化（均在 `gradle/release.gradle`；两任务支持 `-PdryRun` 预览）。通道分界（openspec change
+固化（均在 `tny.release` 约定插件；两任务支持 `-PdryRun` 预览）。通道分界（openspec change
 `migrate-git-calls-to-grgit`）：`releaseCutAndTag` 的全部 git 操作已收敛到 grgit 插件
 （JGit 后端），不依赖本机 git 二进制，因此不需要 `-PgitExe`；`releaseRebaseBack` 仍保留四类
 子进程调用——`rebase`、`rebase --abort`、`rev-list --count`、`push --force-with-lease`——

@@ -1,18 +1,12 @@
 
-apply plugin: "maven-publish"
+apply plugin: 'maven-publish'
 
 dependencies {
 
-    api project(":tny-game-common-lang")
-//    api libs.guava
-    api libs.spring_core
+    api project(':tny-game-common-lang')
+    api libs.springCore
 
-    api libs.commons_collections4
-
-//    api libs.google_finbugs
-//    api libs.commons_codec
-//    api libs.cglib_nodep
-//    api libs.javassist
+    api libs.commonsCollections4
 
 }
 

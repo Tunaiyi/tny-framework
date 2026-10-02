@@ -1,23 +1,19 @@
 
-apply plugin: "maven-publish"
+apply plugin: 'maven-publish'
 
 dependencies {
 
+    annotationProcessor libs.springBootConfigurationProcessor
 
-    annotationProcessor libs.spring_boot_configuration_processor
-
-//    api libs.spring_boot_autoconfigure
-    api(libs.redisson_spring_boot_starter) {
+    api(libs.redissonSpringBootStarter) {
         exclude module: 'spring-boot-starter-web'
         exclude module: 'spring-boot-starter-logging'
         exclude module: 'log4j-to-slf4j'
     }
 
-    api project(":tny-game-boot")
-    api project(":tny-game-starter-codec")
-    api project(":tny-game-redisson")
+    api project(':tny-game-boot')
+    api project(':tny-game-starter-codec')
+    api project(':tny-game-redisson')
 
 }
-
-
 

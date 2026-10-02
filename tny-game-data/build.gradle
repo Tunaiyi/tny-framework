@@ -1,9 +1,9 @@
 
-apply plugin: "maven-publish"
+apply plugin: 'maven-publish'
 
 dependencies {
 
-    api project(":tny-game-common-lifecycle")
+    api project(':tny-game-common-lifecycle')
     api libs.caffeine
 
 

@@ -1,10 +1,10 @@
 
-apply plugin: "maven-publish"
+apply plugin: 'maven-publish'
 
 dependencies {
-    api project(":tny-game-common-lang")
-    api libs.commons_io
-    api libs.commons_codec
+    api project(':tny-game-common-lang')
+    api libs.commonsIo
+    api libs.commonsCodec
 
 }
 

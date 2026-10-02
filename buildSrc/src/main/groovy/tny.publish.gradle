@@ -1,0 +1,36 @@
+// 发布仓与凭据属性约定插件（adopt-gradle-official-dsl 插件化，前身为 gradle/publish.gradle）。
+// 本插件负责：RELEASE/SNAPSHOT 仓地址与 Nexus 凭据四属性经 hasProperty 取值入 ext、
+// 共享仓发布任务挂属性存在性 fail-fast 断言（ToMavenLocal 本地链豁免，见谓词注释，
+// 与 tny.publish-gate 的豁免判定同源）。边界：分支/版本一致性门禁在 tny.publish-gate。
+
+ext.RELEASE_REPOSITORY_URL = hasProperty('RELEASE_REPOSITORY_URL') ? RELEASE_REPOSITORY_URL : ''
+ext.SNAPSHOT_REPOSITORY_URL = hasProperty('SNAPSHOT_REPOSITORY_URL') ? SNAPSHOT_REPOSITORY_URL : ''
+ext.NEXUS_USERNAME = hasProperty('NEXUS_USERNAME') ? NEXUS_USERNAME : ''
+ext.NEXUS_PASSWORD = hasProperty('NEXUS_PASSWORD') ? NEXUS_PASSWORD : ''
+
+// 仅在 publish 相关任务实际执行前断言四项发布配置的存在性；任一为空即以任务名与属性键 fail-fast，不打印任何凭据值。
+// 判定范围与 tny.publish-gate 的发布门禁一致：publishToMavenLocal 等本地发布路径不受影响。
+def requiredPublishingProperties = [
+        RELEASE_REPOSITORY_URL: ext.RELEASE_REPOSITORY_URL,
+        SNAPSHOT_REPOSITORY_URL: ext.SNAPSHOT_REPOSITORY_URL,
+        NEXUS_USERNAME: ext.NEXUS_USERNAME,
+        NEXUS_PASSWORD: ext.NEXUS_PASSWORD,
+]
+tasks.matching { candidate ->
+    String taskName = candidate.name
+    if (taskName == 'publish' || taskName == 'publishAllPublications' || taskName == 'publishMavenJavaPublicationToMavenRepository') {
+        return true
+    }
+    // 判定与 tny.publish-gate 的发布门禁谓词同源（sweep-gradle-build-style D7）：
+    // 豁免尾缀 ToMavenLocal 的整条本地发布链；原 startsWith 判断漏掉
+    // publishMavenJavaPublicationToMavenLocal，本地发布会被误挂四项属性断言（门禁处已实测修正，此处同步）。
+    return taskName.startsWith('publish') && !taskName.endsWith('ToMavenLocal')
+}.all { task ->
+    task.doFirst {
+        requiredPublishingProperties.each { key, value ->
+            if (value == null || value.toString().trim().isEmpty()) {
+                throw new IllegalStateException("Task '${task.path}' failed: required publishing property '${key}' is empty or missing.")
+            }
+        }
+    }
+}

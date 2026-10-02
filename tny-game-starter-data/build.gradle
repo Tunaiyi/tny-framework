@@ -1,22 +1,22 @@
 
-apply plugin: "maven-publish"
+apply plugin: 'maven-publish'
 
 dependencies {
 
 
-    annotationProcessor libs.spring_boot_configuration_processor // IDEA 使用
+    annotationProcessor libs.springBootConfigurationProcessor // IDEA 使用
 
-    api libs.spring_boot_autoconfigure
+    api libs.springBootAutoconfigure
 
-    api project(":tny-game-data")
-    api project(":tny-game-boot")
+    api project(':tny-game-data')
+    api project(':tny-game-boot')
 
-    compileOnly project(":tny-game-data-redisson")
-    compileOnly project(":tny-game-data-mongodb")
+    compileOnly project(':tny-game-data-redisson')
+    compileOnly project(':tny-game-data-mongodb')
 
-    testImplementation libs.spring_boot_starter_test
-    testImplementation project(":tny-game-data-redisson")
+    testImplementation libs.springBootStarterTest
+    testImplementation project(':tny-game-data-redisson')
     // 绑定钉桩需运行时实例化 MongoStorageAccessorFactorySetting（默认值引用 data-mongodb 类，主源集 compileOnly 不进 test 运行时）
-    testImplementation project(":tny-game-data-mongodb")
+    testImplementation project(':tny-game-data-mongodb')
 }
 

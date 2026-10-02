@@ -1,13 +1,13 @@
 
-apply plugin: "maven-publish"
+apply plugin: 'maven-publish'
 
 
 dependencies {
 
-    api project(":tny-game-common-io")
-    api project(":tny-game-codec-jackson")
+    api project(':tny-game-common-io')
+    api project(':tny-game-codec-jackson')
 
-    api project(":tny-game-boot")
+    api project(':tny-game-boot')
 
     api libs.javassist
     api libs.redisson

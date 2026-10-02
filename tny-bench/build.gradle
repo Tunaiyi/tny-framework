@@ -1,6 +1,15 @@
 plugins {
     id 'java'
     id 'me.champeau.jmh' version '0.7.3'
+    // 族属清单与枚举/对账/落盘任务在 tny.bench-suite 约定插件（注册归属与任务名不变）
+    id 'tny.bench-suite'
+    // 横切角色统一插件（consolidate-module-modes-plugin）
+    id 'tny.module-modes'
+}
+
+// 自述：不发布设施（零发布合同就地核对消费；刻意不带 tny-game- 前缀见 settings 约定注释）
+moduleModes {
+    enableUnpublished()
 }
 
 // 刻意不叫 tny-game-*：不落根构建 moduleProjects 装配线，零发布（openspec capability: benchmark-harness）。
@@ -10,32 +19,27 @@ java {
         languageVersion = JavaLanguageVersion.of(javaVersion.toInteger())
     }
 }
-compileJmhJava.options.encoding = "${encoding}"
 
-// 族属双承载（split-bench-suites D1）：目录分置族子包即族属，清单按族子包正则声明，
-// CI 两面（评审枚举 / 执行选择）只从这份单一事实派生；目录↔声明对账见 jmhSuiteVerify。
-ext {
-    // 单一 alternation 正则语义沿用：插件会把 includes 列表逗号拼接成单个 JMH 位置参数（实测），
-    // 而 JMH 位置参数语义为"一个正则"——多正则必须自拼 |。
-    benchRoutineClasses = ['.*\\.bench\\.net\\.routine\\..*']
-    benchDevSuiteClasses = ['.*\\.bench\\.net\\.devtest\\..*']
-    // 设施探针：devtest 族成员，恒随执行面运行——执行链存活哨兵，其条目不构成框架性能断言对象。
-    benchFacilityProbe = ['.*\\.bench\\.net\\.devtest\\.SmokeBenchmark.*']
-    // include 正则不匹配参数串（实测：`:prod_` 分支 0 选中）——生产臂筛选走 -p（JMH 1.37 的 -p 语义是
-    // 覆写参数域而非过滤，对未声明该字段的基准无排除效应，实测证实）。臂属选择面问题，不属族属问题（D1）。
-    benchRoutineAlgoArms = ['prod_crc64_xortile', 'prod_siphash24_xortile', 'prod_crc32_xortile',
-                            'prod_siphash24_xorprod', 'prod_crc32_xorprod', 'prod_siphash24_chacha']
-    // 速览规模（refine-bench-routine-triggering D2）：常规族去掉加密装配矩阵类再并入设施探针，
-    // 供框架合入的 push 场合计时；矩阵级退化由夜间与手动的完整规模兜底。
-    // 前瞻负向断言保持"族全集减矩阵"语义——常规族日后新增类自动进速览，无需二次维护本清单。
-    benchQuickRun = ['.*\\.bench\\.net\\.(?!routine\\.PipelineCryptoMatrixBenchmark)(routine|devtest\\.SmokeBenchmark).*']
+tasks.withType(AbstractCompile).configureEach {
+    options.encoding = encoding
+}
+
+// 基准族清单（split-bench-suites D1 族属双承载的声明面：目录即族属，此清单登记族正则，
+// jmhSuiteVerify 双向对账钉死；行为来由注释在 tny.bench-suite 插件）。
+benchSuite {
+    routineFamily.set(['.*\\.bench\\.net\\.routine\\..*'])
+    devtestFamily.set(['.*\\.bench\\.net\\.devtest\\..*'])
+    facilityProbes.set(['.*\\.bench\\.net\\.devtest\\.SmokeBenchmark.*'])
+    routineAlgoArms.set(['prod_crc64_xortile', 'prod_siphash24_xortile', 'prod_crc32_xortile',
+                         'prod_siphash24_xorprod', 'prod_crc32_xorprod', 'prod_siphash24_chacha'])
+    quickRunExcludes.set(['.*\\.bench\\.net\\.routine\\.PipelineCryptoMatrixBenchmark.*'])
 }
 
 dependencies {
     jmhImplementation project(':tny-game-net')
     jmhImplementation project(':tny-game-net-netty4')
     jmhImplementation project(':tny-game-net-test')
-    jmhImplementation libs.mockito_junit_jupiter   // 基准装配复用 mock ctx（版本由根 BOM 管理）
+    jmhImplementation libs.mockitoJunitJupiter   // 基准装配复用 mock ctx（版本由根 BOM 管理）
 }
 
 // D3 基线纪律入库（原 D2 裸 JavaExec 已废，见 openspec/changes/promote-netbench-to-tny-bench design T2）：
@@ -49,31 +53,26 @@ jmh {
     timeOnIteration = '1s'
     resultFormat = 'json'
     resultsFile = project.layout.buildDirectory.file('reports/bench/bench-result.json').get().asFile
+    def familyInclude = (benchSuite.routineFamily.get() + benchSuite.facilityProbes.get()).join('|')
     if (project.hasProperty('benchAll')) {
         includes = ['.*']
     } else if (project.hasProperty('benchInclude')) {
         includes = [project.property('benchInclude').toString()]   // 单正则语义（JMH 位置参数）
     } else if (project.hasProperty('benchScope') && project.property('benchScope').toString() == 'quick') {
-        // 速览规模：合入计时用（CI push 传 -PbenchScope=quick）；矩阵类不在选择面，algo 参数域无的放矢不必设置
-        includes = benchQuickRun
+        // 速览规模（refine-bench-routine-triggering D2）：与完整档共用 include 面，
+        // 矩阵级退化由夜间与手动的完整规模兜底；排除面是显式清单（新增矩阵类在此登记）
+        includes = [familyInclude]
+        excludes = benchSuite.quickRunExcludes.get()
     } else {
         // 缺省即完整规模（本地直接执行、夜间定时、手动触发）：常规族并设施探针，
-        // 两单元素清单自拼竖线成单正则（插件逗号拼接语义），六臂参数域覆写沿用。
-        includes = [(benchRoutineClasses + benchFacilityProbe).join('|')]
-        benchmarkParameters = [algo: objects.listProperty(String).value(benchRoutineAlgoArms)]
+        // 两族清单自拼竖线成单正则（插件逗号拼接语义），六臂参数域覆写沿用。
+        includes = [familyInclude]
+        benchmarkParameters = [algo: objects.listProperty(String).value(benchSuite.routineAlgoArms.get())]
     }
     if (project.hasProperty('benchGc')) {
         profilers = ['gc']            // 分配画像（P3 裁决数据源）
     }
-    if (project.hasProperty('benchParams')) {
-        // 参数过滤经 JMH -p（include 正则不匹配参数串，实测证实）；分号分隔多字段。
-        Map map = [:]
-        project.property('benchParams').toString().split(';').each { kv ->
-            def (k, v) = kv.split('=', 2)
-            map[k] = objects.listProperty(String).value([v])   // MapProperty<String,ListProperty<String>> 实型
-        }
-        benchmarkParameters = map
-    }
+    // benchParams 显式参数覆写的解析在 tny.bench-suite 插件 afterEvaluate（程序性不入模块文件）
     if (project.hasProperty('benchFast')) {
         // 选择面探针：只验证"哪些 benchmark 会被选中"，不出可信数字。
         fork = 1
@@ -81,109 +80,5 @@ jmh {
         iterations = 1
         warmup = '100ms'
         timeOnIteration = '100ms'
-    }
-}
-
-// 列清单（锚集定义与 jmh 运行同源 ext）：CI PR 通道用它证明"清单可枚举"。
-// BenchmarkList 由插件 jmhRunBytecodeGenerator 产出于 generatedResourcesDir（非注解处理器阶段）。
-tasks.register('jmhList', JavaExec) {
-    group = 'benchmark'
-    description = 'List JMH benchmarks honoring routine-suite filters. 全量清单：-PbenchAll'
-    dependsOn 'jmhCompileGeneratedClasses'
-    mainClass = 'org.openjdk.jmh.Main'
-    args '-l'
-    def listFile = new File(temporaryDir, 'jmhList.txt')
-    doFirst {
-        def gen = tasks.named('jmhRunBytecodeGenerator').get()
-        classpath = sourceSets.jmh.runtimeClasspath + files(gen.generatedResourcesDir)
-        if (!project.hasProperty('benchAll')) {
-            args project.hasProperty('benchInclude') ? [project.property('benchInclude').toString()] : project.benchRoutineClasses
-        }
-        standardOutput = new FileOutputStream(listFile)
-    }
-    finalizedBy 'jmhListVerify'
-    ext.listFile = listFile
-}
-
-// 空匹配不可静默绿（spec：名称过滤无匹配不误报绿——JMH -l 空列表退 0，此处显式判红）
-tasks.register('jmhListVerify') {
-    group = 'benchmark'
-    def listTask = tasks.named('jmhList')
-    doLast {
-        def f = listTask.get().listFile
-        def n = f.exists() ? f.readLines().count { it.startsWith('com.') } : 0
-        if (n == 0) {
-            throw new GradleException("jmhList 过滤后无任何匹配（JMH -l 空列表不报错，此处显式判红）：检查 benchRoutineClasses 与 -PbenchAll")
-        }
-        logger.lifecycle("jmhList: ${n} 个基名条目")
-    }
-}
-
-// 族属完备性 × 目录双向对账（split-bench-suites D1/3.2）：全量枚举逐类归族；
-// 未归族（搬而未登记／族正则漂移）、多族命中、族空面、探针失配——皆显式判红（JMH -l 空列表不报错教训沿用）。
-tasks.register('jmhSuiteVerify', JavaExec) {
-    group = 'benchmark'
-    description = 'Verify every benchmark class is directory-classified (routine/devtest), suites non-empty, facility probe resolves.'
-    dependsOn 'jmhCompileGeneratedClasses'
-    mainClass = 'org.openjdk.jmh.Main'
-    args '-l'
-    def listFile = new File(temporaryDir, 'suiteList.txt')
-    doFirst {
-        def gen = tasks.named('jmhRunBytecodeGenerator').get()
-        classpath = sourceSets.jmh.runtimeClasspath + files(gen.generatedResourcesDir)
-        standardOutput = new FileOutputStream(listFile)
-    }
-    doLast {
-        def classes = listFile.readLines().findAll { it.startsWith('com.') }
-                .collect { it.substring(0, it.lastIndexOf('.')) }.unique()
-        def famOf = { String c ->
-            def hits = []
-            if (project.benchRoutineClasses.any { p -> c =~ p }) { hits << 'routine' }
-            if (project.benchDevSuiteClasses.any { p -> c =~ p }) { hits << 'devtest' }
-            hits
-        }
-        def unclassified = classes.findAll { famOf(it).empty }
-        if (unclassified) {
-            throw new GradleException("基准类未归族（目录不在族子包，或族清单正则漂移）：${unclassified}")
-        }
-        def multiFamily = classes.findAll { famOf(it).size() > 1 }
-        if (multiFamily) {
-            throw new GradleException("基准类同时命中多族清单（族界须互斥）：${multiFamily}")
-        }
-        def routineN = classes.count { famOf(it) == ['routine'] }
-        def devN = classes.count { famOf(it) == ['devtest'] }
-        if (routineN == 0 || devN == 0) {
-            throw new GradleException("族清单空面：routine=${routineN}, devtest=${devN}")
-        }
-        def probe = classes.findAll { c -> project.benchFacilityProbe.any { p -> c =~ p } }
-        if (probe.empty) {
-            throw new GradleException("设施探针清单无命中：${project.benchFacilityProbe}——Smoke 搬偏或清单漂移")
-        }
-        logger.lifecycle("jmhSuiteVerify: routine ${routineN} 类 / devtest ${devN} 类 / 探针 ${probe.size()} 类，全量 ${classes.size()} 类皆已归族")
-    }
-}
-
-// 常规族落盘（执行通道 push/夜间同款）：跑默认族清单后把 JSON 复制为 results/bench-<yyyymmdd>-routine.json（日期执行期生成）。
-tasks.register('benchRoutineExport') {
-    group = 'benchmark'
-    description = 'Run routine-suite benchmarks (incl. facility probe) and archive JSON result into results/ with a date fingerprint.'
-    dependsOn 'jmh'
-    doLast {
-        def src = jmh.resultsFile.get().asFile
-        if (!src.exists()) {
-            throw new GradleException("常规族运行声明完成但结果文件缺失：${src}（spec：产物缺失可发现）")
-        }
-        // 日期统一钉 UTC（实况教训：runner 时区为 UTC，本地 Asia/Shanghai 差一日，
-        // 速览首跑产物落成 bench-20261001-quick.json 与本地日期口径错位——与回写提交时间戳同基准）。
-        def dateFormat = new java.text.SimpleDateFormat('yyyyMMdd')
-        dateFormat.timeZone = TimeZone.getTimeZone('UTC')
-        def dateStr = dateFormat.format(new Date())
-        // 产物规模标识（refine-bench-routine-triggering D2/差量产物条款）：
-        // 速览与完整各自成文件，同日期覆盖限定同规模，逐版对比要求同规模成立。
-        def scopeSuffix = (project.hasProperty('benchScope') && project.property('benchScope').toString() == 'quick') ? 'quick' : 'routine'
-        def dest = file("${projectDir}/results/bench-${dateStr}-${scopeSuffix}.json")
-        dest.parentFile.mkdirs()
-        ant.copy(file: src, tofile: dest, overwrite: true)
-        logger.lifecycle("benchRoutineExport: ${dest}")
     }
 }

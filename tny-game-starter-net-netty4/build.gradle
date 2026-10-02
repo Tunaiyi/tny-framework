@@ -1,27 +1,25 @@
 
-apply plugin: "maven-publish"
+apply plugin: 'maven-publish'
 
 compileJava.dependsOn(processResources)
 
 dependencies {
 
+    annotationProcessor libs.springBootConfigurationProcessor // IDEA 使用
 
-    annotationProcessor libs.spring_boot_configuration_processor // IDEA 使用
+    api project(':tny-game-boot')
+    api project(':tny-game-rpc')
+    api project(':tny-game-net-netty4')
 
-    api project(":tny-game-boot")
-    api project(":tny-game-rpc")
-    api project(":tny-game-net-netty4")
+    api libs.springBootAutoconfigure
 
-    api libs.spring_boot_autoconfigure
-//    api libs.spring_cloud_starter_bootstrap
-
-    api project(":tny-game-starter-codec")
-    api project(":tny-game-net-netty4-codec-protoex")
-    compileOnly project(":tny-game-net-netty4-codec-jprotobuf")
-    compileOnly libs.alibaba_cloud_starter_nacos_discovery
-    testImplementation libs.alibaba_cloud_starter_nacos_discovery
+    api project(':tny-game-starter-codec')
+    api project(':tny-game-net-netty4-codec-protoex')
+    compileOnly project(':tny-game-net-netty4-codec-jprotobuf')
+    compileOnly libs.alibabaCloudStarterNacosDiscovery
+    testImplementation libs.alibabaCloudStarterNacosDiscovery
     // 绑定钉桩需运行时构造 SpringNettyChannelSetting（构造器硬引用 jprotobuf codec 类，主源集 compileOnly 不进 test 运行时）
-    testImplementation project(":tny-game-net-netty4-codec-jprotobuf")
+    testImplementation project(':tny-game-net-netty4-codec-jprotobuf')
 
 }
 

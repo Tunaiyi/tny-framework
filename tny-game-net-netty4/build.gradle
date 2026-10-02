@@ -1,30 +1,32 @@
 
-apply plugin: "maven-publish"
+apply plugin: 'maven-publish'
 
 dependencies {
 
-    api libs.netty_common
-    api libs.netty_handler
-    api libs.netty_transport
-    api libs.netty_buffer
-    api libs.netty_codec
-    api libs.netty_resolver
-    api libs.netty_resolver_dns
-    api libs.netty_transport_native_kqueue
-    api libs.netty_transport_native_epoll
-    api libs.netty_transport_native_epoll_x86
-//    api libs.netty
-//    api libs.netty_transport
-//    api libs.netty_transport_classes_epoll
+    api libs.nettyCommon
+    api libs.nettyHandler
+    api libs.nettyTransport
+    api libs.nettyBuffer
+    api libs.nettyCodec
+    api libs.nettyResolver
+    api libs.nettyResolverDns
+    api libs.nettyTransportNativeKqueue
+    api libs.nettyTransportNativeEpoll
+    // 平台分类件：TOML 目录（Gradle 8.5）无 classifier 键，在消费侧以 artifact 块声明；
+    // 版本与主件同由 netty-bom 管理，单一书写点不变。
+    api(libs.nettyTransportNativeEpoll) {
+        artifact {
+            classifier = 'linux-x86_64'
+        }
+    }
     api libs.disruptor
     api libs.jprotobuf
-    api project(":tny-game-net")
-    api project(":tny-game-protoex")
-    api project(":tny-game-codec-jprotobuf")
+    api project(':tny-game-net')
+    api project(':tny-game-protoex')
+    api project(':tny-game-codec-jprotobuf')
 
-
-    testImplementation libs.spring_context_support
-    testImplementation project(":tny-game-net-test")
+    testImplementation libs.springContextSupport
+    testImplementation project(':tny-game-net-test')
 
 }
 

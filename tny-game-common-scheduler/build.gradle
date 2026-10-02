@@ -1,12 +1,12 @@
 
-apply plugin: "maven-publish"
+apply plugin: 'maven-publish'
 
 dependencies {
 
 
-    api project(":tny-game-common-lifecycle")
-    api project(":tny-game-common-io")
-    api libs.quartz_scheduler
+    api project(':tny-game-common-lifecycle')
+    api project(':tny-game-common-io')
+    api libs.quartzScheduler
 
 
 }

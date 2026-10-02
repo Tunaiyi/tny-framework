@@ -46,3 +46,16 @@ run#18（stabilize 根治推送）起算：#18-#27 十轮（stabilize §6 原账
 integration job 全绿、ci-it-diag 自 run#17 唯一案卷后零新投递（tip 恒 889e0942）。
 **10/10 定案：stabilize 组 5 根治有效，门禁阶段二书面生效（见 handoff 终裁注记）。**
 本案 unit 的"10 轮零红"计数独立于本账，自 etcd 假设或案 #1 处方落地后另起。
+
+## 本地并行证据登记（构建脚本系列变更期间，2026-10-02 至 10-03，全量构建并行压力下）
+
+本节登记三例本地偶红，与本案 CI unit 偶红同属"负载下时序敏感断言"家族，证据供处方设计参考；均未动手术刀。
+
+### 登记 #1：tny-game-actor `VoidTypeStageTest.testAwaitRun1`（2026-10-02，sweep-gradle-build-style 基线首跑）
+- **签名**：断言超时失败（VoidTypeStageTest.java:304），全量并行构建一次红；单任务 `--rerun` 两次全绿（9/9）。
+- **与案 #1 关系**：同模块相邻用例（TypeStageTest/VoidTypeStageTest 同一套墙钟窗口判据），支持案 #1 处方候选①（有界轮询替代绝对时间）覆盖整个测试族，而不止 testAwaitApply1 一例。
+
+### 登记 #2/3/4：tny-game-common-lang `CollectionLockTest.exclusiveMixturesNeverOverlap`（2026-10-02 至 10-03 共三次）
+- **签名**：`读读应可并行驻留（观测不到任何并行说明互斥过紧） expected true but was false`；三次均出现在全量并行构建（6 worker），每次单任务 `--rerun` 复跑绿（约 31 秒）；第 2 次恰逢 buildSrc 引入期，经"旧架构 stash 对照全量一次绿 + 新架构单跑两绿"排除迁移相关性，定性负载偶红。
+- **机理读码**：断言以"观测到并发驻留"为真，负载挤压下两读线程被调度串行化即翻转——与案 #1 同一病灶类型（把调度延迟当作被检性质的反证），患者换到 lock 线。
+- **处置建议**：并入案 #1 的处方族（观察窗口内允许重试观测而非单次判定）；本登记不新开立案件，待其修复轮统一回归。

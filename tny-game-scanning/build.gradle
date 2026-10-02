@@ -1,9 +1,9 @@
 
-apply plugin: "maven-publish"
+apply plugin: 'maven-publish'
 
 dependencies {
 
-    api libs.spring_core
+    api libs.springCore
 
 
 }

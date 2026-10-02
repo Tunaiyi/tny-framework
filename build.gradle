@@ -1,313 +1,67 @@
 plugins {
     id 'org.ajoberstar.grgit' version '4.1.1' apply false
-    // nmcp（Gradle 团队维护的 Central Portal 上传器，capability central-publishing D3）：
-    // aggregation 挂根、模块侧 com.gradleup.nmcp 不建 publication 不碰 maven-publish，
-    // 直接消费既有 mavenJava；由 gradle/central.gradle 与 publications.gradle 分别 apply。
+    // nmcp（Central Portal 上传器，central-publishing D3）：aggregation 挂根、模块侧经
+    // tny.central 与 tny.publications 分别 apply，直接消费既有 mavenJava。
     id 'com.gradleup.nmcp' version '1.6.2' apply false
     id 'com.gradleup.nmcp.aggregation' version '1.6.2' apply false
     id 'org.springframework.boot' version "${springBootVersion}" apply false
-    id "io.spring.dependency-management" version "1.1.0" apply false
-    id "com.baidu.jprotobuf" version "1.2.1" apply false
-    id "com.gradle.plugin-publish" version "0.16.0" apply false
+    id 'io.spring.dependency-management' version '1.1.0' apply false
+    id 'com.baidu.jprotobuf' version '1.2.1' apply false
+    id 'com.gradle.plugin-publish' version '0.16.0' apply false
 }
 
-apply from: "${rootDir}/gradle/dependency.gradle"
-apply from: "${rootDir}/gradle/git.gradle"
+// 第三方插件在根脚本作用域先行应用（buildSrc 作用域无法解析父构建类路径插件，实测 8.5）；
+// tny.git 派生值（branchName/projectVersion）必须先于一切消费方加载，坐标版本见版本目录。
+apply plugin: 'org.ajoberstar.grgit'
+apply plugin: 'tny.git'
 // 发布快速通道：releaseCutAndTag / releaseRebaseBack（语义契约见 docs/release-process.md）
-apply from: "${rootDir}/gradle/release.gradle"
+apply plugin: 'tny.release'
 
 ext {
-    // 发布构件组号的单一事实源（central-publishing D2）：模块不得另行声明组号；
-    // 2026-10-02 任务 2.2 完成迁移：Central 命名空间验证（任务 1.1）以 tnydev.com DNS TXT 为准，凭证 token 已验证可用。
+    // 发布构件组号的单一事实源（central-publishing D2）：模块不得另行声明组号
+    // （Central 命名空间验证与凭证迁移记录见该变更归档）。
     projectGroup = 'com.tnydev.game'
-    // 唯一例外：Gradle 插件模块的组号与其插件 id（com.tny.game）同谱系，组号迁移不牵连插件解析链
-    // （spec central-publishing"Gradle 插件构件本次不入 Central"）。
+    // 唯一例外：插件模块组号与插件 id 同谱系（spec central-publishing"Gradle 插件构件不入 Central"）。
     pluginLegacyGroup = 'com.tny.game'
 
-    moduleProjects = subprojects.findAll { it.name.startsWith("tny-game-") }
-    javaProjects = moduleProjects - project(":tny-game-bom")
-    javaProjects = javaProjects.findAll { !it.name.endsWith("-gradle") }
-    // 集成测试模块：仅测试代码，不走发布/javaProjects 公共配置（add-integration-testing design D3）
-    javaProjects = javaProjects - project(":tny-game-integration-test")
-    gradleProjects = moduleProjects.findAll { it.name.endsWith("-gradle") }
+    moduleProjects = subprojects.findAll { it.name.startsWith('tny-game-') }
+    // javaProjects 按命名约定排除三类（zero-enumeration-shared-scripts：共享脚本不点名，约定权威定义见 settings.gradle 注释）：
+    // -bom 无编译构件；-gradle 走例外组号（spec central-publishing）；-integration-test 仅测试代码（add-integration-testing design D3）。
+    javaProjects = moduleProjects.findAll {
+        !it.name.endsWith('-bom') && !it.name.endsWith('-gradle') && !it.name.endsWith('-integration-test')
+    }
+    gradleProjects = moduleProjects.findAll { it.name.endsWith('-gradle') }
 }
 
-// Central 通道：centralBundle / centralUpload（capability central-publishing）。
-// 须在 ext 声明块之后加载：任务聚合依赖 moduleProjects 等项目集合。
-apply from: "${rootDir}/gradle/central.gradle"
+// Central 通道：centralBundle / centralUpload（capability central-publishing）；
+// tny.central 须在 ext 声明块之后加载（聚合依赖 moduleProjects 集合）。
+apply plugin: 'com.gradleup.nmcp.aggregation'
+apply plugin: 'tny.central'
 
-// 根工程自身的仓库列表（此前不存在）：nmcp 根聚合插件在 root 解析 :nmcpTasks 配置，
-// 无仓可解析即失败；同口径独占路由镜像缺件组。
-repositories {
-    exclusiveContent {
-        forRepository { mavenCentral() }
-        filter {
-            includeGroup("com.gradleup.nmcp")
-            includeGroup("io.github.pdvrieze.xmlutil")
-        }
-    }
-    mavenCentral()
-}
+// 配置阶段跨工程对账（组号单一事实源、基准模块零发布合同）：程序性校验限定约定插件（gradle-build-style 需求一）
+apply plugin: 'tny.project-checks'
 
-// 组号对账（central-publishing D2 / spec"制品组号以单一事实源派生"错误路径）：
-// 配置完成后校验全部发布构件组号等于单一声明点值；Gradle 插件模块校验其例外组号。
-// 任何模块复制粘贴出第二个组号声明，都会在此判红并列出违例，杜绝半改状态发布。
-gradle.projectsEvaluated {
-    def violations = []
-    moduleProjects.each { m ->
-        // configure-on-demand 下仅校验本次已评估的工程，未评估工程组号尚未派生、不参与对账
-        if (!m.state.executed) {
-            return
-        }
-        if (m == project(":tny-game-doc-gradle")) {
-            if (m.group.toString() != pluginLegacyGroup) {
-                violations << "${m.path}（插件模块例外）组号应为 '${pluginLegacyGroup}'，实际 '${m.group}'"
-            }
-        } else if (m.group.toString() != projectGroup) {
-            violations << "${m.path} 组号应为单一事实源 '${projectGroup}'，实际 '${m.group}'（请删除模块内组号声明，由根构建派生）"
-        }
-    }
-    if (!violations.isEmpty()) {
-        throw new GradleException("发布构件组号与单一事实源对账失败：\n- " + violations.join("\n- "))
-    }
-}
-
-// benchmark-harness 零发布合同（openspec capability: benchmark-harness）：
-// 基准模块 :tny-bench 不入装配线，且任何发布模块（tny-game-*）不得声明对其依赖——
-// 基准模块不被发布坐标传递，故按声明面扫描即覆盖可达路径；违例在配置期报出违例模块。
-gradle.projectsEvaluated {
-    def bench = project(':tny-bench')
-    if (moduleProjects.contains(bench)) {
-        throw new GradleException("零发布合同违例：:tny-bench 命中 tny-game-* 装配线谓词")
-    }
-    moduleProjects.each { p ->
-        p.configurations.each { cfg ->
-            cfg.dependencies.withType(ProjectDependency).each { d ->
-                if (d.dependencyProject == bench) {
-                    throw new GradleException("零发布合同违例：${p.path} 的配置 ${cfg.name} 依赖 :tny-bench（基准模块禁止被发布模块引用，见 benchmark-harness 规格）")
-                }
-            }
-        }
-    }
-}
-
+// 装配线（各插件文件头声明职责与边界）：约定插件之间不互相 apply（脚本插件嵌套应用触发
+// 类加载器服务缺失，实测 Gradle 8.5），故各线所需插件在此按依赖顺序逐一应用，幂等无副作用。
 configure(subprojects) {
-
-    apply plugin: "idea"
-    apply plugin: 'maven-publish'
-
-    apply plugin: "io.spring.dependency-management"
-
-    dependencyManagement {
-
-        imports {
-            mavenBom("org.apache.logging.log4j:log4j-bom:${log4j2Version}")
-            mavenBom("com.alibaba.cloud:spring-cloud-alibaba-dependencies:${alibabaCloudVersion}")
-            mavenBom("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
-            mavenBom("com.google.protobuf:protobuf-bom:${protobufVersion}")
-            mavenBom("io.netty:netty-bom:${nettyVersion}")
-            mavenBom("org.slf4j:slf4j-parent:${slf4jVersion}")
-            mavenBom("com.fasterxml.jackson:jackson-bom:${jacksonVersion}")
-            mavenBom("org.testcontainers:testcontainers-bom:${testcontainersVersion}")
-        }
-
-        dependencies {
-            dependency "${libs.redisson}:${vers.redisson}"
-            dependency "${libs.commons_io}:2.8.0"
-            dependency "${libs.commons_codec}:1.15"
-            dependency "${libs.commons_beanutils}:1.9.4"
-            dependency "${libs.commons_collections}:3.2.2"
-            dependency "${libs.commons_collections4}:4.4"
-            dependency "${libs.commons_configuration}:1.10"
-            dependency "${libs.commons_lang}:2.6"
-            dependency "${libs.commons_lang3}:3.12.0"
-            dependency "${libs.commons_math3}:3.6.1"
-            dependency "${libs.commons_compress}:1.22"
-            dependency "${libs.commons_pool2}:2.9.0"
-            dependency "${libs.commons_pool}:1.6"
-            dependency "${libs.commons_crypto}:1.1.0"
-            dependency "${libs.commons_dbcp2}:2.8.0"
-            dependency "${libs.checkerframework}"
-            dependency "${libs.errorprone}"
-            dependency "${libs.guava}:31.1-jre"
-            dependency "${libs.javassist}:3.30.2-GA"
-            dependency "${libs.xstream}:1.4.20"
-        }
-        generatedPomCustomization {
-            enabled = false
-        }
-    }
-    group projectGroup
-    version "${projectVersion}"
-
-    repositories {
-        // 镜像钉选陷阱（两次首探实测）：tencent 镜像存有 xmlutil rc 版 pom 但缺 jar，
-        // Gradle 一旦从镜像解析模块元数据即钉选该仓找 jar，其余仓库不再尝试。
-        // nmcp 与其 xmlutil 依赖组独占路由直连 Central，其余依赖维持镜像优先。
-        exclusiveContent {
-            forRepository { mavenCentral() }
-            filter {
-                includeGroup("com.gradleup.nmcp")
-                includeGroup("io.github.pdvrieze.xmlutil")
-            }
-        }
-        mavenLocal()
-        maven { url "https://mirrors.cloud.tencent.com/nexus/repository/maven-public/" }
-        maven { url "https://m2.tnydev.com/repository/maven-public/" }
-        maven { url "https://maven.aliyun.com/repository/public" }
-        mavenCentral()
-    }
-
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'tny.subprojects-baseline'
 }
-
-
 configure(gradleProjects) {
-    apply plugin: 'groovy'
-    apply plugin: 'java-gradle-plugin'
-    apply from: "${rootDir}/gradle/publish.gradle"
-
-    // 构建可复现：Groovy/插件模块编译与 javaProjects 对齐钉定 Java 21 toolchain（align-groovy-build-jdk-21）
-    java {
-        toolchain {
-            languageVersion = JavaLanguageVersion.of(javaVersion.toInteger())
-        }
-    }
-
-    configurations {
-        all {
-            resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-            resolutionStrategy.cacheDynamicVersionsFor 0, 'seconds'
-        }
-    }
-
-    [compileJava, compileGroovy, javadoc]*.options*.encoding = "${encoding}"
-
-    dependencies {
-        api gradleApi()
-        api localGroovy()
-    }
-
-    task sourcesJar(type: Jar, dependsOn: classes) {
-        duplicatesStrategy = DuplicatesStrategy.INCLUDE
-        archiveClassifier.set("sources")
-        from sourceSets.main.allSource
-    }
-
-    task createProject {
-        doLast {
-            sourceSets*.groovy.srcDirs*.each { it.mkdirs() }
-            sourceSets*.resources.srcDirs*.each { it.mkdirs() }
-        }
-    }
+    apply plugin: 'tny.publish'
+    apply plugin: 'tny.cache-policy'
+    apply plugin: 'tny.compile-encoding'
+    apply plugin: 'tny.plugin-module'
 }
-
 configure(javaProjects) {
-
-    apply plugin: 'java'
-    apply plugin: 'java-library'
-    apply plugin: 'maven-publish'
-    apply from: "${rootDir}/gradle/publications.gradle"
-    apply from: "${rootDir}/gradle/tny-module.gradle"
-    apply from: "${rootDir}/gradle/dependency-sources.gradle"
-    // 两级验证通道：integration source set 与 integrationTest 任务（add-integration-testing design D1）
-    apply from: "${rootDir}/gradle/integration-test.gradle"
-
-//    ext.springBoot = name.endsWith("-demo") || name.endsWith("-suite") || name.contains("-starter-")
-
-    sourceCompatibility = JavaVersion.toVersion(javaVersion)
-    targetCompatibility = JavaVersion.toVersion(javaVersion)
-
-    // 构建可复现：编译/测试/javadoc 钉在 Java 21 toolchain，与 daemon 所在 JVM 解耦（align-build-jdk-21）
-    java {
-        // Central 准入补 javadoc 构件（central-publishing spec 四件套）；sources 通道
-        // 本文件后段既有手写 sourcesJar 与 java{withSourcesJar()} 已覆盖，不重复声明。
-        withJavadocJar()
-        toolchain {
-            languageVersion = JavaLanguageVersion.of(javaVersion.toInteger())
-        }
-    }
-
-    task createProject {
-        doLast {
-            sourceSets*.java.srcDirs*.each { it.mkdirs() }
-            sourceSets*.resources.srcDirs*.each { it.mkdirs() }
-        }
-    }
-
-    configurations {
-        all {
-            resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-            resolutionStrategy.cacheDynamicVersionsFor 0, 'seconds'
-            exclude module: 'spring-boot-starter-logging'//排除对默认logging的依赖
-            exclude module: 'log4j-to-slf4j'//排除对默认logging的依赖
-        }
-    }
-
-    compileJava.dependsOn(processResources)
-    [compileJava, compileTestJava, javadoc]*.options*.encoding = "${encoding}"
-
-    // javadoc doclint 降级豁免（central-publishing design D6 实施补记）：
-    // 实测严格 doclint 下每模块百级错误，主因是全仓 920 文件在用的 @date 自定义标签与
-    // 块标签次序类告警，非注释内容缺陷；Central 只强制 javadoc jar 存在不校验质量。
-    // 注册 @date 使日期在 HTML 中正常渲染，doclint 全关保证产出稳定。
-    tasks.withType(Javadoc).configureEach {
-        options.encoding = "${encoding}"
-        options.addBooleanOption('Xdoclint:none', true)
-        options.addStringOption('tag', 'date:a:Date:')
-    }
-
-    compileJava {
-        options.compilerArgs << '-parameters'
-        options.fork = true
-        options.encoding = "UTF-8"
-    }
-
-    jar {
-        duplicatesStrategy = DuplicatesStrategy.INCLUDE
-        exclude("**.sql", "**.xml", "**.properties")
-    }
-
-    test {
-        // 单元通道排除集成用例（integrationTest 任务专跑，add-integration-testing design D1）
-        useJUnitPlatform {
-            excludeTags 'integration'
-        }
-    }
-
-    task sourcesJar(type: Jar, dependsOn: classes) {
-        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-        archiveClassifier.set("sources")
-        from sourceSets.main.allSource
-    }
-
-    java {
-        withSourcesJar()
-    }
-
-    dependencies {
-
-
-        implementation libs.slf4j_api
-        implementation libs.commons_lang3
-
-        testImplementation libs.mockito_junit_jupiter
-        testImplementation libs.junit_jupiter
-        testImplementation libs.jmock_junit5
-        testImplementation libs.spring_test
-        testImplementation libs.slf4j_simple
-        testImplementation project(":tny-game-tester")
-
-    }
-
-
-    idea {
-        module {
-            inheritOutputDirs = false
-            outputDir = compileJava.destinationDir
-            testOutputDir = compileTestJava.destinationDir
-            downloadJavadoc = false
-            downloadSources = true
-        }
-    }
-
+    apply plugin: 'com.gradleup.nmcp'
+    apply plugin: 'tny.publish'
+    apply plugin: 'tny.cache-policy'
+    apply plugin: 'tny.compile-encoding'
+    apply plugin: 'tny.java-module'
+    apply plugin: 'tny.dependency-sources'
+    apply plugin: 'tny.integration-test'
+    apply plugin: 'tny.publish-gate'
+    apply plugin: 'tny.publications'
+    apply plugin: 'tny.tny-module'
 }

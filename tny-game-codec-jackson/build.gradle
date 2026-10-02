@@ -1,21 +1,21 @@
 
-apply plugin: "maven-publish"
+apply plugin: 'maven-publish'
 
 dependencies {
 
-    api project(":tny-game-common-reflect")
-    api project(":tny-game-common-lifecycle")
-    api project(":tny-game-loader")
-    api project(":tny-game-scanning")
-    api project(":tny-game-codec")
+    api project(':tny-game-common-reflect')
+    api project(':tny-game-common-lifecycle')
+    api project(':tny-game-loader')
+    api project(':tny-game-scanning')
+    api project(':tny-game-codec')
 
-    api libs.jackson_core
-    api libs.jackson_databind
-    api libs.jackson_annotations
-    api libs.jackson_dataformat_yaml
-    api libs.jackson_dataformat_xml
-    api libs.jackson_datatype_guava
-    api libs.jackson_datatype_java8
+    api libs.jacksonCore
+    api libs.jacksonDatabind
+    api libs.jacksonAnnotations
+    api libs.jacksonDataformatYaml
+    api libs.jacksonDataformatXml
+    api libs.jacksonDatatypeGuava
+    api libs.jacksonDatatypeJava8
 
 
 }
