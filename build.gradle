@@ -36,6 +36,19 @@ ext {
 // 须在 ext 声明块之后加载：任务聚合依赖 moduleProjects 等项目集合。
 apply from: "${rootDir}/gradle/central.gradle"
 
+// 根工程自身的仓库列表（此前不存在）：nmcp 根聚合插件在 root 解析 :nmcpTasks 配置，
+// 无仓可解析即失败；同口径独占路由镜像缺件组。
+repositories {
+    exclusiveContent {
+        forRepository { mavenCentral() }
+        filter {
+            includeGroup("com.gradleup.nmcp")
+            includeGroup("io.github.pdvrieze.xmlutil")
+        }
+    }
+    mavenCentral()
+}
+
 // 组号对账（central-publishing D2 / spec"制品组号以单一事实源派生"错误路径）：
 // 配置完成后校验全部发布构件组号等于单一声明点值；Gradle 插件模块校验其例外组号。
 // 任何模块复制粘贴出第二个组号声明，都会在此判红并列出违例，杜绝半改状态发布。
@@ -128,12 +141,20 @@ configure(subprojects) {
     version "${projectVersion}"
 
     repositories {
+        // 镜像钉选陷阱（两次首探实测）：tencent 镜像存有 xmlutil rc 版 pom 但缺 jar，
+        // Gradle 一旦从镜像解析模块元数据即钉选该仓找 jar，其余仓库不再尝试。
+        // nmcp 与其 xmlutil 依赖组独占路由直连 Central，其余依赖维持镜像优先。
+        exclusiveContent {
+            forRepository { mavenCentral() }
+            filter {
+                includeGroup("com.gradleup.nmcp")
+                includeGroup("io.github.pdvrieze.xmlutil")
+            }
+        }
         mavenLocal()
         maven { url "https://mirrors.cloud.tencent.com/nexus/repository/maven-public/" }
         maven { url "https://m2.tnydev.com/repository/maven-public/" }
         maven { url "https://maven.aliyun.com/repository/public" }
-        // 官方 Central 兜底（nmcp 集成实测）：三方镜像缺 xmlutil 1.0.0-rc3 等
-        // 插件传递依赖，镜像列表后追加权威源，避免构建随镜像缓存漂移。
         mavenCentral()
     }
 
