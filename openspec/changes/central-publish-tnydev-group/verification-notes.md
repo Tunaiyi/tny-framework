@@ -11,3 +11,9 @@
 - 用户开启命名空间 Enable SNAPSHOTs；官方 docs 确认快照走标准 maven-deploy（无验证管线、无签名要求、90 天清理）。实现定案：publications.gradle 增 centralSnapshots 原生仓（条件=快照版本+凭据存在，与 Nexus 路由同文件同源判定），nmcp 自带快照任务保持禁用防双时间戳竞争；spec/proposal/design/tasks/流程文档五处账目同步修订。
 - 7.2 实测：`publishMavenJavaPublicationToCentralSnapshotsRepository` 单模块上传成功，公共端匿名核验通过——组 metadata 出现 `5.7.x-SNAPSHOT`，时间戳部署 `5.7.x-20261002.070940-1`，HTTP 200。滚动坐标形态被 Central 正常接受。
 - 前置闭环：DNS TXT `game.tnydev.com` 已全球生效（dig 经 1.1.1.1 复核）；Portal Verify 状态以用户确认为准；本机四套凭据（NEXUS_*、mavenCentral*）齐备非空。
+
+## 7.1 首发执行记录（5.7.8，2026-10-02）
+
+- 链路：releaseCutAndTag 真切（CLI 通道修复后）→ 标签 v5.7.8 与分支 5.7.8.release 推送 → Nexus publish 成功（含一次工具链修复引发的标签校正：发布窗口内 retag 至 7a2a287d 并重发覆盖，制品源与标签终对齐）→ Central 聚合上传成功，部署 a297d887-738d-47c6-b0c2-7c73c36416ab 校验通过进入 PUBLISHING（AUTOMATIC）。
+- 中途事故账目：并行会话 docs 提交落上发布分支（已 cherry-pick 回 5.7.x 并复位发布分支）；本会话一次 rebase 目标分支选错（远端未受损，已复位）；migrate 会话 stash 恢复时 release.gradle 冲突（预期内，stash 保留原主处理）。
+- 待收口：repo1.maven.org 复制延迟中（Portal 受理后典型 15 分钟至数小时）；7.1 勾销以 repo1 检索到 5.7.8 全模块为准；4.4 幂等重跑演练顺延至部署 PUBLISHED 后执行，nmcp 通道对重复版本的实际行为为验证期明确报错（design D4 的"等价成功吸收"设想与实现有偏差，届时如实修订）。
