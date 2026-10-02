@@ -105,9 +105,16 @@ tasks.register('releaseCutAndTag') {
             return
         }
         logger.lifecycle(plan)
-        git.grgiter.branch.create(name: targetBranch, startPoint: from, checkoutOnCreate: true)
-        git.grgiter.tag.create(name: tagName, message: "release ${v} from ${targetBranch}")
-        git.grgiter.push(remote: remoteName, refs: ["refs/heads/${targetBranch}", "refs/tags/${tagName}"])
+        // 写操作走 git CLI（grgit 4.1.1 的 branch.create(Map) 签名不匹配，真实首跑实测暴露；
+        // 与 releaseRebaseBack 段同一通道标准，grgit 化统一交给 migrate-git-calls-to-grgit）
+        def mkBranch = runGit(['switch', '-c', targetBranch, from])
+        if (mkBranch.exit != 0) { throw new GradleException("切发布分支失败：${mkBranch.err}") }
+        def mkTag = runGit(['tag', '-a', tagName, '-m', "release ${v} from ${targetBranch}"])
+        if (mkTag.exit != 0) { throw new GradleException("创建附注标签失败：${mkTag.err}") }
+        def mkPush = runGit(['push', remoteName,
+                             "refs/heads/${targetBranch}:refs/heads/${targetBranch}",
+                             "refs/tags/${tagName}:refs/tags/${tagName}"])
+        if (mkPush.exit != 0) { throw new GradleException("推送分支与标签失败：${mkPush.err}") }
         logger.lifecycle("releaseCutAndTag 完成：${targetBranch} 与 ${tagName} 已推送。发布顺序：标签已在远端 → 现在执行 ./gradlew publish（门禁将核对标签存证），成功后执行 ./gradlew releaseRebaseBack。")
     }
 }
