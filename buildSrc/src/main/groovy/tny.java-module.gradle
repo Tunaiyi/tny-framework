@@ -1,11 +1,10 @@
 // Java 发布模块线装配约定插件（adopt-gradle-official-dsl 插件化，前身为 gradle/java-module.gradle；
-// 成员：根 ext 的 javaProjects 集合）。本插件负责发布模块共有的编译与验证配置：java/java-library 插件、
+// 成员：根 ext 的 javaProjects 集合）。本插件负责发布模块共有的编译、验证与构件接线配置：java/java-library 插件、
 // toolchain 钉定、javadoc 与 sources 构件通道、公共依赖、logging 绑定排他、
-// 单元/集成两级测试通道划分、IDEA 输出目录；编码钉定、动态依赖缓存、发布元数据、
-// 门禁与构件接线等共享块与兄弟插件（tny.compile-encoding、tny.cache-policy、
-// tny.publications、tny.publish-gate、tny.tny-module、tny.dependency-sources、
-// tny.integration-test）由根脚本装配线行按序应用。
-// 边界：BOM/仓库/组号版本派生在 tny.subprojects-baseline；发布元数据与签名在 tny.publications；
+// 单元/集成两级测试通道划分、IDEA 输出目录、依赖源码包批量下载任务、jar 清单四属性与 mavenJava 构件接线；
+// 编码钉定与动态依赖缓存、发布元数据、门禁等共享块与兄弟插件（tny.compile-baseline、
+// tny.publish、tny.publications、tny.integration-test）由根脚本装配线行按序应用。
+// 边界：BOM/仓库/组号版本派生在 tny.dependency-management；发布元数据与签名在 tny.publications；
 // 两级验证通道任务在 tny.integration-test；插件模块线在 tny.plugin-module。
 // 由根脚本 configure(javaProjects) 一行引入。
 
@@ -33,7 +32,7 @@ tasks.register('sourcesJar', Jar) {
 java {
     // Central 准入四件套之 javadoc 与 sources 构件（central-publishing spec）：
     // sources 由上方手写注册与 withSourcesJar 复用共同承载，javadoc 由声明生成同名任务，
-    // 均经 tny.tny-module 的 from components.java 自动挂入发布。
+    // 均经本文件末尾 publishing 段的 from components.java 自动挂入发布。
     withJavadocJar()
     withSourcesJar()
     toolchain {
@@ -49,7 +48,7 @@ tasks.register('createProject') {
 }
 
 configurations {
-    all {
+    configureEach {
         // 排除 Boot 默认 logback 绑定与 log4j-to-slf4j 反向桥：本框架统一 log4j2 绑定，
         // 多绑定共存使 Spring Boot 启动期即因 slf4j 双 provider 报错
         // （差异说明：插件模块线历史上不带此排除，两线共用会扩大行为面，故留本线不并入共享块）
@@ -72,7 +71,7 @@ tasks.withType(Javadoc).configureEach {
 }
 
 // 编译参数统一按类型钉定：-parameters 与 fork 对 main 与 test 编译同为期望语义（sweep-gradle-build-style D6），
-// 编码由 tny.compile-encoding 共享块承担。
+// 编码由 tny.compile-baseline 共享块承担。
 tasks.withType(JavaCompile).configureEach {
     options.compilerArgs << '-parameters'
     options.fork = true
@@ -81,6 +80,14 @@ tasks.withType(JavaCompile).configureEach {
 tasks.named('jar').configure {
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
     exclude('**.sql', '**.xml', '**.properties')
+    // 清单四属性（merge-tny-module-into-java-module 变更自单任务退役件逐字并入同块，D3：同任务两段配置合为一个块）
+    manifest.attributes['Implementation-Title'] = project.name
+    manifest.attributes['Implementation-Version'] = project.version
+    // Automatic-Module-Name 供 JDK9+ 模块系统（Jigsaw）把本 jar 作为具名模块解析；
+    // 模块名不允许连字符，故以点号替换连字符保持与包名同谱系。
+    manifest.attributes['Automatic-Module-Name'] = project.name.replace('-', '.')
+    manifest.attributes['Created-By'] =
+            "${providers.systemProperty('java.version').get()} (${providers.systemProperty('java.specification.vendor').get()})"
 }
 
 tasks.named('test').configure {
@@ -96,12 +103,60 @@ dependencies {
 
     testImplementation libs.mockitoJunitJupiter
     testImplementation libs.junitJupiter
-    testImplementation libs.jmockJunit5
+     testImplementation libs.jmockJunit5
     testImplementation libs.springTest
     testImplementation libs.slf4jSimple
     // 公共测试夹具按 -tester 后缀检索自动挂接（zero-enumeration-shared-scripts D4；当前唯一命中 tny-game-tester）
     rootProject.ext.moduleProjects.findAll { it.name.endsWith('-tester') }.each {
         add('testImplementation', it)
+    }
+}
+
+// 依赖源码包批量下载任务（merge-dependency-sources-into-java-module 自主约定插件退役件逐行迁入，任务语义不变；
+// 只读外部仓下载产物，不参与发布与门禁；镜像未代理 sources 时按缺件跳过并记录日志）。
+tasks.register('downloadDependencySources') {
+    group = 'dependency management'
+    description = '下载 compile/runtime/testCompile 类路径依赖的 sources 源码包到 build/dependency-sources'
+
+    doLast {
+        def outDir = layout.buildDirectory.dir('dependency-sources').get().asFile
+        outDir.mkdirs()
+
+        // 收集所有已解析依赖坐标（去重）
+        def modules = new LinkedHashSet<String>()
+        ['compileClasspath', 'runtimeClasspath', 'testRuntimeClasspath'].each { name ->
+            configurations.named(name).configure {
+                incoming.resolutionResult.allDependencies.each {
+                    if (it instanceof ResolvedDependencyResult) {
+                        def mv = it.selected.moduleVersion
+                        modules.add("${mv.group}:${mv.name}:${mv.version}")
+                    }
+                }
+            }
+        }
+
+        def downloaded = []
+        def missing = []
+        modules.each { coord ->
+            // group:name:version:classifier 记法指定 sources classifier
+            def sourcesCfg = configurations.detachedConfiguration(dependencies.create("${coord}:sources"))
+            sourcesCfg.transitive = false
+            try {
+                copy {
+                    from sourcesCfg
+                    into outDir
+                    eachFile { details -> details.path = details.name }
+                    includeEmptyDirs = false
+                }
+                downloaded << coord
+            } catch (Exception ignored) {
+                // 镜像仓库未代理 sources 包时属正常情况，记录后跳过
+                missing << coord
+                logger.info('[dependency-sources] 无源码包: {}', coord)
+            }
+        }
+
+        logger.lifecycle("[dependency-sources] ${project.name}: 成功 ${downloaded.size()} 个，无源码包 ${missing.size()} 个 -> ${outDir}")
     }
 }
 
@@ -114,5 +169,25 @@ idea {
         testOutputDir = file('build/classes/java/test')
         downloadJavadoc = false
         downloadSources = true
+    }
+}
+
+// mavenJava 构件接线（merge-tny-module-into-java-module 变更自发布元数据退役插件逐行迁入，置于末段合区块顺序需求）。
+// 本块现为 mavenJava 的先创建者，tny.publications 同名块随之转为配置方——两处同为 create-or-configure 形态，
+// 先后互换语义等价（design D2 隔离探针实证），发布物零差异为兜底判据。
+publishing {
+
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionOf('runtimeClasspath')
+                }
+                usage('java-runtime') {
+                    fromResolutionResult()
+                }
+            }
+        }
     }
 }

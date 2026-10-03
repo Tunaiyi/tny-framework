@@ -8,11 +8,11 @@ plugins {
     // 两级验证通道：integration source set 与 integrationTest 任务（add-integration-testing design D1）
     id 'tny.integration-test'
     // 横切角色统一插件（consolidate-module-modes-plugin）
-    id 'tny.module-modes'
+    id 'tny.module-setting'
 }
 
 // 自述：本工程不发布（声明即禁用本工程 publish 任务，design D3 双重保险语义不变）
-moduleModes {
+moduleSetting {
     enableUnpublished()
 }
 

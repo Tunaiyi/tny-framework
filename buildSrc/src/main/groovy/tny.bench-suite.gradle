@@ -1,7 +1,9 @@
+import java.text.SimpleDateFormat
+
 // 基准族执行通道约定插件（adopt-gradle-official-dsl 插件化，前身为 gradle/bench-suite.gradle；
-// declarative-it-demo-isolation 起族清单数据外提为 benchSuite 扩展，由 :tny-bench 模块声明）。
+// declarative-it-demo-isolation 起族清单数据外提为 benchSuite 扩展，由 :tny-benchmark 模块声明）。
 // 本插件负责：benchSuite 扩展贡献与行为来由注释、jmhList/jmhListVerify/jmhSuiteVerify 枚举对账
-// 任务与 benchRoutineExport 落盘任务，注册归属 :tny-bench 工程，CI 调用路径不变。
+// 任务与 benchRoutineExport 落盘任务，注册归属 :tny-benchmark 工程；任务名历次迁移不变，工程路径的模块段自 rename-bench-to-benchmark 起为 tny-benchmark。
 // 配置面：benchSuite 五清单（tny.convention.BenchSuite）；清单语义的双承载出处见下 jmhSuiteVerify 注释。
 // 边界：jmh 执行参数与依赖声明在模块构建文件；族目录↔清单对账语义出处见
 // split-bench-suites 与 refine-bench-routine-triggering。
@@ -104,7 +106,7 @@ tasks.register('benchRoutineExport') {
         }
         // 日期统一钉 UTC（实况教训：runner 时区为 UTC，本地 Asia/Shanghai 差一日，
         // 速览首跑产物落成 bench-20261001-quick.json 与本地日期口径错位——与回写提交时间戳同基准）。
-        def dateFormat = new java.text.SimpleDateFormat('yyyyMMdd')
+        def dateFormat = new SimpleDateFormat('yyyyMMdd')
         dateFormat.timeZone = TimeZone.getTimeZone('UTC')
         def dateStr = dateFormat.format(new Date())
         // 产物规模标识（refine-bench-routine-triggering D2/差量产物条款）：
@@ -124,7 +126,7 @@ afterEvaluate {
     if (project.hasProperty('benchParams')) {
         Map map = [:]
         project.property('benchParams').toString().split(';').each { kv ->
-            def (k, v) = kv.split('=', 2)
+            def (String k, String v) = kv.split('=', 2)
             map[k] = objects.listProperty(String).value([v])   // MapProperty<String,ListProperty<String>> 实型
         }
         jmh.benchmarkParameters = map

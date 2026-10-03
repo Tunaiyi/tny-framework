@@ -75,7 +75,7 @@ tasks.register('integrationTest', Test) {
         // （centralize-resolution-config D4：换机调参不改脚本，CI 无键行为不变）
         def configured = providers.gradleProperty('dockerSocketCandidates').getOrElse('').split(',').collect { it.trim() }.findAll { it }
         def candidates = configured ?: ["$home/.orbstack/run/docker.sock", "$home/.docker/run/docker.sock"]
-        def hit = candidates.find { new File(it).exists() }
+        def hit = candidates.find { new File(it as String).exists() }
         return hit ? "unix://$hit" : null
     }
     def dockerHost = resolveDockerHost()
@@ -98,7 +98,7 @@ tasks.register('integrationTest', Test) {
 // 集成测试专用模块的受控隔离子进程装配（merge-demo-isolation-into-integration-test：
 // 自 tny.demo-isolation 整体迁入，闸门用已成文的 -integration-test 后缀命名约定，
 // 接线体逐行未改）。受控目标＝本工程 integrationImplementation 直接工程依赖 ∩ 声明
-// enableApp() 的应用蓝本（tny.module-modes，就地核对无登记清单），按声明序；交集为空、
+// enableApp() 的应用蓝本（tny.module-setting，就地核对无登记清单），按声明序；交集为空、
 // 目标缺 jar 任务或缺 runtimeClasspath 均在该任务执行前 fail-fast 报红。
 // ---------------------------------------------------------------------------
 if (project.name.endsWith('-integration-test')) {
@@ -113,8 +113,8 @@ if (project.name.endsWith('-integration-test')) {
         doFirst {
             // 就地核对：执行期所有工程已完成评估，直接读依赖对象的角色声明
             def declared = configurations.integrationImplementation.dependencies
-                    .withType(org.gradle.api.artifacts.ProjectDependency)*.dependencyProject
-            def targets = declared.findAll { tny.convention.ModuleModes.enabled(it, tny.convention.ModuleModes.Mode.APP) }
+                    .withType(ProjectDependency)*.dependencyProject
+            def targets = declared.findAll { tny.convention.ModuleSetting.enabled(it, tny.convention.ModuleSetting.Mode.APP) }
             if (targets.isEmpty()) {
                 throw new GradleException('tny.integration-test: 受控隔离目标交集为空——integrationImplementation 的直接工程依赖 ' +
                         '(' + (declared.isEmpty() ? '无' : declared*.path) + ') 中无任何声明 enableApp() 的应用蓝本。' +
@@ -125,7 +125,7 @@ if (project.name.endsWith('-integration-test')) {
                 if (!target.tasks.names.contains('jar')) {
                     throw new GradleException("tny.integration-test: 目标工程 '${target.path}' 无 jar 任务，不能作为受控隔离目标（期望：应用 java 线的可发布工程）。")
                 }
-                if (target.configurations.findByName('runtimeClasspath') == null) {
+                if (target.configurations.named('runtimeClasspath') == null) {
                     throw new GradleException("tny.integration-test: 目标工程 '${target.path}' 无 runtimeClasspath 配置，不能作为受控隔离目标。")
                 }
             }

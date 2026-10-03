@@ -1,8 +1,8 @@
 // Gradle 插件模块线装配约定插件（adopt-gradle-official-dsl 插件化，前身为 gradle/plugin-module.gradle；
 // 当前成员：tny-game-doc-gradle）。本插件负责插件模块专属公共配置：groovy/java-gradle-plugin 插件、
 // Java 21 toolchain 对齐与 sources/工程目录任务；例外组号依托的发布通道与缓存、编码共享块
-// （tny.publish、tny.cache-policy、tny.compile-encoding）由根脚本装配线行先行应用。
-// 边界：BOM/仓库/组号版本派生在 tny.subprojects-baseline；本线不走 tny.java-module 的发布元数据链
+// （tny.publish、tny.compile-baseline）由根脚本装配线行先行应用。
+// 边界：BOM/仓库/组号版本派生在 tny.dependency-management；本线不走 tny.java-module 的发布元数据链
 // （插件 id 与组号同谱系，spec central-publishing"Gradle 插件构件本次不入 Central"）。
 // 由根脚本 configure(gradleProjects) 一行引入。
 

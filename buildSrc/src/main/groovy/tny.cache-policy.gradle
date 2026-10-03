@@ -1,9 +1,0 @@
-// 动态依赖零缓存共享块（adopt-gradle-official-dsl D4）：changing 模块与动态版本一律不缓存，
-// java 发布模块线与插件模块线共用同一实现。边界：仓路由在 tny.repositories，本块只管缓存时长。
-
-configurations {
-    all {
-        resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-        resolutionStrategy.cacheDynamicVersionsFor 0, 'seconds'
-    }
-}

@@ -1,4 +1,5 @@
-// 子工程公共基线装配约定插件（adopt-gradle-official-dsl 插件化，前身为 gradle/subprojects-baseline.gradle）。
+// 子工程公共依赖管理装配约定插件（adopt-gradle-official-dsl 插件化，前身为 gradle/subprojects-baseline.gradle；
+// 工程标识名 tny.dependency-management 指向本文件内容重心——BOM 导入与具名版本管理声明）。
 // 前置约定：io.spring.dependency-management 由根构建脚本在装配线行先行应用（第三方插件不在
 // buildSrc 作用域解析，实测 Gradle 8.5）。本插件负责每个子工程共用的事：应用 idea/maven-publish、
 // 声明 BOM 与具名版本管理（集中声明的依赖写法由本脚本内 dependencyNotation() 从版本目录生成）、
@@ -63,7 +64,7 @@ version rootProject.ext.projectVersion
 
 // 把版本目录读到的依赖转成 Gradle 依赖声明写法字符串（"组:名:版本"，官方文档称 notation）：
 // 按公开属性逐段拼接，不依赖对象的 toString（其输出格式非官方承诺）。参数为访问器返回的 Provider。
-def dependencyNotation(provider) {
+static def dependencyNotation(provider) {
     def dependency = provider.get()
     return "${dependency.group}:${dependency.name}:${dependency.version}"
 }

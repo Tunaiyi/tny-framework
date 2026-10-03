@@ -1,10 +1,10 @@
 plugins {
     // 横切角色统一插件（consolidate-module-modes-plugin）
-    id 'tny.module-modes'
+    id 'tny.module-setting'
 }
 
 // 自述：应用形态蓝本，可作 integrationTest 受控隔离子进程（消费方 tny.demo-isolation 沿依赖边就地核对）
-moduleModes {
+moduleSetting {
     enableApp()
 }
 

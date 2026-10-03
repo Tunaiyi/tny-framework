@@ -3,7 +3,7 @@
 // （第三方插件不在 buildSrc 作用域解析，实测 Gradle 8.5），本插件假定其已就位；
 // per-java-module 应用，capability central-publishing 的模块侧接线）。本插件负责：
 // maven-publish/signing 声明、POM 必填元数据、Nexus/Central 快照仓路由、GPG 签名策略。
-// 边界：发布前置门禁在 tny.publish-gate（本插件一行引入），Nexus 属性断言在 tny.publish，
+// 边界：发布前置门禁与 Nexus 属性断言合一在 tny.publish（merge-publish-gate-into-publish），
 // Central 正式版聚合上传在 tny.central。
 
 plugins {
@@ -115,4 +115,4 @@ tasks.configureEach { t ->
     }
 }
 
-// 发布门禁与前置校验（共享仓判定、分支/版本/仓库一致性、发布标签存证）在 tny.publish-gate 约定插件（D3）
+// 发布门禁与前置校验（共享仓判定、分支/版本/仓库一致性、发布标签存证）在 tny.publish 约定插件（merge-publish-gate-into-publish 合并后双层拦截合一）

@@ -1,3 +1,6 @@
+import java.time.Duration
+import java.time.temporal.ChronoUnit
+
 // Central 通道根侧接线约定插件（adopt-gradle-official-dsl 插件化，前身为 gradle/central.gradle；
 // 前置约定：com.gradleup.nmcp.aggregation 由根构建脚本先行应用（第三方插件在 buildSrc 作用域
 // 内 apply 触发类加载器服务缺失，实测 Gradle 8.5），本插件假定其扩展 nmcpAggregation 已就位；
@@ -18,10 +21,10 @@ nmcpAggregation {
         // AUTOMATIC：Portal 校验通过后自动发布，免登门户点按；快照永不进本通道（分支守卫在前）。
         publishingType = 'AUTOMATIC'
         // 超时分钟数取 gradle.properties 标量键，缺失/空值回退 20（centralize-resolution-config D4）
-        validationTimeout = java.time.Duration.of(
+        validationTimeout = Duration.of(
                 providers.gradleProperty('centralValidationTimeoutMinutes')
                         .map { it.trim() }.filter { !it.isEmpty() }.map { Integer.parseInt(it) }.getOrElse(20),
-                java.time.temporal.ChronoUnit.MINUTES)
+                ChronoUnit.MINUTES)
     }
 }
 
@@ -62,7 +65,7 @@ tasks.register('centralCheck') {
 // 第二级产物完整性（spec"Central 正式版准入完整性"）：置于聚合任务 doFirst，
 // 此时各模块 staging 发布件与签名已生成，jar 与 .asc 配对可校验。
 // 发布测试纪律由 nmcp 模块 staging 任务（publishMavenJavaPublicationToNmcpRepository 以 publish 起头，
-// 命中 tny.publish-gate 门禁谓词）自动挂 check 承担，无需在此重复声明。
+// 命中 tny.publish 门禁谓词）自动挂 check 承担，无需在此重复声明。
 tasks.named('publishAggregationToCentralPortal') {
     dependsOn 'centralCheck'
     doFirst {

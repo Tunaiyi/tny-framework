@@ -3,7 +3,6 @@ plugins {
     id 'tny.publish'
     // nmcp 模块插件与 java 发布线同权由本模块先行应用（tny.publications 不再代施第三方插件）
     id 'com.gradleup.nmcp'
-    id 'tny.publish-gate'
     id 'tny.publications'
     // BOM 约束面条目由装配线工程集合派生，程序性生成在 tny.bom-platform 约定插件（gradle-build-style 需求一）
     id 'tny.bom-platform'

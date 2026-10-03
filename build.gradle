@@ -39,29 +39,24 @@ apply plugin: 'com.gradleup.nmcp.aggregation'
 apply plugin: 'tny.central'
 
 // 配置阶段跨工程对账（组号单一事实源、基准模块零发布合同）：程序性校验限定约定插件（gradle-build-style 需求一）
-apply plugin: 'tny.project-checks'
+apply plugin: 'tny.module-checker'
 
 // 装配线（各插件文件头声明职责与边界）：约定插件之间不互相 apply（脚本插件嵌套应用触发
 // 类加载器服务缺失，实测 Gradle 8.5），故各线所需插件在此按依赖顺序逐一应用，幂等无副作用。
 configure(subprojects) {
     apply plugin: 'io.spring.dependency-management'
-    apply plugin: 'tny.subprojects-baseline'
+    apply plugin: 'tny.dependency-management'
 }
 configure(gradleProjects) {
     apply plugin: 'tny.publish'
-    apply plugin: 'tny.cache-policy'
-    apply plugin: 'tny.compile-encoding'
+    apply plugin: 'tny.compile-baseline'
     apply plugin: 'tny.plugin-module'
 }
 configure(javaProjects) {
     apply plugin: 'com.gradleup.nmcp'
     apply plugin: 'tny.publish'
-    apply plugin: 'tny.cache-policy'
-    apply plugin: 'tny.compile-encoding'
+    apply plugin: 'tny.compile-baseline'
     apply plugin: 'tny.java-module'
-    apply plugin: 'tny.dependency-sources'
     apply plugin: 'tny.integration-test'
-    apply plugin: 'tny.publish-gate'
     apply plugin: 'tny.publications'
-    apply plugin: 'tny.tny-module'
 }

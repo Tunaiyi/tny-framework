@@ -127,7 +127,7 @@ tasks.register('releaseRebaseBack') {
             throw new GradleException("releaseRebaseBack 必须在发布分支形态（如 5.7.8.release）上执行，当前分支 '${current}'")
         }
         def v = git.parseBranchVersion(current)
-        def parts = v.split(/\./)
+        def parts = v.split(/\./ as Closure)
         def line = "${parts[0]}.${parts[1]}.x"
         def lineBranch = git.grgiter.branch.list().find { it.name == line }
         def remoteName = resolveRemote(current) ?: resolveRemote(line)

@@ -47,7 +47,7 @@ dependencyResolutionManagement {
 //   -gradle 后缀             Gradle 插件模块（例外组号 com.tny.game，不入 Central）
 //   -integration-test 后缀   集成测试专用模块（不进 java 线、不进 BOM 约束面）
 //   -tester 后缀             公共测试夹具（自动挂为全部发布模块的测试依赖）
-//   刻意不带 tny-game- 前缀  不发布设施（须应用 tny.module-modes 并声明 enableUnpublished()，受零发布合同约束）
+//   刻意不带 tny-game- 前缀  不发布设施（须应用 tny.module-setting 并声明 enableUnpublished()，受零发布合同约束）
 // 新增归入上述类别的模块：只改本文件 include 与模块自身构建文件，共享脚本零改动。
 rootProject.name = 'tny-framework'
 
@@ -122,5 +122,5 @@ include 'tny-game-starter-data'
 include 'tny-game-tester'
 
 // 基准设施：刻意不以 tny-game- 开头，不落入发布/模块装配线（optimize-net-hot-path D1）
-include 'tny-bench'
+include 'tny-benchmark'
 
