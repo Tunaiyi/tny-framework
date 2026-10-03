@@ -121,7 +121,7 @@ jobs:
       # 职责边界（spec：CI 双通道 + 二分分类契约）：两族编译 + 按族枚举 + 目录↔声明双向对账，零计时——
       # PR 不因基准数字变红，但编译破裂、族清单空面、未归族基准必红（jmhList/jmhSuiteVerify 显式判红）。
       - name: Compile benchmarks, verify family lists & suite classification
-        run: ./gradlew :tny-bench:jmhCompileGeneratedClasses :tny-bench:jmhList :tny-bench:jmhSuiteVerify -q
+        run: ./gradlew :tny-benchmark:jmhCompileGeneratedClasses :tny-benchmark:jmhList :tny-benchmark:jmhSuiteVerify -q
 
   # 内容门禁（refine-bench-routine-triggering D1）：判定本次进入受监控分支的改动是否可能改变
   # 框架代码行为。只有框架改动才放行计时；纯文档、规格案卷、流水线脚本的合入不计时也不回写。
@@ -156,7 +156,7 @@ jobs:
               echo "run=true" >> "$GITHUB_OUTPUT"
               echo "scope=full" >> "$GITHUB_OUTPUT"
             elif git diff --name-only "$before" "${{ github.sha }}" \
-                 | grep -qE '(^|/)src/|(^|/)build\.gradle$|^gradle\.properties$|^gradle/libs\.versions\.toml$|^tny-bench/'; then
+                 | grep -qE '(^|/)src/|(^|/)build\.gradle$|^gradle\.properties$|^gradle/libs\.versions\.toml$|^tny-benchmark/'; then
               echo "改动触及模块源码、构建脚本、版本配置或基准模块：以速览规模放行计时。"
               echo "run=true" >> "$GITHUB_OUTPUT"
               echo "scope=quick" >> "$GITHUB_OUTPUT"
@@ -187,20 +187,20 @@ jobs:
       - name: Run routine suite (benchRoutineExport, suite chosen by gate)
         run: |
           if [ "${{ needs.bench-scope-gate.outputs.scope }}" = "quick" ]; then
-            ./gradlew :tny-bench:benchRoutineExport -PbenchScope=quick
+            ./gradlew :tny-benchmark:benchRoutineExport -PbenchScope=quick
           else
-            ./gradlew :tny-bench:benchRoutineExport
+            ./gradlew :tny-benchmark:benchRoutineExport
           fi
       - uses: actions/upload-artifact@v4
         with:
           name: bench-routine-results
-          path: tny-bench/results/*.json
+          path: tny-benchmark/results/*.json
           if-no-files-found: error
       - name: Commit routine result into results/
         run: |
           git config user.name "bench-routine[bot]"
           git config user.email "bench-routine@users.noreply.github.com"
-          git add -f tny-bench/results/
+          git add -f tny-benchmark/results/
           if git diff --cached --quiet; then echo "no result change to commit"; exit 0; fi
           git commit -m "chore(bench): routine benchmark results [skip ci]"
           # 回写竞态防御：执行窗 ~21min 内分支可前进（run#18 与第四轮 4bb98df 实证 push 被拒）。
@@ -218,7 +218,7 @@ jobs:
           # main 与 5.7.x、速览与完整互不混线，告警只在同组近期序列内比较。
           name: Routine ${{ needs.bench-scope-gate.outputs.scope }} (${{ github.ref_name }})
           tool: 'jmh'
-          output-file-path: tny-bench/build/reports/bench/bench-result.json
+          output-file-path: tny-benchmark/build/reports/bench/bench-result.json
           gh-pages-branch: gh-pages
           # action 的 auto-push 要求显式授 token（缺它报 "'auto-push' is enabled but 'github-token'
           # is not set"，run#2/#3 实证）；job 级 contents: write 已就位。

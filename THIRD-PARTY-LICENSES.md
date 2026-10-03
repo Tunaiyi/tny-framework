@@ -50,7 +50,7 @@ TnyFramework 本体采用 [Apache License 2.0](https://www.apache.org/licenses/L
 | LuaJ | org.luaj:luaj-jse | MIT |
 | Checker Qual | org.checkerframework:checker-qual | MIT |
 | Jedis | redis.clients:jedis | MIT |
-| JMH 基准框架（tny-bench 模块） | org.openjdk.jmh:* | GPL-2.0 with Classpath Exception |
+| JMH 基准框架（tny-benchmark 模块） | org.openjdk.jmh:* | GPL-2.0 with Classpath Exception |
 | GraalVM 语言运行时 | org.graalvm.*:* | 双许可（UPL-1.0 与 GPL-2.0 with Classpath Exception），按 UPL-1.0 使用 |
 | ICU4J | com.ibm.icu:icu4j | Unicode License v3（宽松许可证） |
 | JUnit 5 平台 | org.junit.*:* | EPL-2.0 |

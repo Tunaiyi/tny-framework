@@ -1,10 +1,10 @@
-# tny-bench —— 全仓基准模块（benchmark-harness）
+# tny-benchmark —— 全仓基准模块（benchmark-harness）
 
 ## 定位
 
-- **全仓基准执行设施**（不限于网络域）：基准类按被测域放 `com.tny.game.bench.<domain>`，当前域：`net`。
+- **全仓基准执行设施**（不限于网络域）：基准类按被测域放 `com.tny.game.benchmark.<domain>`，当前域：`net`。
 - **刻意不叫 `tny-game-*`**：不落入根构建的模块装配线（发布/装配由该命名触发），本模块零发布；
-  根 `build.gradle` 另有配置期守卫——任何 `tny-game-*` 模块声明对 `:tny-bench` 的依赖将构建失败并指明违例模块。
+  `tny.module-checker` 约定插件（根 build.gradle 一行引入）另有配置期零发布合同：装配线成员声明依赖自报不发布角色的工程将构建失败并列出双方路径。
 - 产出的是**基线数据**（`results/bench-<日期>-routine.json` 与 `baseline-*.md`），供优化变更引用作前后对比锚点——优化本身不在这里做。
 
 ## 两族分类与目录组织（split-bench-suites）
@@ -14,7 +14,7 @@
 漂移或未归族即评审通道判红。
 
 ```
-com.tny.game.bench.net/
+com.tny.game.benchmark.net/
 ├── routine/    框架常规基准族——生产路径性能哨兵，CI 执行通道（push+夜间）计时运行
 ├── devtest/    开发测试基准族——决策取证/探索/设施自检，CI 永不自动计时，本地按名跑
 └── shared/     跨族可复用支撑件（非基准执行实体，免于族分置；算法体零 diff 纪律）
@@ -40,30 +40,30 @@ com.tny.game.bench.net/
 
 ```bash
 # 列常规族清单（CI 评审通道同款；族空匹配显式判红）
-./gradlew :tny-bench:jmhList
+./gradlew :tny-benchmark:jmhList
 
 # 列全量基准清单
-./gradlew :tny-bench:jmhList -PbenchAll
+./gradlew :tny-benchmark:jmhList -PbenchAll
 
 # 族属完备性 × 目录双向对账
-./gradlew :tny-bench:jmhSuiteVerify
+./gradlew :tny-benchmark:jmhSuiteVerify
 
 # 缺省运行 = 常规族（含设施探针）+ 仓库声明的基线参数（可复现）
-./gradlew :tny-bench:jmh
+./gradlew :tny-benchmark:jmh
 
 # 按名子集（单正则语义，多目标用 |；开发族取证也走这里）
-./gradlew :tny-bench:jmh -PbenchInclude='PacketCodec|MessageQueue|RespondFuture'
-./gradlew :tny-bench:jmh -PbenchInclude='.*bench\.net\.devtest\.CryptoAlgorithm.*'
+./gradlew :tny-benchmark:jmh -PbenchInclude='PacketCodec|MessageQueue|RespondFuture'
+./gradlew :tny-benchmark:jmh -PbenchInclude='.*benchmark\.net\.devtest\.CryptoAlgorithm.*'
 
 # 全量矩阵（大预算，人工择窗执行）
-./gradlew :tny-bench:jmh -PbenchAll
+./gradlew :tny-benchmark:jmh -PbenchAll
 
 # 常规族落盘：跑完后复制为 results/bench-<yyyymmdd>-routine.json（CI 执行通道同款）
-./gradlew :tny-bench:benchRoutineExport
+./gradlew :tny-benchmark:benchRoutineExport
 
 # 分配画像（P3 裁决数据源）：每操作真实分配字节（JIT 逃逸分析消化后的净值）
 # 注：profilers 不入 jmh 任务输入缓存——开关 -PbenchGc 后若结果未变，加 --rerun-tasks。
-./gradlew :tny-bench:jmh -PbenchInclude='PacketCodec|MessageQueue|RespondFuture' -PbenchGc
+./gradlew :tny-benchmark:jmh -PbenchInclude='PacketCodec|MessageQueue|RespondFuture' -PbenchGc
 ```
 
 ## 缺省基线参数（D3 入库，`jmh{}` 块）
@@ -84,10 +84,10 @@ com.tny.game.bench.net/
 | 规模 | 成员 | 组合数 | 谁在用 |
 |---|---|---|---|
 | 速览 quick | 全管线、发送队列、RPC 配对三类加设施探针（加密装配矩阵除外） | 13 | 触及框架源码的合入（CI push 经内容门禁放行，传 `-PbenchScope=quick`） |
-| 完整 full | 常规族全部，矩阵臂经 `-p algo` 选 `prod_*` 六臂 | 37 | 夜间定时、手动触发、本地缺省直接执行 `./gradlew :tny-bench:jmh` |
+| 完整 full | 常规族全部，矩阵臂经 `-p algo` 选 `prod_*` 六臂 | 37 | 夜间定时、手动触发、本地缺省直接执行 `./gradlew :tny-benchmark:jmh` |
 
 - 触发规则（`build.yml` 的 `bench-scope-gate` 内容门禁）：push 仅在改动触及模块源码目录、任一构建脚本、
-  根 `gradle.properties`、`gradle/libs.versions.toml` 或 `tny-bench/` 时以速览规模计时；纯文档、规格案卷、
+  根 `gradle.properties`、`gradle/libs.versions.toml` 或 `tny-benchmark/` 时以速览规模计时；纯文档、规格案卷、
   流水线脚本的合入**不计时也不回写**；定时与手动恒完整规模；PR 永不计时（基准编译与族校验由
   `bench-compile` 全触发承担）。矩阵级退化最迟在下一次夜间完整运行显现，属既定裁决而非漏洞。
 - 时长预算（实测）：完整规模约十八至二十一分钟（commit 43a5e966 首跑与 00e4c9da 二跑实证）；
@@ -115,10 +115,11 @@ com.tny.game.bench.net/
 - **R1 警示**：微基准对"纯分配类"候选给出的数字是上界（JIT 逃逸分析在真实调用链可能标量替换）——据此的优化决策需真实管线场景复测。
 - 已知污染源：`RespondFutureMonitor` 的 static 5s 全局定时器在 respond 基准期间后台运行（数据解读时标注）。
 - shared 支撑件**算法体零 diff 纪律**：摘出/迁入只动 package、声明位与 import；实现逐行照抄。
+- **换代断点（rename-bench-to-benchmark，2026-10-03）**：基准项键随包根换代整体由 com.tny.game.bench 前缀改为 com.tny.game.benchmark；同组曲线自本日起只在新键间比较，历史文件内指向旧模块目录的路径一律换算至本目录同名文件（对照表见该变更 verification-notes.md）。
 
 ## 新增基准
 
-放 `src/jmh/java/com/tny/game/bench/<domain>/{routine|devtest}/` 下，`@Benchmark` 注解即可
+放 `src/jmh/java/com/tny/game/benchmark/<domain>/{routine|devtest}/` 下，`@Benchmark` 注解即可
 （annprocess 随插件接线自动登记；BenchmarkList 由 `jmhRunBytecodeGenerator` 生成）。
 跨包访问 protected 成员的装配（如 codec 注入）参照 `PacketCodecBenchmark.inject` 的反射模式。
 被多个基准复用的实现放 `shared/`，不随宿主族走。归族与对账口径见上「两族分类」节。

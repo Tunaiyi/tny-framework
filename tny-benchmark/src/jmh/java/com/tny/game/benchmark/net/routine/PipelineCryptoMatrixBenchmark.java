@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.tny.game.bench.net.routine;
+package com.tny.game.benchmark.net.routine;
 
-import com.tny.game.bench.net.shared.AeadRfc7539;
-import com.tny.game.bench.net.shared.Crc64Slicing;
-import com.tny.game.bench.net.shared.SipHash64;
+import com.tny.game.benchmark.net.shared.AeadRfc7539;
+import com.tny.game.benchmark.net.shared.Crc64Slicing;
+import com.tny.game.benchmark.net.shared.SipHash64;
 import com.tny.game.common.digest.binary.*;
 import com.tny.game.net.codec.*;
 import com.tny.game.net.codec.cryptoloy.*;

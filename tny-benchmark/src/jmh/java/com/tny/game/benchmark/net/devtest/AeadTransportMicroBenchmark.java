@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.tny.game.bench.net.devtest;
+package com.tny.game.benchmark.net.devtest;
 
-import com.tny.game.bench.net.shared.AeadRfc7539;
+import com.tny.game.benchmark.net.shared.AeadRfc7539;
 import org.openjdk.jmh.annotations.*;
 
 import java.util.concurrent.TimeUnit;

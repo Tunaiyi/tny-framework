@@ -4,11 +4,11 @@ plugins {
     // 族属清单与枚举/对账/落盘任务在 tny.bench-suite 约定插件（注册归属与任务名不变）
     id 'tny.bench-suite'
     // 横切角色统一插件（consolidate-module-modes-plugin）
-    id 'tny.module-modes'
+    id 'tny.module-setting'
 }
 
 // 自述：不发布设施（零发布合同就地核对消费；刻意不带 tny-game- 前缀见 settings 约定注释）
-moduleModes {
+moduleSetting {
     enableUnpublished()
 }
 
@@ -27,12 +27,12 @@ tasks.withType(AbstractCompile).configureEach {
 // 基准族清单（split-bench-suites D1 族属双承载的声明面：目录即族属，此清单登记族正则，
 // jmhSuiteVerify 双向对账钉死；行为来由注释在 tny.bench-suite 插件）。
 benchSuite {
-    routineFamily.set(['.*\\.bench\\.net\\.routine\\..*'])
-    devtestFamily.set(['.*\\.bench\\.net\\.devtest\\..*'])
-    facilityProbes.set(['.*\\.bench\\.net\\.devtest\\.SmokeBenchmark.*'])
+    routineFamily.set(['.*\\.benchmark\\.net\\.routine\\..*'])
+    devtestFamily.set(['.*\\.benchmark\\.net\\.devtest\\..*'])
+    facilityProbes.set(['.*\\.benchmark\\.net\\.devtest\\.SmokeBenchmark.*'])
     routineAlgoArms.set(['prod_crc64_xortile', 'prod_siphash24_xortile', 'prod_crc32_xortile',
                          'prod_siphash24_xorprod', 'prod_crc32_xorprod', 'prod_siphash24_chacha'])
-    quickRunExcludes.set(['.*\\.bench\\.net\\.routine\\.PipelineCryptoMatrixBenchmark.*'])
+    quickRunExcludes.set(['.*\\.benchmark\\.net\\.routine\\.PipelineCryptoMatrixBenchmark.*'])
 }
 
 dependencies {

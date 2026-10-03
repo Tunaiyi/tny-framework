@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.tny.game.bench.net.shared;
+package com.tny.game.benchmark.net.shared;
 
 /**
  * 与生产 CRC64 同多项式（ECMA-182 反射）的 slicing-by-8 原型。

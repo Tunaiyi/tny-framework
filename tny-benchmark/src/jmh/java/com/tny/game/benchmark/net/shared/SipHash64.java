@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.tny.game.bench.net.shared;
+package com.tny.game.benchmark.net.shared;
 
 /**
  * SipHash-2-4 实现（基准装配共用件）。

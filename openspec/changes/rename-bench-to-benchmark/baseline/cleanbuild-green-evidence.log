@@ -1,12 +1,12 @@
 Configuration on demand is an incubating feature.
 > Task :buildSrc:extractPluginRequests UP-TO-DATE
 > Task :buildSrc:generatePluginAdapters UP-TO-DATE
-> Task :buildSrc:compileJava UP-TO-DATE
-> Task :buildSrc:compileGroovy UP-TO-DATE
+> Task :buildSrc:compileJava
+> Task :buildSrc:compileGroovy
 > Task :buildSrc:compileGroovyPlugins UP-TO-DATE
 > Task :buildSrc:pluginDescriptors UP-TO-DATE
 > Task :buildSrc:processResources UP-TO-DATE
-> Task :buildSrc:classes UP-TO-DATE
+> Task :buildSrc:classes
 > Task :buildSrc:jar UP-TO-DATE
 Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk-11.0.13.jdk/Contents/Home' (MacOS java_home). It will be re-checked in the next build. This might have performance impact if it keeps failing. Run the 'javaToolchains' task for more details.
 Invalid Java installation found at '/Library/Internet Plug-Ins/JavaAppletPlugin.plugin/Contents/Home' (MacOS java_home). It will be re-checked in the next build. This might have performance impact if it keeps failing. Run the 'javaToolchains' task for more details.
@@ -15,70 +15,70 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
 > Task :tny-game-boot-log4j2:clean
 > Task :tny-game-codec:clean
 > Task :tny-game-boot:clean
-> Task :tny-bench:clean
 > Task :tny-game-codec-protoex:clean
 > Task :tny-game-codec-jackson:clean
+> Task :tny-benchmark:clean
 > Task :tny-game-codec-jprotobuf:clean
-> Task :tny-game-actor:clean
 > Task :tny-game-common-digest:clean
 > Task :tny-game-common-io:clean
+> Task :tny-game-actor:clean
 > Task :tny-game-common-lifecycle:clean
 > Task :tny-game-common-scheduler:clean
-> Task :tny-game-data:clean
 > Task :tny-game-common-reflect:clean
+> Task :tny-game-data:clean
 > Task :tny-game-data-mongodb:clean
 > Task :tny-game-basics:clean
 > Task :tny-game-data-redisson:clean
 > Task :tny-game-doc-annotation:clean
 > Task :tny-game-doc-gradle:clean
-> Task :tny-game-expr-graaljs:clean
 > Task :tny-game-expr:clean
+> Task :tny-game-expr-graaljs:clean
 > Task :tny-game-doc:clean
 > Task :tny-game-integration-test:clean
 > Task :tny-game-expr-groovy:clean
-> Task :tny-game-expr-jsr223:clean
 > Task :tny-game-expr-luaj:clean
-> Task :tny-game-loader:clean
+> Task :tny-game-expr-jsr223:clean
 > Task :tny-game-expr-mvel:clean
+> Task :tny-game-loader:clean
 > Task :tny-game-namnspace-etcd:clean
 > Task :tny-game-mongodb:clean
 > Task :tny-game-namnspace:clean
+> Task :tny-game-common-lang:clean
 > Task :tny-game-net-demo:clean
 > Task :tny-game-net-netty4-codec-jprotobuf:clean
 > Task :tny-game-net-test:clean
-> Task :tny-game-common-lang:clean
 > Task :tny-game-net-netty4-codec-protoex:clean
-> Task :tny-game-oplog-log4j:clean
 > Task :tny-game-oplog:clean
+> Task :tny-game-oplog-log4j:clean
 > Task :tny-game-protobuf:clean
 > Task :tny-game-redisson:clean
 > Task :tny-game-net-netty4:clean
-> Task :tny-game-protoex:clean
 > Task :tny-game-rpc:clean
+> Task :tny-game-protoex:clean
 > Task :tny-game-scanning:clean
 > Task :tny-game-starter-mongodb:clean
 > Task :tny-game-starter-codec:clean
 > Task :tny-game-starter-namnspace:clean
 > Task :tny-game-starter-net-apm-skywalking:clean
 > Task :tny-game-starter-data:clean
-> Task :tny-bench:compileJava NO-SOURCE
-> Task :tny-bench:processResources NO-SOURCE
-> Task :tny-bench:classes UP-TO-DATE
+> Task :tny-benchmark:compileJava NO-SOURCE
+> Task :tny-benchmark:processResources NO-SOURCE
+> Task :tny-benchmark:classes UP-TO-DATE
 > Task :tny-game-starter-redisson:clean
 > Task :tny-game-actor:processResources NO-SOURCE
 > Task :tny-game-tester:clean
-> Task :tny-bench:jar
-> Task :tny-bench:assemble
-> Task :tny-bench:compileTestJava NO-SOURCE
-> Task :tny-bench:processTestResources NO-SOURCE
-> Task :tny-bench:testClasses UP-TO-DATE
 > Task :tny-game-common-lang:processResources
-> Task :tny-bench:test NO-SOURCE
-> Task :tny-bench:check UP-TO-DATE
-> Task :tny-bench:build
+> Task :tny-game-common-lifecycle:processResources
 > Task :tny-game-common-reflect:processResources NO-SOURCE
 > Task :tny-game-scanning:processResources NO-SOURCE
-> Task :tny-game-common-lifecycle:processResources
+> Task :tny-benchmark:jar
+> Task :tny-benchmark:assemble
+> Task :tny-benchmark:compileTestJava NO-SOURCE
+> Task :tny-benchmark:processTestResources NO-SOURCE
+> Task :tny-benchmark:testClasses UP-TO-DATE
+> Task :tny-benchmark:test NO-SOURCE
+> Task :tny-benchmark:check UP-TO-DATE
+> Task :tny-benchmark:build
 > Task :tny-game-tester:processResources NO-SOURCE
 > Task :tny-game-actor:processTestResources
 > Task :tny-game-basics:processResources
@@ -87,18 +87,18 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
 > Task :tny-game-starter-net-netty4:clean
 > Task :tny-game-expr-groovy:processResources NO-SOURCE
 > Task :tny-game-expr-jsr223:processResources NO-SOURCE
-> Task :tny-game-starter-basics:clean
+> Task :tny-game-basics:processTestResources
 > Task :tny-game-bom:assemble UP-TO-DATE
 > Task :tny-game-bom:check UP-TO-DATE
 > Task :tny-game-bom:build UP-TO-DATE
-> Task :tny-game-basics:processTestResources
+> Task :tny-game-boot:processResources
 > Task :tny-game-loader:processResources
+> Task :tny-game-boot:processTestResources NO-SOURCE
 > Task :tny-game-boot-log4j2:processResources NO-SOURCE
 > Task :tny-game-boot-log4j2:processTestResources NO-SOURCE
 > Task :tny-game-codec:processResources NO-SOURCE
 > Task :tny-game-codec:processTestResources NO-SOURCE
-> Task :tny-game-boot:processResources
-> Task :tny-game-boot:processTestResources NO-SOURCE
+> Task :tny-game-starter-basics:clean
 > Task :tny-game-codec-jackson:processResources
 > Task :tny-game-codec-jackson:processTestResources NO-SOURCE
 > Task :tny-game-doc-annotation:processResources NO-SOURCE
@@ -125,32 +125,32 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
 > Task :tny-game-common-io:processTestResources
 > Task :tny-game-data-mongodb:processTestResources NO-SOURCE
 > Task :tny-game-data-redisson:processResources NO-SOURCE
-> Task :tny-game-mongodb:processResources
+> Task :tny-game-redisson:processResources
 > Task :tny-game-data-redisson:processTestResources NO-SOURCE
 > Task :tny-game-doc:processResources NO-SOURCE
 > Task :tny-game-expr-mvel:processResources NO-SOURCE
-> Task :tny-game-redisson:processResources
+> Task :tny-game-mongodb:processResources
 > Task :tny-game-net:processResources
 > Task :tny-game-doc:processTestResources NO-SOURCE
 > Task :tny-game-rpc:processResources
 > Task :tny-game-expr-graaljs:processResources NO-SOURCE
 > Task :tny-game-expr-graaljs:processTestResources NO-SOURCE
-> Task :tny-game-doc-gradle:pluginDescriptors
 > Task :tny-game-expr-groovy:processTestResources NO-SOURCE
 > Task :tny-game-expr-jsr223:processTestResources NO-SOURCE
-> Task :tny-game-doc-gradle:processResources
 > Task :tny-game-expr-luaj:processResources NO-SOURCE
-> Task :tny-game-doc-gradle:processTestResources NO-SOURCE
 > Task :tny-game-expr-luaj:processTestResources NO-SOURCE
 > Task :tny-game-expr-mvel:processTestResources NO-SOURCE
+> Task :tny-game-doc-gradle:pluginDescriptors
 > Task :tny-game-net-netty4:processResources NO-SOURCE
+> Task :tny-game-doc-gradle:processResources
+> Task :tny-game-doc-gradle:processTestResources NO-SOURCE
 > Task :tny-game-protoex:processResources
-> Task :tny-game-net-netty4-codec-jprotobuf:processResources
-> Task :tny-game-net-test:processResources NO-SOURCE
 > Task :tny-game-net-netty4-codec-protoex:processResources NO-SOURCE
+> Task :tny-game-net-test:processResources NO-SOURCE
 > Task :tny-game-integration-test:processResources NO-SOURCE
-> Task :tny-game-loader:processTestResources NO-SOURCE
 > Task :tny-game-integration-test:processTestResources NO-SOURCE
+> Task :tny-game-net-netty4-codec-jprotobuf:processResources
+> Task :tny-game-loader:processTestResources NO-SOURCE
 > Task :tny-game-mongodb:processTestResources NO-SOURCE
 > Task :tny-game-namnspace:processResources NO-SOURCE
 > Task :tny-game-namnspace-etcd:processResources NO-SOURCE
@@ -159,15 +159,15 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
 > Task :tny-game-net:processTestResources NO-SOURCE
 > Task :tny-game-starter-codec:processResources
 > Task :tny-game-starter-data:processResources
-> Task :tny-game-net-demo:processResources
 > Task :tny-game-starter-mongodb:processResources
+> Task :tny-game-net-demo:processResources
 > Task :tny-game-starter-net-netty4:processResources
 > Task :tny-game-net-demo:processTestResources NO-SOURCE
 > Task :tny-game-net-netty4:processTestResources
 > Task :tny-game-starter-redisson:processResources
 > Task :tny-game-net-netty4-codec-jprotobuf:processTestResources NO-SOURCE
-> Task :tny-game-net-test:processTestResources NO-SOURCE
 > Task :tny-game-net-netty4-codec-protoex:processTestResources NO-SOURCE
+> Task :tny-game-net-test:processTestResources NO-SOURCE
 > Task :tny-game-protobuf:processResources NO-SOURCE
 > Task :tny-game-oplog:processResources
 > Task :tny-game-oplog:processTestResources
@@ -218,8 +218,8 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
 > Task :tny-game-protobuf:processTestResources NO-SOURCE
 
 > Task :tny-game-common-lang:compileJava
-注: /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/url/URL.java使用或覆盖了已过时的 API。
-注: 有关详细信息, 请使用 -Xlint:deprecation 重新编译。
+?: /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/url/URL.java?????????? API?
+?: ??????, ??? -Xlint:deprecation ?????
 
 > Task :tny-game-common-lang:classes
 > Task :tny-game-common-lang:jar
@@ -251,32 +251,27 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
 > Task :tny-game-codec:classes
 > Task :tny-game-codec:jar
 > Task :tny-game-common-reflect:compileJava
-
-> Task :tny-game-protobuf:compileTestJava
-注: /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-protobuf/src/test/java/com/tny/game/protobuf/format/test/FormatTestProtos.java使用或覆盖了已过时的 API。
-注: 有关详细信息, 请使用 -Xlint:deprecation 重新编译。
-
-> Task :tny-game-common-reflect:classes
-> Task :tny-game-common-reflect:jar
 > Task :tny-game-common-lifecycle:compileJava
-> Task :tny-game-codec-jprotobuf:compileJava
+> Task :tny-game-loader:javadoc
 > Task :tny-game-common-lifecycle:classes
 > Task :tny-game-common-lifecycle:jar
-> Task :tny-game-loader:javadoc
+> Task :tny-game-common-reflect:classes
+> Task :tny-game-common-reflect:jar
 > Task :tny-game-expr-jsr223:compileJava
-> Task :tny-game-expr-groovy:compileJava
-> Task :tny-game-boot:compileJava
-> Task :tny-game-expr-groovy:classes
-> Task :tny-game-expr-groovy:jar
+
+> Task :tny-game-protobuf:compileTestJava
+?: /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-protobuf/src/test/java/com/tny/game/protobuf/format/test/FormatTestProtos.java?????????? API?
+?: ??????, ??? -Xlint:deprecation ?????
+
 > Task :tny-game-expr-jsr223:classes
 > Task :tny-game-expr-jsr223:jar
-> Task :tny-game-boot:classes
-> Task :tny-game-boot:jar
 > Task :tny-game-actor:compileJava
 > Task :tny-game-actor:classes
 > Task :tny-game-actor:jar
+> Task :tny-game-expr-groovy:compileJava
 > Task :tny-game-codec:javadoc
-> Task :tny-game-common-io:javadoc
+> Task :tny-game-expr-groovy:classes
+> Task :tny-game-expr-groovy:jar
 > Task :tny-game-codec:javadocJar
 > Task :tny-game-codec:assemble
 > Task :tny-game-codec:compileTestJava NO-SOURCE
@@ -284,64 +279,33 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
 > Task :tny-game-codec:test NO-SOURCE
 > Task :tny-game-codec:check UP-TO-DATE
 > Task :tny-game-codec:build
+> Task :tny-game-common-io:javadoc
+> Task :tny-game-boot:compileJava
+> Task :tny-game-boot:classes
+> Task :tny-game-boot:jar
+> Task :tny-game-codec-jprotobuf:compileJava
 > Task :tny-game-boot-log4j2:compileJava
 > Task :tny-game-boot-log4j2:classes
 > Task :tny-game-boot-log4j2:jar
 
-> Task :tny-game-common-lang:javadoc
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/worker/AbstractFuture.java:56: 警告: @param argument "callable" 不是参数名称。
-     * @param callable the callable task
-       ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/worker/AbstractFuture.java:79: 警告: 被覆盖的方法不记录异常错误类型 java.util.concurrent.CancellationException (module java.base package java.util.concurrent class CancellationException)
-     * @throws CancellationException {@inheritDoc}
-       ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/worker/AbstractFuture.java:87: 警告: 被覆盖的方法不记录异常错误类型 java.util.concurrent.CancellationException (module java.base package java.util.concurrent class CancellationException)
-     * @throws CancellationException {@inheritDoc}
-       ^
-
 > Task :tny-game-codec-jackson:compileJava
-注: /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-codec-jackson/src/main/java/com/tny/game/codec/jackson/mapper/ObjectMapperFactory.java使用或覆盖了已过时的 API。
-注: 有关详细信息, 请使用 -Xlint:deprecation 重新编译。
+?: /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-codec-jackson/src/main/java/com/tny/game/codec/jackson/mapper/ObjectMapperFactory.java?????????? API?
+?: ??????, ??? -Xlint:deprecation ?????
 
 > Task :tny-game-codec-jackson:classes
 > Task :tny-game-codec-jackson:jar
 
-> Task :tny-game-basics:compileJava
-注: /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/loader/jackson/JacksonModelLoader.java使用或覆盖了已过时的 API。
-注: 有关详细信息, 请使用 -Xlint:deprecation 重新编译。
-
-> Task :tny-game-basics:classes
-> Task :tny-game-basics:jar
-> Task :tny-game-boot-log4j2:javadoc
-> Task :tny-game-boot-log4j2:javadocJar
-> Task :tny-game-boot-log4j2:assemble
-> Task :tny-game-boot-log4j2:compileTestJava NO-SOURCE
-> Task :tny-game-boot-log4j2:testClasses UP-TO-DATE
-> Task :tny-game-boot-log4j2:test NO-SOURCE
-> Task :tny-game-boot-log4j2:check UP-TO-DATE
-> Task :tny-game-boot-log4j2:build
-> Task :tny-game-codec-jprotobuf:classes
-> Task :tny-game-codec-jprotobuf:jar
-> Task :tny-game-boot:javadoc
-> Task :tny-game-boot:javadocJar
-> Task :tny-game-boot:assemble
-> Task :tny-game-boot:compileTestJava NO-SOURCE
-> Task :tny-game-boot:testClasses UP-TO-DATE
-> Task :tny-game-boot:test NO-SOURCE
-> Task :tny-game-boot:check UP-TO-DATE
-> Task :tny-game-boot:build
-
-> Task :tny-game-actor:javadoc
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-actor/src/main/java/com/tny/game/actor/ActorFactory.java:50: 警告: 不能在返回类型为空的方法中使用 @return 标记。
-    void stopAll();
-         ^
-
-> Task :tny-game-common-digest:compileJava
-> Task :tny-game-common-digest:classes
-> Task :tny-game-common-digest:jar
-
 > Task :tny-game-common-lang:javadoc
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/utils/Asserts.java:162: 警告: 无效输入：'{@code {} placeholder in the template with an
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/worker/AbstractFuture.java:56: ??: @param argument "callable" ???????
+     * @param callable the callable task
+       ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/worker/AbstractFuture.java:79: ??: ??????????????? java.util.concurrent.CancellationException (module java.base package java.util.concurrent class CancellationException)
+     * @throws CancellationException {@inheritDoc}
+       ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/worker/AbstractFuture.java:87: ??: ??????????????? java.util.concurrent.CancellationException (module java.base package java.util.concurrent class CancellationException)
+     * @throws CancellationException {@inheritDoc}
+       ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/utils/Asserts.java:162: ??: ?????'{@code {} placeholder in the template with an
      *                                  {@code errorMessageArgs} is null (don't let this happen)
                                                                                                ^
                                argument. These are matched by position - the first {@code {} gets {@code
@@ -352,7 +316,7 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
    @throws IllegalArgumentException if {@code expression} is false
    @throws NullPointerException     if the check fails and either {@code errorMessageTemplate} or
                                     {@code errorMessageArgs} is null (don't let this happen)'
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/utils/Asserts.java:239: 警告: 无效输入：'{@code {} placeholder in the template with an
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/utils/Asserts.java:239: ??: ?????'{@code {} placeholder in the template with an
      *                               {@code errorMessageArgs} is null (don't let this happen)
                                                                                             ^
                                argument. These are matched by position - the first {@code {} gets {@code
@@ -363,7 +327,7 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
    @throws IllegalStateException if {@code expression} is false
    @throws NullPointerException  if the check fails and either {@code errorMessageTemplate} or
                                  {@code errorMessageArgs} is null (don't let this happen)'
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/utils/Asserts.java:291: 警告: 无效输入：'{@code {} placeholder in the template with an
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/utils/Asserts.java:291: ??: ?????'{@code {} placeholder in the template with an
      * @throws NullPointerException if {@code reference} is null
                                                                ^
                                argument. These are matched by position - the first {@code {} gets {@code
@@ -373,148 +337,185 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
                                are converted to strings using {@link String#valueOf(Object)}.
    @return the non-null reference that was validated
    @throws NullPointerException if {@code reference} is null'
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/context/Attributes.java:159: 警告: 不能在返回类型为空的方法中使用 @return 标记。
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/context/Attributes.java:159: ??: ??????????????? @return ???
     void clearAttribute();
          ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/concurrent/BaseFuture.java:49: 警告: 被覆盖的方法不记录异常错误类型 java.util.concurrent.CancellationException (module java.base package java.util.concurrent class CancellationException)
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/concurrent/BaseFuture.java:49: ??: ??????????????? java.util.concurrent.CancellationException (module java.base package java.util.concurrent class CancellationException)
      * @throws CancellationException {@inheritDoc}
        ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/concurrent/BaseFuture.java:71: 警告: 被覆盖的方法不记录异常错误类型 java.util.concurrent.CancellationException (module java.base package java.util.concurrent class CancellationException)
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/concurrent/BaseFuture.java:71: ??: ??????????????? java.util.concurrent.CancellationException (module java.base package java.util.concurrent class CancellationException)
      * @throws CancellationException {@inheritDoc}
        ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/worker/command/DelayCommand.java:114: 警告: 无效输入：'&'
-     * 可执行 = 尚未结束 且 执行时点已到（原定义 isDone()&&delay<=0 与执行门联合构成判反）。
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/worker/command/DelayCommand.java:114: ??: ?????'&'
+     * ??? = ???? ? ?????????? isDone()&&delay<=0 ????????????
                                        ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/worker/command/DelayCommand.java:114: 警告: 无效输入：'&delay'
-     * 可执行 = 尚未结束 且 执行时点已到（原定义 isDone()&&delay<=0 与执行门联合构成判反）。
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/worker/command/DelayCommand.java:114: ??: ?????'&delay'
+     * ??? = ???? ? ?????????? isDone()&&delay<=0 ????????????
                                              ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/worker/command/DelayCommand.java:114: 警告: 无效输入：'<'
-     * 可执行 = 尚未结束 且 执行时点已到（原定义 isDone()&&delay<=0 与执行门联合构成判反）。
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/worker/command/DelayCommand.java:114: ??: ?????'<'
+     * ??? = ???? ? ?????????? isDone()&&delay<=0 ????????????
                                               ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/worker/command/DelayCommand.java:114: 警告: 无效输入：'&'
-     * 可执行 = 尚未结束 且 执行时点已到（原定义 isDone()&&delay<=0 与执行门联合构成判反）。
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/worker/command/DelayCommand.java:114: ??: ?????'&'
+     * ??? = ???? ? ?????????? isDone()&&delay<=0 ????????????
                                        ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/worker/command/DelayCommand.java:114: 警告: 无效输入：'&delay'
-     * 可执行 = 尚未结束 且 执行时点已到（原定义 isDone()&&delay<=0 与执行门联合构成判反）。
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/worker/command/DelayCommand.java:114: ??: ?????'&delay'
+     * ??? = ???? ? ?????????? isDone()&&delay<=0 ????????????
                                              ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/worker/command/DelayCommand.java:114: 警告: 无效输入：'<'
-     * 可执行 = 尚未结束 且 执行时点已到（原定义 isDone()&&delay<=0 与执行门联合构成判反）。
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/worker/command/DelayCommand.java:114: ??: ?????'<'
+     * ??? = ???? ? ?????????? isDone()&&delay<=0 ????????????
                                               ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/worker/FutureTask.java:98: 警告: 被覆盖的方法不记录异常错误类型 java.util.concurrent.CancellationException (module java.base package java.util.concurrent class CancellationException)
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/worker/FutureTask.java:98: ??: ??????????????? java.util.concurrent.CancellationException (module java.base package java.util.concurrent class CancellationException)
      * @throws CancellationException {@inheritDoc}
        ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/worker/FutureTask.java:106: 警告: 被覆盖的方法不记录异常错误类型 java.util.concurrent.CancellationException (module java.base package java.util.concurrent class CancellationException)
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/worker/FutureTask.java:106: ??: ??????????????? java.util.concurrent.CancellationException (module java.base package java.util.concurrent class CancellationException)
      * @throws CancellationException {@inheritDoc}
        ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/utils/HashAide.java:650: 警告: 无效输入：'&T'
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/utils/HashAide.java:650: ??: ?????'&T'
      * This hash algorithm is based on work by Peter J. Weinberger of AT&T Bell Labs.
                                                                          ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/concurrent/lock/LockAide.java:38: 警告: @param argument "objectCollection" 不是参数名称。
-     * @param objectCollection 要获得锁的对象或实体实例数组
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/concurrent/lock/LockAide.java:38: ??: @param argument "objectCollection" ???????
+     * @param objectCollection ??????????????
        ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/concurrent/lock/LockAide.java:49: 警告: @param argument "objectCollection" 不是参数名称。
-     * @param objectCollection 要获得锁的对象或实体实例数组
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/concurrent/lock/LockAide.java:49: ??: @param argument "objectCollection" ???????
+     * @param objectCollection ??????????????
        ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/concurrent/lock/LockAide.java:60: 警告: @param argument "objectCollection" 不是参数名称。
-     * @param objectCollection 要获得锁的对象或实体实例数组
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/concurrent/lock/LockAide.java:60: ??: @param argument "objectCollection" ???????
+     * @param objectCollection ??????????????
        ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/concurrent/lock/LockAide.java:73: 警告: @param argument "objectCollection" 不是参数名称。
-     * @param objectCollection 要获得锁的对象或实体实例数组
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/concurrent/lock/LockAide.java:73: ??: @param argument "objectCollection" ???????
+     * @param objectCollection ??????????????
        ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/concurrent/lock/LockAide.java:108: 警告: @param argument "objects" 不是参数名称。
-     * @param objects 要获得锁的对象或实体实例数组
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/concurrent/lock/LockAide.java:108: ??: @param argument "objects" ???????
+     * @param objects ??????????????
        ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/concurrent/lock/LockAide.java:121: 警告: @param argument "objects" 不是参数名称。
-     * @param objects  要获得锁的对象或实体实例数组
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/concurrent/lock/LockAide.java:121: ??: @param argument "objects" ???????
+     * @param objects  ??????????????
        ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/concurrent/lock/LockAide.java:132: 警告: @param argument "lockType" 不是参数名称。
-     * @param lockType 获取的所类型
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/concurrent/lock/LockAide.java:132: ??: @param argument "lockType" ???????
+     * @param lockType ??????
        ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/concurrent/lock/LockAide.java:133: 警告: @param argument "objects" 不是参数名称。
-     * @param objects  要获得锁的对象或实体实例数组
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/concurrent/lock/LockAide.java:133: ??: @param argument "objects" ???????
+     * @param objects  ??????????????
        ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/number/NumberAide.java:610: 警告: 无效输入：'<'
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/number/NumberAide.java:610: ??: ?????'<'
      * @return x < y : -1 | x = y : 0 | x ></> y : 1
                  ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/number/NumberAide.java:610: 警告: 无效输入：'<'
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/number/NumberAide.java:610: ??: ?????'<'
      * @return x < y : -1 | x = y : 0 | x ></> y : 1
                                            ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/number/NumberAide.java:621: 警告: 无效输入：'<'
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/number/NumberAide.java:621: ??: ?????'<'
      * @return x < y : 1 | x = y : 0 | x ></> y : -1
                  ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/number/NumberAide.java:621: 警告: 无效输入：'<'
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/number/NumberAide.java:621: ??: ?????'<'
      * @return x < y : 1 | x = y : 0 | x ></> y : -1
                                           ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/number/NumberAide.java:632: 警告: 无效输入：'<'
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/number/NumberAide.java:632: ??: ?????'<'
      * @return x < y : -1 | x = y : 0 | x ></> y : 1
                  ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/number/NumberAide.java:632: 警告: 无效输入：'<'
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/number/NumberAide.java:632: ??: ?????'<'
      * @return x < y : -1 | x = y : 0 | x ></> y : 1
                                            ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/number/NumberAide.java:643: 警告: 无效输入：'<'
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/number/NumberAide.java:643: ??: ?????'<'
      * @return x < y : 1 | x = y : 0 | x ></> y : -1
                  ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/number/NumberAide.java:643: 警告: 无效输入：'<'
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/number/NumberAide.java:643: ??: ?????'<'
      * @return x < y : 1 | x = y : 0 | x ></> y : -1
                                           ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/number/NumberAide.java:654: 警告: 无效输入：'<'
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/number/NumberAide.java:654: ??: ?????'<'
      * @return x < y : -1 | x = y : 0 | x ></> y : 1
                  ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/number/NumberAide.java:654: 警告: 无效输入：'<'
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/number/NumberAide.java:654: ??: ?????'<'
      * @return x < y : -1 | x = y : 0 | x ></> y : 1
                                            ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/number/NumberAide.java:665: 警告: 无效输入：'<'
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/number/NumberAide.java:665: ??: ?????'<'
      * @return x < y : 1 | x = y : 0 | x ></> y : -1
                  ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/number/NumberAide.java:665: 警告: 无效输入：'<'
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/number/NumberAide.java:665: ??: ?????'<'
      * @return x < y : 1 | x = y : 0 | x ></> y : -1
                                           ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/number/NumberAide.java:676: 警告: 无效输入：'<'
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/number/NumberAide.java:676: ??: ?????'<'
      * @return x < y : -1 | x = y : 0 | x ></> y : 1
                  ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/number/NumberAide.java:676: 警告: 无效输入：'<'
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/number/NumberAide.java:676: ??: ?????'<'
      * @return x < y : -1 | x = y : 0 | x ></> y : 1
                                            ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/number/NumberAide.java:687: 警告: 无效输入：'<'
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/number/NumberAide.java:687: ??: ?????'<'
      * @return x < y : 1 | x = y : 0 | x ></> y : -1
                  ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/number/NumberAide.java:687: 警告: 无效输入：'<'
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/number/NumberAide.java:687: ??: ?????'<'
      * @return x < y : 1 | x = y : 0 | x ></> y : -1
                                           ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/number/NumberAide.java:698: 警告: 无效输入：'<'
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/number/NumberAide.java:698: ??: ?????'<'
      * @return x < y : -1 | x = y : 0 | x ></> y : 1
                  ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/number/NumberAide.java:698: 警告: 无效输入：'<'
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/number/NumberAide.java:698: ??: ?????'<'
      * @return x < y : -1 | x = y : 0 | x ></> y : 1
                                            ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/number/NumberAide.java:709: 警告: 无效输入：'<'
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/number/NumberAide.java:709: ??: ?????'<'
      * @return x < y : 1 | x = y : 0 | x ></> y : -1
                  ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/number/NumberAide.java:709: 警告: 无效输入：'<'
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/number/NumberAide.java:709: ??: ?????'<'
      * @return x < y : 1 | x = y : 0 | x ></> y : -1
                                           ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/number/NumberAide.java:720: 警告: 无效输入：'<'
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/number/NumberAide.java:720: ??: ?????'<'
      * @return x < y : -1 | x = y : 0 | x ></> y : 1
                  ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/number/NumberAide.java:720: 警告: 无效输入：'<'
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/number/NumberAide.java:720: ??: ?????'<'
      * @return x < y : -1 | x = y : 0 | x ></> y : 1
                                            ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/number/NumberAide.java:731: 警告: 无效输入：'<'
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/number/NumberAide.java:731: ??: ?????'<'
      * @return x < y : 1 | x = y : 0 | x ></> y : -1
                  ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/number/NumberAide.java:731: 警告: 无效输入：'<'
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/number/NumberAide.java:731: ??: ?????'<'
      * @return x < y : 1 | x = y : 0 | x ></> y : -1
                                           ^
+
+> Task :tny-game-boot-log4j2:javadoc
+> Task :tny-game-boot-log4j2:javadocJar
+> Task :tny-game-boot-log4j2:assemble
+> Task :tny-game-boot-log4j2:compileTestJava NO-SOURCE
+> Task :tny-game-boot-log4j2:testClasses UP-TO-DATE
+> Task :tny-game-boot-log4j2:test NO-SOURCE
+> Task :tny-game-boot-log4j2:check UP-TO-DATE
+> Task :tny-game-boot-log4j2:build
+> Task :tny-game-codec-jprotobuf:classes
+> Task :tny-game-codec-jprotobuf:jar
 
 > Task :tny-game-actor:javadoc
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-actor/src/main/java/com/tny/game/actor/local/BaseActorCommand.java:103: 警告: 不能在返回类型为空的方法中使用 @return 标记。
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-actor/src/main/java/com/tny/game/actor/ActorFactory.java:50: ??: ??????????????? @return ???
+    void stopAll();
+         ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-actor/src/main/java/com/tny/game/actor/local/BaseActorCommand.java:103: ??: ??????????????? @return ???
     protected void success(T result) {
                    ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-actor/src/main/java/com/tny/game/actor/local/BaseActorCommand.java:121: 警告: 不能在返回类型为空的方法中使用 @return 标记。
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-actor/src/main/java/com/tny/game/actor/local/BaseActorCommand.java:121: ??: ??????????????? @return ???
     protected void fail(Throwable cause, boolean cancelled) throws Throwable {
                    ^
-3 个警告
 
+> Task :tny-game-boot:javadoc
+> Task :tny-game-boot:javadocJar
+> Task :tny-game-boot:assemble
+> Task :tny-game-boot:compileTestJava NO-SOURCE
+> Task :tny-game-boot:testClasses UP-TO-DATE
+> Task :tny-game-boot:test NO-SOURCE
+> Task :tny-game-boot:check UP-TO-DATE
+> Task :tny-game-boot:build
+
+> Task :tny-game-basics:compileJava
+?: /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/loader/jackson/JacksonModelLoader.java?????????? API?
+?: ??????, ??? -Xlint:deprecation ?????
+
+> Task :tny-game-basics:classes
+
+> Task :tny-game-actor:javadoc
+3 ???
+
+> Task :tny-game-basics:jar
+> Task :tny-game-actor:javadocJar
+> Task :tny-game-actor:assemble
+> Task :tny-game-common-digest:compileJava
+> Task :tny-game-common-digest:classes
+> Task :tny-game-common-digest:jar
 > Task :tny-game-codec-jackson:javadoc
 > Task :tny-game-codec-jackson:javadocJar
 > Task :tny-game-codec-jackson:assemble
@@ -523,41 +524,27 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
 > Task :tny-game-codec-jackson:test NO-SOURCE
 > Task :tny-game-codec-jackson:check UP-TO-DATE
 > Task :tny-game-codec-jackson:build
-> Task :tny-game-actor:javadocJar
-> Task :tny-game-actor:assemble
 > Task :tny-game-common-io:javadocJar
 > Task :tny-game-common-io:assemble
+> Task :tny-game-actor:compileTestJava
+> Task :tny-game-actor:testClasses
 
 > Task :tny-game-common-lang:javadoc
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/worker/command/DelayCommand.java:114: 警告: 无效输入：'&'
-     * 可执行 = 尚未结束 且 执行时点已到（原定义 isDone()&&delay<=0 与执行门联合构成判反）。
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/worker/command/DelayCommand.java:114: ??: ?????'&'
+     * ??? = ???? ? ?????????? isDone()&&delay<=0 ????????????
                                        ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/worker/command/DelayCommand.java:114: 警告: 无效输入：'&delay'
-     * 可执行 = 尚未结束 且 执行时点已到（原定义 isDone()&&delay<=0 与执行门联合构成判反）。
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/worker/command/DelayCommand.java:114: ??: ?????'&delay'
+     * ??? = ???? ? ?????????? isDone()&&delay<=0 ????????????
                                              ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/worker/command/DelayCommand.java:114: 警告: 无效输入：'<'
-     * 可执行 = 尚未结束 且 执行时点已到（原定义 isDone()&&delay<=0 与执行门联合构成判反）。
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/worker/command/DelayCommand.java:114: ??: ?????'<'
+     * ??? = ???? ? ?????????? isDone()&&delay<=0 ????????????
                                               ^
-53 个警告
+53 ???
 
 > Task :tny-game-common-lang:javadocJar
 > Task :tny-game-common-lang:assemble
-> Task :tny-game-actor:compileTestJava
-> Task :tny-game-actor:testClasses
 > Task :tny-game-common-io:compileTestJava
 > Task :tny-game-common-io:testClasses
-
-> Task :tny-game-basics:javadoc
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/ItemModel.java:135: 警告: 无效输入：'&扣除列表'
-     * 获取奖励&扣除列表
-               ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/ItemModel.java:125: 警告: 无效输入：'&扣除列表'
-     * 获取奖励&扣除列表
-               ^
-
-> Task :tny-game-common-digest:javadoc
-> Task :tny-game-common-digest:javadocJar
-> Task :tny-game-common-digest:assemble
 > Task :tny-game-codec-jprotobuf:javadoc
 > Task :tny-game-codec-jprotobuf:javadocJar
 > Task :tny-game-codec-jprotobuf:assemble
@@ -565,244 +552,257 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
 > Task :tny-game-codec-jprotobuf:testClasses UP-TO-DATE
 > Task :tny-game-codec-jprotobuf:test NO-SOURCE
 > Task :tny-game-codec-jprotobuf:check UP-TO-DATE
+> Task :tny-game-common-digest:javadoc
+> Task :tny-game-common-digest:javadocJar
+> Task :tny-game-common-digest:assemble
+
+> Task :tny-game-basics:javadoc
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/ItemModel.java:135: ??: ?????'&????'
+     * ????&????
+               ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/ItemModel.java:125: ??: ?????'&????'
+     * ????&????
+               ^
+
 > Task :tny-game-common-digest:compileTestJava
 > Task :tny-game-common-digest:testClasses
 
 > Task :tny-game-common-lang:compileTestJava
-注: 某些输入文件使用或覆盖了已过时的 API。
-注: 有关详细信息, 请使用 -Xlint:deprecation 重新编译。
+?: ???????????????? API?
+?: ??????, ??? -Xlint:deprecation ?????
 
 > Task :tny-game-common-lang:processTestResources
 > Task :tny-game-common-lang:testClasses
-
-> Task :tny-game-basics:javadoc
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/ItemModel.java:125: 警告: 无效输入：'&扣除列表'
-     * 获取奖励&扣除列表
-               ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/ItemModel.java:135: 警告: 无效输入：'&扣除列表'
-     * 获取奖励&扣除列表
-               ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/ActionPlan.java:100: 警告: 无效输入：'&扣除结果'
-     * 获取该操作的奖励&扣除结果
-                   ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/ActionPlan.java:100: 警告: 无效输入：'&扣除结果'
-     * 获取该操作的奖励&扣除结果
-                   ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/AwardList.java:33: 警告: 无效输入：'<'
-     * 获取奖励的所有<奖励组<奖励物品的ID - 奖励数量>>
-              ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/AwardList.java:33: 警告: 无效输入：'<'
-     * 获取奖励的所有<奖励组<奖励物品的ID - 奖励数量>>
-                  ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/AwardList.java:33: 警告: 无效输入：'<'
-     * 获取奖励的所有<奖励组<奖励物品的ID - 奖励数量>>
-              ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/AwardList.java:33: 警告: 无效输入：'<'
-     * 获取奖励的所有<奖励组<奖励物品的ID - 奖励数量>>
-                  ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/ActionPlan.java:100: 警告: 无效输入：'&扣除结果'
-     * 获取该操作的奖励&扣除结果
-                   ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/ActionPlan.java:100: 警告: 无效输入：'&扣除结果'
-     * 获取该操作的奖励&扣除结果
-                   ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/BehaviorPlan.java:80: 警告: 无效输入：'&扣除'
-     * 计算对该事物进行某操作对象操作的奖励&扣除
-                           ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/BehaviorPlan.java:80: 警告: 无效输入：'&扣除'
-     * 计算对该事物进行某操作对象操作的奖励&扣除
-                           ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/BehaviorPlan.java:80: 警告: 无效输入：'&扣除'
-     * 计算对该事物进行某操作对象操作的奖励&扣除
-                           ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/BehaviorPlan.java:80: 警告: 无效输入：'&扣除'
-     * 计算对该事物进行某操作对象操作的奖励&扣除
-                           ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/TradeInfo.java:63: 警告: 无效输入：'<'
-     * @return 返沪所有<消费项ID, 数量>
-                   ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/DemandType.java:30: 警告: 无效输入：'<'
- * LE : <=
-        ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/DemandType.java:32: 警告: 无效输入：'<'
- * LE : <
-        ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/Item.java:132: 警告: 无效输入：'&扣除信息'
-     * 生产奖励&扣除信息
-               ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/Item.java:132: 警告: 无效输入：'&扣除信息'
-     * 生产奖励&扣除信息
-               ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/ItemBuilder.java:83: 警告: 不能在返回类型为空的方法中使用 @return 标记。
-    protected void afterModelItem(I item) {
-                   ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/ItemModel.java:135: 警告: 无效输入：'&扣除列表'
-     * 获取奖励&扣除列表
-               ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/ItemModel.java:125: 警告: 无效输入：'&扣除列表'
-     * 获取奖励&扣除列表
-               ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/ItemModel.java:125: 警告: 无效输入：'&扣除列表'
-     * 获取奖励&扣除列表
-               ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/ItemModel.java:135: 警告: 无效输入：'&扣除列表'
-     * 获取奖励&扣除列表
-               ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/simple/SimpleAwardList.java:34: 警告: 无效输入：'<'
-     * 奖励信息 <奖励组<物品ID, 数量>>
-            ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/simple/SimpleAwardList.java:34: 警告: 无效输入：'<'
-     * 奖励信息 <奖励组<物品ID, 数量>>
-                ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/AwardList.java:33: 警告: 无效输入：'<'
-     * 获取奖励的所有<奖励组<奖励物品的ID - 奖励数量>>
-              ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/AwardList.java:33: 警告: 无效输入：'<'
-     * 获取奖励的所有<奖励组<奖励物品的ID - 奖励数量>>
-                  ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/simple/SimpleAwardList.java:34: 警告: 无效输入：'<'
-     * 奖励信息 <奖励组<物品ID, 数量>>
-            ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/simple/SimpleAwardList.java:34: 警告: 无效输入：'<'
-     * 奖励信息 <奖励组<物品ID, 数量>>
-                ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/AwardList.java:33: 警告: 无效输入：'<'
-     * 获取奖励的所有<奖励组<奖励物品的ID - 奖励数量>>
-              ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/AwardList.java:33: 警告: 无效输入：'<'
-     * 获取奖励的所有<奖励组<奖励物品的ID - 奖励数量>>
-                  ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/TradeInfo.java:63: 警告: 无效输入：'<'
-     * @return 返沪所有<消费项ID, 数量>
-                   ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/TradeInfo.java:63: 警告: 无效输入：'<'
-     * @return 返沪所有<消费项ID, 数量>
-                   ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/ActionPlan.java:100: 警告: 无效输入：'&扣除结果'
-     * 获取该操作的奖励&扣除结果
-                   ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/BehaviorPlan.java:80: 警告: 无效输入：'&扣除'
-     * 计算对该事物进行某操作对象操作的奖励&扣除
-                           ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/ItemModel.java:135: 警告: 无效输入：'&扣除列表'
-     * 获取奖励&扣除列表
-               ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/Item.java:132: 警告: 无效输入：'&扣除信息'
-     * 生产奖励&扣除信息
-               ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/ItemModel.java:125: 警告: 无效输入：'&扣除列表'
-     * 获取奖励&扣除列表
-               ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/AwardList.java:33: 警告: 无效输入：'<'
-     * 获取奖励的所有<奖励组<奖励物品的ID - 奖励数量>>
-              ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/AwardList.java:33: 警告: 无效输入：'<'
-     * 获取奖励的所有<奖励组<奖励物品的ID - 奖励数量>>
-                  ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/simple/SimpleAwardList.java:34: 警告: 无效输入：'<'
-     * 奖励信息 <奖励组<物品ID, 数量>>
-            ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/simple/SimpleAwardList.java:34: 警告: 无效输入：'<'
-     * 奖励信息 <奖励组<物品ID, 数量>>
-                ^
-45 个警告
-
-> Task :tny-game-basics:javadocJar
-> Task :tny-game-basics:assemble
-> Task :tny-game-common-digest:test
-> Task :tny-game-common-digest:check
-> Task :tny-game-common-digest:build
 > Task :tny-game-actor:test
 > Task :tny-game-actor:check
 > Task :tny-game-actor:build
 
-> Task :tny-game-basics:compileTestJava
-注: /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/test/java/com/tny/game/basics/item/xml/YamlTest.java使用或覆盖了已过时的 API。
-注: 有关详细信息, 请使用 -Xlint:deprecation 重新编译。
+> Task :tny-game-basics:javadoc
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/ItemModel.java:125: ??: ?????'&????'
+     * ????&????
+               ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/ItemModel.java:135: ??: ?????'&????'
+     * ????&????
+               ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/ActionPlan.java:100: ??: ?????'&????'
+     * ????????&????
+                   ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/ActionPlan.java:100: ??: ?????'&????'
+     * ????????&????
+                   ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/AwardList.java:33: ??: ?????'<'
+     * ???????<???<?????ID - ????>>
+              ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/AwardList.java:33: ??: ?????'<'
+     * ???????<???<?????ID - ????>>
+                  ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/AwardList.java:33: ??: ?????'<'
+     * ???????<???<?????ID - ????>>
+              ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/AwardList.java:33: ??: ?????'<'
+     * ???????<???<?????ID - ????>>
+                  ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/ActionPlan.java:100: ??: ?????'&????'
+     * ????????&????
+                   ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/ActionPlan.java:100: ??: ?????'&????'
+     * ????????&????
+                   ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/BehaviorPlan.java:80: ??: ?????'&??'
+     * ??????????????????&??
+                           ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/BehaviorPlan.java:80: ??: ?????'&??'
+     * ??????????????????&??
+                           ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/BehaviorPlan.java:80: ??: ?????'&??'
+     * ??????????????????&??
+                           ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/BehaviorPlan.java:80: ??: ?????'&??'
+     * ??????????????????&??
+                           ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/TradeInfo.java:63: ??: ?????'<'
+     * @return ????<???ID, ??>
+                   ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/DemandType.java:30: ??: ?????'<'
+ * LE : <=
+        ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/DemandType.java:32: ??: ?????'<'
+ * LE : <
+        ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/Item.java:132: ??: ?????'&????'
+     * ????&????
+               ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/Item.java:132: ??: ?????'&????'
+     * ????&????
+               ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/ItemBuilder.java:83: ??: ??????????????? @return ???
+    protected void afterModelItem(I item) {
+                   ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/ItemModel.java:135: ??: ?????'&????'
+     * ????&????
+               ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/ItemModel.java:125: ??: ?????'&????'
+     * ????&????
+               ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/ItemModel.java:125: ??: ?????'&????'
+     * ????&????
+               ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/ItemModel.java:135: ??: ?????'&????'
+     * ????&????
+               ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/simple/SimpleAwardList.java:34: ??: ?????'<'
+     * ???? <???<??ID, ??>>
+            ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/simple/SimpleAwardList.java:34: ??: ?????'<'
+     * ???? <???<??ID, ??>>
+                ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/AwardList.java:33: ??: ?????'<'
+     * ???????<???<?????ID - ????>>
+              ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/AwardList.java:33: ??: ?????'<'
+     * ???????<???<?????ID - ????>>
+                  ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/simple/SimpleAwardList.java:34: ??: ?????'<'
+     * ???? <???<??ID, ??>>
+            ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/simple/SimpleAwardList.java:34: ??: ?????'<'
+     * ???? <???<??ID, ??>>
+                ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/AwardList.java:33: ??: ?????'<'
+     * ???????<???<?????ID - ????>>
+              ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/AwardList.java:33: ??: ?????'<'
+     * ???????<???<?????ID - ????>>
+                  ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/TradeInfo.java:63: ??: ?????'<'
+     * @return ????<???ID, ??>
+                   ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/TradeInfo.java:63: ??: ?????'<'
+     * @return ????<???ID, ??>
+                   ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/ActionPlan.java:100: ??: ?????'&????'
+     * ????????&????
+                   ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/BehaviorPlan.java:80: ??: ?????'&??'
+     * ??????????????????&??
+                           ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/ItemModel.java:135: ??: ?????'&????'
+     * ????&????
+               ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/Item.java:132: ??: ?????'&????'
+     * ????&????
+               ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/ItemModel.java:125: ??: ?????'&????'
+     * ????&????
+               ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/AwardList.java:33: ??: ?????'<'
+     * ???????<???<?????ID - ????>>
+              ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/AwardList.java:33: ??: ?????'<'
+     * ???????<???<?????ID - ????>>
+                  ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/simple/SimpleAwardList.java:34: ??: ?????'<'
+     * ???? <???<??ID, ??>>
+            ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/simple/SimpleAwardList.java:34: ??: ?????'<'
+     * ???? <???<??ID, ??>>
+                ^
+45 ???
 
-> Task :tny-game-basics:testClasses
+> Task :tny-game-common-digest:test
+> Task :tny-game-common-digest:check
+> Task :tny-game-common-digest:build
+> Task :tny-game-basics:javadocJar
+> Task :tny-game-basics:assemble
 > Task :tny-game-common-lifecycle:javadoc
 > Task :tny-game-common-lifecycle:javadocJar
 > Task :tny-game-common-lifecycle:assemble
 > Task :tny-game-common-lifecycle:compileTestJava
 > Task :tny-game-common-lifecycle:testClasses
 
-> Task :tny-game-common-reflect:javadoc
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-reflect/src/main/java/com/tny/game/common/reflect/javassist/ConstructInvoker.java:24: 警告: @param argument "host" 不是参数名称。
-     * @param host 执行对象
-       ^
-1 个警告
+> Task :tny-game-basics:compileTestJava
+?: /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/test/java/com/tny/game/basics/item/xml/YamlTest.java?????????? API?
+?: ??????, ??? -Xlint:deprecation ?????
 
-> Task :tny-game-common-reflect:javadocJar
-> Task :tny-game-common-reflect:assemble
-> Task :tny-game-common-reflect:compileTestJava
-> Task :tny-game-common-reflect:testClasses
-> Task :tny-game-common-lifecycle:test
-> Task :tny-game-common-lifecycle:check
-> Task :tny-game-common-lifecycle:build
+> Task :tny-game-basics:testClasses
 > Task :tny-game-codec-jprotobuf:jprotobuf_precompile
 > Task :tny-game-codec-jprotobuf:build
 > Task :tny-game-common-scheduler:compileJava
 > Task :tny-game-common-scheduler:classes
 > Task :tny-game-common-scheduler:jar
+> Task :tny-game-common-lifecycle:test
+> Task :tny-game-common-lifecycle:check
+> Task :tny-game-common-lifecycle:build
+
+> Task :tny-game-common-reflect:javadoc
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-reflect/src/main/java/com/tny/game/common/reflect/javassist/ConstructInvoker.java:24: ??: @param argument "host" ???????
+     * @param host ????
+       ^
+1 ???
+
 > Task :tny-game-data:compileJava
 > Task :tny-game-data:classes
 > Task :tny-game-data:jar
-> Task :tny-game-basics:test
-> Task :tny-game-basics:check
-> Task :tny-game-basics:build
-
-> Task :tny-game-mongodb:compileJava
-注: /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-mongodb/src/main/java/com/tny/game/data/mongodb/configuration/MongodbBeanConfiguration.java使用或覆盖了已过时的 API。
-注: 有关详细信息, 请使用 -Xlint:deprecation 重新编译。
-
-> Task :tny-game-common-reflect:test
-> Task :tny-game-common-reflect:check
-> Task :tny-game-common-reflect:build
-> Task :tny-game-mongodb:classes
-> Task :tny-game-mongodb:jar
-> Task :tny-game-data-mongodb:compileJava
-> Task :tny-game-data-mongodb:classes
-> Task :tny-game-data-mongodb:jar
-> Task :tny-game-redisson:compileJava
+> Task :tny-game-common-reflect:javadocJar
+> Task :tny-game-common-reflect:assemble
+> Task :tny-game-common-reflect:compileTestJava
+> Task :tny-game-common-reflect:testClasses
 > Task :tny-game-common-scheduler:javadoc
 > Task :tny-game-common-scheduler:javadocJar
 > Task :tny-game-common-scheduler:assemble
-> Task :tny-game-data-redisson:compileJava
-> Task :tny-game-data-redisson:classes
-> Task :tny-game-data-redisson:jar
 > Task :tny-game-common-scheduler:compileTestJava
 > Task :tny-game-common-scheduler:testClasses
+> Task :tny-game-basics:test
+> Task :tny-game-basics:check
+> Task :tny-game-basics:build
+> Task :tny-game-common-reflect:test
+> Task :tny-game-common-reflect:check
+> Task :tny-game-common-reflect:build
 
 > Task :tny-game-data:javadoc
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-data/src/main/java/com/tny/game/data/EntityManager.java:77: 警告: @param argument "onLoad" 不是参数名称。
-     * @param onLoad  加载回调
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-data/src/main/java/com/tny/game/data/EntityManager.java:77: ??: @param argument "onLoad" ???????
+     * @param onLoad  ????
        ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-data/src/main/java/com/tny/game/data/EntityManager.java:204: 警告: @param argument "id" 不是参数名称。
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-data/src/main/java/com/tny/game/data/EntityManager.java:204: ??: @param argument "id" ???????
      * @param id id
        ^
-2 个警告
+
+> Task :tny-game-redisson:compileJava
+
+> Task :tny-game-data:javadoc
+2 ???
 
 > Task :tny-game-data:javadocJar
 > Task :tny-game-data:assemble
+
+> Task :tny-game-mongodb:compileJava
+?: /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-mongodb/src/main/java/com/tny/game/data/mongodb/configuration/MongodbBeanConfiguration.java?????????? API?
+?: ??????, ??? -Xlint:deprecation ?????
+
 > Task :tny-game-data:compileTestJava
 > Task :tny-game-data:testClasses
-> Task :tny-game-data-mongodb:javadoc
-> Task :tny-game-data-mongodb:javadocJar
-> Task :tny-game-data-mongodb:assemble
-> Task :tny-game-data-mongodb:compileTestJava NO-SOURCE
-> Task :tny-game-data-mongodb:testClasses UP-TO-DATE
-> Task :tny-game-data-mongodb:test NO-SOURCE
-> Task :tny-game-data-mongodb:check UP-TO-DATE
-> Task :tny-game-data-mongodb:build
-> Task :tny-game-redisson:classes
-> Task :tny-game-redisson:jar
-> Task :tny-game-expr-mvel:compileJava
+> Task :tny-game-data-redisson:compileJava
+> Task :tny-game-mongodb:classes
+> Task :tny-game-mongodb:jar
+> Task :tny-game-data-redisson:classes
+> Task :tny-game-data-redisson:jar
+> Task :tny-game-data-mongodb:compileJava
+> Task :tny-game-data-mongodb:classes
+> Task :tny-game-data-mongodb:jar
 > Task :tny-game-data:test
 > Task :tny-game-data:check
 > Task :tny-game-data:build
+> Task :tny-game-redisson:classes
+> Task :tny-game-redisson:jar
+> Task :tny-game-expr-mvel:compileJava
+> Task :tny-game-common-io:test
+> Task :tny-game-common-io:check
+> Task :tny-game-common-io:build
 > Task :tny-game-expr-mvel:classes
 > Task :tny-game-expr-mvel:jar
+> Task :tny-game-expr-graaljs:compileJava
+> Task :tny-game-expr-graaljs:classes
+> Task :tny-game-expr-graaljs:jar
 > Task :tny-game-data-redisson:javadoc
 > Task :tny-game-data-redisson:javadocJar
 > Task :tny-game-data-redisson:assemble
@@ -811,20 +811,14 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
 > Task :tny-game-data-redisson:test NO-SOURCE
 > Task :tny-game-data-redisson:check UP-TO-DATE
 > Task :tny-game-data-redisson:build
-> Task :tny-game-expr-graaljs:compileJava
-> Task :tny-game-expr-graaljs:classes
-> Task :tny-game-expr-graaljs:jar
-> Task :tny-game-common-io:test
-> Task :tny-game-common-io:check
-> Task :tny-game-common-io:build
-> Task :tny-game-expr-groovy:javadoc
-> Task :tny-game-expr-groovy:javadocJar
-> Task :tny-game-expr-groovy:assemble
-> Task :tny-game-expr-groovy:compileTestJava NO-SOURCE
-> Task :tny-game-expr-groovy:testClasses UP-TO-DATE
-> Task :tny-game-expr-groovy:test NO-SOURCE
-> Task :tny-game-expr-groovy:check UP-TO-DATE
-> Task :tny-game-expr-groovy:build
+> Task :tny-game-data-mongodb:javadoc
+> Task :tny-game-data-mongodb:javadocJar
+> Task :tny-game-data-mongodb:assemble
+> Task :tny-game-data-mongodb:compileTestJava NO-SOURCE
+> Task :tny-game-data-mongodb:testClasses UP-TO-DATE
+> Task :tny-game-data-mongodb:test NO-SOURCE
+> Task :tny-game-data-mongodb:check UP-TO-DATE
+> Task :tny-game-data-mongodb:build
 > Task :tny-game-expr-graaljs:javadoc
 > Task :tny-game-expr-graaljs:javadocJar
 > Task :tny-game-expr-graaljs:assemble
@@ -838,9 +832,19 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
 > Task :tny-game-expr-luaj:jar
 
 > Task :tny-game-net:compileJava
-注: /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-net/src/main/java/com/tny/game/net/command/dispatcher/AutoIncrementIdGenerator.java使用或覆盖了已过时的 API。
-注: 有关详细信息, 请使用 -Xlint:deprecation 重新编译。
+?: /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-net/src/main/java/com/tny/game/net/command/dispatcher/AutoIncrementIdGenerator.java?????????? API?
+?: ??????, ??? -Xlint:deprecation ?????
 
+> Task :tny-game-expr-groovy:javadoc
+> Task :tny-game-net:classes
+> Task :tny-game-net:jar
+> Task :tny-game-expr-groovy:javadocJar
+> Task :tny-game-expr-groovy:assemble
+> Task :tny-game-expr-groovy:compileTestJava NO-SOURCE
+> Task :tny-game-expr-groovy:testClasses UP-TO-DATE
+> Task :tny-game-expr-groovy:test NO-SOURCE
+> Task :tny-game-expr-groovy:check UP-TO-DATE
+> Task :tny-game-expr-groovy:build
 > Task :tny-game-expr-jsr223:javadoc
 > Task :tny-game-expr-jsr223:javadocJar
 > Task :tny-game-expr-jsr223:assemble
@@ -849,21 +853,7 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
 > Task :tny-game-expr-jsr223:test NO-SOURCE
 > Task :tny-game-expr-jsr223:check UP-TO-DATE
 > Task :tny-game-expr-jsr223:build
-
-> Task :tny-game-protoex:compileJava
-注: /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-protoex/src/main/java/com/tny/game/protoex/field/runtime/RuntimeUnsafeFieldDescFactory.java使用或覆盖了已过时的 API。
-注: 有关详细信息, 请使用 -Xlint:deprecation 重新编译。
-
-> Task :tny-game-net:classes
-> Task :tny-game-expr-mvel:javadoc
 > Task :tny-game-expr-luaj:javadoc
-> Task :tny-game-expr-mvel:javadocJar
-> Task :tny-game-expr-mvel:assemble
-> Task :tny-game-expr-mvel:compileTestJava NO-SOURCE
-> Task :tny-game-expr-mvel:testClasses UP-TO-DATE
-> Task :tny-game-expr-mvel:test NO-SOURCE
-> Task :tny-game-expr-mvel:check UP-TO-DATE
-> Task :tny-game-expr-mvel:build
 > Task :tny-game-expr-luaj:javadocJar
 > Task :tny-game-expr-luaj:assemble
 > Task :tny-game-expr-luaj:compileTestJava NO-SOURCE
@@ -871,9 +861,12 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
 > Task :tny-game-expr-luaj:test NO-SOURCE
 > Task :tny-game-expr-luaj:check UP-TO-DATE
 > Task :tny-game-expr-luaj:build
-> Task :tny-game-net:jar
-> Task :tny-game-protoex:classes
-> Task :tny-game-protoex:jar
+> Task :tny-game-rpc:compileJava
+> Task :tny-game-net-test:compileJava
+> Task :tny-game-rpc:classes
+> Task :tny-game-rpc:jar
+> Task :tny-game-net-test:classes
+> Task :tny-game-net-test:jar
 > Task :tny-game-loader:javadocJar
 > Task :tny-game-loader:assemble
 > Task :tny-game-loader:compileTestJava NO-SOURCE
@@ -881,22 +874,34 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
 > Task :tny-game-loader:test NO-SOURCE
 > Task :tny-game-loader:check UP-TO-DATE
 > Task :tny-game-loader:build
-> Task :tny-game-rpc:compileJava
-> Task :tny-game-net-test:compileJava
-> Task :tny-game-rpc:classes
-> Task :tny-game-rpc:jar
-> Task :tny-game-net-test:classes
-> Task :tny-game-net-test:jar
-> Task :tny-game-namnspace:compileJava
-> Task :tny-game-namnspace:classes
-> Task :tny-game-namnspace:jar
+
+> Task :tny-game-protoex:compileJava
+?: /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-protoex/src/main/java/com/tny/game/protoex/field/runtime/RuntimeUnsafeFieldDescFactory.java?????????? API?
+?: ??????, ??? -Xlint:deprecation ?????
+
 > Task :tny-game-doc:compileJava
 > Task :tny-game-doc:classes
 > Task :tny-game-doc:jar
-> Task :tny-game-net-netty4:compileJava
+> Task :tny-game-common-scheduler:test
+> Task :tny-game-common-scheduler:check
+> Task :tny-game-common-scheduler:build
 > Task :tny-game-doc-gradle:compileJava NO-SOURCE
-> Task :tny-game-mongodb:javadoc
+> Task :tny-game-net-netty4:compileJava
 > Task :tny-game-net-netty4-codec-jprotobuf:compileJava
+> Task :tny-game-expr-mvel:javadoc
+> Task :tny-game-expr-mvel:javadocJar
+> Task :tny-game-expr-mvel:assemble
+> Task :tny-game-expr-mvel:compileTestJava NO-SOURCE
+> Task :tny-game-expr-mvel:testClasses UP-TO-DATE
+> Task :tny-game-expr-mvel:test NO-SOURCE
+> Task :tny-game-expr-mvel:check UP-TO-DATE
+> Task :tny-game-expr-mvel:build
+> Task :tny-game-net-netty4:classes
+> Task :tny-game-net-netty4:jar
+> Task :tny-game-net-netty4-codec-jprotobuf:classes
+> Task :tny-game-net-netty4-codec-jprotobuf:jar
+> Task :tny-game-protoex:classes
+> Task :tny-game-protoex:jar
 > Task :tny-game-net-netty4-codec-protoex:compileJava
 > Task :tny-game-integration-test:compileJava NO-SOURCE
 > Task :tny-game-integration-test:classes UP-TO-DATE
@@ -904,23 +909,15 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
 > Task :tny-game-integration-test:assemble
 > Task :tny-game-integration-test:compileTestJava NO-SOURCE
 > Task :tny-game-integration-test:testClasses UP-TO-DATE
-> Task :tny-game-net-netty4:classes
-> Task :tny-game-net-netty4:jar
-> Task :tny-game-net-netty4-codec-jprotobuf:classes
-> Task :tny-game-net-netty4-codec-jprotobuf:jar
 > Task :tny-game-net-netty4-codec-protoex:classes
 > Task :tny-game-net-netty4-codec-protoex:jar
 > Task :tny-game-integration-test:test NO-SOURCE
 > Task :tny-game-integration-test:check UP-TO-DATE
 > Task :tny-game-integration-test:build
-> Task :tny-game-namnspace:javadoc
-> Task :tny-game-namnspace:javadocJar
-> Task :tny-game-namnspace:assemble
-> Task :tny-game-namnspace:compileTestJava NO-SOURCE
-> Task :tny-game-namnspace:testClasses UP-TO-DATE
-> Task :tny-game-namnspace:test NO-SOURCE
-> Task :tny-game-namnspace:check UP-TO-DATE
-> Task :tny-game-namnspace:build
+> Task :tny-game-namnspace:compileJava
+> Task :tny-game-namnspace:classes
+> Task :tny-game-namnspace:jar
+> Task :tny-game-mongodb:javadoc
 > Task :tny-game-mongodb:javadocJar
 > Task :tny-game-mongodb:assemble
 > Task :tny-game-mongodb:compileTestJava NO-SOURCE
@@ -939,15 +936,29 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
 > Task :tny-game-namnspace-etcd:compileJava
 > Task :tny-game-namnspace-etcd:classes
 > Task :tny-game-namnspace-etcd:jar
-> Task :tny-game-common-scheduler:test
-> Task :tny-game-common-scheduler:check
-> Task :tny-game-common-scheduler:build
 > Task :tny-game-starter-codec:compileJava
+> Task :tny-game-namnspace:javadoc
+> Task :tny-game-doc-gradle:compileGroovy
+> Task :tny-game-doc-gradle:classes
+> Task :tny-game-namnspace:javadocJar
+> Task :tny-game-namnspace:assemble
+> Task :tny-game-namnspace:compileTestJava NO-SOURCE
+> Task :tny-game-namnspace:testClasses UP-TO-DATE
+> Task :tny-game-namnspace:test NO-SOURCE
+> Task :tny-game-namnspace:check UP-TO-DATE
+> Task :tny-game-namnspace:build
 > Task :tny-game-starter-mongodb:compileJava NO-SOURCE
+> Task :tny-game-doc-gradle:jar
+> Task :tny-game-doc-gradle:assemble
+> Task :tny-game-doc-gradle:compileTestJava NO-SOURCE
+> Task :tny-game-doc-gradle:compileTestGroovy NO-SOURCE
+> Task :tny-game-doc-gradle:pluginUnderTestMetadata
+> Task :tny-game-doc-gradle:testClasses UP-TO-DATE
+> Task :tny-game-doc-gradle:test NO-SOURCE
 
 > Task :tny-game-starter-data:compileJava
-注: /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-data/src/main/java/com/tny/game/data/configuration/mongodb/MongoStorageAutoConfiguration.java使用或覆盖了已过时的 API。
-注: 有关详细信息, 请使用 -Xlint:deprecation 重新编译。
+?: /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-data/src/main/java/com/tny/game/data/configuration/mongodb/MongoStorageAutoConfiguration.java?????????? API?
+?: ??????, ??? -Xlint:deprecation ?????
 
 > Task :tny-game-starter-redisson:compileJava
 > Task :tny-game-starter-codec:classes
@@ -959,53 +970,63 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
 > Task :tny-game-starter-redisson:classes
 > Task :tny-game-starter-redisson:jar
 
-> Task :tny-game-starter-net-netty4:compileJava
-注: /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-net-netty4/src/main/java/com/tny/game/net/netty4/cloud/nacos/NacosServeNodeClient.java使用或覆盖了已过时的 API。
-注: 有关详细信息, 请使用 -Xlint:deprecation 重新编译。
+> Task :tny-game-net:javadoc
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-net/src/main/java/com/tny/game/net/session/Session.java:98: ??: ?????'&'
+     * @param bound  ???? fromId & toId
+                                 ^
 
-> Task :tny-game-net-demo:compileJava
-> Task :tny-game-net-demo:classes
-> Task :tny-game-net-demo:jar
+> Task :tny-game-doc-gradle:validatePlugins
+> Task :tny-game-doc-gradle:check
+> Task :tny-game-doc-gradle:build
+
+> Task :tny-game-starter-net-netty4:compileJava
+?: /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-net-netty4/src/main/java/com/tny/game/net/netty4/cloud/nacos/NacosServeNodeClient.java?????????? API?
+?: ??????, ??? -Xlint:deprecation ?????
+
 > Task :tny-game-namnspace-etcd:javadoc
 > Task :tny-game-namnspace-etcd:javadocJar
 > Task :tny-game-namnspace-etcd:assemble
 > Task :tny-game-namnspace-etcd:compileTestJava
 > Task :tny-game-namnspace-etcd:testClasses
+> Task :tny-game-net-demo:compileJava
+> Task :tny-game-net-demo:classes
+> Task :tny-game-net-demo:jar
 
 > Task :tny-game-net:javadoc
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-net/src/main/java/com/tny/game/net/session/Session.java:98: 警告: 无效输入：'&'
-     * @param bound  是否包含 fromId & toId
-                                 ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-net/src/main/java/com/tny/game/net/codec/CodecVerifier.java:51: ??: @param argument "time" ???????
+     * @param time
+       ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-net/src/main/java/com/tny/game/net/session/NetSession.java:51: ??: @param argument "tunnel" ???????
+     * @param tunnel ????
+       ^
 
-> Task :tny-game-doc-gradle:compileGroovy
-> Task :tny-game-doc-gradle:classes
-> Task :tny-game-doc-gradle:jar
-> Task :tny-game-doc-gradle:assemble
-> Task :tny-game-doc-gradle:compileTestJava NO-SOURCE
-> Task :tny-game-doc-gradle:compileTestGroovy NO-SOURCE
-> Task :tny-game-doc-gradle:pluginUnderTestMetadata
-> Task :tny-game-doc-gradle:testClasses UP-TO-DATE
-> Task :tny-game-doc-gradle:test NO-SOURCE
 > Task :tny-game-namnspace-etcd:test
 > Task :tny-game-namnspace-etcd:check
 > Task :tny-game-namnspace-etcd:build
 > Task :tny-game-starter-net-netty4:classes
 > Task :tny-game-starter-net-netty4:jar
-> Task :tny-game-doc-gradle:validatePlugins
-> Task :tny-game-doc-gradle:check
-> Task :tny-game-doc-gradle:build
-> Task :tny-game-net-netty4:javadoc
-> Task :tny-game-net-netty4:javadocJar
-> Task :tny-game-net-netty4:assemble
+> Task :tny-game-net-netty4-codec-jprotobuf:javadoc
+> Task :tny-game-net-netty4-codec-jprotobuf:javadocJar
+> Task :tny-game-net-netty4-codec-jprotobuf:assemble
+> Task :tny-game-net-netty4-codec-jprotobuf:compileTestJava
+> Task :tny-game-net-netty4-codec-jprotobuf:testClasses
 
 > Task :tny-game-net:javadoc
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-net/src/main/java/com/tny/game/net/codec/CodecVerifier.java:51: 警告: @param argument "time" 不是参数名称。
-     * @param time
-       ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-net/src/main/java/com/tny/game/net/session/NetSession.java:51: 警告: @param argument "tunnel" 不是参数名称。
-     * @param tunnel 指定认证
-       ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-net/src/main/java/com/tny/game/net/session/SentMessageHistory.java:58: ??: ?????'&'
+     * @param bound  ???? fromId & toId
+                                 ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-net/src/main/java/com/tny/game/net/session/Session.java:98: ??: ?????'&'
+     * @param bound  ???? fromId & toId
+                                 ^
 
+> Task :tny-game-net-netty4-codec-protoex:javadoc
+> Task :tny-game-net-netty4-codec-protoex:javadocJar
+> Task :tny-game-net-netty4-codec-protoex:assemble
+> Task :tny-game-net-netty4:javadoc
+> Task :tny-game-net-netty4-codec-protoex:compileTestJava
+> Task :tny-game-net-netty4-codec-protoex:testClasses
+> Task :tny-game-net-netty4:javadocJar
+> Task :tny-game-net-netty4:assemble
 > Task :tny-game-net-demo:javadoc
 > Task :tny-game-net-demo:javadocJar
 > Task :tny-game-net-demo:assemble
@@ -1014,29 +1035,30 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
 > Task :tny-game-net-demo:test NO-SOURCE
 > Task :tny-game-net-demo:check UP-TO-DATE
 > Task :tny-game-net-demo:build
-> Task :tny-game-net-netty4-codec-jprotobuf:javadoc
-> Task :tny-game-net-netty4-codec-jprotobuf:javadocJar
-> Task :tny-game-net-netty4-codec-jprotobuf:assemble
-> Task :tny-game-net-netty4-codec-jprotobuf:compileTestJava
-> Task :tny-game-net-netty4-codec-jprotobuf:testClasses
 > Task :tny-game-net-netty4:compileTestJava
 > Task :tny-game-net-netty4:testClasses
-> Task :tny-game-net-netty4-codec-protoex:javadoc
-> Task :tny-game-net-netty4-codec-protoex:javadocJar
-> Task :tny-game-net-netty4-codec-protoex:assemble
-> Task :tny-game-net-netty4-codec-protoex:compileTestJava
-> Task :tny-game-net-netty4-codec-protoex:testClasses
-OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
 
 > Task :tny-game-net:javadoc
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-net/src/main/java/com/tny/game/net/session/SentMessageHistory.java:58: 警告: 无效输入：'&'
-     * @param bound  是否包含 fromId & toId
-                                 ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-net/src/main/java/com/tny/game/net/session/Session.java:98: 警告: 无效输入：'&'
-     * @param bound  是否包含 fromId & toId
-                                 ^
-5 个警告
+5 ???
 
+> Task :tny-game-net-netty4-codec-jprotobuf:test
+> Task :tny-game-net-netty4-codec-jprotobuf:check
+> Task :tny-game-net-netty4-codec-jprotobuf:build
+> Task :tny-game-net:javadocJar
+> Task :tny-game-net:assemble
+> Task :tny-game-oplog:compileJava
+> Task :tny-game-oplog:classes
+> Task :tny-game-oplog:jar
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+
+> Task :tny-game-net:compileTestJava
+?: ???????????????? API?
+?: ??????, ??? -Xlint:deprecation ?????
+?: ?????????????????????
+?: ??????, ??? -Xlint:unchecked ?????
+
+> Task :tny-game-net:testClasses
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
 > Task :tny-game-net-test:javadoc
 > Task :tny-game-net-test:javadocJar
 > Task :tny-game-net-test:assemble
@@ -1045,25 +1067,6 @@ OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader clas
 > Task :tny-game-net-test:test NO-SOURCE
 > Task :tny-game-net-test:check UP-TO-DATE
 > Task :tny-game-net-test:build
-> Task :tny-game-net-netty4-codec-jprotobuf:test
-> Task :tny-game-net-netty4-codec-jprotobuf:check
-> Task :tny-game-net-netty4-codec-jprotobuf:build
-> Task :tny-game-protobuf:testClasses
-> Task :tny-game-net:javadocJar
-> Task :tny-game-net:assemble
-> Task :tny-game-oplog:compileJava
-> Task :tny-game-oplog:classes
-> Task :tny-game-oplog:jar
-
-> Task :tny-game-net:compileTestJava
-注: 某些输入文件使用或覆盖了已过时的 API。
-注: 有关详细信息, 请使用 -Xlint:deprecation 重新编译。
-注: 某些输入文件使用了未经检查或不安全的操作。
-注: 有关详细信息, 请使用 -Xlint:unchecked 重新编译。
-
-> Task :tny-game-net:testClasses
-OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
-> Task :tny-game-protobuf:test
 > Task :tny-game-oplog-log4j:compileJava
 > Task :tny-game-oplog-log4j:classes
 > Task :tny-game-oplog-log4j:jar
@@ -1075,12 +1078,14 @@ OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader clas
 > Task :tny-game-oplog:test NO-SOURCE
 > Task :tny-game-oplog:check UP-TO-DATE
 > Task :tny-game-oplog:build
-> Task :tny-game-protobuf:check
-> Task :tny-game-protobuf:build
+> Task :tny-game-protobuf:testClasses
 OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
 > Task :tny-game-net-netty4-codec-protoex:test
 > Task :tny-game-net-netty4-codec-protoex:check
 > Task :tny-game-net-netty4-codec-protoex:build
+> Task :tny-game-protobuf:test
+> Task :tny-game-protobuf:check
+> Task :tny-game-protobuf:build
 > Task :tny-game-oplog-log4j:javadoc
 > Task :tny-game-oplog-log4j:javadocJar
 > Task :tny-game-oplog-log4j:assemble
@@ -1089,6 +1094,7 @@ OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader clas
 > Task :tny-game-oplog-log4j:test NO-SOURCE
 > Task :tny-game-oplog-log4j:check UP-TO-DATE
 > Task :tny-game-oplog-log4j:build
+> Task :tny-game-common-lang:test
 > Task :tny-game-net-netty4:test
 > Task :tny-game-net-netty4:check
 > Task :tny-game-net-netty4:build
@@ -1099,13 +1105,18 @@ OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader clas
 > Task :tny-game-scanning:build
 
 > Task :tny-game-protoex:javadoc
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-protoex/src/main/java/com/tny/game/protoex/field/FieldDesc.java:39: 警告: @param argument "value" 不是参数名称。
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-protoex/src/main/java/com/tny/game/protoex/field/FieldDesc.java:39: ??: @param argument "value" ???????
      * @param value
        ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-protoex/src/main/java/com/tny/game/protoex/ProtobufExException.java:204: 警告: @param argument "type" 不是参数名称。
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-protoex/src/main/java/com/tny/game/protoex/ProtobufExException.java:204: ??: @param argument "type" ???????
      * @param type
        ^
+2 ???
 
+> Task :tny-game-protoex:javadocJar
+> Task :tny-game-protoex:assemble
+> Task :tny-game-protoex:compileTestJava
+> Task :tny-game-protoex:testClasses
 > Task :tny-game-redisson:javadoc
 > Task :tny-game-redisson:javadocJar
 > Task :tny-game-redisson:assemble
@@ -1114,37 +1125,17 @@ OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader clas
 > Task :tny-game-redisson:test NO-SOURCE
 > Task :tny-game-redisson:check UP-TO-DATE
 > Task :tny-game-redisson:build
-
-> Task :tny-game-protoex:javadoc
-2 个警告
-
-> Task :tny-game-protoex:javadocJar
-> Task :tny-game-protoex:assemble
 > Task :tny-game-rpc:javadoc
 > Task :tny-game-rpc:javadocJar
 > Task :tny-game-rpc:assemble
-> Task :tny-game-protoex:compileTestJava
-> Task :tny-game-protoex:testClasses
 > Task :tny-game-rpc:compileTestJava
 > Task :tny-game-rpc:testClasses
-
-> Task :tny-game-starter-basics:compileJava
-注: /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/mongodb/mapper/MongoBasicsObjectMapperCustomizer.java使用或覆盖了已过时的 API。
-注: 有关详细信息, 请使用 -Xlint:deprecation 重新编译。
-
-> Task :tny-game-starter-basics:classes
-> Task :tny-game-starter-basics:jar
+> Task :tny-game-protoex:test
+> Task :tny-game-protoex:check
+> Task :tny-game-protoex:build
 > Task :tny-game-rpc:test
 > Task :tny-game-rpc:check
 > Task :tny-game-rpc:build
-> Task :tny-game-starter-codec:javadoc
-> Task :tny-game-starter-codec:javadocJar
-> Task :tny-game-starter-codec:assemble
-> Task :tny-game-starter-codec:compileTestJava NO-SOURCE
-> Task :tny-game-starter-codec:testClasses UP-TO-DATE
-> Task :tny-game-starter-codec:test NO-SOURCE
-> Task :tny-game-starter-codec:check UP-TO-DATE
-> Task :tny-game-starter-codec:build
 > Task :tny-game-starter-mongodb:javadoc NO-SOURCE
 > Task :tny-game-starter-mongodb:javadocJar
 > Task :tny-game-starter-mongodb:assemble
@@ -1153,32 +1144,43 @@ OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader clas
 > Task :tny-game-starter-mongodb:test NO-SOURCE
 > Task :tny-game-starter-mongodb:check UP-TO-DATE
 > Task :tny-game-starter-mongodb:build
+
+> Task :tny-game-starter-basics:compileJava
+?: /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/mongodb/mapper/MongoBasicsObjectMapperCustomizer.java?????????? API?
+?: ??????, ??? -Xlint:deprecation ?????
+
+> Task :tny-game-starter-codec:javadoc
+> Task :tny-game-starter-codec:javadocJar
+> Task :tny-game-starter-codec:assemble
+> Task :tny-game-starter-codec:compileTestJava NO-SOURCE
+> Task :tny-game-starter-codec:testClasses UP-TO-DATE
+> Task :tny-game-starter-codec:test NO-SOURCE
+> Task :tny-game-starter-codec:check UP-TO-DATE
+> Task :tny-game-starter-codec:build
 > Task :tny-game-starter-namnspace:compileJava
 > Task :tny-game-starter-namnspace:classes
+> Task :tny-game-starter-basics:classes
 > Task :tny-game-starter-namnspace:jar
-> Task :tny-game-protoex:test
-> Task :tny-game-protoex:check
-> Task :tny-game-protoex:build
+> Task :tny-game-starter-basics:jar
 
 > Task :tny-game-starter-net-apm-skywalking:compileJava
-注: /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-net-apm-skywalking/src/main/java/com/tny/game/net/netty4/apm/skywalking/SkywalkingRpcMonitorHandler.java使用了未经检查或不安全的操作。
-注: 有关详细信息, 请使用 -Xlint:unchecked 重新编译。
+?: /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-net-apm-skywalking/src/main/java/com/tny/game/net/netty4/apm/skywalking/SkywalkingRpcMonitorHandler.java???????????????
+?: ??????, ??? -Xlint:unchecked ?????
 
 > Task :tny-game-starter-net-apm-skywalking:classes
 > Task :tny-game-starter-net-apm-skywalking:jar
-
-> Task :tny-game-starter-data:javadoc
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-data/src/main/java/com/tny/game/data/configuration/storage/AbstractObjectStorageFactoriesProperties.java:30: 警告: 无效输入：'<'
- * <li>storages 默认 new HashMap<>()——现状 getter 直返 live 可变引用；</li>
-                              ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-data/src/main/java/com/tny/game/data/configuration/AbstractStorageAccessorFactoryProperties.java:30: 警告: 无效输入：'<'
- * <li>accessors 默认 new HashMap<>()——现状 getter 直返 live 可变引用（与 netty4 侧只读包装不同，禁止抹平）；</li>
-                               ^
-
 > Task :tny-game-net:test
 > Task :tny-game-net:check
 > Task :tny-game-net:build
-> Task :tny-game-common-lang:test
+
+> Task :tny-game-starter-data:javadoc
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-data/src/main/java/com/tny/game/data/configuration/storage/AbstractObjectStorageFactoriesProperties.java:30: ??: ?????'<'
+ * <li>storages ?? new HashMap<>()???? getter ?? live ?????</li>
+                              ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-data/src/main/java/com/tny/game/data/configuration/AbstractStorageAccessorFactoryProperties.java:30: ??: ?????'<'
+ * <li>accessors ?? new HashMap<>()???? getter ?? live ?????? netty4 ??????????????</li>
+                               ^
+
 > Task :tny-game-starter-namnspace:javadoc
 > Task :tny-game-starter-namnspace:javadocJar
 > Task :tny-game-starter-namnspace:assemble
@@ -1187,57 +1189,121 @@ OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader clas
 > Task :tny-game-starter-namnspace:test NO-SOURCE
 > Task :tny-game-starter-namnspace:check UP-TO-DATE
 > Task :tny-game-starter-namnspace:build
-
-> Task :tny-game-starter-basics:javadoc
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:167: 警告: 无效输入：'<'
-     *                 <0时永久有效,
-                       ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:180: 警告: 无效输入：'<'
-     *                 <0时永久有效,
-                       ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:232: 警告: 无效输入：'<'
-     *                  <0时永久有效,
-                        ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:245: 警告: 无效输入：'<'
-     *                  <0时永久有效,
-                        ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:298: 警告: 无效输入：'<'
-     *                 <0时永久有效,
-                       ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:309: 警告: 无效输入：'<'
-     *                 <0时永久有效,
-                       ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:443: 警告: 无效输入：'<'
-     *                 <0时永久有效,
-                       ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:456: 警告: 无效输入：'<'
-     *                    <0时永久有效,
-                          ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:469: 警告: 无效输入：'<'
-     *                  <0时永久有效,
-                        ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:521: 警告: 无效输入：'<'
-     *                  <0时永久有效,
-                        ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:532: 警告: 无效输入：'<'
-     *                 <0时永久有效,
-                       ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:543: 警告: 无效输入：'<'
-     *                 <0时永久有效,
-                       ^
-
-> Task :tny-game-starter-data:javadoc
-2 个警告
-
-> Task :tny-game-starter-data:javadocJar
-> Task :tny-game-starter-data:assemble
 > Task :tny-game-starter-net-apm-skywalking:javadoc
 > Task :tny-game-starter-net-apm-skywalking:javadocJar
 > Task :tny-game-starter-net-apm-skywalking:assemble
+
+> Task :tny-game-starter-data:javadoc
+2 ???
+
+> Task :tny-game-starter-data:javadocJar
+> Task :tny-game-starter-data:assemble
 > Task :tny-game-starter-net-apm-skywalking:compileTestJava
 > Task :tny-game-starter-net-apm-skywalking:testClasses
 > Task :tny-game-starter-data:compileTestJava
 > Task :tny-game-starter-data:testClasses
+
+> Task :tny-game-starter-basics:javadoc
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:167: ??: ?????'<'
+     *                 <0?????,
+                       ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:180: ??: ?????'<'
+     *                 <0?????,
+                       ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:232: ??: ?????'<'
+     *                  <0?????,
+                        ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:245: ??: ?????'<'
+     *                  <0?????,
+                        ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:298: ??: ?????'<'
+     *                 <0?????,
+                       ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:309: ??: ?????'<'
+     *                 <0?????,
+                       ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:443: ??: ?????'<'
+     *                 <0?????,
+                       ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:456: ??: ?????'<'
+     *                    <0?????,
+                          ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:469: ??: ?????'<'
+     *                  <0?????,
+                        ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:521: ??: ?????'<'
+     *                  <0?????,
+                        ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:532: ??: ?????'<'
+     *                 <0?????,
+                       ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:543: ??: ?????'<'
+     *                 <0?????,
+                       ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:167: ??: ?????'<'
+     *                 <0?????,
+                       ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:180: ??: ?????'<'
+     *                 <0?????,
+                       ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:192: ??: ?????'<'
+     *                 <0?????,
+                       ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:206: ??: ?????'<'
+     *                 <0?????,
+                       ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:219: ??: ?????'<'
+     *                 <0?????,
+                       ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:232: ??: ?????'<'
+     *                  <0?????,
+                        ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:245: ??: ?????'<'
+     *                  <0?????,
+                        ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:257: ??: ?????'<'
+     *                  <0?????,
+                        ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:270: ??: ?????'<'
+     *                 <0?????,
+                       ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:284: ??: ?????'<'
+     *                  <0?????,
+                        ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:298: ??: ?????'<'
+     *                 <0?????,
+                       ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:309: ??: ?????'<'
+     *                 <0?????,
+                       ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:443: ??: ?????'<'
+     *                 <0?????,
+                       ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:456: ??: ?????'<'
+     *                    <0?????,
+                          ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:469: ??: ?????'<'
+     *                  <0?????,
+                        ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:481: ??: ?????'<'
+     *                    <0?????,
+                          ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:494: ??: ?????'<'
+     *                 <0?????,
+                       ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:508: ??: ?????'<'
+     *                  <0?????,
+                        ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:521: ??: ?????'<'
+     *                  <0?????,
+                        ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:532: ??: ?????'<'
+     *                 <0?????,
+                       ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:543: ??: ?????'<'
+     *                 <0?????,
+                       ^
+
 > Task :tny-game-starter-net-apm-skywalking:test
 > Task :tny-game-starter-net-apm-skywalking:check
 > Task :tny-game-starter-net-apm-skywalking:build
@@ -1249,97 +1315,34 @@ OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader clas
 > Task :tny-game-starter-redisson:test NO-SOURCE
 > Task :tny-game-starter-redisson:check UP-TO-DATE
 > Task :tny-game-starter-redisson:build
-
-> Task :tny-game-starter-basics:javadoc
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:167: 警告: 无效输入：'<'
-     *                 <0时永久有效,
-                       ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:180: 警告: 无效输入：'<'
-     *                 <0时永久有效,
-                       ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:192: 警告: 无效输入：'<'
-     *                 <0时永久有效,
-                       ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:206: 警告: 无效输入：'<'
-     *                 <0时永久有效,
-                       ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:219: 警告: 无效输入：'<'
-     *                 <0时永久有效,
-                       ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:232: 警告: 无效输入：'<'
-     *                  <0时永久有效,
-                        ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:245: 警告: 无效输入：'<'
-     *                  <0时永久有效,
-                        ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:257: 警告: 无效输入：'<'
-     *                  <0时永久有效,
-                        ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:270: 警告: 无效输入：'<'
-     *                 <0时永久有效,
-                       ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:284: 警告: 无效输入：'<'
-     *                  <0时永久有效,
-                        ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:298: 警告: 无效输入：'<'
-     *                 <0时永久有效,
-                       ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:309: 警告: 无效输入：'<'
-     *                 <0时永久有效,
-                       ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:443: 警告: 无效输入：'<'
-     *                 <0时永久有效,
-                       ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:456: 警告: 无效输入：'<'
-     *                    <0时永久有效,
-                          ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:469: 警告: 无效输入：'<'
-     *                  <0时永久有效,
-                        ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:481: 警告: 无效输入：'<'
-     *                    <0时永久有效,
-                          ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:494: 警告: 无效输入：'<'
-     *                 <0时永久有效,
-                       ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:508: 警告: 无效输入：'<'
-     *                  <0时永久有效,
-                        ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:521: 警告: 无效输入：'<'
-     *                  <0时永久有效,
-                        ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:532: 警告: 无效输入：'<'
-     *                 <0时永久有效,
-                       ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:543: 警告: 无效输入：'<'
-     *                 <0时永久有效,
-                       ^
-33 个警告
-
 > Task :tny-game-starter-data:test
 > Task :tny-game-starter-data:check
 > Task :tny-game-starter-data:build
-> Task :tny-game-starter-basics:javadocJar
-> Task :tny-game-starter-basics:assemble
-> Task :tny-game-starter-basics:compileTestJava
-> Task :tny-game-starter-basics:testClasses
 > Task :tny-game-starter-net-netty4:javadoc
-> Task :tny-game-starter-basics:test
-> Task :tny-game-starter-basics:check
-> Task :tny-game-starter-basics:build
 > Task :tny-game-starter-net-netty4:javadocJar
 > Task :tny-game-starter-net-netty4:assemble
+> Task :tny-game-starter-net-netty4:compileTestJava
+> Task :tny-game-starter-net-netty4:testClasses
 > Task :tny-game-tester:javadoc
 > Task :tny-game-tester:javadocJar
 > Task :tny-game-tester:assemble
+
+> Task :tny-game-starter-basics:javadoc
+33 ???
+
 > Task :tny-game-tester:compileTestJava NO-SOURCE
 > Task :tny-game-tester:testClasses UP-TO-DATE
 > Task :tny-game-tester:test NO-SOURCE
 > Task :tny-game-tester:check UP-TO-DATE
 > Task :tny-game-tester:build
-> Task :tny-game-starter-net-netty4:compileTestJava
-> Task :tny-game-starter-net-netty4:testClasses
+> Task :tny-game-starter-basics:javadocJar
+> Task :tny-game-starter-basics:assemble
+> Task :tny-game-starter-basics:compileTestJava
+> Task :tny-game-starter-basics:testClasses
 OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+> Task :tny-game-starter-basics:test
+> Task :tny-game-starter-basics:check
+> Task :tny-game-starter-basics:build
 > Task :tny-game-starter-net-netty4:test
 > Task :tny-game-starter-net-netty4:check
 > Task :tny-game-starter-net-netty4:build
@@ -1352,5 +1355,5 @@ You can use '--warning-mode all' to show the individual deprecation warnings and
 
 For more on this, please refer to https://docs.gradle.org/8.5/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
 
-BUILD SUCCESSFUL in 53s
-347 actionable tasks: 339 executed, 8 up-to-date
+BUILD SUCCESSFUL in 1m 7s
+347 actionable tasks: 341 executed, 6 up-to-date
