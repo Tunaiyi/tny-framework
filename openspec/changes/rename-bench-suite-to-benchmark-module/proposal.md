@@ -6,7 +6,7 @@
 
 ## What Changes
 
-- 文件 `tny.bench-suite.gradle` 移名 `tny.benchmark-module.gradle`（插件 id 随文件名派生）；内部六处随改——第 4/5/7/18 行注释的 `benchSuite` 字样、第 16 行 `extensions.create('benchSuite', …)` 改 `benchmarkSuite`（类型参数 `tny.convention.BenchSuite` 不动，类暂留）、第 47 行 `jmhListVerify` 报错文案的"检查 benchSuite.routineFamily"换扩展名前缀（属性名与 -PbenchAll 不动）；第 2 行"前身为 gradle/bench-suite.gradle"历史路径保留。
+- 文件 `tny.bench-suite.gradle` 移名 `tny.benchmark-module.gradle`（插件 id 随文件名派生）；内部六处随改——第 4/5/7/18 行注释的 `benchSuite` 字样、第 16 行 `extensions.create('benchSuite', …)` 改 `benchmarkSuite`（类型参数 `tny.convention.BenchSuite` 不动，类暂留）、第 47 行 `jmhListVerify` 报错文案的"检查 benchSuite.routineFamily"换扩展名前缀（属性名与 -PbenchAll 不动）；第 3 行"前身为 gradle/bench-suite.gradle"历史路径保留。
 - 类文件 `tny/convention/BenchSuite.groovy` 第 1、4 行对 `tny.bench-suite` 的指称改 `tny.benchmark-module`；类名与五个属性名不动。
 - 模块 `tny-benchmark/build.gradle` 八处——第 4/28/75 行插件名指称、第 5 行 `id 'tny.benchmark-module'`、第 29 行扩展块 `benchSuite {` 与第 56/65/70 行三处 `benchSuite.<属性>` 读取改 `benchmarkSuite`；族正则、臂属清单、任务名与 `-Pbench*` 属性名一律不动。
 - 历史指称不回改：归档案卷（含 rename-bench-to-benchmark 册内 `benchSuite 清单` 等记录）、HANDOFF 与本账其他工件按记录原则保留。

@@ -6,14 +6,14 @@
 
 ## Goals / Non-Goals
 
-Goals：插件 id、扩展名两层与基准模块新名同词族（benchmark），族清单配置面的读者在模块文件里读作 `benchmarkSuite { routineFamily.set(…) }`；行为逐字节不变。Non-Goals：不改实现类 `tny.convention.BenchSuite` 与五个属性名（routineFamily 等）——类收口与 module-setting 先例同节奏可另批；不改任务名（jmhList/jmhListVerify/jmhSuiteVerify/benchRoutineExport，CI 调用契约与插件头注释"任务名历次迁移不变"注记均继续成立）；不改 `-Pbench*` 属性名与 `reports/bench/`、`dev/bench/` 路径段；不改插件第 2 行历史路径指称；不回改归档与 HANDOFF。
+Goals：插件 id、扩展名两层与基准模块新名同词族（benchmark），族清单配置面的读者在模块文件里读作 `benchmarkSuite { routineFamily.set(…) }`；行为逐字节不变。Non-Goals：不改实现类 `tny.convention.BenchSuite` 与五个属性名（routineFamily 等）——类收口与 module-setting 先例同节奏可另批；不改任务名（jmhList/jmhListVerify/jmhSuiteVerify/benchRoutineExport，CI 调用契约与插件头注释"任务名历次迁移不变"注记均继续成立）；不改 `-Pbench*` 属性名与 `reports/bench/`、`dev/bench/` 路径段；不改插件第 3 行历史路径指称；不回改归档与 HANDOFF。
 
 ## Decisions
 
 **D1 扩展名取 `benchmarkSuite` 而非 `benchmarkModule`（立项后修订的用户裁决）。** 用户最初给的落点字面是插件名 `tny.benchmark-module`，插件 id 从其字面；扩展名此前经"id 与扩展名同动"裁决拟机械映射为 benchmarkModule，立项核查轮发现——扩展承载的是基准族清单集合，"Suite"在该语境（清单、对账、报错文案）比"Module"准确，且与暂留类名 `BenchSuite` 同词根使"扩展名/类型名"关系与 module-setting 收口前形态同构；插件 id 仍按用户字面取 `tny.benchmark-module`（id 说出"基准模块的约定插件"、扩展说出"族清单集合"，两层语义各得其所）。
 **D2 报错文案前缀随扩展名改。** 第 47 行"检查 benchSuite.routineFamily 与 -PbenchAll"改"检查 benchmarkSuite.routineFamily 与 -PbenchAll"——指引对象换名，属性名与触发条件不动；与 module-setting D3 同理。
 **D3 `:tny-benchmark` 归属字样归前批。** 插件第 4 行同行含 `benchSuite`（本册改）与 `:tny-benchmark`（rename-bench-to-benchmark 已改，本册实施时已是现名），两词族各有归属互不触碰。
-**D4 判据含大小写不敏感复核步骤。** 终态 grep 以两判据（`tny\.bench-suite`、`benchSuite`）零命中为准，另跑一次 `-i` 复核：命中面应只剩历史路径（`gradle/bench-suite.gradle` 第 2 行）、类名（`BenchSuite` 声明与 import）与 `jmhSuiteVerify` 字样（任务名，两处）四类豁免——多出一类即漏改。
+**D4 判据含大小写不敏感复核步骤。** 终态 grep 以两判据（`tny\.bench-suite`、`benchSuite`）零命中为准，另跑一次 `-i` 复核：命中面应只剩历史路径（`gradle/bench-suite.gradle` 第 3 行）、类名（`BenchSuite` 声明与 import）与 `jmhSuiteVerify` 字样（任务名，两处）四类豁免——多出一类即漏改。
 
 ## Risks / Trade-offs
 
