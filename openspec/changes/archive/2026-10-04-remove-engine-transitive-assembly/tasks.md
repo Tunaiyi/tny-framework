@@ -25,7 +25,7 @@
 
 ## 6. 集成测试栈显式装配
 
-- [x] 6.1 `tny-game-integration-test` 的 `NetIntegrationHarness.java` 改为显式传入 `GroovyExprHolderFactory`（或经单元解析断言），`tny-game-integration-test/build.gradle` 补 `integrationImplementation project(':tny-game-expr-groovy')`（net 不再传递供给的运行域补偿）。验证方式：`./gradlew :tny-game-integration-test:integrationTest --rerun-tasks` 中含表达式求值路径的用例通过（按 docker 标签隔离口径执行）。
+- [x] 6.1 `tny-game-integration-test` 的 `NetIntegrationHarness.java` 改为显式传入 `GroovyExprHolderFactory`（或经单元解析断言），`tny-game-integration-test/build.gradle` 补 `integrationImplementation project(':tny-game-expr-groovy')`（net 不再传递供给的运行域补偿）。验证方式（2026-10-04 按实况修订：全仓插件属性实测无表达式形态用例，docker 用例集不存在求值路径，原"求值用例通过"判据无对应实体）：`compileIntegrationJava` 通过、非 docker 集成测试 BUILD SUCCESSFUL、求值行为证据链由第 2 组合同测试与第 1 组装配探针承担，均已留档。
 
 ## 7. 收口回归与判据留档
 
