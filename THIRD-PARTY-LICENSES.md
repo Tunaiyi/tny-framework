@@ -56,13 +56,11 @@ TnyFramework 本体采用 [Apache License 2.0](https://www.apache.org/licenses/L
 | JUnit 5 平台 | org.junit.*:* | EPL-2.0 |
 | AspectJ | org.aspectj:* | EPL-2.0（与 LGPL-2.1 双许可，按 EPL-2.0 使用） |
 | Java EE / 注解 API | javax:javaee-api、javax.annotation:javax.annotation-api | 双许可（CDDL-1.1 与 GPL-2.0 with Classpath Exception），仅作编译期引用 |
-| hutool | cn.hutool:hutool-core | Mulan PSL v2（木兰宽松许可证第 2 版） |
 
 ## 三、需要特别留意的组件
 
 **MySQL Connector/J（mysql:mysql-connector-java）** 的官方许可证是 GPL-2.0 配合 Universal FOSS Exception。它作为独立构件被驱动使用不产生传染，但如果你把本框架连同该驱动合并为单一 fat-jar 再分发，合并产物将受 GPL 条件约束。依赖了它的模块仅位于 obsolete 目录下的历史缓存模块，正常集成路径不会引入该驱动。
 
-**hutool（cn.hutool:hutool-core）** 自身采用 Mulan PSL v2。Mulan PSL v2 与 Apache-2.0 同属宽松许可证家族，二者义务互不冲突，各自保留自身许可证随构件分发即可，不需要任何特殊处理。
 
 ## 四、再分发义务摘要
 

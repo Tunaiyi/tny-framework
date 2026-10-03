@@ -15,7 +15,6 @@
  */
 package com.tny.game.namespace.algorithm;
 
-import cn.hutool.core.util.HashUtil;
 import com.google.common.hash.HashFunction;
 import net.openhft.hashing.LongHashFunction;
 import org.apache.commons.codec.digest.XXHash32;
@@ -47,10 +46,9 @@ public class HashAlgorithms {
     public static final HashAlgorithm XXH3_HASH_64 = openFht64(LongHashFunction::xx3, true);
 
     public static final HashAlgorithm CITY_HASH_32 = hash32(
-            (value, seed) -> Integer.toUnsignedLong(HashUtil.cityHash32(value.getBytes(CHARSET))), false);
+            (value, seed) -> CityHash32.hashUnsigned(value.getBytes(CHARSET)), false);
 
-    public static final HashAlgorithm CITY_HASH_64 = hash64(
-            (value, seed) -> HashUtil.cityHash64(value.getBytes(CHARSET), seed), true);
+    public static final HashAlgorithm CITY_HASH_64 = openFht64(LongHashFunction::city_1_1, true);
 
     public static final HashAlgorithm FARM_HASH_32 = openFht64(LongHashFunction::farmNa, true);
 

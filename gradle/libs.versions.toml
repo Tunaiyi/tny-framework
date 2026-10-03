@@ -75,7 +75,6 @@ commonsMath3 = { module = 'org.apache.commons:commons-math3', version = '3.6.1' 
 # 33.0.0-jre 为 jetcd-core 0.7.7 传递要求的最低满足值（fix-dependency-version-governance D3 于 2026-10-03 从 32.0.1-jre 升钉）：
 # 托管插件把带版本的直连依赖隐式转为全工程强制托管，钉值即全图 guava 唯一生效值，低于 jetcd 要求会静默压降其传递声明
 guava = { module = 'com.google.guava:guava', version = '33.0.0-jre' }
-hutoolCore = { module = 'cn.hutool:hutool-core', version = '5.8.25' }
 javassist = { module = 'org.javassist:javassist', version = '3.30.2-GA' }
 jetcdCore = { module = 'io.etcd:jetcd-core', version = '0.7.7' }
 jmockJunit5 = { module = 'org.jmock:jmock-junit5', version = '2.12.0' }
