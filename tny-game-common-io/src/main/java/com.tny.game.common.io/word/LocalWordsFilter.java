@@ -16,13 +16,12 @@
 
 package com.tny.game.common.io.word;
 
-import com.google.common.collect.ImmutableList;
 import com.tny.game.common.io.config.*;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.*;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /**
@@ -172,10 +171,19 @@ public class LocalWordsFilter extends FileLoader implements WordsFilter {
     protected void doLoad(InputStream inputStream, boolean reload) throws IOException {
         List<String> badWords;
         try {
-            badWords = IOUtils.readLines(inputStream, "UTF-8");
+            // 词表逐行读取走 JDK 标准库：readLine 失败抛出的就是 IOException 本身，守卫的 catch 契约
+            // 不随第三方库实现漂移（commons-io readLines 与 BufferedReader.lines() 在 2.14 系把读失败
+            // 包装成 UncheckedIOException，守卫会 catch 不到——adapt-commons-io-214-word-filter 教训）。
+            // 行内容语义与 IOUtils.readLines 一致：逐行收集、不含行尾符；关流由基类 finally 统一负责。
+            badWords = new ArrayList<>();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                badWords.add(line);
+            }
         } catch (IOException e) {
             if (reload && this.rootNode != null) {
-                // 热更读取失败：保留旧词表（fail-closed），不得清空导致敏感词整体失效
+                // 热更读取失败：保留旧词表（fail-closed），不得清空导致敏感词过滤整体失效
                 LOG.error("#词表热更#读取 {} 失败，保留当前词表", getPath(), e);
                 return;
             }
@@ -183,7 +191,7 @@ public class LocalWordsFilter extends FileLoader implements WordsFilter {
         }
         Node node = new Node('R');
         for (String str : badWords) {
-            if (str != null && str.length() > 0) {
+            if (str != null && !str.isEmpty()) {
                 char[] chars = str.toLowerCase().toCharArray();
                 if (chars.length > 0) {
                     this.insertNode(node, chars, 0);
