@@ -1,62 +1,62 @@
 Configuration on demand is an incubating feature.
 > Task :buildSrc:extractPluginRequests UP-TO-DATE
 > Task :buildSrc:generatePluginAdapters UP-TO-DATE
-> Task :buildSrc:compileJava
-> Task :buildSrc:compileGroovy
+> Task :buildSrc:compileJava UP-TO-DATE
+> Task :buildSrc:compileGroovy UP-TO-DATE
 > Task :buildSrc:compileGroovyPlugins UP-TO-DATE
 > Task :buildSrc:pluginDescriptors UP-TO-DATE
 > Task :buildSrc:processResources UP-TO-DATE
-> Task :buildSrc:classes
+> Task :buildSrc:classes UP-TO-DATE
 > Task :buildSrc:jar UP-TO-DATE
+Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_311.jdk/Contents/Home' (MacOS java_home). It will be re-checked in the next build. This might have performance impact if it keeps failing. Run the 'javaToolchains' task for more details.
 Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk-11.0.13.jdk/Contents/Home' (MacOS java_home). It will be re-checked in the next build. This might have performance impact if it keeps failing. Run the 'javaToolchains' task for more details.
 Invalid Java installation found at '/Library/Internet Plug-Ins/JavaAppletPlugin.plugin/Contents/Home' (MacOS java_home). It will be re-checked in the next build. This might have performance impact if it keeps failing. Run the 'javaToolchains' task for more details.
-Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_311.jdk/Contents/Home' (MacOS java_home). It will be re-checked in the next build. This might have performance impact if it keeps failing. Run the 'javaToolchains' task for more details.
 > Task :tny-game-bom:clean
+> Task :tny-benchmark:clean
 > Task :tny-game-boot-log4j2:clean
 > Task :tny-game-codec:clean
-> Task :tny-game-boot:clean
 > Task :tny-game-codec-protoex:clean
+> Task :tny-game-boot:clean
 > Task :tny-game-codec-jackson:clean
-> Task :tny-benchmark:clean
-> Task :tny-game-codec-jprotobuf:clean
 > Task :tny-game-common-digest:clean
+> Task :tny-game-codec-jprotobuf:clean
 > Task :tny-game-common-io:clean
 > Task :tny-game-actor:clean
 > Task :tny-game-common-lifecycle:clean
-> Task :tny-game-common-scheduler:clean
 > Task :tny-game-common-reflect:clean
-> Task :tny-game-data:clean
+> Task :tny-game-common-scheduler:clean
 > Task :tny-game-data-mongodb:clean
-> Task :tny-game-basics:clean
+> Task :tny-game-data:clean
 > Task :tny-game-data-redisson:clean
+> Task :tny-game-basics:clean
 > Task :tny-game-doc-annotation:clean
 > Task :tny-game-doc-gradle:clean
 > Task :tny-game-expr:clean
-> Task :tny-game-expr-graaljs:clean
 > Task :tny-game-doc:clean
-> Task :tny-game-integration-test:clean
+> Task :tny-game-expr-graaljs:clean
 > Task :tny-game-expr-groovy:clean
-> Task :tny-game-expr-luaj:clean
+> Task :tny-game-integration-test:clean
 > Task :tny-game-expr-jsr223:clean
-> Task :tny-game-expr-mvel:clean
+> Task :tny-game-expr-luaj:clean
 > Task :tny-game-loader:clean
+> Task :tny-game-expr-mvel:clean
 > Task :tny-game-namnspace-etcd:clean
-> Task :tny-game-mongodb:clean
 > Task :tny-game-namnspace:clean
+> Task :tny-game-mongodb:clean
 > Task :tny-game-common-lang:clean
 > Task :tny-game-net-demo:clean
 > Task :tny-game-net-netty4-codec-jprotobuf:clean
-> Task :tny-game-net-test:clean
 > Task :tny-game-net-netty4-codec-protoex:clean
-> Task :tny-game-oplog:clean
+> Task :tny-game-net-test:clean
 > Task :tny-game-oplog-log4j:clean
+> Task :tny-game-oplog:clean
 > Task :tny-game-protobuf:clean
 > Task :tny-game-redisson:clean
 > Task :tny-game-net-netty4:clean
 > Task :tny-game-rpc:clean
 > Task :tny-game-protoex:clean
-> Task :tny-game-scanning:clean
 > Task :tny-game-starter-mongodb:clean
+> Task :tny-game-scanning:clean
 > Task :tny-game-starter-codec:clean
 > Task :tny-game-starter-namnspace:clean
 > Task :tny-game-starter-net-apm-skywalking:clean
@@ -66,11 +66,6 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
 > Task :tny-benchmark:classes UP-TO-DATE
 > Task :tny-game-starter-redisson:clean
 > Task :tny-game-actor:processResources NO-SOURCE
-> Task :tny-game-tester:clean
-> Task :tny-game-common-lang:processResources
-> Task :tny-game-common-lifecycle:processResources
-> Task :tny-game-common-reflect:processResources NO-SOURCE
-> Task :tny-game-scanning:processResources NO-SOURCE
 > Task :tny-benchmark:jar
 > Task :tny-benchmark:assemble
 > Task :tny-benchmark:compileTestJava NO-SOURCE
@@ -79,6 +74,11 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
 > Task :tny-benchmark:test NO-SOURCE
 > Task :tny-benchmark:check UP-TO-DATE
 > Task :tny-benchmark:build
+> Task :tny-game-common-lang:processResources
+> Task :tny-game-common-lifecycle:processResources
+> Task :tny-game-common-reflect:processResources NO-SOURCE
+> Task :tny-game-scanning:processResources NO-SOURCE
+> Task :tny-game-tester:clean
 > Task :tny-game-tester:processResources NO-SOURCE
 > Task :tny-game-actor:processTestResources
 > Task :tny-game-basics:processResources
@@ -87,18 +87,18 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
 > Task :tny-game-starter-net-netty4:clean
 > Task :tny-game-expr-groovy:processResources NO-SOURCE
 > Task :tny-game-expr-jsr223:processResources NO-SOURCE
-> Task :tny-game-basics:processTestResources
+> Task :tny-game-starter-basics:clean
 > Task :tny-game-bom:assemble UP-TO-DATE
 > Task :tny-game-bom:check UP-TO-DATE
 > Task :tny-game-bom:build UP-TO-DATE
+> Task :tny-game-basics:processTestResources
 > Task :tny-game-boot:processResources
-> Task :tny-game-loader:processResources
 > Task :tny-game-boot:processTestResources NO-SOURCE
 > Task :tny-game-boot-log4j2:processResources NO-SOURCE
 > Task :tny-game-boot-log4j2:processTestResources NO-SOURCE
 > Task :tny-game-codec:processResources NO-SOURCE
 > Task :tny-game-codec:processTestResources NO-SOURCE
-> Task :tny-game-starter-basics:clean
+> Task :tny-game-loader:processResources
 > Task :tny-game-codec-jackson:processResources
 > Task :tny-game-codec-jackson:processTestResources NO-SOURCE
 > Task :tny-game-doc-annotation:processResources NO-SOURCE
@@ -112,9 +112,9 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
 > Task :tny-game-codec-protoex:javadocJar
 > Task :tny-game-codec-protoex:assemble
 > Task :tny-game-codec-protoex:processTestResources NO-SOURCE
+> Task :tny-game-net:clean
 > Task :tny-game-common-digest:processResources NO-SOURCE
 > Task :tny-game-common-digest:processTestResources NO-SOURCE
-> Task :tny-game-net:clean
 > Task :tny-game-common-lifecycle:processTestResources NO-SOURCE
 > Task :tny-game-common-reflect:processTestResources NO-SOURCE
 > Task :tny-game-common-scheduler:processResources
@@ -125,11 +125,11 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
 > Task :tny-game-common-io:processTestResources
 > Task :tny-game-data-mongodb:processTestResources NO-SOURCE
 > Task :tny-game-data-redisson:processResources NO-SOURCE
-> Task :tny-game-redisson:processResources
+> Task :tny-game-mongodb:processResources
 > Task :tny-game-data-redisson:processTestResources NO-SOURCE
 > Task :tny-game-doc:processResources NO-SOURCE
 > Task :tny-game-expr-mvel:processResources NO-SOURCE
-> Task :tny-game-mongodb:processResources
+> Task :tny-game-redisson:processResources
 > Task :tny-game-net:processResources
 > Task :tny-game-doc:processTestResources NO-SOURCE
 > Task :tny-game-rpc:processResources
@@ -138,18 +138,18 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
 > Task :tny-game-expr-groovy:processTestResources NO-SOURCE
 > Task :tny-game-expr-jsr223:processTestResources NO-SOURCE
 > Task :tny-game-expr-luaj:processResources NO-SOURCE
+> Task :tny-game-doc-gradle:pluginDescriptors
 > Task :tny-game-expr-luaj:processTestResources NO-SOURCE
 > Task :tny-game-expr-mvel:processTestResources NO-SOURCE
-> Task :tny-game-doc-gradle:pluginDescriptors
 > Task :tny-game-net-netty4:processResources NO-SOURCE
 > Task :tny-game-doc-gradle:processResources
 > Task :tny-game-doc-gradle:processTestResources NO-SOURCE
-> Task :tny-game-protoex:processResources
-> Task :tny-game-net-netty4-codec-protoex:processResources NO-SOURCE
-> Task :tny-game-net-test:processResources NO-SOURCE
-> Task :tny-game-integration-test:processResources NO-SOURCE
-> Task :tny-game-integration-test:processTestResources NO-SOURCE
 > Task :tny-game-net-netty4-codec-jprotobuf:processResources
+> Task :tny-game-net-netty4-codec-protoex:processResources NO-SOURCE
+> Task :tny-game-protoex:processResources
+> Task :tny-game-integration-test:processResources NO-SOURCE
+> Task :tny-game-net-test:processResources NO-SOURCE
+> Task :tny-game-integration-test:processTestResources NO-SOURCE
 > Task :tny-game-loader:processTestResources NO-SOURCE
 > Task :tny-game-mongodb:processTestResources NO-SOURCE
 > Task :tny-game-namnspace:processResources NO-SOURCE
@@ -160,13 +160,13 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
 > Task :tny-game-starter-codec:processResources
 > Task :tny-game-starter-data:processResources
 > Task :tny-game-starter-mongodb:processResources
-> Task :tny-game-net-demo:processResources
 > Task :tny-game-starter-net-netty4:processResources
+> Task :tny-game-net-demo:processResources
 > Task :tny-game-net-demo:processTestResources NO-SOURCE
 > Task :tny-game-net-netty4:processTestResources
-> Task :tny-game-starter-redisson:processResources
 > Task :tny-game-net-netty4-codec-jprotobuf:processTestResources NO-SOURCE
 > Task :tny-game-net-netty4-codec-protoex:processTestResources NO-SOURCE
+> Task :tny-game-starter-redisson:processResources
 > Task :tny-game-net-test:processTestResources NO-SOURCE
 > Task :tny-game-protobuf:processResources NO-SOURCE
 > Task :tny-game-oplog:processResources
@@ -226,6 +226,12 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
 > Task :tny-game-loader:compileJava
 > Task :tny-game-loader:classes
 > Task :tny-game-loader:jar
+> Task :tny-game-codec:compileJava
+> Task :tny-game-codec:classes
+> Task :tny-game-codec:jar
+> Task :tny-game-common-io:compileJava
+> Task :tny-game-common-io:classes
+> Task :tny-game-common-io:jar
 > Task :tny-game-tester:compileJava
 > Task :tny-game-tester:classes
 > Task :tny-game-tester:jar
@@ -234,37 +240,17 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
 > Task :tny-game-codec-protoex:test NO-SOURCE
 > Task :tny-game-codec-protoex:check UP-TO-DATE
 > Task :tny-game-codec-protoex:build
-> Task :tny-game-doc-annotation:compileTestJava NO-SOURCE
-> Task :tny-game-doc-annotation:testClasses UP-TO-DATE
-> Task :tny-game-doc-annotation:test NO-SOURCE
-> Task :tny-game-doc-annotation:check UP-TO-DATE
-> Task :tny-game-doc-annotation:build
-> Task :tny-game-expr:compileTestJava NO-SOURCE
-> Task :tny-game-expr:testClasses UP-TO-DATE
-> Task :tny-game-expr:test NO-SOURCE
-> Task :tny-game-expr:check UP-TO-DATE
-> Task :tny-game-expr:build
-> Task :tny-game-common-io:compileJava
-> Task :tny-game-common-io:classes
-> Task :tny-game-common-io:jar
-> Task :tny-game-codec:compileJava
-> Task :tny-game-codec:classes
-> Task :tny-game-codec:jar
+> Task :tny-game-codec-jprotobuf:compileJava
+> Task :tny-game-codec-jprotobuf:classes
 > Task :tny-game-common-reflect:compileJava
+> Task :tny-game-codec-jprotobuf:jar
+> Task :tny-game-common-reflect:classes
+> Task :tny-game-common-reflect:jar
 > Task :tny-game-common-lifecycle:compileJava
 > Task :tny-game-loader:javadoc
 > Task :tny-game-common-lifecycle:classes
 > Task :tny-game-common-lifecycle:jar
-> Task :tny-game-common-reflect:classes
-> Task :tny-game-common-reflect:jar
 > Task :tny-game-expr-jsr223:compileJava
-
-> Task :tny-game-protobuf:compileTestJava
-?: /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-protobuf/src/test/java/com/tny/game/protobuf/format/test/FormatTestProtos.java?????????? API?
-?: ??????, ??? -Xlint:deprecation ?????
-
-> Task :tny-game-expr-jsr223:classes
-> Task :tny-game-expr-jsr223:jar
 > Task :tny-game-actor:compileJava
 > Task :tny-game-actor:classes
 > Task :tny-game-actor:jar
@@ -272,6 +258,9 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
 > Task :tny-game-codec:javadoc
 > Task :tny-game-expr-groovy:classes
 > Task :tny-game-expr-groovy:jar
+> Task :tny-game-expr-jsr223:classes
+> Task :tny-game-expr-jsr223:jar
+> Task :tny-game-common-io:javadoc
 > Task :tny-game-codec:javadocJar
 > Task :tny-game-codec:assemble
 > Task :tny-game-codec:compileTestJava NO-SOURCE
@@ -279,21 +268,6 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
 > Task :tny-game-codec:test NO-SOURCE
 > Task :tny-game-codec:check UP-TO-DATE
 > Task :tny-game-codec:build
-> Task :tny-game-common-io:javadoc
-> Task :tny-game-boot:compileJava
-> Task :tny-game-boot:classes
-> Task :tny-game-boot:jar
-> Task :tny-game-codec-jprotobuf:compileJava
-> Task :tny-game-boot-log4j2:compileJava
-> Task :tny-game-boot-log4j2:classes
-> Task :tny-game-boot-log4j2:jar
-
-> Task :tny-game-codec-jackson:compileJava
-?: /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-codec-jackson/src/main/java/com/tny/game/codec/jackson/mapper/ObjectMapperFactory.java?????????? API?
-?: ??????, ??? -Xlint:deprecation ?????
-
-> Task :tny-game-codec-jackson:classes
-> Task :tny-game-codec-jackson:jar
 
 > Task :tny-game-common-lang:javadoc
 /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/worker/AbstractFuture.java:56: ??: @param argument "callable" ???????
@@ -305,6 +279,41 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
 /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/worker/AbstractFuture.java:87: ??: ??????????????? java.util.concurrent.CancellationException (module java.base package java.util.concurrent class CancellationException)
      * @throws CancellationException {@inheritDoc}
        ^
+
+> Task :tny-game-boot:compileJava
+> Task :tny-game-boot:classes
+> Task :tny-game-boot:jar
+> Task :tny-game-codec-jprotobuf:javadoc
+
+> Task :tny-game-codec-jackson:compileJava
+?: /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-codec-jackson/src/main/java/com/tny/game/codec/jackson/mapper/ObjectMapperFactory.java?????????? API?
+?: ??????, ??? -Xlint:deprecation ?????
+
+> Task :tny-game-codec-jackson:classes
+> Task :tny-game-codec-jackson:jar
+> Task :tny-game-boot-log4j2:compileJava
+> Task :tny-game-boot-log4j2:classes
+> Task :tny-game-boot-log4j2:jar
+
+> Task :tny-game-actor:javadoc
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-actor/src/main/java/com/tny/game/actor/ActorFactory.java:50: ??: ??????????????? @return ???
+    void stopAll();
+         ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-actor/src/main/java/com/tny/game/actor/local/BaseActorCommand.java:103: ??: ??????????????? @return ???
+    protected void success(T result) {
+                   ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-actor/src/main/java/com/tny/game/actor/local/BaseActorCommand.java:121: ??: ??????????????? @return ???
+    protected void fail(Throwable cause, boolean cancelled) throws Throwable {
+                   ^
+
+> Task :tny-game-basics:compileJava
+?: /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/loader/jackson/JacksonModelLoader.java?????????? API?
+?: ??????, ??? -Xlint:deprecation ?????
+
+> Task :tny-game-basics:classes
+> Task :tny-game-basics:jar
+
+> Task :tny-game-common-lang:javadoc
 /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/utils/Asserts.java:162: ??: ?????'{@code {} placeholder in the template with an
      *                                  {@code errorMessageArgs} is null (don't let this happen)
                                                                                                ^
@@ -470,6 +479,11 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
      * @return x < y : 1 | x = y : 0 | x ></> y : -1
                                           ^
 
+> Task :tny-game-actor:javadoc
+3 ???
+
+> Task :tny-game-actor:javadocJar
+> Task :tny-game-actor:assemble
 > Task :tny-game-boot-log4j2:javadoc
 > Task :tny-game-boot-log4j2:javadocJar
 > Task :tny-game-boot-log4j2:assemble
@@ -478,20 +492,12 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
 > Task :tny-game-boot-log4j2:test NO-SOURCE
 > Task :tny-game-boot-log4j2:check UP-TO-DATE
 > Task :tny-game-boot-log4j2:build
-> Task :tny-game-codec-jprotobuf:classes
-> Task :tny-game-codec-jprotobuf:jar
-
-> Task :tny-game-actor:javadoc
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-actor/src/main/java/com/tny/game/actor/ActorFactory.java:50: ??: ??????????????? @return ???
-    void stopAll();
-         ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-actor/src/main/java/com/tny/game/actor/local/BaseActorCommand.java:103: ??: ??????????????? @return ???
-    protected void success(T result) {
-                   ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-actor/src/main/java/com/tny/game/actor/local/BaseActorCommand.java:121: ??: ??????????????? @return ???
-    protected void fail(Throwable cause, boolean cancelled) throws Throwable {
-                   ^
-
+> Task :tny-game-codec-jprotobuf:javadocJar
+> Task :tny-game-codec-jprotobuf:assemble
+> Task :tny-game-codec-jprotobuf:compileTestJava NO-SOURCE
+> Task :tny-game-codec-jprotobuf:testClasses UP-TO-DATE
+> Task :tny-game-codec-jprotobuf:test NO-SOURCE
+> Task :tny-game-codec-jprotobuf:check UP-TO-DATE
 > Task :tny-game-boot:javadoc
 > Task :tny-game-boot:javadocJar
 > Task :tny-game-boot:assemble
@@ -500,34 +506,9 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
 > Task :tny-game-boot:test NO-SOURCE
 > Task :tny-game-boot:check UP-TO-DATE
 > Task :tny-game-boot:build
-
-> Task :tny-game-basics:compileJava
-?: /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/loader/jackson/JacksonModelLoader.java?????????? API?
-?: ??????, ??? -Xlint:deprecation ?????
-
-> Task :tny-game-basics:classes
-
-> Task :tny-game-actor:javadoc
-3 ???
-
-> Task :tny-game-basics:jar
-> Task :tny-game-actor:javadocJar
-> Task :tny-game-actor:assemble
 > Task :tny-game-common-digest:compileJava
 > Task :tny-game-common-digest:classes
 > Task :tny-game-common-digest:jar
-> Task :tny-game-codec-jackson:javadoc
-> Task :tny-game-codec-jackson:javadocJar
-> Task :tny-game-codec-jackson:assemble
-> Task :tny-game-codec-jackson:compileTestJava NO-SOURCE
-> Task :tny-game-codec-jackson:testClasses UP-TO-DATE
-> Task :tny-game-codec-jackson:test NO-SOURCE
-> Task :tny-game-codec-jackson:check UP-TO-DATE
-> Task :tny-game-codec-jackson:build
-> Task :tny-game-common-io:javadocJar
-> Task :tny-game-common-io:assemble
-> Task :tny-game-actor:compileTestJava
-> Task :tny-game-actor:testClasses
 
 > Task :tny-game-common-lang:javadoc
 /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/worker/command/DelayCommand.java:114: ??: ?????'&'
@@ -541,20 +522,26 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
                                               ^
 53 ???
 
+> Task :tny-game-common-io:javadocJar
+> Task :tny-game-common-io:assemble
+> Task :tny-game-codec-jackson:javadoc
+> Task :tny-game-codec-jackson:javadocJar
+> Task :tny-game-codec-jackson:assemble
+> Task :tny-game-codec-jackson:compileTestJava NO-SOURCE
+> Task :tny-game-codec-jackson:testClasses UP-TO-DATE
+> Task :tny-game-codec-jackson:test NO-SOURCE
+> Task :tny-game-codec-jackson:check UP-TO-DATE
+> Task :tny-game-codec-jackson:build
 > Task :tny-game-common-lang:javadocJar
 > Task :tny-game-common-lang:assemble
+> Task :tny-game-actor:compileTestJava
+> Task :tny-game-actor:testClasses
 > Task :tny-game-common-io:compileTestJava
 > Task :tny-game-common-io:testClasses
-> Task :tny-game-codec-jprotobuf:javadoc
-> Task :tny-game-codec-jprotobuf:javadocJar
-> Task :tny-game-codec-jprotobuf:assemble
-> Task :tny-game-codec-jprotobuf:compileTestJava NO-SOURCE
-> Task :tny-game-codec-jprotobuf:testClasses UP-TO-DATE
-> Task :tny-game-codec-jprotobuf:test NO-SOURCE
-> Task :tny-game-codec-jprotobuf:check UP-TO-DATE
-> Task :tny-game-common-digest:javadoc
-> Task :tny-game-common-digest:javadocJar
-> Task :tny-game-common-digest:assemble
+
+> Task :tny-game-common-lang:compileTestJava
+?: ???????????????? API?
+?: ??????, ??? -Xlint:deprecation ?????
 
 > Task :tny-game-basics:javadoc
 /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/ItemModel.java:135: ??: ?????'&????'
@@ -564,15 +551,13 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
      * ????&????
                ^
 
-> Task :tny-game-common-digest:compileTestJava
-> Task :tny-game-common-digest:testClasses
-
-> Task :tny-game-common-lang:compileTestJava
-?: ???????????????? API?
-?: ??????, ??? -Xlint:deprecation ?????
-
 > Task :tny-game-common-lang:processTestResources
 > Task :tny-game-common-lang:testClasses
+> Task :tny-game-common-digest:javadoc
+> Task :tny-game-common-digest:javadocJar
+> Task :tny-game-common-digest:assemble
+> Task :tny-game-common-digest:compileTestJava
+> Task :tny-game-common-digest:testClasses
 > Task :tny-game-actor:test
 > Task :tny-game-actor:check
 > Task :tny-game-actor:build
@@ -707,32 +692,32 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
 /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/behavior/simple/SimpleAwardList.java:34: ??: ?????'<'
      * ???? <???<??ID, ??>>
                 ^
+
+> Task :tny-game-codec-jprotobuf:jprotobuf_precompile
+> Task :tny-game-codec-jprotobuf:build
+
+> Task :tny-game-basics:javadoc
 45 ???
 
+> Task :tny-game-basics:javadocJar
+> Task :tny-game-basics:assemble
 > Task :tny-game-common-digest:test
 > Task :tny-game-common-digest:check
 > Task :tny-game-common-digest:build
-> Task :tny-game-basics:javadocJar
-> Task :tny-game-basics:assemble
-> Task :tny-game-common-lifecycle:javadoc
-> Task :tny-game-common-lifecycle:javadocJar
-> Task :tny-game-common-lifecycle:assemble
-> Task :tny-game-common-lifecycle:compileTestJava
-> Task :tny-game-common-lifecycle:testClasses
 
 > Task :tny-game-basics:compileTestJava
 ?: /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-basics/src/test/java/com/tny/game/basics/item/xml/YamlTest.java?????????? API?
 ?: ??????, ??? -Xlint:deprecation ?????
 
 > Task :tny-game-basics:testClasses
-> Task :tny-game-codec-jprotobuf:jprotobuf_precompile
-> Task :tny-game-codec-jprotobuf:build
 > Task :tny-game-common-scheduler:compileJava
 > Task :tny-game-common-scheduler:classes
 > Task :tny-game-common-scheduler:jar
-> Task :tny-game-common-lifecycle:test
-> Task :tny-game-common-lifecycle:check
-> Task :tny-game-common-lifecycle:build
+> Task :tny-game-common-lifecycle:javadoc
+> Task :tny-game-common-lifecycle:javadocJar
+> Task :tny-game-common-lifecycle:assemble
+> Task :tny-game-common-lifecycle:compileTestJava
+> Task :tny-game-common-lifecycle:testClasses
 
 > Task :tny-game-common-reflect:javadoc
 /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-common-reflect/src/main/java/com/tny/game/common/reflect/javassist/ConstructInvoker.java:24: ??: @param argument "host" ???????
@@ -740,24 +725,38 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
        ^
 1 ???
 
-> Task :tny-game-data:compileJava
-> Task :tny-game-data:classes
-> Task :tny-game-data:jar
 > Task :tny-game-common-reflect:javadocJar
 > Task :tny-game-common-reflect:assemble
 > Task :tny-game-common-reflect:compileTestJava
 > Task :tny-game-common-reflect:testClasses
+> Task :tny-game-common-lifecycle:test
+> Task :tny-game-common-lifecycle:check
+> Task :tny-game-common-lifecycle:build
 > Task :tny-game-common-scheduler:javadoc
+> Task :tny-game-data:compileJava
+> Task :tny-game-data:classes
 > Task :tny-game-common-scheduler:javadocJar
 > Task :tny-game-common-scheduler:assemble
+> Task :tny-game-data:jar
 > Task :tny-game-common-scheduler:compileTestJava
 > Task :tny-game-common-scheduler:testClasses
-> Task :tny-game-basics:test
-> Task :tny-game-basics:check
-> Task :tny-game-basics:build
 > Task :tny-game-common-reflect:test
 > Task :tny-game-common-reflect:check
 > Task :tny-game-common-reflect:build
+> Task :tny-game-basics:test
+> Task :tny-game-basics:check
+> Task :tny-game-basics:build
+> Task :tny-game-redisson:compileJava
+
+> Task :tny-game-mongodb:compileJava
+?: /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-mongodb/src/main/java/com/tny/game/data/mongodb/configuration/MongodbBeanConfiguration.java?????????? API?
+?: ??????, ??? -Xlint:deprecation ?????
+
+> Task :tny-game-data-redisson:compileJava
+> Task :tny-game-mongodb:classes
+> Task :tny-game-mongodb:jar
+> Task :tny-game-data-redisson:classes
+> Task :tny-game-data-redisson:jar
 
 > Task :tny-game-data:javadoc
 /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-data/src/main/java/com/tny/game/data/EntityManager.java:77: ??: @param argument "onLoad" ???????
@@ -766,43 +765,21 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
 /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-data/src/main/java/com/tny/game/data/EntityManager.java:204: ??: @param argument "id" ???????
      * @param id id
        ^
-
-> Task :tny-game-redisson:compileJava
-
-> Task :tny-game-data:javadoc
 2 ???
 
-> Task :tny-game-data:javadocJar
-> Task :tny-game-data:assemble
-
-> Task :tny-game-mongodb:compileJava
-?: /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-mongodb/src/main/java/com/tny/game/data/mongodb/configuration/MongodbBeanConfiguration.java?????????? API?
-?: ??????, ??? -Xlint:deprecation ?????
-
-> Task :tny-game-data:compileTestJava
-> Task :tny-game-data:testClasses
-> Task :tny-game-data-redisson:compileJava
-> Task :tny-game-mongodb:classes
-> Task :tny-game-mongodb:jar
-> Task :tny-game-data-redisson:classes
-> Task :tny-game-data-redisson:jar
 > Task :tny-game-data-mongodb:compileJava
 > Task :tny-game-data-mongodb:classes
+> Task :tny-game-data:javadocJar
+> Task :tny-game-data:assemble
 > Task :tny-game-data-mongodb:jar
+> Task :tny-game-data:compileTestJava
+> Task :tny-game-data:testClasses
 > Task :tny-game-data:test
 > Task :tny-game-data:check
 > Task :tny-game-data:build
 > Task :tny-game-redisson:classes
 > Task :tny-game-redisson:jar
 > Task :tny-game-expr-mvel:compileJava
-> Task :tny-game-common-io:test
-> Task :tny-game-common-io:check
-> Task :tny-game-common-io:build
-> Task :tny-game-expr-mvel:classes
-> Task :tny-game-expr-mvel:jar
-> Task :tny-game-expr-graaljs:compileJava
-> Task :tny-game-expr-graaljs:classes
-> Task :tny-game-expr-graaljs:jar
 > Task :tny-game-data-redisson:javadoc
 > Task :tny-game-data-redisson:javadocJar
 > Task :tny-game-data-redisson:assemble
@@ -811,6 +788,21 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
 > Task :tny-game-data-redisson:test NO-SOURCE
 > Task :tny-game-data-redisson:check UP-TO-DATE
 > Task :tny-game-data-redisson:build
+> Task :tny-game-expr-mvel:classes
+> Task :tny-game-expr-mvel:jar
+> Task :tny-game-doc-annotation:compileTestJava NO-SOURCE
+> Task :tny-game-doc-annotation:testClasses UP-TO-DATE
+> Task :tny-game-doc-annotation:test NO-SOURCE
+> Task :tny-game-doc-annotation:check UP-TO-DATE
+> Task :tny-game-doc-annotation:build
+> Task :tny-game-expr:compileTestJava NO-SOURCE
+> Task :tny-game-expr:testClasses UP-TO-DATE
+> Task :tny-game-expr:test NO-SOURCE
+> Task :tny-game-expr:check UP-TO-DATE
+> Task :tny-game-expr:build
+> Task :tny-game-expr-graaljs:compileJava
+> Task :tny-game-expr-graaljs:classes
+> Task :tny-game-expr-graaljs:jar
 > Task :tny-game-data-mongodb:javadoc
 > Task :tny-game-data-mongodb:javadocJar
 > Task :tny-game-data-mongodb:assemble
@@ -827,6 +819,17 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
 > Task :tny-game-expr-graaljs:test NO-SOURCE
 > Task :tny-game-expr-graaljs:check UP-TO-DATE
 > Task :tny-game-expr-graaljs:build
+> Task :tny-game-expr-groovy:javadoc
+> Task :tny-game-expr-groovy:javadocJar
+> Task :tny-game-expr-groovy:assemble
+> Task :tny-game-expr-groovy:compileTestJava NO-SOURCE
+> Task :tny-game-expr-groovy:testClasses UP-TO-DATE
+> Task :tny-game-expr-groovy:test NO-SOURCE
+> Task :tny-game-expr-groovy:check UP-TO-DATE
+> Task :tny-game-expr-groovy:build
+> Task :tny-game-common-io:test
+> Task :tny-game-common-io:check
+> Task :tny-game-common-io:build
 > Task :tny-game-expr-luaj:compileJava
 > Task :tny-game-expr-luaj:classes
 > Task :tny-game-expr-luaj:jar
@@ -835,17 +838,12 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
 ?: /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-net/src/main/java/com/tny/game/net/command/dispatcher/AutoIncrementIdGenerator.java?????????? API?
 ?: ??????, ??? -Xlint:deprecation ?????
 
-> Task :tny-game-expr-groovy:javadoc
+> Task :tny-game-rpc:compileJava
+> Task :tny-game-expr-jsr223:javadoc
 > Task :tny-game-net:classes
 > Task :tny-game-net:jar
-> Task :tny-game-expr-groovy:javadocJar
-> Task :tny-game-expr-groovy:assemble
-> Task :tny-game-expr-groovy:compileTestJava NO-SOURCE
-> Task :tny-game-expr-groovy:testClasses UP-TO-DATE
-> Task :tny-game-expr-groovy:test NO-SOURCE
-> Task :tny-game-expr-groovy:check UP-TO-DATE
-> Task :tny-game-expr-groovy:build
-> Task :tny-game-expr-jsr223:javadoc
+> Task :tny-game-rpc:classes
+> Task :tny-game-rpc:jar
 > Task :tny-game-expr-jsr223:javadocJar
 > Task :tny-game-expr-jsr223:assemble
 > Task :tny-game-expr-jsr223:compileTestJava NO-SOURCE
@@ -861,33 +859,6 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
 > Task :tny-game-expr-luaj:test NO-SOURCE
 > Task :tny-game-expr-luaj:check UP-TO-DATE
 > Task :tny-game-expr-luaj:build
-> Task :tny-game-rpc:compileJava
-> Task :tny-game-net-test:compileJava
-> Task :tny-game-rpc:classes
-> Task :tny-game-rpc:jar
-> Task :tny-game-net-test:classes
-> Task :tny-game-net-test:jar
-> Task :tny-game-loader:javadocJar
-> Task :tny-game-loader:assemble
-> Task :tny-game-loader:compileTestJava NO-SOURCE
-> Task :tny-game-loader:testClasses UP-TO-DATE
-> Task :tny-game-loader:test NO-SOURCE
-> Task :tny-game-loader:check UP-TO-DATE
-> Task :tny-game-loader:build
-
-> Task :tny-game-protoex:compileJava
-?: /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-protoex/src/main/java/com/tny/game/protoex/field/runtime/RuntimeUnsafeFieldDescFactory.java?????????? API?
-?: ??????, ??? -Xlint:deprecation ?????
-
-> Task :tny-game-doc:compileJava
-> Task :tny-game-doc:classes
-> Task :tny-game-doc:jar
-> Task :tny-game-common-scheduler:test
-> Task :tny-game-common-scheduler:check
-> Task :tny-game-common-scheduler:build
-> Task :tny-game-doc-gradle:compileJava NO-SOURCE
-> Task :tny-game-net-netty4:compileJava
-> Task :tny-game-net-netty4-codec-jprotobuf:compileJava
 > Task :tny-game-expr-mvel:javadoc
 > Task :tny-game-expr-mvel:javadocJar
 > Task :tny-game-expr-mvel:assemble
@@ -896,12 +867,25 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
 > Task :tny-game-expr-mvel:test NO-SOURCE
 > Task :tny-game-expr-mvel:check UP-TO-DATE
 > Task :tny-game-expr-mvel:build
-> Task :tny-game-net-netty4:classes
-> Task :tny-game-net-netty4:jar
-> Task :tny-game-net-netty4-codec-jprotobuf:classes
-> Task :tny-game-net-netty4-codec-jprotobuf:jar
-> Task :tny-game-protoex:classes
-> Task :tny-game-protoex:jar
+> Task :tny-game-loader:javadocJar
+> Task :tny-game-loader:assemble
+> Task :tny-game-loader:compileTestJava NO-SOURCE
+> Task :tny-game-loader:testClasses UP-TO-DATE
+> Task :tny-game-loader:test NO-SOURCE
+> Task :tny-game-loader:check UP-TO-DATE
+> Task :tny-game-loader:build
+> Task :tny-game-doc:compileJava
+> Task :tny-game-doc:classes
+> Task :tny-game-doc:jar
+
+> Task :tny-game-protoex:compileJava
+?: /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-protoex/src/main/java/com/tny/game/protoex/field/runtime/RuntimeUnsafeFieldDescFactory.java?????????? API?
+?: ??????, ??? -Xlint:deprecation ?????
+
+> Task :tny-game-doc-gradle:compileJava NO-SOURCE
+> Task :tny-game-net-test:compileJava
+> Task :tny-game-net-netty4:compileJava
+> Task :tny-game-net-netty4-codec-jprotobuf:compileJava
 > Task :tny-game-net-netty4-codec-protoex:compileJava
 > Task :tny-game-integration-test:compileJava NO-SOURCE
 > Task :tny-game-integration-test:classes UP-TO-DATE
@@ -909,14 +893,25 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
 > Task :tny-game-integration-test:assemble
 > Task :tny-game-integration-test:compileTestJava NO-SOURCE
 > Task :tny-game-integration-test:testClasses UP-TO-DATE
+> Task :tny-game-net-netty4:classes
+> Task :tny-game-net-netty4:jar
+> Task :tny-game-net-netty4-codec-jprotobuf:classes
+> Task :tny-game-net-netty4-codec-jprotobuf:jar
 > Task :tny-game-net-netty4-codec-protoex:classes
 > Task :tny-game-net-netty4-codec-protoex:jar
+> Task :tny-game-net-test:classes
+> Task :tny-game-net-test:jar
+> Task :tny-game-protoex:classes
+> Task :tny-game-protoex:jar
 > Task :tny-game-integration-test:test NO-SOURCE
 > Task :tny-game-integration-test:check UP-TO-DATE
 > Task :tny-game-integration-test:build
 > Task :tny-game-namnspace:compileJava
 > Task :tny-game-namnspace:classes
 > Task :tny-game-namnspace:jar
+> Task :tny-game-common-scheduler:test
+> Task :tny-game-common-scheduler:check
+> Task :tny-game-common-scheduler:build
 > Task :tny-game-mongodb:javadoc
 > Task :tny-game-mongodb:javadocJar
 > Task :tny-game-mongodb:assemble
@@ -925,6 +920,9 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
 > Task :tny-game-mongodb:test NO-SOURCE
 > Task :tny-game-mongodb:check UP-TO-DATE
 > Task :tny-game-mongodb:build
+> Task :tny-game-namnspace-etcd:compileJava
+> Task :tny-game-namnspace-etcd:classes
+> Task :tny-game-namnspace-etcd:jar
 > Task :tny-game-doc:javadoc
 > Task :tny-game-doc:javadocJar
 > Task :tny-game-doc:assemble
@@ -933,13 +931,14 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
 > Task :tny-game-doc:test NO-SOURCE
 > Task :tny-game-doc:check UP-TO-DATE
 > Task :tny-game-doc:build
-> Task :tny-game-namnspace-etcd:compileJava
-> Task :tny-game-namnspace-etcd:classes
-> Task :tny-game-namnspace-etcd:jar
 > Task :tny-game-starter-codec:compileJava
+
+> Task :tny-game-starter-data:compileJava
+?: /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-data/src/main/java/com/tny/game/data/configuration/mongodb/MongoStorageAutoConfiguration.java?????????? API?
+?: ??????, ??? -Xlint:deprecation ?????
+
+> Task :tny-game-starter-mongodb:compileJava NO-SOURCE
 > Task :tny-game-namnspace:javadoc
-> Task :tny-game-doc-gradle:compileGroovy
-> Task :tny-game-doc-gradle:classes
 > Task :tny-game-namnspace:javadocJar
 > Task :tny-game-namnspace:assemble
 > Task :tny-game-namnspace:compileTestJava NO-SOURCE
@@ -947,19 +946,6 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
 > Task :tny-game-namnspace:test NO-SOURCE
 > Task :tny-game-namnspace:check UP-TO-DATE
 > Task :tny-game-namnspace:build
-> Task :tny-game-starter-mongodb:compileJava NO-SOURCE
-> Task :tny-game-doc-gradle:jar
-> Task :tny-game-doc-gradle:assemble
-> Task :tny-game-doc-gradle:compileTestJava NO-SOURCE
-> Task :tny-game-doc-gradle:compileTestGroovy NO-SOURCE
-> Task :tny-game-doc-gradle:pluginUnderTestMetadata
-> Task :tny-game-doc-gradle:testClasses UP-TO-DATE
-> Task :tny-game-doc-gradle:test NO-SOURCE
-
-> Task :tny-game-starter-data:compileJava
-?: /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-data/src/main/java/com/tny/game/data/configuration/mongodb/MongoStorageAutoConfiguration.java?????????? API?
-?: ??????, ??? -Xlint:deprecation ?????
-
 > Task :tny-game-starter-redisson:compileJava
 > Task :tny-game-starter-codec:classes
 > Task :tny-game-starter-codec:jar
@@ -970,27 +956,41 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
 > Task :tny-game-starter-redisson:classes
 > Task :tny-game-starter-redisson:jar
 
-> Task :tny-game-net:javadoc
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-net/src/main/java/com/tny/game/net/session/Session.java:98: ??: ?????'&'
-     * @param bound  ???? fromId & toId
-                                 ^
-
-> Task :tny-game-doc-gradle:validatePlugins
-> Task :tny-game-doc-gradle:check
-> Task :tny-game-doc-gradle:build
-
 > Task :tny-game-starter-net-netty4:compileJava
 ?: /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-net-netty4/src/main/java/com/tny/game/net/netty4/cloud/nacos/NacosServeNodeClient.java?????????? API?
 ?: ??????, ??? -Xlint:deprecation ?????
 
+> Task :tny-game-doc-gradle:compileGroovy
+> Task :tny-game-doc-gradle:classes
+> Task :tny-game-doc-gradle:jar
+> Task :tny-game-doc-gradle:assemble
+> Task :tny-game-doc-gradle:compileTestJava NO-SOURCE
+> Task :tny-game-doc-gradle:compileTestGroovy NO-SOURCE
+> Task :tny-game-doc-gradle:pluginUnderTestMetadata
+> Task :tny-game-doc-gradle:testClasses UP-TO-DATE
+> Task :tny-game-doc-gradle:test NO-SOURCE
 > Task :tny-game-namnspace-etcd:javadoc
 > Task :tny-game-namnspace-etcd:javadocJar
 > Task :tny-game-namnspace-etcd:assemble
 > Task :tny-game-namnspace-etcd:compileTestJava
 > Task :tny-game-namnspace-etcd:testClasses
+
+> Task :tny-game-net:javadoc
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-net/src/main/java/com/tny/game/net/session/Session.java:98: ??: ?????'&'
+     * @param bound  ???? fromId & toId
+                                 ^
+
 > Task :tny-game-net-demo:compileJava
 > Task :tny-game-net-demo:classes
 > Task :tny-game-net-demo:jar
+> Task :tny-game-namnspace-etcd:test
+> Task :tny-game-namnspace-etcd:check
+> Task :tny-game-namnspace-etcd:build
+> Task :tny-game-starter-net-netty4:classes
+> Task :tny-game-starter-net-netty4:jar
+> Task :tny-game-doc-gradle:validatePlugins
+> Task :tny-game-doc-gradle:check
+> Task :tny-game-doc-gradle:build
 
 > Task :tny-game-net:javadoc
 /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-net/src/main/java/com/tny/game/net/codec/CodecVerifier.java:51: ??: @param argument "time" ???????
@@ -1000,33 +1000,16 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
      * @param tunnel ????
        ^
 
-> Task :tny-game-namnspace-etcd:test
-> Task :tny-game-namnspace-etcd:check
-> Task :tny-game-namnspace-etcd:build
-> Task :tny-game-starter-net-netty4:classes
-> Task :tny-game-starter-net-netty4:jar
 > Task :tny-game-net-netty4-codec-jprotobuf:javadoc
 > Task :tny-game-net-netty4-codec-jprotobuf:javadocJar
 > Task :tny-game-net-netty4-codec-jprotobuf:assemble
-> Task :tny-game-net-netty4-codec-jprotobuf:compileTestJava
-> Task :tny-game-net-netty4-codec-jprotobuf:testClasses
-
-> Task :tny-game-net:javadoc
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-net/src/main/java/com/tny/game/net/session/SentMessageHistory.java:58: ??: ?????'&'
-     * @param bound  ???? fromId & toId
-                                 ^
-/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-net/src/main/java/com/tny/game/net/session/Session.java:98: ??: ?????'&'
-     * @param bound  ???? fromId & toId
-                                 ^
-
 > Task :tny-game-net-netty4-codec-protoex:javadoc
 > Task :tny-game-net-netty4-codec-protoex:javadocJar
 > Task :tny-game-net-netty4-codec-protoex:assemble
-> Task :tny-game-net-netty4:javadoc
+> Task :tny-game-net-netty4-codec-jprotobuf:compileTestJava
+> Task :tny-game-net-netty4-codec-jprotobuf:testClasses
 > Task :tny-game-net-netty4-codec-protoex:compileTestJava
 > Task :tny-game-net-netty4-codec-protoex:testClasses
-> Task :tny-game-net-netty4:javadocJar
-> Task :tny-game-net-netty4:assemble
 > Task :tny-game-net-demo:javadoc
 > Task :tny-game-net-demo:javadocJar
 > Task :tny-game-net-demo:assemble
@@ -1035,10 +1018,19 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
 > Task :tny-game-net-demo:test NO-SOURCE
 > Task :tny-game-net-demo:check UP-TO-DATE
 > Task :tny-game-net-demo:build
+> Task :tny-game-net-netty4:javadoc
+> Task :tny-game-net-netty4:javadocJar
+> Task :tny-game-net-netty4:assemble
 > Task :tny-game-net-netty4:compileTestJava
 > Task :tny-game-net-netty4:testClasses
 
 > Task :tny-game-net:javadoc
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-net/src/main/java/com/tny/game/net/session/SentMessageHistory.java:58: ??: ?????'&'
+     * @param bound  ???? fromId & toId
+                                 ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-net/src/main/java/com/tny/game/net/session/Session.java:98: ??: ?????'&'
+     * @param bound  ???? fromId & toId
+                                 ^
 5 ???
 
 > Task :tny-game-net-netty4-codec-jprotobuf:test
@@ -1049,7 +1041,19 @@ Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_3
 > Task :tny-game-oplog:compileJava
 > Task :tny-game-oplog:classes
 > Task :tny-game-oplog:jar
+> Task :tny-game-net-test:javadoc
 OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+> Task :tny-game-net-test:javadocJar
+> Task :tny-game-net-test:assemble
+> Task :tny-game-net-test:compileTestJava NO-SOURCE
+> Task :tny-game-net-test:testClasses UP-TO-DATE
+> Task :tny-game-net-test:test NO-SOURCE
+> Task :tny-game-net-test:check UP-TO-DATE
+> Task :tny-game-net-test:build
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+> Task :tny-game-oplog-log4j:compileJava
+> Task :tny-game-oplog-log4j:classes
+> Task :tny-game-oplog-log4j:jar
 
 > Task :tny-game-net:compileTestJava
 ?: ???????????????? API?
@@ -1058,34 +1062,24 @@ OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader clas
 ?: ??????, ??? -Xlint:unchecked ?????
 
 > Task :tny-game-net:testClasses
-OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
-> Task :tny-game-net-test:javadoc
-> Task :tny-game-net-test:javadocJar
-> Task :tny-game-net-test:assemble
-> Task :tny-game-net-test:compileTestJava NO-SOURCE
-> Task :tny-game-net-test:testClasses UP-TO-DATE
-> Task :tny-game-net-test:test NO-SOURCE
-> Task :tny-game-net-test:check UP-TO-DATE
-> Task :tny-game-net-test:build
-> Task :tny-game-oplog-log4j:compileJava
-> Task :tny-game-oplog-log4j:classes
-> Task :tny-game-oplog-log4j:jar
+> Task :tny-game-net-netty4-codec-protoex:test
+> Task :tny-game-net-netty4-codec-protoex:check
+> Task :tny-game-net-netty4-codec-protoex:build
+
+> Task :tny-game-protobuf:compileTestJava
+?: /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-protobuf/src/test/java/com/tny/game/protobuf/format/test/FormatTestProtos.java?????????? API?
+?: ??????, ??? -Xlint:deprecation ?????
+
+> Task :tny-game-protobuf:testClasses
 > Task :tny-game-oplog:javadoc
 > Task :tny-game-oplog:javadocJar
 > Task :tny-game-oplog:assemble
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
 > Task :tny-game-oplog:compileTestJava NO-SOURCE
 > Task :tny-game-oplog:testClasses
 > Task :tny-game-oplog:test NO-SOURCE
 > Task :tny-game-oplog:check UP-TO-DATE
 > Task :tny-game-oplog:build
-> Task :tny-game-protobuf:testClasses
-OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
-> Task :tny-game-net-netty4-codec-protoex:test
-> Task :tny-game-net-netty4-codec-protoex:check
-> Task :tny-game-net-netty4-codec-protoex:build
-> Task :tny-game-protobuf:test
-> Task :tny-game-protobuf:check
-> Task :tny-game-protobuf:build
 > Task :tny-game-oplog-log4j:javadoc
 > Task :tny-game-oplog-log4j:javadocJar
 > Task :tny-game-oplog-log4j:assemble
@@ -1094,7 +1088,9 @@ OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader clas
 > Task :tny-game-oplog-log4j:test NO-SOURCE
 > Task :tny-game-oplog-log4j:check UP-TO-DATE
 > Task :tny-game-oplog-log4j:build
-> Task :tny-game-common-lang:test
+> Task :tny-game-protobuf:test
+> Task :tny-game-protobuf:check
+> Task :tny-game-protobuf:build
 > Task :tny-game-net-netty4:test
 > Task :tny-game-net-netty4:check
 > Task :tny-game-net-netty4:build
@@ -1113,10 +1109,6 @@ OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader clas
        ^
 2 ???
 
-> Task :tny-game-protoex:javadocJar
-> Task :tny-game-protoex:assemble
-> Task :tny-game-protoex:compileTestJava
-> Task :tny-game-protoex:testClasses
 > Task :tny-game-redisson:javadoc
 > Task :tny-game-redisson:javadocJar
 > Task :tny-game-redisson:assemble
@@ -1125,17 +1117,33 @@ OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader clas
 > Task :tny-game-redisson:test NO-SOURCE
 > Task :tny-game-redisson:check UP-TO-DATE
 > Task :tny-game-redisson:build
+> Task :tny-game-protoex:javadocJar
+> Task :tny-game-protoex:assemble
+> Task :tny-game-protoex:compileTestJava
+> Task :tny-game-protoex:testClasses
 > Task :tny-game-rpc:javadoc
 > Task :tny-game-rpc:javadocJar
 > Task :tny-game-rpc:assemble
 > Task :tny-game-rpc:compileTestJava
 > Task :tny-game-rpc:testClasses
+> Task :tny-game-starter-codec:javadoc
+
+> Task :tny-game-starter-basics:compileJava
+?: /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/mongodb/mapper/MongoBasicsObjectMapperCustomizer.java?????????? API?
+?: ??????, ??? -Xlint:deprecation ?????
+
+> Task :tny-game-starter-basics:classes
+> Task :tny-game-starter-codec:javadocJar
+> Task :tny-game-starter-codec:assemble
+> Task :tny-game-starter-codec:compileTestJava NO-SOURCE
+> Task :tny-game-starter-codec:testClasses UP-TO-DATE
+> Task :tny-game-starter-codec:test NO-SOURCE
+> Task :tny-game-starter-codec:check UP-TO-DATE
+> Task :tny-game-starter-codec:build
+> Task :tny-game-starter-basics:jar
 > Task :tny-game-protoex:test
 > Task :tny-game-protoex:check
 > Task :tny-game-protoex:build
-> Task :tny-game-rpc:test
-> Task :tny-game-rpc:check
-> Task :tny-game-rpc:build
 > Task :tny-game-starter-mongodb:javadoc NO-SOURCE
 > Task :tny-game-starter-mongodb:javadocJar
 > Task :tny-game-starter-mongodb:assemble
@@ -1144,24 +1152,12 @@ OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader clas
 > Task :tny-game-starter-mongodb:test NO-SOURCE
 > Task :tny-game-starter-mongodb:check UP-TO-DATE
 > Task :tny-game-starter-mongodb:build
-
-> Task :tny-game-starter-basics:compileJava
-?: /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/mongodb/mapper/MongoBasicsObjectMapperCustomizer.java?????????? API?
-?: ??????, ??? -Xlint:deprecation ?????
-
-> Task :tny-game-starter-codec:javadoc
-> Task :tny-game-starter-codec:javadocJar
-> Task :tny-game-starter-codec:assemble
-> Task :tny-game-starter-codec:compileTestJava NO-SOURCE
-> Task :tny-game-starter-codec:testClasses UP-TO-DATE
-> Task :tny-game-starter-codec:test NO-SOURCE
-> Task :tny-game-starter-codec:check UP-TO-DATE
-> Task :tny-game-starter-codec:build
+> Task :tny-game-rpc:test
+> Task :tny-game-rpc:check
+> Task :tny-game-rpc:build
 > Task :tny-game-starter-namnspace:compileJava
 > Task :tny-game-starter-namnspace:classes
-> Task :tny-game-starter-basics:classes
 > Task :tny-game-starter-namnspace:jar
-> Task :tny-game-starter-basics:jar
 
 > Task :tny-game-starter-net-apm-skywalking:compileJava
 ?: /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-net-apm-skywalking/src/main/java/com/tny/game/net/netty4/apm/skywalking/SkywalkingRpcMonitorHandler.java???????????????
@@ -1172,6 +1168,14 @@ OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader clas
 > Task :tny-game-net:test
 > Task :tny-game-net:check
 > Task :tny-game-net:build
+> Task :tny-game-starter-namnspace:javadoc
+> Task :tny-game-starter-namnspace:javadocJar
+> Task :tny-game-starter-namnspace:assemble
+> Task :tny-game-starter-namnspace:compileTestJava NO-SOURCE
+> Task :tny-game-starter-namnspace:testClasses UP-TO-DATE
+> Task :tny-game-starter-namnspace:test NO-SOURCE
+> Task :tny-game-starter-namnspace:check UP-TO-DATE
+> Task :tny-game-starter-namnspace:build
 
 > Task :tny-game-starter-data:javadoc
 /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-starter-data/src/main/java/com/tny/game/data/configuration/storage/AbstractObjectStorageFactoriesProperties.java:30: ??: ?????'<'
@@ -1181,17 +1185,10 @@ OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader clas
  * <li>accessors ?? new HashMap<>()???? getter ?? live ?????? netty4 ??????????????</li>
                                ^
 
-> Task :tny-game-starter-namnspace:javadoc
-> Task :tny-game-starter-namnspace:javadocJar
-> Task :tny-game-starter-namnspace:assemble
-> Task :tny-game-starter-namnspace:compileTestJava NO-SOURCE
-> Task :tny-game-starter-namnspace:testClasses UP-TO-DATE
-> Task :tny-game-starter-namnspace:test NO-SOURCE
-> Task :tny-game-starter-namnspace:check UP-TO-DATE
-> Task :tny-game-starter-namnspace:build
 > Task :tny-game-starter-net-apm-skywalking:javadoc
 > Task :tny-game-starter-net-apm-skywalking:javadocJar
 > Task :tny-game-starter-net-apm-skywalking:assemble
+> Task :tny-game-common-lang:test
 
 > Task :tny-game-starter-data:javadoc
 2 ???
@@ -1318,18 +1315,13 @@ OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader clas
 > Task :tny-game-starter-data:test
 > Task :tny-game-starter-data:check
 > Task :tny-game-starter-data:build
-> Task :tny-game-starter-net-netty4:javadoc
-> Task :tny-game-starter-net-netty4:javadocJar
-> Task :tny-game-starter-net-netty4:assemble
-> Task :tny-game-starter-net-netty4:compileTestJava
-> Task :tny-game-starter-net-netty4:testClasses
-> Task :tny-game-tester:javadoc
-> Task :tny-game-tester:javadocJar
-> Task :tny-game-tester:assemble
 
 > Task :tny-game-starter-basics:javadoc
 33 ???
 
+> Task :tny-game-tester:javadoc
+> Task :tny-game-tester:javadocJar
+> Task :tny-game-tester:assemble
 > Task :tny-game-tester:compileTestJava NO-SOURCE
 > Task :tny-game-tester:testClasses UP-TO-DATE
 > Task :tny-game-tester:test NO-SOURCE
@@ -1337,12 +1329,17 @@ OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader clas
 > Task :tny-game-tester:build
 > Task :tny-game-starter-basics:javadocJar
 > Task :tny-game-starter-basics:assemble
+> Task :tny-game-starter-net-netty4:javadoc
+> Task :tny-game-starter-net-netty4:javadocJar
+> Task :tny-game-starter-net-netty4:assemble
 > Task :tny-game-starter-basics:compileTestJava
 > Task :tny-game-starter-basics:testClasses
-OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+> Task :tny-game-starter-net-netty4:compileTestJava
+> Task :tny-game-starter-net-netty4:testClasses
 > Task :tny-game-starter-basics:test
 > Task :tny-game-starter-basics:check
 > Task :tny-game-starter-basics:build
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
 > Task :tny-game-starter-net-netty4:test
 > Task :tny-game-starter-net-netty4:check
 > Task :tny-game-starter-net-netty4:build
@@ -1355,5 +1352,5 @@ You can use '--warning-mode all' to show the individual deprecation warnings and
 
 For more on this, please refer to https://docs.gradle.org/8.5/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
 
-BUILD SUCCESSFUL in 1m 7s
-347 actionable tasks: 341 executed, 6 up-to-date
+BUILD SUCCESSFUL in 54s
+347 actionable tasks: 339 executed, 8 up-to-date
