@@ -13,6 +13,7 @@ Goals：一个主题一个文件；重复谓词根除；doc-gradle 补上 releas
 ## Decisions
 **D1 合并方向选"gate 并入 publish"而非反向。** tny.publish 是三条线共同应用的底座（java/插件/BOM 全经过它），门禁并入即自动覆盖三条线；反向合并需要给 gradleProjects 补应用新 id，改线不改文件。依据：改动面最小、覆盖语义即需求。被否决备选：新建 tny.publish-safety 第三个 id——否决理由：为合并再造一层命名。
 **D2 谓词合流为局部 def，两处挂接共用。** 迁移后端内单一 `def publishesToSharedRepository = { ... }`（保留现注释含 D7 历史），属性断言的 tasks.matching 与门禁挂接共用之；两文件历史差异（publish 版曾在 D7 前用 startsWith('publishToMavenLocal') 旧语义）已消一，逐字核对确认现存两份一致后合流（实施第一步 diff 两谓词，若有任何语义差异立即停下回用户处）。
+**D2b 实施修正注记（落地时补记，2026-10-03）**：合并后 tny.publish 在 gradleProjects 线的应用时点早于模块自身 plugins{} 求值，两处"裸对象引用触发实名化"的旧形态随之失效——挂接谓词的 `it != checkPublishPrerequisites` 改 `it.name != 'checkPublishPrerequisites'`、门禁任务的 `dependsOn tasks.named('check')` 改 `dependsOn 'check'`（均推迟到任务图构建期解析，语义全等）；doc-gradle 评估报红实测与堆栈取证、修正后四处实断言全绿，过程记录见 verification-notes。原"仅谓词合流"的 Non-Goal 按此范围修正。
 **D3 doc-gradle 覆盖为向规格对齐，验收按"允许差异清单"执行。** tasks --all 差异预期为 tny-game-doc-gradle:checkPublishPrerequisites 一行及其挂接不改变其它任务名（挂接是既有 publish 任务的依赖边，dry-run 清单核对边名不新增 java/BOM 侧）；差异超出预期清单即停。
 
 ## Risks / Trade-offs

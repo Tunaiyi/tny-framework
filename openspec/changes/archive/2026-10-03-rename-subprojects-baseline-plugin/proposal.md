@@ -19,4 +19,4 @@ tny.subprojects-baseline 的名字（"子工程基线"）没有说出它的主�
 ## Impact
 
 - **受影响文件**：改名主体 1 个、引用 4 处（根脚本 1 行、自身头注释、plugin-module 与 java-module 头注释各 1 处）。
-- **验收**：评估通过、clean build 全绿、tasks --all 与 merge 变更归档基线零差异（id 不出现在任何任务名/产物面，预期零差异）。历史归档与 verification-notes 中的旧名指称不回改（历史记录原则）。
+- **验收**：评估通过、clean build 全绿、tasks --all 对实施前自抓基线零差异（id 不出现在任何任务名与产物面，预期零差异）。历史归档与 verification-notes 中的旧名指称不回改（历史记录原则）。
