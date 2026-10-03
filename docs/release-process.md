@@ -1,0 +1,105 @@
+# 发布流程
+
+本文档描述 TnyFramework 从分支、标签到制品仓库的完整发布流程与门禁规则。规格出处见
+`openspec/specs`（capability `release-versioning`，由变更 `adopt-plain-ga-versioning` 归档产生）。
+
+## 版本形态总览
+
+| 分支形态 | 示例 | 派生版本 | 发布目标 | 说明 |
+|---|---|---|---|---|
+| 开发线 `<主>.<次>.x` | `5.7.x` | `5.7.x-SNAPSHOT` | 快照仓 | 滚动坐标，发布正式版不改变它 |
+| 发布分支 `<主>.<次>.<补丁>.release` | `5.7.8.release` | `5.7.8`（裸号） | 正式发布仓 | 一次性发布容器，发布即打标签 |
+| 其他一切分支 | `5.0.x.net`、`master` | — | 拒绝发布 | 门禁直接阻断共享仓发布任务 |
+
+## 常规发布（例如发布 5.7.8）
+
+1. 从开发线切出发布分支：`git switch -c 5.7.8.release 5.7.x`。
+2. 在该分支 HEAD 创建附注标签并推送标签与分支：
+   `git tag -a v5.7.8 -m "release 5.7.8 from 5.7.8.release"`，随后
+   `git push github 5.7.8.release v5.7.8`。标签必须先于制品：发布门禁会核对远端存在
+   指向当前构建提交的附注标签 `v5.7.8`，缺失则拒绝发布。
+3. 执行发布：`./gradlew publish`（全部模块；门禁含测试、分支形态、版本形态、
+   同号黑名单与标签存证五重校验）。
+4. 发布成功后合回开发线（`./gradlew releaseRebaseBack`）：采用变基策略——发布分支相对
+   开发线若有新提交则变基后快进开发线（线性历史）；常规发布若切支后无新提交，合回自动
+   跳过（线已含全部内容）。
+5. 发布分支保留作为审计容器；标签 `v5.7.8` 是"该版本出自哪个提交"的永久存证。
+   证据语义注记：变基合回会重写发布分支历史并以 `--force-with-lease` 强推，标签继续指向
+   构建发布制品的那个提交（证据不变），但该提交此后不再是开发线的祖先——线内含的是
+   等价重放提交；"制品 ↔ 提交"的对账以标签为准，不以线的历史为准。
+
+## Hotfix 发布（5.7.8 之后紧急修复发布 5.7.9）
+
+1. 从上一个发布分支的头切出新发布分支（补丁的谱系是发布分支之间延续，不经过开发线）：
+   `git switch -c 5.7.9.release 5.7.8.release`。
+2. 在新分支完成修复提交。
+3. 同常规发布第 2、3 步：建标签 `v5.7.9` 并推送，再 `./gradlew publish`。
+4. 把修复合回开发线（`./gradlew releaseRebaseBack`，变基策略见上）：修复提交重放到线上
+   并快进开发线、强推发布分支（lease 保护）。不可省略此步骤，否则快照线静默丢失 hotfix；
+   人工等价命令为在发布分支上 `git rebase 5.7.x`，随后检出 `5.7.x` 执行
+   `git merge --ff-only 5.7.9.release` 并推送两条分支。
+
+## 开新线
+
+1. 从当前开发线头切出：`git switch -c 5.8.x 5.7.x`（下一个次版本）或
+   `git switch -c 6.0.x`（主版本升级，须附协议与公共 API 兼容性评估）。
+2. 新线第一次构建即自动派生 `5.8.x-SNAPSHOT`，无任何版本号文件需要修改。
+3. 旧线 `5.7.x` 降级为维护线：夜间快照发布通道只保留当前开发线，维护线在 hotfix 时按需手动发布。
+
+## 线退役
+
+一条开发线宣布终止维护时：从夜间发布白名单移除该线，开发线分支可删除。删除没有审计损失，
+因为该线所有正式发布都已被 `vN.M.K` 标签永久存证，任何版本对应哪个提交随时可以查询。
+
+## 发布门禁的五重校验
+
+`./gradlew publish`（以及任何共享仓发布任务）在任何模块上执行前由
+`tny.publish` 约定插件的门禁任务校验，任一项不通过即整构建失败并列出全部问题：
+
+1. 分支形态白名单：仅开发线形态与发布分支形态可发布；以 `.release` 结尾但数字段数
+   不是三段（例如 `5.7.8.1.release`）给出专门拒绝文案。
+2. 版本形态匹配：开发线版本必须恰为 `<分支名>-SNAPSHOT`；发布分支版本必须恰为裸三段号。
+3. 同号黑名单：目标裸号若已记录于 `gradle/released-legacy.txt`（历史上以 `-RELEASE`
+   后缀发布过的号），拒绝发布，防止同号两种形态共存导致排序纠缠。
+4. 仓库路由一致：快照版本不得指向 release 仓 URL，裸号版本不得指向快照仓 URL。
+5. 标签存证前置：发布分支目标版本对应的附注标签 `vN.M.K` 必须已存在于远端
+   （`git ls-remote` 核对，附注标签含 `^{}` 解引用记录），且解引用指向当前构建提交；
+   远端不可达按存证缺失拒绝（fail-closed）。校验结果一次构建内记忆化，全仓多模块
+   发布只查询一次远端。个别机器 PATH 上的 git 二进制与 Gradle 守护进程架构不匹配时，
+   可用 `-PgitExe=/path/to/git` 指定可用二进制。本项校验评估过改用 grgit（JGit）的
+   ls-remote：JGit 5.13 对附注标签只给"已解引用"标志而不给解引用后的提交号，无法支撑
+   "标签解引用指向当前构建提交"的核对，因此该项定案维持子进程实现（定案记录见
+   openspec/changes/migrate-git-calls-to-grgit/probe-jgit-remote.md）。
+
+## 制品库运维前置条件（由运维侧执行，不在构建代码内）
+
+1. 正式发布仓（maven-releases）禁止重复部署同一版本坐标，保证裸号正式版不可变。
+2. 快照仓（maven-snapshots）配置按天数的保留清理策略：滚动快照坐标 `N.M.x-SNAPSHOT`
+   每夜构建追加一份时间戳产物且永不互相顶替，无保留策略则磁盘无界增长。
+
+## Central 发布（正式版第二通道）
+
+自 central-publish-tnydev-group 变更起，正式版同时发布到 Maven Central（组号 `com.tnydev.game`）：
+
+- 本地通道：`./gradlew publish`（Nexus，不变）→ `./gradlew publishAggregationToCentralPortal`
+  （nmcp 聚合上传；`centralCheck` 前置校验分支形态与凭据，上传前逐模块校验四件套与签名配对）。
+  凭据：`mavenCentralUsername/mavenCentralPassword`（Portal User Token）用户级属性 +
+  签名三属性同内网通道。快照永不进 Central（非发布分支被 `centralCheck` 拒绝，
+  nmcp 暴露的快照上传任务已全部禁用）。
+- CI 通道：`.github/workflows/publish.yml`——release 事件（按标签推导发布分支）或
+  `workflow_dispatch` 人工触发，两通道分步独立执行、互不回滚。所需 secrets：
+  `MAVEN_CENTRAL_USERNAME/PASSWORD`、`SIGNING_KEY`（armor 私钥）/`SIGNING_KEY_ID`/`SIGNING_PASSWORD`、
+  `NEXUS_USERNAME/PASSWORD`。前置条件：`com.tnydev.game` 命名空间已在 Portal 完成 DNS 验证。
+- 快照通道：开发线 `./gradlew publish` 自动分发**内网快照仓与 Central 快照仓**双目的地（条件=快照版本形态且本机配置 `mavenCentralUsername/Password`，缺凭据机器仅发内网；Central 快照 90 天自动清理，权威归档在内网）。
+- 首版验收：Central 检索到 `com.tnydev.game:tny-game-*:<版本>` 全模块清单后，本流程定版。
+
+## 快速通道（Gradle 任务）
+
+上述四则流程中的切支+打标签+推送由根任务 `releaseCutAndTag` 固化顺序，合回由 `releaseRebaseBack`
+固化（均在 `tny.release` 约定插件；两任务支持 `-PdryRun` 预览）。通道分界（openspec change
+`migrate-git-calls-to-grgit`）：`releaseCutAndTag` 的全部 git 操作已收敛到 grgit 插件
+（JGit 后端），不依赖本机 git 二进制，因此不需要 `-PgitExe`；`releaseRebaseBack` 仍保留四类
+子进程调用——`rebase`、`rebase --abort`、`rev-list --count`、`push --force-with-lease`——
+原因是 grgit 4.1.1 没有独立变基操作，且其推送只有无条件强推，不能拿弱语义替代 lease；
+本机执行这些子进程调用仍受 JDK 21 与 `-PgitExe` 两个环境前置约束，详见任务脚本头部注释。
+`./gradlew publish` 仍按原流程独立执行，门禁校验不因使用快速通道而减免。

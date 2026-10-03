@@ -1,0 +1,260 @@
+/*
+ * Copyright (c) 2020 Tunaiyi
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.tny.game.common.utils;
+
+import com.tny.game.common.enums.*;
+import com.tny.game.common.number.*;
+import com.tny.game.common.type.*;
+
+import java.lang.reflect.*;
+import java.util.Objects;
+import java.util.function.*;
+
+import static com.tny.game.common.utils.StringAide.*;
+
+/**
+ * Created by Kun Yang on 16/3/9.
+ */
+public class ObjectAide {
+
+    public static boolean isAnyExist(Object... values) {
+        for (Object value : values) {
+            if (value != null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean isAnyNull(Object... values) {
+        for (Object value : values) {
+            if (value == null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean isAllExist(Object... values) {
+        for (Object value : values) {
+            if (value == null) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean isAllNull(Object... values) {
+        for (Object value : values) {
+            if (value != null) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static void noOps() {
+    }
+
+    public static <T> T none() {
+        return null;
+    }
+
+    public static <T> T none(Class<T> clazz) {
+        return null;
+    }
+
+    public static <T> T ifNull(T object, T defObject) {
+        return object == null ? defObject : object;
+    }
+
+    public static <T> T ifNullAndGet(T object, Supplier<T> defObject) {
+        return object == null ? defObject.get() : object;
+    }
+
+    public static <T, O> O ifNotNull(T object, Function<T, O> mapper, O defObject) {
+        return object == null ? defObject : mapper.apply(object);
+    }
+
+    private static <T, O> O ifNotNullElse(T object, Function<T, O> mapper, Supplier<? extends O> supplier) {
+        return object == null ? supplier.get() : mapper.apply(object);
+    }
+
+    public static <V, R> R test(V value, Predicate<V> condition, R trueValue, R falseValue) {
+        if (condition.test(value)) {
+            return trueValue;
+        }
+        return falseValue;
+    }
+
+    public static <V> V test(V value, Predicate<V> condition, V falseValue) {
+        if (condition.test(value)) {
+            return value;
+        }
+        return falseValue;
+    }
+
+    public static <V, R> R testAndApply(V value, Predicate<V> condition, Function<V, R> trueValue, Function<V, R> falseValue) {
+        if (condition.test(value)) {
+            return trueValue.apply(value);
+        }
+        return falseValue.apply(value);
+    }
+
+    public static <V, R> R ifEquals(V one, V other, R trueValue, R falseValue) {
+        if (Objects.equals(one, other)) {
+            return trueValue;
+        }
+        return falseValue;
+    }
+
+    public static <V, R> R ifEqualsAndGet(V one, V other, Supplier<R> trueValue, Supplier<R> falseValue) {
+        if (Objects.equals(one, other)) {
+            return trueValue.get();
+        }
+        return falseValue.get();
+    }
+
+    public static <T> T self(T object) {
+        return object;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T as(Object object) {
+        return (T) object;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T as(Object object, Class<T> clazz) {
+        if (object == null) {
+            return null;
+        }
+        if (clazz.isInstance(object)) {
+            return (T) object;
+        }
+        throw new ClassCastException(object + "is not " + clazz + "instance");
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T as(Object object, ReferenceType<T> referenceType) {
+        if (object == null) {
+            return null;
+        }
+        return (T) object;
+        //		throw new ClassCastException(object + "is not " + clazz + "instance");
+    }
+
+    /**
+     * 解析引用令牌携带的类型：读取声明 ReferenceType 的直接父层（getGenericSuperclass）的泛型实参，
+     * MUST NOT 从实例实现的接口列表取型（原实现接口列表为空即下标越界、错位即取到无关类型）。
+     * 原始捕获或不可解析形态显式受控失败。
+     */
+    private static <T> Class<T> getClassType(ReferenceType<T> referenceType) {
+        Class<T> clazz = resolveReferenceTypeClass(referenceType.getClass());
+        if (clazz == null) {
+            // forType(...) 构造的令牌：类层级上是类型变量，只能取构造期已解析的类型
+            clazz = typeToClass(referenceType.getType());
+        }
+        if (clazz == null) {
+            throw new IllegalArgumentException(
+                    format("无法从引用令牌 {} 解析出具体类型（原始捕获或不可解析形态）", referenceType.getType()));
+        }
+        return clazz;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> Class<T> resolveReferenceTypeClass(Class<?> subclass) {
+        for (Class<?> current = subclass;
+             current != null && current != Object.class && ReferenceType.class.isAssignableFrom(current);
+             current = current.getSuperclass()) {
+            Type genericSuper = current.getGenericSuperclass();
+            if (genericSuper instanceof ParameterizedType) {
+                ParameterizedType parameterizedType = (ParameterizedType) genericSuper;
+                if (parameterizedType.getRawType() == ReferenceType.class) {
+                    return typeToClass(parameterizedType.getActualTypeArguments()[0]);
+                }
+                // 中间泛型层：沿原始类继续上溯
+            } else if (genericSuper instanceof Class && (Class<?>) genericSuper == ReferenceType.class) {
+                // 原始捕获（ReferenceType 层未提供类型实参）
+                return null;
+            }
+        }
+        return null;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> Class<T> typeToClass(Type type) {
+        if (type instanceof Class) {
+            return (Class<T>) type;
+        }
+        if (type instanceof ParameterizedType) {
+            return (Class<T>) ((ParameterizedType) type).getRawType();
+        }
+        return null;
+    }
+
+    private static <E extends Enum<?>> E enumConvert(Object source, Class<E> clazz) {
+        E value = null;
+        if (source instanceof String) {
+            value = EnumAide.ofName(clazz, as(source));
+        }
+        if (value == null && Enumerable.class.isAssignableFrom(clazz)) {
+            value = as(EnumAide.of(as(clazz), source));
+        }
+        return value;
+    }
+
+    public static <T> T convertTo(Object object, ReferenceType<T> referenceType) {
+        return convertTo(object, getClassType(referenceType));
+    }
+
+    public static <T> T convertTo(Object source, Class<T> clazz) {
+        if (source == null) {
+            return null;
+        }
+        if (clazz.isInstance(source)) {
+            return as(source);
+        }
+        final Class<?> targetClass = !clazz.isPrimitive() ? clazz : Wrapper.getWrapper(clazz);
+        if (targetClass.isInstance(source)) {
+            return as(source);
+        }
+        if (Enum.class.isAssignableFrom(targetClass)) {
+            @SuppressWarnings("rawtypes")
+            Class<? extends Enum> enumClass = as(targetClass);
+            return as(enumConvert(source, enumClass));
+        }
+        if (Number.class.isAssignableFrom(targetClass)) {
+            Class<? extends Number> numberClass = as(targetClass);
+            if (source instanceof String) {
+                return as(NumberAide.parse(as(source), numberClass));
+            }
+            if (source instanceof Number) {
+                Number number = as(source);
+                return as(NumberAide.as(number, numberClass));
+            }
+        }
+        if (targetClass == String.class) {
+            return as(source.toString());
+        }
+        if (!clazz.isAssignableFrom(source.getClass())) {
+            throw new ClassCastException(format("{} can not convert to {}", source.getClass(), clazz));
+        }
+        return as(source);
+    }
+
+}

@@ -1,0 +1,84 @@
+/*
+ * Copyright (c) 2020 Tunaiyi
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.tny.game.codec.typeprotobuf;
+
+import com.baidu.bjf.remoting.protobuf.annotation.ProtobufClass;
+import com.tny.game.codec.typeprotobuf.annotation.*;
+import com.tny.game.codec.typeprotobuf.exception.*;
+import com.tny.game.common.utils.*;
+import org.slf4j.*;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import static com.tny.game.common.utils.ObjectAide.*;
+import static com.tny.game.common.utils.StringAide.*;
+
+/**
+ * <p>
+ *
+ * @author : kgtny
+ * @date : 2021/7/24 12:48 下午
+ */
+public final class TypeProtobufSchemeManager {
+
+    public static final Logger LOGGER = LoggerFactory.getLogger(TypeProtobufSchemeManager.class);
+
+    private static final TypeProtobufSchemeManager INSTANCE = new TypeProtobufSchemeManager();
+
+    private static final Map<Integer, TypeProtobufScheme<?>> idSchemeMap = new ConcurrentHashMap<>();
+
+    private static final Map<Class<?>, TypeProtobufScheme<?>> typeSchemeMap = new ConcurrentHashMap<>();
+
+    private TypeProtobufSchemeManager() {
+    }
+
+    public static TypeProtobufSchemeManager getInstance() {
+        return INSTANCE;
+    }
+
+    public <T> TypeProtobufScheme<T> getScheme(int id) {
+        TypeProtobufScheme<T> scheme = as(idSchemeMap.get(id));
+        return Asserts.checkNotNull(scheme, "TypeProtobuf Id {} TypeProtobufScheme is no exist", id);
+    }
+
+    public <T> TypeProtobufScheme<T> loadScheme(Class<T> valueClass) {
+        TypeProtobufScheme<?> scheme = typeSchemeMap.get(valueClass);
+        if (scheme != null) {
+            return as(scheme);
+        }
+        try {
+            Asserts.checkNotNull(valueClass.getAnnotation(TypeProtobuf.class), "class {} is miss {} annotation", valueClass, TypeProtobuf.class);
+            Asserts.checkNotNull(valueClass.getAnnotation(ProtobufClass.class), "class {} is miss {} annotation", valueClass, ProtobufClass.class);
+            TypeProtobufScheme<T> newScheme = new TypeProtobufScheme<>(valueClass);
+            TypeProtobufScheme<?> old = typeSchemeMap.putIfAbsent(newScheme.getType(), newScheme);
+            if (old != null) {
+                return as(old);
+            }
+            old = idSchemeMap.put(newScheme.getId(), newScheme);
+            if (old != null && old.getType() != newScheme.getType()) {
+                throw new IllegalArgumentException(format("{} and {} are same ProtobufType id {}",
+                        newScheme.getType(), old.getType(), old.getId()));
+            }
+            LOGGER.info("TypeProtobufScheme Load [({}) {}]  finish", newScheme.getId(), valueClass);
+            return newScheme;
+        } catch (Throwable e) {
+            throw new TypeProtobufSchemeException(format("Load {} class TypeProtobufScheme exception", valueClass), e);
+        }
+    }
+
+}

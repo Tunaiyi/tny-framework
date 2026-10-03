@@ -1,0 +1,81 @@
+/*
+ * Copyright (c) 2020 Tunaiyi
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.tny.game.codec.jackson;
+
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.*;
+import com.google.common.collect.ImmutableList;
+import com.tny.game.codec.*;
+import com.tny.game.codec.jackson.mapper.*;
+import org.springframework.util.MimeType;
+
+import java.lang.reflect.Type;
+import java.util.Collection;
+
+import static com.tny.game.common.collection.CollectionAide.*;
+
+/**
+ * <p>
+ *
+ * @author : kgtny
+ * @date : 2020/8/19 6:27 下午
+ */
+public class JacksonObjectCodecFactory extends AbstractObjectCodecFactory {
+
+    private final ObjectMapper mapper;
+
+    private static final Collection<MimeType> DEFAULT_MIME_TYPES = ImmutableList
+            .copyOf(MimeTypeAide.asList(JsonMimeType.JSON, JsonMimeType.JSON_WILDCARD));
+
+    public JacksonObjectCodecFactory() {
+        this(null, null);
+    }
+
+    public JacksonObjectCodecFactory(ObjectMapper mapper) {
+        this(null, mapper);
+    }
+
+    public JacksonObjectCodecFactory(Collection<MimeType> supportMimeTypes) {
+        this(supportMimeTypes, null);
+    }
+
+    public JacksonObjectCodecFactory(Collection<MimeType> supportMimeTypes, ObjectMapper mapper) {
+        super(ifEmpty(supportMimeTypes, DEFAULT_MIME_TYPES));
+        if (mapper != null) {
+            this.mapper = mapper;
+        } else {
+            this.mapper = ObjectMapperFactory.createMapper()
+                    .setVisibility(PropertyAccessor.FIELD, Visibility.ANY)
+                    .setVisibility(PropertyAccessor.SETTER, Visibility.ANY)
+                    .setVisibility(PropertyAccessor.GETTER, Visibility.NONE)
+                    .setVisibility(PropertyAccessor.IS_GETTER, Visibility.NONE);
+        }
+    }
+
+    @Override
+    public <T> ObjectCodec<T> createCodec(Type clazz) {
+        JavaType type = this.mapper.getTypeFactory().constructType(clazz);
+        return new JacksonObjectCodec<>(type, this.mapper);
+    }
+
+    @Override
+    public MimeType isCanCodec(Class<?> clazz) {
+        return JsonMimeType.JSON_MIME_TYPE;
+    }
+
+}

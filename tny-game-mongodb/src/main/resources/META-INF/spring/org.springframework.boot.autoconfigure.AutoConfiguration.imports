@@ -1,0 +1,2 @@
+com.tny.game.data.mongodb.configuration.MongodbBeanConfiguration
+com.tny.game.data.mongodb.configuration.MongodbAutoConfiguration

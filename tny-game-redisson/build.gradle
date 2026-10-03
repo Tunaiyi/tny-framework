@@ -1,0 +1,13 @@
+
+apply plugin: 'maven-publish'
+
+
+dependencies {
+
+    api project(':tny-game-common-io')
+    api project(':tny-game-codec-jackson')
+
+    api libs.javassist
+    api libs.redisson
+}
+

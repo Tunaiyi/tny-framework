@@ -1,0 +1,83 @@
+/*
+ * 集成测试专用叶子模块（add-integration-testing design D3）：
+ * 仅承载跨模块网络链路与全栈场景的集成测试，不参与 maven 发布、不进入 tny-game-bom 约束面。
+ * 已自根 build.gradle 的 javaProjects 排除，此处自行装配 java 编译与两级验证通道。
+ */
+plugins {
+    id 'java-library'
+    // 两级验证通道：integration source set 与 integrationTest 任务（add-integration-testing design D1）
+    id 'tny.integration-test'
+    // 横切角色统一插件（consolidate-module-modes-plugin）
+    id 'tny.module-setting'
+}
+
+// 自述：本工程不发布（声明即禁用本工程 publish 任务，design D3 双重保险语义不变）
+moduleSetting {
+    enableUnpublished()
+}
+
+// 对齐根 javaProjects 约定（本模块被排除在外需自带）：排除默认 logging 桥接，
+// 统一 log4j2 绑定，避免 logback/slf4j-simple/log4j2 多绑定冲突（Spring Boot 启动期即炸）
+configurations.configureEach {
+    exclude module: 'spring-boot-starter-logging'
+    exclude module: 'log4j-to-slf4j'
+    exclude module: 'logback-classic'
+    exclude module: 'slf4j-simple'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(javaVersion.toInteger())
+    }
+}
+
+tasks.withType(AbstractCompile).configureEach {
+    options.encoding = encoding
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs << '-parameters'
+}
+
+dependencies {
+
+    implementation libs.slf4jApi
+    implementation libs.commonsLang3
+
+    // 被测栈：网络抽象 + netty4 实现 + TCP 报文体编解码 + 既有测试夹具
+    api project(':tny-game-net')
+    api project(':tny-game-net-netty4')
+    implementation project(':tny-game-net-test')
+    implementation project(':tny-game-net-netty4-codec-jprotobuf')
+    implementation project(':tny-game-net-netty4-codec-protoex')
+
+    // starter 装配验证域（add-starter-net-integration-tests D1）：官方装配 + demo 蓝本（零修改复用）
+    integrationImplementation project(':tny-game-starter-net-netty4')
+    integrationImplementation project(':tny-game-net-demo')
+    // harness 装配位显式声明引擎（remove-engine-transitive-assembly D4）：此前经 starter 的 api 传递
+    // 白拿引擎编译可见性，装配者自声明所装配之物
+    integrationImplementation project(':tny-game-expr-groovy')
+
+    integrationImplementation libs.junitJupiter
+    integrationImplementation libs.mockitoJunitJupiter
+    // 注：本模块 IT classpath 含 Spring Boot（logback 绑定），不再叠加 slf4j-simple 避免双绑定冲突
+
+    // P3 容器/全栈档（add-integration-testing 任务 5.1/6.1，design D1 docker 标签隔离）：
+    // 全部挂 integration 配置，普通 test 与无 Docker 的 integrationTest 任务不受影响
+    integrationImplementation project(':tny-game-boot')
+    integrationImplementation project(':tny-game-data')
+    integrationImplementation project(':tny-game-starter-redisson')
+    integrationImplementation project(':tny-game-data-redisson')
+    integrationImplementation project(':tny-game-redisson')
+    integrationImplementation project(':tny-game-starter-mongodb')
+    integrationImplementation project(':tny-game-data-mongodb')
+    integrationImplementation project(':tny-game-mongodb')
+    // Spring Boot 全栈装配、官方 log4j2 集成与容器驱动收编为目录 bundle containerStack，一行挂接；
+    // 接线一致与损坏帧告警捕获等来由说明集中写在 catalog [bundles] 节上方注释
+    integrationImplementation libs.bundles.containerStack
+    // slf4j2 绑定族另一半：provider 选择来由（slf4j-api 2.x 不识别 1.x 桥，误用静默退化 NOP）与
+    // bundle 内 log4jCore 同源，见 catalog [bundles] 节注释
+    integrationRuntimeOnly libs.log4jApi
+    integrationRuntimeOnly libs.log4jSlf4j2Impl
+
+}

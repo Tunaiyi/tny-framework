@@ -1,0 +1,64 @@
+plugins {
+    id 'org.ajoberstar.grgit' version '4.1.1' apply false
+    // nmcp（Central Portal 上传器，central-publishing D3）：aggregation 挂根、模块侧经
+    // tny.central 与 tny.publications 分别 apply，直接消费既有 mavenJava。
+    id 'com.gradleup.nmcp' version '1.6.2' apply false
+    id 'com.gradleup.nmcp.aggregation' version '1.6.2' apply false
+    // 死声明清除（fix-dependency-version-governance D10，全仓复证零应用点）：
+    // org.springframework.boot 插件（本工程无 bootJar 重打需求，springBootVersion 键仍由 BOM 导入句消费）与
+    // com.gradle.plugin-publish 插件（Gradle Plugin Portal 发布通道从未接通，见 tny-game-doc-gradle 残迹注记）
+    id 'io.spring.dependency-management' version '1.1.0' apply false
+    id 'com.baidu.jprotobuf' version '1.2.1' apply false
+}
+
+// 第三方插件在根脚本作用域先行应用（buildSrc 作用域无法解析父构建类路径插件，实测 8.5）；
+// tny.git 创建的根工程类型化扩展 gitFlow（派生分支名、项目版本等值，实现类 tny.convention.GitFlow）
+// 必须先于一切消费方应用——消费方经 getByType 按类型拉取，扩展不在位即报错；坐标版本见版本目录。
+apply plugin: 'org.ajoberstar.grgit'
+apply plugin: 'tny.git'
+// 发布快速通道：releaseCutAndTag / releaseRebaseBack（语义契约见 docs/release-process.md）
+apply plugin: 'tny.release'
+
+ext {
+    // 发布构件组号的单一事实源（central-publishing D2）：模块不得另行声明组号
+    // （Central 命名空间验证与凭证迁移记录见该变更归档）。
+    projectGroup = 'com.tnydev.game'
+    // 唯一例外：插件模块组号与插件 id 同谱系（spec central-publishing"Gradle 插件构件不入 Central"）。
+    pluginLegacyGroup = 'com.tny.game'
+
+    moduleProjects = subprojects.findAll { it.name.startsWith('tny-game-') }
+    // javaProjects 按命名约定排除三类（zero-enumeration-shared-scripts：共享脚本不点名，约定权威定义见 settings.gradle 注释）：
+    // -bom 无编译构件；-gradle 走例外组号（spec central-publishing）；-integration-test 仅测试代码（add-integration-testing design D3）。
+    javaProjects = moduleProjects.findAll {
+        !it.name.endsWith('-bom') && !it.name.endsWith('-gradle') && !it.name.endsWith('-integration-test')
+    }
+    gradleProjects = moduleProjects.findAll { it.name.endsWith('-gradle') }
+}
+
+// Central 通道：centralBundle / centralUpload（capability central-publishing）；
+// tny.central 须在 ext 声明块之后加载（聚合依赖 moduleProjects 集合）。
+apply plugin: 'com.gradleup.nmcp.aggregation'
+apply plugin: 'tny.central'
+
+// 配置阶段跨工程对账（组号单一事实源、基准模块零发布合同）：程序性校验限定约定插件（gradle-build-style 需求一）
+apply plugin: 'tny.module-checker'
+
+// 装配线（各插件文件头声明职责与边界）：约定插件之间不互相 apply（脚本插件嵌套应用触发
+// 类加载器服务缺失，实测 Gradle 8.5），故各线所需插件在此按依赖顺序逐一应用，幂等无副作用。
+configure(subprojects) {
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'tny.dependency-management'
+}
+configure(gradleProjects) {
+    apply plugin: 'tny.publish'
+    apply plugin: 'tny.compile-baseline'
+    apply plugin: 'tny.plugin-module'
+}
+configure(javaProjects) {
+    apply plugin: 'com.gradleup.nmcp'
+    apply plugin: 'tny.publish'
+    apply plugin: 'tny.compile-baseline'
+    apply plugin: 'tny.java-module'
+    apply plugin: 'tny.integration-test'
+    apply plugin: 'tny.publications'
+}

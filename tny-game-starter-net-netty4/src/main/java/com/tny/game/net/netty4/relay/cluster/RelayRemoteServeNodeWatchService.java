@@ -1,0 +1,106 @@
+/*
+ * Copyright (c) 2020 Tunaiyi
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.tny.game.net.netty4.relay.cluster;
+
+import com.tny.game.common.concurrent.collection.*;
+import com.tny.game.common.lifecycle.*;
+import com.tny.game.net.clusters.*;
+import com.tny.game.net.relay.cluster.*;
+import com.tny.game.net.relay.cluster.watch.*;
+import com.tny.game.net.relay.link.*;
+import org.slf4j.*;
+
+import java.util.*;
+
+/**
+ * <p>
+ *
+ * @author : kgtny
+ * @date : 2021/9/13 8:50 下午
+ */
+public class RelayRemoteServeNodeWatchService implements AppPrepareStart, AppClosed {
+
+    public static final Logger LOGGER = LoggerFactory.getLogger(RelayRemoteServeNodeWatchService.class);
+
+    // 按集群去重：prepareStart 可被生命周期链重复驱动，匿名 watcher 无 equals 会重复订阅（net-boot-integration）
+    private final java.util.concurrent.ConcurrentHashMap<RemoteServeCluster, ServeInstanceWatcher> watchers = new java.util.concurrent.ConcurrentHashMap<>();
+
+    private final NetClientRelayExplorer localRelayExplorer;
+
+    private final ServeNodeClient serveNodeClient;
+
+    public RelayRemoteServeNodeWatchService(ServeNodeClient serveNodeClient, NetClientRelayExplorer localRelayExplorer) {
+        this.serveNodeClient = serveNodeClient;
+        this.localRelayExplorer = localRelayExplorer;
+    }
+
+    @Override
+    public void onClosed() {
+        watchers.values().forEach(ServeInstanceWatcher::stop);
+        watchers.clear();
+    }
+
+    @Override
+    public void prepareStart() {
+        for (RemoteServeCluster cluster : localRelayExplorer.getClusters()) {
+            RemoteServeClusterContext context = cluster.getContext();
+            var setting = context.getSetting();
+            if (setting.isDiscovery()) {
+                ServeInstanceWatcher watcher = new ServeInstanceWatcher(cluster);
+                if (watchers.putIfAbsent(cluster, watcher) == null) {
+                    watcher.start();
+                }
+            }
+        }
+    }
+
+    private class ServeInstanceWatcher implements ServeNodeListener {
+
+        private final RemoteServeCluster cluster;
+
+        private void start() {
+            serveNodeClient.subscribe(cluster.getServeName(), this);
+        }
+
+        private void stop() {
+            serveNodeClient.unsubscribe(cluster.getServeName(), this);
+        }
+
+        private ServeInstanceWatcher(RemoteServeCluster cluster) {
+            this.cluster = cluster;
+        }
+
+        @Override
+        public void onChange(ServeNode node, List<ServeNodeChangeStatus> statuses) {
+            LOGGER.info("ServeNode {} change {}", node, statuses);
+            localRelayExplorer.updateInstance(node, statuses);
+        }
+
+        @Override
+        public void onRemove(ServeNode node) {
+            LOGGER.info("ServeNode {} remove", node);
+            localRelayExplorer.removeInstance(node);
+        }
+
+        @Override
+        public void onCreate(ServeNode node) {
+            LOGGER.info("ServeNode {} create", node);
+            localRelayExplorer.putInstance(node);
+        }
+
+    }
+
+}

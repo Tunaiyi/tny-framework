@@ -1,0 +1,116 @@
+/*
+ * Copyright (c) 2020 Tunaiyi
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.tny.game.boot.launcher;
+
+import com.google.common.collect.ImmutableSet;
+import com.tny.game.common.concurrent.utils.*;
+import com.tny.game.scanner.*;
+import org.apache.commons.collections4.CollectionUtils;
+import org.slf4j.*;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.*;
+import org.springframework.context.annotation.ComponentScan;
+
+import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+/**
+ * <p>
+ */
+public class ApplicationLauncherContext {
+
+    public static final Logger LOGGER = LoggerFactory.getLogger(ApplicationLauncherContext.class);
+
+    private static final ApplicationLifecycleProcessor processor = new ApplicationLifecycleProcessor();
+
+    private static final AtomicBoolean staticInit = new AtomicBoolean(false);
+
+    private static final AtomicBoolean start = new AtomicBoolean(false);
+
+    private static final AtomicBoolean started = new AtomicBoolean(false);
+
+    private static final AtomicBoolean closed = new AtomicBoolean(false);
+
+    private static Set<String> basePackages = ImmutableSet.of();
+
+    public static void register(Class<?> applicationClass) {
+        ClassLoader loader = applicationClass.getClassLoader();
+        Set<String> scanBasePackages = new HashSet<>();
+        scanBasePackages.add("com.tny.game.net");
+        SpringBootApplication application = applicationClass.getAnnotation(SpringBootApplication.class);
+        if (application != null) {
+            String[] packages = application.scanBasePackages();
+            CollectionUtils.addAll(scanBasePackages, packages);
+        }
+        ComponentScan componentScan = applicationClass.getAnnotation(ComponentScan.class);
+        if (componentScan != null) {
+            String[] packages = componentScan.value();
+            CollectionUtils.addAll(scanBasePackages, packages);
+            packages = componentScan.basePackages();
+            CollectionUtils.addAll(scanBasePackages, packages);
+        }
+        if (staticInit.compareAndSet(false, true)) {
+            basePackages = ImmutableSet.copyOf(scanBasePackages);
+            ClassMetadataReaderFactory.init(loader);
+            ExeAide.runUnchecked(() -> processor.onStaticInit(loader, basePackages));
+        }
+    }
+
+    public static Set<String> getBasePackages() {
+        return basePackages;
+    }
+
+    public static void staticInit(String... paths) {
+        if (staticInit.compareAndSet(false, true)) {
+            ExeAide.runUnchecked(() -> processor.onStaticInit(ApplicationLauncherContext.class.getClassLoader(), Arrays.asList(paths)));
+        }
+    }
+
+    public static void prepareStart(ApplicationContext context) {
+        if (start.compareAndSet(false, true)) {
+            ApplicationLifecycleProcessor.loadHandler(context);
+            // processor.setApplicationContext(this.appContext);
+            try {
+                processor.onPrepareStart(false);
+            } catch (Throwable throwable) {
+                LOGGER.error("System exit -1 | {} processor exec exception", processor.getClass(), throwable);
+                ((ConfigurableApplicationContext) context).close();
+                //                throw new IllegalArgumentException(throwable);
+                //                System.exit(1);
+            }
+        }
+    }
+
+    public static void postStart(ApplicationContext context) {
+        if (started.compareAndSet(false, true)) {
+            ApplicationLifecycleProcessor.loadHandler(context);
+            try {
+                processor.onPostStart(false);
+            } catch (Throwable throwable) {
+                LOGGER.error("System exit -1 | {} processor exec exception", processor.getClass(), throwable);
+                ((ConfigurableApplicationContext) context).close();
+            }
+        }
+    }
+
+    public static void close() {
+        if (closed.compareAndSet(false, true)) {
+            ExeAide.runUnchecked(() -> processor.onClosed(true));
+        }
+    }
+
+}
