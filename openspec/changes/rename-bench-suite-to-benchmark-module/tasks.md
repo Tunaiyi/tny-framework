@@ -6,7 +6,7 @@
 
 ## 2. 改名实施
 
-- [x] 2.1 插件与扩展两层：`buildSrc/src/main/groovy/tny.bench-suite.gradle` 以 git mv 移名 `tny.benchmark-module.gradle`；内部六处随改——第 4/5/7/18 行注释的 `benchSuite` 字样换 `benchmarkSuite`（同行 `:tny-benchmark` 归属注已是现名不动，D3）、第 16 行 `extensions.create('benchmarkSuite', tny.convention.BenchSuite)`（类型参数不动）、第 47 行报错文案"检查 benchmarkSuite.routineFamily 与 -PbenchAll"（D2）；第 2 行"前身为 gradle/bench-suite.gradle"历史路径不动。类文件 `tny/convention/BenchSuite.groovy` 第 1、4 行对 `tny.bench-suite` 的指称改 `tny.benchmark-module`（类名与五属性名不动，D1）。模块 `tny-benchmark/build.gradle` 八行——第 4/28/75 行插件名指称随改、第 5 行 `id 'tny.benchmark-module'`、第 29 行块名与第 56/65/70 行三处读取 `benchSuite` 换 `benchmarkSuite`；族正则四条、臂属清单、jmh 段结构取值一字不动。任务名、`-Pbench*` 属性名、`reports/bench/` 与 `dev/bench/` 路径段一律不动（Non-Goals）。验证：`./gradlew projects -q` 通过（应用行与配置期读取链即探）。
+- [x] 2.1 插件与扩展两层：`buildSrc/src/main/groovy/tny.bench-suite.gradle` 以 git mv 移名 `tny.benchmark-module.gradle`；内部六处随改——第 4/5/7/18 行注释的 `benchSuite` 字样换 `benchmarkSuite`（同行 `:tny-benchmark` 归属注已是现名不动，D3）、第 16 行 `extensions.create('benchmarkSuite', tny.convention.BenchSuite)`（类型参数不动）、第 47 行报错文案"检查 benchmarkSuite.routineFamily 与 -PbenchAll"（D2）；第 3 行"前身为 gradle/bench-suite.gradle"历史路径不动。类文件 `tny/convention/BenchSuite.groovy` 第 1、4 行对 `tny.bench-suite` 的指称改 `tny.benchmark-module`（类名与五属性名不动，D1）。模块 `tny-benchmark/build.gradle` 八行——第 4/28/75 行插件名指称随改、第 5 行 `id 'tny.benchmark-module'`、第 29 行块名与第 56/65/70 行三处读取 `benchSuite` 换 `benchmarkSuite`；族正则四条、臂属清单、jmh 段结构取值一字不动。任务名、`-Pbench*` 属性名、`reports/bench/` 与 `dev/bench/` 路径段一律不动（Non-Goals）。验证：`./gradlew projects -q` 通过（应用行与配置期读取链即探）。
 
 ## 3. 零差异验收
 
