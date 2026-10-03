@@ -12,7 +12,8 @@ plugins {
 }
 
 // 第三方插件在根脚本作用域先行应用（buildSrc 作用域无法解析父构建类路径插件，实测 8.5）；
-// tny.git 派生值（branchName/projectVersion）必须先于一切消费方加载，坐标版本见版本目录。
+// tny.git 创建的根工程类型化扩展 gitFlow（派生分支名、项目版本等值，实现类 tny.convention.GitFlow）
+// 必须先于一切消费方应用——消费方经 getByType 按类型拉取，扩展不在位即报错；坐标版本见版本目录。
 apply plugin: 'org.ajoberstar.grgit'
 apply plugin: 'tny.git'
 // 发布快速通道：releaseCutAndTag / releaseRebaseBack（语义契约见 docs/release-process.md）

@@ -6,6 +6,8 @@
 // 边界：发布前置门禁与 Nexus 属性断言合一在 tny.publish（merge-publish-gate-into-publish），
 // Central 正式版聚合上传在 tny.central。
 
+import tny.convention.GitFlow
+
 plugins {
     id 'maven-publish'
     id 'signing'
@@ -88,7 +90,8 @@ publishing {
 // 发布分支形态必签——正式版对 Central 与内网共用同一签名产物，缺签在准入校验判红；
 // 快照在无密钥环境（如新克隆的开发机）跳过，不阻塞内网快照通道。
 signing {
-    def signingBranch = rootProject.ext.branchName.toString()
+    // 分支名经根工程 gitFlow 类型化扩展拉取（tny.convention.GitFlow，expose-git-info-extension）。
+    def signingBranch = rootProject.extensions.getByType(GitFlow).branchName.toString()
     required = { signingBranch ==~ /\d+\.\d+\.\d+\.release/ }
     // CI 桥接：无点号环境变量 SIGNING_KEY(_ID/_PASSWORD) 走内存密钥环。
     // 属性名 signing.keyId 含点，无法经 ORG_GRADLE_PROJECT_* 注入（Gradle 环境桥不接受点号），故专用 env。

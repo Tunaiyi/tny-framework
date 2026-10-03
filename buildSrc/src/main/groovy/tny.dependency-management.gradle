@@ -9,6 +9,8 @@
 // 形态约定：预编译脚本内可应用的插件一律写头部 plugins{} 块（脚本体内 legacy apply plugin
 // 触发 ClassLoaderScope 缺失，实测 Gradle 8.5）。
 
+import tny.convention.GitFlow
+
 plugins {
     id 'idea'
     id 'maven-publish'
@@ -67,8 +69,11 @@ dependencyManagement {
         enabled = false
     }
 }
+// 项目版本经根工程 gitFlow 类型化扩展拉取（tny.convention.GitFlow，expose-git-info-extension）：
+// 按类型获取，tny.git 未先加载即抛"扩展不存在"（expose-git-info-extension 设计决策 D3）；组号属根身份事实源，仍在根 ext 保留。
+def rootGitFlow = rootProject.extensions.getByType(GitFlow)
 group = rootProject.ext.projectGroup
-version = rootProject.ext.projectVersion
+version = rootGitFlow.projectVersion
 
 // 把版本目录读到的依赖转成 Gradle 依赖声明写法字符串（"组:名:版本"，官方文档称 notation）：
 // 按公开属性逐段拼接，不依赖对象的 toString（其输出格式非官方承诺）。参数为访问器返回的 Provider。

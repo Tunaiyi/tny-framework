@@ -4,7 +4,11 @@
 // 变基合回开发线，二者均带 -PdryRun 预览通道。边界：门禁负责做错时拦住，本插件负责做对；
 // git 写操作走 git CLI（grgit 化交 migrate-git-calls-to-grgit 收口）。
 
-def git = rootProject.ext
+import tny.convention.GitFlow
+
+// git 派生事实经根工程 gitFlow 类型化扩展拉取（tny.convention.GitFlow，expose-git-info-extension）：
+// 此前整包取根 ext 字典、键名拼错要到执行才炸，现按类型获取、tny.git 未加载即报"扩展不存在"（expose-git-info-extension 设计决策 D3）。
+def gitFlow = rootProject.extensions.getByType(GitFlow)
 
 def runGit = { List args ->
     def exe = (project.findProperty('gitExe') ?: 'git').toString()
@@ -62,7 +66,7 @@ tasks.register('releaseCutAndTag') {
         }
         def targetBranch = "${v}.release"
         def tagName = 'v' + v
-        def current = git.branchName.toString()
+        def current = gitFlow.branchName.toString()
         def from = project.findProperty('releaseFrom')?.toString()
         if (from == null) {
             if (current ==~ /\d+\.\d+\.x/) {
@@ -73,10 +77,10 @@ tasks.register('releaseCutAndTag') {
                 throw new GradleException("无法从当前分支 '${current}' 推断发布来源，请用 -PreleaseFrom=<分支|标签|提交> 显式指定（首发从开发线如 5.7.x，hotfix 从上一个发布分支）")
             }
         }
-        if (git.grgiter.branch.list().any { it.name == targetBranch }) {
+        if (gitFlow.grgiter.branch.list().any { it.name == targetBranch }) {
             throw new GradleException("本地已存在分支 '${targetBranch}'，同号发布禁止重复切支")
         }
-        if (git.grgiter.tag.list().any { it.name == tagName }) {
+        if (gitFlow.grgiter.tag.list().any { it.name == tagName }) {
             throw new GradleException("本地已存在标签 '${tagName}'，同号发布禁止重复建标")
         }
         def remoteName = resolveRemote(current)
@@ -122,14 +126,14 @@ tasks.register('releaseRebaseBack') {
     group = 'release'
     description = 'After ./gradlew publish succeeded, rebase the release branch commits onto its dev line N.M.x, fast-forward the line and push (linear history; the release branch is force-pushed with lease).'
     doLast {
-        def current = git.branchName.toString()
+        def current = gitFlow.branchName.toString()
         if (!(current ==~ /\d+\.\d+\.\d+\.release/)) {
             throw new GradleException("releaseRebaseBack 必须在发布分支形态（如 5.7.8.release）上执行，当前分支 '${current}'")
         }
-        def v = git.parseBranchVersion(current)
+        def v = gitFlow.parseBranchVersion(current)
         def parts = v.split(/\./ as Closure)
         def line = "${parts[0]}.${parts[1]}.x"
-        def lineBranch = git.grgiter.branch.list().find { it.name == line }
+        def lineBranch = gitFlow.grgiter.branch.list().find { it.name == line }
         def remoteName = resolveRemote(current) ?: resolveRemote(line)
         if (remoteName == null) {
             throw new GradleException('无法确定推送目标的远端：发布分支与开发线都没有上游，且仓库远端数量不是 1')
@@ -148,7 +152,7 @@ tasks.register('releaseRebaseBack') {
         }
         def preview = project.hasProperty('dryRun')
         requireCleanTree('releaseRebaseBack', preview)
-        if (!git.grgiter.tag.list().any { it.name == 'v' + v }) {
+        if (!gitFlow.grgiter.tag.list().any { it.name == 'v' + v }) {
             logger.warn("提示：本地未见标签 v${v}，请确认发布切支（releaseCutAndTag）与发布均已完成")
         }
         // rebase 策略（开发者要求线性历史）：发布分支独有提交重放到线上后快进开发线；

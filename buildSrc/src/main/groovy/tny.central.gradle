@@ -1,5 +1,6 @@
 import java.time.Duration
 import java.time.temporal.ChronoUnit
+import tny.convention.GitFlow
 
 // Central 通道根侧接线约定插件（adopt-gradle-official-dsl 插件化，前身为 gradle/central.gradle；
 // 前置约定：com.gradleup.nmcp.aggregation 由根构建脚本先行应用（第三方插件在 buildSrc 作用域
@@ -48,9 +49,12 @@ tasks.register('centralCheck') {
     group = 'verification'
     description = 'Fast-fail Central channel preconditions: release branch form and Portal credentials.'
     doLast {
+        // 分支名经根工程 gitFlow 类型化扩展拉取（tny.convention.GitFlow，expose-git-info-extension）；
+        // 取代此前裸属性沿根 ext 动态解析的形态，tny.git 未加载即报"扩展不存在"（expose-git-info-extension 设计决策 D3）。
+        def gitFlow = rootProject.extensions.getByType(GitFlow)
         def problems = []
-        if (!branchName.toString().matches(/\d+\.\d+\.\d+\.release/)) {
-            problems << "Central 通道仅发布分支形态可用（spec：快照构件不进入 Central）；当前分支 '${branchName}' 派生快照版本"
+        if (!gitFlow.branchName.toString().matches(/\d+\.\d+\.\d+\.release/)) {
+            problems << "Central 通道仅发布分支形态可用（spec：快照构件不进入 Central）；当前分支 '${gitFlow.branchName}' 派生快照版本"
         }
         if (!project.hasProperty('mavenCentralUsername') || !project.hasProperty('mavenCentralPassword')) {
             problems << '缺 mavenCentralUsername/mavenCentralPassword 属性（Portal User Token，用户级 gradle.properties 或 CI secrets 注入）'
