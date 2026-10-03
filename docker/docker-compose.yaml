@@ -1,0 +1,70 @@
+# tny-framework 项目所用 Docker 基础设施的统一声明。
+#
+# 来源与对齐关系（镜像与参数逐一对应 Java 测试代码与 CI workflow，非随意选取）：
+#   etcd  gcr.io/etcd-development/etcd:v3.5.11
+#       ← EtcdNamespaceExplorerIT / DockerChannelSentinelIT 的 ETCD 容器定义、
+#         .github/workflows/build.yml 的 services.etcd（单测静态依赖 localhost:2379，见该文件注释）
+#   redis redis:7.2-alpine
+#       ← tny-game-integration-test 装配/拓扑类 IT 的 REDIS 容器；
+#         requirepass 与 DemoApps.REDIS_PASSWORD 一致（可用环境变量覆盖）
+#   mongo mongo:4.4
+#       ← MongoDBContainer 用例（MongodbDataAccessIT、RelayLoginScenarioIT 等）
+#
+# 定位说明：
+#   - docker 档 Testcontainers 容器由 IT 代码自行启动（随机宿主端口），不走本文件；
+#   - 本文件提供：1) tny-game-namnspace-etcd 单测所需的固定端口 etcd（localhost:2379）；
+#                2) 与 CI services 等价的常驻调试环境（compose up 后可反复手跑用例）。
+#   - 宿主端口默认值与测试期望一致；与其它项目容器冲突时（如已占用 2379/27017），
+#     通过环境变量改宿主侧端口即可，容器内端口勿动。
+#   - 临时调试遗留容器（如手工 docker run 的 it-p0-etcd）请先移除再起本文件，避免撞端口。
+#
+# 用法：
+#   docker compose up -d          # 起全部
+#   docker compose up -d etcd     # 只起单测依赖的 etcd
+#   docker compose ps / logs      # 状态与日志
+
+name: tny-framework-dev
+
+services:
+  etcd:
+    image: gcr.io/etcd-development/etcd:v3.5.11
+    # etcd 默认仅监听容器内 127.0.0.1，须显式绑 0.0.0.0 才能经端口映射被 jetcd 连接
+    # （参数与 EtcdNamespaceExplorerIT.withCommand 及 CI healthcheck 相同）
+    command: /usr/local/bin/etcd
+      --listen-client-urls http://0.0.0.0:2379
+      --advertise-client-urls http://127.0.0.1:2379
+    ports:
+      - "${ETCD_HOST_PORT:-2379}:2379"
+    healthcheck:
+      test: ["CMD", "etcdctl", "endpoint", "health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7.2-alpine
+    command: redis-server --requirepass ${REDIS_PASSWORD:-tNbrH3NSErGd}
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-tNbrH3NSErGd}
+    ports:
+      - "${REDIS_HOST_PORT:-6379}:6379"
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a \"$$REDIS_PASSWORD\" ping | grep PONG"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mongo:
+    image: mongo:4.4
+    ports:
+      - "${MONGO_HOST_PORT:-27017}:27017"
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongo", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mongo-data:

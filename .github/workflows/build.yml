@@ -1,0 +1,229 @@
+name: build
+
+on:
+  pull_request:
+  push:
+    branches: [ main, '5.7.x' ]
+  schedule:
+    - cron: '37 18 * * *'   # nightly（UTC18:37 错峰）
+  workflow_dispatch: {}     # 手动触发（bench-routine 首验/补跑用）
+
+env:
+  # Gradle 8.5 daemon 须运行于 JDK ≤21；toolchain 另钉 JDK 21（见 README 构建环境注记）
+  GRADLE_OPTS: -Dorg.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8
+
+jobs:
+  unit:
+    name: Unit tests (no Docker)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    services:
+      # 既有 tny-game-namnspace-etcd 单测静态依赖本地 etcd:2379（非本变更引入），CI 须提供
+      etcd:
+        image: gcr.io/etcd-development/etcd:v3.5.11
+        # 雷②修复：etcd 默认只绑容器内 localhost，宿主映射端口拒连——services 原生 env
+        # 直通 ETCD_* 参数（官方 flag→env 映射），令其监听 0.0.0.0。
+        env:
+          ETCD_LISTEN_CLIENT_URLS: http://0.0.0.0:2379
+          ETCD_ADVERTISE_CLIENT_URLS: http://0.0.0.0:2379
+        ports: [ '2379:2379' ]
+        # 雷③定案：不设 options/healthcheck。run#10-14 全矩阵证明同镜像下"带 options 的
+        # unit 恒败于 Initialize、无 options 的 e2e 恒绿"——YAML 折叠把 --health-cmd 的引号
+        # 变字面字符、空格拆参喂 docker 产生垃圾 args（官方示例的 health-cmd 均为无空格
+        # 单词，恰为反证），等号形式亦不幸存。就绪性由时序天然保证：容器裸起 ~1s，
+        # 首个 etcd 请求发生在 checkout+setup+编译之后（分钟级裕量）。
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v3
+        with:
+          cache-disabled: 'false'
+      - name: Unit tests
+        id: ut
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          ./gradlew test --continue --console=plain 2>&1 | tee /tmp/unit-console.log
+      # fix-ci-unit-flakes D1 诊断电路（与 ci-it-diag 同型三件套）：红时投递四件案卷——
+      # ①etcd services 容器状态+日志（本案头号嫌疑人）②gradle 输出尾部 ③失败用例 XML ④环境自述。
+      # 取卷：git fetch github ci-unit-diag && git show FETCH_HEAD:unitdiag/console-tail.txt
+      # 采集步全部 || true 降级——电路自身永不因取证失败而更红。
+      - name: Exfil unit failure evidence to ci-unit-diag
+        if: steps.ut.outcome == 'failure'
+        run: |
+          git checkout --orphan ci-unit-diag
+          mkdir -p unitdiag
+          docker ps -a > unitdiag/docker-ps.txt 2>&1 || true
+          for c in $(docker ps -aq --filter ancestor=gcr.io/etcd-development/etcd:v3.5.11 2>/dev/null); do docker logs --tail 200 "$c" > "unitdiag/etcd-$c.log" 2>&1 || true; done
+          tail -c 200000 /tmp/unit-console.log > unitdiag/console-tail.txt
+          find . -path "*/build/test-results/test/*.xml" -print0 2>/dev/null | xargs -0 grep -l "<failure\|<error" 2>/dev/null | while read -r f; do cp "$f" unitdiag/; done
+          { java -version; uname -a; } > unitdiag/env.txt 2>&1 || true
+          git add -f unitdiag
+          git -c user.name="ci-unit-diag" -c user.email="ci-unit-diag@users.noreply.github.com" commit -m "unit diag run ${{ github.run_id }}"
+          git push -f origin ci-unit-diag
+      # 硬门禁语义零变化（design Non-Goals：不降级、不重试）
+      - name: Fail job when unit tests failed (gate preserved)
+        if: steps.ut.outcome == 'failure'
+        run: exit 1
+
+  integration:
+    name: Integration tests (real transport + containers, starter 装配与剧本覆盖)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v3
+      # docker 档并入 PR 通道（add-starter-net-integration-tests 决策：GH runner 自带 docker，
+      # starter 装配/中继剧本/数据容器 IT 需要 PR 反馈；时长代价 +2~4min）
+      - name: Integration tests (include docker lane)
+        id: it
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          ./gradlew integrationTest -PincludeDocker --continue --console=plain 2>&1 | tee /tmp/it-console.log
+      # 诊断电路（run#15 起常驻；匿名 API 拉不到日志正文，git 通道永远可达）：
+      # 红时把失败用例 XML + 控制台尾部 force-push 到孤儿分支 ci-it-diag，取卷：
+      #   git fetch github ci-it-diag && git show FETCH_HEAD:itdiag/console-tail.txt
+      - name: Exfil failing IT evidence to ci-it-diag
+        if: steps.it.outcome == 'failure'
+        run: |
+          git checkout --orphan ci-it-diag
+          mkdir -p itdiag
+          find . -path "*/build/test-results/integrationTest/*.xml" -print0 2>/dev/null | xargs -0 grep -l "<failure\|<error" 2>/dev/null | while read -r f; do cp "$f" itdiag/; done
+          tail -c 200000 /tmp/it-console.log > itdiag/console-tail.txt
+          git add -f itdiag
+          git -c user.name="ci-it-diag" -c user.email="ci-it-diag@users.noreply.github.com" commit -m "it diag run ${{ github.run_id }}"
+          git push -f origin ci-it-diag
+      # 保持硬门禁语义不变（阶段一降级是 stabilize 线的选项，不在本电路里擅自生效）
+      - name: Fail job when IT failed (gate preserved)
+        if: steps.it.outcome == 'failure'
+        run: exit 1
+
+  bench-compile:
+    name: Bench compile check (no timings)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v3
+      # 职责边界（spec：CI 双通道 + 二分分类契约）：两族编译 + 按族枚举 + 目录↔声明双向对账，零计时——
+      # PR 不因基准数字变红，但编译破裂、族清单空面、未归族基准必红（jmhList/jmhSuiteVerify 显式判红）。
+      - name: Compile benchmarks, verify family lists & suite classification
+        run: ./gradlew :tny-benchmark:jmhCompileGeneratedClasses :tny-benchmark:jmhList :tny-benchmark:jmhSuiteVerify -q
+
+  # 内容门禁（refine-bench-routine-triggering D1）：判定本次进入受监控分支的改动是否可能改变
+  # 框架代码行为。只有框架改动才放行计时；纯文档、规格案卷、流水线脚本的合入不计时也不回写。
+  # 定时与手动触发恒放行且规模完整；PR 事件一律不放行（执行通道从不跑 PR，评审职责归 bench-compile）。
+  bench-scope-gate:
+    name: Bench scope gate (content-based triggering)
+    runs-on: ubuntu-latest
+    outputs:
+      run: ${{ steps.judge.outputs.run }}
+      scope: ${{ steps.judge.outputs.scope }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # push 事件需要比对前序提交才能列出本次改动文件，仅此场合拉全历史，其余事件浅克隆重
+          fetch-depth: ${{ github.event_name == 'push' && '0' || '1' }}
+      - name: Decide whether to run timed benchmarks and with which suite
+        id: judge
+        run: |
+          event="${{ github.event_name }}"
+          if [ "$event" = "schedule" ] || [ "$event" = "workflow_dispatch" ]; then
+            echo "定时或手动触发：恒放行，执行完整规模。"
+            echo "run=true" >> "$GITHUB_OUTPUT"
+            echo "scope=full" >> "$GITHUB_OUTPUT"
+          elif [ "$event" != "push" ]; then
+            echo "PR 等非 push 事件：执行通道不运行。"
+            echo "run=false" >> "$GITHUB_OUTPUT"
+            echo "scope=full" >> "$GITHUB_OUTPUT"
+          else
+            before="${{ github.event.before }}"
+            if ! git cat-file -e "${before}^{commit}" 2>/dev/null; then
+              echo "前序提交不可达（例如 force push 改写历史），按安全侧放行完整规模，宁可多跑不漏检。"
+              echo "run=true" >> "$GITHUB_OUTPUT"
+              echo "scope=full" >> "$GITHUB_OUTPUT"
+            elif git diff --name-only "$before" "${{ github.sha }}" \
+                 | grep -qE '(^|/)src/|(^|/)build\.gradle$|^gradle\.properties$|^gradle/libs\.versions\.toml$|^tny-benchmark/'; then
+              echo "改动触及模块源码、构建脚本、版本配置或基准模块：以速览规模放行计时。"
+              echo "run=true" >> "$GITHUB_OUTPUT"
+              echo "scope=quick" >> "$GITHUB_OUTPUT"
+            else
+              echo "改动仅涉及文档、案卷或流水线脚本等非行为性文件：跳过计时与回写。"
+              echo "run=false" >> "$GITHUB_OUTPUT"
+              echo "scope=full" >> "$GITHUB_OUTPUT"
+            fi
+          fi
+
+  bench-routine:
+    name: Routine benchmarks (quick on qualifying merges, full nightly, human verdict)
+    # 执行通道（差量契约见 refine-bench-routine-triggering）：门禁决定放行与规模——
+    # 框架改动合入跑速览（十三组合，约七至九分钟），定时与手动跑完整（三十七组合），
+    # 非行为性改动整个作业跳过。告警语义不变：信号非门禁，人裁决终裁。
+    needs: bench-scope-gate
+    if: needs.bench-scope-gate.outputs.run == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v3
+      - name: Run routine suite (benchRoutineExport, suite chosen by gate)
+        run: |
+          if [ "${{ needs.bench-scope-gate.outputs.scope }}" = "quick" ]; then
+            ./gradlew :tny-benchmark:benchRoutineExport -PbenchScope=quick
+          else
+            ./gradlew :tny-benchmark:benchRoutineExport
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bench-routine-results
+          path: tny-benchmark/results/*.json
+          if-no-files-found: error
+      - name: Commit routine result into results/
+        run: |
+          git config user.name "bench-routine[bot]"
+          git config user.email "bench-routine@users.noreply.github.com"
+          git add -f tny-benchmark/results/
+          if git diff --cached --quiet; then echo "no result change to commit"; exit 0; fi
+          git commit -m "chore(bench): routine benchmark results [skip ci]"
+          # 回写竞态防御：执行窗 ~21min 内分支可前进（run#18 与第四轮 4bb98df 实证 push 被拒）。
+          # rebase 到最新远端再推；同日期产物冲突取新（-X theirs=重放侧=本次运行结果）。
+          git fetch origin "$GITHUB_REF_NAME"
+          git rebase -X theirs "origin/$GITHUB_REF_NAME" || { git rebase --abort; exit 1; }
+          git push origin "HEAD:refs/heads/$GITHUB_REF_NAME"
+      # 历史曲线=信号非门禁（spec：回归判定人裁决）：告警级 alert-threshold，
+      # gh-pages 未启用/私有仓场景 continue-on-error 降级（design 风险条）。
+      - name: Store benchmark result & trend
+        uses: benchmark-action/github-action-benchmark@v1
+        continue-on-error: true
+        with:
+          # 序列分组键（refine-bench-routine-triggering D3）：分支与规模共同成组，
+          # main 与 5.7.x、速览与完整互不混线，告警只在同组近期序列内比较。
+          name: Routine ${{ needs.bench-scope-gate.outputs.scope }} (${{ github.ref_name }})
+          tool: 'jmh'
+          output-file-path: tny-benchmark/build/reports/bench/bench-result.json
+          gh-pages-branch: gh-pages
+          # action 的 auto-push 要求显式授 token（缺它报 "'auto-push' is enabled but 'github-token'
+          # is not set"，run#2/#3 实证）；job 级 contents: write 已就位。
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          alert-threshold: '150%'
+          comment-on-alert: true
+          fail-on-alert: false
+          auto-push: true

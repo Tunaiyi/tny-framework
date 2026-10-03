@@ -1,0 +1,18 @@
+
+apply plugin: 'maven-publish'
+
+dependencies {
+
+    api libs.springBootAutoconfigure
+    api libs.springBootConfigurationProcessor
+
+    api project(':tny-game-boot')
+
+    implementation libs.log4jApi
+    implementation libs.log4jCore
+    implementation libs.log4jSlf4jImpl
+
+
+}
+
+

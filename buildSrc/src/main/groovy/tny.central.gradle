@@ -1,0 +1,104 @@
+import java.time.Duration
+import java.time.temporal.ChronoUnit
+
+// Central 通道根侧接线约定插件（adopt-gradle-official-dsl 插件化，前身为 gradle/central.gradle；
+// 前置约定：com.gradleup.nmcp.aggregation 由根构建脚本先行应用（第三方插件在 buildSrc 作用域
+// 内 apply 触发类加载器服务缺失，实测 Gradle 8.5），本插件假定其扩展 nmcpAggregation 已就位；
+// capability central-publishing）。本插件负责：nmcp 聚合挂根、发布分支守卫、Central 准入完整性前置校验
+// （spec"Central 正式版准入完整性"的推前拒绝语义）。边界：模块侧贡献在 tny.publications，
+// 快照通道原生仓在 tny.publications 的 centralSnapshots 声明；快照聚合任务保持禁用防双发。
+
+// 聚合集＝具备 mavenJava 发布且已应用 nmcp 模块插件的工程面（javaProjects + BOM）。
+// spec"Gradle 插件构件本次不入 Central"天然成立：tny-game-doc-gradle 属 gradleProjects、
+// tny-game-integration-test 属纯测试模块，二者均不应用 tny.publications、不挂 nmcp 模块插件。
+// 聚合成员按命名约定判定（-bom 后缀，约定见 settings.gradle 注释）；当前即 tny-game-bom 一个
+def centralModules = javaProjects + subprojects.findAll { it.name.startsWith('tny-game-') && it.name.endsWith('-bom') }
+
+nmcpAggregation {
+    centralPortal {
+        username = providers.gradleProperty('mavenCentralUsername').orElse('')
+        password = providers.gradleProperty('mavenCentralPassword').orElse('')
+        // AUTOMATIC：Portal 校验通过后自动发布，免登门户点按；快照永不进本通道（分支守卫在前）。
+        publishingType = 'AUTOMATIC'
+        // 超时分钟数取 gradle.properties 标量键，缺失/空值回退 20（centralize-resolution-config D4）
+        validationTimeout = Duration.of(
+                providers.gradleProperty('centralValidationTimeoutMinutes')
+                        .map { it.trim() }.filter { !it.isEmpty() }.map { Integer.parseInt(it) }.getOrElse(20),
+                ChronoUnit.MINUTES)
+    }
+}
+
+// lenient 收集：只有应用了 com.gradleup.nmcp 且被依赖声明的项目贡献发布件（nmcp manual 文档）
+dependencies {
+    nmcpAggregation(centralModules)
+}
+
+// 快照进 Central 的通道唯一化为 tny.publications 的 centralSnapshots 原生仓（与 Nexus 同经
+// publish 分发，标准 maven-deploy，官方 docs 无验证要求）。nmcp 的快照聚合/直传任务保持禁用：
+// 两条通道并跑会让同一构件产生双时间戳部署竞争。
+tasks.configureEach { t ->
+    if (t.name == 'publishAggregationToCentralSnapshots') {
+        t.enabled = false
+        t.description = '（已禁用）快照 Central 分发统一走 centralSnapshots 原生仓，禁用 nmcp 双发路径'
+    }
+}
+
+// 第一级快速失败：分支形态与凭据（不触发 staging 链，可在任意工作树单独执行 centralCheck）。
+tasks.register('centralCheck') {
+    group = 'verification'
+    description = 'Fast-fail Central channel preconditions: release branch form and Portal credentials.'
+    doLast {
+        def problems = []
+        if (!branchName.toString().matches(/\d+\.\d+\.\d+\.release/)) {
+            problems << "Central 通道仅发布分支形态可用（spec：快照构件不进入 Central）；当前分支 '${branchName}' 派生快照版本"
+        }
+        if (!project.hasProperty('mavenCentralUsername') || !project.hasProperty('mavenCentralPassword')) {
+            problems << '缺 mavenCentralUsername/mavenCentralPassword 属性（Portal User Token，用户级 gradle.properties 或 CI secrets 注入）'
+        }
+        if (!problems.isEmpty()) {
+            throw new GradleException('centralCheck：\n- ' + problems.join('\n- '))
+        }
+        logger.lifecycle('centralCheck: 分支形态与凭据就绪')
+    }
+}
+
+// 第二级产物完整性（spec"Central 正式版准入完整性"）：置于聚合任务 doFirst，
+// 此时各模块 staging 发布件与签名已生成，jar 与 .asc 配对可校验。
+// 发布测试纪律由 nmcp 模块 staging 任务（publishMavenJavaPublicationToNmcpRepository 以 publish 起头，
+// 命中 tny.publish 门禁谓词）自动挂 check 承担，无需在此重复声明。
+tasks.named('publishAggregationToCentralPortal') {
+    dependsOn 'centralCheck'
+    doFirst {
+        def problems = []
+        centralModules.each { m ->
+            def pub = m.extensions.findByType(PublishingExtension)?.publications?.findByName('mavenJava')
+            if (pub == null) {
+                problems << "${m.name}: 无 mavenJava 发布定义"
+                return
+            }
+            def files = pub.artifacts.collect { it.file }.findAll { it != null }
+            def names = files*.name
+            if (!m.name.endsWith('-bom')) {
+                if (!names.any { it.endsWith('.jar') && !it.endsWith('-sources.jar') && !it.endsWith('-javadoc.jar') }) {
+                    problems << "${m.name}: 缺主 jar"
+                }
+                if (!names.any { it.endsWith('-sources.jar') }) {
+                    problems << "${m.name}: 缺 sources jar"
+                }
+                if (!names.any { it.endsWith('-javadoc.jar') }) {
+                    problems << "${m.name}: 缺 javadoc jar"
+                }
+            }
+            files.each { f ->
+                def sig = fileTree(m.layout.buildDirectory.get().asFile) { include "**/${f.name}.asc" }
+                if (sig.isEmpty()) {
+                    problems << "${m.name}: ${f.name} 缺 GPG 签名 .asc（发布分支必签，见 tny.publications signing）"
+                }
+            }
+        }
+        if (!problems.isEmpty()) {
+            throw new GradleException('Central 准入完整性校验失败：\n- ' + problems.join('\n- '))
+        }
+        logger.lifecycle("publishAggregationToCentralPortal: ${centralModules.size()} 个模块产物完整性通过")
+    }
+}

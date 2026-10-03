@@ -1,0 +1,10 @@
+dependencies {
+
+    api project(':tny-game-namnspace')
+
+    api libs.jetcdCore
+    api libs.guava
+
+    api project(':tny-game-codec-jackson')
+}
+

@@ -1,0 +1,8 @@
+
+apply plugin: 'maven-publish'
+
+dependencies {
+
+
+}
+

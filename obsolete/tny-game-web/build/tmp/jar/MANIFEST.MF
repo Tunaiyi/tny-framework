@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Implementation-Title: tny-game-web
+Implementation-Version: 5.5.x-SNAPSHOT
+Automatic-Module-Name: tny.game.web
+Created-By: 11.0.13 (Oracle Corporation)
+

@@ -1,0 +1,274 @@
+// 发布凭据与错误发布拦截约定插件（前身为 gradle/publish.gradle 与 gradle/publish-gate.gradle；
+// merge-publish-gate-into-publish 变更把"做错时拦住"同一主题的两件合一，承担双层拦截）。
+// 第一层"属性必在"：RELEASE/SNAPSHOT 仓地址与 Nexus 凭据四属性经 hasProperty 取值入 ext，
+// 共享仓发布任务挂属性存在性 fail-fast 断言（任一为空即以任务名与属性键报错，不打印任何凭据值）；
+// 第二层"一致性门禁"：发布资格由分支形态白名单决定，分支/版本/仓库路由一致性断言、
+// 发布标签远端存证核对（按根工程记忆化）与同号黑名单核查。
+// 门禁内部按职责各成同文件辅助闭包（形态核对、仓库路由、黑名单、标签存证，以及 fix-dependency-version-governance D6
+// 新增的发布依赖形态核对——预发布后缀直连依赖拒绝发布、豁免经 gradle/publish-prerelease-exemptions.txt 成文并在门禁
+// 输出逐条打印），主闭包按登记顺序合流抛出。
+// 两层拦截对共享仓发布任务的判定合流为唯一局部谓词 publishesToSharedRepository——此前
+// 两文件以注释互指"同源"维持一致性（sweep-gradle-build-style D7），正是主账本禁止的
+// 共享配置块逐字复制形态，此处根除。
+// 边界：发布元数据与签名在 tny.publications，Central 准入在 tny.central，"做对"的快通道在 tny.release，
+// git 派生值在 tny.git 创建的根工程类型化扩展 gitInfo（tny.convention.GitInfo）。
+// 本插件只断言，不改变仓库选择逻辑（仓库路由仍按版本后缀在 publishing.repositories 处决定）。
+import tny.convention.GitInfo
+
+ext.RELEASE_REPOSITORY_URL = hasProperty('RELEASE_REPOSITORY_URL') ? RELEASE_REPOSITORY_URL : ''
+ext.SNAPSHOT_REPOSITORY_URL = hasProperty('SNAPSHOT_REPOSITORY_URL') ? SNAPSHOT_REPOSITORY_URL : ''
+ext.NEXUS_USERNAME = hasProperty('NEXUS_USERNAME') ? NEXUS_USERNAME : ''
+ext.NEXUS_PASSWORD = hasProperty('NEXUS_PASSWORD') ? NEXUS_PASSWORD : ''
+
+// 共享仓发布任务判定谓词（两件原子谓词的合流点：主体逐字承前，语义未动）：
+def publishesToSharedRepository = { candidate ->
+    String taskName = candidate.name
+    if (taskName == 'publish' || taskName == 'publishAllPublications' || taskName == 'publishMavenJavaPublicationToMavenRepository') {
+        return true
+    }
+    // 排除尾缀 ToMavenLocal 的全部本地发布任务（publishToMavenLocal 与其依赖的
+    // publishMavenJavaPublicationToMavenLocal 整条链）；原判断只排了前者，链上后者会误挂门禁，
+    // 使"本地坐标直通"的上游意图落空（7.1 端到端空跑实测暴露）。门禁只约束共享仓发布。
+    return taskName.startsWith('publish') && !taskName.endsWith('ToMavenLocal')
+}
+
+// 仅在 publish 相关任务实际执行前断言四项发布配置的存在性；任一为空即以任务名与属性键 fail-fast，不打印任何凭据值。
+def requiredPublishingProperties = [
+        RELEASE_REPOSITORY_URL: ext.RELEASE_REPOSITORY_URL,
+        SNAPSHOT_REPOSITORY_URL: ext.SNAPSHOT_REPOSITORY_URL,
+        NEXUS_USERNAME: ext.NEXUS_USERNAME,
+        NEXUS_PASSWORD: ext.NEXUS_PASSWORD,
+]
+tasks.matching { publishesToSharedRepository(it) }.configureEach { task ->
+    task.doFirst {
+        requiredPublishingProperties.each { key, value ->
+            if (value == null || value.toString().trim().isEmpty()) {
+                throw new IllegalStateException("Task '${task.path}' failed: required publishing property '${key}' is empty or missing.")
+            }
+        }
+    }
+}
+
+// 发布资格由分支形态白名单决定（规格：openspec change adopt-plain-ga-versioning / release-versioning）。
+// 开发线 <主>.<次>.x 只允许 <主>.<次>.x-SNAPSHOT 快照进快照仓；发布分支 <主>.<次>.<补丁>.release 只允许
+// 裸三段号正式版进 release 仓；名单外分支（含 feature 分支与主干历史分支）执行发布任务一律拒绝。
+// 仅断言，不改变仓库选择逻辑（仓库路由仍按版本后缀在 publishing.repositories 处决定）。
+// 发布资格核对（split-publish-consistency-closure：119 行单闭包按四职责拆为同文件辅助闭包，
+// 每段控制在四十行内；provenance 注释随段。合流顺序＝原 problems 追加顺序：
+// 形态核对 → 仓库路由 → 历史占号黑名单 → 发布标签存证）。
+
+def validateBranchVersionShape = { problems, gitInfo, version, currentBranch, devBranch, releaseBranch ->
+    if (devBranch) {
+        def expected = currentBranch + gitInfo.SNAPSHOT_PACK_SUFFIX
+        if (version != expected) {
+            problems << "开发线 '${currentBranch}' 的发布版本为 '${version}'，不符合快照形态 '${expected}'；裸号正式版必须经由发布分支产生"
+        }
+    } else if (releaseBranch) {
+        def expected = gitInfo.parseBranchVersion(currentBranch)
+        if (version != expected) {
+            problems << "发布分支 '${currentBranch}' 的发布版本为 '${version}'，不符合裸号形态 '${expected}'"
+        }
+    } else if (currentBranch.endsWith(gitInfo.RELEASE_VERSION_SUFFIX)) {
+        problems << "发布分支 '${currentBranch}' 以 ${gitInfo.RELEASE_VERSION_SUFFIX} 结尾，但不符合三段号加 ${gitInfo.RELEASE_VERSION_SUFFIX} 的命名形态（例如 5.7.8.release）；发布分支出现第四段等其他形态一律拒绝"
+    } else {
+        problems << "当前分支 '${currentBranch}' 不属于可发布形态。发布仅允许在开发线形态（<主>.<次>.x，例如 5.7.x）或发布分支形态（<主>.<次>.<补丁>.release，例如 5.7.8.release）的分支上执行"
+    }
+}
+
+def validateRepositoryRouting = { problems, version, devBranch, releaseBranch ->
+    def repoUrls = publishing.repositories.withType(MavenArtifactRepository).collect { repository ->
+        repository.url == null ? '' : repository.url.toString()
+    }.findAll { repoUrl -> repoUrl.startsWith('http') }
+    if (devBranch || releaseBranch) {
+        repoUrls.each { repoUrl ->
+            def lowered = repoUrl.toLowerCase()
+            if (devBranch && (lowered.contains('releases') || lowered.contains('-release/'))) {
+                problems << "开发线版本 '${version}' 的发布目标仓库 '${repoUrl}' 是 release 仓库，快照必须发布到快照仓库"
+            } else if (releaseBranch && lowered.contains('snapshots')) {
+                problems << "发布分支版本 '${version}' 的发布目标仓库 '${repoUrl}' 是 SNAPSHOT 仓库，正式版必须发布到 release 仓库"
+            }
+        }
+    }
+}
+
+// 历史后缀形态占用的版本号不得复用：以 -RELEASE 发布过的号列入 gradle/released-legacy.txt，
+// Maven 排序将 "RELEASE" 限定符与裸号等价特判，同号双形态共存必然乱序（规格：同号黑名单需求）。
+def validateLegacyVersionReuse = { problems, gitInfo, currentBranch, releaseBranch ->
+    if (!releaseBranch) {
+        return
+    }
+    def legacyFile = rootProject.file('gradle/released-legacy.txt')
+    def legacyVersions = legacyFile.exists() ? legacyFile.readLines().findAll { !it.trim().isEmpty() && !it.trim().startsWith('#') } : []
+    def targetVersion = gitInfo.parseBranchVersion(currentBranch)
+    if (legacyVersions.contains(targetVersion)) {
+        problems << "版本 '${targetVersion}' 已以 -RELEASE 后缀形态发布并记录于 gradle/released-legacy.txt，禁止以裸号形态复用同号"
+    }
+}
+
+// 发布标签前置存证校验（规格：发布标签是正式版发布的前置存证；决策 D3）。
+// 存证源就是远端（规格原文要求"远程仓库已存在"），用 git ls-remote 读取：
+// 附注标签产生 "refs/tags/NAME" 与 "refs/tags/NAME^{}"（解引用到目标提交）两行，轻量标签没有 "^{}" 行。
+// 全仓发布逐模块校验会重复联网，结果按"分支+提交+标签"在根工程记忆化，一次构建只查一次远端。
+// 远端不可达时输出为空，按"标签不存在"拒绝发布，属 fail-closed，网络恢复后重试即可。
+// git 可执行文件默认取 PATH 上的 git；个别机器 PATH 二进制与守护进程架构不匹配时可用 -PgitExe=/path/to/git 覆盖。
+def validateReleaseTagAttested = { problems, gitInfo, currentBranch, releaseBranch ->
+    if (!releaseBranch) {
+        return
+    }
+    def targetVersion = gitInfo.parseBranchVersion(currentBranch)
+    def tagName = 'v' + targetVersion
+    def gitExe = project.findProperty('gitExe') ?: 'git'
+    def runGit = { List args ->
+        def probe = providers.exec {
+            commandLine ([gitExe.toString()] + args)
+            workingDir = rootDir
+            // 非零退出（网络不可达、无上游的 rev-parse 等）不抛出，输出按空处理，
+            // 走"标签不在远端"的 fail-closed 拒绝文案
+            ignoreExitValue = true
+        }
+        probe.standardOutput.asText.get()
+    }
+    // 远端名推定（存证段内部小闭包）：当前分支配置了上游则取上游远端，否则仅当仓库只配置一个远端才采用
+    def resolveRemoteName = {
+        def remoteName = null
+        try {
+            def upstream = runGit(['rev-parse', '--abbrev-ref', '--symbolic-full-name', '@{upname}']).trim()
+            if (upstream.contains('/')) {
+                remoteName = upstream.substring(0, upstream.indexOf('/'))
+            }
+        } catch (Exception ignored) {
+            // 分支无上游时输出为空/异常，走单远端兜底
+        }
+        if (remoteName == null) {
+            def remotes = runGit(['remote']).readLines().findAll { !it.trim().isEmpty() }
+            if (remotes.size() == 1) {
+                remoteName = remotes[0].trim()
+            }
+        }
+        return remoteName
+    }
+    def cacheKey = "${currentBranch}|${gitInfo.commitId}|${tagName}"
+    def memoKey = 'publishTagCheckMemo'
+    if (!rootProject.ext.has(memoKey)) {
+        rootProject.ext[memoKey] = [:]
+    }
+    def memo = rootProject.ext[memoKey]
+    if (!memo.containsKey(cacheKey)) {
+        def findings = []
+        def remoteName = resolveRemoteName()
+        if (remoteName == null) {
+            findings << "无法确定用于核对发布标签 '${tagName}' 的远端：当前分支没有配置上游远端，且仓库远端数量不是 1"
+        } else {
+            def refMap = runGit(['ls-remote', '--tags', remoteName, "refs/tags/${tagName}*"])
+                    .readLines()
+                    .collect { it.split('\t') }
+                    .findAll { it.length == 2 }
+                    .collectEntries { [(it[1].trim()): it[0].trim()] }
+            def baseRef = refMap["refs/tags/${tagName}"]
+            def peeledRef = refMap["refs/tags/${tagName}^{}"]
+            if (baseRef == null) {
+                findings << "发布标签 '${tagName}' 在远端 '${remoteName}' 不存在（或远端此刻不可达）：请先在发布分支 HEAD 创建同名附注标签并推送远端，再执行发布"
+            } else {
+                if (peeledRef == null) {
+                    findings << "远端标签 '${tagName}' 是轻量标签（无解引用记录），须以 git tag -a 创建附注标签并重新推送"
+                }
+                def tagTarget = peeledRef != null ? peeledRef : baseRef
+                if (tagTarget != gitInfo.commitId) {
+                    findings << "远端标签 '${tagName}' 指向 '${tagTarget}'，与当前构建提交 '${gitInfo.commitId}' 不一致"
+                }
+            }
+        }
+        memo[cacheKey] = findings
+    }
+    problems.addAll(memo[cacheKey])
+}
+
+// 发布依赖形态门禁（fix-dependency-version-governance D6；规格：release-versioning"发布线构件的依赖坐标
+// 为发布级形态"）：发布线构件的 api、implementation、runtimeOnly 三个编译与运行域配置中，直接声明的外部
+// 依赖坐标若携带快照、候选发布、里程碑等预发布后缀，且未在豁免登记清单按全量坐标精确登记，即拒绝发布并
+// 列出违规坐标与声明构件。豁免清单每行格式"组:名:版本 | 理由 | 处置去向"，当前生效条目在门禁执行输出中
+// 逐条打印（按根工程记忆化，一次构建只打印一次），使例外对每次发布可审计。
+def loadPrereleaseExemptions = {
+    def exemptionFile = rootProject.file('gradle/publish-prerelease-exemptions.txt')
+    def entries = [:] as LinkedHashMap
+    if (exemptionFile.exists()) {
+        exemptionFile.readLines().each { line ->
+            def trimmed = line.trim()
+            if (trimmed.isEmpty() || trimmed.startsWith('#')) {
+                return
+            }
+            def parts = trimmed.split('\\|').collect { it.trim() }
+            if (parts.size() >= 3) {
+                // 值用字符串拼接而非插值模板产出：Groovy 插值串是 GString 类型，
+                // 作为 containsKey 的查询参数与 String 键永远哈希不等（2026-10-03 门禁实测咬过，见坐标同款教训）
+                entries[parts[0]] = parts[1] + '；处置去向：' + parts[2]
+            }
+        }
+    }
+    return entries
+}
+def validatePreReleaseDependencies = { problems, exemptions ->
+    def preReleaseSuffix = ~/(?i)-(?:snapshot|alpha|beta|milestone|eap|cr|rc|dev|m)\d*$/
+    ['api', 'implementation', 'runtimeOnly'].each { configName ->
+        def configuration = configurations.findByName(configName)
+        if (configuration == null) {
+            return
+        }
+        configuration.dependencies.withType(ExternalModuleDependency).each { dep ->
+            def depVersion = dep.version
+            if (depVersion != null && preReleaseSuffix.matcher(depVersion).find()) {
+                // toString() 定死为 String：插值模板产出的 GString 与豁免清单的 String 键哈希不等，豁免会全部失效
+                def coordinate = "${dep.group}:${dep.name}:${depVersion}".toString()
+                if (!exemptions.containsKey(coordinate)) {
+                    problems << "${path} 的 ${configName} 域直接依赖预发布形态坐标 '${coordinate}'：正式发布构件不得携带快照、候选发布或里程碑依赖；" +
+                            '确需保留的豁免须经 gradle/publish-prerelease-exemptions.txt 登记理由与处置去向，或由上游转正后更新版本目录'
+                }
+            }
+        }
+    }
+}
+
+def validatePublishConsistency = { gateTask ->
+    // git 派生事实经根工程 gitInfo 类型化扩展拉取（tny.convention.GitInfo，expose-git-info-extension）：
+    // 此前整包取根 ext 字典，键缺失要到门禁执行深处才炸，现按类型获取即刻报"扩展不存在"（design D3）。
+    def gitInfo = rootProject.extensions.getByType(GitInfo)
+    def version = project.version == null ? '' : project.version.toString()
+    def currentBranch = gitInfo.branchName.toString()
+    boolean devBranch = currentBranch ==~ /\d+\.\d+\.x/
+    boolean releaseBranch = currentBranch ==~ /\d+\.\d+\.\d+\.release/
+    def problems = []
+    validateBranchVersionShape(problems, gitInfo, version, currentBranch, devBranch, releaseBranch)
+    validateRepositoryRouting(problems, version, devBranch, releaseBranch)
+    validateLegacyVersionReuse(problems, gitInfo, currentBranch, releaseBranch)
+    validateReleaseTagAttested(problems, gitInfo, currentBranch, releaseBranch)
+    def exemptions = loadPrereleaseExemptions()
+    validatePreReleaseDependencies(problems, exemptions)
+    if (!exemptions.isEmpty() && !rootProject.ext.has('prereleaseExemptionsAnnounced')) {
+        rootProject.ext.prereleaseExemptionsAnnounced = true
+        exemptions.each { coordinate, note -> logger.lifecycle("发布依赖形态门禁：当前生效豁免 ${coordinate} —— ${note}") }
+    }
+    if (!problems.isEmpty()) {
+        def hint = (devBranch || releaseBranch)
+                ? '请检查版本派生（tny.git）与 RELEASE_REPOSITORY_URL / SNAPSHOT_REPOSITORY_URL 配置是否与当前分支形态匹配。'
+                : '请切换到开发线形态或发布分支形态的分支后再发布。'
+        throw new GradleException("发布被阻断（任务 ${gateTask.path}）：\n- " + problems.join('\n- ') + '\n' + hint)
+    }
+}
+
+// 依赖声明由 tasks.named('check') 即时解析改为名字串惰性解析（merge-publish-gate-into-publish 实施修正注记之二）：
+// matching 活视图使容器转入排序态后，后续任务添加事件会连带实名化本注册，闭包在 gradleProjects 线上
+// 早于 java-gradle-plugin 的 check 注册执行；名字串依赖把解析推迟到任务图构建期，语义全等。
+tasks.register('checkPublishPrerequisites') {
+    dependsOn 'check'
+    doLast {
+        validatePublishConsistency(it)
+    }
+}
+
+// 挂接谓词的本任务排除由裸名引用改为按名称比较（merge-publish-gate-into-publish 实施修正注记）：
+// 合并后本插件也应用于 gradleProjects 线（应用时点早于模块自身 plugins{} 求值），
+// 裸名引用会在首个任务添加事件即实名化本任务，彼时 java-gradle-plugin 的 check 尚未注册，
+// 实名化失败（doc-gradle 评估报红实测）；名称比较与对象排除语义全等且不触发实名化。
+tasks.matching { it.name != 'checkPublishPrerequisites' && publishesToSharedRepository(it) }.configureEach { task ->
+    task.dependsOn(tasks.named('checkPublishPrerequisites'))
+}

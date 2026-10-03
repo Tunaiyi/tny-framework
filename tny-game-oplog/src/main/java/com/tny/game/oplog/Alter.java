@@ -1,0 +1,114 @@
+/*
+ * Copyright (c) 2020 Tunaiyi
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.tny.game.oplog;
+
+import org.slf4j.*;
+
+import java.util.function.Supplier;
+
+public class Alter<N> {
+
+    public static final Logger LOGGER = LoggerFactory.getLogger(Alter.class);
+
+    private N value;
+
+    private N lately;
+
+    private Supplier<N> supplier;
+
+    public static <N> Alter<N> of(Supplier<N> supplier) {
+        return new Alter<N>(supplier);
+    }
+
+    public static <N> Alter<N> of(N value) {
+        return new Alter<N>(value);
+    }
+
+    public static <N> Alter<N> of(N value, N lately) {
+        return new Alter<N>(value, lately);
+    }
+
+    private Alter(N value) {
+        this.value = value;
+    }
+
+    private Alter(N value, N lately) {
+        this.value = value;
+        this.lately = lately;
+    }
+
+    private Alter(Supplier<N> supplier) {
+        this.supplier = supplier;
+        this.value = supplier.get();
+    }
+
+    public N getValue() {
+        return this.value;
+    }
+
+    public N getLately() {
+        return this.lately;
+    }
+
+    public void update() {
+        if (this.supplier == null) {
+            LOGGER.warn("alter supplier is null", new NullPointerException());
+        }
+        this.update(this.supplier.get());
+    }
+
+    public void update(N alter) {
+        if (alter == null) {
+            return;
+        }
+        if (this.lately != null) {
+            this.lately = alter;
+        } else if (this.value == null || !this.value.equals(alter)) {
+            this.lately = alter;
+        }
+    }
+
+    public boolean isChange() {
+        return this.lately != null;
+    }
+
+    public String toString(String defaultValue) {
+        if (this.lately == null) {
+            return this.value == null ? defaultValue : this.value.toString();
+        } else {
+            return (this.value == null ? defaultValue : this.value.toString()) + "->" + this.lately;
+        }
+    }
+
+    @Override
+    public String toString() {
+        if (this.lately == null) {
+            return this.value.toString();
+        } else {
+            return this.value + "->" + this.lately;
+        }
+    }
+
+    public boolean isHasValue() {
+        return this.value != null;
+    }
+
+    public boolean isHasWorth() {
+        return this.value != null || this.lately != null;
+    }
+
+}

@@ -1,0 +1,170 @@
+/*
+ * Copyright (c) 2020 Tunaiyi
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.tny.game.net.rpc;
+
+import com.google.common.collect.ImmutableList;
+import com.tny.game.net.application.*;
+import com.tny.game.net.session.*;
+
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.locks.*;
+
+/**
+ * <p>
+ *
+ * @author : kgtny
+ * @date : 2021/11/3 3:31 下午
+ */
+public class RpcServiceNode implements RpcInvokeNode, RpcForwardNode {
+
+    private final int serverId;
+
+    private final Map<Long, RpcRemoteServiceAccess> remoteServiceAccessMap = new HashMap<>();
+
+    private volatile List<RpcServiceAccess> orderAccessPoints = ImmutableList.of();
+
+    private final RpcServiceNodeSet service;
+
+    private final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
+
+    public RpcServiceNode(int serverId, RpcServiceNodeSet service) {
+        this.serverId = serverId;
+        this.service = service;
+    }
+
+    @Override
+    public int getNodeId() {
+        return serverId;
+    }
+
+    @Override
+    public ContactType getServiceType() {
+        return service.getServiceType();
+    }
+
+    @Override
+    public List<? extends RpcAccess> getOrderAccesses() {
+        return orderAccessPoints;
+    }
+
+    @Override
+    public List<? extends RpcForwardAccess> getOrderForwardAccess() {
+        return orderAccessPoints;
+    }
+
+    public RpcAccess anyGet() {
+        List<? extends RpcAccess> orderAccessPoints = this.orderAccessPoints;
+        if (orderAccessPoints.isEmpty()) {
+            return null;
+        }
+        return orderAccessPoints.get(ThreadLocalRandom.current().nextInt(orderAccessPoints.size()));
+    }
+
+    private void readLock() {
+        readWriteLock.readLock().lock();
+    }
+
+    private void readUnlock() {
+        readWriteLock.readLock().unlock();
+    }
+
+    private void writeLock() {
+        readWriteLock.writeLock().lock();
+    }
+
+    private void writeUnlock() {
+        readWriteLock.writeLock().unlock();
+    }
+
+    @Override
+    public RpcServiceAccess getForwardAccess(long id) {
+        readLock();
+        try {
+            return remoteServiceAccessMap.get(id);
+        } finally {
+            readUnlock();
+        }
+    }
+
+    @Override
+    public RpcAccess getAccess(long id) {
+        readLock();
+        try {
+            return remoteServiceAccessMap.get(id);
+        } finally {
+            readUnlock();
+        }
+    }
+
+    @Override
+    public boolean isActive() {
+        return !orderAccessPoints.isEmpty();
+    }
+
+    /**
+     * 接入点是否已清空（写锁内判定，供注册表收缩摘除僵尸节点）。
+     */
+    public boolean isEmpty() {
+        readLock();
+        try {
+            return this.remoteServiceAccessMap.isEmpty();
+        } finally {
+            readUnlock();
+        }
+    }
+
+    protected void addSession(Session session) {
+        writeLock();
+        try {
+            boolean activate = this.remoteServiceAccessMap.isEmpty();
+            RpcAccessIdentify nodeId = session.getIdentifyToken(RpcAccessIdentify.class);
+            this.remoteServiceAccessMap.put(nodeId.getContactId(), new RpcRemoteServiceAccess(session));
+            this.orderAccessPoints = ImmutableList.sortedCopyOf(Comparator.comparing(RpcAccess::getAccessId), remoteServiceAccessMap.values());
+            // 跃迁语义：空→非空才通知激活（原条件写反：首次激活不通知、冗余加入反而通知）
+            if (activate) {
+                service.onNodeActivate(this);
+            }
+        } finally {
+            writeUnlock();
+        }
+    }
+
+    protected void removeSession(Session session) {
+        writeLock();
+        try {
+            RpcAccessIdentify nodeId = session.getIdentifyToken(RpcAccessIdentify.class);
+            boolean activate = this.remoteServiceAccessMap.isEmpty();
+            RpcRemoteServiceAccess accessPoint = this.remoteServiceAccessMap.get(nodeId.getContactId());
+            if (accessPoint == null) {
+                return;
+            }
+            if (accessPoint.getSession() != session) {
+                return;
+            }
+            if (this.remoteServiceAccessMap.remove(nodeId.getContactId(), accessPoint)) {
+                this.orderAccessPoints = ImmutableList.sortedCopyOf(Comparator.comparing(RpcAccess::getAccessId), remoteServiceAccessMap.values());
+                // 跃迁语义：非空→空才通知失活（原 activate 取值于移除前恒 false，onNodeUnactivated 不可达）
+                if (this.remoteServiceAccessMap.isEmpty()) {
+                    service.onNodeUnactivated(this);
+                }
+            }
+        } finally {
+            writeUnlock();
+        }
+    }
+
+}

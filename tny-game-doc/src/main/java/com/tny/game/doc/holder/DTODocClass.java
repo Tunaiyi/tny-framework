@@ -1,0 +1,93 @@
+/*
+ * Copyright (c) 2020 Tunaiyi
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.tny.game.doc.holder;
+
+import com.tny.game.doc.annotation.*;
+import org.slf4j.*;
+
+import java.lang.annotation.Annotation;
+import java.util.function.Function;
+
+public class DTODocClass extends DocClass {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(DTODocClass.class);
+
+    private final DTODoc dtoDoc;
+
+    private final Object id;
+
+    private final String docDesc;
+
+    private final String docText;
+
+    private final Class<?> entityClass;
+
+    private <C extends Annotation, F extends Annotation> DTODocClass(Class<?> clazz,
+            Class<C> classAnnotation, Function<C, Object> classIdGetter,
+            Class<F> fieldAnnotation, Function<F, Object> fieldIdGetter) {
+        super(clazz, fieldAnnotation, fieldIdGetter);
+        this.dtoDoc = clazz.getAnnotation(DTODoc.class);
+        this.docDesc = dtoDoc.value();
+        this.docText = dtoDoc.text();
+        this.entityClass = clazz;
+        C classAnn = clazz.getAnnotation(classAnnotation);
+        Object id = classIdGetter.apply(classAnn);
+        this.id = id;
+        if (id == null) {
+            LOGGER.error("{} class id 为 null", clazz);
+        }
+    }
+
+    public static <C extends Annotation, F extends Annotation> DTODocClass create(Class<?> clazz,
+            Class<C> classAnnotation, Function<C, Object> classIdGetter,
+            Class<F> fieldAnnotation, Function<F, Object> fieldIdGetter) {
+        DTODoc dtoDoc = clazz.getAnnotation(DTODoc.class);
+        if (dtoDoc == null) {
+            LOGGER.error("{} 未添加 {} 注解", clazz, DTODoc.class);
+            return null;
+        }
+        C classAnn = clazz.getAnnotation(classAnnotation);
+        if (classAnn == null) {
+            LOGGER.error("{} 未添加 {} 注解", clazz, classAnnotation);
+            return null;
+        }
+        return new DTODocClass(clazz, classAnnotation, classIdGetter, fieldAnnotation, fieldIdGetter);
+    }
+
+    public DTODoc getDTODoc() {
+        return this.dtoDoc;
+    }
+
+    public Class<?> getEntityClass() {
+        return this.entityClass;
+    }
+
+    @Override
+    public String getDocDesc() {
+        return docDesc;
+    }
+
+    @Override
+    public String getDocText() {
+        return docText;
+    }
+
+    public Object getId() {
+        return this.id;
+    }
+
+}

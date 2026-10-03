@@ -1,0 +1,66 @@
+spring:
+  redis:
+    host: '${r2.redis.host:127.0.0.1}'
+    password: '${r2.redis.password:tNbrH3NSErGd}'
+    port: '${r2.redis.post:6379}'
+    database: '${r2.redis.db:9}'
+
+#  data:
+#    mongodb:
+#      uri: '${uc.mongodb.uri:mongodb://ucenter:ucenter0626@127.0.0.1:27018/?authSource=admin&minPoolSize=4&maxIdleTimeMS=60000}'
+#      database: '${uc.mongodb.database:tny-framework-demo}'
+#      auto-index-creation: true
+tny:
+  app:
+    name: GameClientApp
+    app-type: client
+    scope-type: online
+  net:
+    bootstrap:
+      network:
+        client:
+          channel:
+            encoder:
+              message-body-codec: typeProtobufMessageBodyCodec
+              security-keys:
+                - abcdefghijklmn
+                - opqrstuvwxyz
+            decoder:
+              message-body-codec: typeProtobufMessageBodyCodec
+              security-keys:
+                - abcdefghijklmn
+                - opqrstuvwxyz
+          connector:
+            retry-intervals: [ 3000, 5000, 7000, 8000, 9000 ,10000 ]
+      rpc:
+        # Rpc连接客户端 配置
+        client:
+          channel:
+            encoder:
+              message-body-codec: typeProtobufMessageBodyCodec
+            decoder:
+              message-body-codec: typeProtobufMessageBodyCodec
+          connector:
+            retry-intervals: [ 1000, 3000, 5000, 7000, 8000, 9000 , 10000 ]
+    command:
+      executor:
+        serial:
+          setting:
+            enable: true
+            threads: 4
+    rpc:
+      cluster:
+        services:
+          - service: game-service
+            discovery: false
+            host: 127.0.0.1
+            port: 17800
+            username: game-client
+
+  data:
+    enable: false
+    object-storage:
+      async-storage:
+        enable: false
+
+

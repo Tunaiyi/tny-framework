@@ -1,0 +1,78 @@
+// 子工程公共依赖管理装配约定插件（adopt-gradle-official-dsl 插件化，前身为 gradle/subprojects-baseline.gradle；
+// 工程标识名 tny.dependency-management 指向本文件内容重心——BOM 导入与具名版本管理声明）。
+// 前置约定：io.spring.dependency-management 由根构建脚本在装配线行先行应用（第三方插件不在
+// buildSrc 作用域解析，实测 Gradle 8.5）。本插件负责每个子工程共用的事：应用 idea/maven-publish、
+// 声明 BOM 与具名版本管理（集中声明的依赖写法由本脚本内 dependencyNotation() 从版本目录生成）、
+// 派生组号与版本（根 ext 单一事实源）。工程依赖解析仓由 settings.gradle 的 dependencyResolutionManagement 单点声明（centralize-resolution-config），本插件不再接入。
+// 边界：java 线专属在 tny.java-module，插件线在 tny.plugin-module，发布元数据在 tny.publications；
+// 本插件不触碰任务注册。由根构建脚本 configure(subprojects) 一行引入。
+// 形态约定：预编译脚本内可应用的插件一律写头部 plugins{} 块（脚本体内 legacy apply plugin
+// 触发 ClassLoaderScope 缺失，实测 Gradle 8.5）。
+
+plugins {
+    id 'idea'
+    id 'maven-publish'
+}
+
+dependencyManagement {
+
+    imports {
+        // 覆盖次序契约（fix-dependency-version-governance 成文；托管合并语义经 2026-10-03 配置期实测）：
+        // 依赖管理插件对多个 BOM 按"后导入者覆盖先导入者"合并，显式托管条目优先于全部导入。
+        // 本账具名版本键声明的族，凡导入句位置早于 spring-boot-dependencies 即被 Boot 内嵌管理面静默覆盖
+        // （log4j 族曾以此形态失守：声明 2.22.1 实际生效 Boot 的 2.21.1）。
+        // 因此凡需压过 Boot 管理面的显式大头导入一律排在 spring-boot-dependencies 之后；
+        // 重排本次序会静默改变族级生效版本，由 tny.module-checker 的配置期版本面对账守卫拦截。
+        mavenBom("com.alibaba.cloud:spring-cloud-alibaba-dependencies:${alibabaCloudVersion}")
+        mavenBom("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
+        mavenBom("org.apache.logging.log4j:log4j-bom:${log4j2Version}")
+        mavenBom("com.google.protobuf:protobuf-bom:${protobufVersion}")
+        mavenBom("io.netty:netty-bom:${nettyVersion}")
+        mavenBom("org.slf4j:slf4j-bom:${slf4jVersion}")
+        mavenBom("com.fasterxml.jackson:jackson-bom:${jacksonVersion}")
+        mavenBom("org.testcontainers:testcontainers-bom:${testcontainersVersion}")
+        // grpc 托管层（fix-dependency-version-governance D4）：jetcd-core 传递引入的 io.grpc 六件
+        // 此前无任何具名管辖，等值收编为事实源键 grpcVersion，消除多 grpc 来源共存时无统一裁决的裸奔形态
+        mavenBom("io.grpc:grpc-bom:${grpcVersion}")
+    }
+
+    dependencies {
+        // 集中声明接口只接受"组:名:版本"形式的依赖声明写法字符串（传依赖对象会被拒绝，2026-10-03 实测），
+        // 故逐条把版本目录读到的依赖交给 dependencyNotation() 转成声明写法字符串；
+        // 条目集合与顺序自 condense-managed-coordinates 起维持稳定，条目的增删须经变更册裁决后改动
+        // （先例：fix-dependency-version-governance 册按对账结果增删条目）。
+        // redisson
+        dependency dependencyNotation(libs.redisson)
+        // Apache Commons 系列——无落点成员已随 fix-dependency-version-governance 8.6 对账移除（全配置解析树零出现），
+        // 以下两条为"托管而无模块直连消费但有真实传递落点"的保留登记（规格：有落点的条目 MUST 在声明处注释登记）：
+        // commonsCompress 钉扎 testcontainers 栈传递请求的 commons-compress（上游请求 1.24.0，被压至本目声明 1.22；
+        // 该压降与已知漏洞线的修正一并归版本升级册处置），commonsMath3 钉扎 jmh-core 1.37 传递引入的 commons-math3:3.6.1
+        dependency dependencyNotation(libs.commonsIo)
+        dependency dependencyNotation(libs.commonsCodec)
+        dependency dependencyNotation(libs.commonsCollections4)
+        dependency dependencyNotation(libs.commonsLang3)
+        dependency dependencyNotation(libs.commonsMath3)
+        dependency dependencyNotation(libs.commonsCompress)
+        // 注解校验，以及未纳入 BOM 管理的常用库
+        dependency dependencyNotation(libs.checkerframework)
+        dependency dependencyNotation(libs.errorprone)
+        dependency dependencyNotation(libs.guava)
+        dependency dependencyNotation(libs.javassist)
+        dependency dependencyNotation(libs.xstream)
+        // grpc 托管层的 vertx 构件：io.vertx:vertx-grpc 不在 grpc-bom 管辖之内，
+        // 以单条显式托管钉住 jetcd-grpc 当前传递版本（等值收编，fix-dependency-version-governance D4）
+        dependency dependencyNotation(libs.vertxGrpc)
+    }
+    generatedPomCustomization {
+        enabled = false
+    }
+}
+group = rootProject.ext.projectGroup
+version = rootProject.ext.projectVersion
+
+// 把版本目录读到的依赖转成 Gradle 依赖声明写法字符串（"组:名:版本"，官方文档称 notation）：
+// 按公开属性逐段拼接，不依赖对象的 toString（其输出格式非官方承诺）。参数为访问器返回的 Provider。
+static def dependencyNotation(provider) {
+    def dependency = provider.get()
+    return "${dependency.group}:${dependency.name}:${dependency.version}"
+}

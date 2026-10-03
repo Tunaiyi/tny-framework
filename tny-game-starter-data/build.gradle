@@ -1,0 +1,22 @@
+
+apply plugin: 'maven-publish'
+
+dependencies {
+
+
+    annotationProcessor libs.springBootConfigurationProcessor // IDEA 使用
+
+    api libs.springBootAutoconfigure
+
+    api project(':tny-game-data')
+    api project(':tny-game-boot')
+
+    compileOnly project(':tny-game-data-redisson')
+    compileOnly project(':tny-game-data-mongodb')
+
+    testImplementation libs.springBootStarterTest
+    testImplementation project(':tny-game-data-redisson')
+    // 绑定钉桩需运行时实例化 MongoStorageAccessorFactorySetting（默认值引用 data-mongodb 类，主源集 compileOnly 不进 test 运行时）
+    testImplementation project(':tny-game-data-mongodb')
+}
+
