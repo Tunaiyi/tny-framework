@@ -1,8 +1,11 @@
 // 配置阶段跨工程对账约定插件（adopt-gradle-official-dsl 插件化，前身为 gradle/project-checks.gradle；
-// 工程标识名 tny.module-checker 指向本文件内容重心——构件模块两条硬合同的配置期对账）。
-// 本插件负责且仅负责两项校验：发布构件组号对账（central-publishing D2，gradle.projectsEvaluated
-// 时机不变）与零发布合同（consolidate-module-modes-plugin D2：依赖边就地核对，沿依赖强制评估
-// 被依赖方后读其 tny.module-setting 声明，取代"根清单到齐点名"）。边界：不做装配配置；
+// 工程标识名 tny.module-checker 指向本文件内容重心——构件模块硬合同的配置期对账）。
+// 本插件负责且仅负责三项校验：发布构件组号对账（central-publishing D2，gradle.projectsEvaluated
+// 时机不变）、零发布合同（consolidate-module-modes-plugin D2：依赖边就地核对，沿依赖强制评估
+// 被依赖方后读其 tny.module-setting 声明，取代"根清单到齐点名"）与托管版本面对账守卫
+// （fix-dependency-version-governance D1：大头版本族代表坐标的托管生效值必须等于事实源声明值，
+// 后导入 BOM 静默覆盖先导入者的次序漂移在配置阶段报红，规格见 gradle-build-style"托管版本面在配置期
+// 与声明事实源对账"需求）。边界：不做装配配置；
 // 组号对账须由根构建脚本在 ext 集合派生之后一行引入。
 
 gradle.projectsEvaluated {
@@ -11,6 +14,11 @@ gradle.projectsEvaluated {
         // configure-on-demand 下仅校验本次已评估的工程，未评估工程组号尚未派生、不参与对账
         if (!m.state.executed) {
             return
+        }
+        // 装配线成员构建文件存在性断言（fix-dependency-version-governance D8）：settings 引入而无构建
+        // 文件的工程会以空工程形态过完整条装配线并产出只含清单的空构件（tny-game-codec-protoex 事故形态）
+        if (m.buildFile == null || !m.buildFile.exists()) {
+            violations << "${m.path} 属于发布装配线但其构建文件不存在（settings.gradle 引入悬空）：删除该引入行，或补齐工程的构建文件"
         }
         if (m.name.endsWith('-gradle')) {  // 例外组号按约定后缀判定（settings.gradle 注释），与插件模块线同规则
             if (m.group.toString() != pluginLegacyGroup) {
@@ -21,7 +29,7 @@ gradle.projectsEvaluated {
         }
     }
     if (!violations.isEmpty()) {
-        throw new GradleException('发布构件组号与单一事实源对账失败：\n- ' + violations.join('\n- '))
+        throw new GradleException('发布构件配置期对账失败（组号单一事实源与构建文件存在性）：\n- ' + violations.join('\n- '))
     }
 }
 
@@ -35,7 +43,8 @@ moduleProjects.each { m ->
     m.afterEvaluate { evaluated ->
         evaluated.configurations.each { cfg ->
             cfg.dependencies.withType(ProjectDependency).each { d ->
-                def target = d.dependencyProject
+                // getDependencyProject 已弃用（Gradle 9 移除），以工程路径解析等价替代
+                def target = evaluated.rootProject.project(d.path)
                 if (target == evaluated) {
                     return
                 }
@@ -50,3 +59,49 @@ moduleProjects.each { m ->
         }
     }
 }
+
+// 托管版本面对账守卫（fix-dependency-version-governance D1）：大头版本键声明的族，其代表坐标在托管合并
+// 模型中的生效版本必须等于事实源声明值；代表坐标从托管面消失（生效值取不到）同样计为失配。
+// 核对范围限于"成员版本随所属 BOM 版本同值"的族（覆盖次序契约见 tny.dependency-management 块头注释）；
+// spring-boot-dependencies 的成员版本与键值不同值（例如 spring-core 为 6.1.2 而键为 3.2.1），不入本对账。
+// 时机与组号对账一致取 gradle.projectsEvaluated；configure-on-demand 下仅核对本次已评估且带托管扩展的工程。
+def managedFamilyGuardCoords = [
+    log4j2Version: ['org.apache.logging.log4j:log4j-api', 'org.apache.logging.log4j:log4j-core'],
+    nettyVersion: ['io.netty:netty-common', 'io.netty:netty-buffer', 'io.netty:netty-transport'],
+    jacksonVersion: ['com.fasterxml.jackson.core:jackson-databind', 'com.fasterxml.jackson.core:jackson-core'],
+    protobufVersion: ['com.google.protobuf:protobuf-java'],
+    slf4jVersion: ['org.slf4j:slf4j-api', 'org.slf4j:slf4j-simple'],
+    testcontainersVersion: ['org.testcontainers:junit-jupiter', 'org.testcontainers:mongodb'],
+    grpcVersion: ['io.grpc:grpc-core', 'io.grpc:grpc-netty'],
+    alibabaCloudVersion: ['com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-discovery'],
+]
+gradle.projectsEvaluated {
+    def drifts = []
+    managedFamilyGuardCoords.each { versionKey, coords ->
+        def declared = rootProject.property(versionKey).toString()
+        rootProject.allprojects.each { p ->
+            if (!p.state.executed) {
+                return
+            }
+            def dm = p.extensions.findByName('dependencyManagement')
+            if (dm == null) {
+                return
+            }
+            def managed = dm.managedVersions
+            coords.each { coord ->
+                def effective = managed.get(coord)
+                if (effective != declared) {
+                    def shown = effective == null ? '（该族无托管源）' : "'${effective}'"
+                    drifts << "${p.path} 的族 '${versionKey}' 失配：坐标 ${coord} 事实源声明 '${declared}' 实际生效 ${shown}"
+                }
+            }
+        }
+    }
+    if (!drifts.isEmpty()) {
+        throw new GradleException('托管版本面与声明事实源对账失败（修正声明或导入次序后重试；次序契约见 ' +
+                'tny.dependency-management 的 imports 块头注释）：\n- ' + drifts.take(12).join('\n- ') +
+                (drifts.size() > 12 ? "\n- ……共 ${drifts.size()} 条，仅列前 12 条" : ''))
+    }
+}
+
+

@@ -4,10 +4,11 @@ plugins {
     // tny.central 与 tny.publications 分别 apply，直接消费既有 mavenJava。
     id 'com.gradleup.nmcp' version '1.6.2' apply false
     id 'com.gradleup.nmcp.aggregation' version '1.6.2' apply false
-    id 'org.springframework.boot' version "${springBootVersion}" apply false
+    // 死声明清除（fix-dependency-version-governance D10，全仓复证零应用点）：
+    // org.springframework.boot 插件（本工程无 bootJar 重打需求，springBootVersion 键仍由 BOM 导入句消费）与
+    // com.gradle.plugin-publish 插件（Gradle Plugin Portal 发布通道从未接通，见 tny-game-doc-gradle 残迹注记）
     id 'io.spring.dependency-management' version '1.1.0' apply false
     id 'com.baidu.jprotobuf' version '1.2.1' apply false
-    id 'com.gradle.plugin-publish' version '0.16.0' apply false
 }
 
 // 第三方插件在根脚本作用域先行应用（buildSrc 作用域无法解析父构建类路径插件，实测 8.5）；

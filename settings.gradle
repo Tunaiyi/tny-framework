@@ -3,11 +3,11 @@ pluginManagement {
     repositories {
         mavenCentral()
         gradlePluginPortal()
-        maven { url 'https://mirrors.cloud.tencent.com/nexus/repository/maven-public/' }
-        maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
-        maven { url 'https://m2.tunaiyi.com/repository/maven-public' }
-        maven { url 'https://maven.aliyun.com/repository/jcenter' }
-        maven { url 'https://maven.aliyun.com/repository/spring-plugin' }
+        maven { url = 'https://mirrors.cloud.tencent.com/nexus/repository/maven-public/' }
+        maven { url = 'https://maven.aliyun.com/repository/gradle-plugin' }
+        maven { url = 'https://m2.tunaiyi.com/repository/maven-public' }
+        maven { url = 'https://maven.aliyun.com/repository/jcenter' }
+        maven { url = 'https://maven.aliyun.com/repository/spring-plugin' }
     }
 
 }
@@ -32,9 +32,9 @@ dependencyResolutionManagement {
             }
         }
         mavenLocal()
-        maven { url 'https://mirrors.cloud.tencent.com/nexus/repository/maven-public/' }
-        maven { url 'https://m2.tnydev.com/repository/maven-public/' }
-        maven { url 'https://maven.aliyun.com/repository/public' }
+        maven { url = 'https://mirrors.cloud.tencent.com/nexus/repository/maven-public/' }
+        maven { url = 'https://m2.tnydev.com/repository/maven-public/' }
+        maven { url = 'https://maven.aliyun.com/repository/public' }
         mavenCentral()
     }
 
@@ -79,7 +79,9 @@ include 'tny-game-doc-gradle'
 include 'tny-game-codec'
 include 'tny-game-codec-jackson'
 include 'tny-game-codec-jprotobuf'
-include 'tny-game-codec-protoex'
+// tny-game-codec-protoex 的引入行已删除（fix-dependency-version-governance D8）：该工程无任何被跟踪的
+// 构建文件与源码，却因 tny-game- 前缀命名谓词进入发布装配线并产出空构件；配置期构建文件存在性断言
+// （tny.module-checker）防复发。
 include 'tny-game-starter-codec'
 
 include 'tny-game-oplog'

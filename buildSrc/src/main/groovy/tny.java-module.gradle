@@ -15,8 +15,12 @@ plugins {
     id 'maven-publish'
 }
 
-sourceCompatibility = JavaVersion.toVersion(javaVersion)
-targetCompatibility = JavaVersion.toVersion(javaVersion)
+// 经 java 扩展对象钉定 source/target（2026-10-03 弃用修正：脚本动态属性直写会命中已弃用的
+// JavaPluginConvention 老式门面；javaVersion 取值仍来自 gradle.properties 单一事实源，语义等值）
+java {
+    sourceCompatibility = JavaVersion.toVersion(javaVersion)
+    targetCompatibility = JavaVersion.toVersion(javaVersion)
+}
 
 // sourcesJar 必须先以本声明注册、再由下方 java 块 withSourcesJar() 复用：
 // 复用路径只把构件挂入 java 组件（发布仍产出 sources jar），不自建则会把任务接入
@@ -103,11 +107,14 @@ dependencies {
 
     testImplementation libs.mockitoJunitJupiter
     testImplementation libs.junitJupiter
-     testImplementation libs.jmockJunit5
+    testImplementation libs.jmockJunit5
     testImplementation libs.springTest
     testImplementation libs.slf4jSimple
-    // 公共测试夹具按 -tester 后缀检索自动挂接（zero-enumeration-shared-scripts D4；当前唯一命中 tny-game-tester）
-    rootProject.ext.moduleProjects.findAll { it.name.endsWith('-tester') }.each {
+    // 公共测试夹具按 -tester 后缀检索自动挂接（zero-enumeration-shared-scripts D4；当前唯一命中 tny-game-tester）。
+    // 谓词排除宿主工程自身（fix-dependency-version-governance D8）：tester 也属 javaProjects 装配线成员，
+    // 原形态下它会把自己的工程对象挂进自身的 testImplementation 形成自依赖边（无 POM 泄漏面，属脚本卫生违例；
+    // tny.module-checker 零发布合同里"依赖目标是自身即跳过"的分支恰是该形态存在的自证，保留作双保险）
+    rootProject.ext.moduleProjects.findAll { it.name.endsWith('-tester') && it != project }.each {
         add('testImplementation', it)
     }
 }

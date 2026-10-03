@@ -1,6 +1,6 @@
 // Gradle 插件模块例外组号：插件 id com.tny.game 及其 marker 坐标谱系不随框架主组号迁移
 // （spec central-publishing"Gradle 插件构件本次不入 Central"；例外登记于 design D2）
-group pluginLegacyGroup
+group = pluginLegacyGroup
 
 apply plugin: 'java-gradle-plugin'
 
@@ -14,9 +14,8 @@ gradlePlugin {
         }
     }
 }
-//    website = 'https://github.com/Tunaiyi/tny-framework'
-//    vcsUrl = 'https://github.com/Tunaiyi/tny-framework'
-//    tags = ['game', 'code', 'plugins']
+// Plugin Portal 发布接入从未完成，遗留的注释配置行已随 fix-dependency-version-governance D10 清除
+// （该插件不走 Gradle Plugin Portal 的决策注记补记于 central-publishing 规格域，见本册 verification-notes）
 
 publishing {
     repositories {

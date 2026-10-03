@@ -112,8 +112,9 @@ if (project.name.endsWith('-integration-test')) {
         dependsOn configurations.integrationRuntimeClasspath
         doFirst {
             // 就地核对：执行期所有工程已完成评估，直接读依赖对象的角色声明
+            // getDependencyProject 已弃用（Gradle 9 移除），以工程路径解析等价替代（与 tny.module-checker 同法）
             def declared = configurations.integrationImplementation.dependencies
-                    .withType(ProjectDependency)*.dependencyProject
+                    .withType(ProjectDependency).collect { rootProject.project(it.path) }
             def targets = declared.findAll { tny.convention.ModuleSetting.enabled(it, tny.convention.ModuleSetting.Mode.APP) }
             if (targets.isEmpty()) {
                 throw new GradleException('tny.integration-test: 受控隔离目标交集为空——integrationImplementation 的直接工程依赖 ' +

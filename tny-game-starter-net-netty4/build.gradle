@@ -7,6 +7,11 @@ dependencies {
 
     annotationProcessor libs.springBootConfigurationProcessor // IDEA 使用
 
+    // 门面自声明引擎装配边（fix-dependency-version-governance D7 连带修正）：本模块 NetAutoConfiguration
+    // 直接 import com.tny.game.expr 契约与 com.tny.game.expr.groovy 实现（第 18、19 行），此前靠 net 的 api
+    // 传递获得编译可见性，net 收缩后按"装配者显式声明所装配之物"自声明，对外暴露范围与收缩前逐配置等值
+    api project(':tny-game-expr-groovy')
+
     api project(':tny-game-boot')
     api project(':tny-game-rpc')
     api project(':tny-game-net-netty4')
