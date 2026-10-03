@@ -19,7 +19,6 @@ import com.tny.game.common.lifecycle.*;
 import com.tny.game.common.lifecycle.unit.*;
 import com.tny.game.common.lifecycle.unit.annotation.*;
 import com.tny.game.expr.*;
-import com.tny.game.expr.groovy.*;
 import com.tny.game.net.application.*;
 import com.tny.game.net.command.auth.*;
 import com.tny.game.net.command.listener.*;
@@ -28,8 +27,10 @@ import com.tny.game.net.command.plugins.*;
 @Unit
 public class DefaultMessageDispatcher extends BaseMessageDispatcher implements AppPrepareStart {
 
+    // 短构造器不再焊死具体引擎（remove-engine-transitive-assembly D1）：以 null 传递，
+    // 求值位置经 ExprHolderFactoryResolver 按装配注册表解析；显式装配引擎或传入工厂路径行为不变
     public DefaultMessageDispatcher(NetAppContext appContext, ContactAuthenticator contactAuthenticator) {
-        super(appContext, contactAuthenticator, new GroovyExprHolderFactory());
+        super(appContext, contactAuthenticator, null);
     }
 
     public DefaultMessageDispatcher(NetAppContext appContext, ContactAuthenticator contactAuthenticator,

@@ -17,6 +17,7 @@ package com.tny.game.it.harness;
 
 import com.tny.game.common.lifecycle.unit.*;
 import com.tny.game.common.url.*;
+import com.tny.game.expr.groovy.*;
 import com.tny.game.net.application.*;
 import com.tny.game.net.application.configuration.*;
 import com.tny.game.net.command.auth.*;
@@ -332,7 +333,10 @@ public final class NetIntegrationHarness implements AutoCloseable {
             return;
         }
         ContactAuthenticateService contactAuthenticator = new ContactAuthenticateService(new CommonSessionKeeperManager());
-        DefaultMessageDispatcher messageDispatcher = new DefaultMessageDispatcher(APP_CONTEXT, contactAuthenticator);
+        // 装配位显式传入引擎工厂（remove-engine-transitive-assembly D4）：net 短构造器不再兜底具体引擎，
+        // harness 作为集成栈的装配方自声明引擎，消除对单元注册时序的依赖
+        DefaultMessageDispatcher messageDispatcher = new DefaultMessageDispatcher(APP_CONTEXT, contactAuthenticator,
+                new GroovyExprHolderFactory());
         registerIfAbsent(MessageFactory.class, MESSAGE_FACTORY, new CommonMessageFactory());
         registerIfAbsent(ContactFactory.class, CONTACT_FACTORY, new DefaultContactFactory());
         registerIfAbsent(SessionFactory.class, SESSION_FACTORY, new CommonSessionFactory());

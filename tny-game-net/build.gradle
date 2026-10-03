@@ -4,10 +4,19 @@ apply plugin: 'maven-publish'
 dependencies {
 
     api libs.jprotobuf
-    api project(':tny-game-expr-groovy')
+    // 契约直达边（fix-dependency-version-governance D7，P2 依赖倒置）：公开签名使用的 ExprHolderFactory/ExprHolder
+    // 来自 tny-game-expr 接口包，此前靠引擎实现模块的 api 传递获得，属"引用提供方而非契约"反例形态
+    api project(':tny-game-expr')
+    // 契约直达边补全（D7 连带）：主源码六个以上文件直接使用 common-lifecycle 的类型（codec 与 relay 契约、
+    // unit 微框架标注），此前靠 expr-groovy 引擎实现模块的 api 传递链获得编译与对外暴露，引擎收缩后自声明；
+    // 下游 net-netty4 等经本边获得 lifecycle 编译可见性，与收缩前逐配置等值
+    api project(':tny-game-common-lifecycle')
     api project(':tny-game-common-io')
     api project(':tny-game-common-digest')
     api project(':tny-game-codec-jprotobuf')
+
+    // 对表达式引擎实现模块的依赖已整体移除（remove-engine-transitive-assembly D1）：主源码经
+    // ExprHolderFactoryResolver 按装配注册表解析引擎，发布 POM 任何域不再携带引擎构件
 
     // 跨编译单元同名分包引用：仅允许公开成员（契约与 O1 预案见 tny-game-net-test/build.gradle 注释、
     // stabilize-build-test-infra/preflight.md）

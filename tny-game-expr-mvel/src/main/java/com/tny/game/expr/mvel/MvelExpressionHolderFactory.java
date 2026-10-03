@@ -16,12 +16,16 @@
 
 package com.tny.game.expr.mvel;
 
+import com.tny.game.common.lifecycle.unit.annotation.*;
 import com.tny.game.expr.*;
 import org.apache.commons.lang3.StringUtils;
 
 /**
  * Created by Kun Yang on 2018/6/4.
  */
+// 单元装配自声明（remove-engine-transitive-assembly D3）：装配生效语义与 expr-groovy 侧一致
+@UnitInterface
+@Unit(unitInterfaces = ExprHolderFactory.class)
 public class MvelExpressionHolderFactory extends MvelExprHolderFactory {
 
     public MvelExpressionHolderFactory() {

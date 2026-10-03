@@ -8,8 +8,18 @@ dependencies {
     api libs.jacksonDataformatYaml
     api libs.javaxAnnotationApi
     api project(':tny-game-scanning')
-    api project(':tny-game-expr-groovy')
+    // 契约直达边（D7，P2）：公开签名的 ExprHolder/ExprHolderFactory 全部来自 tny-game-expr 接口包，
+    // 此前靠引擎实现模块的 api 传递获得接口编译能力，属"引用提供方而非契约"反例形态
+    api project(':tny-game-expr')
+    // reflect 直达边（remove-engine-transitive-assembly D2）：公开类 ItemModelProxyHandler 实现 cglib
+    // MethodInterceptor、LoadableModelManager 使用 com.tny.game.common.reflect.proxy 类型，
+    // 此前这些编译与对外可见性靠引擎 api 传递链白拿；cglib 类型在公开签名上故取 api（逐配置等值）
+    api project(':tny-game-common-reflect')
     api project(':tny-game-common-io')
+
+    // 引擎实现整体退出发布面（remove-engine-transitive-assembly D2）：主源码零处引用引擎类型，
+    // 仅测试源码五处直接实例化（测试源集自装配），引擎不再进入本工程 POM 的任何依赖域
+    testImplementation project(':tny-game-expr-groovy')
 
     testImplementation libs.xpp3
 

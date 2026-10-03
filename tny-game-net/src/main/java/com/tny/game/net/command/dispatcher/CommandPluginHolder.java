@@ -16,7 +16,6 @@
 package com.tny.game.net.command.dispatcher;
 
 import com.tny.game.expr.*;
-import com.tny.game.expr.groovy.*;
 import com.tny.game.net.annotation.*;
 import com.tny.game.net.application.*;
 import com.tny.game.net.command.plugins.*;
@@ -58,13 +57,13 @@ public class CommandPluginHolder {
     private CommandPluginHolder(ControllerHolder controller, CommandPlugin<?> plugin, String attributes, ExprHolderFactory exprHolderFactory) {
         this.plugin = as(plugin);
         this.controller = controller;
-        if (exprHolderFactory == null) {
-            exprHolderFactory = new GroovyExprHolderFactory();
-        }
         if (attributes.equals(NULL_EXPR)) {
             this.attributes = null;
         } else if (StringUtils.startsWith(attributes, EXPR_PREFIX)) {
-            this.attributes = exprHolderFactory.create(attributes.substring(1))
+            // 引擎经装配解析取得（remove-engine-transitive-assembly D1）：仅在真正求值时解析，
+            // 显式传入优先，未传入按注册表恰一裁决，不再静默回退具体引擎
+            ExprHolderFactory factory = ExprHolderFactoryResolver.resolve(exprHolderFactory, attributes);
+            this.attributes = factory.create(attributes.substring(1))
                     .createExpr()
                     .execute(plugin.getAttributesClass());
         } else {

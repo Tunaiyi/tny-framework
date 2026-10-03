@@ -16,6 +16,7 @@
 
 package com.tny.game.expr.groovy;
 
+import com.tny.game.common.lifecycle.unit.annotation.*;
 import com.tny.game.common.math.*;
 import com.tny.game.expr.*;
 import com.tny.game.expr.jsr223.*;
@@ -26,6 +27,10 @@ import java.time.Instant;
 /**
  * Created by Kun Yang on 2018/5/24.
  */
+// 单元装配自声明（remove-engine-transitive-assembly D3）：装配方把本引擎带上并经启动装配注册后，
+// 求值位置经 ExprHolderFactory 契约键解析取得本实现；契约模块保持零引擎依赖
+@UnitInterface
+@Unit(unitInterfaces = ExprHolderFactory.class)
 public class GroovyExprHolderFactory extends ScriptExprHolderFactory {
 
     private static final String LAN = "groovy";
