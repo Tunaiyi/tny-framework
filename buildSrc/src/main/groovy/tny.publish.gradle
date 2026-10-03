@@ -34,6 +34,7 @@ def requiredPublishingProperties = [
         NEXUS_USERNAME: ext.NEXUS_USERNAME,
         NEXUS_PASSWORD: ext.NEXUS_PASSWORD,
 ]
+
 tasks.matching { publishesToSharedRepository(it) }.configureEach { task ->
     task.doFirst {
         requiredPublishingProperties.each { key, value ->
