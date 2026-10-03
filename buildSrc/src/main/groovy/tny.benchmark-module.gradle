@@ -1,10 +1,10 @@
 import java.text.SimpleDateFormat
 
 // 基准族执行通道约定插件（adopt-gradle-official-dsl 插件化，前身为 gradle/bench-suite.gradle；
-// declarative-it-demo-isolation 起族清单数据外提为 benchSuite 扩展，由 :tny-benchmark 模块声明）。
-// 本插件负责：benchSuite 扩展贡献与行为来由注释、jmhList/jmhListVerify/jmhSuiteVerify 枚举对账
+// declarative-it-demo-isolation 起族清单数据外提为 benchmarkSuite 扩展，由 :tny-benchmark 模块声明）。
+// 本插件负责：benchmarkSuite 扩展贡献与行为来由注释、jmhList/jmhListVerify/jmhSuiteVerify 枚举对账
 // 任务与 benchRoutineExport 落盘任务，注册归属 :tny-benchmark 工程；任务名历次迁移不变，工程路径的模块段自 rename-bench-to-benchmark 起为 tny-benchmark。
-// 配置面：benchSuite 五清单（tny.convention.BenchSuite）；清单语义的双承载出处见下 jmhSuiteVerify 注释。
+// 配置面：benchmarkSuite 五清单（tny.convention.BenchSuite）；清单语义的双承载出处见下 jmhSuiteVerify 注释。
 // 边界：jmh 执行参数与依赖声明在模块构建文件；族目录↔清单对账语义出处见
 // split-bench-suites 与 refine-bench-routine-triggering。
 // 正则拼接来由（自模块 ext 迁入，机制侧知识）：插件会把 includes 列表逗号拼接成单个 JMH 位置参数
@@ -13,9 +13,9 @@ import java.text.SimpleDateFormat
 // 无排除效应）；速览档与完整档共用同一 include 面，差异只在 quickRunExcludes 显式清单
 // （矩阵类烙负向前瞻正则的静默失效陷阱由此消灭，refine-bench-routine-triggering D2）。
 
-def suite = extensions.create('benchSuite', tny.convention.BenchSuite)
+def suite = extensions.create('benchmarkSuite', tny.convention.BenchSuite)
 
-// 列清单（锚集定义与 jmh 运行同源 benchSuite 扩展）：CI PR 通道用它证明"清单可枚举"。
+// 列清单（锚集定义与 jmh 运行同源 benchmarkSuite 扩展）：CI PR 通道用它证明"清单可枚举"。
 // BenchmarkList 由插件 jmhRunBytecodeGenerator 产出于 generatedResourcesDir（非注解处理器阶段）。
 tasks.register('jmhList', JavaExec) {
     group = 'benchmark'
@@ -44,7 +44,7 @@ tasks.register('jmhListVerify') {
         def f = listTask.get().listFile
         def n = f.exists() ? f.readLines().count { it.startsWith('com.') } : 0
         if (n == 0) {
-            throw new GradleException('jmhList 过滤后无任何匹配（JMH -l 空列表不报错，此处显式判红）：检查 benchSuite.routineFamily 与 -PbenchAll')
+            throw new GradleException('jmhList 过滤后无任何匹配（JMH -l 空列表不报错，此处显式判红）：检查 benchmarkSuite.routineFamily 与 -PbenchAll')
         }
         logger.lifecycle("jmhList: ${n} 个基名条目")
     }

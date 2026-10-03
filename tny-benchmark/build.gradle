@@ -1,8 +1,8 @@
 plugins {
     id 'java'
     id 'me.champeau.jmh' version '0.7.3'
-    // 族属清单与枚举/对账/落盘任务在 tny.bench-suite 约定插件（注册归属与任务名不变）
-    id 'tny.bench-suite'
+    // 族属清单与枚举/对账/落盘任务在 tny.benchmark-module 约定插件（注册归属与任务名不变）
+    id 'tny.benchmark-module'
     // 横切角色统一插件（consolidate-module-modes-plugin）
     id 'tny.module-setting'
 }
@@ -25,8 +25,8 @@ tasks.withType(AbstractCompile).configureEach {
 }
 
 // 基准族清单（split-bench-suites D1 族属双承载的声明面：目录即族属，此清单登记族正则，
-// jmhSuiteVerify 双向对账钉死；行为来由注释在 tny.bench-suite 插件）。
-benchSuite {
+// jmhSuiteVerify 双向对账钉死；行为来由注释在 tny.benchmark-module 插件）。
+benchmarkSuite {
     routineFamily.set(['.*\\.benchmark\\.net\\.routine\\..*'])
     devtestFamily.set(['.*\\.benchmark\\.net\\.devtest\\..*'])
     facilityProbes.set(['.*\\.benchmark\\.net\\.devtest\\.SmokeBenchmark.*'])
@@ -53,7 +53,7 @@ jmh {
     timeOnIteration = '1s'
     resultFormat = 'json'
     resultsFile = project.layout.buildDirectory.file('reports/bench/bench-result.json').get().asFile
-    def familyInclude = (benchSuite.routineFamily.get() + benchSuite.facilityProbes.get()).join('|')
+    def familyInclude = (benchmarkSuite.routineFamily.get() + benchmarkSuite.facilityProbes.get()).join('|')
     if (project.hasProperty('benchAll')) {
         includes = ['.*']
     } else if (project.hasProperty('benchInclude')) {
@@ -62,17 +62,17 @@ jmh {
         // 速览规模（refine-bench-routine-triggering D2）：与完整档共用 include 面，
         // 矩阵级退化由夜间与手动的完整规模兜底；排除面是显式清单（新增矩阵类在此登记）
         includes = [familyInclude]
-        excludes = benchSuite.quickRunExcludes.get()
+        excludes = benchmarkSuite.quickRunExcludes.get()
     } else {
         // 缺省即完整规模（本地直接执行、夜间定时、手动触发）：常规族并设施探针，
         // 两族清单自拼竖线成单正则（插件逗号拼接语义），六臂参数域覆写沿用。
         includes = [familyInclude]
-        benchmarkParameters = [algo: objects.listProperty(String).value(benchSuite.routineAlgoArms.get())]
+        benchmarkParameters = [algo: objects.listProperty(String).value(benchmarkSuite.routineAlgoArms.get())]
     }
     if (project.hasProperty('benchGc')) {
         profilers = ['gc']            // 分配画像（P3 裁决数据源）
     }
-    // benchParams 显式参数覆写的解析在 tny.bench-suite 插件 afterEvaluate（程序性不入模块文件）
+    // benchParams 显式参数覆写的解析在 tny.benchmark-module 插件 afterEvaluate（程序性不入模块文件）
     if (project.hasProperty('benchFast')) {
         // 选择面探针：只验证"哪些 benchmark 会被选中"，不出可信数字。
         fork = 1

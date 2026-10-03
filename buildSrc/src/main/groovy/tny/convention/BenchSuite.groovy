@@ -1,7 +1,7 @@
-// 基准族清单配置面（tny.bench-suite 的五个数据属性，declarative-it-demo-isolation design D5）。
+// 基准族清单配置面（tny.benchmark-module 的五个数据属性，declarative-it-demo-isolation design D5）。
 // 族属双承载（split-bench-suites D1）：目录分置族子包即族属，此处按族子包正则声明清单，
 // CI 两面（评审枚举 / 执行选择）只从这份单一事实派生；目录↔声明对账由 jmhSuiteVerify 钉死。
-// 各条目的行为来由注释（JMH 拼接语义、-p 筛选实测等）留在 tny.bench-suite 插件内。
+// 各条目的行为来由注释（JMH 拼接语义、-p 筛选实测等）留在 tny.benchmark-module 插件内。
 package tny.convention
 
 import org.gradle.api.provider.ListProperty
