@@ -70,6 +70,11 @@ public class MapperLocker<O> implements ObjectLocker<O> {
                         return lock;
                     } catch (InterruptedException e) {
                         lock.release(LockerKey.KEY);
+                        // 与 unlock 的回收形态一致：等待获取被中断的一方归还引用计数后，
+                        // 同样由最后一个把计数归零的释放者负责销毁条目并从映射表移除
+                        if (lock.destroy(LockerKey.KEY)) {
+                            lockMap.remove(object, lock);
+                        }
                         throw e;
                     }
                 } else {
@@ -94,6 +99,15 @@ public class MapperLocker<O> implements ObjectLocker<O> {
                         return Optional.of(lock);
                     } else {
                         lock.release(LockerKey.KEY);
+                        // 修复 diagnosis.md 案 #2（CI unit 工作流 GitHub Actions 运行号 run id 37165077819，2026-10-04）：
+                        // 获取失败的一方在归还引用计数后，若本线程恰是最后一个把计数归零的释放者，
+                        // 就由本线程销毁条目并从映射表移除（与 unlock 的回收形态一致）。修复前这条路径只做
+                        // release 而不销毁，归零的条目永久残留在映射表里，size() 永远不会自行归零。
+                        // destroy 是计数从零到销毁态的比较交换，只有最后一个归零的释放者能成功；与 apply
+                        // 的比较交换协议交错时，后来者读到销毁态返回 false，走本方法既有的移除并重建分支。
+                        if (lock.destroy(LockerKey.KEY)) {
+                            lockMap.remove(object, lock);
+                        }
                         return Optional.empty();
                     }
                 } else {
@@ -119,10 +133,19 @@ public class MapperLocker<O> implements ObjectLocker<O> {
                             return Optional.of(lock);
                         } else {
                             lock.release(LockerKey.KEY);
+                            // 与即时 tryLock 的获取失败分支同形：限时等待失败的一方归还计数后，
+                            // 由最后一个把计数归零的释放者销毁条目并从映射表移除
+                            if (lock.destroy(LockerKey.KEY)) {
+                                lockMap.remove(object, lock);
+                            }
                             return Optional.empty();
                         }
                     } catch (InterruptedException e) {
                         lock.release(LockerKey.KEY);
+                        // 与 lockInterruptibly 的中断分支同形：等待被中断的一方归还计数后尝试销毁回收
+                        if (lock.destroy(LockerKey.KEY)) {
+                            lockMap.remove(object, lock);
+                        }
                         throw e;
                     }
                 } else {
