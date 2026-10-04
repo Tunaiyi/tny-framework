@@ -9,13 +9,19 @@
 探索中曾评估并否决用户原始提议的"每补丁一分支、修复向上滚动合并"形态（B 案，否决理由
 记入 D8）。
 
-**现场基线（已从磁盘核实）。** `gradle/release.gradle` 当前是被修正提交 `976896b4` 收敛后
-的形态：写操作（切支、附注标签、推送）走文件内 `runGit` 子进程助手，只读查询（分支与标签
-列表）走 grgit；5.7.8 首发已按此形态真实执行完毕，容器分支未被重写。根构建脚本对该脚本
-保持一行注释加一行 `apply from`（行号随并行进行中的 `gradle-build-style` 全仓清理浮动，
-实施时以当时文件为准）。旧任务名的全部引用面为：`gradle/release.gradle`（本体）、根脚本
-引用注释、`docs/release-process.md`、`.claude/commands/tny/release.md`；
-`.github/workflows/` 不引用任务名。
+**现场基线（开工时从磁盘重新核实，挂起记录条件 3）。** 原工件成文后合入了两个前置变更：
+`sweep-gradle-build-style`（提交 `0b4fca25`，全仓构建脚本按 `gradle-build-style` 规格改造并
+迁入 buildSrc 约定插件）与 `adopt-gradle-official-dsl`（提交 `ba7ea66b`，git 派生字典改为
+根工程类型化扩展 `gitFlow`，实现类 `tny.convention.GitFlow`）。因此组 1 的实施文件是
+`buildSrc/src/main/groovy/tny.release.gradle`（原 `gradle/release.gradle` 的插件化后继），
+根脚本经 `build.gradle:20-21` 的注释行加 `apply plugin: 'tny.release'` 挂接；该文件当前
+形态是修正提交 `976896b4` 之后的写走 CLI、分支标签列表读走 `gitFlow.grgiter`，5.7.8 首发
+已按此形态真实执行完毕，容器分支未被重写。Gradle 基线已由另一会话升至 8.14.5
+（提交 `84ffc707`），`adopt-gradle-8-14-baseline` 仍在进行但其在途改动不触碰发布插件。
+旧任务名的全部引用面为：发布插件本体、根脚本引用注释、`docs/release-process.md`、
+`.claude/commands/tny/release.md`；`.github/workflows/` 不引用任务名。发布门禁现居
+`buildSrc/src/main/groovy/tny.publish.gradle`（`checkPublishPrerequisites` 于 260 行注册，
+标签存证的 `ls-remote` 子进程与 `-PgitExe` 约定原样保留）。
 
 **main 的实测状态与转正推论。** `github/main` 头为 2024-01-11 的提交 `315f54bf`，落后
 `github/5.7.x` 129 个提交、领先 0 个——`main` 是 `5.7.x` 的严格祖先，自身零独有内容。
@@ -55,7 +61,8 @@
 
 **Non-Goals:**
 
-- 不改发布门禁五重校验与版本派生逻辑（`publications.gradle`、`git.gradle` 零改动）。
+- 不改发布门禁五重校验与版本派生逻辑（`buildSrc/src/main/groovy/tny.publish.gradle`、
+  `tny.git.gradle` 与 `GitFlow` 类零改动）。
 - 不建跨线下传的工具任务；不实现 `release.published` 触发器的自动化（留开放问题）。
 - 不给 main 提供发布通道（main 上的构建只跑 CI，不出制品）。
 - 不处理"发布操作应在独立 worktree 执行"的操作纪律（另行决定）。
@@ -149,8 +156,9 @@ P13：遵循已被实战证明的路径，不再同时赌两条通道。`migrate
 写通道统一目标就此终结，其实录保留在该变更目录供追溯。
 被否决备选：在新脚本中改用 grgit 写路径——缺乏实战验证且与本变更主题无关的风险叠加，否决。
 
-**D7：`gradle/release.gradle` 按 `gradle-build-style` 八条需求整文件重写。**
-该脚本属需求第一条许可的"专用编排脚本"（多步顺序操作容身之处），根脚本保持一行引入；
+**D7：`buildSrc/src/main/groovy/tny.release.gradle` 按 `gradle-build-style` 八条需求整文件重写。**
+该脚本属需求第一条许可的两个容身之处之一——buildSrc 约定插件脚本（多步顺序操作的收纳地），
+根脚本装配线保持 `apply plugin: 'tny.release'` 单行引入不变；
 三个任务全部 `tasks.register` 惰性注册；任务体内为动作期程序逻辑（合规位置）；字符串纪律
 （无插值一律单引号）、区块顺序（常量、原语、步骤闭包、任务装配）、注释只写原因与规格出处、
 文件头让三十秒扫读者能答"本文件固化了哪三个发布动作、为什么"。
@@ -179,10 +187,10 @@ P13：遵循已被实战证明的路径，不再同时赌两条通道。`migrate
 
 ## Migration Plan
 
-1. 建议先行：用户归档 `migrate-git-calls-to-grgit`（归档摘要注明写通道目标由本变更终结）；
-   并行的 `gradle-build-style` 清理合入后再动 `gradle/release.gradle`。
-2. 重写 `gradle/release.gradle` 与根脚本引用注释；改写 `docs/release-process.md` 与
-   `.claude/commands/tny/release.md`。
+1. 前置已核销（开工时确认）：`migrate-git-calls-to-grgit` 已于 2026-10-03 归档，
+   `gradle-build-style` 清理与 buildSrc 插件化已合入 HEAD。
+2. 重写 `buildSrc/src/main/groovy/tny.release.gradle` 与根脚本引用注释；改写
+   `docs/release-process.md` 与 `.claude/commands/tny/release.md`。
 3. 临时 bare 仓库演练三步序列（含 hotfix 形态：标签在修复提交之后）与合回后三方一致断言。
 4. 仓库运维（人工确认后执行）：`git push github 5.7.x:main` 一次性快进转正；删除本地
    `master`；`build.yml` 触发清单核对并以真实 push 验证 main 与现役线各一次。默认分支

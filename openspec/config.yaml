@@ -24,6 +24,13 @@ context: |
     全量构建 ./gradlew clean build。
   - 构建脚本形态：全部 .gradle 文件的书写形态受 openspec 能力 gradle-build-style 约束，
     其权威文本为 openspec/specs/gradle-build-style/spec.md；修改任何构建文件前先读该规格。
+  - 零差异验收基线抓样口径（唯一权威文本，各册基线抓样条目引用本条而不是各抄一份）：
+    凡以逐行 diff 或逐键比对作为零差异验收判据的变更，改造前样本与改造后样本必须在同一个
+    Gradle daemon、且 UTF-8 locale 已经确认钉住的环境下抓取，否则中文描述行会被渲染成问号
+    而使逐行判据失真，可用任务名列的纯 ASCII 子集比对来甄别编码噪声；凡判据要求把任务输出
+    文件转存到 baseline 目录的，必须先运行生成该输出文件的任务再做转存，否则抓到的是空文件
+    而不是现状；环境侧统一为 JDK 固定 Corretto 21、不注入 JAVA_TOOL_OPTIONS、并剔除 daemon
+    告警与进度等噪声行及空行。
   - 发布：maven-publish 推送到 Nexus 与 Maven Central（tny.publish 与 tny.central 约定插件），
     组号由根 build.gradle 单一事实源派生为 com.tnydev.game，唯一例外是 Gradle 插件模块沿用 com.tny.game；
     下游业务工程依赖已发布 API，公共接口的兼容性是硬约束。
@@ -66,6 +73,9 @@ operations:
     guidance:
       - 每完成一个任务组，运行受影响模块的测试，将结果摘要记入变更目录。
       - 禁止顺带修改未在规格差量中声明的行为；确有需要时停止实现，回到提案更新差量。
+      - 执行零差异验收册的基线抓样任务时，逐条落实 context 中"零差异验收基线抓样口径"：
+        转存型样件先运行生成任务再转存，改造前后两份样件在同一 Gradle daemon、UTF-8 locale
+        已确认钉住的环境下抓取。
       - 变更修改 .gradle 文件时，按能力 gradle-build-style 的需求"存量违例按触碰即改渐进修正"
         处理：改动区域内的违例形态（旧式任务声明、spread 批量赋值、分号结尾语句、注释掉的配置残留）
         顺手修正为合规形态；改动区域外的存量一律不动，需要全仓清扫时另立独立变更。

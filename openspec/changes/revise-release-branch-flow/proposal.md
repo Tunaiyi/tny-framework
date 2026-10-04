@@ -47,8 +47,9 @@
 - 通道基线沿用 5.7.8 首发实战后的现状：写操作走 git 子进程，只读查询走 grgit；
   `migrate-git-calls-to-grgit` 变更"写路径统一 grgit 化"的目标由本变更宣告终结（其实录
   保留在该变更目录中供追溯）。
-- `gradle/release.gradle` 重写为满足 `gradle-build-style` 规格全部八条需求的编排脚本
-  （惰性任务注册、单引号纪律、注释只记原因、三十秒扫读可答问）。
+- `buildSrc/src/main/groovy/tny.release.gradle`（原 `gradle/release.gradle` 经
+  `adopt-gradle-official-dsl` 插件化后的后继文件）重写为满足 `gradle-build-style`
+  规格全部八条需求的约定插件（惰性任务注册、单引号纪律、注释只记原因、三十秒扫读可答问）。
 
 ## Capabilities
 
@@ -65,11 +66,12 @@
 
 ## Impact
 
-- **构建脚本**：`gradle/release.gradle` 整体重写（三个任务替代两个任务）。根构建脚本对
-  它保持一行引入（具体行号随并行进行的 `gradle-build-style` 全仓清理浮动，实施时以当时
-  文件为准），引用注释中的任务名随行更名。门禁脚本 `gradle/publications.gradle` 与版本
-  派生脚本 `gradle/git.gradle` 在本变更范围内零改动——五重校验的判定输入在新时序下天然
-  成立；main 不发布制品由既有白名单需求直接覆盖，无需新校验。
+- **构建脚本**：`buildSrc/src/main/groovy/tny.release.gradle`（原 `gradle/release.gradle`
+  经 buildSrc 插件化合入后的后继文件）整体重写（三个任务替代两个任务），根
+  `build.gradle:20` 的引用注释随行更名（`apply plugin: 'tny.release'` 单行装配不变）。
+  门禁插件 `buildSrc/src/main/groovy/tny.publish.gradle` 与版本派生插件 `tny.git.gradle`、
+  扩展类 `tny.convention.GitFlow` 在本变更范围内零改动——五重校验的判定输入在新时序下
+  天然成立；main 不发布制品由既有白名单需求直接覆盖，无需新校验。
 - **产品模块与下游**：不改任何 `tny-game-*` 模块的公共 API、报文协议或 starter。下游
   可感知的变化只有一处：滚动快照坐标的内容口径收窄（见 What Changes 的契约变更条），
   坐标字符串本身不变。
@@ -79,10 +81,12 @@
 - **仓库运维（手工步骤，进任务清单）**：main 快进转正（一次普通推送）；删除本地
   `master`；`build.yml` 触发清单核对与真实触发验证（main 与现役线各一次）；GitHub
   默认分支不动。
-- **关联变更**：`migrate-git-calls-to-grgit`（11/11 完成、未归档、写通道目标已被修正提交
-  `976896b4` 取代）建议在本变更实施前先归档，归档摘要注明"写路径目标由本变更终结"；
+- **关联变更**（开工时核销）：`migrate-git-calls-to-grgit` 已于 2026-10-03 归档，其写通道
+  统一目标由本变更定案终结（终结说明登记在本变更账本）；`sweep-gradle-build-style` 与
+  `adopt-gradle-official-dsl` 已合入 HEAD，组 1 以插件化后的文件形态为起点；
   `central-publish-tnydev-group` 的验证记录引用旧任务名，属对方会话账本，不在本变更改写；
-  并行的 `gradle-build-style` 清理若先落地，本变更组 1 的重写以清理后的文件形态为起点。
+  进行中的 `adopt-gradle-8-14-baseline` 不触碰发布插件，其根脚本在途改动与本变更的
+  注释行编辑无文本重叠。
 - **存量边界**：5.7.8 首发按旧机制完成且容器未被重写，新机制自下一个发布（5.7.9 起）
   生效；现有 `5.7.x` 线的直接未来身份是"5.7 冻结线"，无需迁移操作；特性开发区自本变更
   运维步骤完成起改在 main 上继续。

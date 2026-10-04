@@ -22,3 +22,7 @@
 - **受影响文件**：`tny-game-integration-test/build.gradle`（−7 行）、`buildSrc/src/main/groovy/tny.integration-test.gradle`（+守卫循环与 afterEvaluate 段、头注释）、`tny-benchmark/build.gradle`（jmh 块收敛为纯声明）、`buildSrc/src/main/groovy/tny.benchmark-module.gradle`（afterEvaluate 扩段、头注释）。
 - **顺序关系**：两册互不相干可独立实施；与活跃册 `expose-git-info-extension`（消费 tny.git 派生值）无文件交集。前批确立的捕获口径沿用（JDK 钉 21、正常 locale、剔噪清单比对）。
 - **验收基线**：两文件行数回到界线内（wc 复核）；`:tny-game-integration-test:dependencies --configuration integrationImplementation` 与 `integrationRuntimeClasspath` 解析集 before/after 零差异；bench 侧 `jmhList -PbenchAll` 枚举 31 键、`jmhSuiteVerify` 对账、缺省/速览/`-PbenchAll`/`-PbenchInclude` 四形态选择面逐项 before/after 一致；`tasks --all` 剔噪清单零差异；两册各一次 `clean build` 全绿（偶红按登记标准处置）。
+
+## 归档后勘误（2026-10-03，基线口径审计工作流揭出）
+
+本册 Why 与 What Changes 把集成测试模块 `tny-game-integration-test/build.gradle` 的超行主因记为"滞留模块文件的配置阶段 each 循环（装配线 java 形态模块整体挂 integrationImplementation）"。后续对案卷 move-it-fixture-loop-into-plugin 的口径审计经现场复核证伪该记载：现树该文件的 dependencies 块（第 42 至 85 行）没有任何循环，全仓 grep `moduleProjects` 与 `git log --all -S` 检索循环文本均零命中——该循环从未进入过该文件的 git 历史。85 行超界的事实仍成立，不成立的是"主因是程序性控制流"的归因；由此派生的 move-it-fixture-loop-into-plugin 册的待迁对象不存在，该册须回炉重定超行构成与修复对象。本册两处行数实测（85 行与 84 行）与界线判定不受影响，bench 册前提（jmh 控制流链在位）经复核成立。本册归档原文不改，本段为勘误记录；教训（立项前提的现场引用必须附可复核证据件）已随口径一并固化于 openspec/config.yaml context。

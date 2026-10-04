@@ -1,5 +1,7 @@
 # Tasks
 
+> 抓样口径（对尚未执行的 4.4 重跑演练与 5.1、5.2 工作流演练，以及此后任何补抓适用）：本机执行 Gradle 抓样沿用 openspec/config.yaml context 中"零差异验收基线抓样口径"一条——JDK 钉 Corretto 21、正常 locale（UTF-8）、不注入 JAVA_TOOL_OPTIONS、过滤 daemon 噪声行与空行；同一轮演练内需要逐字互比且两份都能当场采集的样本，必须在同一 daemon 环境下抓取，否则中文消息行会被编码渲染成问号，逐字比对判据失真。与已记录留痕核对的抓取不在此列：4.4 的 nmcp 报错文案须对照 7.1 首发留痕并按实修订 design D4，而首发留痕不可重抓（Central 发布不可撤销），故核对前提为本轮抓样满足上述口径且中文行渲染正常；渲染异常时逐字判据不成立，须按口径补抓后再核对。若按 verification-notes.md"首发收口与 CI 通道状态"一节推荐的 workflow_dispatch 路线在 GitHub Actions runner 上采集，JDK 以 publish.yml 已钉的 temurin 21 为准、不注入 JAVA_TOOL_OPTIONS；runner 日志中中文行渲染异常时，改在本机以同一注入条件复现该次拒绝，按本段口径抓样留存。
+
 ## 1. Central 命名空间验证（前置闸口）
 
 - [x] 1.1 在 Central Portal 提交 `com.tnydev.game` 命名空间验证：按其指引在 `tnydev.com` 域名添加验证记录并确认生效（验证：Portal 界面显示该命名空间 verified；未通过则停止后续任务并回 proposal 重新定组号）

@@ -4,6 +4,7 @@
 > tasks.md）取案卷登记本表，红主犯必须署名到 job（口径沿 stabilize it-diagnosis.md §6）。
 > 电路投递历史分支被 force-push 覆盖——**重要案卷一律即时固化到本目录**（探针件已在
 > `probe-evidence/`）。定罪前禁止任何预防性手术（design D3）。
+> 固化转存以该轮红轮案卷投递完成为前提：先确认该轮 run 的 unit 结论为红，且 `ci-unit-diag` 分支尖端提交信息含本轮 run id（形如 `unit diag run <run id>`），再执行取卷；取卷时先 `git fetch github ci-unit-diag`，列出尖端 `unitdiag/` 目录的实际文件清单（etcd 日志文件名含容器 id，不得凭猜测命名），按清单路径转存到本目录；转存完成后逐一检查固化文件存在且非空，一旦发现空文件，说明转存路径与尖端实际内容不符或取卷早于投递完成，必须重新取卷并按尖端清单重转。
 
 ## 取证时间线
 
