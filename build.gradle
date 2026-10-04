@@ -7,7 +7,8 @@ plugins {
     // 死声明清除（fix-dependency-version-governance D10，全仓复证零应用点）：
     // org.springframework.boot 插件（本工程无 bootJar 重打需求，springBootVersion 键仍由 BOM 导入句消费）与
     // com.gradle.plugin-publish 插件（Gradle Plugin Portal 发布通道从未接通，见 tny-game-doc-gradle 残迹注记）
-    id 'io.spring.dependency-management' version '1.1.0' apply false
+    // 1.1.0→1.1.7（adopt-gradle-8-14-baseline D1）：1.1.5 起修复该插件在 Gradle 8.8 以上环境的兼容假设
+    id 'io.spring.dependency-management' version '1.1.7' apply false
     id 'com.baidu.jprotobuf' version '1.2.1' apply false
 }
 
@@ -16,7 +17,7 @@ plugins {
 // 必须先于一切消费方应用——消费方经 getByType 按类型拉取，扩展不在位即报错；坐标版本见版本目录。
 apply plugin: 'org.ajoberstar.grgit'
 apply plugin: 'tny.git'
-// 发布快速通道：releaseCutAndTag / releaseRebaseBack（语义契约见 docs/release-process.md）
+// 发布快速通道：releaseCut / releaseTag / releaseMergeBack（语义契约见 docs/release-process.md）
 apply plugin: 'tny.release'
 
 ext {
