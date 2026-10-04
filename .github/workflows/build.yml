@@ -3,7 +3,11 @@ name: build
 on:
   pull_request:
   push:
-    branches: [ main, '5.7.x' ]
+    # 分支入口按形态通配（revise-release-branch-flow 组 4）：main 是特性开发顶点（转正后
+    # 常驻），'*.*.x' 命中全部冻结线形态（5.7.x、未来的 5.8.x/6.0.x 自动覆盖，开新线
+    # 不再需要改本文件）；容器分支（.release 结尾）与个人工位不在触发面——发布前验证由
+    # PR 通道与门禁的 check 依赖承担。
+    branches: [ main, '*.*.x' ]
   schedule:
     - cron: '37 18 * * *'   # nightly（UTC18:37 错峰）
   workflow_dispatch: {}     # 手动触发（bench-routine 首验/补跑用）
