@@ -5,9 +5,9 @@
 
 | 场景 | 证据位置 | 结论 |
 |---|---|---|
-| hotfix 合回之后容器与标签原封不动 | 任务 2.2 演练（`/tmp/drill3/run.sh` 段"2.2"，输出 CONTAINER-IMMUTABLE-OK、TAG-IMMUTABLE-OK、PROVENANCE-OK、CHERRY-OK） | 已验证 |
-| 常规发布切支后无新提交时合回不产生任何移动 | 任务 2.1 演练（SKIP-OK 与 TRIPLE-OK 断言：零新提交走跳过路径，容器头==标签解引用全程同值） | 已验证 |
-| 重放合回遇到冲突时全体保持原状 | 任务 2.3 演练（CONFLICT-DETECTED 后 abort、回容器，RESTORE-OK 断言线/容器/标签三方与执行前逐字节同值；人工等价命令文案在 `tny.release.gradle` 的 releaseMergeBack 冲突异常信息中） | 已验证 |
+| hotfix 合回之后容器与标签原封不动 | 修复轮演练 v2 的 2.2 段（`drill/run-v2-output.txt`：PENDING-2-OK、CONTAINER-IMMUTABLE-OK、TAG-IMMUTABLE-OK、CHERRY-DONE、PROVENANCE-OK；双修复笔经 `git cherry` pending 集重放） | 已验证 |
+| 常规发布切支后无新提交时合回不产生任何移动 | 演练 v2 的 2.1 段（SKIP-OK 与 TRIPLE-OK）与 2.3b 段（PENDING-EMPTY-OK：已移植提交重跑报"全部存在于线，跳过"） | 已验证 |
+| 重放合回遇到冲突时全体保持原状 | 演练 v2 的 2.3 段（核心用例：第一笔成功、第二笔冲突——CONFLICT-DETECTED 后 abort、`reset --hard` 清回原线头含成功的第一笔、切回容器，RESET-OK 断言三方原状；首轮缺口"只撤销当前一笔"已修复）；人工等价命令文案在 `tny.release.gradle` 的 releaseMergeBack 冲突异常信息中 | 已验证 |
 | 事后重新发布同一容器时存证核对仍然成立 | 门禁侧输入恒等性由前三行保证（容器头永不离开标签解引用指向的提交，`checkPublishPrerequisites` 第 5 重校验的比对结果与首发相同）；端到端登记为"首个真实发布（5.7.9 起）时跟随核对"，随发布收口补记 | 演练级验证＋首发布跟随核对 |
 
 既有五项需求逐项复核（不受本变更影响的理由）：

@@ -1,5 +1,15 @@
 # 实施记录（revise-release-branch-flow 组 1 至组 4 执行结果）
 
+## 更正声明（verify 修复轮 2026-10-04，覆盖本文件早前记录中的三处失实）
+
+1. "`grep force-with-lease 零命中`"失实：首轮文件头部的退役说明注释含该词命中一处；
+   修复轮重写头注释后现文件 grep 零命中（以修复轮记录为准）。
+2. "dryRun 预览实测不需要 gitExe"首轮仅对 releaseCut/releaseTag 成立：
+   releaseMergeBack 预览路径当时含 fetch 与 rev-list 的 CLI 调用。修复轮按 D10（四）
+   将预览路径纯 grgit 化，三任务 dryRun 均不带 -PgitExe 实测通过。
+3. "5.7.8 首发容器未被重写"被远端实测证伪（容器头 `3c8e723d` 与标签解引用 `7a2a287d`
+   分叉），处置见 design.md Context 存量分叉段与 proposal.md 存量边界修订。
+
 ## 基线校正（挂起记录恢复条件 3）
 
 开工时两个并行前置变更已合入并改变了文件形态：`sweep-gradle-build-style`（提交 `0b4fca25`）
