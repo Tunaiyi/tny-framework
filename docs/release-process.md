@@ -28,21 +28,40 @@
 需要持续吃特性的下游应改锁新次版本线坐标。5.7.8 首发按旧语义发布，属历史事实；自下一个
 次版本线起执行新语义。
 
-## 日常开发：创建特性分支
+## 流程一：创建特性分支
 
-- **触发**：任何新特性或通用修复工作开始。
-- **命令**：`git switch -c feat/<名字> main`（基取 main 头；fix 工作同理
-  `git switch -c fix/<名字> main`，仅当缺陷代码路径已不在 main 存在时基取受影响线头）。
+- **触发**：任何新特性工作开始。
+- **命令**：`git switch -c feat/<名字> main`（基取 main 头）。
 - **验证点**：`git log --oneline -1` 应与 `origin/main` 头一致。
 - **禁止**：以冻结线或容器为特性基线（特性只进 main）。
 
-## 日常开发：rebase 特性分支
+## 流程二：rebase 特性分支
 
 - **触发**：main 前进后同步工位，或 PR 前收尾。
 - **命令**：`git fetch && git rebase origin/main`；工位分支自身允许
-  `git push --force-with-lease origin feat/<名字>`（个人分支强推豁免）。
+  `git push --force-with-lease origin feat/<名字>`（个人分支强推豁免，见角色总表）。
 - **验证点**：`git merge-base --is-ancestor origin/main HEAD` 通过。
 - **禁止**：对 main、冻结线、容器执行 rebase 或强推。
+
+## 流程三：创建 fix 分支
+
+- **触发**：缺陷修复工作开始。
+- **命令**：`git switch -c fix/<名字> main`（基取 main 头）。仅当缺陷所在的代码路径
+  已不在 main 存在（main 已重构移除）时，基取受影响线的线头，且该修复合入线后必须按
+  流程七向上传播回 main。
+- **验证点**：非线原生场景下 `git log --oneline -1` 与 `origin/main` 头一致；线原生场景下
+  基提交应在 `origin/<线>` 祖先链上。
+- **禁止**：直接在冻结线或容器分支上编辑提交（修复先走工位分支，经 PR 或按传播规则进线）。
+
+## 流程四：rebase fix 分支
+
+- **触发**：base 侧前进后同步 fix 工位，或 PR 前收尾。
+- **命令**：main 基的 fix 分支执行 `git fetch && git rebase origin/main`；线原生 fix 分支
+  执行 `git fetch && git rebase origin/<线>`。工位分支自身允许带豁免的
+  `git push --force-with-lease`。
+- **验证点**：`git merge-base --is-ancestor origin/main HEAD`（或
+  `origin/<线>` 对应式）通过。
+- **禁止**：同流程二——rebase 只发生在工位分支。
 
 ## 日常开发：合入 main
 
@@ -50,21 +69,21 @@
   （哪些维护线受影响、或判定不受影响的理由），该声明是后续同步的对账账本。
 - 仓库以 rebase-merge 方式合入，main 保持线性。
 
-## 创建特性版本分支（开新线）
+## 流程五：创建特性版本分支（开新线）
 
 - **触发**：main 上累积的特性集合值得一个次版本号（如 5.8）。主版本升级（6.0）必须
   先附协议与公共 API 兼容性评估。
 - **命令序列**：
   1. 确认 CI 在 main 头为绿：`git log --oneline -1 origin/main` 对照 Actions 状态。
   2. `git switch -c 5.8.x main && git push -u github 5.8.x`。
-  3. 登记线入口：`.github/workflows/build.yml` 推送触发与夜间快照白名单加入 `5.8.x`、
-     移除旧线 `5.7.x`（旧线转入仅维护态）。
+  3. 快照通道随线走（**零文件改动**）：推送触发由 `build.yml` 的 `'*.*.x'` 形态通配自动
+     覆盖新线；夜间快照发布通道以"当前最高版本线"为口径，旧线自然转入仅维护态。
   4. 开线记录：在本文件"线谱系"追加一行（开线提交号、日期、当时旧线最新标签）。
 - **验证点**：5.8.x 第一次构建派生 `5.8.x-SNAPSHOT`（零版本文件改动）；当晚 nightly
   从新线产出快照。
 - **禁止**：从旧线头切新线（内容前沿在 main）；两条线同时享有夜间快照通道。
 
-## 发布特性版本（如 5.8.0 与常规 5.7.9）
+## 流程六：发布特性版本（如 5.8.0 与常规 5.7.9）
 
 - **触发**：线头内容达到发布标准。
 - **命令序列**（三步任务，均可先加 `-PdryRun` 预览；写操作本机需 `-PgitExe=/usr/bin/git`）：
@@ -89,7 +108,7 @@
 3. 与常规发布同路：`releaseTag`（标签打在修复定型头）→ `publish` → `releaseMergeBack`
    （修复按补丁内容去重后重放上线，全程普通推送）。
 
-## 同步 fix 提交（跨线传播）
+## 流程七：同步 fix 提交（跨线传播）
 
 - **规则（最上游优先、每笔修复最多两站）**：修复原型产生在 main（常规）或所属线
   （main 已无该代码路径的线原生修复）。
