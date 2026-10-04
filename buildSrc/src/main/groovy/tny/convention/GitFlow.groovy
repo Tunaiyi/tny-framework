@@ -23,6 +23,8 @@
 // 推导方法体承自 expose-git-info-extension 的逐行迁移，不顺手重写（其设计文档决策 D2）；实测教训注释随语句同行。
 package tny.convention
 
+import org.gradle.api.GradleException
+
 class GitFlow {
 
     // —— 后缀常量（裸三段号规范出处：openspec change adopt-plain-ga-versioning） ——
@@ -45,6 +47,12 @@ class GitFlow {
     // buildTime 取构造时刻的系统时钟而非 git 事实。全部求值一次，值为 String。
     GitFlow(git) {
         grgiter = git
+        // 兜底守卫（upgrade-grgit-for-worktrees D1 第二道）：位置判据未命中而 HEAD 仍解析不出时
+        // 给通用异常，替代裸 NPE；worktree 场景已在 tny.git 的守卫处拦截，不会走到这里
+        if (git.head() == null) {
+            throw new GradleException('git 仓库句柄异常：HEAD 无法解析（仓库可能损坏或处于未受支持的 git 布局；' +
+                    '注意 gradle 不支持在 git linked worktree 中构建，请改用完整克隆）')
+        }
         branchName = gitBranchName()
         branchVersion = parseBranchVersion(branchName)
         projectVersion = parseProjectVersion(branchName)

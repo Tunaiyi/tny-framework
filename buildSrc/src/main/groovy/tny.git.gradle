@@ -11,4 +11,25 @@
 // 对 git 远端的只读查询在此，写操作一律经 tny.release 的 git CLI 通道。
 import tny.convention.GitFlow
 
+// 环境守卫（openspec change upgrade-grgit-for-worktrees 设计 D1）：JGit 对 linked worktree
+// 解析符号引用时不跟随 commondir 重定向到公共目录（5.13 与 6.10.1 实测均如此，证据表见该册
+// design.md Context），GitFlow 构造会因此撞上具误导性的配置期 NPE；升级不解决，故 fail fast
+// 为指向明确的错误。判据取 gitdir 位置形态而非 head 判空：detached HEAD 等场景 head 仍可解析，
+// 位置判据精准归因且不误伤主仓、完整克隆与子模块（.git/modules 布局不含 /worktrees/ 段）。
+def dotGit = new File(project.getRootDir(), '.git')
+def resolvedGitDir = null
+if (dotGit.isFile()) {
+    def pointer = (dotGit.text.trim() =~ /^gitdir:[ \t]*(.+)$/)
+    if (pointer.matches()) {
+        resolvedGitDir = new File(pointer.group(1)).canonicalFile
+    }
+} else if (dotGit.isDirectory()) {
+    resolvedGitDir = dotGit.canonicalFile
+}
+if (resolvedGitDir != null && resolvedGitDir.absolutePath.replace('\\', '/').contains('/.git/worktrees/')) {
+    throw new GradleException('gradle 不能在 git linked worktree 中构建：JGit 无法解析该布局的分支引用' +
+            '（上游限制，升级 grgit/JGit 不解决；openspec change upgrade-grgit-for-worktrees）。' +
+            '发布与验证操作请改用完整克隆：git clone <仓库URL> <目录> && cd <目录>')
+}
+
 project.extensions.create('gitFlow', GitFlow, grgit.open(currentDir: project.getRootDir()))

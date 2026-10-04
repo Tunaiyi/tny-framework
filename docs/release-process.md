@@ -201,3 +201,10 @@
 纯查询走 grgit（不需要）。旧任务名映射：`releaseCutAndTag` 拆分为 `releaseCut` 加
 `releaseTag`；`releaseRebaseBack` 更名 `releaseMergeBack` 且语义从变基重写改为重放封存，
 `--force-with-lease` 路径整体退役。`./gradlew publish` 仍独立执行，门禁校验不因快速通道减免。
+
+**发布与验证的执行环境**：发布相关 gradle 操作（三步任务、publish 及其演练验证）在
+**完整克隆**中进行，不在 git linked worktree 中进行——JGit 无法解析 linked worktree 的
+分支引用（HEAD 文件可读而符号引用不跟随 commondir 重定向；升级 grgit/JGit 已实测证伪，
+证据与复验脚本见 openspec change `upgrade-grgit-for-worktrees` 卷宗），gradle 构建在该
+布局下会直接报错拒绝。克隆自带完整 `.git`，全链路已实测可用；代价仅为磁盘占用与首次
+构建缓存，换来发布动作与共享工作区的 HEAD 争用彻底隔离。
