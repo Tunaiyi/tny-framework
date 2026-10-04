@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TnyFramework 分支模型总览</title>
+<style>
+  :root{
+    --bg:#0f1419; --panel:#171e26; --panel2:#1d2731; --line:#2c3a49;
+    --text:#dce6f0; --dim:#8fa3b5; --accent:#5ec8a8; --warn:#e0a458;
+    --main:#5ea0c8; --line-c:#5ec8a8; --cont:#c8a05e; --tag:#c85e7a; --desk:#9a8fc8;
+    --mono:"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);
+       font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;line-height:1.75}
+  .wrap{max-width:1080px;margin:0 auto;padding:32px 20px 80px}
+  h1{font-size:1.9em;margin:.2em 0 .1em}
+  h2{font-size:1.35em;margin:2.2em 0 .6em;border-left:4px solid var(--accent);padding-left:10px}
+  .sub{color:var(--dim)}
+  .axioms{display:flex;gap:12px;flex-wrap:wrap;margin:18px 0}
+  .axiom{flex:1 1 280px;background:var(--panel);border:1px solid var(--line);
+         border-radius:10px;padding:14px 16px}
+  .axiom b{color:var(--accent)}
+  table{border-collapse:collapse;width:100%;background:var(--panel);border-radius:10px;overflow:hidden}
+  th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+  th{background:var(--panel2);color:var(--dim);font-weight:600}
+  code,.m{font-family:var(--mono);font-size:.92em;color:#a9d9c8;background:#12251f;
+          padding:1px 6px;border-radius:5px;white-space:nowrap}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}
+  .card h3{margin:0 0 6px;font-size:1.05em}
+  .pill{display:inline-block;font-size:.78em;padding:1px 9px;border-radius:20px;
+        border:1px solid var(--line);color:var(--dim);margin-left:8px;vertical-align:2px}
+  .ok{color:#7fd6b0}.no{color:#e08a8a}
+  .legend{display:flex;gap:18px;flex-wrap:wrap;color:var(--dim);font-size:.9em;margin:8px 0}
+  .sw{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+  figure{margin:14px 0;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px}
+  figcaption{color:var(--dim);font-size:.9em;margin-top:8px}
+  svg text{font-family:var(--mono)}
+  .steps{counter-reset:s;margin:10px 0;padding:0;list-style:none}
+  .steps li{counter-increment:s;position:relative;padding:10px 12px 10px 52px;margin:8px 0;
+            background:var(--panel);border:1px solid var(--line);border-radius:10px}
+  .steps li::before{content:counter(s);position:absolute;left:14px;top:12px;width:24px;height:24px;
+    border-radius:50%;background:var(--panel2);border:1px solid var(--accent);color:var(--accent);
+    text-align:center;line-height:22px;font-size:.85em}
+  .flow{color:var(--dim)}
+  .cmd{font-family:var(--mono);font-size:.9em;color:#a9d9c8}
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  details{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+          margin:8px 0;padding:0 14px}
+  summary{cursor:pointer;padding:12px 0;color:var(--text);font-weight:600}
+  footer{margin-top:40px;color:var(--dim);font-size:.88em;border-top:1px solid var(--line);padding-top:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>TnyFramework 分支模型总览</h1>
+<p class="sub">权威文本：<code>docs/release-process.md</code> 与规格账本 <code>release-versioning</code>（七条需求）。本页是导读，冲突以二者为准。</p>
+
+<div class="axioms">
+  <div class="axiom"><b>公理一</b><br>版本语义住在分支名里，仓库不存在版本文件。下游因此能锁定一个跨发布期永不改名的滚动坐标 <span class="m">5.7.x-SNAPSHOT</span>。</div>
+  <div class="axiom"><b>公理二</b><br>标签是发布事实的唯一永久存证：标签先于制品，解引用恰指构建提交，推送后绝对不动。</div>
+  <div class="axiom"><b>公理三</b><br>每个对象只有一种变更原因：main 管未来（特性），版本开发分支管过去（修复），版本发布分支管那一刻（制品），三者永不互相改写。</div>
+</div>
+
+<h2>一、分支类型</h2>
+<table>
+  <tr><th>类型</th><th>命名形态</th><th>一句话身份</th></tr>
+  <tr><td>开发顶点</td><td><code>main</code></td><td>特性与日常修复的唯一开发区，PR 默认底，CI 恒常基线</td></tr>
+  <tr><td>版本开发分支</td><td><code>&lt;主&gt;.&lt;次&gt;.x</code>（如 <span class="m">5.7.x</span>）</td><td>该版本系列的维护阵地；规格条文中称"开发线分支"</td></tr>
+  <tr><td>版本发布分支</td><td><code>&lt;主&gt;.&lt;次&gt;.&lt;补丁&gt;.release</code></td><td>一次发布的构建载体；名字即裸号版本</td></tr>
+  <tr><td>发布标签</td><td><code>v&lt;主&gt;.&lt;次&gt;.&lt;补丁&gt;</code>（附注）</td><td>"该版本出自哪个提交"的永久答案</td></tr>
+  <tr><td>特性工位</td><td><code>feat/&lt;主&gt;.&lt;次&gt;.x-&lt;名&gt;</code></td><td>单次特性草稿；版本号是目标预期，延期不改名</td></tr>
+  <tr><td>修复工位</td><td><code>fix/&lt;主&gt;.&lt;次&gt;.&lt;补丁&gt;-&lt;名&gt;</code></td><td>单次修复草稿；补丁号对应实际目标发布分支</td></tr>
+</table>
+
+<h2>二、职责、允许与禁止</h2>
+<div class="cards">
+  <div class="card"><h3>main<span class="pill">开发顶点</span></h3>
+    <div class="ok">允许：正常提交；rebase-merge 合入特性与修复。</div>
+    <div class="no">禁止：发布制品（不在门禁白名单，天然拒绝）；接收任何老线的反向合并。</div></div>
+  <div class="card"><h3>5.7.x<span class="pill">版本开发分支</span></h3>
+    <div class="ok">允许：快进推送；修复重放落点；维护性 PR 合入；在其上执行 publish 产出滚动快照 <span class="m">5.7.x-SNAPSHOT</span>。</div>
+    <div class="no">禁止：改写历史、强推、接收特性提交（特性只进 main）。</div></div>
+  <div class="card"><h3>5.7.9.release<span class="pill">版本发布分支</span></h3>
+    <div class="ok">允许：标签创建前快进式追加修复提交并推送（hotfix）。</div>
+    <div class="no">禁止：任何历史改写；标签创建后一切移动。</div></div>
+  <div class="card"><h3>v5.7.9<span class="pill">发布标签</span></h3>
+    <div class="ok">允许：创建后单独推送；先于制品存在（门禁第五重核对解引用等于构建提交）。</div>
+    <div class="no">禁止：已推送后移动、删除、改名；未推送的本地错标可删后重建，是唯一修正窗口。</div></div>
+  <div class="card"><h3>feat/...、fix/...<span class="pill">工位</span></h3>
+    <div class="ok">允许：rebase；对个人分支强推（全仓唯一豁免——产物入 main 或线前必经 rebase-merge 重铸）。</div>
+    <div class="no">禁止：直接发布（形态不在白名单）。</div></div>
+  <div class="card"><h3>门禁识别<span class="pill">形态即资格</span></h3>
+    只有 <span class="m">N.M.x</span> 与 <span class="m">N.M.K.release</span> 两种形态有发布资格；其余形态（含 main、历史分支、四段号）一律拒绝，拒绝文案自带合法形态说明。</div>
+</div>
+
+<h2>三、分支关系图</h2>
+<figure>
+<svg viewBox="0 0 960 600" width="100%">
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="0 0 L10 5 L0 10 z" fill="#8fa3b5"/></marker>
+    <marker id="arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="0 0 L10 5 L0 10 z" fill="#5ec8a8"/></marker>
+    <marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="0 0 L10 5 L0 10 z" fill="#c8a05e"/></marker>
+    <marker id="arb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="0 0 L10 5 L0 10 z" fill="#5ea0c8"/></marker>
+    <marker id="arv" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="0 0 L10 5 L0 10 z" fill="#9a8fc8"/></marker>
+  </defs>
+  <!-- 工位层 -->
+  <rect x="55" y="16" width="290" height="52" rx="24" fill="#1d2731" stroke="#9a8fc8" stroke-width="1.4"/>
+  <text x="200" y="38" text-anchor="middle" fill="#c4bbe8" font-size="13">feat/&lt;主&gt;.&lt;次&gt;.x-&lt;名&gt;（特性工位）</text>
+  <text x="200" y="56" text-anchor="middle" fill="#8fa3b5" font-size="11">基=main 头；允许 rebase 与个人强推豁免</text>
+  <rect x="615" y="16" width="290" height="52" rx="24" fill="#1d2731" stroke="#9a8fc8" stroke-width="1.4"/>
+  <text x="760" y="38" text-anchor="middle" fill="#c4bbe8" font-size="13">fix/&lt;主&gt;.&lt;次&gt;.&lt;补丁&gt;-&lt;名&gt;（修复工位）</text>
+  <text x="760" y="56" text-anchor="middle" fill="#8fa3b5" font-size="11">基=main 或受影响线头；热修提交经版本发布分支发布分支落地</text>
+  <!-- main -->
+  <rect x="300" y="128" width="360" height="40" rx="8" fill="#1d2731" stroke="#5ea0c8" stroke-width="1.6"/>
+  <text x="480" y="153" text-anchor="middle" fill="#9fd0ec" font-size="15">main（开发顶点：特性在这里诞生）</text>
+  <!-- 工位 -> main：rebase-merge 合并；main ⇠ 工位：rebase 同步 -->
+  <path d="M240 68 C 260 92, 300 108, 340 126" fill="none" stroke="#9a8fc8" stroke-width="1.5" marker-end="url(#arv)"/>
+  <text x="196" y="98" fill="#9a8fc8" font-size="12">PR 合入：rebase-merge（无合并提交）</text>
+  <path d="M380 128 C 330 112, 290 96, 268 70" fill="none" stroke="#9a8fc8" stroke-width="1.2" stroke-dasharray="3 3" marker-end="url(#arv)"/>
+  <text x="392" y="96" fill="#8fa3b5" font-size="11">定期 rebase origin/main</text>
+  <path d="M720 68 C 680 92, 630 108, 596 126" fill="none" stroke="#9a8fc8" stroke-width="1.5" marker-end="url(#arv)"/>
+  <text x="640" y="98" fill="#9a8fc8" font-size="12">PR 合入：rebase-merge</text>
+  <!-- lines -->
+  <rect x="70" y="278" width="360" height="40" rx="8" fill="#1d2731" stroke="#5ec8a8" stroke-width="1.6"/>
+  <text x="250" y="303" text-anchor="middle" fill="#9adcc4" font-size="15">5.7.x（版本开发分支 · 维护态）</text>
+  <rect x="530" y="278" width="360" height="40" rx="8" fill="#1d2731" stroke="#5ec8a8" stroke-width="1.6"/>
+  <text x="710" y="303" text-anchor="middle" fill="#9adcc4" font-size="15">5.8.x（版本开发分支 · 当前线）</text>
+  <path d="M380 168 C 250 200, 200 238, 210 276" fill="none" stroke="#8fa3b5" stroke-width="1.4" marker-end="url(#ar)"/>
+  <text x="128" y="228" fill="#8fa3b5" font-size="12">开新线：从 main 切出</text>
+  <path d="M560 168 C 680 200, 740 238, 740 276" fill="none" stroke="#8fa3b5" stroke-width="1.4" marker-end="url(#ar)"/>
+  <path d="M710 168 C 716 200, 716 240, 714 276" fill="none" stroke="#5ea0c8" stroke-width="1.5" marker-end="url(#arb)"/>
+  <text x="742" y="230" fill="#5ea0c8" font-size="12">修复上收 main（rebase-merge）</text>
+  <!-- containers -->
+  <rect x="100" y="418" width="300" height="40" rx="8" fill="#1d2731" stroke="#c8a05e" stroke-width="1.6"/>
+  <text x="250" y="443" text-anchor="middle" fill="#e6cf9a" font-size="14">5.7.9.release（版本发布分支）</text>
+  <rect x="560" y="418" width="300" height="40" rx="8" fill="#1d2731" stroke="#c8a05e" stroke-width="1.6"/>
+  <text x="710" y="443" text-anchor="middle" fill="#e6cf9a" font-size="14">5.8.0.release（版本发布分支）</text>
+  <text x="250" y="500" text-anchor="middle" fill="#e09090" font-size="15">★ v5.7.9　创建推送后与发布分支同步封存</text>
+  <text x="710" y="500" text-anchor="middle" fill="#e09090" font-size="15">★ v5.8.0　创建推送后与发布分支同步封存</text>
+  <path d="M232 318 L232 416" fill="none" stroke="#c8a05e" stroke-width="1.4" marker-end="url(#arw)"/>
+  <text x="240" y="368" fill="#c8a05e" font-size="12">hotfix 切基=v5.7.8 标签</text>
+  <path d="M710 318 L710 416" fill="none" stroke="#c8a05e" stroke-width="1.4" marker-end="url(#arw)"/>
+  <text x="718" y="368" fill="#c8a05e" font-size="12">常规切基=线头</text>
+  <path d="M285 416 C 285 370, 288 348, 290 320" fill="none" stroke="#5ec8a8" stroke-width="1.4" stroke-dasharray="4 3" marker-end="url(#arg)"/>
+  <text x="296" y="382" fill="#5ec8a8" font-size="12">releaseMergeBack 重放（cherry-pick -x）</text>
+  <path d="M745 416 C 745 370, 748 350, 748 320" fill="none" stroke="#5ec8a8" stroke-width="1.4" stroke-dasharray="4 3" marker-end="url(#arg)"/>
+  <path d="M430 290 L530 290" fill="none" stroke="#8fa3b5" stroke-width="1.4" marker-end="url(#ar)"/>
+  <text x="436" y="283" fill="#8fa3b5" font-size="12">修复逐级上收 →</text>
+  <path d="M530 308 L430 308" fill="none" stroke="#5ea0c8" stroke-width="1.4" marker-end="url(#arb)"/>
+  <text x="424" y="323" fill="#5ea0c8" font-size="12">← 按需下传（波及线清单）</text>
+</svg>
+<figcaption>紫=工位与 rebase 通道（点线为同步、实线为 rebase-merge 合入）；蓝=上收/下传；橙=版本发布分支切出；绿虚线=releaseMergeBack 重放（普通推送，发布分支与标签不动）；灰=开线切出。内容只沿箭头方向流动，任何反向合并都被纪律拒绝。</figcaption>
+</figure>
+
+<h2>四、生命周期与命名</h2>
+<table>
+  <tr><th>对象</th><th>生</th><th>变</th><th>死／终态</th></tr>
+  <tr><td><code>main</code></td><td>永久存在（2026-10-04 由化石转正为开发顶点）</td><td>只向前生长</td><td>无终态</td></tr>
+  <tr><td>版本开发分支</td><td>开线仪式：从 main 切出并推送；CI 由 <span class="m">*.*.x</span> 通配自动覆盖；登记线谱系表</td><td>特性冻结、持续收修复、产滚动快照</td><td>退役：移出快照选线与传播链，分支可删——标签已存证一切</td></tr>
+  <tr><td>版本发布分支</td><td>releaseCut</td><td>标签创建前可快进追加修复</td><td>标签创建即封存，永久保留、零操作</td></tr>
+  <tr><td>标签</td><td>releaseTag</td><td>无（不可移动）</td><td>绝对永久；错误也无法回收，只能弃号提高补丁号重发</td></tr>
+  <tr><td>工位</td><td>从基线头切出（feat 基 main；fix 基 main 或受影响线头）</td><td>rebase 同步、个人分支强推豁免</td><td>PR 合入即删</td></tr>
+</table>
+
+<h2>五、完整流程（开发 → 合并 → 发布）</h2>
+
+<div class="tabs"><b>日常开发</b></div>
+<ol class="steps">
+  <li><span class="cmd">git switch -c feat/5.8.x-actor-pool main</span> —— 特性工位基取 main 头。<span class="flow">（工位名中的版本号是目标预期；延期不强制改名，以 PR 落点为准）</span></li>
+  <li>开发中定期 <span class="cmd">git fetch && git rebase origin/main</span>；个人工位允许 <span class="cmd">push --force-with-lease</span>。</li>
+  <li>向 main 发 PR（默认底即 main），<b>PR 描述必填波及线清单</b>——哪些维护线受影响或为何不波及；这是跨线传播的对账账本。仓库以 rebase-merge 合入，main 保持线性。</li>
+</ol>
+
+<div class="tabs"><b>开新线（特性攒够一个次版本）</b></div>
+<ol class="steps">
+  <li>确认 main 的 CI 为绿。</li>
+  <li><span class="cmd">git switch -c 5.8.x main && git push -u github 5.8.x</span> —— 新线第一次构建自动派生 <span class="m">5.8.x-SNAPSHOT</span>，零版本文件改动。</li>
+  <li>CI 线入口由通配自动覆盖，快照发布选线随之换线（旧线转维护态）；<b>禁止</b>从旧线头切新线——内容前沿在 main。</li>
+  <li>线谱系表追加一行：线名、开线提交号、日期、当时上一线最新标签、状态。</li>
+  <li>普通推送同步 main（main 是线的直系后代时一条 <span class="cmd">git push github 5.7.x:main</span> 即可）。</li>
+</ol>
+
+<div class="tabs"><b>常规发布（如 5.8.0）——三步任务，全程可在完整克隆中执行</b></div>
+<ol class="steps">
+  <li><span class="cmd">./gradlew releaseCut -PreleaseVersion=5.8.0</span>：从 5.8.x 线头切出 <span class="m">5.8.0.release</span> 并推送；<b>不创建标签</b>。</li>
+  <li><span class="cmd">./gradlew releaseTag -PreleaseVersion=5.8.0</span>：在该分支 HEAD 建附注标签 <span class="m">v5.8.0</span> 并推送——标签即制品出生提交，先于制品。</li>
+  <li><span class="cmd">./gradlew publish -PgitExe=/usr/bin/git</span>：五重门禁（分支形态白名单、版本形态、同号黑名单、仓库路由、标签存证）通过后制品入正式仓；Central 聚合通道独立执行、一败一留。</li>
+  <li><span class="cmd">./gradlew releaseMergeBack</span>：该分支无新提交时如实报告跳过。版本发布分支与标签自此封存，<b>标签、版本发布分支头、制品三者对账恒等</b>（规格第七条）。</li>
+</ol>
+
+<div class="tabs"><b>hotfix（如 5.7.9）与跨线传播</b></div>
+<ol class="steps">
+  <li><span class="cmd">./gradlew releaseCut -PreleaseVersion=5.7.9 -PreleaseFrom=v5.7.8</span>：基=上一版<b>标签</b>（制品证据点），补丁谱系绕开线的新内容；工具拒绝自动推断上一版本号。</li>
+  <li>修复提交进该分支并推送（标签创建前的合法快进追加），随后 releaseTag → publish → releaseMergeBack 与常规同路。</li>
+  <li>波及其它线：对每条受影响线 <span class="cmd">git switch &lt;线&gt; && git cherry-pick -x &lt;原型&gt; && git push</span>；方向永远旧线→新线（或线→main 上收），绝不反向。</li>
+  <li>对账（只读）：<span class="cmd">git cherry &lt;新线&gt; &lt;老线&gt;</span> 输出为空 = 无静默丢失；非空且非"判定不波及"= 立即补。</li>
+</ol>
+
+<div class="tabs"><b>失败与恢复速查</b></div>
+<table>
+  <tr><th>情况</th><th>系统表现</th><th>处置</th></tr>
+  <tr><td>忘打标签就 publish</td><td>门禁拒绝"标签不存在"</td><td>补跑 releaseTag，重跑 publish，无孤儿制品</td></tr>
+  <tr><td>错标但尚未推送</td><td>仅存在于本地</td><td>删除本地标签重建后再推送（唯一合法窗口）</td></tr>
+  <tr><td>错标且已推送</td><td>门禁拒绝（解引用不符）</td><td>绝对不动：弃号、提高补丁号重发</td></tr>
+  <tr><td>合回重放冲突</td><td>自动 abort、reset 清回线原头、切回版本发布分支，三方原状</td><td>按错误信息中的人工等价命令收尾</td></tr>
+  <tr><td>线被他人推进</td><td>普通推送被拒</td><td><span class="cmd">git pull --rebase</span> 更新线后重跑 releaseMergeBack</td></tr>
+  <tr><td>远端不可达</td><td>门禁 fail-closed 拒绝</td><td>网络恢复后重跑</td></tr>
+  <tr><td>在 linked worktree 里跑 gradle</td><td>守卫直接报错（JGit 上游限制，升级不解决）</td><td>改用完整克隆执行一切发布操作</td></tr>
+</table>
+
+<footer>
+  本页面随 <code>revise-release-branch-flow</code>（三层模型）与 <code>upgrade-grgit-for-worktrees</code>（克隆纪律）归档后生成；
+  术语对照：本文"版本开发分支"即规格条文中的"开发线分支"，"版本发布分支"即规格中的"发布分支"。
+  若与 <code>docs/release-process.md</code> 或规格账本不一致，以后者为准。
+</footer>
+</div>
+</body>
+</html>
