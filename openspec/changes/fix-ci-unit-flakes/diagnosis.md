@@ -90,3 +90,14 @@ integration job 转绿、`ci-it-diag` 自 run#93 后零新投递。同轮 unit �
 被证伪（run#93），矩阵选择约束据此新增"镜像系可用"一条——全程证据见
 `openspec/changes/upgrade-grpc-for-netty-137/verification/matrix.md`。本节登记簿的
 "IT 回归跨线记录"至此销账。
+
+## 观察账（run#94 起算，2026-10-04 核）
+
+- run#95、#96、#97、#98：build 工作流**连续四轮全绿**；`ci-unit-diag` 与 `ci-it-diag`
+  自 run#94 后**零新投递**（尖端恒为 a46adfff / 120f3672）。
+- 单元通道当前连续零红计数：**4 / 10 轮**（验收口径出自 fix-ci-unit-flakes 任务 4.2）。
+- etcd 就绪假设：四轮观察内未现形（既未证实也未证伪）。
+- 娇气断言家族（TypeStageTest、ObjectLockerTest）四轮安静——与"负载挤压才发作"假设一致，
+  不构成治愈证明，处方（改为有界轮询观察）仍建议由 actor 线与 common-lang 线认领执行。
+- 附带闭合：upgrade-grpc-for-netty-137 的"连续三轮 push 无 etcd 相关红"要求已由
+  #95–#98 四轮超额满足（该册已归档，此行为其后置证据记录）。
