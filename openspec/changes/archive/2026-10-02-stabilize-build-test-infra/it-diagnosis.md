@@ -20,6 +20,7 @@
 
 - `cbb83ba7` 改动面 = build.yml 的 **integration job** + openspec 文档，**未触碰 unit 通道**；run#16 unit 步骤却红 → #15 的"unit 首次绿"不是稳态，unit 通道同样存在间歇性（交接 §5"不动 unit 通道"边界由此更须守住，另案处置）。
 - 匿名 API 拉不到 unit 失败日志正文（同 IT 电路立项原因）。待办：run#17 出结果后若 unit 再红，按 build.yml unit job 的 services etcd 假设排查签名（与本 IT 案卷分线，勿混定罪）。
+- **收口指针（2026-10-05 追加，不改上文历史）**：本段"另案处置"已收口——另案由 `fix-ci-unit-flakes` 变更承接完成：诊断电路上线并自证、两个自然红案卷定罪为时序与并发观测断言家族、根治代码已入库、修复落地后首轮全绿；详见下文"unit 另案收口账"段与该变更目录 `diagnosis.md`。
 
 ## §4 静态核查（不依赖案卷、零行为变更）
 
@@ -57,6 +58,14 @@
 - **收口后续账（2026-10-02 追记，本变更已归档、只记账不重开）**：
   - IT 通道 #33→#36 job 级持续全绿（`ci-it-diag` 零新投递）；e2e 通道自 run#33 起被 `consolidate-ci-it-lanes` 合并删除（删段实际载体=共享树吞并提交 `e942a878`，§5 判决表与取卷纪律不受影响——今后红仍投 `ci-it-diag`）；
   - **unit 间歇登记簿延伸：#33✅ #34✅ #35❌ #36❌**——#35/#36 红源用例为 `CiCircuitProbeTest`（兄弟线 `fix-ci-unit-flakes` 新上线的 unit 电路金丝雀探针，`ci-unit-diag` 首投卷 `04196d9a` 含 etcd 容器日志四件套，疑似有意造红自证投递链路）；unit 门禁 `Fail job` exit 1 步骤运转正常，判读与销账归 `fix-ci-unit-flakes` 线，本案卷仅续账。
+- **unit 另案收口账（2026-10-05 追记，fix-ci-unit-flakes 线代账，本账簿不重开）**：§3 的"另案处置"已收口——
+  unit 诊断电路上线并经探针轮自证（红必投递 `ci-unit-diag`、绿不投递两半程均有实证）；两个自然红案卷
+  （run#38 与 GitHub Actions run id 37165077819）定罪为"时序与并发观测断言在负载下翻转"家族，根治代码
+  已入库（actor 线与 common-lang 线测试改有界轮询与会合形态，生产侧 `MapperLocker` 补齐销毁回收，
+  提交 82b71062、43118456、36b96fde），修复落地后首轮 run#100 全绿。本账簿最初的三个无卷红
+  （#16/#19/#22）所系的 services etcd 就绪假设至今未现形，对应预检由该线 tasks.md 任务 4.1a 记跳过裁定。
+  验收计数（连续十次推送零红）归 `openspec/changes/fix-ci-unit-flakes/diagnosis.md` 观察账单一账本，
+  此后 unit 新红的取证入口为 `git fetch github ci-unit-diag` 取卷对签名，不再回到猜因。
 - **本地（OrbStack）5 轮 `integrationTest -PincludeDocker --rerun`**：**5/5 全绿**（每轮 rc=0、BUILD SUCCESSFUL，约 2.3 min/轮，串行窗口查过并发）。非空跑实证：最新轮 20 结果文件、**61 个真实用例、failures=0、skipped=0**（etcd 档 36 例 + Mongodb/Redisson/DataAccess + integration-test 23 例全执行）——与 CI integration/e2e 恒绿结论一致。**5.5 本地端达成**。
 - **无 docker 环境显性 skip 探针**：✅ `-PdockerHost=unix:///tmp/no-such-docker.sock` 下 docker 档用例（MongodbDataAccessIT、RedissonDataAccessIT）显性 `SKIPPED`（testLogging 有 skipped 事件），非静默绿。
 - **CI 5 轮一致**：✅ **已满足**（IT job 级连绿 10 轮 ≥5，与本地 5/5 结论一致；unit 间歇与 bench 回写红均另有主犯、不属本项病源）。

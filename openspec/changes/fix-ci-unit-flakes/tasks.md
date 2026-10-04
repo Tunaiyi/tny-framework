@@ -31,7 +31,7 @@
 
 ## 6. 收口
 
-- [ ] 6.1 `release-note.md`（设施向：unit 电路生效声明、根治内容与定罪案卷号、门禁语义零变化声明）。
-- [ ] 6.2 账与记忆结转：stabilize `it-diagnosis.md` §3"另案"登记与 memory `docker-it-rerun-discipline` 关联条目更新为已收口/移交到位。验证：`openspec validate fix-ci-unit-flakes` 通过；全仓 `./gradlew test`（本地，OrbStack 在位）绿。
+- [x] 6.1 `release-note.md`（设施向：unit 电路生效声明、根治内容与定罪案卷号、门禁语义零变化声明）。完成注记（2026-10-05）：release-note.md 已撰写，含上述三要素，另如实声明两处账实——实施期追加的 MapperLocker 生产修复（提案修订注记已对齐）与案 #1 轮案卷固化失败（run#38 原件不可复取、签名证据仅存定罪栏摘录）。
+- [x] 6.2 账与记忆结转：stabilize `it-diagnosis.md` §3"另案"登记与 memory `docker-it-rerun-discipline` 关联条目更新为已收口/移交到位。验证：`openspec validate fix-ci-unit-flakes` 通过；全仓 `./gradlew test`（本地，OrbStack 在位）绿。完成注记（2026-10-05）：结转三处已落笔——stabilize 归档体 §3 加收口指针行、§6 收口后续账加"unit 另案收口账"追记段（均为追加，历史正文未改写）；memory `docker-it-rerun-discipline` 条目追加 unit 另案收口段并更新索引行。验证两条兑现：`openspec validate fix-ci-unit-flakes` 输出"Change 'fix-ci-unit-flakes' is valid"；全仓 `./gradlew test` 于 2026-10-05 实测（OrbStack etcd 与 redis 端口在位）BUILD SUCCESSFUL，171 份结果文件全量扫描合计 919 用例、失败与错误 0、跳过 0。任务 4.2 的连续零红观察计数不属本条验收，在该行继续滚动。
 
 > 3.2 完成注记：首案卷=run#38（支 c 跨线：tny-game-actor 墙钟时序测试，判决与处方见 diagnosis.md 定罪栏案#1；本案不动刀）。
