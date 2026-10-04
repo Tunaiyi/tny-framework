@@ -4,9 +4,11 @@
 
 1. "`grep force-with-lease 零命中`"失实：首轮文件头部的退役说明注释含该词命中一处；
    修复轮重写头注释后现文件 grep 零命中（以修复轮记录为准）。
-2. "dryRun 预览实测不需要 gitExe"首轮仅对 releaseCut/releaseTag 成立：
-   releaseMergeBack 预览路径当时含 fetch 与 rev-list 的 CLI 调用。修复轮按 D10（四）
-   将预览路径纯 grgit 化，三任务 dryRun 均不带 -PgitExe 实测通过。
+2. 预览免 gitExe 的声称按 D11 登记纪律如实分级：首轮 releaseMergeBack 预览路径含
+   fetch 与 rev-list 的 CLI 调用；D10（四）修复后其预览结构上不再触 CLI（grep 可
+   核），releaseCut/releaseTag 的不带 gitExe dryRun 实测通过；**releaseMergeBack 的
+   不带 gitExe dryRun 走到计划段的实测未做**（本机无容器分支可站，不能为他人工作区
+   造分支），属"结构成立、容器场景待首个真实发布实测"，挂账于此。
 3. "5.7.8 首发容器未被重写"被远端实测证伪（容器头 `3c8e723d` 与标签解引用 `7a2a287d`
    分叉），处置见 design.md Context 存量分叉段与 proposal.md 存量边界修订。
 
@@ -78,9 +80,11 @@
    实测输出逐字一致（本会话冒烟记录）——通过。
 3. 工作流触发面与流程五"开新线零文件改动"口径对账：`build.yml` 现为
    `branches: [ main, '*.*.x' ]`，两侧命中均经 Actions API 验证——通过。
-4. D9 强推白名单三处表述对账：文档角色总表限定"发布链无强推、个人工位豁免"；插件
-   零 force 路径；`build.yml` 诊断分支（`ci-unit-diag`/`ci-it-diag`）的 `push -f` 属
-   孤儿取证通道、不在发布链对象内——三处无矛盾——通过。
+4. D9 强推白名单对账（D11 更正措辞）：文档角色总表限定"发布链无强推、个人工位豁免"、
+   插件零 force 路径，两处一致；`build.yml` 诊断分支（`ci-unit-diag`/`ci-it-diag`）的
+   `push -f` 属孤儿取证通道、不在发布链对象内，与白名单不构成矛盾，但文档尚未对该通道
+   做豁免交代——挂账发现 17 仍开放（归 bench/CI 账本）。早前"三处无矛盾"的终检措辞
+   省略了这一未交代项，现予更正。
 5. main 转正后的向上传播实操：本次账本三笔经 worktree cherry-pick 快进上收
    （`35b8f8c7..7a9da453`），零 force，符合新纪律——通过（同时作为流程七的首例实录）。
 
