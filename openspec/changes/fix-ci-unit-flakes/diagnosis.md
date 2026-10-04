@@ -137,6 +137,15 @@ integration job 转绿、`ci-it-diag` 自 run#93 后零新投递。同轮 unit �
   build 工作流结论为 success，unit 任务全部通过；取证分支 `ci-unit-diag` 尖端仍为 a46adfff，
   未出现新投递——与电路"失败必投递、成功不投递"的已自证语义一致。结论经 GitHub REST 接口
   按运行号与头提交双重核对取得。
+- run#112（2026-10-05 04:32 推送触发，头提交 `47dff9d2`，内容为案卷抢救固化与变更收口两笔文档提交）：
+  unit 任务（Unit tests (no Docker)）结论为 success——任务 4.2 新口径计数第 2 轮；取证分支
+  `ci-unit-diag` 尖端仍为 a46adfff，绿轮不投递复核通过。本轮构建工作流整体为红，红主犯署名在
+  integration 任务（Integration tests (real transport + containers, starter 装配与剧本覆盖)）：
+  失败发生在依赖解析阶段而非测试断言——`tny-game-namnspace-etcd` 的 integrationTest 解析
+  `grpc-context-1.82.4.jar` 落空（腾讯镜像缺件，日志在卷），取证分支 `ci-it-diag` 新投递
+  `cc93df3b`（console-tail 40965 字节）。同一依赖树在 22 分钟前的 run#110 刚成功过，属镜像可用性
+  瞬态；该约束条款（"矩阵选择约束含镜像系可用"）由 upgrade-grpc-for-netty-137 变更在册，归 IT 线处置，
+  本节仅登记不动手。
 - 计数口径说明：上列"4 / 10 轮"以 run#94 起算，其时根治代码尚未落地；按定罪栏案 #1
   "对本案影响"条目既定口径，任务 4.2 的连续零红验收计数自修复落地轮重新起算，run#100 为
   新口径下第 1 轮。两套起算点并行存在，最终计数裁定归观察账维护者，本节不设双重标准。
