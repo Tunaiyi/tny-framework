@@ -132,7 +132,7 @@ def validateReleaseTagAttested = { problems, gitFlow, currentBranch, releaseBran
     def resolveRemoteName = {
         def remoteName = null
         try {
-            def upstream = runGit(['rev-parse', '--abbrev-ref', '--symbolic-full-name', '@{upname}']).trim()
+            def upstream = runGit(['rev-parse', '--abbrev-ref', '--symbolic-full-name', '@{upstream}']).trim()
             if (upstream.contains('/')) {
                 remoteName = upstream.substring(0, upstream.indexOf('/'))
             }
