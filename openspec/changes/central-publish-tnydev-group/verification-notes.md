@@ -23,3 +23,13 @@
 - 1.1 勾销：Portal 命名空间 Verified（用户界面确认）+ 快照受理先例 + dig 生效记录。
 - 7.1 勾销：部署 a297d887 PUBLISHED；repo1 权威镜像抽查 bom/common-lang/net/starter-net-netty4 全 200，组目录 52 模块齐；tny-game-net POM 的组号、许可证（Apache 2.0 与全仓事实一致）、url、scm 字段核验通过。
 - 用户已配置 GitHub secrets（CI 发布通道就绪）与轮换口令。5.1/5.2 与 4.4 的收口推荐动作：在 GitHub Actions 对 publish.yml 手动运行一次（workflow_dispatch，填分支 5.7.8.release）——预期 Nexus 步骤绿色（内网允许覆盖重发）、Central 步骤以"版本已存在"类校验失败红色收场，一次演练同时验证工作流真实链路（5.1/5.2）与重复版本行为（4.4 实测口径，据此修订 design D4 的"等价成功吸收"表述）。
+
+## 工具换代后回归（2026-10-04，发布脚本已迁入 buildSrc 约定插件 tny.central/tny.publications/tny.release/tny.git）
+
+- 复用面确认：`centralCheck`、`publishAggregationToCentralPortal`、`checkPublishPrerequisites`、`signMavenJavaPublication` 任务在位；nmcp 配置随 `gradle/central.gradle` 迁至 `buildSrc/.../tny.central.gradle`；publish.yml 两步任务名未变。
+- 本会话实跑三项失败注入（本地临时容器，用后即删）：
+  1. `centralCheck` 在 `5.7.x` 拒绝（当前分支派生快照，非发布分支形态）✓ spec 快照不入 Central 错误路径。
+  2. 临时容器 `9.9.9.release` 无远端标签 → `checkPublishPrerequisites` 拒绝，文案含"发布标签 'v9.9.9' 在远端 'github' 不存在"，且版本派生注释已更新为 tny.git ✓ 对应 release-versioning"缺标签拒绝"与 5.2 缺标签注入。
+  3. 同容器执行 `signMavenJavaPublication`（未注入口令）→ "no configured signatory" 失败 ✓ 对应 5.2 缺签名注入。
+- 5.2 第三注入"缺附属件"未本地执行：完整性校验挂在 `publishAggregationToCentralPortal` 的 doFirst，须先过远端标签门禁方可触达，本地无安全注入路径（伪造标签=污染公共账本）。收口方式：下一次真实发布（如 5.7.9）首发前的 workflow dry-run，或该 doFirst 逻辑已在 5.7.8 首发"52 模块产物完整性通过"正向路径实证。
+- 首发链路（4.4/5.1/5.2）仍待一次 GitHub Actions dispatch 实弹；secrets 用户已配。stash@{0} 现为 autostash 形态（并行会话变基产物，非本窗口 WIP，不代处置）。
