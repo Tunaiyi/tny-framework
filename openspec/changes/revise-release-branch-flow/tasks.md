@@ -82,7 +82,7 @@ gradle 命令在本机需 `JAVA_HOME` 指向 JDK 21；写通道按设计 D6 走 
   `refs/heads/5.7.x` 同头；此后新特性提交只进 main。
 - [x] 4.2 删除本地化石分支 `master`（与 main 同头，无独有提交，已实测）。完成判据：
   `git branch --list master` 为空。
-- [ ] 4.3 `.github/workflows/build.yml` 推送触发清单核对转正：`main` 由死项转为活主干
+- [x] 4.3 `.github/workflows/build.yml` 推送触发清单核对转正：`main` 由死项转为活主干
   入口（保留并确认语义），开发线条目以形态通配或显式列举现役线；以一次真实 push
   （不含 `[skip ci]`）分别验证 main 与现役线触发命中，通配不成立则退回显式列举并在
   开线仪式清单（任务 3.1）补登记步骤。完成判据：Actions 页面可见两条 push 各自触发的
@@ -110,6 +110,6 @@ gradle 命令在本机需 `JAVA_HOME` 指向 JDK 21；写通道按设计 D6 走 
   挂钩首个特性版本分支创建）入变更目录，投递时点=首个次版本线开线之后随发布通知发出
   （投递本身是外向动作，执行前向用户确认）。完成判据：文稿存在且与任务 3.1 的契约
   声明段逐句一致。
-- [ ] 5.5 七条流程与实现面的终检：任务 3.1 文档中的每条命令与 `.claude/commands/
+- [x] 5.5 七条流程与实现面的终检：任务 3.1 文档中的每条命令与 `.claude/commands/
   tny/release.md`、`gradle/release.gradle` 当时形态逐条对照；三层白名单（D9）在文档、
   脚本、工作流三处的表述无互相矛盾。完成判据：终检清单全绿并入 apply-notes。

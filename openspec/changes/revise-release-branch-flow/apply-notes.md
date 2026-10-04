@@ -49,12 +49,30 @@
 - 4.1（提交 `35b8f8c7` 推送时执行）：`git push github 5.7.x:main` 一次性普通快进
   `315f54bf..35b8f8c7`，main 转正为开发顶点；GitHub 默认分支保持 main。
 - 4.2：本地化石分支 `master` 已删（`git branch -d`，与旧 main 同头零独有提交）。
-- 4.3：工作流通配改造完成并经 main 侧推送验证命中（Actions API 可见 `build` 工作流
-  push/main 运行）；**线侧命中待观察**——`5.7.x` 分支当前分叉（远端一条 bench 回写提交、
-  本地含基线会话已归档提交 `b4f6f595` 与本变更三提交），分叉收口（任一在途会话常规
-  rebase 推送）后 `'*.*.x'` 通配将自然命中，与 main 同用一条目，无独立风险。此项不判完。
+- 4.3：工作流通配改造完成并两侧命中均验证——main 侧经转正推送触发（Actions API 可见
+  `build` 工作流 push/main 运行）；线侧经账本提交推送 `e33c4c33..b5ceace6` 触发
+  `'*.*.x'` 通配（Actions API 可见 `build` 工作流 push/5.7.x 运行）。收口期间处置了
+  一次历史分叉：远端 bench 回写被并行会话以 rebase 织入本地链、重写了我已推 main 的提交
+  哈希（`35b8f8c7` 与新线顶端内容等价但拓扑分叉），按流程七"向上传播"以临时 worktree
+  cherry-pick 三笔账本提交快进上收 main（`35b8f8c7..7a9da453`，零 force）。教训入
+  挂账：先收口线分叉、后转正 main，转正推送与线重写不得并发。
 - 4.4：`decision-release-published-trigger.md`——`release.published` 触发器不纳入本变更，
   CI 发布通道维持 `workflow_dispatch` 口径。
+
+## 5.5 终检清单（全绿）
+
+1. 文档七流程命令与 `tny.release.gradle` 逐条对账：三任务注册各一、参数名
+   `releaseVersion/releaseFrom/dryRun/gitExe` 全部真实存在；旧任务名在两份文档中仅存
+   映射说明行——通过。
+2. `.claude/commands/tny/release.md` 三步命令与脚本守护文案对账：dryRun 与拒绝路径
+   实测输出逐字一致（本会话冒烟记录）——通过。
+3. 工作流触发面与流程五"开新线零文件改动"口径对账：`build.yml` 现为
+   `branches: [ main, '*.*.x' ]`，两侧命中均经 Actions API 验证——通过。
+4. D9 强推白名单三处表述对账：文档角色总表限定"发布链无强推、个人工位豁免"；插件
+   零 force 路径；`build.yml` 诊断分支（`ci-unit-diag`/`ci-it-diag`）的 `push -f` 属
+   孤儿取证通道、不在发布链对象内——三处无矛盾——通过。
+5. main 转正后的向上传播实操：本次账本三笔经 worktree cherry-pick 快进上收
+   （`35b8f8c7..7a9da453`），零 force，符合新纪律——通过（同时作为流程七的首例实录）。
 
 ## 挂账与提醒
 
