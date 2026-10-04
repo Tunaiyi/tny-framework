@@ -16,9 +16,9 @@ AI 生成的一切面向人阅读的文本，必须让没有参与过程的读�
 
 ## Gradle 构建脚本规则
 
-本节适用于全部 `.gradle` 文件（根 `build.gradle`、`settings.gradle`、buildSrc 约定插件脚本、各模块 `build.gradle`）。规则的唯一权威文本是 openspec 规格账本中的 `gradle-build-style` 能力规格（`openspec/specs/gradle-build-style/spec.md`，八条需求十九个场景）；两处如有出入以规格为准，本节不重复维护细则正文。
+本节适用于全部 `.gradle` 文件（根 `build.gradle`、`settings.gradle`、buildSrc 约定插件脚本、各模块 `build.gradle`）。规则的唯一权威文本是 openspec 规格账本中的 `gradle-build-style` 能力规格（`openspec/specs/gradle-build-style/spec.md`，需求与场景的条数以该文件现文为准）；两处如有出入以规格为准，本节不重复维护细则正文。
 
-执行要点三句（完整形态与验收场景以规格八条需求为准）：
+执行要点三句（完整形态与验收场景以规格文件的全部需求为准）：
 
 1. **配置写声明式语句**：构建脚本读起来必须像配置说明书而不是程序，配置阶段不写循环、分支与逐步累加的程序性控制流。
 2. **程序性行为只有两个容身之处**：命令行调用、对账校验、多步顺序操作这类行为只能写在任务注册闭包的动作块内，或者 buildSrc 约定插件脚本里；约定插件之间不互相应用，根脚本装配线按依赖顺序对每个插件各用一行引入语句。
