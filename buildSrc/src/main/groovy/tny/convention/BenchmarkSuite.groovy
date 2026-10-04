@@ -6,7 +6,7 @@ package tny.convention
 
 import org.gradle.api.provider.ListProperty
 
-abstract class BenchSuite {
+abstract class BenchmarkSuite {
 
     // 常规族成员正则（单一 alternation 语义：多正则自拼 | 由插件承担，插件会逗号拼接实测在前）。
     abstract ListProperty<String> getRoutineFamily()

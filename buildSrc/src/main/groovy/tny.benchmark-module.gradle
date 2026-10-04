@@ -4,8 +4,8 @@ import java.text.SimpleDateFormat
 // declarative-it-demo-isolation 起族清单数据外提为 benchmarkSuite 扩展，由 :tny-benchmark 模块声明）。
 // 本插件负责：benchmarkSuite 扩展贡献与行为来由注释、jmhList/jmhListVerify/jmhSuiteVerify 枚举对账
 // 任务与 benchRoutineExport 落盘任务，注册归属 :tny-benchmark 工程；任务名历次迁移不变，工程路径的模块段自 rename-bench-to-benchmark 起为 tny-benchmark。
-// 配置面：benchmarkSuite 五清单（tny.convention.BenchSuite）；清单语义的双承载出处见下 jmhSuiteVerify 注释。
-// 边界：jmh 执行参数与依赖声明在模块构建文件；族目录↔清单对账语义出处见
+// 配置面：benchmarkSuite 五清单（tny.convention.BenchmarkSuite）；清单语义的双承载出处见下 jmhSuiteVerify 注释。
+// 边界：jmh 静态参数与依赖声明在模块构建文件，执行面规模选择在插件 afterEvaluate；族目录↔清单对账语义出处见
 // split-bench-suites 与 refine-bench-routine-triggering。
 // 正则拼接来由（自模块 ext 迁入，机制侧知识）：插件会把 includes 列表逗号拼接成单个 JMH 位置参数
 // （实测），而 JMH 位置参数语义为"一个正则"——多正则必须自拼 |；臂属筛选走 -p 而非 include 正则
@@ -13,7 +13,7 @@ import java.text.SimpleDateFormat
 // 无排除效应）；速览档与完整档共用同一 include 面，差异只在 quickRunExcludes 显式清单
 // （矩阵类烙负向前瞻正则的静默失效陷阱由此消灭，refine-bench-routine-triggering D2）。
 
-def suite = extensions.create('benchmarkSuite', tny.convention.BenchSuite)
+def suite = extensions.create('benchmarkSuite', tny.convention.BenchmarkSuite)
 
 // 列清单（锚集定义与 jmh 运行同源 benchmarkSuite 扩展）：CI PR 通道用它证明"清单可枚举"。
 // BenchmarkList 由插件 jmhRunBytecodeGenerator 产出于 generatedResourcesDir（非注解处理器阶段）。
@@ -116,6 +116,41 @@ tasks.register('benchRoutineExport') {
         dest.parentFile.mkdirs()
         ant.copy(file: src, tofile: dest, overwrite: true)
         logger.lifecycle("benchRoutineExport: ${dest}")
+    }
+}
+
+// 执行面规模选择（move-bench-suite-selection-into-plugin：gradle-build-style 需求一——
+// 分支与中间变量累加属程序性，收编本插件；模块 jmh 块只留声明式静态基线参数）。
+// 缺省执行＝常规族（含设施探针）＋六臂参数域，可复现；全量矩阵以 -PbenchAll 显式打开。
+// D1：本段注册在 benchParams 段之前——同工程 afterEvaluate 回调按注册顺序执行，
+// 显式 -PbenchParams 覆写参数域的优先级承前最后。
+afterEvaluate {
+    def familyInclude = (suite.routineFamily.get() + suite.facilityProbes.get()).join('|')
+    if (project.hasProperty('benchAll')) {
+        jmh.includes = ['.*']
+    } else if (project.hasProperty('benchInclude')) {
+        jmh.includes = [project.property('benchInclude').toString()]   // 单正则语义（JMH 位置参数）
+    } else if (project.hasProperty('benchScope') && project.property('benchScope').toString() == 'quick') {
+        // 速览规模（refine-bench-routine-triggering D2）：与完整档共用 include 面，
+        // 矩阵级退化由夜间与手动的完整规模兜底；排除面是显式清单（新增矩阵类在此登记）
+        jmh.includes = [familyInclude]
+        jmh.excludes = suite.quickRunExcludes.get()
+    } else {
+        // 缺省即完整规模（本地直接执行、夜间定时、手动触发）：常规族并设施探针，
+        // 两族清单自拼竖线成单正则（插件逗号拼接语义），六臂参数域覆写沿用。
+        jmh.includes = [familyInclude]
+        jmh.benchmarkParameters = [algo: objects.listProperty(String).value(suite.routineAlgoArms.get())]
+    }
+    if (project.hasProperty('benchGc')) {
+        jmh.profilers = ['gc']            // 分配画像（P3 裁决数据源）
+    }
+    if (project.hasProperty('benchFast')) {
+        // 选择面探针：只验证"哪些 benchmark 会被选中"，不出可信数字。
+        jmh.fork = 1
+        jmh.warmupIterations = 0
+        jmh.iterations = 1
+        jmh.warmup = '100ms'
+        jmh.timeOnIteration = '100ms'
     }
 }
 

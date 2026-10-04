@@ -43,7 +43,7 @@ dependencies {
 }
 
 // D3 基线纪律入库（原 D2 裸 JavaExec 已废，见 openspec/changes/promote-netbench-to-tny-bench design T2）：
-// 缺省执行 = 常规族（含设施探针）+ 下列参数，可复现；全量矩阵以 -PbenchAll 显式打开。
+// 缺省执行 = 常规族（含设施探针）+ 下列参数，可复现；全量矩阵以 -PbenchAll 显式打开（选择实现收编在 tny.benchmark-module 的 afterEvaluate，gradle-build-style 需求一）。
 jmh {
     jmhVersion = '1.37'                       // Central 冻结版；插件按此自动接线 core+annprocess
     fork = 2                                  // D3：-f ≥ 2
@@ -53,32 +53,6 @@ jmh {
     timeOnIteration = '1s'
     resultFormat = 'json'
     resultsFile = project.layout.buildDirectory.file('reports/bench/bench-result.json').get().asFile
-    def familyInclude = (benchmarkSuite.routineFamily.get() + benchmarkSuite.facilityProbes.get()).join('|')
-    if (project.hasProperty('benchAll')) {
-        includes = ['.*']
-    } else if (project.hasProperty('benchInclude')) {
-        includes = [project.property('benchInclude').toString()]   // 单正则语义（JMH 位置参数）
-    } else if (project.hasProperty('benchScope') && project.property('benchScope').toString() == 'quick') {
-        // 速览规模（refine-bench-routine-triggering D2）：与完整档共用 include 面，
-        // 矩阵级退化由夜间与手动的完整规模兜底；排除面是显式清单（新增矩阵类在此登记）
-        includes = [familyInclude]
-        excludes = benchmarkSuite.quickRunExcludes.get()
-    } else {
-        // 缺省即完整规模（本地直接执行、夜间定时、手动触发）：常规族并设施探针，
-        // 两族清单自拼竖线成单正则（插件逗号拼接语义），六臂参数域覆写沿用。
-        includes = [familyInclude]
-        benchmarkParameters = [algo: objects.listProperty(String).value(benchmarkSuite.routineAlgoArms.get())]
-    }
-    if (project.hasProperty('benchGc')) {
-        profilers = ['gc']            // 分配画像（P3 裁决数据源）
-    }
-    // benchParams 显式参数覆写的解析在 tny.benchmark-module 插件 afterEvaluate（程序性不入模块文件）
-    if (project.hasProperty('benchFast')) {
-        // 选择面探针：只验证"哪些 benchmark 会被选中"，不出可信数字。
-        fork = 1
-        warmupIterations = 0
-        iterations = 1
-        warmup = '100ms'
-        timeOnIteration = '100ms'
-    }
+    // 执行面规模选择（全量/定向/速览与 benchGc、benchFast）在 tny.benchmark-module 的 afterEvaluate（需求一：程序性不入模块文件）；
+    // benchParams 显式参数覆写的解析也在该插件 afterEvaluate，覆写优先级承前居末
 }
