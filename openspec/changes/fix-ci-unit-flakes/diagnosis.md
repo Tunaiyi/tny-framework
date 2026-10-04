@@ -13,9 +13,10 @@
 | #33-#34 | e942a878 / 670c3e95 | 排队中 | 电路/文档上线轮 | 待登记 |
 | #35 | f3bebdcb | ❌ **PROBE 计划内红** | 电路自证空弹（非病灶） | 五件齐备已固化 `probe-evidence/`：docker-ps(容器 Up 2min、0.0.0.0:2379 映射✓)、etcd 日志、console-tail(31KB，PROBE 断言栈清晰)、失败 XML、env(Temurin 21.0.12.1) |
 | #36-#37 | 9979a681 / edd52dbd | revert 恢复轮 | 探针撤销 | — |
-| **#38** | b72d6103（纯 docs 提交） | ❌ **首个自然红** | 电路实战首录；改动面零测试相关 | 已固化 `natural-red-1/`（TypeStageTest XML+栈、etcd 日志健康、env）|
+| **#38** | b72d6103（纯 docs 提交） | ❌ **首个自然红** | 电路实战首录；改动面零测试相关 | **固化失败（2026-10-05 复盘如实改记）**：`natural-red-1/` 四件在入库提交 b26abd89 时即全部为 0 字节空文件，且 etcd 日志件未转存；原件已被该分支后续 force-push 覆盖，永久不可再取。案 #1 签名证据现仅存定罪栏正文摘录（断言失败行与栈均已转述）。失败根因：转存路径与分支尖端实际清单不符，且未履行本表上方协议"转存完成后逐一检查非空"的核验义务——本行为该义务的事后补记 |
 | #39 | a1f04f26 | ✅ 全 job 绿 | **负半程自证轮**：绿→ci-unit-diag tip 不变（49694f16）→"绿时不投递"实证 | 零投递=预期 |
-| run 37165077819（10-04） | — | ❌ 第二个自然红 | ObjectLockerTest.lockInterruptibly 断言翻转；etcd 无辜（容器日志健康在卷） | 待固化（tip 5b1c2653，先于覆盖即取） |
+| run 37165077819（10-04） | — | ❌ 第二个自然红 | ObjectLockerTest.lockInterruptibly 断言翻转；etcd 无辜（容器日志健康在卷） | **已固化 `natural-red-2/`**（五件齐、逐一非空；2026-10-05 从本地 git 对象 5b1c2653 的 unitdiag/ 尖端清单转存，失败 XML 内签名"`lockMap={locker=…[Unlocked]} expected:<0> but was:<1>`"独立印证定罪栏案 #2 执行记录的零引用条目残留机理） |
+| run#94 = 37208019636（10-04） | 5fc5a368（IT 修复轮） | ❌ ObjectLockerTest 同签名复发 | 与升级 grpc 修复 IT 同轮；unit 红属定罪栏案 #2 家族，与该回归无关（见"IT 回归终裁"节） | **已固化 `natural-red-3/`**（五件齐、逐一非空；取证分支当前尖端 a46adfff 转存，含同件失败 XML） |
 | run 37200391839 + 37201722161（10-04） | — | integration job ❌ | EtcdNamespaceExplorerIT 两轮连红（ci-it-diag 自 run#17 后首次再投递） | 根因跨线，见"IT 回归"节 |
 
 ## 探针结论（tasks 2.2 验证记录）
