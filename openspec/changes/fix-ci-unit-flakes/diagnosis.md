@@ -15,6 +15,8 @@
 | #36-#37 | 9979a681 / edd52dbd | revert 恢复轮 | 探针撤销 | — |
 | **#38** | b72d6103（纯 docs 提交） | ❌ **首个自然红** | 电路实战首录；改动面零测试相关 | 已固化 `natural-red-1/`（TypeStageTest XML+栈、etcd 日志健康、env）|
 | #39 | a1f04f26 | ✅ 全 job 绿 | **负半程自证轮**：绿→ci-unit-diag tip 不变（49694f16）→"绿时不投递"实证 | 零投递=预期 |
+| run 37165077819（10-04） | — | ❌ 第二个自然红 | ObjectLockerTest.lockInterruptibly 断言翻转；etcd 无辜（容器日志健康在卷） | 待固化（tip 5b1c2653，先于覆盖即取） |
+| run 37200391839 + 37201722161（10-04） | — | integration job ❌ | EtcdNamespaceExplorerIT 两轮连红（ci-it-diag 自 run#17 后首次再投递） | 根因跨线，见"IT 回归"节 |
 
 ## 探针结论（tasks 2.2 验证记录）
 
@@ -35,6 +37,25 @@
   测试内轮询计数替代绝对时间；③ 若①②重——降该用例 CI 权重为观察位（下策，如实标注）。
 - **对本案影响**：etcd 就绪假设未证伪也未证实（本轮与 etcd 无关）；tasks 3.2"首个自然红案卷"达成
   （支 c 定罪=跨线移交即闭合定罪动作）；"连续零红 10 轮"计数由 actor 线修复轮起重新累计。
+
+### 案 #2（run 37165077819，10-04）——与案 #1 同族：调度观测断言在 CI 负载下翻转
+- **签名**：`tny-game-common-lang` `ObjectLockerTest.lockInterruptibly()` 断言翻转
+  （MapObjectLocker 状态观测），单用例失败；etcd 容器与模块全部无辜。
+- **归因**：与本地登记 #2/3/4（CollectionLockTest 三次）及案 #1（actor 墙钟）同一家族——
+  把"观测到并发驻留/时序窗口"当作被测性质代理的断言，在 runner 调度挤压下翻转。
+  unit 通道两大自然红案卷（#1、#2）均与该家族命中，**均未命中 etcd 就绪假设**。
+
+## IT 回归跨线记录（10-04，本案取证副产物，归治理线处置）
+
+- **现象**：EtcdNamespaceExplorerIT（stabilize 迁 docker 轨后 run#18→#39 十余轮绿）连红两轮。
+- **定罪（决定性对照）**：依赖治理册 32273604（2026-10-04 02:25）将 `nettyVersion`
+  4.1.104 全量升 4.1.137；本地同 HEAD 默认 31/36 红（60 处 grpc `end-of-stream mid-frame`），
+  仅以 `-PnettyVersion=4.1.104.Final` 覆盖单变量 → **36/36 全绿**。
+  机理：jetcd 0.7.7 + grpc-netty 1.60.0 的 HTTP/2 流与 netty 4.1.137 传输层合同冲突。
+- **附带账目瑕疵（移交时一并指出）**：治理册提交信息自称"guava 为本册唯一数值变更"，
+  与 nettyVersion 实改矛盾；CLAUDE.md 技术栈行仍写 Netty 4.1.104。
+- **处置**：跨线不动刀（该文件属治理册主权）。修复方向二选一由治理线定：
+  回退 4.1.104（最小风险）或升 grpc 至与 netty 137 兼容的版本（需另立验证）。
 
 ## 历史红登记（电路前，来自 stabilize it-diagnosis.md §3/§6，零案卷）
 
