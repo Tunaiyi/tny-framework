@@ -5,38 +5,36 @@ description: 初始化/重建/排障本机的 MCP 环境（GitHub MCP、Docker M
 
 # MCP 环境初始化（本机实测配方）
 
-2026-10-01 在本机（macOS arm64 / OrbStack / 无 gh CLI / git clone 受网络限制）完整验证过的搭建与排障流程。
+2026-10-01 在本机（macOS arm64 / OrbStack / 无 gh CLI / git clone 受网络限制）完整验证过的搭建与排障流程；2026-10-04 将 GitHub MCP 接线改为 GitHub 托管远程端点 + PAT 并冒烟通过（§1）。
 所有步骤按序执行；带 ⚠ 的是本机特有约束，别按通用文档照抄。
 
 ## 架构总览（谁在跑）
 
 | 组件 | 形态 | 宿主入口 |
 |---|---|---|
-| github-mcp-server v1.12.2 | stdio 容器（会话存续期常驻，`--rm` 会话结束即删） | `claude mcp get github` |
+| GitHub MCP | GitHub 托管远程端点（`https://api.githubcopilot.com/mcp/`，静态 PAT header，无本地容器） | `claude mcp get github` |
 | docker-mcp (L337-org 2.2.6) | stdio 容器 + docker.sock 挂载，165 工具 | `claude mcp get docker` |
 | docker-skills 插件 v0.3.1 | Claude Code plugin（user scope） | `claude plugin list` |
 | docker mcp gateway v0.44.1 | 宿主 CLI 插件进程（stdio，profile tny，当前挂 docker-docs remote） | `claude mcp get docker-gateway` |
-| 项目 compose 栈 | `docker/docker-compose.yaml`（etcd/redis/mongo, project=tny-framework-dev）；`docker/docker-compose.mcp.yaml`（MCP stdio 双服务声明，宿主 compose run 消费） | 见仓库根 |
+| 项目 compose 栈 | `docker/docker-compose.yaml`（etcd/redis/mongo, project=tny-framework-dev）；`docker/docker-compose.mcp.yaml`（MCP stdio 单服务声明：2026-10-04 起仅存 mcp-docker，宿主 compose run 消费） | 见仓库根 |
 
 **关键原则**：Claude Code 会话启动后才 `claude mcp add` 的 server，本会话不加载，需重启会话验证。
 
-## 1. GitHub MCP — stdio + OAuth（唯一可行接线）
+## 1. GitHub MCP — GitHub 托管远程端点 + PAT（现网接线，2026-10-04 切换）
 
-现网形态（2026-10-01 起统一为 compose 声明式，配置来源 = `docker/` 目录下的 `docker-compose.mcp.yaml` 的 `mcp-github-stdio` 服务，stdio profile）：
+现网形态（user scope，注册后配置落在 `~/.claude.json` 顶层 `mcpServers` 的 github 条目里，token 随配置文件持久保存，重启电脑或会话后不再发生任何授权）：
 
 ```bash
-claude mcp add github -s user -- \
-  docker compose -f <repo>/docker/docker-compose.mcp.yaml --profile stdio run --rm -T --service-ports --name tny-mcp-github mcp-github-stdio
-# 固定名必须用 run --name：compose 的 run 忽略服务级 container_name（实测 v5.5.1）
-# ⚠ 必须带 --service-ports：compose run 默认不映射服务级 ports（实测 v5.1.2，2026-10-01 事故），
-#   缺它则容器 8085 不出宿主、OAuth 回调无处落地；勿用宿主转发器补位（容器 IP 随重启漂移、
-#   server 端 pending flow 单例——对 /callback 发探测假请求会提前关监听，真回调即被拒）。
-# 注册命令变更后需重启会话才生效（会话持有启动时快照的命令）。
+claude mcp add github -s user -t http https://api.githubcopilot.com/mcp/ \
+  -H "Authorization: Bearer <classic PAT>"
+```
 
-- 首次调用返回授权 URL → 浏览器登录授权 → 回调 localhost:8085 进容器 → 重试调用即通。token 仅内存：重启电脑/Docker 后每会话重新授权一次。
-- ⚠ 为什么不用远程端点（`https://api.githubcopilot.com/mcp/`）：GitHub OAuth 服务器不支持 DCR（动态客户端注册），Claude Code 拿不到 client_id，报 `Incompatible auth server: does not support dynamic client registration`。
-- ⚠ 为什么不用常驻 http 模式：实测 401 元数据链的 `authorization_servers` 指向 GitHub 本体 → 同样 DCR 死路（只适合自备 PAT 或前置 OAuth 代理的场景）。因此 compose 中曾有过的 `mcp-github`(serve/:8082) 常驻服务**已评估移除**（2026-10-01，定义见 git 历史）；出现多客户端共享端点需求时按上述条件恢复。
-- 端口提醒：8085 若被其它项目 dev 容器占用，换端口需同时改 `-p` 与 `GITHUB_OAUTH_CALLBACK_PORT`（回调 URI 以 localhost:PORT 注册，端口必须两边一致）。
+- PAT 在 https://github.com/settings/tokens/new 创建（classic 型），scope 勾选 `repo read:org user notifications read:packages write:packages`，与旧接线 OAuth 授予的权限一一对应。
+- ⚠ header 里不得写 `${VAR}` 占位符：Claude Code 会刻意把远程服务器 `url`/`headers` 中的凭据类变量名读成空值（官方文档规则，查证于 2026-10-04），服务端收到的 `Bearer ` 不带凭据必然 401。要么写字面 token，要么改用 `headersHelper` 在连接时动态生成 header。
+- ⚠ 远程端点的 OAuth 路径仍然不通：GitHub OAuth 服务器不支持 DCR（动态客户端注册），Claude Code 拿不到 client_id，会报 `Incompatible auth server: does not support dynamic client registration`。静态 PAT header 是唯一绕过授权的途径。
+- 冒烟测试（不必等会话重启）：用 curl 向端点发一条带 bearer header 的 MCP initialize POST 请求，返回 200 与 serverInfo 正文即证明 token、网络、header 三者都通（2026-10-04 实测通过）。
+- 会话内验收：直接调 `get_me` 成功，且不应再出现任何授权 URL。
+- 历史：2026-10-04 之前的接线是 stdio 容器 `mcp-github-stdio`（compose 声明式 + 浏览器 OAuth + localhost:8085 回调），token 仅存内存，每次重启都要重新授权。该服务的定义与那条接线的实测坑（固定容器名单实例、回调端口必须宿主容器一致、server 端 pending flow 单例）见本文件与 `docker/docker-compose.mcp.yaml` 的 git 历史。8085 端口已随接线退役整体释放。
 
 ## 2. Docker MCP — stdio 直连 + socket 挂载
 
@@ -46,7 +44,7 @@ claude mcp add github -s user -- \
 claude mcp add docker -s user -- \
   docker compose -f <repo>/docker/docker-compose.mcp.yaml --profile stdio run --rm -T --name tny-mcp-docker mcp-docker
 ```
-固定名 `tny-mcp-docker` / `tny-mcp-github` 便于 docker exec/logs 定位；**代价是单实例**——多会话并行或 `claude mcp list` 健康探测二次 spawn 会撞名（github 侧本就受 8085 端口单实例约束）。stdio 管道由宿主 spawn 持有，`up` 不拉 stdio 服务（profile 隔离的缘由）。
+固定名 `tny-mcp-docker` 便于 docker exec/logs 定位；**代价是单实例**——多会话并行或 `claude mcp list` 健康探测二次 spawn 会撞名。stdio 管道由宿主 spawn 持有，`up` 不拉 stdio 服务（profile 隔离的缘由）。
 
 - `/var/run/docker.sock` 由 OrbStack **VM 侧**解析（容器与 daemon 同 VM），Mac 上没有该路径也正常工作；
   compose 挂载源写 `~/.orbstack/run/docker.sock` 反而不通（virtiofs 不支持跨 OS unix socket）。
@@ -94,7 +92,7 @@ claude mcp add docker-gateway -s user -e DOCKER_MCP_IN_CONTAINER=1 \
 ```bash
 docker compose -f docker/docker-compose.yaml up -d                 # etcd:2379 + redis:6379（+ mongo）
 MONGO_HOST_PORT=27018 docker compose -f docker/docker-compose.yaml up -d mongo   # 27017 被 x35 项目占用时的用法
-# docker/docker-compose.mcp.yaml 无 up 型服务：stdio 双服务由宿主 compose run 按需拉起（见 §1/§2）
+# docker/docker-compose.mcp.yaml 无 up 型服务：stdio 单服务（mcp-docker）由宿主 compose run 按需拉起（见 §2）
 ```
 详见两文件头注释（参数均对齐 IT 代码与 CI，勿随意改动 command/端口）。
 
@@ -102,7 +100,7 @@ MONGO_HOST_PORT=27018 docker compose -f docker/docker-compose.yaml up -d mongo  
 
 ```bash
 claude mcp list                          # 全绿 Connected
-# stdio 握手探针（github/docker server 通用模板）：
+# stdio 握手探针（现仅 docker server 需要；github 已改远程端点，冒烟方法见 §1）：
 ( printf '%s\n' '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"p","version":"0"}}}' '{"jsonrpc":"2.0","method":"notifications/initialized"}' '{"jsonrpc":"2.0","id":2,"method":"tools/list"}'; sleep 6 ) \
   | docker run -i --rm -v /var/run/docker.sock:/var/run/docker.sock ghcr.io/l337-org/docker-mcp-server:2.2.6 2>/dev/null | tail -1 | head -c 200
 nc -z localhost 2379 && nc -z localhost 6379          # 项目 compose 栈
@@ -113,14 +111,15 @@ nc -z localhost 2379 && nc -z localhost 6379          # 项目 compose 栈
 
 | 症状 | 根因 | 处置 |
 |---|---|---|
-| `Incompatible auth server: does not support DCR` | 远程端点/http 模式 + GitHub 无 DCR | 改 stdio 接线（§1） |
+| `Incompatible auth server: does not support DCR` | 尝试走 OAuth 流程（GitHub 无 DCR） | 走 §1 的静态 PAT header 接线；OAuth 路线在本机没有可行路径 |
 | gateway 报 `Docker Desktop is not running` | Desktop 特性检查 | `DOCKER_MCP_IN_CONTAINER=1` |
 | gateway 报 `Cannot connect to the Docker daemon at unix:///var/run/docker.sock` | 不读 docker context | `DOCKER_HOST=unix://$HOME/.orbstack/run/docker.sock` |
 | gateway 报 `host path "/var/run/docker.sock" is blocked (sensitive system path)` | 安全策略硬禁 | 容器管理类改用 §2 直连 |
 | `secrets engine is not available` | 非 Desktop 无 secrets store | 仅影响需 secret 的 server；env 兜底 |
 | `claude plugin marketplace add <owner>/<repo>` 克隆失败 | 本机 git 通道受限 | curl tar → 本地路径注册（§3） |
 | MCP 配置成功但会话里没有工具 | 会话早于配置启动 | 重启 `claude` 或 `--continue` |
-| 重启电脑后 GitHub 调用 401/要求授权 | token 仅内存（设计如此） | 首次调用走一遍浏览器授权 |
+| GitHub 调用 401 | PAT 过期或被吊销、scope 不足，或 header 写了凭据占位变量被读成空值（见 §1 ⚠ 条） | 重新生成 PAT 并按 §1 写回字面 header；本机已不存在浏览器授权流程 |
 | compose 工具报找不到文件 | server 容器无 Mac 文件系统 | 注入容器或宿主 CLI 操作（§2） |
-| `claude mcp list` 里 github 报 CONNECTION_CLOSED 且 `docker ps` 无 github 容器 | 会话的 stdio 管道断过（容器已随 `--rm` 消失），传输惰性重启前的正常表象 | 直接调一次工具：Claude Code 会按需重起容器；新容器内存 token 为空 → 走一遍浏览器授权即恢复。独立健康探针请用别的宿主端口（如 `-p 127.0.0.1:18085:8085`），避免与在役会话容器抢 8085 造成假失败 |
-| `claude mcp list` 探测 github/docker 报 name already in use（或端口冲突） | 固定名 `--name tny-mcp-*` + 8085 端口的单实例副作用，会话容器在役时外部探测必失败 | 属预期，勿当故障：以会话内真实工具调用为准（如 get_me / container_list） |
+| `claude mcp list` 探测 docker 报 name already in use | 固定名 `--name tny-mcp-docker` 的单实例副作用，会话容器在役时外部探测必失败 | 属预期，勿当故障：以会话内真实工具调用为准（如 container_list） |
+| 容器 Up（`docker ps` 可见 `tny-mcp-docker`），但本会话启动时 spawn 撞名退出、会话内无工具；`claude mcp list` 假报 CONNECTION_CLOSED | 另一个开着但未用 docker 的旧会话在启动时抢占了单实例槽位（空占：容器内没数据） | ① `pgrep -f 'compose.*run.*tny-mcp'` 沿父链找到持有它的 claude 会话 PID；② `docker logs --since 24h tny-mcp-docker` 零输出（只有启动横幅）确认确属空占；③ 经用户确认后 `docker rm -f tny-mcp-docker` 回收——持有会话不受影响，其后续工具调用会自动重建；④ 回收后由需要工具的会话 `/mcp` 重连或重启会话去占槽，**外部探针不得抢槽**（固定名须留给会话自身的 spawn） |
+| 槽位空闲（无 `tny-mcp-docker` 容器、固定名无人持有）但 `/mcp` 重连后仍显示 Failed | 重连的 spawn 没成功；先用注册命令原样手动复跑一次性握手（stdin 喂 initialize/tools/list，`--rm` 自清理不留槽）区分接线故障与宿主加载故障 | 手动复跑能返回 tools/list → 接线健康，问题在 Claude Code 本会话的连接层 → 重启会话（`claude --continue`）让启动时重新 spawn；手动复跑报错 → 按报错处置（镜像缺失/daemon 不通/环境 PATH） |
