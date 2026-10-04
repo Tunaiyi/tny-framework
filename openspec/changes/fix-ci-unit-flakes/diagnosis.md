@@ -81,3 +81,12 @@ integration job 全绿、ci-it-diag 自 run#17 唯一案卷后零新投递（tip
 - **签名**：`读读应可并行驻留（观测不到任何并行说明互斥过紧） expected true but was false`；三次均出现在全量并行构建（6 worker），每次单任务 `--rerun` 复跑绿（约 31 秒）；第 2 次恰逢 buildSrc 引入期，经"旧架构 stash 对照全量一次绿 + 新架构单跑两绿"排除迁移相关性，定性负载偶红。
 - **机理读码**：断言以"观测到并发驻留"为真，负载挤压下两读线程被调度串行化即翻转——与案 #1 同一病灶类型（把调度延迟当作被检性质的反证），患者换到 lock 线。
 - **处置建议**：并入案 #1 的处方族（观察窗口内允许重试观测而非单次判定）；本登记不新开立案件，待其修复轮统一回归。
+
+## IT 回归终裁（2026-10-04，由 upgrade-grpc-for-netty-137 册回写）
+
+run#94（远端 `5fc5a368`，grpcVersion 1.60.0→1.82.4）：`EtcdNamespaceExplorerIT` 签名红修复，
+integration job 转绿、`ci-it-diag` 自 run#93 后零新投递。同轮 unit 红为既有 ObjectLockerTest
+偶红（案 #2 家族，与本回归无关）。中间档 1.84.0 因腾讯镜像缺 grpc-grpclb jar 在 CI 编译期
+被证伪（run#93），矩阵选择约束据此新增"镜像系可用"一条——全程证据见
+`openspec/changes/upgrade-grpc-for-netty-137/verification/matrix.md`。本节登记簿的
+"IT 回归跨线记录"至此销账。

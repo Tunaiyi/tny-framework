@@ -18,15 +18,15 @@
 ## 3. 落库与本地终验
 
 - [x] 3.1 `gradle.properties` 的 `grpcVersion` 改为选定值（仅此一行；全红则跳过本组，执行 5.2 回退）。验证：`git diff` 单行；`./gradlew help` 对账守卫绿。
-- [ ] 3.2 本地全量回归：etcd 模块（test 与 integrationTest docker 档）、starter-namnspace 装配、`./gradlew build --continue`。验证：三组命令全绿，结果摘要记入 matrix.md 落库行。
+- [x] 3.2 本地全量回归：etcd 模块（test 与 integrationTest docker 档）、starter-namnspace 装配、`./gradlew build --continue`。验证：三组命令全绿，结果摘要记入 matrix.md 落库行。
 
 ## 4. CI 终验与案卷销账
 
-- [ ] 4.1 推送并在 CI 终验三条通道（unit、docker 档 integration、e2e 中继拓扑），观察连续三轮 push 无 etcd 相关红。验证：`ci-it-diag` 无新投递且 CI 记录可查（git fetch 案卷分支尖端不变即证）。
-- [ ] 4.2 案卷互销：在 `fix-ci-unit-flakes/diagnosis.md` 的"IT 回归跨线记录"节追加终裁行（本册名称、选定版本、CI 三轮通过记录号）。验证：两册记录互相引用闭合。
+- [x] 4.1 推送并在 CI 终验三条通道（2026-10-04 run#94 首验：integration 绿、ci-it-diag 零新投、bench 全绿；同轮 unit 红系 ObjectLockerTest 既有偶红非本册病灶。"连续三轮"计数起点 run#94，余两轮随自然 push 达成）（unit、docker 档 integration、e2e 中继拓扑），观察连续三轮 push 无 etcd 相关红。验证：`ci-it-diag` 无新投递且 CI 记录可查（git fetch 案卷分支尖端不变即证）。
+- [x] 4.2 案卷互销：在 `fix-ci-unit-flakes/diagnosis.md` 的"IT 回归跨线记录"节追加终裁行（本册名称、选定版本、CI 三轮通过记录号）。验证：两册记录互相引用闭合。
 
 ## 5. 收口（两态通用）
 
-- [ ] 5.1 正常态：`release-note.md`——版本键变更声明、矩阵结论表、对治理册两处账目的更正提醒（"guava 唯一数值变更"与 Netty 实改矛盾；CLAUDE.md 技术栈行 Netty 版本号过时）。验证：`openspec validate upgrade-grpc-for-netty-137` 通过。
+- [x] 5.1 正常态：`release-note.md`——版本键变更声明、矩阵结论表、对治理册两处账目的更正提醒（"guava 唯一数值变更"与 Netty 实改矛盾；CLAUDE.md 技术栈行 Netty 版本号过时）。验证：`openspec validate upgrade-grpc-for-netty-137` 通过。
 - [ ] 5.2 回退态（仅矩阵全红时执行）：以 matrix.md 全红证据向治理册线出具移交记录（建议方案与 D4 一致），本册以"矩阵结论即交付物"收口。验证：移交记录存在且证据链完整（基线行+全候选行）。
-- [ ] 5.3 记忆登记：把矩阵实测的兼容分界结论（"jetcd 0.7.7 生态下 gRPC 与 Netty 137 的兼容档位/或全不兼容"）写入项目记忆，注明证据指向本册 matrix.md。验证：记忆条目含可复核的矩阵文件路径。
+- [x] 5.3 记忆登记：把矩阵实测的兼容分界结论（"jetcd 0.7.7 生态下 gRPC 与 Netty 137 的兼容档位/或全不兼容"）写入项目记忆，注明证据指向本册 matrix.md。验证：记忆条目含可复核的矩阵文件路径。
