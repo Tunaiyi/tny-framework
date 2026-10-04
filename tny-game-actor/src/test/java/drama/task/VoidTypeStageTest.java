@@ -18,9 +18,12 @@ package drama.task;
 
 import com.tny.game.actor.stage.*;
 import com.tny.game.actor.stage.invok.*;
+import com.tny.game.common.result.*;
 import org.jmock.Expectations;
 import org.junit.jupiter.api.*;
 
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,6 +32,9 @@ import static org.junit.jupiter.api.Assertions.*;
  * Created by Kun Yang on 16/1/25.
  */
 @SuppressWarnings("unchecked")
+// 类级超时兜底：任何用例若在有界轮询之外仍卡住，三十秒后由 JUnit 判红并释放，形态对齐
+// EtcdNamespaceExplorerIT 的类级 @Timeout 兜底（stabilize 判例）。
+@Timeout(value = 30, unit = TimeUnit.SECONDS, threadMode = Timeout.ThreadMode.SEPARATE_THREAD)
 public class VoidTypeStageTest extends FlowTestUnits {
 
     // @Test
@@ -271,14 +277,20 @@ public class VoidTypeStageTest extends FlowTestUnits {
         context.checking(new Expectations() {{
             exactly(2).of(fn).run();
         }});
-        long time = System.currentTimeMillis();
+        // diagnosis.md 案 #1（CI unit 工作流运行号 run#38）的处方覆盖整个测试族，diagnosis.md 本地登记 #1
+        // （2026-10-02 全量并行构建下 VoidTypeStageTest.testAwaitRun1 一次偶红）是同族相邻案件。本用例原先
+        // 用生产助手 Flows.time 的墙钟窗口作等待条件，并在用例末尾把驱动循环启动前抓取的墙钟原点与该窗口
+        // 的到期时刻比较；而生产代码 Stages.WaitFragment 要到 stage 首次执行时才抓取超时原点，两个墙钟原点
+        // 之间隔着调度间隙，CI runner 调度挤压把间隙拉大到临界值时断言就可能翻转。改造把判据换成尝试计数：
+        // 等待条件第一次调用返回 false、第二次调用返回 true，用例末尾断言条件确实推进到第二次尝试。
+        AtomicInteger times = new AtomicInteger(0);
         checkFlow(
                 Flows.of(fn::run)
-                        .waitUntil(Flows.time(TIME_100))
+                        .waitUntil(() -> times.incrementAndGet() >= 2)
                         .thenRun(fn::run)
                 , true
         );
-        assertTrue(System.currentTimeMillis() >= time + TIME_100.toMillis());
+        assertTrue(times.get() >= 2);
         context.assertIsSatisfied();
     }
 
@@ -288,25 +300,37 @@ public class VoidTypeStageTest extends FlowTestUnits {
         context.checking(new Expectations() {{
             exactly(2).of(fn).run();
         }});
-        long time = System.currentTimeMillis();
+        // diagnosis.md 案 #1（CI unit 工作流运行号 run#38）的处方覆盖整个测试族，diagnosis.md 本地登记 #1
+        // （2026-10-02 全量并行构建下 VoidTypeStageTest.testAwaitRun1 一次偶红）正是本案卷点名的用例。
+        // 墙钟窗口判据的完整机理见 testAwaitRun 处注释。期望成功段改造为尝试计数判据：等待条件第一次调用
+        // 返回 false、第二次调用返回 true，用例末尾断言条件确实推进到第二次尝试。
+        AtomicInteger times1 = new AtomicInteger(0);
         checkFlow(
                 Flows.of(fn::run)
-                        .waitUntil(Flows.time(TIME_100), TIME_200)
+                        .waitUntil(() -> times1.incrementAndGet() >= 2, TIME_200)
                         .thenRun(fn::run)
                 , true
         );
-        assertTrue(System.currentTimeMillis() >= time + TIME_100.toMillis());
+        assertTrue(times1.get() >= 2);
         context.assertIsSatisfied();
 
         context.checking(new Expectations() {{
             exactly(1).of(fn).run();
         }});
+        // diagnosis.md 案 #1（CI unit 工作流运行号 run#38）对期望失败段的改造：原先的墙钟条件到窗口尽头
+        // 就会成立，成立判定与超时判定的先后次序随调度间隙漂移换边。改造把条件改为永不成立，Flow 由
+        // waitUntil 传入的超时预算耗尽而失败，失败结论在任何调度负载下不变；计数自增保留重试确实发生的验证。
+        AtomicInteger times2 = new AtomicInteger(0);
         checkFlow(
                 Flows.of(fn::run)
-                        .waitUntil(Flows.time(TIME_200), TIME_100)
+                        .waitUntil(() -> {
+                            times2.getAndIncrement();
+                            return false;
+                        }, TIME_100)
                         .thenRun(fn::run)
                 , false
         );
+        assertTrue(times2.get() > 0);
         context.assertIsSatisfied();
     }
 
@@ -319,14 +343,24 @@ public class VoidTypeStageTest extends FlowTestUnits {
             oneOf(cfn).apply(value);
             will(returnValue(value));
         }});
-        long time = System.currentTimeMillis();
+        // diagnosis.md 案 #1（CI unit 工作流运行号 run#38）的处方覆盖整个测试族，diagnosis.md 本地登记 #1
+        // （2026-10-02 全量并行构建下 VoidTypeStageTest.testAwaitRun1 一次偶红）是同族相邻案件。墙钟窗口
+        // 判据的完整机理见 testAwaitRun 处注释。期望成功段改造为尝试计数判据：等待条件第一次调用返回
+        // 未完成结果、第二次调用返回完成结果，用例末尾断言条件确实推进到第二次尝试。
+        AtomicInteger times = new AtomicInteger(0);
         checkFlow(
                 Flows.of(fn::run)
-                        .waitFor(Flows.time(value, TIME_100))
+                        .waitFor(() -> {
+                            if (times.incrementAndGet() < 2) {
+                                return DoneResults.failure();
+                            } else {
+                                return DoneResults.success(value);
+                            }
+                        })
                         .thenApply(cfn)
                 , true, value
         );
-        assertTrue(System.currentTimeMillis() >= time + TIME_100.toMillis());
+        assertTrue(times.get() >= 2);
         context.assertIsSatisfied();
 
     }
@@ -342,26 +376,45 @@ public class VoidTypeStageTest extends FlowTestUnits {
             oneOf(ffn).apply(value);
             will(returnValue(value));
         }});
-        long time = System.currentTimeMillis();
+        // diagnosis.md 案 #1（CI unit 工作流运行号 run#38）的处方覆盖整个测试族，diagnosis.md 本地登记 #1
+        // （2026-10-02 全量并行构建下 VoidTypeStageTest.testAwaitRun1 一次偶红）是同族相邻案件。墙钟窗口
+        // 判据的完整机理见 testAwaitRun 处注释。期望成功段改造为尝试计数判据：等待条件第一次调用返回
+        // 未完成结果、第二次调用返回完成结果，用例末尾断言条件确实推进到第二次尝试。
+        AtomicInteger times1 = new AtomicInteger(0);
         checkFlow(
                 Flows.of(fn::run)
-                        .waitFor(Flows.time(value, TIME_100), TIME_200)
+                        .waitFor(() -> {
+                            if (times1.incrementAndGet() < 2) {
+                                return DoneResults.failure();
+                            } else {
+                                return DoneResults.success(value);
+                            }
+                        }, TIME_200)
                         .thenApply(ffn)
                 , true, value
         );
-        assertTrue(System.currentTimeMillis() >= time + TIME_100.toMillis());
+        assertTrue(times1.get() >= 2);
         context.assertIsSatisfied();
 
         context.checking(new Expectations() {{
             exactly(1).of(fn).run();
             never(cfn).accept(value);
         }});
+        // diagnosis.md 案 #1（CI unit 工作流运行号 run#38）对期望失败段的改造：原先的墙钟条件到窗口尽头
+        // 就会返回完成结果，成立判定与超时判定的先后次序随调度间隙漂移换边。改造把条件改为永不成立，
+        // Flow 由 waitFor 传入的超时预算耗尽而失败，失败结论在任何调度负载下不变；计数自增保留重试
+        // 确实发生的验证。
+        AtomicInteger times2 = new AtomicInteger(0);
         checkFlow(
                 Flows.of(fn::run)
-                        .waitFor(Flows.time(value, TIME_200), TIME_100)
+                        .waitFor(() -> {
+                            times2.getAndIncrement();
+                            return DoneResults.<String>failure();
+                        }, TIME_100)
                         .thenAccept(cfn::accept)
                 , false
         );
+        assertTrue(times2.get() > 0);
         context.assertIsSatisfied();
     }
 
