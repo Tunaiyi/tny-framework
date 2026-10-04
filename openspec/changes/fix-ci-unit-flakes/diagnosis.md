@@ -129,3 +129,13 @@ integration job 转绿、`ci-it-diag` 自 run#93 后零新投递。同轮 unit �
   不构成治愈证明，处方（改为有界轮询观察）仍建议由 actor 线与 common-lang 线认领执行。
 - 附带闭合：upgrade-grpc-for-netty-137 的"连续三轮 push 无 etcd 相关红"要求已由
   #95–#98 四轮超额满足（该册已归档，此行为其后置证据记录）。
+- run#100（2026-10-05 00:10 推送触发，头提交 `b665baec99fc98c45741fde51fa20a2fca260cc5`，
+  提交内容为定罪栏案 #1（CI unit 工作流运行号 run#38，TypeStageTest 与 VoidTypeStageTest 的
+  墙钟时序断言）与案 #2（GitHub Actions 运行号 run id 37165077819，ObjectLockerTest 与
+  CollectionLockTest 的并发状态观测断言）的有界轮询根治实施，连同 MapperLocker 生产缺陷修复）：
+  build 工作流结论为 success，unit 任务全部通过；取证分支 `ci-unit-diag` 尖端仍为 a46adfff，
+  未出现新投递——与电路"失败必投递、成功不投递"的已自证语义一致。结论经 GitHub REST 接口
+  按运行号与头提交双重核对取得。
+- 计数口径说明：上列"4 / 10 轮"以 run#94 起算，其时根治代码尚未落地；按定罪栏案 #1
+  "对本案影响"条目既定口径，任务 4.2 的连续零红验收计数自修复落地轮重新起算，run#100 为
+  新口径下第 1 轮。两套起算点并行存在，最终计数裁定归观察账维护者，本节不设双重标准。
