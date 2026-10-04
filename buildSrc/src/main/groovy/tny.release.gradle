@@ -1,9 +1,9 @@
 // 发布快速通道约定插件（语义契约见 openspec capability release-versioning 与
 // docs/release-process.md；形态与验收点见 openspec change revise-release-branch-flow 的
 // design.md 决策 D1/D2/D10/D11）。三个任务各固化一个顺序动作：releaseCut 切出
-// <V>.release 容器并推送（不建标签），releaseTag 在制品定型点建附注标签 v<V> 并推送
-// （标签即构建提交、先于制品），releaseMergeBack 把容器独有提交重放到所属冻结线头并
-// 普通推送；容器与标签一经创建推送永不移动，--force-with-lease 随之退役。
+// <V>.release 版本发布分支并推送（不建标签），releaseTag 在制品定型点建附注标签 v<V> 并推送
+// （标签即构建提交、先于制品），releaseMergeBack 把版本发布分支独有提交重放到所属版本开发分支头并
+// 普通推送；版本发布分支与标签一经创建推送永不移动，--force-with-lease 随之退役。
 // 通道分界（设计 D6 与 D11（四））：写与本地状态推进走 git CLI（-PgitExe 可覆盖二进制），
 // 仓库状态查询走 grgit；rev-parse、cherry 这类与重放同源、依赖执行期最新引用的查询随
 // 写侧走 CLI。三任务的 -PdryRun 预览不触 CLI，本机 PATH git 损坏时预览照常可用。
@@ -76,7 +76,7 @@ def assertNotLegacyOccupied = { String v ->
 
 tasks.register('releaseCut') {
     group = 'release'
-    description = 'Cut <V>.release container branch from a source ref and push it (no tag yet; the tag comes from releaseTag at artifact finalization). Needs -PreleaseVersion=N.M.K, optional -PreleaseFrom=<branch|tag|commit>, -PdryRun for preview.'
+    description = 'Cut <V>.release branch (version release branch) from a source ref and push it (no tag yet; the tag comes from releaseTag at artifact finalization). Needs -PreleaseVersion=N.M.K, optional -PreleaseFrom=<branch|tag|commit>, -PdryRun for preview.'
     doLast {
         def v = requireReleaseVersion('releaseCut')
         assertNotLegacyOccupied(v)
@@ -85,8 +85,8 @@ tasks.register('releaseCut') {
         def current = gitFlow.branchName.toString()
         def from = project.findProperty('releaseFrom')?.toString()
         if (from == null) {
-            // D3 与 D10（六）：仅冻结线形态允许缺省推断；hotfix 必须显式上一版本标签
-            if (!(current ==~ /\d+\.\d+\.x/)) throw new GradleException("无法从当前分支 '${current}' 推断发布来源：常规发布请在冻结线形态分支上执行本任务，" +
+            // D3 与 D10（六）：仅版本开发分支形态允许缺省推断；hotfix 必须显式上一版本标签
+            if (!(current ==~ /\d+\.\d+\.x/)) throw new GradleException("无法从当前分支 '${current}' 推断发布来源：常规发布请在版本开发分支形态分支上执行本任务，" +
                     "hotfix 必须显式给出上一版本标签（例如 -PreleaseFrom=v5.7.8，设计 D3 禁止自动推断）")
             from = current
         }
@@ -102,30 +102,30 @@ tasks.register('releaseCut') {
         requireCleanTree('releaseCut', preview)
         def plan = """releaseCut 计划：
   来源        ${from}
-  容器分支    ${targetBranch}（切自来源、检出并推送；标签创建前容器只允许快进式追加修复提交）
+  版本发布分支    ${targetBranch}（切自来源、检出并推送；标签创建前版本发布分支只允许快进式追加修复提交）
   标签        不创建——标签由 releaseTag 在制品定型后创建（标签先于制品，顺序由两步固化）
   推送远端    ${remoteName}
-后续步骤：（hotfix 先在容器上完成修复提交并推送）  ./gradlew releaseTag   然后  ./gradlew publish   然后  ./gradlew releaseMergeBack"""
+后续步骤：（hotfix 先在版本发布分支上完成修复提交并推送）  ./gradlew releaseTag   然后  ./gradlew publish   然后  ./gradlew releaseMergeBack"""
         if (preview) {
             logger.lifecycle('[dryRun] 未做任何变更\n' + plan)
             return
         }
         logger.lifecycle(plan)
         requireGit(['switch', '-c', targetBranch, from], '切发布分支失败')
-        requireGit(['push', remoteName, "refs/heads/${targetBranch}:refs/heads/${targetBranch}"], '推送容器分支失败')
-        logger.lifecycle("releaseCut 完成：${targetBranch} 已从 ${from} 切出并推送。下一步在容器上完成修复（如有）后执行 ./gradlew releaseTag（标签即制品），再 ./gradlew publish。")
+        requireGit(['push', remoteName, "refs/heads/${targetBranch}:refs/heads/${targetBranch}"], '推送版本发布分支失败')
+        logger.lifecycle("releaseCut 完成：${targetBranch} 已从 ${from} 切出并推送。下一步在版本发布分支上完成修复（如有）后执行 ./gradlew releaseTag（标签即制品），再 ./gradlew publish。")
     }
 }
 
 tasks.register('releaseTag') {
     group = 'release'
-    description = 'Create annotated tag v<V> at the release container HEAD (the artifact commit) and push it — run right before publish, after any hotfix commits are final. Needs -PreleaseVersion=N.M.K, -PdryRun for preview.'
+    description = 'Create annotated tag v<V> at the version release branch HEAD (the artifact commit) and push it — run right before publish, after any hotfix commits are final. Needs -PreleaseVersion=N.M.K, -PdryRun for preview.'
     doLast {
         def v = requireReleaseVersion('releaseTag')
         def current = gitFlow.branchName.toString()
         def targetBranch = "${v}.release"
         def tagName = "v${v}"
-        if (current != targetBranch) throw new GradleException("releaseTag 必须在目标版本的发布容器上执行（当前应为 '${targetBranch}'），当前分支 '${current}'——请先检出容器分支，或确认 hotfix 的容器号与版本号一致")
+        if (current != targetBranch) throw new GradleException("releaseTag 必须在目标版本的版本发布分支上执行（当前应为 '${targetBranch}'），当前分支 '${current}'——请先检出版本发布分支，或确认 hotfix 的发布分支号与版本号一致")
         def existing = grgiter.tag.list().find { it.name == tagName }
         // 幂等只放行"附注形态且恰指当前构建提交"；轻量标签（tagger 为空）无解引用、
         // 必死在门禁第 5 重，同错标一并拒绝（D11（一）），防止把错误标签推上远端
@@ -133,13 +133,13 @@ tasks.register('releaseTag') {
             throw new GradleException("本地标签 '${tagName}' ${existing.tagger == null ? '是轻量标签（无解引用，门禁必拒）' : '指向非当前构建提交（' + existing.commit?.id + '）'}——未推送时人工删除本地错标后重跑本任务；已推送则绝对不动，提高补丁号重发")
         }
         def remoteName = resolveRemote(current)
-        if (remoteName == null) throw new GradleException("无法确定推送目标的远端：容器分支 '${current}' 没有上游，且仓库远端数量不是 1")
+        if (remoteName == null) throw new GradleException("无法确定推送目标的远端：版本发布分支 '${current}' 没有上游，且仓库远端数量不是 1")
         if (remoteRefNames(remoteName, false, true).any { it.startsWith("refs/tags/${tagName}") }) throw new GradleException("远端 '${remoteName}' 已存在标签 '${tagName}'（或存在前缀撞名，请核对后处理）")
         def preview = project.hasProperty('dryRun')
         requireCleanTree('releaseTag', preview)
         def plan = """releaseTag 计划：
-  容器        ${current}（HEAD 即制品构建提交）
-  附注标签    ${tagName}（指向容器 HEAD 并单独推送——标签先于制品）
+  版本发布分支        ${current}（HEAD 即制品构建提交）
+  附注标签    ${tagName}（指向版本发布分支 HEAD 并单独推送——标签先于制品）
   推送远端    ${remoteName}${existing != null ? '\n  注            本地附注标签已指向当前构建提交，将跳过创建仅补推送' : ''}
 后续步骤：  ./gradlew publish   然后  ./gradlew releaseMergeBack"""
         if (preview) {
@@ -158,7 +158,7 @@ tasks.register('releaseTag') {
 
 tasks.register('releaseMergeBack') {
     group = 'release'
-    description = 'After ./gradlew publish succeeded, replay the container-only commits onto its dev line N.M.x with cherry-pick and push the line normally (linear history; the container branch and tag never move).'
+    description = 'After ./gradlew publish succeeded, replay the release-branch-only commits onto its dev line N.M.x with cherry-pick and push the line normally (linear history; the release branch and tag never move).'
     doLast {
         def current = gitFlow.branchName.toString()
         if (!(current ==~ /\d+\.\d+\.\d+\.release/)) throw new GradleException("releaseMergeBack 必须在发布分支形态（如 5.7.8.release）上执行，当前分支 '${current}'")
@@ -190,9 +190,9 @@ tasks.register('releaseMergeBack') {
         }
         def aheadNote = ahead >= 0 ? "祖先区间超前 ${ahead} 笔，" : '线本地缺失、超前笔数待执行期拉取后计，'
         def plan = """releaseMergeBack 计划（重放策略）：
-  检出 ${line} 并按补丁内容取缺、按序 git cherry-pick -x 容器独有提交（${aheadNote}pending 集以执行期 git cherry 为准）
+  检出 ${line} 并按补丁内容取缺、按序 git cherry-pick -x 版本发布分支独有提交（${aheadNote}pending 集以执行期 git cherry 为准）
   git push ${remoteName} refs/heads/${line}（普通推送；线被他人推进则拒绝后可重跑）
-  注：容器 ${current} 与标签 v${v} 永不移动——标签、容器头、制品三者对账恒等
+  注：版本发布分支 ${current} 与标签 v${v} 永不移动——标签、版本发布分支头、制品三者对账恒等
   前提确认：./gradlew publish 已成功（本任务无法核对制品仓，顺序由发布者保证）"""
         if (preview) {
             logger.lifecycle('[dryRun] 未做任何变更\n' + plan)
@@ -201,30 +201,30 @@ tasks.register('releaseMergeBack') {
         logger.lifecycle(plan)
         def lineHeadBefore = requireGit(['rev-parse', baseRef], '记录开发线原头失败').out.trim()
         // 查询前置到检出之前：pending 集按补丁内容取 '+'（已移植的自然跳过），
-        // 查询失败时 HEAD 尚未离开容器（D11（二））
+        // 查询失败时 HEAD 尚未离开版本发布分支（D11（二））
         def cherry = requireGit(['cherry', baseRef, current], '查询重放 pending 集失败（未动任何分支）')
         def pending = cherry.out.readLines().findAll { it.startsWith('+') }.collect { it.substring(1).trim() }
         if (pending.isEmpty()) {
-            logger.lifecycle("releaseMergeBack：容器 ${current} 的独有提交按补丁内容已全部存在于 '${line}'（此前已移植），无重放必要，跳过。")
+            logger.lifecycle("releaseMergeBack：版本发布分支 ${current} 的独有提交按补丁内容已全部存在于 '${line}'（此前已移植），无重放必要，跳过。")
             return
         }
         requireGit(lineBranch != null ? ['switch', line] : ['switch', '-c', line, baseRef], "检出开发线 '${line}' 失败")
         for (sha in pending) {
             // 失败按 D10（一）保全：abort（其自身失败记录不静默，D11（三））、reset 回
-            // 原线头（不清回则先前重放笔残留线上）、切回容器
+            // 原线头（不清回则先前重放笔残留线上）、切回版本发布分支
             def cp = runGit(['cherry-pick', '-x', sha])
             if (cp.exit != 0) {
                 def ab = runGit(['cherry-pick', '--abort'])
                 if (ab.exit != 0) logger.warn("cherry-pick --abort 自身失败，仍继续以 reset 回退：${ab.err.trim()}")
                 requireGit(['reset', '--hard', lineHeadBefore], "回退开发线到原头 ${lineHeadBefore.take(10)} 失败")
-                requireGit(['switch', current], '切回容器失败')
-                throw new GradleException("重放 ${sha} 到开发线 '${line}' 发生冲突，已中止并把线回退到 ${lineHeadBefore.take(10)}、切回容器 '${current}'（容器、标签、开发线均保持原状）。" +
+                requireGit(['switch', current], '切回版本发布分支失败')
+                throw new GradleException("重放 ${sha} 到开发线 '${line}' 发生冲突，已中止并把线回退到 ${lineHeadBefore.take(10)}、切回版本发布分支 '${current}'（版本发布分支、标签、开发线均保持原状）。" +
                         "请手工完成：git switch ${line} 后按序 cherry-pick -x 区间 ${baseRef}..${current} 的剩余提交，冲突解决后 git cherry-pick --continue，完成后 git push ${remoteName} refs/heads/${line}")
             }
         }
         // 先因后果：stderr 紧跟"推送失败"，恢复指引另起一行（D11（四）S3）
         def ps = runGit(['push', remoteName, "refs/heads/${line}"])
         if (ps.exit != 0) throw new GradleException("推送 ${line} 失败：${ps.err.trim()}\n本地重放已完成（线被他人推进时普通推送会被拒——先 git pull --rebase ${remoteName} ${line} 再重跑本任务即可）")
-        logger.lifecycle("releaseMergeBack 完成：${pending.size()} 笔提交已重放进 ${line}（线性历史），${line} 已推送；容器 ${current} 与标签 v${v} 就此封存、永不移动。可切回冻结线或 main 继续。")
+        logger.lifecycle("releaseMergeBack 完成：${pending.size()} 笔提交已重放进 ${line}（线性历史），${line} 已推送；版本发布分支 ${current} 与标签 v${v} 就此封存、永不移动。可切回版本开发分支或 main 继续。")
     }
 }
