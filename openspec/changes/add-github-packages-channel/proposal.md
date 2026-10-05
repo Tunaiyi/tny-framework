@@ -24,9 +24,9 @@
 
 ### Modified Capabilities
 
-（无。`release-versioning` 的分支形态白名单与仓库路由条文以"与版本形态匹配的目标仓库"泛称表述，天然容纳新目的地；`gradle-build-style` 不变更，新增配置形态已按其十一项需求逐条核验合规，核验记录见 design.md。）
+（无。`release-versioning` 的分支形态白名单与仓库路由条文以"与版本形态匹配的目标仓库"泛称表述，天然容纳新目的地；`gradle-build-style` 不变更，新增配置形态已按其十一项需求逐条核验合规，逐条核验记录在 `PLAN-发布构件到GitHub-Packages-2026-10-05.md` 第 7.4 节"gradle-build-style 逐条对照"；design.md 的 D1、D3、D6 引用其中需求一与需求二的判定。）
 
-**与在途变更 `central-publish-tnydev-group` 的时序约束**：本册与在途变更并行立项，规格基线为该变更目录中 central-publishing 增量规格（`openspec/changes/central-publish-tnydev-group/specs/central-publishing/spec.md`）的现文。归档顺序钉死为**在途变更先归档、本册后归档**：本册的通道独立性契约与 central-publishing 需求"双仓并行发布相互独立"存在衔接面（镜像是该条文所述两个目的地之外的第三目的地），只有该能力进入主账本后本册才能在 Modified Capabilities 中按主账本现文做扩写差量；若实施期间在途变更的通道枚举文本发生变化，本册 specs 差量同步核对。
+**与在途变更 `central-publish-tnydev-group` 的时序约束**：本册与在途变更并行立项，规格基线为该变更目录中 central-publishing 增量规格（`openspec/changes/central-publish-tnydev-group/specs/central-publishing/spec.md`）的现文。归档顺序钉死为**在途变更先归档、本册后归档**：本册的通道独立性契约与 central-publishing 需求"双仓并行发布相互独立"存在衔接面（镜像是该条文所述两个目的地之外的第三目的地）。该能力进入主账本后，其通道枚举文本是否需按"各目的地独立"口径扩写，由后续对账动作核对；核对若需扩写，另立一个极小的规格维护变更承接，本册差不变（本册差量全部为 ADDED，见 design.md D9）。若实施期间在途变更的通道枚举文本发生变化，本册 specs 差量同步核对。
 
 ## Impact
 
@@ -35,4 +35,4 @@
 - 文档：`docs/release-process.md`、`README.md`、`openspec/config.yaml`；方案输入文档 `PLAN-发布构件到GitHub-Packages-2026-10-05.md` 保留为调研存证，本变更归档时其结论已全部落入规格与文档正文。
 - 下游模块与 starter：全部 `tny-game-*` 发布模块与 `tny-game-starter-*` 的构件新增一处可取用地，坐标与既有通道完全一致，依赖声明无需任何改写；消费方从镜像解析需携带 GitHub 凭据（官方规则：公开包亦不开放匿名下载），接入方式在 `docs/release-process.md` 成文。
 - 不受影响：Java 包名与源码、公共 API、版本派生、五重门禁逻辑、`gradle/released-legacy.txt`、`obsolete/` 目录（非活跃范围，零触碰）、Gradle 插件模块 `tny-game-doc-gradle`（首批排除，其既有发布通道原样）。
-- 环境侧已核实事实（gh 登录态查询）：`Tunaiyi/tny-framework` 为公开仓库、默认分支 main；账户 `Tunaiyi` 名下当前无任何 Maven 包（命名空间无占号冲突）；仓库 Actions 已启用且允许全部动作；操作者现有 classic PAT 已含 `write:packages` scope。
+- 环境侧已核实事实（gh 登录态查询）：`Tunaiyi/tny-framework` 为公开仓库、默认分支 main；立项时（2026-10-05 经 gh 登录态查询核实）账户 `Tunaiyi` 名下无任何 Maven 包，命名空间无占号冲突；实施期间产生的两个沙箱探针包已随任务 5.4 删仓一并清理，复查确认账户级包清单重新为空（2026-10-05）；仓库 Actions 已启用且允许全部动作；操作者现有 classic PAT 已含 `write:packages` scope。
