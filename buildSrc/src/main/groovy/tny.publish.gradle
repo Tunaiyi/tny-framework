@@ -61,9 +61,9 @@ tasks.matching { publishesToSharedRepository(it) }.configureEach { task ->
 
 def validateBranchVersionShape = { problems, gitFlow, version, currentBranch, devBranch, releaseBranch, legacyLine, maintenanceBranch ->
     if (maintenanceBranch) {
-        def base = gitFlow.parseBranchVersion(currentBranch)
-        if (!(version ==~ /\d+\.\d+\.\d+/) || !version.startsWith(base.substring(0, base.lastIndexOf('.') + 1))) {
-            problems << "release 维护分支 '${currentBranch}' 的发布版本为 '${version}'，必须是该系列（${base}.*）的裸三段号"
+        def base = gitFlow.parseBranchVersion(currentBranch) - '.x'
+        if (!(version ==~ /\d+\.\d+\.\d+/) || !version.startsWith("${base}.")) {
+            problems << "release 维护分支 '${currentBranch}' 的发布版本为 '${version}'，必须是该系列（${base}.K）的裸三段号"
         }
     } else if (legacyLine) {
         def expected = currentBranch + gitFlow.SNAPSHOT_PACK_SUFFIX
@@ -93,7 +93,9 @@ def validateNextPatchNumber = { problems, gitFlow, version, currentBranch, maint
     if (!maintenanceBranch || !(version ==~ /\d+\.\d+\.\d+/)) {
         return
     }
-    def base = gitFlow.parseBranchVersion(currentBranch)
+    // 系列 base 取分支编号去 .x 尾缀（parseBranchVersion 只剥 release/ 前缀得 5.8.x，
+    // 直接当系列名会让标签枚举与期望号双双失配——门禁矩阵 G3 实锤）
+    def base = gitFlow.parseBranchVersion(currentBranch) - '.x'
     def rmName = gitFlow.resolveRemoteName(currentBranch)
     if (rmName == null) {
         problems << "无法确定核对下一补丁号的远端：分支 '${currentBranch}' 没有上游且仓库远端数量不是 1"
