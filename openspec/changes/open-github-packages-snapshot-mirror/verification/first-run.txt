@@ -1,0 +1,39 @@
+date: 2026-10-05T15:59:53Z 任务 5.2 首次快照镜像运行取证（run 37336175323，用户批准话术：批准对 5.7.x dispatch 首跑）
+conclusion=failure
+Pick active dev lines	Resolve branch matrix	2026-10-05T15:51:25.4899085Z   echo 'lines=[""]' >> "$GITHUB_OUTPUT"
+Pick active dev lines	Resolve branch matrix	2026-10-05T15:51:25.4900611Z     | sed 's/^/lines=/' >> "$GITHUB_OUTPUT" 2>/dev/null \
+Pick active dev lines	Resolve branch matrix	2026-10-05T15:51:25.4900997Z     || echo 'lines=[]' >> "$GITHUB_OUTPUT"
+Mirror snapshot of 2.0.x	Ensure branch context for the gate	﻿2026-10-05T15:51:36.1789913Z ##[group]Run git checkout -B "2.0.x"
+Mirror snapshot of 2.0.x	Ensure branch context for the gate	2026-10-05T15:51:36.1790191Z git checkout -B "2.0.x"
+Mirror snapshot of 2.0.x	Publish snapshot mirror to GitHub Packages (five-fold gate runs inside)	2026-10-05T15:51:37.8222597Z ./gradlew publishAllPublicationsToGithubPackagesRepository
+Mirror snapshot of 2.0.x	Publish snapshot mirror to GitHub Packages (five-fold gate runs inside)	2026-10-05T15:51:37.8277974Z   GRADLE_BUILD_ACTION_SETUP_COMPLETED: true
+Mirror snapshot of 2.0.x	Publish snapshot mirror to GitHub Packages (five-fold gate runs inside)	2026-10-05T15:51:37.8278137Z   GRADLE_BUILD_ACTION_CACHE_RESTORED: true
+Mirror snapshot of 4.2.x	Ensure branch context for the gate	﻿2026-10-05T15:51:36.6628031Z ##[group]Run git checkout -B "4.2.x"
+Mirror snapshot of 4.2.x	Ensure branch context for the gate	2026-10-05T15:51:36.6628432Z git checkout -B "4.2.x"
+Mirror snapshot of 4.2.x	Publish snapshot mirror to GitHub Packages (five-fold gate runs inside)	2026-10-05T15:51:39.1926136Z ./gradlew publishAllPublicationsToGithubPackagesRepository
+Mirror snapshot of 4.2.x	Publish snapshot mirror to GitHub Packages (five-fold gate runs inside)	2026-10-05T15:51:39.1987920Z   GRADLE_BUILD_ACTION_SETUP_COMPLETED: true
+Mirror snapshot of 4.2.x	Publish snapshot mirror to GitHub Packages (five-fold gate runs inside)	2026-10-05T15:51:39.1988177Z   GRADLE_BUILD_ACTION_CACHE_RESTORED: true
+Mirror snapshot of 3.1.x	Ensure branch context for the gate	﻿2026-10-05T15:51:36.6708341Z ##[group]Run git checkout -B "3.1.x"
+Mirror snapshot of 3.1.x	Ensure branch context for the gate	2026-10-05T15:51:36.6708758Z git checkout -B "3.1.x"
+Mirror snapshot of 3.1.x	Publish snapshot mirror to GitHub Packages (five-fold gate runs inside)	2026-10-05T15:51:37.6106463Z ./gradlew publishAllPublicationsToGithubPackagesRepository
+Mirror snapshot of 3.1.x	Publish snapshot mirror to GitHub Packages (five-fold gate runs inside)	2026-10-05T15:51:37.6174754Z   GRADLE_BUILD_ACTION_SETUP_COMPLETED: true
+Mirror snapshot of 3.1.x	Publish snapshot mirror to GitHub Packages (five-fold gate runs inside)	2026-10-05T15:51:37.6175055Z   GRADLE_BUILD_ACTION_CACHE_RESTORED: true
+Mirror snapshot of 3.0.x	Ensure branch context for the gate	﻿2026-10-05T15:51:34.9072922Z ##[group]Run git checkout -B "3.0.x"
+Mirror snapshot of 3.0.x	Ensure branch context for the gate	2026-10-05T15:51:34.9073438Z git checkout -B "3.0.x"
+Mirror snapshot of 3.0.x	Publish snapshot mirror to GitHub Packages (five-fold gate runs inside)	2026-10-05T15:51:37.5324153Z ./gradlew publishAllPublicationsToGithubPackagesRepository
+Mirror snapshot of 3.0.x	Publish snapshot mirror to GitHub Packages (five-fold gate runs inside)	2026-10-05T15:51:37.5385901Z   GRADLE_BUILD_ACTION_SETUP_COMPLETED: true
+Mirror snapshot of 3.0.x	Publish snapshot mirror to GitHub Packages (five-fold gate runs inside)	2026-10-05T15:51:37.5386153Z   GRADLE_BUILD_ACTION_CACHE_RESTORED: true
+Mirror snapshot of 5.0.x	Ensure branch context for the gate	﻿2026-10-05T15:51:35.4976066Z ##[group]Run git checkout -B "5.0.x"
+Mirror snapshot of 5.0.x	Ensure branch context for the gate	2026-10-05T15:51:35.4976522Z git checkout -B "5.0.x"
+===运行后镜像侧只读核对===
+30
+dir-metadata-5.7.x => 200
+<timestamp>20261005.155147
+<buildNumber>1
+
+=== 判读与裁决补记（2026-10-05T16:22:16Z） ===
+failure 归因：矩阵混入退役历史线（2.0.x 至 5.6.x 等），其旧分支 wrapper 缺 jar（Could not find or load main class GradleWrapperMain）全部秒败；本线作业 Mirror snapshot of 5.7.x => success——首跑主判据全部达成。
+触发原因双重：其一，操作侧 dispatch 漏传 -f branch=5.7.x（inputs.branch 为空走了枚举路径）；其二，设计侧按分支存在性枚举与线退役不删分支的事实冲突。
+裁决：用户 2026-10-06 定案定时口径为线谱系登记唯一依据（每日仅当前开发线，维护线经人工 dispatch 指定补跑）；workflow enumerate 步骤与全账本措辞已同步修订（见 tasks 第 6 组）。
+=== 包数复核（per_page=100） ===
+51
