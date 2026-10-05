@@ -48,6 +48,30 @@ jobs:
             esac
           done
           exit $bad
+  # 维护分支只收补丁守卫（capability branch-integration-gates）：目标为 release/** 的 PR
+  # 中任何 feat 类提交首行即拒绝——特性只进开发版本分支并随其首发到达下游。
+  release-line-patch-only:
+    name: Release lines accept patches only
+    if: github.event_name == 'pull_request' && startsWith(github.base_ref, 'release/')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Reject feat commits targeting release lines
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          bad=0
+          for sha in $(git rev-list "$BASE"..HEAD); do
+            subject=$(git log -1 --format=%s "$sha")
+            case "$subject" in
+              feat:*|"feat("*)
+                echo "::error ::提交 $(git log -1 --format=%h "$sha") 是特性提交（$subject），不得合入 release 维护分支——特性走开发版本分支并随下一系列首发"
+                bad=1 ;;
+            esac
+          done
+          exit $bad
   unit:
     name: Unit tests (no Docker)
     runs-on: ubuntu-latest

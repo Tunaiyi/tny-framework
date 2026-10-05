@@ -178,3 +178,32 @@ tasks.register('mergeUpward') {
         logger.lifecycle("mergeUpward 全部完成：${source} 的补丁已逐级到达 ${targets.join('、')}；源分支与既有标签未移动。")
     }
 }
+
+// 退役前检查（capability branch-integration-gates"删除分支之前执行退役检查"的 gradle 侧执法点）：
+// 在候选退役的 release 维护分支上执行，枚举该分支上已提交但 main 尚未包含的提交（未集成提交）——
+// 确需保留的先完成 mergeUpward，判定废弃的逐笔把理由登记进线谱系登记表处置列后，本检查方可通过。
+// 平台侧防线（GitHub 分支保护禁删除）与本地删除命令互不替代：本任务是删除前的核对清单。
+tasks.register('retireGuard') {
+    group = 'release'
+    description = 'Check uncollected commits on the current release maintenance branch before retiring (deleting) it: lists commits not yet contained in main and refuses unless the lineage registry disposition column records their keep-or-discard decision.'
+    doLast {
+        requireRemote()
+        if (!(current ==~ /release\/\d+\.\d+\.x/)) {
+            throw new GradleException("retireGuard 必须在待退役的 release 维护分支上执行，当前分支 '${current}'")
+        }
+        requireGit(['fetch', remoteName, "refs/heads/${current}:refs/remotes/${remoteName}/${current}"], '刷新维护分支远端引用失败')
+        runGit(['fetch', remoteName, 'refs/heads/main:refs/remotes/' + remoteName + '/main'])
+        def uncollected = runGit(['log', '--oneline', "${remoteName}/main..${remoteName}/${current}"]).out.readLines().findAll { it.trim() }
+        if (!uncollected.isEmpty()) {
+            throw new GradleException("退役检查未通过：${current} 上有 ${uncollected.size()} 笔未集成提交——\n" +
+                    uncollected.join('\n') +
+                    "\n确需保留的先执行 mergeUpward 完成向上合并；判定废弃的在 docs/release-process.md 线谱系登记表处置列逐笔写明理由后重跑本任务。")
+        }
+        def lineage = new File(rootDir, 'docs/release-process.md')
+        def dispositioned = lineage.exists() && lineage.text.readLines().any { it.contains(current) }
+        if (!dispositioned) {
+            throw new GradleException("退役检查未通过：线谱系登记表中没有 '${current}' 的行——先按退役条款把该线状态改为已退役并登记处置，再执行删除")
+        }
+        logger.lifecycle("retireGuard 通过：${current} 无未集成提交且已在登记表记状态；可由仓库管理员删除远端分支（本地 git push ${remoteName} --delete ${current}）。")
+    }
+}

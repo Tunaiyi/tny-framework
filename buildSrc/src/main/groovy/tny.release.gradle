@@ -154,6 +154,16 @@ tasks.register('releaseTag') {
                             ' / 本地 ' + gitFlow.commitId.take(10) + '）——先把分支头推送对齐再重跑')
                 }
                 assertNextPatchNumber(remoteName, base, v)
+                // 例外入账可见化（capability branch-integration-gates 例外通道）：本次发版
+                // 携带的 propagated-as 登记提交逐条打印，使"例外随版发出"对发布者与审计可见。
+                def patches = GitCli.remoteTagPatches(rootDir, gitExe, remoteName, base)
+                if (!patches.isEmpty()) {
+                    def carried = runGit(['log', '--oneline', '--grep=propagated-as', "v${base}.${patches.max()}..HEAD"]).out
+                            .readLines().findAll { it.trim() }
+                    if (!carried.isEmpty()) {
+                        logger.lifecycle("releaseTag：本次 ${v} 将随版发出 ${carried.size()} 笔例外登记提交：\n" + carried.join('\n'))
+                    }
+                }
             } else {
                 logger.lifecycle('[dryRun] 提示：远端头对齐与下一补丁号校验在真实执行时进行')
             }
