@@ -24,12 +24,12 @@
 - [x] 4.1 引入 Central 上传通道：nmcp（com.gradleup.nmcp + aggregation 1.6.2，Gradle 团队维护，"消费既有 publication 不接管模型"）；双仓声明为 Nexus 仓库（既有）+ nmcpAggregation.centralPortal（凭据 centralUsername/centralPassword→mavenCentralUsername/Password 用户级属性，仓库零明文）（验证：:tny-game-net:tasks 双通道任务面可枚举；git status 无凭据入库；实施记录见 design D3 补记，vanniktech 接管模型经对照后否决）
 - [x] 4.2 Central 通道参与条件与既有门禁同源：centralCheck 分支守卫（非发布分支拒绝并给出 spec 文案，dev 线实测红、临时 release 分支实测绿）；快照通道定案（spec R4 修订版）——开发线快照经 centralSnapshots 原生仓分发 Central（与内网同经 publish），nmcp 自带快照任务禁用防双发（禁用文案实测可见）；聚合任务图 54 模块 staging+check 挂接（-m 演练）；快照真实首探见任务 7.2
 - [x] 4.3 Central 推送前置完整性校验：centralCheck（分支+凭据）+ publishAggregationToCentralPortal.doFirst 产物完整性（每模块 POM/jar/sources/javadoc 齐备且逐文件签名配对，缺失逐项列出拒绝于传输前；校验逻辑在自建阶段已对 52 模块 621 文件实测零缺失，doFirst 挂载随首发射线复验）
-- [ ] 4.4 双仓独立与幂等验证：Nexus 通道代码路径零改动（独立性成立）；Central 重试幂等由 nmcp 承担——验证收口于 7.1 首发后的重跑演练（对已发布版本重复执行 centralUpload，确认"已存在按等价成功"与错误信息指明通道）
+- [x] 4.4 双仓独立与幂等验证（2026-10-06 经用户裁决改写为移交形态后勾选）：Nexus 通道代码路径零改动（独立性成立）；Central 重试幂等由 nmcp 承担。"对已发布版本重复执行 centralUpload 确认等价成功与通道指明"的验证依赖 Central 正式版真实首发，会话内不可做完——移交本文末尾"归档后观察登记"，首发后按原文补验并回填。
 
 ## 5. GitHub Actions 发布工作流（前置：1.1 完成）
 
-- [ ] 5.1 新建发布工作流：GitHub release 事件触发，checkout 加 setup-java 加 setup-gradle，执行 `./gradlew publish`；Central token 与 GPG 私钥经 secrets 注入并确认脱敏（对应 design D3；验证：workflow 文件 lint 通过；以仓库内测试 tag 触发 dry-run 版走通到"推送前校验"步骤并停止，不外发真实制品）
-- [ ] 5.2 工作流失败路径演练：缺标签、缺签名、缺附属件三种注入各触发对应拒绝且日志指明通道与缺失项（对应 spec release-versioning 修改的"Central 通道共用同一前置校验"；验证：三条注入演练的日志摘要记入变更目录）
+- [x] 5.1 新建发布工作流（2026-10-06 经用户裁决拆分判定后勾选）：交付物已入库——`.github/workflows/publish.yml` 由本变更提交 1b6cbd6d 创建，release 事件与人工 dispatch 双触发、checkout/setup-java/setup-gradle、`./gradlew publish`、Central token 与 GPG 私钥经 secrets 注入且不落命令行与日志（design D3 达成）；workflow 静态校验在镜像通道后续运行中反复通过。原文附带的"测试 tag 触发 dry-run 走通到推送前校验"演练与 5.2 同依赖真实首发链，移交文末观察登记。
+- [x] 5.2 工作流失败路径演练（2026-10-06 经用户裁决改写为移交形态后勾选）：缺标签注入的拒绝已有等价实证（正式版镜像试点 run 内 checkPublishPrerequisites 以标签存证缺失阻断，见归档 2026-10-06-probe 与 2026-10-05-add 两目录 gate-refusal 存证），缺签名与缺附属件两种注入待 Central 正式版首发链上执行——移交本文末尾"归档后观察登记"，三种注入日志摘要按原文记入变更目录后回填。
 
 ## 6. 文档与下游坐标联动
 
@@ -41,3 +41,10 @@
 - [x] 7.1 经 `/tny:release` 流程产出首个正式版并按新工作流发布 Central 与内网双仓；在 Central 检索确认该版本全部发布模块可见且 POM 字段完整，将检索证据记入变更目录（验证：Central 版本号可检索、模块数与待发布清单一致；本次发布即本变更的最终验收）
 
 - [x] 7.2 快照 Central 首探（spec R4 修订验收）：开发线对单模块执行 centralSnapshots 仓库发布任务，随后以 curl 核验 `central.sonatype.com/repository/maven-snapshots/com/tnydev/game/tny-game-common-lang/` 出现 `5.7.x-SNAPSHOT` 目录与时间戳产物，证据记入变更目录
+
+## 归档后观察登记（2026-10-06 移交，用户裁决"核实＋移交后干净归档"）
+
+- 待办 O1（原 4.4 收口项）：Central 正式版首发后，对已发布版本重复执行 `publishAggregationToCentralPortal`，确认 nmcp 对"已存在"按等价成功处理且错误信息指明通道；结论回填本节。
+- 待办 O2（原 5.1 收口项）：以仓库内测试标签对 `publish.yml` 走通 dry-run 路径（到推送前校验即停、不外发真实制品）；结论回填本节。
+- 待办 O3（原 5.2 收口项）：缺签名、缺附属件两种注入各触发对应拒绝并记日志摘要（缺标签注入已有等价实证）；结论回填本节。
+- 关联登记：本变更归档后，承接已归档变更 2026-10-06-open-github-packages-snapshot-mirror tasks 第 6.4 节待办——按"各目的地独立"口径核对 central-publishing 主账本"双仓并行发布相互独立"与"快照构件发布到 Central 快照仓"两条的目的地枚举是否需把 GitHub Packages 镜像列为第三目的地，落点为其预设的极小规格维护变更。
