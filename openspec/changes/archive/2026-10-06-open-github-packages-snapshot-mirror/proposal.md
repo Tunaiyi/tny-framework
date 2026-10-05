@@ -35,4 +35,4 @@
 - 运维面（成文为已知限制，不在本变更解决）：GitHub Packages 对历史时间戳快照构建无自动清理记载，定时形态下每条活跃开发线每年约 365 套构件单调累积；需要清理时按文档阶梯的 GraphQL 删除手段处置，自动清理机制若未来立项另议。
 - 下游模块与 starter：零影响（消费坐标不变；新镜像快照通道为可选取用面）。
 - 在途变更：`central-publish-tnydev-group` 的差量能力集与本差量不相交且基线已在主账本，两变更可并行、无归档先后依赖；本变更 tasks 登记其归档后的通道枚举联动核对项。
-- 关联存证：调查变更 `probe-github-packages-snapshot-support` 的 `verification/snapshot-spike.md` 为本变更全部事实从句的引用源（引用其归档后路径）；调查变更自身的沙箱清理两项待办（含令牌明文临时文件与 `gpr-snapshot-spike` 仓库删除）不受本变更阻塞，另行处置。
+- 关联存证：调查变更（已归档）归档目录 `2026-10-06-probe-github-packages-snapshot-support` 的 `verification/snapshot-spike.md` 为本变更全部事实从句的引用源（引用其归档后路径）；调查变更自身的沙箱清理两项待办（含令牌明文临时文件与 `gpr-snapshot-spike` 仓库删除）不受本变更阻塞，另行处置。
