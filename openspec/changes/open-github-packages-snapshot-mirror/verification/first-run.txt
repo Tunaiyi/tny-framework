@@ -37,3 +37,22 @@ failure 归因：矩阵混入退役历史线（2.0.x 至 5.6.x 等），其旧�
 裁决：用户 2026-10-06 定案定时口径为线谱系登记唯一依据（每日仅当前开发线，维护线经人工 dispatch 指定补跑）；workflow enumerate 步骤与全账本措辞已同步修订（见 tasks 第 6 组）。
 === 包数复核（per_page=100） ===
 51
+
+=== 复验运行（任务 6.3，run 37340434944，2026-10-06） ===
+触发方式：dispatch 不填线名 → 检验线谱系解析路径（schedule 等价）。
+conclusion=success
+Mirror snapshot of 5.7.x	Complete job	2026-10-05T16:30:52.8270067Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-java@v4, gradle/actions/setup-gradle@v3. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Mirror snapshot of 5.7.x	Complete job	﻿2026-10-05T16:30:52.8068908Z Cleaning up orphan processes
+Mirror snapshot of 5.7.x	Ensure branch context for the gate	2026-10-05T16:24:10.8755219Z git checkout -B "5.7.x"
+Mirror snapshot of 5.7.x	Ensure branch context for the gate	2026-10-05T16:24:10.8974735Z shell: /usr/bin/bash -e {0}
+Mirror snapshot of 5.7.x	Ensure branch context for the gate	2026-10-05T16:24:10.8974977Z env:
+Mirror snapshot of 5.7.x	Ensure branch context for the gate	2026-10-05T16:24:10.8975364Z   ORG_GRADLE_PROJECT_NEXUS_USERNAME: ***
+Mirror snapshot of 5.7.x	Ensure branch context for the gate	2026-10-05T16:24:10.8975596Z   ORG_GRADLE_PROJECT_NEXUS_PASSWORD: ***
+Mirror snapshot of 5.7.x	Ensure branch context for the gate	2026-10-05T16:24:10.8977215Z   ORG_GRADLE_PROJECT_GITHUB_PACKAGES_KEY: ***
+Mirror snapshot of 5.7.x	Ensure branch context for the gate	2026-10-05T16:24:10.8977416Z ##[endgroup]
+Mirror snapshot of 5.7.x	Ensure branch context for the gate	2026-10-05T16:24:11.0251090Z Reset branch '5.7.x'
+Mirror snapshot of 5.7.x	Ensure branch context for the gate	2026-10-05T16:24:11.0253047Z Your branch is up to date with 'origin/5.7.x'.
+Mirror snapshot of 5.7.x	Ensure branch context for the gate	﻿2026-10-05T16:24:10.8754914Z ##[group]Run git checkout -B "5.7.x"
+=== 快照 buildNumber 推进复核 ===
+<timestamp>20261005.162420
+<buildNumber>2
