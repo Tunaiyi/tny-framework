@@ -3,11 +3,12 @@ name: build
 on:
   pull_request:
   push:
-    # 分支入口按形态通配（revise-release-branch-flow 组 4）：main 是特性开发顶点（转正后
-    # 常驻），'*.*.x' 命中全部冻结线形态（5.7.x、未来的 5.8.x/6.0.x 自动覆盖，开新线
-    # 不再需要改本文件）；容器分支（.release 结尾）与个人工位不在触发面——发布前验证由
-    # PR 通道与门禁的 check 依赖承担。
-    branches: [ main, '*.*.x' ]
+    # 分支入口按形态通配（redesign-devline-integration-model 组 5 更新）：main 常驻；
+    # 'dev/**' 命中全部开发版本分支（Actions 过滤中 * 不跨斜杠、** 跨段——GitHub 官方
+    # filter-pattern 规则，2026-10-06 查档并按活体探测复核）；'release/**' 命中维护分支
+    # （补丁合入后发布前的 CI 验证走推送触发）；'*.*.x' 保留覆盖祖父登记线（5.7.x）至
+    # 其退役；个人 feat/fix 工位不在推送触发面——它们的验证走 pull_request 通道。
+    branches: [ main, 'dev/**', 'release/**', '*.*.x' ]
   schedule:
     - cron: '37 18 * * *'   # nightly（UTC18:37 错峰）
   workflow_dispatch: {}     # 手动触发（bench-routine 首验/补跑用）

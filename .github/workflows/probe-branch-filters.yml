@@ -1,0 +1,18 @@
+# 通配语义探测（redesign-devline-integration-model 任务 5.1）：唯一待决问题是
+# GitHub Actions 分支过滤器里 `*` 是否跨越斜杠——'dev/5.8.x' 能否命中现行 '*.*.x'。
+# 探测法：过滤器只写 '*.*.x' 一种，然后分别推送两条分支：
+#   probe-a.5.8.x（不含斜杠的对照，任何语义下都应触发）与 probe-a/5.8.x（含斜杠，
+#   触发即证明 * 跨斜杠，不触发即证明不跨）。workflow_dispatch 提供手动重放。
+# 结论回填 apply-notes/group5-verification.md 后，据此定正式过滤器并删除本文件（任务 5.4）。
+name: probe-branch-filters
+on:
+  push:
+    branches: [ '*.*.x' ]
+  workflow_dispatch: {}
+jobs:
+  echo:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "ref=${{ github.ref }} event=${{ github.event_name }}"
+          echo "只有上表过滤器命中的 push 才会产生本日志"

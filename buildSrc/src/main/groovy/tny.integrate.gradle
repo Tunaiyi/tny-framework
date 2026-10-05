@@ -25,7 +25,12 @@ def requireRemote = {
     if (remoteName == null) throw new GradleException("无法确定远端：分支 '${current}' 没有上游且仓库远端数量不是 1")
     remoteName
 }
-def num = { String branch -> def m = (branch =~ /(\d+)\.(\d+)\.x$/); m.matches() ? (m[0][1] as int) * 1000 + (m[0][2] as int) : -1 }
+// 编号提取用 find 语义（'dev/5.7.x' 这类带前缀名无法全串 matches，误用 matches 会让
+// 一切数值比较静默失效——e2e 第五轮实锤的教训）；键值 主*1000+次 为字典序数值化。
+def num = { String branch ->
+    def m = (branch =~ /(\d+)\.(\d+)\.x$/)
+    m.find() ? (m.group(1) as int) * 1000 + (m.group(2) as int) : -1
+}
 def remoteRefHas = { String branch ->
     runGit(['ls-remote', '--heads', remoteName, "refs/heads/${branch}"]).out.trim() != ''
 }
