@@ -31,7 +31,7 @@ context: |
     文件转存到 baseline 目录的，必须先运行生成该输出文件的任务再做转存，否则抓到的是空文件
     而不是现状；环境侧统一为 JDK 固定 Corretto 21、不注入 JAVA_TOOL_OPTIONS、并剔除 daemon
     告警与进度等噪声行及空行。
-  - 发布：maven-publish 推送到 Nexus 与 Maven Central（tny.publish 与 tny.central 约定插件），
+  - 发布：maven-publish 推送到 Nexus 与 Maven Central，正式版本另由 CI 镜像到 GitHub Packages（tny.publish、tny.central 与 tny.github-packages 约定插件），
     组号由根 build.gradle 单一事实源派生为 com.tnydev.game，唯一例外是 Gradle 插件模块沿用 com.tny.game；
     下游业务工程依赖已发布 API，公共接口的兼容性是硬约束。
   - 非活跃范围：obsolete/ 目录与 settings.gradle 中已注释的模块禁止修改、禁止作为

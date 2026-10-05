@@ -103,7 +103,8 @@
   3. `./gradlew releaseTag -PreleaseVersion=5.8.0`——在版本发布分支 HEAD 建附注标签 `v5.8.0`
      并推送；标签先于制品。
   4. `./gradlew publish`——五重门禁（含标签解引用对当前构建提交）通过后制品入正式仓；
-     Central 第二通道按"Central 发布"一节执行。
+     Central 第二通道按"Central 发布"一节执行；GitHub Packages 镜像由工作流第三步骤在 CI 执行
+     且仅收正式版本，本机命令不含镜像（原因与形态见"GitHub Packages 镜像通道"一节）。
   5. `./gradlew releaseMergeBack -PgitExe=/usr/bin/git`——把版本发布分支独有提交重放回所属线；
      常规发布切支后无新提交时如实报告跳过。
 - **验证点**：发布后 `git ls-remote github refs/heads/5.8.0.release`、
@@ -182,6 +183,10 @@
 2. 快照仓（maven-snapshots）配置按天数的保留清理策略：滚动快照坐标 `N.M.x-SNAPSHOT`
    每在线上执行一次 publish 即追加一份时间戳产物且永不互相顶替（本仓库没有自动夜间
    发布工作流，快照发布是人工动作，口径见流程五），无保留策略则磁盘无界增长。
+3. GitHub Packages 镜像通道对同一版本的已存在文件拒绝覆盖上传（同名文件重复上传返回
+   HTTP 409，本仓沙箱实测证实；官方条文未记载此规则），正式版本进入该通道因此是一次
+   成型动作；失败处置按"GitHub Packages 镜像通道"一节的阶梯执行，不得以重跑全量发布
+   作为默认补救。
 
 ## Central 发布（正式版第二通道）
 
@@ -198,6 +203,68 @@
   `NEXUS_USERNAME/PASSWORD`。前置条件：`com.tnydev.game` 命名空间已在 Portal 完成 DNS 验证。
 - 快照通道：开发线 `./gradlew publish` 自动分发**内网快照仓与 Central 快照仓**双目的地（条件=快照版本形态且本机配置 `mavenCentralUsername/Password`，缺凭据机器仅发内网；Central 快照 90 天自动清理，权威归档在内网）。
 - 首版验收：Central 检索到 `com.tnydev.game:tny-game-*:<版本>` 全模块清单后，本流程定版。
+
+## GitHub Packages 镜像通道（正式版第三目的地）
+
+自 add-github-packages-channel 变更起，裸号正式版本构件镜像分发到
+`https://maven.pkg.github.com/tunaiyi/tny-framework`（URL 的属主段按官方注册表命名规则全小写，
+与 POM scm 段页面地址的大小写形态不同属有意为之，两处用途不同）。本通道是尽力镜像：
+权威归档仍是内网 Nexus 仓，免凭据的公开分发仍是 Maven Central。
+
+- **触发形态**：仅由 `.github/workflows/publish.yml` 的第三个步骤在持续集成执行
+  （release.published 事件或指定发布分支的人工 workflow_dispatch）。镜像凭据只经单一密钥属性
+  `GITHUB_PACKAGES_KEY` 在 CI 注入（值为内置 `GITHUB_TOKEN`，Basic 认证用户名由构建插件固定
+  为仓库属主账户名），发布者本机不得把它写入用户级 `~/.gradle/gradle.properties`——未配置
+  凭据密钥的机器根本不声明该仓库，本机 `./gradlew publish` 的行为与本通道上线前逐任务一致，
+  也不会与 CI 步骤产生同号双发。
+- **收录范围**：java 线全部发布模块与 BOM 模块收录；快照构件不收（下一条目交代原因）；
+  Gradle 插件模块 `tny-game-doc-gradle` 首批不收——其构件无签名、POM 无元数据组，镜像面貌
+  与主通道不一致，未来纳入由独立变更裁决。镜像不减免任何门禁：四项属性断言、分支形态
+  白名单、仓库路由、同号黑名单与发布标签远端存证照常先行，缺附注标签 `vN.M.K` 时镜像
+  同样被拒绝。
+- **快照为什么不进镜像（2026-10-05 沙箱实测，记录见 openspec change
+  add-github-packages-channel 目录 `verification/sandbox-probe.md`）**：Gradle 上传快照文件用
+  带时间戳的文件名，注册表接受重复上传；但注册表不生成含快照时间戳块的元数据，也不提供
+  目录列举，消费方的 Maven 与 Gradle 都无法解析 `-SNAPSHOT` 坐标——上传产物是任何人都取用
+  不到的孤儿文件，因此快照从声明层面被守卫排除。快照的消费走两条既有通路：内网快照仓
+  （开发线 `./gradlew publish`）与 Central 快照仓（本机配置 Central 凭据时自动分发）。
+- **同号重复上传的判读与处置阶梯**：注册表对已存在的文件拒绝覆盖（HTTP 409），正式版本
+  因此一次成型。重跑工作流收到 409 时先按"构件已在镜像中"的存证判读——以只读方式核对版本
+  清单（包页面或 `gh api "users/Tunaiyi/packages?package_type=maven"`），不为消除报错而删版本。
+  修正需要发布构件时的处置次序：① 首选提高补丁号走完整发布流程（releaseCut 至
+  releaseMergeBack，与"标签一经创建不可移动"的既有纪律一致）；② 必须保留同号时，由对
+  仓库有管理权限者先删除受影响版本——实测工作流内置令牌经 GraphQL `deletePackageVersion`
+  即可删除（参数要用 GraphQL 全局节点 ID，REST 清单里的数字 ID 不可混用），删除后同一
+  版本号可立即重新上传；注意官方限制：公共包的任一版本下载量超过 5000 次即无法删除，
+  删除后 30 天内可恢复，采用本路线前以一次性测试版本确认约束满足；③ 仅部分模块已镜像时，
+  可对未上传模块逐个补跑 `./gradlew :模块名:publishAllPublicationsToGithubPackagesRepository`
+  ——该任务命中共享仓门禁谓词，会连带执行全量 check 与标签存证核对，并非轻量操作，且
+  未配置镜像凭据的机器上该任务根本不存在。
+- **消费方接入**：GitHub Packages 对公开包同样要求凭据下载，不存在匿名解析。凭据须创建
+  personal access tokens (classic)（fine-grained 令牌截至 2026-10-05 不能访问 Packages，官方
+  缺口清单注明"并非永久"，如日后放开以官方现文为准）并勾选 `read:packages` scope；因 Maven
+  包的权限完全继承所在仓库，官方规则同时要求 `repo` scope，建议为接入本镜像单独创建最小
+  用途的令牌。Gradle 下游工程把下面条目加进其依赖解析仓库的声明位置——采用集中声明的工程
+  （`settings.gradle` 启用 `dependencyResolutionManagement` 的，本仓库自身即此形态）加进它的
+  `repositories` 块，未采用的加进自身构建脚本的 `repositories` 块，两种形态的条目内容相同：
+
+      maven {
+          url = 'https://maven.pkg.github.com/tunaiyi/tny-framework'
+          credentials {
+              username = providers.gradleProperty('gprUser').get()
+              password = providers.gradleProperty('gprToken').get()
+          }
+      }
+
+  （`gprUser` 与 `gprToken` 写在用户级 `~/.gradle/gradle.properties`，或由 CI 经
+  `ORG_GRADLE_PROJECT_*` 注入；属性键名不得含点号。两个属性任一缺失时 Gradle 在配置期
+  报缺属性、错误可读，不会带着空凭据到解析期才收认证错误。）Maven 下游在 `pom.xml` 声明
+  同一 URL，并在 `~/.m2/settings.xml` 配置同 id 的 server 凭据；本通道不收快照，仓库条目
+  无需 snapshots 开关。
+- **体量与速率**：公共仓库的包存储与流量免费（官方计费条文）。一次全量发布向镜像上传约
+  六十余个构件族、上千次 PUT（每构件附 md5、sha1、sha256、sha512 四种校验和）。限流类
+  失败（HTTP 429 或超时）与 409 的判读区别在响应正文——后者明写拒绝覆盖；限流失败的处置
+  是分批补传，不是升号或删版本。
 
 ## 快速通道（Gradle 任务）
 

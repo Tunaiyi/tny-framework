@@ -1,0 +1,106 @@
+取证说明：临时分支 5.7.99.release + dummy 双凭据注入执行逐仓镜像任务；本机 daemon 环境首次尝试时 git 子进程启动失败（同为拒绝，fail-closed），改用插件预留逃生口 -PgitExe=/usr/bin/git 重跑得到下方标签存证拒绝文案；任务图见 dry-run 证据（checkPublishPrerequisites 先于发布任务）。
+---
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by net.rubygrapefruit.platform.internal.NativeLibraryLoader in an unnamed module (file:/Users/kgtny/.gradle/wrapper/dists/gradle-8.14.5-bin/690y85m0j9nfaub7xoiayko8a/gradle-8.14.5/lib/native-platform-0.22-milestone-28.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+Configuration on demand is an incubating feature.
+> Task :buildSrc:extractPluginRequests UP-TO-DATE
+> Task :buildSrc:generatePluginAdapters UP-TO-DATE
+> Task :buildSrc:compileJava UP-TO-DATE
+> Task :buildSrc:compileGroovy UP-TO-DATE
+> Task :buildSrc:compileGroovyPlugins UP-TO-DATE
+> Task :buildSrc:pluginDescriptors UP-TO-DATE
+> Task :buildSrc:processResources UP-TO-DATE
+> Task :buildSrc:classes UP-TO-DATE
+> Task :buildSrc:jar UP-TO-DATE
+Invalid Java installation found at '/Library/Internet Plug-Ins/JavaAppletPlugin.plugin/Contents/Home' (MacOS java_home) auto-detected. It will be re-checked in the next build. This might have performance impact if it keeps failing. Run the 'javaToolchains' task for more details.
+Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk-11.0.13.jdk/Contents/Home' (MacOS java_home) auto-detected. It will be re-checked in the next build. This might have performance impact if it keeps failing. Run the 'javaToolchains' task for more details.
+Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_311.jdk/Contents/Home' (MacOS java_home) auto-detected. It will be re-checked in the next build. This might have performance impact if it keeps failing. Run the 'javaToolchains' task for more details.
+> Task :tny-game-codec:processResources NO-SOURCE
+> Task :tny-game-loader:processResources UP-TO-DATE
+> Task :tny-game-scanning:processResources NO-SOURCE
+> Task :tny-game-common-lang:processResources UP-TO-DATE
+> Task :tny-game-doc-annotation:processResources NO-SOURCE
+> Task :tny-game-codec-jprotobuf:processResources UP-TO-DATE
+> Task :tny-game-common-reflect:processResources NO-SOURCE
+> Task :tny-game-common-digest:processResources NO-SOURCE
+> Task :tny-game-common-io:processResources NO-SOURCE
+> Task :tny-game-common-lifecycle:processResources UP-TO-DATE
+> Task :tny-game-expr:processResources NO-SOURCE
+> Task :tny-game-net-test:processResources NO-SOURCE
+> Task :tny-game-net:processResources UP-TO-DATE
+> Task :tny-game-tester:processResources NO-SOURCE
+> Task :tny-game-net:processTestResources NO-SOURCE
+> Task :tny-game-doc-annotation:compileJava UP-TO-DATE
+> Task :tny-game-doc-annotation:classes UP-TO-DATE
+> Task :tny-game-expr:compileJava UP-TO-DATE
+> Task :tny-game-expr:classes UP-TO-DATE
+> Task :tny-game-doc-annotation:jar UP-TO-DATE
+> Task :tny-game-scanning:compileJava UP-TO-DATE
+> Task :tny-game-expr:jar UP-TO-DATE
+> Task :tny-game-scanning:classes UP-TO-DATE
+> Task :tny-game-common-lang:compileJava UP-TO-DATE
+> Task :tny-game-scanning:jar UP-TO-DATE
+> Task :tny-game-common-lang:classes UP-TO-DATE
+> Task :tny-game-common-lang:jar UP-TO-DATE
+> Task :tny-game-common-reflect:compileJava UP-TO-DATE
+> Task :tny-game-codec:compileJava UP-TO-DATE
+> Task :tny-game-codec:classes UP-TO-DATE
+> Task :tny-game-common-io:compileJava UP-TO-DATE
+> Task :tny-game-common-io:classes UP-TO-DATE
+> Task :tny-game-loader:compileJava UP-TO-DATE
+> Task :tny-game-codec:jar UP-TO-DATE
+> Task :tny-game-common-reflect:classes UP-TO-DATE
+> Task :tny-game-common-lifecycle:compileJava UP-TO-DATE
+> Task :tny-game-common-lifecycle:classes UP-TO-DATE
+> Task :tny-game-common-io:jar UP-TO-DATE
+> Task :tny-game-loader:classes UP-TO-DATE
+> Task :tny-game-common-reflect:jar UP-TO-DATE
+> Task :tny-game-common-digest:compileJava UP-TO-DATE
+> Task :tny-game-common-lifecycle:jar UP-TO-DATE
+> Task :tny-game-loader:jar UP-TO-DATE
+> Task :tny-game-common-digest:classes UP-TO-DATE
+> Task :tny-game-common-digest:jar UP-TO-DATE
+> Task :tny-game-codec-jprotobuf:compileJava UP-TO-DATE
+> Task :tny-game-codec-jprotobuf:classes UP-TO-DATE
+> Task :tny-game-codec-jprotobuf:jar UP-TO-DATE
+> Task :tny-game-tester:compileJava UP-TO-DATE
+> Task :tny-game-tester:classes UP-TO-DATE
+> Task :tny-game-tester:jar UP-TO-DATE
+> Task :tny-game-net:generatePomFileForMavenJavaPublication
+> Task :tny-game-net:compileJava UP-TO-DATE
+> Task :tny-game-net:classes UP-TO-DATE
+> Task :tny-game-net:jar UP-TO-DATE
+> Task :tny-game-net:javadoc UP-TO-DATE
+> Task :tny-game-net:javadocJar UP-TO-DATE
+> Task :tny-game-net-test:compileJava UP-TO-DATE
+> Task :tny-game-net-test:classes UP-TO-DATE
+> Task :tny-game-net:sourcesJar UP-TO-DATE
+> Task :tny-game-net-test:jar UP-TO-DATE
+> Task :tny-game-net:compileTestJava UP-TO-DATE
+> Task :tny-game-net:testClasses UP-TO-DATE
+> Task :tny-game-net:test UP-TO-DATE
+> Task :tny-game-net:check UP-TO-DATE
+
+> Task :tny-game-net:checkPublishPrerequisites FAILED
+发布依赖形态门禁：当前生效豁免 com.funs.game:tools-template:0.0.1-SNAPSHOT —— 该模板构件由本公司另一工程供给，上游从未发布过正式版，tny-game-doc-gradle 的模板件装配暂以快照钉住；处置去向：待立的模板件发布册将其转为固定正式版并更新版本目录引用后删除本条
+发布依赖形态门禁：当前生效豁免 org.quartz-scheduler:quartz:2.5.0-rc1 —— 版本目录钉住候选版早于上游正式版发布，上游现已有 2.5.0 至 2.5.2 正式版而本册（治理册）不改版本数值；处置去向：版本升级册（预发布转正批）升为 2.5.x 正式版后删除本条
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tny-game-net:checkPublishPrerequisites'.
+> 发布被阻断（任务 :tny-game-net:checkPublishPrerequisites）：
+  - 发布标签 'v5.7.99' 在远端 'github' 不存在（或远端此刻不可达）：请先在发布分支 HEAD 创建同名附注标签并推送远端，再执行发布
+  请检查版本派生（tny.git）与 RELEASE_REPOSITORY_URL / SNAPSHOT_REPOSITORY_URL 配置是否与当前分支形态匹配。
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 6s
+48 actionable tasks: 2 executed, 46 up-to-date

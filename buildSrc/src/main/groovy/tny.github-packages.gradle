@@ -1,0 +1,51 @@
+// GitHub Packages 镜像通道约定插件（capability github-packages-mirror 的第三目的地声明点；
+// 规格文本见 openspec change add-github-packages-channel 的 specs/github-packages-mirror/spec.md）。
+// 本插件负责：为应用它的工程在 publishing.repositories 增加名为 githubPackages 的仓库声明，
+// 把同一套发布构件镜像分发到本仓库的 GitHub Packages Apache Maven 注册表。
+// 边界：发布门禁（凭据属性断言与五重一致性校验）在 tny.publish，POM 元数据与签名在 tny.publications，
+// Central 聚合上传在 tny.central，发布快通道 git 编排在 tny.release；本插件只增仓库声明，不触碰门禁。
+// 通道语义：仅裸号正式版进入镜像。快照按实测排除——Gradle 发布机制上传的快照文件在注册表中
+// 以带时间戳的文件名存储，注册表不生成含快照时间戳块的元数据也不提供目录列举，
+// 消费方无法解析快照坐标（2026-10-05 沙箱实测，记录见该 openspec change 目录
+// verification/sandbox-probe.md）；快照的权威通路仍是内网快照仓与 Central 快照仓（tny.publications）。
+plugins {
+    id 'maven-publish'
+}
+
+publishing {
+    repositories {
+        // 守卫条件为两条子句的合取，任何一条不满足即整体不声明本仓：
+        // 其一，版本不是快照形态（来由见文件头通道语义段）。
+        // 其二，凭据密钥属性在位。凭据闭包里的 providers.gradleProperty(...).get()
+        // 在配置阶段（maven-publish 仓库容器添加 maven 声明之时）即被求值，属性缺失会在那一刻
+        // 抛 MissingValueException 而使该机器全部 Gradle 调用报红；单密钥形态下守卫断言与取值
+        // 指向同一个键，不存在半配置窗口。缺凭据的机器不声明本仓，本地裸 publish 的行为与
+        // 本变更前逐任务一致；守卫手法与 tny.publications 的 centralSnapshots 先例同源，
+        // 覆盖面互补（先例只收快照，本仓只收正式版）。
+        // 凭据的注入位置只有持续集成（.github/workflows/publish.yml 的镜像步骤），
+        // 发布者本机不得把凭据密钥写入用户级 gradle.properties（镜像仅由 CI 执行的拍板约束）。
+        if (!project.version.toString().endsWith('-SNAPSHOT')
+                && project.hasProperty('GITHUB_PACKAGES_KEY')) {
+            maven {
+                // 必须显式命名：tny.publications 的首个 Nexus 仓未命名，其默认名派生的任务
+                // publishMavenJavaPublicationToMavenRepository 已被硬编码写进 tny.publish 的
+                // 门禁谓词，再加一条未命名仓会与之冲突。本仓名派生的逐仓发布任务按名字规则
+                // 自动命中门禁谓词的通配条件，继承双层拦截，本插件不豁免。
+                name = 'githubPackages'
+                // URL 的属主段按官方注册表命名规则取全小写（GitHub 账户名含大写亦须折小写）；
+                // 与 POM scm 段页面地址 https://github.com/Tunaiyi/tny-framework 的大小写形态
+                // 不同属有意为之，两处用途不同。
+                url = 'https://maven.pkg.github.com/tunaiyi/tny-framework'
+                credentials {
+                    // Basic 认证用户名取仓库属主账户名（令牌属主与本仓发布身份恒为同一账户，
+                    // 沙箱实测该用户名与内置令牌、classic 令牌两条路均上传成功）；
+                    // 凭据只经单一密钥属性注入。
+                    username = 'Tunaiyi'
+                    // 属性键名不得含点号：Gradle 环境桥 ORG_GRADLE_PROJECT_* 拒绝含点属性名
+                    // （实测教训成文于 tny.publications.gradle 签名段注记）。
+                    password = providers.gradleProperty('GITHUB_PACKAGES_KEY').get()
+                }
+            }
+        }
+    }
+}

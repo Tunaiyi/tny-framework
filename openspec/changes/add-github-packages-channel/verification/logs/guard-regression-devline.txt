@@ -1,0 +1,6 @@
+# 守卫三态回归记录（任务 2.4，2026-10-05，全部零外发）
+## 态一：开发线 5.7.x + dummy 双凭据 → 镜像任务不出现（版本子句生效）
+$ git branch --show-current
+5.7.x
+$ ORG_GRADLE_PROJECT_githubPackagesUsername=dummy ORG_GRADLE_PROJECT_githubPackagesToken=dummy ./gradlew :tny-game-net:tasks --all | grep -ci githubpackages
+0

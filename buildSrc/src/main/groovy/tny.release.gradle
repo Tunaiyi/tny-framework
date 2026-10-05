@@ -152,6 +152,9 @@ tasks.register('releaseTag') {
             requireGit(['tag', '-a', tagName, '-m', "release ${v} from ${targetBranch}"], '创建附注标签失败')
         }
         requireGit(['push', remoteName, "refs/tags/${tagName}:refs/tags/${tagName}"], '推送标签失败')
+        // 话术指路的 ./gradlew publish 覆盖内网 Nexus（及本机凭据在位时的 Central 快照通道）；
+        // GitHub Packages 镜像由 .github/workflows/publish.yml 的第三步在 CI 执行且仅收正式版，
+        // 本机发布不含镜像属设计使然（openspec change add-github-packages-channel 拍板约束，勿当作遗漏）。
         logger.lifecycle("releaseTag 完成：${tagName} 指向当前构建提交并已推送至 ${remoteName}。现在执行 ./gradlew publish（门禁核对标签存证），成功后执行 ./gradlew releaseMergeBack。")
     }
 }

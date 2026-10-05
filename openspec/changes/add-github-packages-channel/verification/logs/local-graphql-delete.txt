@@ -1,0 +1,2 @@
+# 本地 GraphQL 删除 0.0.2 版本取证（classic PAT 无 delete:packages scope）
+mutation result: {"data":{"deletePackageVersion":{"clientMutationId":null}}}  (2026-10-05, version global id PV_lADOU8BGic4AMjKTzgQROYY, 见会话实测)
