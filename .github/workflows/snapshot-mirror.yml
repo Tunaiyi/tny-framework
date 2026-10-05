@@ -18,7 +18,7 @@ on:
   workflow_dispatch:
     inputs:
       branch:
-        description: "开发线分支名（如 5.7.x）；留空则按当日口径枚举全部活跃开发线"
+        description: "开发线分支全名（如 dev/5.8.x，祖父轨过渡期可为 5.7.x）；留空则按当日口径枚举全部活跃快照线"
         required: false
         type: string
 
@@ -42,13 +42,15 @@ jobs:
             # 线形态合法性由门禁分支白名单把关，此处不自建校验
             echo 'lines=["${{ inputs.branch }}"]' >> "$GITHUB_OUTPUT"
           else
-            # 定时口径：线谱系登记中状态含"版本开发分支"的那一条即当前开发线（全库唯一，
-            # 流程五开线仪式保证）；解析不到（表格异常）时输出空矩阵让本次运行干净跳过并在
-            # 日志留一行归因，不回退到分支存在性枚举——那正是首跑批量失败的口径
-            LINE=$(awk 'BEGIN{FS="|"} /^\| *`[0-9]+\.[0-9]+\.x`/ { if ($6 ~ /版本开发分支/) { if (match($2, /[0-9]+\.[0-9]+\.x/)) { print substr($2, RSTART, RLENGTH); exit } } }' docs/release-process.md)
+            # 定时口径（redesign-devline-integration-model 组 5）：线谱系登记中状态含
+            # "在途"的开发版本分支，加状态含"快照在维"的祖父登记线（5.7.x 至退役）；
+            # 解析不到任何线时输出空矩阵干净跳过并留归因日志，不回退到分支存在性枚举
+            # ——那正是首跑批量失败的口径。线名按表内原文捕获（dev/ 前缀一并保留）。
+            LINE=$(awk 'BEGIN{FS="|"} /^\| *`/ { if ($6 ~ /在途|快照在维/) { if (match($2, /`(dev\/)?[0-9]+\.[0-9]+\.x`/)) { name=substr($2, RSTART+1, RLENGTH-2); print name } } }' docs/release-process.md | sort -u)
             if [ -n "$LINE" ]; then
-              echo "lines=[\"$LINE\"]" >> "$GITHUB_OUTPUT"
-              echo "current dev line picked from lineage registry: $LINE"
+              LINES_JSON=$(printf '"%s",' $LINE | sed 's/,$//')
+              echo "lines=[$LINES_JSON]" >> "$GITHUB_OUTPUT"
+              echo "snapshot lines picked from lineage registry: $LINE"
             else
               echo 'lines=[]' >> "$GITHUB_OUTPUT"
               echo '::warning::线谱系登记中未找到状态为"版本开发分支"的行，本次定时运行跳过镜像作业'

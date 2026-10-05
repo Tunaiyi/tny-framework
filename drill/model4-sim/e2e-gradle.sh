@@ -7,7 +7,9 @@ set -u
 export PATH="/usr/bin:$PATH"
 export JAVA_HOME="${JAVA_HOME:-/Users/kgtny/Library/Java/JavaVirtualMachines/corretto-21.0.12.1/Contents/Home}"
 SRC="$(cd "$(dirname "$0")/../.." && pwd)"
-ROOT=/tmp/model4-e2e
+# 目录带进程号后缀：同路径重建会让 Gradle 守护进程按路径复用旧 buildSrc 类loader，
+# 改过插件代码后同路径重跑会拿旧类执行（第七轮实锤）；换路径强制新配置。
+ROOT="/tmp/model4-e2e-$$"
 LEDGER="$ROOT/ledger.txt"
 rm -rf "$ROOT"; mkdir -p "$ROOT"
 # 关键隔离：克隆的 origin 指向真实仓库，演练的推送必须改打独立裸仓——
@@ -57,7 +59,8 @@ expect "releaseCut 5.8.0 切 release/5.8.x" ok G releaseCut -PreleaseVersion=5.8
 expect "维护分支已在远端" ok bash -c 'git ls-remote --heads origin refs/heads/release/5.8.x | grep -q release/5.8.x'
 expect "main 上重复切 5.8 被拒（系列唯一）" fail G releaseCut -PreleaseVersion=5.8.0
 git fetch -q origin
-git checkout -q -b release/5.8.x origin/release/5.8.x
+# releaseCut 已把维护分支建在本地（git branch 自 origin/main），此处直接切换
+git checkout -q release/5.8.x
 
 # 4 首发打标签
 expect "releaseTag 首发 5.8.0（下一补丁号期望 0）" ok G releaseTag -PreleaseVersion=5.8.0
@@ -80,16 +83,18 @@ expect "main 已包含 v5.8.1（祖先判定）" ok git merge-base --is-ancestor
 git checkout -q main; git rm -q bug7001.txt; git commit -qm "refactor: 删除旧结构 BREAK-59（模拟）"; git push -q origin main
 git checkout -q release/5.8.x; echo "guard(BUG-7001): rate limit v2" > bug7001.txt
 git commit -qam "fix: BUG-7001 二次加固"
-expect "releaseTag 5.8.2 成功" ok G releaseTag -PreleaseVersion=5.8.2
+# 真实流程顺序：修复合入源分支即推送（九轮教训：releaseTag 要求本地与远端头对齐）
 git push -q origin release/5.8.x
+expect "releaseTag 5.8.2 成功" ok G releaseTag -PreleaseVersion=5.8.2
 HEAD_BEFORE=$(git rev-parse main)
 expect "mergeUpward 遇 modify/delete 冲突：自动回滚并拒绝" fail G mergeUpward -Pmarkers=BUG-7001
 expect "main 未被污染（已回滚到原头）" ok bash -c "[ \"$(git rev-parse main)\" = \"$HEAD_BEFORE\" ]"
 # 无门禁对照：人工"保持删除"合并 → 历史绿而树丢标记
 git checkout -q main
 git merge --no-edit release/5.8.x >/dev/null 2>&1 || true
+git checkout --ours -- . 2>/dev/null || true
 git rm -q bug7001.txt 2>/dev/null || true; git add -A
-git commit -qm "ungated merge with loss（对照演示）" || true
+git commit -qm "ungated merge with loss（对照演示）" || git merge --quit
 C=$(git grep -c BUG-7001 HEAD -- 2>/dev/null | awk -F: '{s+=$3} END{print s+0}')
 if [ "${C:-0}" = "0" ] && git merge-base --is-ancestor release/5.8.x HEAD; then
   say "PASS(对照) | 无门禁合并确实造成历史绿而树丢标记——mergeUpward 内置检查防的正是此事"

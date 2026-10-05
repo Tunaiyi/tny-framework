@@ -39,9 +39,12 @@ class GitCli {
     }
 
     // 远端 v<base>.* 裸号附注标签的补丁号集合（只认 ^{} 解引用行，轻量标签天然不计入）。
+    // 教训（e2e 第九轮实锤）：Groovy 的 ~/.../ slashy 字符串不做 ${} 插值，含插值的
+    // 模式必须用普通字符串拼接构造，否则模式带着字面 "${base}" 永不匹配、枚举恒为空。
     static List<Integer> remoteTagPatches(File workingDir, String exe, String remoteName, String base) {
-        def pattern = ~/^([0-9a-f]+)\s+refs\/tags\/v${base.replace('.', '\\.')}\.(\d+)\^\{\}$/
+        def pattern = '^([0-9a-f]+)\\s+refs/tags/v' + java.util.regex.Pattern.quote(base) + '\\.(\\d+)\\^\\{\\}$'
+        def re = java.util.regex.Pattern.compile(pattern)
         run(workingDir, exe, ['ls-remote', '--tags', remoteName, "refs/tags/v${base}*"]).out.readLines()
-                .collect { pattern.matcher(it) }.findAll { it.matches() }.collect { it.group(2) as Integer }
+                .collect { re.matcher(it) }.findAll { it.matches() }.collect { it.group(2) as Integer }
     }
 }
