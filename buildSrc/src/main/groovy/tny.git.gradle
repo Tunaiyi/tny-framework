@@ -32,4 +32,11 @@ if (resolvedGitDir != null && resolvedGitDir.absolutePath.replace('\\', '/').con
             '发布与验证操作请改用完整克隆：git clone <仓库URL> <目录> && cd <目录>')
 }
 
-project.extensions.create('gitFlow', GitFlow, grgit.open(currentDir: project.getRootDir()))
+// 祖父登记表（redesign-devline-integration-model D7）：读入 分支名|身份|依据 三列，注释行与空行丢弃。
+def legacyRegistryFile = new File(project.getRootDir(), 'gradle/branch-legacy-registry.txt')
+def legacyRegistry = legacyRegistryFile.exists() ? legacyRegistryFile.readLines()
+        .findAll { !it.trim().isEmpty() && !it.trim().startsWith('#') }
+        .collectEntries { def parts = it.split('\\|').collect { p -> p.trim() }; [(parts[0]): parts[1]] } : [:]
+
+project.extensions.create('gitFlow', GitFlow, grgit.open(currentDir: project.getRootDir()),
+        legacyRegistry, project.findProperty('releaseVersion')?.toString())
