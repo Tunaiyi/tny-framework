@@ -84,8 +84,10 @@
   1. 确认 CI 在 main 头为绿：`git log --oneline -1 origin/main` 对照 Actions 状态。
   2. `git switch -c 5.8.x main && git push -u github 5.8.x`。
   3. CI 触发随线走（**零文件改动**）：推送触发由 `build.yml` 的 `'*.*.x'` 形态通配自动
-     覆盖新线。快照发布的选线口径为"当前开发线"（人工执行 `./gradlew publish` 时所在
-     线，仓库内没有自动夜间发布工作流）；旧线转入仅维护态，按需手动发快照。
+     覆盖新线；`snapshot-mirror.yml` 的快照镜像按分支形态动态枚举，新线自动纳入、退役线自动
+     出局。内网与 Central 快照发布的选线口径为"当前开发线"（人工执行 `./gradlew publish` 时
+     所在线——除 `snapshot-mirror.yml` 逐线定时镜像 GitHub Packages 外，仓库没有自动执行内网或
+     Central 发布的流水线）；旧线转入仅维护态，按需手动发快照。
   4. 开线记录：在本文件"线谱系登记"表追加一行（线名、开线提交号、日期、当时上一线最新
      标签、状态初始为"当前开发线"）。
 - **验证点**：5.8.x 第一次构建派生 `5.8.x-SNAPSHOT`（零版本文件改动）；在该线首次执行
@@ -103,7 +105,9 @@
   3. `./gradlew releaseTag -PreleaseVersion=5.8.0`——在版本发布分支 HEAD 建附注标签 `v5.8.0`
      并推送；标签先于制品。
   4. `./gradlew publish`——五重门禁（含标签解引用对当前构建提交）通过后制品入正式仓；
-     Central 第二通道按"Central 发布"一节执行。
+     Central 第二通道按"Central 发布"一节执行；GitHub Packages 镜像由工作流在 CI 执行
+     （正式版走 publish.yml 第三步骤），收录正式版本与快照两种形态（快照由 snapshot-mirror.yml
+     定时逐线执行），本机命令不含镜像（原因与形态见"GitHub Packages 镜像通道"一节）。
   5. `./gradlew releaseMergeBack -PgitExe=/usr/bin/git`——把版本发布分支独有提交重放回所属线；
      常规发布切支后无新提交时如实报告跳过。
 - **验证点**：发布后 `git ls-remote github refs/heads/5.8.0.release`、
@@ -141,7 +145,8 @@
 
 ## 线退役
 
-一条线宣布终止维护时：从快照发布选线与传播链移除；分支可删。删除没有审计损失——该线全部
+一条线宣布终止维护时：从快照发布选线与传播链移除（GitHub Packages 镜像按分支形态动态枚举，
+分支删除后自动出局，无需改动工作流文件）；分支可删。删除没有审计损失——该线全部
 正式发布都已被各自的 `vN.M.K` 标签与同名版本发布分支永久存证。
 
 ## 发布门禁的五重校验
@@ -180,8 +185,14 @@
 
 1. 正式发布仓（maven-releases）禁止重复部署同一版本坐标，保证裸号正式版不可变。
 2. 快照仓（maven-snapshots）配置按天数的保留清理策略：滚动快照坐标 `N.M.x-SNAPSHOT`
-   每在线上执行一次 publish 即追加一份时间戳产物且永不互相顶替（本仓库没有自动夜间
-   发布工作流，快照发布是人工动作，口径见流程五），无保留策略则磁盘无界增长。
+   每在线上执行一次 publish 即追加一份时间戳产物且永不互相顶替（内网与 Central 通道的快照
+   发布是人工动作，口径见流程五；`snapshot-mirror.yml` 的自动定时只写 GitHub Packages 镜像
+   通道，不产生内网或 Central 构件），无保留策略则磁盘无界增长。
+3. GitHub Packages 镜像通道对同一版本的已存在文件拒绝覆盖上传（同名文件重复上传返回
+   HTTP 409，本仓沙箱实测证实；官方条文未记载此规则），正式版本进入该通道因此是一次
+   成型动作；失败处置按"GitHub Packages 镜像通道"一节的阶梯执行，不得以重跑全量发布
+   作为默认补救。限定：快照构件以时间戳文件名存储、重发不受此限，属镜像侧常态新鲜度维护；
+   镜像对历史时间戳构建无自动清理记载，累积治理见"GitHub Packages 镜像通道"体量条目。
 
 ## Central 发布（正式版第二通道）
 
@@ -198,6 +209,86 @@
   `NEXUS_USERNAME/PASSWORD`。前置条件：`com.tnydev.game` 命名空间已在 Portal 完成 DNS 验证。
 - 快照通道：开发线 `./gradlew publish` 自动分发**内网快照仓与 Central 快照仓**双目的地（条件=快照版本形态且本机配置 `mavenCentralUsername/Password`，缺凭据机器仅发内网；Central 快照 90 天自动清理，权威归档在内网）。
 - 首版验收：Central 检索到 `com.tnydev.game:tny-game-*:<版本>` 全模块清单后，本流程定版。
+
+## GitHub Packages 镜像通道（正式版本与快照构件的第三目的地）
+
+自 add-github-packages-channel 变更起，裸号正式版本构件镜像分发到
+`https://maven.pkg.github.com/tunaiyi/tny-framework`（URL 的属主段按官方注册表命名规则全小写，
+与 POM scm 段页面地址的大小写形态不同属有意为之，两处用途不同）。自 open-github-packages-snapshot-mirror
+变更起，开发线快照构件一并进入镜像——快照最初按首轮沙箱实测被排除，该结论已被复测推翻，
+勘误与裁决经过见下文"快照镜像的复测与开通裁决"条目。本通道是尽力镜像：
+权威归档仍是内网 Nexus 仓与内网快照仓，免凭据的公开分发仍是 Maven Central。
+
+- **触发形态**：仅由持续集成执行——正式版镜像由 `.github/workflows/publish.yml` 的第三个步骤执行
+  （release.published 事件或指定发布分支的人工 workflow_dispatch）；快照镜像由
+  `.github/workflows/snapshot-mirror.yml` 每日定时（UTC19:23，与 build.yml 夜间作业错峰）逐活跃
+  开发线（`<主>.<次>.x` 形态分支，动态枚举，线退役自动出局）执行，同文件附 workflow_dispatch
+  指定开发线的人工补跑入口；定时与枚举逻辑以 main 默认分支上的文件为准生效。镜像凭据只经单一密钥属性
+  `GITHUB_PACKAGES_KEY` 在 CI 注入（值为内置 `GITHUB_TOKEN`，Basic 认证用户名由构建插件固定
+  为仓库属主账户名），发布者本机不得把它写入用户级 `~/.gradle/gradle.properties`——未配置
+  凭据密钥的机器根本不声明该仓库，本机 `./gradlew publish` 的行为与本通道上线前逐任务一致，
+  也不会与 CI 步骤对同一坐标并发双发。
+- **收录范围**：java 线全部发布模块与 BOM 模块收录，正式版本与快照两种形态均在镜像范围；
+  Gradle 插件模块 `tny-game-doc-gradle` 两种形态都不收——其构件无签名、POM 无元数据组，镜像面貌
+  与主通道不一致，未来纳入由独立变更裁决。镜像不减免任何门禁：四项属性断言、分支形态
+  白名单、仓库路由、同号黑名单、发布标签远端存证与发布依赖形态核对在两种形态的镜像运行上
+  照常先行；其中同号黑名单与发布标签存证按自身适用规则只对发布分支形态发生作用
+  （快照形态无标签前置），属适用范围的一致表达而非减免。
+- **快照镜像的复测与开通裁决（勘误记录）**：首轮沙箱实测（归档目录
+  `2026-10-05-add-github-packages-channel` 的 `verification/sandbox-probe.md` 结论 2）只检查了构件级
+  元数据、漏检版本目录级元数据，得出"注册表不生成含快照时间戳块的元数据、消费方按快照坐标
+  解析必然失败"的失实结论，据此在开通时排除了快照。复测（`probe-github-packages-snapshot-support`
+  的 `verification/snapshot-spike.md`，取证 S1 至 S8）更正了该事实：注册表服务端自动为 Gradle 上传的
+  快照维护含时间戳与构建号的目录级 unique 元数据，Gradle 与 Maven 消费端可解析快照坐标并随重发
+  滚动到最新构建，快照重发因各构建时间戳文件名互异不触发 HTTP 409。用户已于 2026-10-05 裁决
+  开放发布快照（变更 open-github-packages-snapshot-mirror），原排除拍板随其失实依据作废；复测报告
+  中"建议维持排除"一节（价值缺口、账本负担、纪律成本三条理由）亦被该裁决推翻，其中仍成立的事实
+  （免凭据消费优先 Central、镜像历史不清理）转化为本节的消费建议与体量条目。快照的权威归档仍是
+  内网快照仓（开发线 `./gradlew publish`），免凭据的公开快照消费仍是 Central 快照仓。
+- **同号重复上传的判读与处置阶梯**：本阶梯只适用于正式版本构件；快照构件按时间戳文件名存储，
+  重发不会触发 409，属常态新鲜度维护，不适用升号优先的处置路线。注册表对已存在的（正式版）文件
+  拒绝覆盖（HTTP 409），正式版本因此一次成型。重跑工作流收到 409 时先按"构件已在镜像中"的存证判读——以只读方式核对版本
+  清单（包页面或 `gh api "users/Tunaiyi/packages?package_type=maven"`），不为消除报错而删版本。
+  修正需要发布构件时的处置次序：① 首选提高补丁号走完整发布流程（releaseCut 至
+  releaseMergeBack，与"标签一经创建不可移动"的既有纪律一致）；② 必须保留同号时，由对
+  仓库有管理权限者先删除受影响版本——实测工作流内置令牌经 GraphQL `deletePackageVersion`
+  即可删除（参数要用 GraphQL 全局节点 ID，REST 清单里的数字 ID 不可混用），删除后同一
+  版本号可立即重新上传；注意官方限制：公共包的任一版本下载量超过 5000 次即无法删除，
+  删除后 30 天内可恢复，采用本路线前以一次性测试版本确认约束满足；③ 仅部分模块已镜像时，
+  可对未上传模块逐个补跑 `./gradlew :模块名:publishAllPublicationsToGithubPackagesRepository`
+  ——该任务命中共享仓门禁谓词，会连带执行全量 check 与标签存证核对，并非轻量操作，且
+  未配置镜像凭据的机器上该任务根本不存在。
+- **消费方接入**：GitHub Packages 对公开包同样要求凭据下载，不存在匿名解析。凭据须创建
+  personal access tokens (classic)（fine-grained 令牌截至 2026-10-05 不能访问 Packages，官方
+  缺口清单注明"并非永久"，如日后放开以官方现文为准）并勾选 `read:packages` scope；因 Maven
+  包的权限完全继承所在仓库，官方规则同时要求 `repo` scope，建议为接入本镜像单独创建最小
+  用途的令牌。Gradle 下游工程把下面条目加进其依赖解析仓库的声明位置——采用集中声明的工程
+  （`settings.gradle` 启用 `dependencyResolutionManagement` 的，本仓库自身即此形态）加进它的
+  `repositories` 块，未采用的加进自身构建脚本的 `repositories` 块，两种形态的条目内容相同：
+
+      maven {
+          url = 'https://maven.pkg.github.com/tunaiyi/tny-framework'
+          credentials {
+              username = providers.gradleProperty('gprUser').get()
+              password = providers.gradleProperty('gprToken').get()
+          }
+      }
+
+  （`gprUser` 与 `gprToken` 写在用户级 `~/.gradle/gradle.properties`，或由 CI 经
+  `ORG_GRADLE_PROJECT_*` 注入；属性键名不得含点号。两个属性任一缺失时 Gradle 在配置期
+  报缺属性、错误可读，不会带着空凭据到解析期才收认证错误。）Maven 下游在 `pom.xml` 声明
+  同一 URL，并在 `~/.m2/settings.xml` 配置同 id 的 server 凭据。本通道收录快照：Gradle 下游按
+  默认声明即可解析正式与快照两种坐标，无需额外开关；Maven 下游若消费快照坐标，须在仓库声明中
+  加 `<snapshots><enabled>true</enabled></snapshots>`（Maven 仓库声明默认不启用快照，漏配会表现为
+  解析取不到快照而非通道故障）。
+- **体量与速率**：公共仓库的包存储与流量免费（官方计费条文）。一次全量发布向镜像上传约
+  六十余个构件族、上千次 PUT（每构件附 md5、sha1、sha256、sha512 四种校验和）。限流类
+  失败（HTTP 429 或超时）与 409 的判读区别在响应正文——后者明写拒绝覆盖；限流失败的处置
+  是分批补传，不是升号或删版本。快照镜像逐线每日新增一组时间戳构建，注册表对历史时间戳构建
+  无自动清理记载，镜像侧单调累积且项目方不作回收承诺；确需清理时按上述判读阶梯第②步的
+  GraphQL 删除手段处置（公共包单版本下载超 5000 次不可删等约束与一次性验证实操同样适用）；
+  快照的保留策略治理在内网快照仓（运维前置第 2 条）与 Central 快照仓（90 天自动清理）侧成文，
+  镜像侧暂以已知限制记录。
 
 ## 快速通道（Gradle 任务）
 

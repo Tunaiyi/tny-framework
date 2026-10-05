@@ -692,11 +692,12 @@ Starter 层 (starter-*)
 
 ## 版本与消费契约
 
-框架的版本体系与发布流程详见 [docs/release-process.md](docs/release-process.md)。下游消费请遵守三条约定：
+框架的版本体系与发布流程详见 [docs/release-process.md](docs/release-process.md)。下游消费请遵守四条约定：
 
 1. **快照只用于集成，且只允许精确锁定。** 开发线发布的坐标形如 `5.7.x-SNAPSHOT`，随构建滚动更新。把它写进版本区间表达式或交给自动升级工具跟踪都是无效的——该坐标的版本比较顺序不可推理，消费方必须逐字锁定坐标本身。
 2. **生产环境只依赖正式发布版本。** 正式版坐标是裸三段号（例如 `5.7.8`），进入仓库后永不改变。升级承诺：补丁版本无条件兼容，次版本向后兼容但建议跑回归验证，主版本包含不兼容变更并附迁移指引。历史上带 `-RELEASE` 后缀的旧正式版（例如 `5.5.0-RELEASE`）保持原样可继续使用，但新版本不再带该后缀。
 3. **弃用接口至少存活一个次版本。** 被标注 `@Deprecated(forRemoval = true)` 的公共 API 从下一个主版本起才允许移除，给下游留出完整的升级窗口。
+4. **GitHub Packages 镜像坐标与内网仓同版本等价，但下载必须携带凭据。** 镜像地址 `https://maven.pkg.github.com/tunaiyi/tny-framework` 收录正式版本与快照两种形态：开发线快照坐标（形如 `5.7.x-SNAPSHOT`）在镜像侧随持续集成的逐线定时发布滚动到最新构建，同一构建的时间戳与构建号标识由镜像与内网各自编号，消费方以所在仓库解析到的最新构建为准；免凭据的公开快照消费仍走 Maven Central 快照仓（90 天自动清理），快照的权威归档在内网快照仓库。GitHub Packages 对公开包同样要求凭据下载，fine-grained 令牌截至 2026-10-05 不能访问 Packages，需创建 personal access tokens (classic) 并勾选 `read:packages` 与 `repo` scope。接入配置详见 [docs/release-process.md](docs/release-process.md) 的 GitHub Packages 镜像通道一节。
 
 ---
 

@@ -62,4 +62,5 @@ configure(javaProjects) {
     apply plugin: 'tny.java-module'
     apply plugin: 'tny.integration-test'
     apply plugin: 'tny.publications'
+    apply plugin: 'tny.github-packages'
 }
