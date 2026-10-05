@@ -26,13 +26,13 @@
 
 ## Decisions
 
-### D1 触发形态：定时计划逐活跃开发线为主，同文件附人工补跑入口
+### D1 触发形态：定时计划每日执行当前开发线，同文件附人工指定线补跑入口（首跑后修订）
 
-**决定**：`snapshot-mirror.yml` 设 `on.schedule` 一条错峰 cron（避开整点，参照 build.yml 既有夜间作业手法），夜间逐活跃开发线各镜像一次快照；同文件设 `on.workflow_dispatch.inputs.branch`（可选字符串：留空按当日枚举跑全部活跃线，填值只跑该线）作即时补跑与调试入口。
+**决定**：`snapshot-mirror.yml` 设 `on.schedule` 一条错峰 cron（避开整点，参照 build.yml 既有夜间作业手法），每日对当前开发线镜像一次快照——当前开发线的唯一来源是 `docs/release-process.md` 线谱系登记中状态含"版本开发分支"的行（与流程五"快照发布选线为当前开发线"同一事实源）；同文件设 `on.workflow_dispatch.inputs.branch` 指定线名作即时补跑入口（人工指定即授权，允许维护态线单次镜像）。**修订记录**：初版决定按 `git ls-remote` 远端分支存在性动态枚举 `\\d+\\.\\d+\\.x` 形态线，首跑 run 37336175323 实证该口径把退役未删分支的历史线（2.0.x 至 5.6.x，旧线 wrapper 缺 jar）全部纳入矩阵并批量失败，经用户复裁改为线谱系解析口径；分支存在性不得作为活跃性依据。
 
-**依据**：决定性比较轴是"镜像存储只增不减且无清理记载"——定时形态把累积钉在每线每年约 365 套，freshness 契约（解析时延不超一个调度周期）对"尽力镜像"定位可辩护；与 build.yml 夜间作业同族，运维心智零新增（模式卷 M1 先例优先）。
+**依据**：决定性比较轴是"镜像存储只增不减且无清理记载"——定时形态把累积钉在全库每年约 365 套（单线），freshness 契约（解析时延不超一个调度周期）对"尽力镜像"定位可辩护；与 build.yml 夜间作业同族，运维心智零新增（模式卷 M1 先例优先）；选线复用线谱系登记这一既有单一事实源（P5 按变更原因归一：开线仪式本就强制登记线谱系，镜像不新增第二处清单）。
 
-**被否决的备选**：其一，开发线每次 push 自动触发。否决理由：每次提交（含文档改动与 WIP）放大为不可回收的整套逐模块时间戳构建，存储与注册表版本目录噪声随提交频率线性增长，且与 build.yml 的单元测试作业在同一提交上重复付 Actions 时长。其二，仅人工 workflow_dispatch。否决理由：无自动新鲜度契约，无人触发时镜像快照静默陈旧，消费方无法从坐标辨别滞后程度，通道可信度最弱，且节律责任转嫁人工记忆（用户上一轮曾选此形态，其背景——快照刚被裁决纳入、无累积数据支撑——已被复测的"只增不减"事实改变，本次呈报时以新轴重裁，用户选定定时为主）。其三，并入 publish.yml 加触发事件。否决理由见 D2。
+**被否决的备选**：其一，开发线每次 push 自动触发。否决理由：每次提交（含文档改动与 WIP）放大为不可回收的整套逐模块时间戳构建，存储与注册表版本目录噪声随提交频率线性增长，且与 build.yml 的单元测试作业在同一提交上重复付 Actions 时长。其二，仅人工 workflow_dispatch。否决理由：无自动新鲜度契约，无人触发时镜像快照静默陈旧，消费方无法从坐标辨别滞后程度，通道可信度最弱，且节律责任转嫁人工记忆（用户上一轮曾选此形态，其背景——快照刚被裁决纳入、无累积数据支撑——已被复测的"只增不减"事实改变，本次呈报时以新轴重裁，用户选定定时为主）。其三，并入 publish.yml 加触发事件。否决理由见 D2。其四（首跑后新增），按远端分支形态动态枚举选线（`git ls-remote` 过滤 `\\d+\\.\\d+\\.x`）。否决理由：线退役流程不删分支，历史线永久满足该形态，此口径必然把退役线纳入并批量产生失败作业（首跑实证：13+ 个失败作业全部来自退役线，其旧线分支缺 wrapper jar 直接起不来）；维护态线是否镜像属价值判断，交人工 dispatch 显式授权比交分支存在性默认更稳。
 
 ### D2 落点：独立新工作流文件，publish.yml 仅修失实注释
 
@@ -52,11 +52,11 @@
 
 ### D4 snapshot-mirror.yml 机制细节
 
-**决定**：作业拓扑两级——`enumerate` 作业在 schedule 触发时经 `git ls-remote --heads` 取远端分支清单、按正则 `\d+\.\d+\.x` 过滤活跃开发线输出矩阵（dispatch 指定分支时矩阵只含该线）；`mirror` 作业按矩阵逐线执行：checkout 对应线（schedule 上下文需显式 `ref: refs/heads/<线名>`）后 `git checkout -B "<线名>"` 兜底建立本地分支（门禁经 grgit 读分支名，分离 HEAD 会致形态核对误拒，首验要点见风险），setup-java 21 与 setup-gradle，单步 `./gradlew publishAllPublicationsToGithubPackagesRepository`；`permissions` 设 `contents: read` 与 `packages: write`；`concurrency.group` 取线名并 `cancel-in-progress: false`（同线串行、跨线并行）。环境变量注入：`ORG_GRADLE_PROJECT_NEXUS_USERNAME/PASSWORD`（属性断言所需）与 `ORG_GRADLE_PROJECT_GITHUB_PACKAGES_KEY: ${{ secrets.GITHUB_TOKEN }}`；不注入 SIGNING 三件（快照跳签，S1 实证无 .asc 可被消费）。
+**决定**：作业拓扑两级——`enumerate` 作业在 schedule 触发时解析 `docs/release-process.md` 线谱系登记表、取状态含"版本开发分支"的行截出当前开发线版本号输出单线矩阵（解析不到时输出空矩阵并留 workflow 告警，绝不回退分支枚举）；dispatch 指定分支时矩阵只含该线；`mirror` 作业按矩阵执行：checkout 对应线（schedule 上下文需显式 `ref: refs/heads/<线名>`）后 `git checkout -B "<线名>"` 兜底建立本地分支（门禁经 grgit 读分支名，分离 HEAD 会致形态核对误拒，首验要点见风险），setup-java 21 与 setup-gradle，单步 `./gradlew publishAllPublicationsToGithubPackagesRepository`；`permissions` 设 `contents: read` 与 `packages: write`；`concurrency.group` 取线名并 `cancel-in-progress: false`（同线串行、跨线并行）。环境变量注入：`ORG_GRADLE_PROJECT_NEXUS_USERNAME/PASSWORD`（属性断言所需）与 `ORG_GRADLE_PROJECT_GITHUB_PACKAGES_KEY: ${{ secrets.GITHUB_TOKEN }}`；不注入 SIGNING 三件（快照跳签，S1 实证无 .asc 可被消费）。
 
 **依据**：逐仓聚合任务名把目的地钉死在镜像单仓，杜绝误推内网与 Central（手法承自 publish.yml 镜像步骤注记，M1）；枚举放默认分支上下文运行是 schedule 事件的平台约束。
 
-**被否决的备选**：硬编码活跃线清单进 cron 矩阵变量。否决理由：开新线与线退役时需同步改 main 上的工作流文件，漂移概率高于动态枚举；线退役的账本联动另有 D6 文档条款承接。
+**被否决的备选**：硬编码线清单进工作流文件，或以 `git ls-remote` 分支形态动态枚举。否决理由：前者在 main 与工作流双处维护同一事实、漂移概率高；后者被首跑实证必然纳入退役未删分支的历史线批量失败——线谱系登记本就是开线仪式的强制落点，解析它零新增维护面。
 
 ### D5 存储单调累积成文为已知限制，不在本变更解决
 
@@ -80,7 +80,7 @@
 
 ## Risks / Trade-offs
 
-- [schedule 事件只在默认分支生效，逐线枚举跑在 main 上下文] → 工作流文件本体与枚举逻辑合入 main 后生效的约束写入实施任务验收句；触发块日后调整一律经 main，文档同步。
+- [schedule 事件只在默认分支生效，选线解析跑在 main 上下文] → 工作流文件本体与枚举逻辑合入 main 后生效的约束写入实施任务验收句；触发块日后调整一律经 main，文档同步。
 - [actions/checkout 在线分支上的分离 HEAD 使门禁分支形态核对误拒] → D4 已内置 `git checkout -B` 兜底；首次真实运行作为强制观察点列入任务，兜底失效即停并上报（不猜替代方案）。
 - [每次快照镜像连带全量 check，定时形态每线每日一次] → 明示成本换可预算的累积；与 build.yml 夜间 unit 作业错峰排布减少同时段资源竞争（cron 分钟数错开，参照既有手法）。
 - [并发运行对同一快照坐标目录级元数据的一致性未实测] → 本设计 concurrency 组按线串行化，跨线坐标互不相同，正常无并发；若日后引入 push 形态须先补并发实测。

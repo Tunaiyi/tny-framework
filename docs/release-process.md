@@ -24,8 +24,9 @@
 版本发布分支（热修对象确定后才建分支时），是确定事实。命名属文档纪律，不设工具或 CI 校验。
 | 其他分支 | 例如 `5.0.x.net` | — | — | 门禁拒绝发布 |
 
-**全仓铁律**：版本发布分支与标签一经创建推送，任何操作不得使其移动（规格需求原文）；版本开发分支与
-`main` 只接受快进或重放提交，不存在发布链上的强推。
+**全仓铁律**：版本发布分支在创建标签（releaseTag）并推送之后不得移动——标签创建之前，它只接受
+快进式追加修复提交并推送（这是它一生唯一的写入窗口）；附注标签一经推送永不移动。版本开发分支与
+`main` 只接受快进或重放提交，把版本开发分支整体合并进 main 不在允许之列，不存在发布链上的强推。
 
 ## 契约变更声明（BREAKING，2026-10 生效）
 
@@ -39,15 +40,15 @@
 
 - **触发**：任何新特性工作开始。
 - **命令**：`git switch -c feat/<主>.<次>.x-<名> main`（基取 main 头；示例 `feat/5.8.x-actor-pool`）。
-- **验证点**：`git log --oneline -1` 应与 `origin/main` 头一致。
+- **验证点**：`git log --oneline -1` 应与 `github/main` 头一致。
 - **禁止**：以版本开发分支或版本发布分支为特性基线（特性只进 main）。
 
 ## 流程二：rebase 特性分支
 
 - **触发**：main 前进后同步工位，或 PR 前收尾。
-- **命令**：`git fetch && git rebase origin/main`；工位分支自身允许
-  `git push --force-with-lease origin feat/<主>.<次>.x-<名>`（个人分支强推豁免，见角色总表）。
-- **验证点**：`git merge-base --is-ancestor origin/main HEAD` 通过。
+- **命令**：`git fetch && git rebase github/main`；工位分支自身允许
+  `git push --force-with-lease github feat/<主>.<次>.x-<名>`（个人分支强推豁免，见角色总表）。
+- **验证点**：`git merge-base --is-ancestor github/main HEAD` 通过。
 - **禁止**：对 main、版本开发分支、版本发布分支执行 rebase 或强推。
 
 ## 流程三：创建 fix 分支
@@ -56,18 +57,18 @@
 - **命令**：`git switch -c fix/<主>.<次>.<补丁>-<名> main`（基取 main 头；热修目标为某条线时基取该线头，示例 `fix/5.7.9-sharedbuf`）。仅当缺陷所在的代码路径
   已不在 main 存在（main 已重构移除）时，基取受影响线的线头，且该修复合入线后必须按
   流程七向上传播回 main。
-- **验证点**：非线原生场景下 `git log --oneline -1` 与 `origin/main` 头一致；线原生场景下
-  基提交应在 `origin/<线>` 祖先链上。
+- **验证点**：非线原生场景下 `git log --oneline -1` 与 `github/main` 头一致；线原生场景下
+  基提交应在 `github/<线>` 祖先链上。
 - **禁止**：直接在版本开发分支或版本发布分支上编辑提交（修复先走工位分支，经 PR 或按传播规则进线）。
 
 ## 流程四：rebase fix 分支
 
 - **触发**：base 侧前进后同步 fix 工位，或 PR 前收尾。
-- **命令**：main 基的 fix 分支执行 `git fetch && git rebase origin/main`；线原生 fix 分支
-  执行 `git fetch && git rebase origin/<线>`。工位分支自身允许带豁免的
+- **命令**：main 基的 fix 分支执行 `git fetch && git rebase github/main`；线原生 fix 分支
+  执行 `git fetch && git rebase github/<线>`。工位分支自身允许带豁免的
   `git push --force-with-lease`。
-- **验证点**：`git merge-base --is-ancestor origin/main HEAD`（或
-  `origin/<线>` 对应式）通过。
+- **验证点**：`git merge-base --is-ancestor github/main HEAD`（或
+  `github/<线>` 对应式）通过。
 - **禁止**：同流程二——rebase 只发生在工位分支。
 
 ## 日常开发：合入 main
@@ -81,12 +82,12 @@
 - **触发**：main 上累积的特性集合值得一个次版本号（如 5.8）。主版本升级（6.0）必须
   先附协议与公共 API 兼容性评估。
 - **命令序列**：
-  1. 确认 CI 在 main 头为绿：`git log --oneline -1 origin/main` 对照 Actions 状态。
+  1. 确认 CI 在 main 头为绿：`git log --oneline -1 github/main` 对照 Actions 状态。
   2. `git switch -c 5.8.x main && git push -u github 5.8.x`。
   3. CI 触发随线走（**零文件改动**）：推送触发由 `build.yml` 的 `'*.*.x'` 形态通配自动
-     覆盖新线；`snapshot-mirror.yml` 的快照镜像按分支形态动态枚举，新线自动纳入、退役线自动
-     出局。内网与 Central 快照发布的选线口径为"当前开发线"（人工执行 `./gradlew publish` 时
-     所在线——除 `snapshot-mirror.yml` 逐线定时镜像 GitHub Packages 外，仓库没有自动执行内网或
+     覆盖新线；`snapshot-mirror.yml` 的快照镜像选线与当前开发线一致（依据线谱系登记），
+     开新线自动换线、状态转入维护或退役即自动退出定时。内网与 Central 快照发布的选线口径为"当前开发线"（人工执行 `./gradlew publish` 时
+     所在线——除 `snapshot-mirror.yml` 每日镜像当前开发线一次 GitHub Packages 外，仓库没有自动执行内网或
      Central 发布的流水线）；旧线转入仅维护态，按需手动发快照。
   4. 开线记录：在本文件"线谱系登记"表追加一行（线名、开线提交号、日期、当时上一线最新
      标签、状态初始为"当前开发线"）。
@@ -107,7 +108,7 @@
   4. `./gradlew publish`——五重门禁（含标签解引用对当前构建提交）通过后制品入正式仓；
      Central 第二通道按"Central 发布"一节执行；GitHub Packages 镜像由工作流在 CI 执行
      （正式版走 publish.yml 第三步骤），收录正式版本与快照两种形态（快照由 snapshot-mirror.yml
-     定时逐线执行），本机命令不含镜像（原因与形态见"GitHub Packages 镜像通道"一节）。
+     定时执行当前开发线），本机命令不含镜像（原因与形态见"GitHub Packages 镜像通道"一节）。
   5. `./gradlew releaseMergeBack -PgitExe=/usr/bin/git`——把版本发布分支独有提交重放回所属线；
      常规发布切支后无新提交时如实报告跳过。
 - **验证点**：发布后 `git ls-remote github refs/heads/5.8.0.release`、
@@ -145,8 +146,8 @@
 
 ## 线退役
 
-一条线宣布终止维护时：从快照发布选线与传播链移除（GitHub Packages 镜像按分支形态动态枚举，
-分支删除后自动出局，无需改动工作流文件）；分支可删。删除没有审计损失——该线全部
+一条线宣布终止维护时：从快照发布选线与传播链移除（GitHub Packages 镜像选线以本表状态为准，
+状态切换即自动退出定时，分支留删与镜像无关）；分支可删。删除没有审计损失——该线全部
 正式发布都已被各自的 `vN.M.K` 标签与同名版本发布分支永久存证。
 
 ## 发布门禁的五重校验
@@ -221,9 +222,10 @@
 
 - **触发形态**：仅由持续集成执行——正式版镜像由 `.github/workflows/publish.yml` 的第三个步骤执行
   （release.published 事件或指定发布分支的人工 workflow_dispatch）；快照镜像由
-  `.github/workflows/snapshot-mirror.yml` 每日定时（UTC19:23，与 build.yml 夜间作业错峰）逐活跃
-  开发线（`<主>.<次>.x` 形态分支，动态枚举，线退役自动出局）执行，同文件附 workflow_dispatch
-  指定开发线的人工补跑入口；定时与枚举逻辑以 main 默认分支上的文件为准生效。镜像凭据只经单一密钥属性
+  `.github/workflows/snapshot-mirror.yml` 每日定时（UTC19:23，与 build.yml 夜间作业错峰）执行
+  当前开发线一次——选线以本文"线谱系登记"表状态为"版本开发分支"的线为唯一依据，与内网快照
+  发布同一口径；维护态、退役线与历史线不在定时范围，确需其镜像快照时用同文件
+  workflow_dispatch 显式指定线名单次补跑（人工指定即授权）；定时与枚举逻辑以 main 默认分支上的文件为准生效。镜像凭据只经单一密钥属性
   `GITHUB_PACKAGES_KEY` 在 CI 注入（值为内置 `GITHUB_TOKEN`，Basic 认证用户名由构建插件固定
   为仓库属主账户名），发布者本机不得把它写入用户级 `~/.gradle/gradle.properties`——未配置
   凭据密钥的机器根本不声明该仓库，本机 `./gradlew publish` 的行为与本通道上线前逐任务一致，
@@ -284,7 +286,7 @@
 - **体量与速率**：公共仓库的包存储与流量免费（官方计费条文）。一次全量发布向镜像上传约
   六十余个构件族、上千次 PUT（每构件附 md5、sha1、sha256、sha512 四种校验和）。限流类
   失败（HTTP 429 或超时）与 409 的判读区别在响应正文——后者明写拒绝覆盖；限流失败的处置
-  是分批补传，不是升号或删版本。快照镜像逐线每日新增一组时间戳构建，注册表对历史时间戳构建
+  是分批补传，不是升号或删版本。快照镜像对当前开发线每日新增一组时间戳构建，注册表对历史时间戳构建
   无自动清理记载，镜像侧单调累积且项目方不作回收承诺；确需清理时按上述判读阶梯第②步的
   GraphQL 删除手段处置（公共包单版本下载超 5000 次不可删等约束与一次性验证实操同样适用）；
   快照的保留策略治理在内网快照仓（运维前置第 2 条）与 Central 快照仓（90 天自动清理）侧成文，

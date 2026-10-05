@@ -1,11 +1,16 @@
 name: snapshot-mirror
 
 # 快照镜像工作流（openspec capability github-packages-mirror，变更 open-github-packages-snapshot-mirror）：
-# 开发线快照构件进入 GitHub Packages 镜像的唯一持续集成入口——定时计划逐活跃开发线各镜像一次，
-# 辅以 workflow_dispatch 指定开发线分支即时补跑。快照不进内网仓与 Central 之外的任何自动通道，
-# 正式版镜像仍归 publish.yml 第三步骤（本文件与它互不重推、互不牵连，通道独立契约同规格条文）。
-# 触发块调整只在默认分支 main 上的本文件生效（schedule 平台约束）；枚举逐线动态执行，
-# 线退役自动出局。快照形态按 tny.publications 现行策略跳签、无 .asc 构件可被消费（复测 S1 至 S8）。
+# 开发线快照构件进入 GitHub Packages 镜像的唯一持续集成入口——定时计划每日镜像当前开发线一次
+# （选线与内网快照发布同一事实源：docs/release-process.md 线谱系登记中状态为"版本开发分支"的线），
+# 维护态与退役线、以及历史线，一律不在定时范围，确需镜像其快照时由 workflow_dispatch
+# 显式指定线名单次补跑（人工指定即授权）。首跑教训（2026-10-05 run 37336175323）：按远端分支
+# 形态动态枚举会把退役但分支未删的历史线（2.0.x 至 5.6.x，旧 wrapper 缺 jar）全部纳入矩阵，
+# 批量产生必然失败的作业——选线必须以线谱系登记为唯一依据，不得以分支存在性推断。
+# 快照不进内网仓与 Central 之外的任何自动通道，正式版镜像仍归 publish.yml 第三步骤
+# （本文件与它互不重推、互不牵连，通道独立契约同规格条文）。
+# 触发块调整只在默认分支 main 上的本文件生效（schedule 平台约束）。
+# 快照形态按 tny.publications 现行策略跳签、无 .asc 构件可被消费（复测 S1 至 S8）。
 on:
   schedule:
     # 每日 UTC19:23，与 build.yml nightly（UTC18:37）错峰 46 分钟，避免同段 runner 排队
@@ -33,15 +38,21 @@ jobs:
         id: pick
         run: |
           if [ -n "${{ inputs.branch }}" ]; then
-            # 人工补跑入口：指定线名时矩阵只含该线；线形态合法性由门禁分支白名单把关，此处不自建校验
+            # 人工补跑入口：指定线名时矩阵只含该线（人工指定即授权，含维护态线）；
+            # 线形态合法性由门禁分支白名单把关，此处不自建校验
             echo 'lines=["${{ inputs.branch }}"]' >> "$GITHUB_OUTPUT"
           else
-            git ls-remote --heads origin \
-              | grep -oE 'refs/heads/[0-9]+\.[0-9]+\.x$' \
-              | sed 's|refs/heads/||' \
-              | jq -R . | jq -sc \
-              | sed 's/^/lines=/' >> "$GITHUB_OUTPUT" 2>/dev/null \
-              || echo 'lines=[]' >> "$GITHUB_OUTPUT"
+            # 定时口径：线谱系登记中状态含"版本开发分支"的那一条即当前开发线（全库唯一，
+            # 流程五开线仪式保证）；解析不到（表格异常）时输出空矩阵让本次运行干净跳过并在
+            # 日志留一行归因，不回退到分支存在性枚举——那正是首跑批量失败的口径
+            LINE=$(awk 'BEGIN{FS="|"} /^\| *`[0-9]+\.[0-9]+\.x`/ { if ($6 ~ /版本开发分支/) { if (match($2, /[0-9]+\.[0-9]+\.x/)) { print substr($2, RSTART, RLENGTH); exit } } }' docs/release-process.md)
+            if [ -n "$LINE" ]; then
+              echo "lines=[\"$LINE\"]" >> "$GITHUB_OUTPUT"
+              echo "current dev line picked from lineage registry: $LINE"
+            else
+              echo 'lines=[]' >> "$GITHUB_OUTPUT"
+              echo '::warning::线谱系登记中未找到状态为"版本开发分支"的行，本次定时运行跳过镜像作业'
+            fi
           fi
 
   mirror:

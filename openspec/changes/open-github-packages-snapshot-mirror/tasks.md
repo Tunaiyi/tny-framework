@@ -28,5 +28,11 @@
 ## 5. 首次运行观察与真实快照发布（需用户批准）
 
 - [x] 5.1 本变更全部文件改动经用户指示提交并合入 main（schedule 与枚举只在默认分支生效，不合入 main 则定时永不触发）。提交动作等用户口令，话术："提交开放快照镜像的全部改动"。
-- [ ] 5.2 首次真实快照镜像运行（需用户单独批准，二选一）：批准人工 dispatch 补跑入口对 `5.7.x` 触发一次，或等待首个定时周期自然发生。运行后只读核对：`checkPublishPrerequisites` 未因 detached HEAD 误拒（兜底生效）、`0.7.x-SNAPSHOT` 形态目录级元数据含 `<snapshot>` 块且消费端解析命中本次构建（`gh api "users/Tunaiyi/packages?package_type=maven"` 与包页面、消费者工程解析各一次）。失败即停，不自动重跑。验证：运行号、矩阵输出、元数据快照块原文与解析记录归档 `verification/first-run.txt`。
+- [x] 5.2 首次真实快照镜像运行（需用户单独批准，二选一）：批准人工 dispatch 补跑入口对 `5.7.x` 触发一次，或等待首个定时周期自然发生。运行后只读核对：`checkPublishPrerequisites` 未因 detached HEAD 误拒（兜底生效）、`0.7.x-SNAPSHOT` 形态目录级元数据含 `<snapshot>` 块且消费端解析命中本次构建（`gh api "users/Tunaiyi/packages?package_type=maven"` 与包页面、消费者工程解析各一次）。失败即停，不自动重跑。验证：运行号、矩阵输出、元数据快照块原文与解析记录归档 `verification/first-run.txt`。
 - [ ] 5.3 组末验证：首运行通过后连续两个定时观察（每线每日一套、时间戳推进），增长量级与文档"已知限制"句核对；若首运行暴露兜底失效，暂停上线并回到设计修订，不带病保留定时触发。
+
+## 6. 选线口径修订（首跑暴露的设计缺口，用户 2026-10-06 复裁）
+
+- [x] 6.1 `snapshot-mirror.yml` 的 schedule 选线从"远端分支形态动态枚举"改为"解析 `docs/release-process.md` 线谱系登记中状态含'版本开发分支'的行、每日仅镜像当前开发线一次"，解析失败输出空矩阵并告警、绝不回退分支枚举；dispatch 指定线名语义不变（人工指定即授权，允许维护线补跑）；头注记录首跑教训。账本同步：specs 差量 CI 需求触发形态括注、proposal 的 Why 与 What Changes、design 的 D1（含修订记录与新增被否决备选"分支存在性枚举"）与 D4、docs 镜像节/流程五/流程六/线退役/运维前置、branch-model 两处、README 第 4 条、`tny.release.gradle` 注释。验证：本地 awk 解析输出 `5.7.x`；两工作流 YAML 解析通过；全仓选线旧措辞检索零残留（tasks 历史执行记录除外）。
+- [x] 6.2 任务文本注记：3.2 勾选文本保留当时"逐线执行"措辞作为历史执行记录；`docs/branch-flow-animation.html`（用户未入库新文件）第 258 行"快照镜像按分支形态动态枚举"表述已过时，提请用户知悉，不由本变更代改。
+- [ ] 6.3 修订后复验：改动合入 main 后 dispatch 一次**不填线名**的运行（同时检验线谱系解析路径与单线矩阵），确认矩阵仅 `5.7.x` 一线、作业 success、快照 buildNumber 推进（第二构建）；证据并入 `verification/first-run.txt`。
