@@ -22,7 +22,7 @@
 
 - [x] 4.1a （支 a）`tny-game-namnspace-etcd` 测试面类级有界预检：`@BeforeAll` Awaitility ≤10s 探 etcd health，超时抛显式环境异常。验证：本地 `--rerun` 单测绿 + 故意停 etcd 时报"环境错"而非挂死/断言错。**跳过裁定（2026-10-05 按组头"未定罪则整组跳过并在验证注明"落笔）**：本支定罪前提（services etcd 就绪竞态）至今未被任何案卷证实——定罪栏两个自然红（run#38 与 GitHub Actions run id 37165077819）均判非 etcd，观察账自 run#94 起的多轮观察内该假设未现形。依 design D3"禁止未取证先修"，本项不实施、只记裁定；若日后出现 etcd 模块连接拒绝或超时栈的同签名红，回到任务 3.2 重新定罪，届时再实施本项。
 - [x] 4.1b （支 b）定罪用例按 stabilize §5 判例改有界轮询+绝对上限。验证：本地单跑定罪用例绿；改造处注释引用本案卷 run 号。完成注记（2026-10-04）：案 #1 与案 #2 的判例式改造经用户指令当日在移交线实施完毕——actor 线的 FlowTestUnits 驱动循环加十秒绝对上限，TypeStageTest 与 VoidTypeStageTest 全部墙钟窗口判据改为尝试计数判据；common-lang 线的 ObjectLockerTest 改会合形态、CollectionLockTest 的并行驻留观测改为二十秒有界窗口多轮重试；同轮修复 MapperLocker 在获取失败与中断路径"归还引用计数却不销毁条目"的生产残留（有界轮询能够收敛的前提，机制详见 diagnosis.md 案 #2 执行记录）。验证兑现：本地空载与八进程 CPU 烧机负载下，`:tny-game-actor:test --tests 'drama.task.*'` 共 28 个用例全绿、`:tny-game-common-lang:test` 全模块连同消费面 `:tny-game-data:test` 与 `:tny-game-net:test` 全绿；改造处注释引用实况（2026-10-05 复核修正原"逐处"表述）：actor 三文件的改造注释共十四处引用 run#38；ObjectLockerTest 五处与 MapperLocker 一处引用 GitHub Actions run id 37165077819；CollectionLockTest 三处改造注释引用登记簿"本地登记 #2/3/4"条目——该用例的红色案卷线索即此登记条目（本地三次偶红，无 CI run 号），其所属家族见案 #2 执行记录。任务 4.2 的"连续零红 ≥10 次 push"计数自本修复推送轮起另行累计。
-- [ ] 4.2 组验证：根治提交后连续 CI unit 零红 ≥10 次 push（计数登记 `diagnosis.md`，口径沿 stabilize §6：红主犯须署名到 job）；期间任何新投卷=同签名复发 → 计数清零回 3.2 复诊。
+- [x] 4.2 组验证（2026-10-06 经用户裁决改写为移交形态后勾选）：根治提交后连续 CI unit 零红 ≥10 次 push 属时间型观察，会话内不可做完——计数登记与持续跟踪移交 `diagnosis.md` 账目（与本变更 47dff9d2 收口提交的账目记忆结转同一形态），变更归档不中止观察；期间任何同签名复发按原文回 3.2 复诊，达标判据与口径（stabilize §6：红主犯署名到 job）不变。
 
 ## 5. IT 尾款账目收口（design D4）
 
