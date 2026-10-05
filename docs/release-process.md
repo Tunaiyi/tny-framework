@@ -143,6 +143,7 @@
 | 线 | 开线提交 | 开线日期 | 开线时上一线最新标签 | 状态 |
 |---|---|---|---|---|
 | `5.7.x`（追溯登记） | — | — | — | 版本开发分支（5.7.8 首发后进入维护态） |
+| `6.0.x`（追溯登记） | `20946ce2`（分叉自 main） | 2022-08-13 | 不可考 | 历史遗留死线：最后活动 2023-08-11，领先 main 36 笔但三年未动；不是当前预研线，待按"线退役"条款处置或封存 |
 
 ## 线退役
 
@@ -205,10 +206,11 @@
   签名三属性同内网通道。快照永不进 Central（非发布分支被 `centralCheck` 拒绝，
   nmcp 暴露的快照上传任务已全部禁用）。
 - CI 通道：`.github/workflows/publish.yml`——release 事件（按标签推导发布分支）或
-  `workflow_dispatch` 人工触发，两通道分步独立执行、互不回滚。所需 secrets：
+  `workflow_dispatch` 人工触发，三个目的地（内网 Nexus、Maven Central、GitHub Packages 镜像——
+  镜像步骤仅收正式版本，快照镜像见"GitHub Packages 镜像通道"一节）分步独立执行、互不回滚。所需 secrets：
   `MAVEN_CENTRAL_USERNAME/PASSWORD`、`SIGNING_KEY`（armor 私钥）/`SIGNING_KEY_ID`/`SIGNING_PASSWORD`、
   `NEXUS_USERNAME/PASSWORD`。前置条件：`com.tnydev.game` 命名空间已在 Portal 完成 DNS 验证。
-- 快照通道：开发线 `./gradlew publish` 自动分发**内网快照仓与 Central 快照仓**双目的地（条件=快照版本形态且本机配置 `mavenCentralUsername/Password`，缺凭据机器仅发内网；Central 快照 90 天自动清理，权威归档在内网）。
+- 快照通道：开发线 `./gradlew publish` 自动分发**内网快照仓与 Central 快照仓**双目的地（条件=快照版本形态且本机配置 `mavenCentralUsername/Password`，缺凭据机器仅发内网；Central 快照 90 天自动清理，权威归档在内网）。快照的第三个目的地为 GitHub Packages 镜像——其参与方式（持续集成定时与本机来源的边界）以能力 github-packages-mirror 条文为准，见"GitHub Packages 镜像通道"一节。
 - 首版验收：Central 检索到 `com.tnydev.game:tny-game-*:<版本>` 全模块清单后，本流程定版。
 
 ## GitHub Packages 镜像通道（正式版本与快照构件的第三目的地）
