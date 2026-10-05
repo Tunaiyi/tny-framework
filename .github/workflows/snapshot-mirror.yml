@@ -53,7 +53,7 @@ jobs:
               echo "snapshot lines picked from lineage registry: $LINE"
             else
               echo 'lines=[]' >> "$GITHUB_OUTPUT"
-              echo '::warning::线谱系登记中未找到状态为"版本开发分支"的行，本次定时运行跳过镜像作业'
+              echo '::warning::线谱系登记中未找到状态含在途或快照在维的线，本次定时运行跳过镜像作业'
             fi
           fi
 
