@@ -18,6 +18,36 @@ env:
   GRADLE_OPTS: -Dorg.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8
 
 jobs:
+  # 提交信息纪律校验（redesign-devline-integration-model 任务 6.1/6.4 的 CI 侧）：
+  # PR 内 fix 类提交首行必须携带缺陷编号（与 .githooks/commit-msg 同规则），
+  # 向上合并的合并结果完整性检查以该编号为检索键，编号缺失即拦下。
+  commit-lint:
+    name: Commit message discipline
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Lint fix commit subjects
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          bad=0
+          for sha in $(git rev-list "$BASE"..HEAD); do
+            subject=$(git log -1 --format=%s "$sha")
+            body=$(git log -1 --format=%b "$sha")
+            case "$subject" in
+              fix:*|"fix("*)
+                if printf '%s' "$subject$body" | grep -qiE '^(Merge|merge-upward:|propagate:)'; then continue; fi
+                if ! printf '%s' "$subject" | grep -qE '[A-Z][A-Z0-9]{1,9}-[0-9]+'; then
+                  echo "::error ::提交 $(git log -1 --format=%h "$sha") 的 fix 首行缺缺陷编号（形如 BUG-101）：$subject"
+                  bad=1
+                fi
+                ;;
+            esac
+          done
+          exit $bad
   unit:
     name: Unit tests (no Docker)
     runs-on: ubuntu-latest

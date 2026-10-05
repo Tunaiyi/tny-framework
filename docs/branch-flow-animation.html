@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TnyFramework 版本管理（改造后）· 分支流程动画</title>
+<title>TnyFramework 分支模型（开发版本分支与常驻维护分支）· 流程动画</title>
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
   body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#0d1117;color:#c9d1d9;padding:28px 20px}
   .wrap{max-width:1340px;margin:0 auto}
   h1{text-align:center;font-size:24px;color:#f0f6fc;margin-bottom:6px}
   .subtitle{text-align:center;color:#8b949e;font-size:12.5px;margin-bottom:18px;line-height:1.8}
-  .subtitle strong{color:#f0f6fc}.subtitle .prop{color:#d2a8ff}
+  .subtitle strong{color:#f0f6fc}
   .controls{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
   .btn{background:#21262d;border:1px solid #30363d;color:#c9d1d9;padding:8px 18px;border-radius:8px;cursor:pointer;font-size:14px;transition:all .15s}
   .btn:hover{background:#30363d;border-color:#8b949e}
@@ -32,7 +32,7 @@
   .badge{font-size:11px;font-weight:normal;padding:2px 10px;border-radius:12px;margin-left:8px;vertical-align:2px}
   .desc{font-size:13.5px;color:#8b949e;line-height:1.8;margin-bottom:10px}
   .desc em{color:#7ee787;font-style:normal}.desc strong{color:#f0f6fc}
-  .desc .warn{color:#ff7b72}.desc .pu{color:#d2a8ff}
+  .desc .warn{color:#ff7b72}.desc .am{color:#ffd33d}
   .codes{display:flex;gap:10px;flex-wrap:wrap}
   .code{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:10px 14px;font-family:"SF Mono",Menlo,Consolas,monospace;font-size:12px;line-height:1.8;color:#c9d1d9;white-space:pre;flex:1;min-width:300px}
   .code .c{color:#8b949e}.code .k{color:#ff7b72}.code .g{color:#7ee787}.code .f{color:#79c0ff}.code .s{color:#a5d6ff}
@@ -50,10 +50,10 @@
 </head>
 <body>
 <div class="wrap">
-<h1>TnyFramework 版本管理（改造后）· 分支流程动画</h1>
-<p class="subtitle">现行三层模型：main 是唯一特性工厂；版本开发分支切线即特性冻结；版本发布分支在标签创建之前只接受快进式追加修复，标签一经创建，它和标签一同永不移动。<br>
-<span class="prop">两处提案尚未立 openspec change，画面带"（提案）"字样：早切晚锁（首发 GA 前的登车窗口）与 6.0-staging（主版本并行）。</span><br>
-图形依据 docs/release-process.md、buildSrc 发布任务与 openspec 规格 release-versioning（七条需求）绘制。图中 5.9.x 与 5.10.x 是示例线，仓库当前真实存在的版本开发分支是 5.7.x。</p>
+<h1>分支模型流程动画（开发版本分支加常驻维护分支模型）</h1>
+<p class="subtitle">特性在开发版本分支 <strong>dev/N.M.x</strong> 生长，首发经<strong>集成到主干</strong>进入 main 并删除该线；<br>
+每个已发布系列由常驻 <strong>release/N.M.x</strong> 维护分支滚动补丁，补丁经<strong>向上合并</strong>逐级回到更新的分支与 main；<br>
+<strong>release 标签</strong>一经推送永不移动，是版本号、制品与提交三者对账的权威依据。依据 docs/release-process.md 与规格 release-versioning、branch-integration-gates 绘制。</p>
 
 <div class="controls">
   <button class="btn" id="prev">◀ 上一步</button>
@@ -65,41 +65,38 @@
 </div>
 
 <div class="legend">
-  <span><i class="sw" style="background:#f0883e"></i><b>main 特性工厂</b>（橙色线段）</span>
-  <span><i class="sw" style="background:#58a6ff"></i>版本开发分支（蓝色线段）</span>
-  <span><i class="sw" style="background:#d29922"></i>版本发布分支</span>
-  <span><i class="sq" style="background:#ffd33d"></i><b>vN.M.K 附注标签</b>（⚑ 徽章）</span>
-  <span><i class="sw" style="background:#7ee787"></i>工位（feat 与 fix）</span>
-  <span><i class="sw" style="background:#bc8cff"></i><span class="prop">提案对象</span></span>
-  <span><i class="sw" style="background:#f778ba"></i>重放落点提交</span>
-  <span style="color:#3fb950">▶ rebase-merge 合入</span>
-  <span style="color:#f778ba">╌ cherry-pick -x 重放</span>
+  <span><i class="sw" style="background:#f0883e"></i><b>main 集成主干</b></span>
+  <span><i class="sw" style="background:#58a6ff"></i>开发版本分支</span>
+  <span><i class="sw" style="background:#d29922"></i>release 维护分支</span>
+  <span><i class="sq" style="background:#ffd33d"></i>集成或向上合并节点</span>
+  <span><i class="sq" style="background:#39d353"></i><b>⚑ release 标签</b></span>
+  <span><i class="sw" style="background:#7ee787"></i>feat 分支、fix 分支</span>
+  <span><i class="sw" style="background:#8b949e"></i>祖父登记线（过渡）</span>
+  <span style="color:#f0883e">▶ 集成到主干</span>
+  <span style="color:#f778ba">╌ 向上合并与同步</span>
   <span style="color:#8b949e">╌ 切出</span>
-  <span style="color:#d29922">→ 快进追加</span>
-  <span style="color:#bc8cff">╌ rebase 同步（工位与 staging）</span>
-  <span style="color:#ff7b72">⛔ 禁止与封存</span>
+  <span style="color:#ff7b72">⛔ 禁止与检查</span>
 </div>
 
 <div class="canvas-card">
 <svg viewBox="0 0 1900 700" id="svg">
   <defs>
-    <marker id="aG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="#3fb950"/></marker>
+    <marker id="aO" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="#f0883e"/></marker>
     <marker id="aP" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="#f778ba"/></marker>
     <marker id="aB" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0L10,5L0,10z" fill="#8b949e"/></marker>
-    <marker id="aO" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="#d29922"/></marker>
     <marker id="aR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="#ff7b72"/></marker>
-    <marker id="aPu" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0L10,5L0,10z" fill="#bc8cff"/></marker>
+    <marker id="aGn" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="#7ee787"/></marker>
   </defs>
-  <text x="12" y="60"  fill="#bc8cff" font-size="12">staging（提案）</text>
-  <text x="12" y="186" fill="#f0883e" font-size="15" font-weight="bold">main</text>
-  <text x="12" y="296" fill="#58a6ff" font-size="13">5.9.x 示例</text>
-  <text x="12" y="406" fill="#58a6ff" font-size="13">5.7.x 真实</text>
-  <text x="12" y="536" fill="#d29922" font-size="13">发布分支</text>
-  <line x1="130" y1="55" x2="1878" y2="55" stroke="#30363d" stroke-dasharray="3 5"/>
-  <line x1="100" y1="180" x2="1878" y2="180" stroke="#30363d" stroke-dasharray="3 5"/>
-  <line x1="100" y1="290" x2="1878" y2="290" stroke="#30363d" stroke-dasharray="3 5"/>
-  <line x1="100" y1="400" x2="1878" y2="400" stroke="#30363d" stroke-dasharray="3 5"/>
-  <line x1="100" y1="530" x2="1878" y2="530" stroke="#30363d" stroke-dasharray="3 5"/>
+  <text x="12" y="66"  fill="#f0883e" font-size="15" font-weight="bold">main</text>
+  <text x="12" y="176" fill="#58a6ff" font-size="13">dev/5.8.x</text>
+  <text x="12" y="286" fill="#58a6ff" font-size="13">dev/5.9.x</text>
+  <text x="12" y="406" fill="#d29922" font-size="13">release/5.8.x</text>
+  <text x="12" y="586" fill="#8b949e" font-size="13">祖父线 5.7.x</text>
+  <line x1="120" y1="60" x2="1878" y2="60" stroke="#30363d" stroke-dasharray="3 5"/>
+  <line x1="120" y1="170" x2="1878" y2="170" stroke="#30363d" stroke-dasharray="3 5"/>
+  <line x1="120" y1="280" x2="1878" y2="280" stroke="#30363d" stroke-dasharray="3 5"/>
+  <line x1="120" y1="400" x2="1878" y2="400" stroke="#30363d" stroke-dasharray="3 5"/>
+  <line x1="120" y1="580" x2="1878" y2="580" stroke="#30363d" stroke-dasharray="3 5"/>
   <g id="edges"></g><g id="nodes"></g>
 </svg>
 </div>
@@ -110,175 +107,141 @@
   <div class="codes" id="pCodes"></div>
 </div>
 
-<div class="foot">五幕结构：分支类型、feat 流程、fix 流程、多分支并行、发布流程（常规与 hotfix 两条支路），尾声给合并方式总账与线退役恢复——与 docs/release-process.md 的七条流程一一对应。键盘左右方向键翻页；命令中远端名一律 github，本仓库没有 origin。</div>
+<div class="foot">十二步：分支种类与铁律、开发版本分支与 feat 分支、同步与集成到主干、首发与常驻维护分支、补丁滚动、向上合并与完整性检查、并行排队、例外通道、祖父轨、退役与总账。键盘左右方向键翻页；命令中远端名一律 github。</div>
 </div>
 
 <script>
-/* 泳道坐标：staging=55 main=180 5.9.x=290 5.7.x=400 发布分支=530 标签菱形=585。画面只放短名，完整语义在下方文字面板。 */
+/* 泳道坐标：main=60 dev5.8=170 dev5.9=280 release=400 标签菱形=455 祖父线=580。画面只放短名，完整语义在文字面板。 */
 const N = {
-  STG:   {x:350, y:55,  c:'#bc8cff', t:'6.0-staging', h:'（提案）', prop:true},
-  STGM:  {x:1500,y:55,  c:'#bc8cff', t:'交接合入',     h:'（提案）', prop:true},
-  B0:    {x:120, y:180, c:'#f0883e', t:'起点'},
-  L57:   {x:160, y:400, c:'#58a6ff', t:'5.7.x', h:'真实维护线'},
-  M_F1:  {x:300, y:180, c:'#f0883e', t:'特性 A'},
-  F1a:   {x:250, y:125, c:'#7ee787', t:'feat 工位'},
-  F1b:   {x:400, y:125, c:'#7ee787', t:'rebase 同步'},
-  M_F2:  {x:470, y:180, c:'#f0883e', t:'A 落定', h:'零合并提交'},
-  L59:   {x:600, y:290, c:'#58a6ff', t:'5.9.x', h:'切线即冻结'},
-  M_F3:  {x:680, y:180, c:'#f0883e', t:'特性 C'},
-  PICK:  {x:750, y:290, c:'#f778ba', t:'C 登车', h:'（提案）'},
-  M_FIX: {x:880, y:180, c:'#f0883e', t:'修复原型', h:'CVE'},
-  P59:   {x:845, y:290, c:'#f778ba', t:'重放 5.9'},
-  P57:   {x:880, y:400, c:'#f778ba', t:'重放 5.7'},
-  FXN:   {x:990, y:455, c:'#7ee787', t:'线原生工位', h:'fix/5.7.12'},
-  PUP:   {x:1080,y:180, c:'#f778ba', t:'上收 main'},
-  BAD:   {x:360, y:240, c:'#ff7b72', t:'⛔ 禁止整体合并', bad:true},
-  C590:  {x:600, y:530, c:'#d29922', t:'5.9.0.release'},
-  T590:  {x:650, y:585, merge:true, tag:'⚑ v5.9.0'},
-  MB590: {x:700, y:345, c:'#f778ba', t:'合回跳过', h:'零新提交'},
-  T5710: {x:1150,y:585, merge:true, tag:'⚑ v5.7.10'},
-  C5711: {x:1280,y:530, c:'#d29922', t:'5.7.11.release'},
-  HFA:   {x:1350,y:470, c:'#7ee787', t:'追加修复', h:'打标前'},
-  T5711: {x:1380,y:585, merge:true, tag:'⚑ v5.7.11'},
-  SEAL:  {x:1470,y:530, c:'#ff7b72', t:'⛔ 封存', bad:true},
-  MB57:  {x:1360,y:400, c:'#f778ba', t:'合回重放'},
-  M_NEXT:{x:1620,y:180, c:'#f0883e', t:'下一代特性'},
-  L510:  {x:1700,y:290, c:'#58a6ff', t:'5.10.x', h:'再切线'},
+  M0:   {x:120, y:60,  c:'#f0883e', t:'起点'},
+  D58:  {x:230, y:170, c:'#58a6ff', t:'dev/5.8.x', h:'自main切出'},
+  FA:   {x:190, y:112, c:'#7ee787', t:'feat 分支'},
+  FB:   {x:345, y:112, c:'#7ee787', t:'rebase 同步'},
+  D58A: {x:420, y:170, c:'#58a6ff', t:'特性入线', h:'发快照'},
+  SYNC: {x:560, y:170, c:'#f778ba', t:'main 同步'},
+  BD9:  {x:640, y:280, c:'#ff7b72', t:'⛔ 抢先集成被拒', bad:true},
+  D59:  {x:430, y:280, c:'#58a6ff', t:'dev/5.9.x', h:'并行孕育'},
+  ME:   {x:760, y:60,  merge:true, tag:'集成 5.8 并删线'},
+  R58:  {x:900, y:400, c:'#d29922', t:'release/5.8.x', h:'每系列唯一'},
+  T580: {x:955, y:455, merge:true, tag:'⚑ v5.8.0'},
+  FX:   {x:1040, y:340, c:'#7ee787', t:'fix 分支', h:'BUG-7001'},
+  R58B: {x:1150, y:400, c:'#d29922', t:'补丁滚动'},
+  T581: {x:1205, y:455, merge:true, tag:'⚑ v5.8.1'},
+  GATE: {x:1250, y:240, c:'#ff7b72', t:'⛔ 丢标记即拦', bad:true},
+  CP:   {x:1330, y:340, c:'#f778ba', t:'BUG-7002', h:'cherry-pick 例外'},
+  MU:   {x:1420, y:60,  merge:true, tag:'补丁落账'},
+  ME2:  {x:1560, y:60,  merge:true, tag:'集成 5.9'},
+  RT:   {x:1500, y:400, c:'#ff7b72', t:'⛔ 先合并后删', bad:true},
+  MN:   {x:1720, y:60,  c:'#f0883e', t:'集成账本', h:'first-parent'},
+  G57:  {x:230, y:580, c:'#8b949e', t:'5.7.x', h:'祖父登记'},
+  GREL: {x:430, y:580, c:'#8b949e', t:'旧一次性分支', h:'过渡流程'},
+  GTAG: {x:530, y:628, merge:true, tag:'⚑ v5.7.99 演练'},
 };
-/* 边型样式：lane=泳道主干粗线段（只有已走过的部分才画出来），其余为动作边。边上一律不写字，颜色语义见图例与文字面板。 */
 const STY = {
   lane:{col:'#8b949e',w:3,dash:null,mark:null},
   fork:{col:'#8b949e',w:1.6,dash:'5 5',mark:'aB'},
-  rm:  {col:'#3fb950',w:2.4,dash:null,mark:'aG'},
-  pick:{col:'#f778ba',w:2.2,dash:'6 5',mark:'aP'},
-  ff:  {col:'#d29922',w:2.4,dash:null,mark:'aO'},
+  lift:{col:'#f0883e',w:2.6,dash:null,mark:'aO'},
+  rm:  {col:'#7ee787',w:2.2,dash:null,mark:'aGn'},
+  up:  {col:'#f778ba',w:2.2,dash:'6 5',mark:'aP'},
   bad: {col:'#ff7b72',w:2.2,dash:'6 5',mark:'aR'},
-  sync:{col:'#bc8cff',w:1.8,dash:'4 6',mark:'aPu'},
 };
 const E = [
-  {id:'em0', a:'B0',    b:'M_F1',  type:'lane', col:'#f0883e'},
-  {id:'em1', a:'M_F1',  b:'M_F2',  type:'lane', col:'#f0883e'},
-  {id:'em2', a:'M_F2',  b:'M_F3',  type:'lane', col:'#f0883e'},
-  {id:'em3', a:'M_F3',  b:'M_FIX', type:'lane', col:'#f0883e'},
-  {id:'em4', a:'M_FIX', b:'PUP',   type:'lane', col:'#f0883e'},
-  {id:'em5', a:'PUP',   b:'M_NEXT',type:'lane', col:'#f0883e'},
-  {id:'el57a',a:'L57',  b:'P57',   type:'lane', col:'#58a6ff'},
-  {id:'el57b',a:'P57',  b:'MB57',  type:'lane', col:'#58a6ff'},
-  {id:'el59a',a:'L59',  b:'PICK',  type:'lane', col:'#58a6ff'},
-  {id:'el59b',a:'PICK', b:'P59',   type:'lane', col:'#58a6ff'},
-  {id:'eFork57',a:'B0',  b:'L57',  type:'fork'},
-  {id:'eForkF1',a:'M_F1',b:'F1a',  type:'fork'},
-  {id:'eSyncF1',a:'F1a', b:'F1b',  type:'sync'},
-  {id:'eRmF1',  a:'F1b', b:'M_F2', type:'rm'},
-  {id:'eCut59', a:'M_F2',b:'L59',  type:'fork'},
-  {id:'ePickC', a:'M_F3',b:'PICK', type:'pick'},
-  {id:'eC590',  a:'L59', b:'C590', type:'fork'},
-  {id:'et590',  a:'C590',b:'T590', type:'fork'},
-  {id:'eP59',   a:'M_FIX',b:'P59', type:'pick'},
-  {id:'eP57',   a:'M_FIX',b:'P57', type:'pick'},
-  {id:'eFXin',  a:'FXN', b:'P57',  type:'rm'},
-  {id:'eFXup',  a:'P57', b:'PUP',  type:'pick'},
-  {id:'eBad',   a:'L57', b:'BAD',  type:'bad'},
-  {id:'eStg',   a:'STG', b:'STGM', type:'sync'},
-  {id:'eStgM',  a:'STGM',b:'M_NEXT',type:'rm'},
-  {id:'eMB590', a:'C590',b:'MB590',type:'pick'},
-  {id:'eC5711', a:'T5710',b:'C5711',type:'fork'},
-  {id:'eHF',    a:'HFA', b:'C5711',type:'ff'},
-  {id:'et5711', a:'C5711',b:'T5711',type:'fork'},
-  {id:'eMB57',  a:'C5711',b:'MB57', type:'pick'},
-  {id:'eSeal',  a:'T5711',b:'SEAL', type:'bad'},
-  {id:'eCut510',a:'M_NEXT',b:'L510',type:'fork'},
+  {id:'ldev', a:'D58', b:'D58A', type:'lane', col:'#58a6ff'},
+  {id:'ldev2',a:'D58A',b:'SYNC', type:'lane', col:'#58a6ff'},
+  {id:'ld9',  a:'D59', b:'BD9',  type:'lane', col:'#58a6ff'},
+  {id:'lrel', a:'R58', b:'R58B', type:'lane', col:'#d29922'},
+  {id:'lm0',  a:'M0',  b:'ME',   type:'lane', col:'#f0883e'},
+  {id:'lm1',  a:'ME',  b:'MU',   type:'lane', col:'#f0883e'},
+  {id:'lm2',  a:'MU',  b:'ME2',  type:'lane', col:'#f0883e'},
+  {id:'lm3',  a:'ME2', b:'MN',   type:'lane', col:'#f0883e'},
+  {id:'eF58', a:'M0',  b:'D58',  type:'fork'},
+  {id:'eFfa', a:'D58', b:'FA',   type:'fork'},
+  {id:'eRmF', a:'FB',  b:'D58A', type:'rm'},
+  {id:'eSyn', a:'FB',  b:'SYNC', type:'up',  lab:''},
+  {id:'eMe',  a:'SYNC',b:'ME',   type:'lift'},
+  {id:'eCut', a:'ME',  b:'R58',  type:'fork'},
+  {id:'eT0',  a:'R58', b:'T580', type:'fork'},
+  {id:'eFX',  a:'FX',  b:'R58B', type:'rm'},
+  {id:'eT1',  a:'R58B',b:'T581', type:'fork'},
+  {id:'eUp',  a:'R58B',b:'MU',   type:'up'},
+  {id:'eGate',a:'R58B',b:'GATE', type:'bad'},
+  {id:'eCP',  a:'CP',  b:'MU',   type:'up'},
+  {id:'eD9',  a:'D59', b:'BD9',  type:'bad'},
+  {id:'eMe2', a:'D59', b:'ME2',  type:'lift'},
+  {id:'eRT',  a:'R58B',b:'RT',   type:'bad'},
+  {id:'eG1',  a:'G57', b:'GREL', type:'fork'},
+  {id:'eG2',  a:'GREL',b:'GTAG', type:'fork'},
 ];
 const STEPS = [
  {s:'现行',t:'第一幕 · 一张图认全对象',
-  d:'五条泳道：紫色是 <b>6.0-staging（提案）</b>；橙色是 <b>main</b> 特性工厂；蓝色是版本开发分支 <b>5.7.x 与 5.9.x</b>；黄色是版本发布分支；黄色菱形加绿色 ⚑ 徽章是 <b>vN.M.K</b> 附注标签，标签垂在它自己的发布制品提交处（历史标签如 v5.7.10 只作为取基点出现，不再画出发分支）。灰色细虚线是切出关系。画面只放短名，完整语义看下面的文字面板。',
-  c:['<span class="c"># 版本形态即发布资格（门禁白名单）</span>\nN.M.x           <span class="g">可发快照</span> N.M.x-SNAPSHOT\nN.M.K.release   <span class="g">可发裸号</span> N.M.K\nmain、工位等     <span class="k">一律拒绝发布</span>'],
-  n:['B0','L59','C590','T590','STG','M_NEXT','M_F2','L57'],e:['eFork57','eCut59']},
- {s:'现行',t:'三条铁律（先立规矩再看戏）',
-  d:'① <b>特性只进 main</b>：一个对象只承担一种变更原因，特性只在一个地方生长，之后切出的每条版本开发分支才自动携带它。<br>② <b>版本发布分支在标签创建后与标签一同封存</b>（规格第七条与全仓铁律）：标签创建之前它只接受快进式追加修复（见第五幕第 14 步），标签一经推送永不移动。<br>③ <b>版本开发分支不得整体合并进 main</b>：全仓铁律成文为"版本开发分支与 main 只接受快进或重放提交"，把整条线合并进来既不是快进也不是重放，因此在禁止之列——图中三条铁律一幕立在半路的红色禁止块就是它。诚实口径：5.7.x 线上旧时代留有 24 枚合并提交（3.6.x 合入 4.0.x 这类线间合并、合入 gitee 远端跟踪分支这类外部合并），切换点之后该线新增合并为零；main 上切换过渡期为同步线上已合入的修复与重放内容，实际发生过 3 枚"merge 5.7.x"合并提交（2026-10-05），属过渡收编，此后特性进 main 的常规途径只有 rebase-merge。',
-  c:['<span class="k">git</span> rev-list <span class="f">--merges</span> <span class="f">--count</span> 5.7.x        <span class="c"># 输出 24：旧时代历史存量</span>\n<span class="k">git</span> rev-list <span class="f">--merges</span> <span class="f">--count</span> 2da82988..5.7.x   <span class="c"># 输出 0：切换点（模型定型提交）后线上无新增</span>'],
-  n:['BAD'],e:['eBad']},
- {s:'现行',t:'第二幕 · feat 流程 ①：工位从 main 切出',
-  d:'特性<strong>基线永远取 main</strong>——版本开发分支是特性将来可能的落点，不是出生地。命名模板 <em>feat/&lt;主&gt;.&lt;次&gt;.x-&lt;名&gt;</em>（名中版本号是目标预期而非承诺，延期不强制改名）。工位是<strong>全仓唯一允许 force-push 的对象</strong>。',
-  c:['<span class="k">git</span> switch <span class="f">-c</span> <span class="s">feat/5.9.x-search</span> main'],
-  n:['M_F1','F1a'],e:['eForkF1','em0']},
- {s:'现行',t:'feat 流程 ②：同步与合入 main',
-  d:'开发期间定期执行 <em>git fetch 后 rebase github/main</em>，冲突在工位上解决，main 不会被污染。完成后向 main 发 PR，<strong>合并方式是 Rebase and merge</strong>：GitHub 先变基再快进 main，不产生合并提交（仓库实测设置现在只开放这一种合并方式：Ordinary merge commit 与 Squash merge 均已关闭）。图中橙色节点"A 落定"就是这次合入的产物。<strong>PR 描述必填"波及线清单"</strong>——哪些维护线受影响、或判定不受影响的理由，它同时是 fix 传播的对账账本。',
-  c:['<span class="k">git</span> fetch <span class="c">&amp;&amp;</span> <span class="k">git</span> rebase github/main\n<span class="k">git</span> push <span class="f">--force-with-lease</span> github feat/5.9.x-search\n<span class="c"># PR 目标 main，合并方式选 Rebase and merge</span>\n<span class="c"># PR 描述：波及线 = 5.9.x、5.7.x（或注明不波及理由）</span>'],
-  n:['F1b'],e:['eSyncF1','eRmF1','em1']},
- {s:'现行+提案',t:'feat 流程 ③ · 开新线；登车窗口（提案）',
-  d:'<b>现行</b>：从 main 切出 5.9.x 即特性冻结（此后只收修复），切线时在线谱系登记表登记、快照坐标生效，CI 触发面按 <em>*.*.x</em> 通配自动覆盖。<br><span class="pu"><b>提案</b>："早切晚锁"——切线与首发 GA 之间开登车窗口，main 上已成熟的特性可用 cherry-pick -x 登上这条线（图中粉色节点），首发一落窗口永久关闭。</span><strong>提案未立 openspec change，现行文档以切线为冻结点。</strong>',
-  c:['<span class="k">git</span> switch <span class="f">-c</span> 5.9.x main <span class="c">&amp;&amp;</span> <span class="k">git</span> push <span class="f">-u</span> github 5.9.x\n<span class="c"># 提案（登车，人已检出在 5.9.x 上执行）：</span>\n<span class="k">git</span> cherry-pick <span class="f">-x</span> <span class="s">&lt;main 上的特性提交&gt;</span>'],
-  n:['M_F3','PICK','L510'],e:['ePickC','eCut510','em2','el59a']},
- {s:'现行',t:'第三幕 · fix 流程 ①：原型在 main，逐线重放',
-  d:'缺陷修复<strong>原型落 main</strong>（trunk-first），PR 仍用 rebase-merge。随后按该 PR 的<strong>波及线清单</strong>，对每条受影响线执行 <em>cherry-pick -x</em> 把修复重放进线，再普通推送——这里的合并方式不是 merge，是复制提交（-x 在提交说明里保留来源行）。判定不受影响的线不重放；某笔 cherry-pick 发生冲突时，人工在受影响的线上解决冲突后 git cherry-pick --continue，或放弃本次用 --abort。',
-  c:['<span class="c"># 修复原型经 PR 进入 main 后，逐线重放：</span>\n<span class="k">for</span> BR <span class="c">in</span> 5.9.x 5.7.x; <span class="k">do</span>\n  <span class="k">git</span> switch $BR\n  <span class="k">git</span> cherry-pick <span class="f">-x</span> <span class="s">&lt;修复提交&gt;</span> <span class="c">&amp;&amp;</span> <span class="k">git</span> push github $BR\n<span class="k">done</span>'],
-  n:['M_FIX','P59','P57'],e:['eP59','eP57','em3','el57a','el59b']},
- {s:'现行',t:'fix 流程 ②：线原生缺陷与方向纪律',
-  d:'main 上已无该代码路径时（老线原生缺陷）：修复工位基取受影响线头，rebase-merge 进<strong>该线</strong>；随后<strong>必须再上收 main</strong>（cherry-pick -x），否则 main 会静默缺这一笔、特性工厂顶点的历史失真。方向纪律完整表述：<em>修复原型产生在最上游——常规在 main，线原生时先落该线、再上收 main；向更老的线传播是逐线重放</em>。被禁止的是把版本开发分支整体<strong>合并</strong>进 main（第一幕的红色禁示块），以及把新线内容反向 merge 进老线——第一幕立在半路的红色禁止块说的正是前者。',
-  c:['<span class="k">git</span> switch <span class="f">-c</span> fix/5.7.12-regression 5.7.x\n<span class="c"># PR rebase-merge 进 5.7.x 后：</span>\n<span class="k">git</span> switch main <span class="c">&amp;&amp;</span> <span class="k">git</span> cherry-pick <span class="f">-x</span> <span class="s">&lt;修复&gt;</span>'],
-  n:['FXN','PUP'],e:['eFXin','eFXup','em4']},
- {s:'现行',t:'fix 流程 ③：发布前对账（三件事）',
-  d:'每轮发布前核对修复是否到齐，共三件事。第一件用 <b>git cherry &lt;新线&gt; &lt;老线&gt;</b> 列出老线有而新线无的补丁，输出为空即无静默丢失（第一参数是 upstream，方向不可写反）。第二件按缺陷编号点名：<em>git rev-list --count &lt;线&gt; --grep=&lt;编号&gt;</em>，每条受影响线的计数都应大于零。第三件：对外引用（工单、发布说明）<strong>写标签不写哈希</strong>，因为标签是永久可解引用的坐标。其中第二、三件是实践约定，规格暂未成文。',
-  c:['<span class="k">git</span> cherry 5.9.x 5.7.x   <span class="c"># 期望输出为空</span>\n<span class="k">git</span> rev-list <span class="f">--count</span> 5.7.x <span class="f">--grep</span><span class="s">=CVE-XXXX</span>\n<span class="k">git</span> rev-list <span class="f">--count</span> 5.9.x <span class="f">--grep</span><span class="s">=CVE-XXXX</span>'],
+  d:'五条泳道：橙色是 <b>main</b>（集成主干，只接收合入不接收直接开发）；蓝色是<b>开发版本分支 dev/N.M.x</b>（特性在这里生长，可多条并行）；黄色是 <b>release 维护分支</b>（每个已发布系列一条、常驻滚动补丁）；绿色 ⚑ 菱形是 <b>release 标签</b>；灰色是<b>祖父登记线</b>（旧形态 5.7.x 的过渡载体）。画面只放短名，完整语义看文字面板。',
+  c:['<span class="c"># 分支形态即发布资格（门禁白名单加登记表双层）</span>\ndev/<主>.<次>.x      <span class="g">可发快照</span> N.M.x-SNAPSHOT\nrelease/<主>.<次>.x  <span class="g">可发裸号</span> N.M.K（滚动）\nmain、feat、fix      <span class="k">一律拒绝发布</span>'],
+  n:['M0','D58','D59','R58','T580','G57'],e:[]},
+ {s:'现行',t:'三条铁律',
+  d:'① <b>main、开发版本分支与 release 维护分支只追加不改写</b>：禁止对这三类分支强制推送或变基改写；main 接收的整体合入仅限"集成到主干"与"向上合并"两个正式动作。<br>② <b>release 标签一经推送永不移动</b>：要纠正只能发布更高补丁号；标签是版本号、制品与提交位置三者对账的权威依据。<br>③ <b>允许强制推送的仅 feat 分支与 fix 分支</b>，且必须使用 --force-with-lease。修复类提交必须携带缺陷编号（commit-msg 钩子加 CI 校验），因为向上合并的完整性检查以该编号为检索键。',
+  c:['<span class="c"># 钩子安装（每台机器一次）</span>\n<span class="k">git</span> config core.hooksPath .githooks'],
   n:[],e:[]},
- {s:'现行+提案',t:'第四幕 · 多分支并行全景',
-  d:'同一时刻三线并行不悖：5.7.x 已转入维护态、只收修复；5.9.x 切线后特性冻结、等待首发；main 同时孕育下一代特性——这部分是现行模型。多版本并行的传播纪律（修复原型在最上游、逐线重放、对账核查）也已是现行。<span class="pu"><b>尚未解决的结构缺口</b>在主版本号并行：破坏性重构一旦落 main，之后切的每条 5.x 线都被迫携带它。补位方案是 6.0-staging（提案）：破坏性工作住进长驻整合分支、持续 rebase 保持合流能力，等 5.9 首发之后的交接窗口一次 rebase-merge 进 main</span>——特性工厂仍然只有一个。',
-  c:['<span class="c"># 提案规则：staging 基取 main，日常 rebase github/main</span>\n<span class="c"># 5.9.x 首发 GA 前不合入；GA 后交接窗口一次性合流</span>'],
-  n:['STGM'],e:['eStg','eStgM']},
- {s:'现行',t:'第五幕 · 发布 ①：releaseCut（常规支路）',
-  d:'在 5.9.x 上执行 <b>releaseCut</b>：基取线头，切出 5.9.0.release 并推送——<strong>此刻不打标签</strong>。改造前的旧任务名为 releaseCutAndTag，切支同时就把标签打了，hotfix 想在切支与发布之间补修复提交时没有合法路径、只能手工建标签。三个发布任务 releaseCut、releaseTag、releaseMergeBack 都支持 <em>-PdryRun</em> 预览；预览只做 grgit 仓库状态查询，本机 git 命令行不可用时预览照常可用。',
-  c:['<span class="k">./gradlew</span> releaseCut <span class="f">-PreleaseVersion=</span><span class="s">5.9.0</span> <span class="f">-PdryRun</span>\n<span class="k">./gradlew</span> releaseCut <span class="f">-PreleaseVersion=</span><span class="s">5.9.0</span> \\\n            <span class="f">-PgitExe=</span>/usr/bin/git'],
-  n:[],e:['eC590']},
- {s:'现行',t:'发布 ②：releaseTag 与 publish 门禁',
-  d:'<b>releaseTag</b> 在发布分支 HEAD 建附注标签 v5.9.0 并推送——<strong>标签创建即封存点</strong>（图中菱形与 ⚑ 徽章就位）。随后 publish 过全部门禁：分支形态白名单、版本形态匹配、同号黑名单（gradle/released-legacy.txt）、仓库路由一致、标签存证（远端 v5.9.0 解引用后恰好指向构建提交，查询失败按拒绝处理），另有预发布依赖核对：依赖坐标带快照、候选发布、里程碑后缀且未登记在豁免清单 gradle/publish-prerelease-exemptions.txt 的一律拒绝。发布目的地共三处：Nexus、Central（组号 com.tnydev.game）与 GitHub Packages 镜像（正式版由 publish.yml 工作流第三步执行；开发线快照由 snapshot-mirror.yml 每日定时逐线镜像）。三条通道分步独立执行、互不回滚，一条失败修好后补跑那一条。',
-  c:['<span class="k">./gradlew</span> releaseTag <span class="f">-PreleaseVersion=</span><span class="s">5.9.0</span> <span class="f">-PgitExe=</span>/usr/bin/git\n<span class="k">./gradlew</span> publish <span class="f">-PgitExe=</span>/usr/bin/git\n<span class="k">./gradlew</span> publishAggregationToCentralPortal \\\n            <span class="f">-PgitExe=</span>/usr/bin/git'],
-  n:[],e:['et590']},
- {s:'现行',t:'发布 ③：mergeBack（常规支路的温柔结局）',
-  d:'常规发布切支后若无新提交，<b>releaseMergeBack</b> 如实报告"无事可做，跳过"——发布分支与标签原地封存。若有追加提交（比如抢在打标前补了一笔），它们被重放进 5.9.x；被重写的永远是"未来的线"，不是"已发布的事实"。',
-  c:['<span class="k">./gradlew</span> releaseMergeBack <span class="f">-PgitExe=</span>/usr/bin/git\n<span class="c"># 输出：无新提交，合回跳过（或 N 笔已重放）</span>'],
-  n:['MB590'],e:['eMB590']},
- {s:'现行',t:'发布 ④：hotfix 支路——基取上一版标签',
-  d:'紧急热修 5.7.11：<b>releaseCut 必须显式 -PreleaseFrom=v5.7.10</b>——基取该线上一版标签（它是上一版制品的证据点），绕开 5.7.x 线头尚未发布的日常内容，补丁谱系里只有这一笔修复。工具拒绝自动推断上一版本号：推断一旦出错就会切错发布基，这条约束写在归档 openspec change 2026-10-04-revise-release-branch-flow 设计文档的决策 D3。',
-  c:['<span class="k">./gradlew</span> releaseCut <span class="f">-PreleaseVersion=</span><span class="s">5.7.11</span> \\\n            <span class="f">-PreleaseFrom=</span><span class="s">v5.7.10</span> <span class="f">-PgitExe=</span>/usr/bin/git'],
-  n:['T5710','C5711'],e:['eC5711']},
- {s:'现行',t:'发布 ⑤：修复追加、打标封存',
-  d:'修复提交在<strong>打标之前</strong>快进追加进 5.7.11.release（合并方式是 fast-forward，这是发布分支一生唯一的写入窗口）。随后 releaseTag 打 v5.7.11——从这一刻起，5.7.11.release 与标签同时封存：不再推送、不 rebase、不移动。误操作没有合法路径：本地若已存在轻量标签（无署名信息、门禁解引用必拒）或指向别处的错标签，任务会直接拒绝并提示处置——未推送的错标人工删除本地标签后重跑本任务；已推送的绝对不动，提高补丁号重发一版。',
-  c:['<span class="c"># fix/5.7.11-x 工位上修复并快进追加发布分支</span>\n<span class="k">./gradlew</span> releaseTag <span class="f">-PreleaseVersion=</span><span class="s">5.7.11</span> \\\n            <span class="f">-PgitExe=</span>/usr/bin/git'],
-  n:['HFA','T5711','SEAL'],e:['eHF','et5711','eSeal']},
- {s:'现行',t:'发布 ⑥：publish 与 mergeBack（hotfix 收口）',
-  d:'publish 过门禁发布 5.7.11 制品后，<b>releaseMergeBack</b> 用 git cherry 找出发布分支有而线上没有的每一笔提交，逐笔 cherry-pick -x 重放进 5.7.x，然后<strong>普通推送</strong>该线。任何一笔冲突都会自动收尾：中止重放、把线 reset 回执行前记录的原头（连同此前已重放成功的笔一起退回）、切回发布分支——发布分支、标签、开发线三者都保持原状，任务给出人工按序重放的指引。线被他人推进时普通推送会被拒绝，先 git pull --rebase 再重跑本任务即可。若这笔修复也波及更新的线，按第三幕的 fix 传播流程继续逐线上收。',
-  c:['<span class="k">./gradlew</span> releaseMergeBack <span class="f">-PgitExe=</span>/usr/bin/git\n<span class="c"># 完成文案：N 笔已重放进 5.7.x；</span>\n<span class="c"># 发布分支与标签就此封存、永不移动</span>'],
-  n:['MB57'],e:['eMB57','em5','el57b']},
- {s:'现行',t:'尾声 ① · 合并方式总账',
-  d:'<table class="g"><tr><th>哪里</th><th>合并方式</th></tr><tr><td>工位合入 main，或线原生工位合入该线</td><td>rebase-merge（GitHub 先变基再快进，不产生合并提交）</td></tr><tr><td>main 向老线传修复、线原生修复上收 main、提案的登车窗口</td><td>逐笔 cherry-pick -x 重放，随后普通推送</td></tr><tr><td>打标之前向发布分支追加修复提交</td><td>快进（fast-forward）普通推送</td></tr><tr><td>发布分支打标之后与标签本身</td><td>绝对不动；要纠正只能发布更高补丁号的新版本</td></tr><tr><td>版本开发分支整体合并进 main</td><td style="color:#ff7b72">禁止（数字口径见第一幕三条铁律：线上旧时代 24 枚为历史化石，切换后线上新增为零，main 上 3 枚是过渡收编）</td></tr></table>',
-  c:[],
-  n:[],e:['eRmF1','eP59','eP57','eHF']},
- {s:'现行',t:'尾声 ② · 线退役与恢复速查',
-  d:'<strong>退役</strong>：版本开发分支终止维护时，把它从 fix 传播链中除名即可，分支可以删除——GitHub Packages 快照镜像的选线以线谱系登记为准（状态切为维护态或退役即自动退出定时，分支留删与镜像无关），无需改动工作流文件；该线全部发布已由各自的标签与同名版本发布分支永久存证，删除没有审计损失。<br><strong>恢复速查</strong>，四种情形四种处置：<br>· 忘打标签被门禁拒绝：补跑 releaseTag，再重跑 publish 即可。<br>· 错标还没推送：删除本地标签，重建再推。<br>· 错标已经推送：绝对不动，提高补丁号重发一版。<br>· releaseMergeBack 重放冲突：任务自动把发布分支、标签、开发线三方恢复原状，按它打印的指引人工续做。<br>发布操作必须在<strong>完整克隆</strong>里执行：gradle 构建在 linked worktree 布局下会被 buildSrc 的 tny.git.gradle 守卫直接报错拒绝，根因是 JGit 无法解析 linked worktree 的符号引用；曾有人假设升级到 JGit 6.10.1 后 worktree 里也能发布，实测证伪了这个假设，问题至今未解。',
-  c:['<span class="k">git</span> ls-remote github <span class="s">"refs/tags/v*.*.*"</span> | wc <span class="f">-l</span>\n<span class="c"># 发布史即标签账本，删除分支零审计损失</span>'],
+ {s:'现行',t:'第二幕 · 开发版本分支与 feat 分支',
+  d:'新特性要开哪个系列，就从该系列的开发版本分支切 feat 分支（<em>feat/&lt;主&gt;.&lt;次&gt;.x-&lt;名&gt;</em>）；开发期间定期 rebase 同步到分支头；完成后向开发版本分支发 PR，以 <b>rebase-merge 合入</b>——先变基再快进，开发版本分支不产生合并提交。PR 描述必填规则只对修复类生效：修复必须声明<b>该补丁影响到的 release 维护分支清单</b>；特性不声明（特性不进入维护分支）。',
+  c:['<span class="k">git</span> switch -c feat/5.8.x-actor-pool github/dev/5.8.x\n<span class="c"># 开发中</span>\n<span class="k">git</span> fetch <span class="c">&amp;&amp;</span> <span class="k">git</span> rebase github/dev/5.8.x\n<span class="k">git</span> push --force-with-lease github feat/5.8.x-actor-pool\n<span class="c"># PR 目标 dev/5.8.x，合并方式 Rebase and merge</span>'],
+  n:['D58','FA','FB','D58A'],e:['eF58','eFfa','eRmF','ldev']},
+ {s:'现行',t:'快照坐标：下游零改动',
+  d:'开发版本分支上的构建派生 <em>N.M.x-SNAPSHOT</em>——坐标字符串<b>不含 dev/ 前缀</b>，与迁移前的历史坐标完全一致，下游既有依赖声明无需任何修改（2026-10 契约声明的承诺继续有效）。集成到主干并删除该开发版本分支后，这个快照坐标停更，下游改用该系列的正式版。',
+  c:['<span class="k">./gradlew</span> publish  <span class="c"># 在 dev/5.8.x 上执行</span>\n<span class="c"># 产出坐标 5.8.x-SNAPSHOT，三目的地：内网、Central 快照、Packages 镜像</span>'],
   n:[],e:[]},
+ {s:'现行',t:'第三幕 · 集成到主干（固定顺序）',
+  d:'首发前必须执行<b>集成到主干</b>固定顺序：第一步把 main 同步合并进开发版本分支（冲突在分支上解决）；第二步整条合入 main，<b>产生一枚合并提交</b>，说明固定格式 integrate dev/5.8.x to main: 5.8.0——main 的 first-parent 日志由此成为集成账本；第三步删除该开发版本分支（本地与远端）。前置是<b>开发版本分支集成顺序检查</b>：低编号开发版本分支尚未集成删除之前，高编号不得集成——发布顺序等于版本顺序。',
+  c:['<span class="k">./gradlew</span> integrateMain <span class="f">-PreleaseVersion=</span><span class="s">5.8.0</span>\n<span class="c"># 守护顺序检查→同步合并→--no-ff 入 main→推送→删线</span>'],
+  n:['SYNC','ME'],e:['ldev2','eSyn','eMe','lm0']},
+ {s:'现行',t:'第四幕 · 首发：切常驻维护分支并打标签',
+  d:'集成完成后在 main 上执行 <b>releaseCut</b>：自 main 分支头切出该系列<b>唯一</b>的 release 维护分支 release/5.8.x（此刻不打标签）；切到维护分支后执行 <b>releaseTag</b>：远端头对齐检查加<b>下一补丁号校验</b>（发版号必须恰为该系列远端最大补丁号加一）通过后建附注标签 v5.8.0 并推送——标签先于制品。随后 publish 过七项门禁，制品进入内网、Central 与 GitHub Packages 三个目的地。',
+  c:['<span class="k">./gradlew</span> releaseCut <span class="f">-PreleaseVersion=</span><span class="s">5.8.0</span>   <span class="c"># 在 main 上</span>\n<span class="k">git</span> switch release/5.8.x\n<span class="k">./gradlew</span> releaseTag <span class="f">-PreleaseVersion=</span><span class="s">5.8.0</span>\n<span class="k">./gradlew</span> publish <span class="f">-PgitExe=</span>/usr/bin/git'],
+  n:['R58','T580'],e:['eCut','eT0']},
+ {s:'现行',t:'第五幕 · 补丁滚动发布',
+  d:'缺陷出现在已发布系列：修复提交产生在<b>最老的仍在接收补丁的 release 维护分支</b>（称源分支）——fix 分支按其 rebase 后 PR 合入并推送；随后 releaseTag（下一补丁号校验保证 5.8.1 紧跟 5.8.0）、publish、按补丁影响清单执行向上合并。维护分支终身滚动补丁：标签不断移动，分支头持续前进——这就是取消一次性发布分支后"发版冻结"的替代语义：每个标签钉死一个发布时刻。',
+  c:['<span class="k">git</span> switch -c fix/5.8.x-cache release/5.8.x\n<span class="c"># 修复、PR rebase-merge 回维护分支、推送</span>\n<span class="k">./gradlew</span> releaseTag <span class="f">-PreleaseVersion=</span><span class="s">5.8.1</span>\n<span class="k">./gradlew</span> publish'],
+  n:['FX','R58B','T581'],e:['eFX','eT1','lrel']},
+ {s:'现行',t:'第六幕 · 向上合并（整条分支合并）',
+  d:'补丁定型后执行 <b>mergeUpward</b>：把源分支<b>整条合并</b>进更新的 release 维护分支与 main——目标分支完整包含源分支历史，"补丁是否到达"退化为精确的祖先判定（<em>git log 目标..源 为空</em>）。不再用逐笔 cherry-pick 复制，也就没有孪生副本与 patch-id 分叉。目标分支被他人推进时普通推送会被拒绝，任务回滚后重跑即可。',
+  c:['<span class="k">./gradlew</span> mergeUpward\n<span class="c"># 目标默认=更高编号维护分支加 main；-Pinto 可显式指定</span>\n<span class="k">git</span> log <span class="f">--oneline</span> main..release/5.8.x   <span class="c"># 应为空</span>'],
+  n:['MU'],e:['eUp','lm1']},
+ {s:'反例',t:'合并结果完整性检查（防"历史绿而内容丢"）',
+  d:'向上合并常要手工解决冲突。危险场景：main 已删除某模块，源分支修复了该模块，解决者选择"保持删除"——<b>合并提交成立、祖先判定通过，但修复内容从树里消失</b>。模型对此的防线是<b>合并结果完整性检查</b>：解决冲突之后、提交之前，把本次搬运的每个缺陷编号在合并结果的全部文件内容里检索（排除 docs 等叙述性路径——演练实锤过脚本自含编号会自我蒙蔽），任一缺失即回滚目标分支并拒绝。',
+  c:['<span class="c"># 拦截后任务的输出（示意）</span>\n<span class="k">GATE | 索引树丢失修复标记: BUG-7001</span>\n<span class="c"># 处置：重新解决冲突；确属目标结构无此代码→登记豁免并重做</span>'],
+  n:['GATE'],e:['eGate']},
+ {s:'现行',t:'并行孕育与集成排队',
+  d:'dev/5.9.x 可以与 release/5.8.x 的补丁期并行孕育特性；但 5.9 想在 5.8 集成删线之前抢先集成，<b>集成顺序检查当场拒绝</b>并列出阻塞它的低编号分支。确要放弃某系列时走改号跳号程序：删除该开发版本分支并在提交说明登记。',
+  c:['<span class="k">./gradlew</span> integrateMain   <span class="c"># 在 dev/5.9.x 上、5.8 未下线时</span>\n<span class="k">失败：</span>低编号开发分支 dev/5.8.x 仍存在且未完成集成到主干'],
+  n:['D59','BD9'],e:['ld9','eD9']},
+ {s:'现行',t:'例外通道：cherry-pick 成对登记',
+  d:'代码位置分叉导致整条合并无法机械解决时（图中 BUG-7002 场景），例外改用 <b>cherry-pick 复制单个修复提交</b>：提交说明带来源哈希（git 的 cherry picked from 尾注）与 propagated-as 登记（判定人、日期、原因），并<b>必须随目标分支下一版发出</b>——下一补丁号校验会强制它入账。此时 git cherry 因内容改写会把已移植的补丁报为未移植（假阳性），权威判定看登记与祖先关系。',
+  c:['<span class="k">git</span> cherry-pick -x &lt;源提交&gt;\n<span class="c"># 提交说明尾注示例</span>\ncherry picked from commit a1b2...\npropagated-as: 判定=张三 2026-10-06 原因=cache 模块已重写'],
+  n:['CP'],e:['eCP']},
+ {s:'祖父轨',t:'祖父登记线 5.7.x（过渡期）',
+  d:'5.7 系列已发布 8 个版本、既有快照供给又在滚动补丁——按<b>祖父条款</b>原样续跑：分支名不改（登记于 gradle/branch-legacy-registry.txt，身份"维护线、快照在维"），下一补丁仍走旧一次性发布分支流程（dryRun 陪跑新工具链）。<b>豁免只减不增</b>：5.7 退役后登记表清空，旧形态随之消失。新形态自 5.8 系列起启用。',
+  c:['<span class="k">./gradlew</span> releaseCut <span class="f">-PreleaseVersion=</span><span class="s">5.7.99</span> <span class="f">-PdryRun</span>\n<span class="c"># 计划文案自动判入祖父轨旧流程（登记身份驱动）</span>'],
+  n:['G57','GREL','GTAG'],e:['eG1','eG2']},
+ {s:'现行',t:'退役与合并方式总账',
+  d:'<strong>退役</strong>：删除 release 维护分支之前，先检查该分支上已提交但 main 尚未包含的提交（未集成提交）——确需保留的先完成向上合并，判定废弃的逐笔写明理由登记，之后才可删除；该系列历史发布全部由 release 标签存证，删除零审计损失。<br><table class="g"><tr><th>哪里</th><th>合并方式</th></tr><tr><td>feat、fix 分支合入所属分支</td><td>rebase-merge，不产生合并提交</td></tr><tr><td>开发版本分支进 main</td><td>集成到主干：先同步后整条合并（--no-ff），账本合并提交，随后删线</td></tr><tr><td>补丁向更新分支与 main</td><td>向上合并：整条分支合并，提交前完整性检查</td></tr><tr><td>整条合并不通行的例外</td><td>cherry-pick 加来源与判定登记，随下一版发出</td></tr><tr><td>release 标签</td><td>一经推送永不移动；纠正等于发布更高补丁号</td></tr></table>',
+  c:['<span class="k">git</span> log <span class="f">--first-parent</span> <span class="f">--merges</span> main   <span class="c"># 集成账本一行一次</span>'],
+  n:['ME2','RT','MN'],e:['eMe2','eRT','lm2','lm3']},
 ];
 const $=s=>document.querySelector(s);
 const NS='http://www.w3.org/2000/svg';
 function mk(tag,attrs){const el=document.createElementNS(NS,tag);for(const k in attrs)el.setAttribute(k,attrs[k]);return el;}
 const gN=$('#nodes'),gE=$('#edges');const nEls={},eEls={};
-/* 边构建：同泳道直线，跨泳道三次贝塞尔弧；边上无文字 */
 for(const ed of E){const f=N[ed.a],t=N[ed.b],st=STY[ed.type];
   const col=ed.col||st.col;let p;
   if(ed.type==='lane'){p=mk('line',{x1:f.x,y1:f.y,x2:t.x,y2:t.y,stroke:col,'stroke-width':st.w});}
-  else if(Math.abs(f.y-t.y)>30||ed.type==='pick'||ed.type==='bad'){const my=(f.y+t.y)/2;
+  else if(Math.abs(f.y-t.y)>30||ed.type==='up'||ed.type==='bad'){const my=(f.y+t.y)/2;
     p=mk('path',{d:`M${f.x},${f.y+(f.y<t.y?11:-11)} C${f.x},${my} ${t.x},${my} ${t.x},${t.y+(f.y<t.y?-13:13)}`,stroke:col,'stroke-width':st.w,'stroke-dasharray':st.dash||'none',fill:'none','marker-end':`url(#${st.mark})`});}
   else{p=mk('path',{d:`M${f.x},${f.y} L${t.x-12},${t.y}`,stroke:col,'stroke-width':st.w,'stroke-dasharray':st.dash||'none',fill:'none','marker-end':`url(#${st.mark})`});}
   p.classList.add('e');gE.appendChild(p);eEls[ed.id]=p;}
-/* 节点构建：圆点（上短名下注释）、黄色菱形加 ⚑ 徽章、红色禁止块 */
+const HALO={stroke:'#161b22','stroke-width':4,'paint-order':'stroke'};
 for(const id in N){const n=N[id];const g=mk('g',{});g.classList.add('n');
   if(n.merge){g.appendChild(mk('rect',{x:n.x-9,y:n.y-9,width:18,height:18,transform:`rotate(45 ${n.x} ${n.y})`,fill:'#ffd33d',stroke:'#f0883e','stroke-width':2.5}));}
   else if(n.bad){g.appendChild(mk('rect',{x:n.x-9,y:n.y-9,width:18,height:18,rx:3,fill:'none',stroke:n.c,'stroke-width':2,'stroke-dasharray':'3 3'}));}
-  else{const c=mk('circle',{cx:n.x,cy:n.y,r:10,fill:n.c,stroke:'#0d1117','stroke-width':2});
-    if(n.prop)c.setAttribute('stroke','#bc8cff');if(n.c==='#f778ba')c.setAttribute('stroke','#f778ba');
-    g.appendChild(c);}
-  const HALO={stroke:'#161b22','stroke-width':4,'paint-order':'stroke'};
+  else{const c=mk('circle',{cx:n.x,cy:n.y,r:10,fill:n.c,stroke:'#0d1117','stroke-width':2});g.appendChild(c);}
   if(n.t){const up=n.merge?24:(n.bad?15:21);const lab=mk('text',Object.assign({x:n.x,y:n.y-up,'text-anchor':'middle',fill:n.bad?'#ff7b72':'#f0f6fc','font-size':11,'font-weight':n.bad?'bold':'normal'},HALO));lab.textContent=n.t;g.appendChild(lab);}
   if(n.h){const h=mk('text',Object.assign({x:n.x,y:n.y+(n.bad?26:28),'text-anchor':'middle',fill:'#8b949e','font-size':9.5},HALO));h.textContent=n.h;g.appendChild(h);}
   if(n.tag){const w=n.tag.length*7+16;
@@ -297,9 +260,8 @@ function go(i){cur=i;const s=STEPS[i];
     nEls[id].classList.remove('pulse');if(isNew)nEls[id].classList.add('pulse');}
   for(const id in eEls){eEls[id].classList.toggle('show',visE.has(id));eEls[id].classList.remove('travel');}
   s.e.forEach(x=>{if(eEls[x])eEls[x].classList.add('travel');});
-  (s.hl||[]).forEach(x=>{const el=nEls[x]||eEls[x];if(el)el.classList.add('pulse');if(eEls[x])eEls[x].classList.add('travel');});
-  const now=s.s==='现行';
-  $('#pTitle').innerHTML=`${i+1}/${STEPS.length} ${s.t}<span class="badge" style="background:${now?'#238636':'#9e6a03'};color:${now?'#7ee787':'#ffd33d'}">${s.s}</span>`;
+  const style={现行:['#238636','#7ee787'],祖父轨:['#9e6a03','#ffd33d'],反例:['#b62324','#ffdcd6']}[s.s];
+  $('#pTitle').innerHTML=`${i+1}/${STEPS.length} ${s.t}<span class="badge" style="background:${style[0]};color:${style[1]}">${s.s}</span>`;
   $('#pDesc').innerHTML=s.d;
   $('#pCodes').innerHTML=(s.c||[]).map(x=>`<div class="code">${x}</div>`).join('');
   [...dots.children].forEach((d,k)=>{d.classList.toggle('active',k===i);d.classList.toggle('done',k<i);});
@@ -310,7 +272,7 @@ $('#next').onclick=()=>{stop();go(Math.min(cur+1,STEPS.length-1));};
 $('#prev').onclick=()=>{stop();go(Math.max(cur-1,0));};
 $('#reset').onclick=()=>{stop();go(0);};
 $('#play').onclick=()=>{if(timer){stop();return;}$('#play').textContent='⏸ 暂停';
-  timer=setInterval(()=>{if(cur>=STEPS.length-1){stop();return;}go(cur+1);},4800);};
+  timer=setInterval(()=>{if(cur>=STEPS.length-1){stop();return;}go(cur+1);},5200);};
 document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'){stop();go(Math.min(cur+1,STEPS.length-1));}if(e.key==='ArrowLeft'){stop();go(Math.max(cur-1,0));}});
 go(0);
 </script>
