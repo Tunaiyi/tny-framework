@@ -15,7 +15,7 @@
 **Migration**: 见本差量 ADDED 条目"正式版本与快照镜像由持续集成独立执行并全量继承发布门禁"，原两个场景语义并入新条目并保持。
 
 ### Requirement: 快照构件不进入镜像通道
-**Reason**: 该需求的排除依据句（注册表不生成含快照时间戳块的元数据、消费方按快照坐标解析必然失败、上传产物为孤儿文件）经复测证伪——首轮实测漏检版本目录级元数据；用户已于 2026-10-05 裁决开放发布快照。复测记录见 归档目录 `2026-10-06-probe-github-packages-snapshot-support` 的 `verification/snapshot-spike.md`（取证 S1 至 S8）。
+**Reason**: 该需求的排除依据句（注册表不生成含快照时间戳块的元数据、消费方按快照坐标解析必然失败、上传产物为孤儿文件）经复测证伪——首轮实测漏检版本目录级元数据；用户已于 2026-10-05 裁决开放发布快照。复测记录见归档目录 `2026-10-06-probe-github-packages-snapshot-support` 的 `verification/snapshot-spike.md`（取证 S1 至 S8）。
 **Migration**: 见本差量 ADDED 条目"快照构件进入镜像通道并随重发滚动到最新构建"，义务由禁止翻转为准入并附滚动与门禁契约。
 
 ## ADDED Requirements

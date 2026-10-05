@@ -75,7 +75,7 @@ jobs:
       # 镜像失败也不波及二者（通道隔离）。tny.github-packages 的守卫只断言凭据密钥
       # GITHUB_PACKAGES_KEY 在位，正式版本与快照形态均可声明目的地；本步骤是正式版本镜像的
       # CI 入口，快照镜像由 snapshot-mirror.yml 执行，两文件互不重推。快照可用性复测与开通
-      # 裁决记录见 openspec change probe-github-packages-snapshot-support 的
+      # 裁决记录见归档目录 2026-10-06-probe-github-packages-snapshot-support 的
       # verification/snapshot-spike.md。NEXUS 两值必须一并注入：tny.publish 的属性断言
       # 不区分目标仓库，命中共享仓谓词的发布任务在任一属性为空时 fail-fast。
       # SIGNING 三件与上方步骤同源：发布分支形态必签，.asc 签名是发布任务的依赖构件。
