@@ -153,10 +153,10 @@ tasks.register('releaseTag') {
         }
         requireGit(['push', remoteName, "refs/tags/${tagName}:refs/tags/${tagName}"], '推送标签失败')
         // 话术指路的 ./gradlew publish 覆盖内网 Nexus（及本机凭据在位时的 Central 快照通道）；
-        // GitHub Packages 镜像一律由持续集成执行且本机不持凭据密钥——正式版走
-        // .github/workflows/publish.yml 第三步骤，快照走 .github/workflows/snapshot-mirror.yml
-        // 的当前开发线每日定时与人工指定线补跑，本机发布不含镜像属设计使然（openspec change
-        // add-github-packages-channel 与 open-github-packages-snapshot-mirror 的拍板约束，勿当作遗漏）。
+        // GitHub Packages 镜像有持续集成与本机两个来源（publish-mirror-via-credential-pair 拍板）：
+        // 持续集成正式版走 .github/workflows/publish.yml 第三步骤、快照走 snapshot-mirror.yml
+        // 定时；发布者本机成对配置 githubPackagesUsername/githubPackagesToken 两属性时，
+        // 上面的 ./gradlew publish 亦扇出镜像；未成对配置的机器不含镜像属凭据守卫设计。
         logger.lifecycle("releaseTag 完成：${tagName} 指向当前构建提交并已推送至 ${remoteName}。现在执行 ./gradlew publish（门禁核对标签存证），成功后执行 ./gradlew releaseMergeBack。")
     }
 }
