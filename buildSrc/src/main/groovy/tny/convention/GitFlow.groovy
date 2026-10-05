@@ -75,6 +75,17 @@ class GitFlow {
         return legacyRegistry[branch]
     }
 
+    // 推送/查询目标的远端名推定（redesign 收编三插件重复实现）：分支配了上游取上游前缀，
+    // 否则仅当仓库只配置一个远端才采用；推定不出返回 null 由调用方报错。
+    def resolveRemoteName(String branch) {
+        def tracked = grgiter.branch.list().find { it.name == branch }?.trackingBranch?.name
+        if (tracked != null && tracked.contains('/')) {
+            return tracked.substring(0, tracked.indexOf('/'))
+        }
+        def remotes = grgiter.remote.list().collect { it.name }
+        return remotes.size() == 1 ? remotes[0] : null
+    }
+
     // 是否祖父登记的豁免线（身份为 maintenance 或 dev 的旧形态线）。
     def isLegacyEligible(String branch) {
         return legacyIdentity(branch) != null

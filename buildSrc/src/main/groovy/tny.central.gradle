@@ -52,9 +52,15 @@ tasks.register('centralCheck') {
         // 分支名经根工程 gitFlow 类型化扩展拉取（tny.convention.GitFlow，expose-git-info-extension）；
         // 取代此前裸属性沿根 ext 动态解析的形态，tny.git 未加载即报"扩展不存在"（expose-git-info-extension 设计决策 D3）。
         def gitFlow = rootProject.extensions.getByType(GitFlow)
+        def branch = gitFlow.branchName.toString()
+        def version = gitFlow.projectVersion?.toString() ?: ''
         def problems = []
-        if (!gitFlow.branchName.toString().matches(/\d+\.\d+\.\d+\.release/)) {
-            problems << "Central 通道仅发布分支形态可用（spec：快照构件不进入 Central）；当前分支 '${gitFlow.branchName}' 派生快照版本"
+        // Central 正式版准入双条件（redesign-devline-integration-model 设计 D6）：版本为裸三段号，
+        // 且所在分支为 release 维护分支（前两段与分支编号一致）或祖父轨一次性发布分支。
+        boolean centralEligible = version ==~ /\d+\.\d+\.\d+/ &&
+                (branch ==~ /release\/${version.replaceAll(/\.\d+$/, '').replace('.', '\\.')}\.x/ || branch ==~ /\d+\.\d+\.\d+\.release/)
+        if (!centralEligible) {
+            problems << "Central 通道仅正式版发布可用（spec：快照构件不进入 Central）；当前分支 '${branch}'、派生版本 '${version}' 不构成发布资格组合"
         }
         if (!project.hasProperty('mavenCentralUsername') || !project.hasProperty('mavenCentralPassword')) {
             problems << '缺 mavenCentralUsername/mavenCentralPassword 属性（Portal User Token，用户级 gradle.properties 或 CI secrets 注入）'

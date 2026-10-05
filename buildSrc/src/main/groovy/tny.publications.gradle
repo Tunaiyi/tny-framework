@@ -87,12 +87,14 @@ publishing {
 }
 
 // 签名配置（central-publishing design D3 / spec 准入完整性）：标准三属性存在即签；
-// 发布分支形态必签——正式版对 Central 与内网共用同一签名产物，缺签在准入校验判红；
-// 快照在无密钥环境（如新克隆的开发机）跳过，不阻塞内网快照通道。
+// 版本为裸三段号即必签（redesign-devline-integration-model 设计 D6：谓词从分支形态改版本形态）——
+// 裸号只可能出现在具备发布资格的构建里（release 维护分支注入 -PreleaseVersion 或祖父轨一次性发布分支），
+// 缺密钥时该构建在签名环节 fail-closed 失败，不再有"缺密钥机器未签名正式版静默入库"的敞口；
+// 快照与无版本参数的普通构建（unspecified）不签名，不阻塞内网快照通道。
 signing {
-    // 分支名经根工程 gitFlow 类型化扩展拉取（tny.convention.GitFlow，expose-git-info-extension）。
-    def signingBranch = rootProject.extensions.getByType(GitFlow).branchName.toString()
-    required = { signingBranch ==~ /\d+\.\d+\.\d+\.release/ }
+    // 派生版本经根工程 gitFlow 类型化扩展拉取（tny.convention.GitFlow，expose-git-info-extension）。
+    def signingVersion = rootProject.extensions.getByType(GitFlow).projectVersion?.toString() ?: ''
+    required = { signingVersion ==~ /\d+\.\d+\.\d+/ }
     // CI 桥接：无点号环境变量 SIGNING_KEY(_ID/_PASSWORD) 走内存密钥环。
     // 属性名 signing.keyId 含点，无法经 ORG_GRADLE_PROJECT_* 注入（Gradle 环境桥不接受点号），故专用 env。
     def memKey = providers.environmentVariable('SIGNING_KEY').orNull
