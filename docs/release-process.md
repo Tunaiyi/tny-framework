@@ -239,8 +239,7 @@
 - **快照镜像的复测与开通裁决（勘误记录）**：首轮沙箱实测（归档目录
   `2026-10-05-add-github-packages-channel` 的 `verification/sandbox-probe.md` 结论 2）只检查了构件级
   元数据、漏检版本目录级元数据，得出"注册表不生成含快照时间戳块的元数据、消费方按快照坐标
-  解析必然失败"的失实结论，据此在开通时排除了快照。复测（`probe-github-packages-snapshot-support`
-  的 `verification/snapshot-spike.md`，取证 S1 至 S8）更正了该事实：注册表服务端自动为 Gradle 上传的
+  解析必然失败"的失实结论，据此在开通时排除了快照。复测（归档目录 `2026-10-06-probe-github-packages-snapshot-support` 的 `verification/snapshot-spike.md`，取证 S1 至 S8）更正了该事实：注册表服务端自动为 Gradle 上传的
   快照维护含时间戳与构建号的目录级 unique 元数据，Gradle 与 Maven 消费端可解析快照坐标并随重发
   滚动到最新构建，快照重发因各构建时间戳文件名互异不触发 HTTP 409。用户已于 2026-10-05 裁决
   开放发布快照（变更 open-github-packages-snapshot-mirror），原排除拍板随其失实依据作废；复测报告

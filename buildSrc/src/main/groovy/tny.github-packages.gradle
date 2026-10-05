@@ -6,8 +6,8 @@
 // Central 聚合上传在 tny.central，发布快通道 git 编排在 tny.release；本插件只增仓库声明，不触碰门禁。
 // 通道语义：正式版本与开发线快照两种形态均进入镜像。快照的可用性经复测确立——注册表服务端
 // 自动为 Gradle 上传的快照维护版本目录级含时间戳与构建号的 unique 元数据，消费端可解析并随
-// 重发滚动到最新构建，重发使用各自时间戳文件名不触发覆盖拒绝（复测记录见 openspec change 目录
-// probe-github-packages-snapshot-support 的 verification/snapshot-spike.md，取证 S1 至 S8；
+// 重发滚动到最新构建，重发使用各自时间戳文件名不触发覆盖拒绝（复测记录见归档目录
+// 2026-10-06-probe-github-packages-snapshot-support 的 verification/snapshot-spike.md，取证 S1 至 S8；
 // 首轮实测因漏检版本目录级元数据得出相反结论，已由 open-github-packages-snapshot-mirror 变更
 // 按用户 2026-10-05 裁决勘误并开放快照）。快照的权威归档仍是内网快照仓与 Central 快照仓。
 plugins {
