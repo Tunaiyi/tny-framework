@@ -95,7 +95,8 @@ git merge --no-edit release/5.8.x >/dev/null 2>&1 || true
 git checkout --ours -- . 2>/dev/null || true
 git rm -q bug7001.txt 2>/dev/null || true; git add -A
 git commit -qm "ungated merge with loss（对照演示）" || git merge --quit
-C=$(git grep -c BUG-7001 HEAD -- 2>/dev/null | awk -F: '{s+=$3} END{print s+0}')
+# 检索须排除叙述性文件（十一轮实锤：本演练脚本自含标记字样，不排除则自我蒙蔽恒绿）
+C=$(git grep -c BUG-7001 HEAD -- ':(exclude)drill' ':(exclude)docs' ':(exclude)openspec' 2>/dev/null | awk -F: '{s+=$3} END{print s+0}')
 if [ "${C:-0}" = "0" ] && git merge-base --is-ancestor release/5.8.x HEAD; then
   say "PASS(对照) | 无门禁合并确实造成历史绿而树丢标记——mergeUpward 内置检查防的正是此事"
 else

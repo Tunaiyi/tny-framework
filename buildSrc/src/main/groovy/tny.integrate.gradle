@@ -152,8 +152,12 @@ tasks.register('mergeUpward') {
                         "人工处置：git switch ${target} && git merge ${source} 解决后自行执行合并结果完整性检查（见规格场景），完成后推送并重跑本任务跳过已入账部分")
             }
             def markers = explicitMarkers ?: autoMarkers(targetHead, source)
+            // 检索排除叙述性路径（docs、drill、openspec 的正文天然引用历史缺陷号；
+            // e2e 第十一轮实锤：演练脚本自含标记令检索恒绿——完整性检查若不排除
+            // 叙述文件会自我蒙蔽）。判定对象是"修复的承载内容在不在"，不是编号被提及过。
             def missing = markers.findAll { ref ->
-                runGit(['grep', '-c', '--', ref, 'HEAD']).out.readLines()
+                runGit(['grep', '-c', ref, 'HEAD', '--',
+                        ':(exclude)docs', ':(exclude)drill', ':(exclude)openspec']).out.readLines()
                         .collect { (it.split(':')[-1]) }.findAll { it.isInteger() }
                         .collect { it as int }.sum(0) == 0
             }
