@@ -58,3 +58,14 @@
 - [x] 6.3 规约工件同步：specs 差量需求一改两条守卫条件与其场景、需求四场景一措辞；design D3 重写为双条件合取并记改名理由、D6 改 env 键名、Context 拍板段补记；proposal What Changes 与 Impact 同步。验证：`openspec validate add-github-packages-channel --strict` 通过。
 - [x] 6.4 守卫新形态回归（全部 `--no-daemon` 执行以免陈旧 daemon 环境注入假阳性；零真实外发）：其一，开发线注入 dummy 单密钥 `./gradlew --no-daemon :tny-game-net:tasks --all` 检索镜像任务计数 0（版本子句生效）；其二，临时本地分支 `5.7.99.release` 注入 dummy 单密钥计数 2（目的地声明生效）；其三，同分支清空注入计数 0（凭据子句独立生效）；其四，注入态 `./gradlew --no-daemon publishAllPublicationsToGithubPackagesRepository --dry-run` 任务图 `checkPublishPrerequisites` 逐模块前置。验证：四组输出记录更新 `verification/logs/guard-regression-devline.txt`；演练后删除临时分支。
 - [x] 6.5 门禁拒绝取证与消费侧探测按新形态重存：临时发布分支注入 dummy 单密钥真实执行 `./gradlew :tny-game-net:publishAllPublicationsToGithubPackagesRepository`，预期被标签存证核对拒绝且零外发，拒绝输出重写 `verification/logs/gate-refusal-5.7.99.txt`；匿名 GET 生产镜像路径与 `gh api "users/Tunaiyi/packages?package_type=maven"` 复查重写对应存证文件。验证：`verification/scenario-coverage.md` 需求一与需求二的证据行引用更新为单密钥形态。
+
+## 归档后待办（用户 2026-10-05 批准提前归档时登记）
+
+- [ ] 在途变更 central-publish-tnydev-group 归档、central-publishing 进入主账本后，核对其需求"双仓并行发布相互独立"的通道枚举措辞是否需按本能力需求"正式版本镜像由持续集成独立执行"的各目的地独立口径扩写；核对结论若需要修改，落为一个极小的规格维护变更（design D9 衔接方式）。
+- [ ] 下一个自然发布周期全量首发后，回填 verification/scenario-coverage.md 两条遗留观察项（跨仓构件逐件一致核对、全量速率边界）。
+
+> 引用注记（2026-10-05 由 open-github-packages-snapshot-mirror 变更登记，不改写上文原文）：
+> 本文件"归档后待办"第一条的通道枚举核对，因快照镜像开放（同一日后续变更
+> open-github-packages-snapshot-mirror 落地）范围扩大——除"正式版本同时发布至 Maven Central
+> 与内网发布仓"外，还须核对"快照构件发布到 Central 快照仓"一条的两目的地枚举是否需把
+> GitHub Packages 镜像列为快照的第三目的地；落点仍是该待办预设的极小规格维护变更。
