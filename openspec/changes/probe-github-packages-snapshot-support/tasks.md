@@ -35,5 +35,5 @@
 
 ## 6. 清理
 
-- [ ] 6.1 删除一次性消费端与生产端临时工程目录及容器挂载的 `settings.xml`，验证：`/tmp` 下相关目录不存在，`grep` 确认 `verification/` 全部文件无令牌明文（检索 `ghp_` 与 Basic 头样式）。
-- [ ] 6.2 删除沙箱仓库 `Tunaiyi/gpr-snapshot-spike`（当前 gh 登录令牌若无 `delete_repo` scope 则 403，转用户网页端删除——上一轮已演练该双出口路径），验证：`gh repo view` 报无法解析、`gh api users/Tunaiyi/packages?package_type=maven` 枚举不含沙箱包。
+- [x] 6.1 清理：一次性工程目录与含令牌文件已由用户于 2026-10-05 全部删除（`/tmp/gpr-mvn-settings.xml`、`/tmp/gpr-snap-spike-producer`、`/tmp/gpr-snap-spike-consumer-gradle`、`/tmp/unique-put`、`/tmp/m2cache`、`/tmp/gpr-sandbox`、`/tmp/probe-logs` 均不存在，验证 `ls` 报 No such file）；本变更 `verification/` 全部文件扫描 `ghp_` 零命中；发布者本机用户级 gradle.properties 镜像凭据键核对——双属性时代残留两行死配置（第 36 至 37 行 githubPackagesUsername/githubPackagesToken，已不被任何代码读取）已提请用户清理或轮换，属用户本机文件不由变更代为删除。
+- [x] 6.2 清理：沙箱仓库 `Tunaiyi/gpr-snapshot-spike` 已删除（2026-10-05 复验 `gh repo view` 报 Could not resolve to a Repository，`gh api users/Tunaiyi/packages?package_type=maven` 返回空数组，探针包随仓库消失）。
