@@ -7,17 +7,18 @@
 #
 # 用法（现网接线，配置单一来源）：
 #   claude mcp add docker -s user -- docker compose -f <本文件绝对路径> --profile stdio run --rm -T --name tny-mcp-docker mcp-docker
-#   GitHub MCP 不再经过本文件：2026-10-04 起改接 GitHub 托管远程端点 + PAT（见注③与 mcp-env-init skill §1）。
+#   GitHub 操作也不经过本文件：GitHub MCP 已于 2026-10-05 全部退役，改用宿主 gh 命令行（见注②与 mcp-env-init skill 第 1 节）。
 # 注①：--name 固定容器名（run 忽略服务级 container_name，实测 v5.5.1）；副作用=单实例，
 #      多会话并行或 claude mcp list 外部探测在会话容器在役时会撞名，属预期非故障。
-# 注②：曾评估并移除常驻 http 服务（mcp-github, serve profile, :8082）：
-#      实测其授权链 authorization_servers=GitHub 本体 → Claude Code 走它必撞 DCR 死路，
-#      仅当自备 PAT 或多客户端共享端点需求出现时再恢复（定义见本文件 git 历史）。
-# 注③：2026-10-04 GitHub MCP 接线改为 GitHub 托管远程端点 + 静态 PAT header
-#      （claude mcp add github -s user -t http https://api.githubcopilot.com/mcp/ -H "Authorization: Bearer <PAT>"），
-#      原 stdio+OAuth 服务 mcp-github-stdio（含 127.0.0.1:8085 回调映射）随之移除，定义见本文件 git 历史。
-#      DCR（动态客户端注册）只挡 OAuth 流程，不挡远程端点的 PAT header 鉴权；若远程端点某日不可达
-#      （代理故障等），可从 git 历史恢复 stdio 备胎，或恢复注②的常驻服务并让服务端自备 PAT（届时不再撞 DCR）。
+# 注②：GitHub MCP 的全部历史接线已于 2026-10-05 退役，不得恢复为现网通道：用户决定 GitHub 操作一律
+#      改用宿主 gh 命令行（接线现状与实测坑见 mcp-env-init skill 第 1 节，行为规则见仓库根 CLAUDE.md
+#      的 GitHub 操作规则）。实际启用过的接线有两条：2026-10-04 之前的 stdio 容器服务 mcp-github-stdio
+#      （浏览器 OAuth 授权，含 127.0.0.1:8085 回调映射，token 仅存内存，每次重启都要浏览器重新授权）；
+#      以及 2026-10-04 起改用的 GitHub 托管远程端点加静态 PAT header（从未写入本文件，配置在宿主 Claude
+#      配置文件里，2026-10-05 已删除）。另有一条更早评估但从未启用的常驻 http 服务 mcp-github
+#      （serve profile，:8082，实测其授权链指向 GitHub 本体，而 GitHub OAuth 服务器不支持 Claude Code
+#      所需的动态客户端注册，因此走不通），仅作历史备注。以上定义与实测细节可在本文件 git 历史中
+#      查证，仅供考古与查证历史之用，不作为恢复方案。
 #
 name: tny-mcp
 
