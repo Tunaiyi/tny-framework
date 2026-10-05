@@ -70,10 +70,12 @@ jobs:
       cancel-in-progress: false
     env:
       # 属性断言不区分目标仓库，命中共享仓谓词的发布任务在任一 Nexus 属性为空时 fail-fast，
-      # 故 NEXUS 两值必须注入；镜像凭据只用内置令牌经单密钥属性桥接；快照跳签不注 SIGNING。
+      # 故 NEXUS 两值必须注入；镜像凭据对以运行账户与内置令牌桥接（与发布者本机配置形态同构）；
+      # 快照跳签不注 SIGNING。
       ORG_GRADLE_PROJECT_NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
       ORG_GRADLE_PROJECT_NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-      ORG_GRADLE_PROJECT_GITHUB_PACKAGES_KEY: ${{ secrets.GITHUB_TOKEN }}
+      ORG_GRADLE_PROJECT_githubPackagesUsername: ${{ github.actor }}
+      ORG_GRADLE_PROJECT_githubPackagesToken: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v4
         with:

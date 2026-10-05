@@ -72,8 +72,9 @@ jobs:
 
       # GitHub Packages 镜像步骤（第三个目的地，包归属本仓库；openspec capability github-packages-mirror）：
       # 选用逐仓聚合任务而非聚合 publish——已成功的 Nexus 与 Central 通道不因本步骤被重推，
-      # 镜像失败也不波及二者（通道隔离）。tny.github-packages 的守卫只断言凭据密钥
-      # GITHUB_PACKAGES_KEY 在位，正式版本与快照形态均可声明目的地；本步骤是正式版本镜像的
+      # 镜像失败也不波及二者（通道隔离）。tny.github-packages 的守卫断言两个镜像凭据属性
+      # 成对在位（githubPackagesUsername 与 githubPackagesToken），正式版本与快照形态均可
+      # 声明目的地；本步骤是正式版本镜像的
       # CI 入口，快照镜像由 snapshot-mirror.yml 执行，两文件互不重推。快照可用性复测与开通
       # 裁决记录见归档目录 2026-10-06-probe-github-packages-snapshot-support 的
       # verification/snapshot-spike.md。NEXUS 两值必须一并注入：tny.publish 的属性断言
@@ -90,5 +91,6 @@ jobs:
           SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
           ORG_GRADLE_PROJECT_NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           ORG_GRADLE_PROJECT_NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-          ORG_GRADLE_PROJECT_GITHUB_PACKAGES_KEY: ${{ secrets.GITHUB_TOKEN }}
+          ORG_GRADLE_PROJECT_githubPackagesUsername: ${{ github.actor }}
+          ORG_GRADLE_PROJECT_githubPackagesToken: ${{ secrets.GITHUB_TOKEN }}
         run: ./gradlew publishAllPublicationsToGithubPackagesRepository
