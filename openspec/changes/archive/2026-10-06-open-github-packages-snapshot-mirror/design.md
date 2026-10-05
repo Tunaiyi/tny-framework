@@ -5,7 +5,7 @@
 动机与裁决沿革见 proposal.md - Why。此处交代实施所依赖的现状与约束：
 
 - 镜像通道现状：约定插件 `buildSrc/src/main/groovy/tny.github-packages.gradle` 以"版本非快照且 `GITHUB_PACKAGES_KEY` 在位"两条子句合取守卫声明 `githubPackages` 目的地；正式版镜像由 `.github/workflows/publish.yml` 第三步骤在 CI 执行；主账本能力 `github-packages-mirror` 五条需求含现行"快照构件不进入镜像通道"义务。
-- 复测事实（openspec change 目录 `probe-github-packages-snapshot-support` 的 `verification/snapshot-spike.md`，S1 至 S8）：注册表自动维护版本目录级 unique 快照元数据；Gradle 与 Maven 消费端可解析并滚动到最新构建；快照重发不触发 409；无签名构件可被接受。
+- 复测事实（归档目录 `2026-10-06-probe-github-packages-snapshot-support` 的 `verification/snapshot-spike.md`，S1 至 S8）：注册表自动维护版本目录级 unique 快照元数据；Gradle 与 Maven 消费端可解析并滚动到最新构建；快照重发不触发 409；无签名构件可被接受。
 - 门禁交互核对结论（改动面勘察工作流逐条引用行号完成）：快照镜像任务名命中 `tny.publish.gradle` 第 24 至 33 行共享仓谓词，双层拦截照常先行；两个仓库 URL 属性由仓库内 `gradle.properties` 恒供，NEXUS 两值不在仓库内、CI 步骤必须注入否则属性断言 fail-fast；分支形态与版本形态核对对开发线恒等放行；同号黑名单与标签存证对非发布分支提前返回（适用范围内自然豁免，非减免）；`tny.publications.gradle` 第 95 行把签名必选只钉发布分支形态，快照运行不注入 SIGNING 即跳签；每次镜像运行连带全量 `check`（三种触发形态的成本分野根源）。
 - 环境先例：`build.yml` 已有夜间定时作业（错峰 cron 手法）与开发线分支通配 `['*.*.x']` 过滤先例；GitHub Actions 的 schedule 事件只在默认分支上的工作流文件生效且运行于默认分支上下文。
 
