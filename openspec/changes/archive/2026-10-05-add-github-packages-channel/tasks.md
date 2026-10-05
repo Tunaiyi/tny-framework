@@ -69,3 +69,4 @@
 > open-github-packages-snapshot-mirror 落地）范围扩大——除"正式版本同时发布至 Maven Central
 > 与内网发布仓"外，还须核对"快照构件发布到 Central 快照仓"一条的两目的地枚举是否需把
 > GitHub Packages 镜像列为快照的第三目的地；落点仍是该待办预设的极小规格维护变更。
+> 注销注记（2026-10-05）：本段通道枚举核对待办已由 openspec change align-central-publishing-channel-enumeration 当日核对并落地——central-publishing 两条需求改题为多目的地表述（正式版三目的地、快照三目的地，中央与镜像职责边界句成文），本段落原文未改写。
