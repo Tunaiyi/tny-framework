@@ -1,31 +1,32 @@
 // GitHub Packages 镜像通道约定插件（capability github-packages-mirror 的第三目的地声明点；
-// 规格文本见 openspec change add-github-packages-channel 的 specs/github-packages-mirror/spec.md）。
+// 规格文本见主账本 openspec/specs/github-packages-mirror/spec.md 现文）。
 // 本插件负责：为应用它的工程在 publishing.repositories 增加名为 githubPackages 的仓库声明，
 // 把同一套发布构件镜像分发到本仓库的 GitHub Packages Apache Maven 注册表。
-// 边界：发布门禁（凭据属性断言与五重一致性校验）在 tny.publish，POM 元数据与签名在 tny.publications，
+// 边界：发布门禁（凭据属性断言与一致性核对）在 tny.publish，POM 元数据与签名在 tny.publications，
 // Central 聚合上传在 tny.central，发布快通道 git 编排在 tny.release；本插件只增仓库声明，不触碰门禁。
-// 通道语义：仅裸号正式版进入镜像。快照按实测排除——Gradle 发布机制上传的快照文件在注册表中
-// 以带时间戳的文件名存储，注册表不生成含快照时间戳块的元数据也不提供目录列举，
-// 消费方无法解析快照坐标（2026-10-05 沙箱实测，记录见该 openspec change 目录
-// verification/sandbox-probe.md）；快照的权威通路仍是内网快照仓与 Central 快照仓（tny.publications）。
+// 通道语义：正式版本与开发线快照两种形态均进入镜像。快照的可用性经复测确立——注册表服务端
+// 自动为 Gradle 上传的快照维护版本目录级含时间戳与构建号的 unique 元数据，消费端可解析并随
+// 重发滚动到最新构建，重发使用各自时间戳文件名不触发覆盖拒绝（复测记录见 openspec change 目录
+// probe-github-packages-snapshot-support 的 verification/snapshot-spike.md，取证 S1 至 S8；
+// 首轮实测因漏检版本目录级元数据得出相反结论，已由 open-github-packages-snapshot-mirror 变更
+// 按用户 2026-10-05 裁决勘误并开放快照）。快照的权威归档仍是内网快照仓与 Central 快照仓。
 plugins {
     id 'maven-publish'
 }
 
 publishing {
     repositories {
-        // 守卫条件为两条子句的合取，任何一条不满足即整体不声明本仓：
-        // 其一，版本不是快照形态（来由见文件头通道语义段）。
-        // 其二，凭据密钥属性在位。凭据闭包里的 providers.gradleProperty(...).get()
-        // 在配置阶段（maven-publish 仓库容器添加 maven 声明之时）即被求值，属性缺失会在那一刻
-        // 抛 MissingValueException 而使该机器全部 Gradle 调用报红；单密钥形态下守卫断言与取值
-        // 指向同一个键，不存在半配置窗口。缺凭据的机器不声明本仓，本地裸 publish 的行为与
-        // 本变更前逐任务一致；守卫手法与 tny.publications 的 centralSnapshots 先例同源，
-        // 覆盖面互补（先例只收快照，本仓只收正式版）。
-        // 凭据的注入位置只有持续集成（.github/workflows/publish.yml 的镜像步骤），
-        // 发布者本机不得把凭据密钥写入用户级 gradle.properties（镜像仅由 CI 执行的拍板约束）。
-        if (!project.version.toString().endsWith('-SNAPSHOT')
-                && project.hasProperty('GITHUB_PACKAGES_KEY')) {
+        // 守卫只有凭据子句一条：镜像凭据密钥属性 GITHUB_PACKAGES_KEY 在位即声明本仓，
+        // 正式版本与快照形态均在声明之列——版本形态的发布资格甄别由 tny.publish 的分支形态
+        // 白名单与版本形态一致性断言承担，声明守卫不参与甄别（open-github-packages-snapshot-mirror 变更）。
+        // 凭据闭包里的 providers.gradleProperty(...).get() 在配置阶段（maven-publish 仓库容器添加
+        // maven 声明之时）即被求值；断言与取值指向同一个键，不存在半配置窗口。缺凭据的机器
+        // 不声明本仓，任意分支形态下本机 publish 的行为与镜像开通前逐任务一致；守卫手法沿用
+        // tny.publications 的 centralSnapshots 条件声明先例。
+        // 凭据的注入位置只有持续集成（正式版走 .github/workflows/publish.yml 第三步骤，
+        // 快照走 .github/workflows/snapshot-mirror.yml），发布者本机不得把密钥写入用户级
+        // gradle.properties（镜像仅由 CI 执行的拍板约束，防本机与 CI 对同一坐标并发双发）。
+        if (project.hasProperty('GITHUB_PACKAGES_KEY')) {
             maven {
                 // 必须显式命名：tny.publications 的首个 Nexus 仓未命名，其默认名派生的任务
                 // publishMavenJavaPublicationToMavenRepository 已被硬编码写进 tny.publish 的
@@ -38,11 +39,10 @@ publishing {
                 url = 'https://maven.pkg.github.com/tunaiyi/tny-framework'
                 credentials {
                     // Basic 认证用户名取仓库属主账户名（令牌属主与本仓发布身份恒为同一账户，
-                    // 沙箱实测该用户名与内置令牌、classic 令牌两条路均上传成功）；
-                    // 凭据只经单一密钥属性注入。
-                    username = 'Tunaiyi'
+                    // 沙箱实测该用户名与内置令牌、classic 令牌两条路、正式与快照两形态均上传成功）；
                     // 属性键名不得含点号：Gradle 环境桥 ORG_GRADLE_PROJECT_* 拒绝含点属性名
                     // （实测教训成文于 tny.publications.gradle 签名段注记）。
+                    username = 'Tunaiyi'
                     password = providers.gradleProperty('GITHUB_PACKAGES_KEY').get()
                 }
             }

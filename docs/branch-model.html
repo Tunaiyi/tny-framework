@@ -160,7 +160,7 @@
 <table>
   <tr><th>对象</th><th>生</th><th>变</th><th>死／终态</th></tr>
   <tr><td><code>main</code></td><td>永久存在（2026-10-04 由化石转正为开发顶点）</td><td>只向前生长</td><td>无终态</td></tr>
-  <tr><td>版本开发分支</td><td>开线仪式：从 main 切出并推送；CI 由 <span class="m">*.*.x</span> 通配自动覆盖；登记线谱系表</td><td>特性冻结、持续收修复、产滚动快照</td><td>退役：移出快照选线与传播链，分支可删——标签已存证一切</td></tr>
+  <tr><td>版本开发分支</td><td>开线仪式：从 main 切出并推送；CI 由 <span class="m">*.*.x</span> 通配自动覆盖；登记线谱系表</td><td>特性冻结、持续收修复、产滚动快照</td><td>退役：移出快照选线与传播链（GitHub Packages 镜像按分支形态动态枚举，随分支删除自动出局），分支可删——标签已存证一切</td></tr>
   <tr><td>版本发布分支</td><td>releaseCut</td><td>标签创建前可快进追加修复</td><td>标签创建即封存，永久保留、零操作</td></tr>
   <tr><td>标签</td><td>releaseTag</td><td>无（不可移动）</td><td>绝对永久；错误也无法回收，只能弃号提高补丁号重发</td></tr>
   <tr><td>工位</td><td>从基线头切出（feat 基 main；fix 基 main 或受影响线头）</td><td>rebase 同步、个人分支强推豁免</td><td>PR 合入即删</td></tr>
@@ -179,7 +179,7 @@
 <ol class="steps">
   <li>确认 main 的 CI 为绿。</li>
   <li><span class="cmd">git switch -c 5.8.x main && git push -u github 5.8.x</span> —— 新线第一次构建自动派生 <span class="m">5.8.x-SNAPSHOT</span>，零版本文件改动。</li>
-  <li>CI 线入口由通配自动覆盖，快照发布选线随之换线（旧线转维护态）；<b>禁止</b>从旧线头切新线——内容前沿在 main。</li>
+  <li>CI 线入口由通配自动覆盖，快照发布选线随之换线（GitHub Packages 镜像按分支形态动态枚举、快照镜像随全部活跃线执行；旧线转维护态）；<b>禁止</b>从旧线头切新线——内容前沿在 main。</li>
   <li>线谱系表追加一行：线名、开线提交号、日期、当时上一线最新标签、状态。</li>
   <li>普通推送同步 main（main 是线的直系后代时一条 <span class="cmd">git push github 5.7.x:main</span> 即可）。</li>
 </ol>

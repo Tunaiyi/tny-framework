@@ -1,0 +1,80 @@
+name: snapshot-mirror
+
+# 快照镜像工作流（openspec capability github-packages-mirror，变更 open-github-packages-snapshot-mirror）：
+# 开发线快照构件进入 GitHub Packages 镜像的唯一持续集成入口——定时计划逐活跃开发线各镜像一次，
+# 辅以 workflow_dispatch 指定开发线分支即时补跑。快照不进内网仓与 Central 之外的任何自动通道，
+# 正式版镜像仍归 publish.yml 第三步骤（本文件与它互不重推、互不牵连，通道独立契约同规格条文）。
+# 触发块调整只在默认分支 main 上的本文件生效（schedule 平台约束）；枚举逐线动态执行，
+# 线退役自动出局。快照形态按 tny.publications 现行策略跳签、无 .asc 构件可被消费（复测 S1 至 S8）。
+on:
+  schedule:
+    # 每日 UTC19:23，与 build.yml nightly（UTC18:37）错峰 46 分钟，避免同段 runner 排队
+    - cron: '23 19 * * *'
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "开发线分支名（如 5.7.x）；留空则按当日口径枚举全部活跃开发线"
+        required: false
+        type: string
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  enumerate:
+    name: Pick active dev lines
+    runs-on: ubuntu-latest
+    outputs:
+      lines: ${{ steps.pick.outputs.lines }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Resolve branch matrix
+        id: pick
+        run: |
+          if [ -n "${{ inputs.branch }}" ]; then
+            # 人工补跑入口：指定线名时矩阵只含该线；线形态合法性由门禁分支白名单把关，此处不自建校验
+            echo 'lines=["${{ inputs.branch }}"]' >> "$GITHUB_OUTPUT"
+          else
+            git ls-remote --heads origin \
+              | grep -oE 'refs/heads/[0-9]+\.[0-9]+\.x$' \
+              | sed 's|refs/heads/||' \
+              | jq -R . | jq -sc \
+              | sed 's/^/lines=/' >> "$GITHUB_OUTPUT" 2>/dev/null \
+              || echo 'lines=[]' >> "$GITHUB_OUTPUT"
+          fi
+
+  mirror:
+    name: Mirror snapshot of ${{ matrix.line }}
+    needs: enumerate
+    if: needs.enumerate.outputs.lines != '[]'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        line: ${{ fromJson(needs.enumerate.outputs.lines) }}
+    concurrency:
+      # 同线串行防并发双写同一快照坐标（并发下目录级元数据一致性未实测），跨线互不阻塞
+      group: snapshot-mirror-${{ matrix.line }}
+      cancel-in-progress: false
+    env:
+      # 属性断言不区分目标仓库，命中共享仓谓词的发布任务在任一 Nexus 属性为空时 fail-fast，
+      # 故 NEXUS 两值必须注入；镜像凭据只用内置令牌经单密钥属性桥接；快照跳签不注 SIGNING。
+      ORG_GRADLE_PROJECT_NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      ORG_GRADLE_PROJECT_NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+      ORG_GRADLE_PROJECT_GITHUB_PACKAGES_KEY: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: refs/heads/${{ matrix.line }}
+      # 门禁经 grgit 读当前分支名，checkout 的分离 HEAD 会让分支形态核对误拒；
+      # checkout -B 兜底建立本地分支指向同一提交（不推送、不改远端）。
+      - name: Ensure branch context for the gate
+        run: git checkout -B "${{ matrix.line }}"
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v3
+      - name: Publish snapshot mirror to GitHub Packages (five-fold gate runs inside)
+        run: ./gradlew publishAllPublicationsToGithubPackagesRepository
