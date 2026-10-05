@@ -1,7 +1,9 @@
 # Tasks
 
-> 任务规则适配注记：本变更不修改任何 Java 代码、公共 API 或报文协议，因此"JUnit 5 测试任务排在实现任务之前"与"每组装完跑 `./gradlew :受影响模块:test`"两条无对应物；各组装完以构建配置层的等价判据收口——配置期回归（`./gradlew help`）、任务面断言（`tasks --all` 出现/消失）、`--dry-run` 任务图断言（不执行任何动作、零外发），集成层的门禁继承取证放在第 5 组。真实向 GitHub Packages 上传的命令只出现在第 1 组沙箱（一次性私有沙箱仓库，操作已获用户批准且已全部执行完毕）与第 5.5 组（写明需用户单独批准），生产命名空间在其余任务零外发。
+> 任务规则适配注记：本变更不修改任何 Java 代码、公共 API 或报文协议，因此"JUnit 5 测试任务排在实现任务之前"与"每组装完跑 `./gradlew :受影响模块:test`"两条无对应物；各组装完以构建配置层的等价判据收口——配置期回归（`./gradlew help`）、任务面断言（`tasks --all` 出现/消失）、`--dry-run` 任务图断言（不执行任何动作、零外发），集成层的门禁继承取证放在第 5 组。真实向 GitHub Packages 上传的命令只出现在第 1 组沙箱（一次性私有沙箱仓库，操作已获用户批准且已全部执行完毕）与第 5.5 组（写明需用户单独批准），生产命名空间在其余任务零外发——任务 5.3 也在生产 URL 上下达同一条逐仓镜像上传命令，但它被发布门禁先行拒绝、上传动作从未执行，属零外发的拒绝取证，存证见 `verification/logs/gate-refusal-5.7.99.txt`。
 >
+> 2026-10-05 命名修订注记：用户复裁把镜像凭据从 `githubPackagesUsername` 与 `githubPackagesToken` 双属性改为单一密钥属性 `GITHUB_PACKAGES_KEY`（用户名由插件固定为仓库属主账户名 `Tunaiyi`）。第 2 组与第 3 组任务描述保留双属性初版原貌（作为当时的执行记录），改名与其回归见新增第 6 组；规约文本（specs 差量需求一、design D3/D6、proposal、CI 步骤、文档、插件）均已改为单密钥现文。
+
 > 2026-10-05 复裁注记：第 1 组实测发现"快照可上传但消费方不可解析"的第四种形态（超出 design D2 原三分支预期），用户据此复裁撤回"快照进镜像"的拍板决定；本任务册第 2 至 5 组已按复裁结果改写（守卫含版本子句、CI 无快照步骤、文档写排除边界）。
 
 ## 1. 沙箱实测与快照机制裁决（design D2/D10）
@@ -48,3 +50,11 @@
 - [x] 5.3 门禁继承的真实拒绝取证（零外发）：本地临时 `git switch -c 5.7.99.release`（取远端未占用的补丁号），dummy 双注入执行 `./gradlew :tny-game-net:publishAllPublicationsToGithubPackagesRepository`，预期被 `checkPublishPrerequisites` 拒绝（远端无附注标签 `v5.7.99`，或先撞 Nexus 属性断言，两者皆为拒绝且发布动作未执行）；记录拒绝输出后 `git switch 5.7.x && git branch -D 5.7.99.release`。验证：拒绝输出存档 `verification/`，证明镜像不旁路五重门禁。
 - [x] 5.4 清理：删除沙箱仓库 `Tunaiyi/gpr-sandbox`（2026-10-05 由用户在网页端 Danger Zone 执行删除；当前 gh 令牌缺 delete_repo scope 故非命令行完成），连带其全部探针包一并消失。核对发布者本机用户级 `~/.gradle/gradle.properties` 中不存在 `githubPackages*` 两键（拍板决定"镜像仅由 CI 执行"的不变式）。验证：`gh repo view Tunaiyi/gpr-sandbox` 返回"Could not resolve to a Repository"，`gh api "users/Tunaiyi/packages?package_type=maven"` 返回空数组，`grep githubPackages ~/.gradle/gradle.properties` 无结果。
 - [ ] 5.5 真实首发（本任务的执行需用户单独明确批准，批准前不得自动触发）：正式版镜像随下一个自然发布周期在 release.published 触发时首发，或经用户批准在发布分支试点逐仓任务；首发后以只读方式核对镜像版本清单与内网仓同号构件族逐模块一致（`gh api "users/Tunaiyi/packages?package_type=maven"` 与包页面）。失败即停、绝不自动重跑同号，处置按发布流程文档阶梯执行。
+
+## 6. 凭据单密钥改名与其回归（2026-10-05 用户复裁，见文首注记）
+
+- [x] 6.1 插件改为单密钥守卫（`project.hasProperty('GITHUB_PACKAGES_KEY')` 与版本子句两条子句合取，`credentials` 用户名固定 `'Tunaiyi'` 并注释理由，口令经同一键取值），根构建脚本与 BOM 接线不变。验证：`./gradlew help` 通过；插件文件行数仍低于约定插件界线。
+- [x] 6.2 CI 与文档同步改名：`publish.yml` 镜像步骤 env 改为 `ORG_GRADLE_PROJECT_GITHUB_PACKAGES_KEY: ${{ secrets.GITHUB_TOKEN }}` 单行并改写步骤注释；`docs/release-process.md` 触发形态段改为单密钥现文。验证：全仓（排除工件修订注记与沙箱历史存证）`grep -rn githubPackagesUsername\|githubPackagesToken` 无生产文件命中；YAML 解析通过。
+- [x] 6.3 规约工件同步：specs 差量需求一改两条守卫条件与其场景、需求四场景一措辞；design D3 重写为双条件合取并记改名理由、D6 改 env 键名、Context 拍板段补记；proposal What Changes 与 Impact 同步。验证：`openspec validate add-github-packages-channel --strict` 通过。
+- [x] 6.4 守卫新形态回归（全部 `--no-daemon` 执行以免陈旧 daemon 环境注入假阳性；零真实外发）：其一，开发线注入 dummy 单密钥 `./gradlew --no-daemon :tny-game-net:tasks --all` 检索镜像任务计数 0（版本子句生效）；其二，临时本地分支 `5.7.99.release` 注入 dummy 单密钥计数 2（目的地声明生效）；其三，同分支清空注入计数 0（凭据子句独立生效）；其四，注入态 `./gradlew --no-daemon publishAllPublicationsToGithubPackagesRepository --dry-run` 任务图 `checkPublishPrerequisites` 逐模块前置。验证：四组输出记录更新 `verification/logs/guard-regression-devline.txt`；演练后删除临时分支。
+- [x] 6.5 门禁拒绝取证与消费侧探测按新形态重存：临时发布分支注入 dummy 单密钥真实执行 `./gradlew :tny-game-net:publishAllPublicationsToGithubPackagesRepository`，预期被标签存证核对拒绝且零外发，拒绝输出重写 `verification/logs/gate-refusal-5.7.99.txt`；匿名 GET 生产镜像路径与 `gh api "users/Tunaiyi/packages?package_type=maven"` 复查重写对应存证文件。验证：`verification/scenario-coverage.md` 需求一与需求二的证据行引用更新为单密钥形态。

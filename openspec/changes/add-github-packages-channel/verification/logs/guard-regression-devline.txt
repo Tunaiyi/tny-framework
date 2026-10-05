@@ -1,6 +1,20 @@
-# 守卫三态回归记录（任务 2.4，2026-10-05，全部零外发）
-## 态一：开发线 5.7.x + dummy 双凭据 → 镜像任务不出现（版本子句生效）
+# 守卫两态回归记录（任务 6.4，2026-10-05，单密钥 GITHUB_PACKAGES_KEY 形态，全部 --no-daemon，零外发）
+## 态一：开发线 5.7.x + dummy 单密钥 → 镜像任务不出现（版本子句生效）
 $ git branch --show-current
 5.7.x
-$ ORG_GRADLE_PROJECT_githubPackagesUsername=dummy ORG_GRADLE_PROJECT_githubPackagesToken=dummy ./gradlew :tny-game-net:tasks --all | grep -ci githubpackages
+$ ORG_GRADLE_PROJECT_GITHUB_PACKAGES_KEY=dummy ./gradlew --no-daemon :tny-game-net:tasks --all | grep -ci githubpackages
 0
+## 态二：临时发布分支 5.7.99.release + dummy 单密钥 → 两任务出现
+$ ORG_GRADLE_PROJECT_GITHUB_PACKAGES_KEY=dummy ./gradlew --no-daemon :tny-game-net:tasks --all | grep -i githubpackages
+publishAllPublicationsToGithubPackagesRepository - Publishes all Maven publications produced by this project to the githubPackages repository.
+publishMavenJavaPublicationToGithubPackagesRepository - Publishes Maven publication 'mavenJava' to Maven repository 'githubPackages'.
+## 态三：同分支清空注入 → 任务消失（凭据子句独立生效，--no-daemon 排除陈旧 daemon 环境污染）
+$ ./gradlew --no-daemon :tny-game-net:tasks --all | grep -ci githubpackages
+0
+## dry-run：checkPublishPrerequisites 逐模块前置（节选）
+:tny-game-actor:checkPublishPrerequisites SKIPPED
+:tny-game-basics:checkPublishPrerequisites SKIPPED
+:tny-game-bom:checkPublishPrerequisites SKIPPED
+:tny-game-boot:checkPublishPrerequisites SKIPPED
+:tny-game-boot-log4j2:checkPublishPrerequisites SKIPPED
+:tny-game-codec:checkPublishPrerequisites SKIPPED
