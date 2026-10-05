@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1791216146099,
+  "lastUpdate": 1791217873338,
   "repoUrl": "https://github.com/Tunaiyi/tny-framework",
   "entries": {
     "Benchmark": [
@@ -7020,6 +7020,108 @@ window.BENCHMARK_DATA = {
           {
             "name": "com.tny.game.benchmark.net.routine.RespondFutureBenchmark.putAndPoll ( {\"inflight\":\"10000\"} )",
             "value": 14801562.463256037,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "yangkun311@gmail.com",
+            "name": "Tunaiyi",
+            "username": "Tunaiyi"
+          },
+          "committer": {
+            "email": "yangkun311@gmail.com",
+            "name": "Tunaiyi",
+            "username": "Tunaiyi"
+          },
+          "distinct": true,
+          "id": "00274a53d499a47eb85b089c4c855298009bd6bf",
+          "message": "ci: 快照镜像选线改为线谱系登记唯一依据——首跑教训与全账本同步\n\n首跑 run 37336175323 双线结论：其一，正面判据全部达成——Mirror snapshot of 5.7.x 作业\nsuccess，detached-HEAD 兜底经受门禁核对，51 个构件包落库，tny-game-net 快照目录级 unique\n元数据（timestamp 20261005.155147 / buildNumber 1）实证注册表自动维护；其二，运行整体\nfailure 暴露选线缺口——schedule 口径若按远端分支形态动态枚举，会把退役但分支未删的历史线\n（2.0.x 至 5.6.x，旧 wrapper 缺 jar）纳入矩阵批量失败（叠加本次 dispatch 漏传线名输入走了\n枚举路径）。用户 2026-10-06 复裁：定时每日仅镜像当前开发线一次，选线解析 docs/release-process.md\n线谱系登记中状态为\"版本开发分支\"的行（与流程五内网快照发布同一事实源，零新增维护面）；维护态\n与退役线仅经 workflow_dispatch 显式指定线名补跑，人工指定即授权；解析失败输出空矩阵并告警，\n绝不回退分支存在性枚举。snapshot-mirror.yml 的 enumerate 步骤、头注教训记录与全账本措辞\n（specs 差量触发形态括注、proposal、design D1 修订记录与新增被否决备选、docs 五处、\nbranch-model 两处、README、tny.release 注释）随之同步；tasks 收口 5.2 并新增第 6 组登记\n本修订，3.2 历史执行记录措辞保留。\n\nCo-Authored-By: Claude Code <noreply@anthropic.com>",
+          "timestamp": "2026-10-06T00:23:01+08:00",
+          "tree_id": "835e3684759aea0df3124ce4a250297623623847",
+          "url": "https://github.com/Tunaiyi/tny-framework/commit/00274a53d499a47eb85b089c4c855298009bd6bf"
+        },
+        "date": 1791217871582,
+        "tool": "jmh",
+        "benches": [
+          {
+            "name": "com.tny.game.benchmark.net.devtest.SmokeBenchmark.noop",
+            "value": 2091781653.5840747,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.MessageQueueBenchmark.addMessage ( {\"capacity\":\"0\"} )",
+            "value": 1255946732.151533,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.MessageQueueBenchmark.addMessage ( {\"capacity\":\"64\"} )",
+            "value": 94666433.73537287,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.MessageQueueBenchmark.filteredRead ( {\"capacity\":\"0\"} )",
+            "value": 179338910.72912794,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.MessageQueueBenchmark.filteredRead ( {\"capacity\":\"64\"} )",
+            "value": 22071520.999412816,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.MessageQueueBenchmark.snapshotRead ( {\"capacity\":\"0\"} )",
+            "value": 179754843.76138553,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.MessageQueueBenchmark.snapshotRead ( {\"capacity\":\"64\"} )",
+            "value": 103331376.90830003,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.PacketCodecBenchmark.encodeThenDecode ( {\"verify\":\"false\"} )",
+            "value": 2846719.4040382546,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.PacketCodecBenchmark.encodeThenDecode ( {\"verify\":\"true\"} )",
+            "value": 887875.4055143308,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.RespondFutureBenchmark.pollMiss ( {\"inflight\":\"1000\"} )",
+            "value": 95282184.50864302,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.RespondFutureBenchmark.pollMiss ( {\"inflight\":\"10000\"} )",
+            "value": 89500391.35013598,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.RespondFutureBenchmark.putAndPoll ( {\"inflight\":\"1000\"} )",
+            "value": 14523777.214480823,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.RespondFutureBenchmark.putAndPoll ( {\"inflight\":\"10000\"} )",
+            "value": 13917103.443888858,
             "unit": "ops/s",
             "extra": "iterations: 10\nforks: 2\nthreads: 1"
           }
