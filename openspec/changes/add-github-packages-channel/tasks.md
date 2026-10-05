@@ -49,7 +49,7 @@
 - [x] 5.2 场景逐条对账：规格五条需求的每个场景（共十个）标注其证据位置（2.4/2.5 守卫三态与 dry-run、3.2/3.3 步骤走查与全文检索、第 1 组实测记录、5.3 门禁拒绝输出、4.1-4.3 文档段落），验证：对账表写入变更目录且无空位。
 - [x] 5.3 门禁继承的真实拒绝取证（零外发）：本地临时 `git switch -c 5.7.99.release`（取远端未占用的补丁号），dummy 双注入执行 `./gradlew :tny-game-net:publishAllPublicationsToGithubPackagesRepository`，预期被 `checkPublishPrerequisites` 拒绝（远端无附注标签 `v5.7.99`，或先撞 Nexus 属性断言，两者皆为拒绝且发布动作未执行）；记录拒绝输出后 `git switch 5.7.x && git branch -D 5.7.99.release`。验证：拒绝输出存档 `verification/`，证明镜像不旁路五重门禁。
 - [x] 5.4 清理：删除沙箱仓库 `Tunaiyi/gpr-sandbox`（2026-10-05 由用户在网页端 Danger Zone 执行删除；当前 gh 令牌缺 delete_repo scope 故非命令行完成），连带其全部探针包一并消失。核对发布者本机用户级 `~/.gradle/gradle.properties` 中不存在 `githubPackages*` 两键（拍板决定"镜像仅由 CI 执行"的不变式）。验证：`gh repo view Tunaiyi/gpr-sandbox` 返回"Could not resolve to a Repository"，`gh api "users/Tunaiyi/packages?package_type=maven"` 返回空数组，`grep githubPackages ~/.gradle/gradle.properties` 无结果。
-- [ ] 5.5 真实首发（本任务的执行需用户单独明确批准，批准前不得自动触发）：正式版镜像随下一个自然发布周期在 release.published 触发时首发，或经用户批准在发布分支试点逐仓任务；首发后以只读方式核对镜像版本清单与内网仓同号构件族逐模块一致（`gh api "users/Tunaiyi/packages?package_type=maven"` 与包页面）。失败即停、绝不自动重跑同号，处置按发布流程文档阶梯执行。
+- [x] 5.5 真实首发（用户批准话术：批准正式版镜像首发试点；2026-10-05 以试点形态执行完毕，取证见 `verification/logs/mirror-pilot-5.7.99.txt`）：经一次性脚手架工作流在临时发布分支 `5.7.99.release`（保留号段）上真实执行单模块逐仓镜像——首跑成功（签名三件经 CI secret 注入，`:tny-game-net` 的 pom/jar/javadoc/pom.asc/module 五类构件携凭据 GET 全部 302，包 `com.tnydev.game.tny-game-net` 与版本 5.7.99 落库）；二次同号触发复现预期 409（Could not PUT tny-game-net-5.7.99.jar，一次成型与判读路径由此得到生产实证，全程未触碰 Nexus 与 Central）。试点痕迹已全部清理（镜像版本与包删除、远端标签与试点分支删除、main 脚手架 revert 于 fa8fb1fc）。全模块正式版生产首发随下一个自然发布周期由 publish.yml 第三步骤自动执行，跨仓构件逐件一致核对与速率观察留在对账表观察项。
 
 ## 6. 凭据单密钥改名与其回归（2026-10-05 用户复裁，见文首注记）
 
