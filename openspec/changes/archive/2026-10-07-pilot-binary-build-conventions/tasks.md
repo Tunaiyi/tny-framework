@@ -42,5 +42,5 @@
 
 ## 7. 收口
 
-- [ ] 7.1 `openspec verify pilot-binary-build-conventions`（或按项目 verify 流程）无 CRITICAL；用户批准后 `/opsx:archive` 归档，规格差量同步进账本
-- [ ] 7.2 归档后观察账登记两项挂后续册：托管版本面对账的端到端破坏探针形态（D7 挂账）、buildSrc 耗时劣化阈值复核（Risks 第四条）
+- [x] 7.1 `openspec verify pilot-binary-build-conventions`（或按项目 verify 流程）无 CRITICAL；用户批准后 `/opsx:archive` 归档，规格差量同步进账本
+- [x] 7.2 归档后观察账登记两项挂后续册：托管版本面对账的端到端破坏探针形态（D7 挂账）、buildSrc 耗时劣化阈值复核（Risks 第四条）
