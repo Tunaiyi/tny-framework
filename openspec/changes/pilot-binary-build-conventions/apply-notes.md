@@ -33,7 +33,7 @@
 - 单测合计 17 用例全绿（checker 三类 4+5+2、projects 5、冒烟 1）；ManagedVersionsCheckTest 首版红过一次——夹具只供一族声明值导致其余七族误判失配，修正为全族基线＋单点扰动。
 ## verify 阶段修复（2026-10-06 /opsx:verify 发现）
 
-- CRITICAL-1：提交链重做（修正首个 C1 错误归属时执行的 `git reset --mixed`）把最初的脚本文件删除一并回退，重建中间态后删除从未再次执行——module-checker 一度仍以预编译脚本形态生效（双形态并存、脚本静默优先，行为输出与预期一致故全部验证仍绿，但"同一 id 二选一"判据未达成）。已补 `git rm` 删除并复验：配置期绿、jar 描述符 `tny.module-checker.properties` 指向 `tny.convention.checker.ModuleCheckerPlugin`（二进制生效实证）。verify 后复验工作流结论回填本节末尾。
+- CRITICAL-1：提交链重做（修正首个 C1 错误归属时执行的 `git reset --mixed`）把最初的脚本文件删除一并回退，重建中间态后删除从未再次执行——module-checker 一度仍以预编译脚本形态生效（双形态并存、脚本静默优先，行为输出与预期一致故全部验证仍绿，但"同一 id 二选一"判据未达成）。已补 `git rm` 删除并复验：配置期绿、jar 描述符 `tny.module-checker.properties` 指向 `tny.convention.checker.ModuleCheckerPlugin`（二进制生效实证）。verify 后复验工作流结论已回填至本文件末尾。
 - WARNING-1：design D1 已补接线类语言例外记录。
 - 证据有效性说明：下文"组 6"五样本零差异与破坏探针两例的实测时点为并存状态（判红承担方为脚本桥接类）；二进制独立承担同等能力的复验由修复后复跑（探针 A 复跑结果见本节末尾工作流结论）。
 
@@ -49,3 +49,19 @@
 - 全量 `./gradlew check --continue`：BUILD SUCCESSFUL，14s，179 tasks 中 3 executed／176 up-to-date（输入未变的合法增量；测试类改动已被前组即时执行覆盖）。
 - 配置耗时：warm daemon 下 `./gradlew help` 三次 1.90/1.94/1.93 秒，无劣化信号。改造前的严格同态对照不成立（改造前当日仅有冷 daemon 首跑数值），按"无 3 秒级劣化"记录，挂账观察条目维持。
 - 触碰文件按 gradle-build-style 全部需求走查通过：声明式主体、withType(Test).configureEach 惰性、JUnit 版本字面量的 D5 注释义务、无新增工程名点名、四个新类均低于 250 行界、provenance 注释逐段随迁（原脚本头注释全量入 ModuleCheckerPlugin javadoc）。
+
+## 修复后复验工作流结论（六智能体，锚定树 8d2e3857/11041dbb 期间）
+
+判决：探针A复跑 PASS（--stacktrace 证实判红帧落在 tny/convention/checker/ModuleCheckerPlugin.groovy:77，无脚本帧——二进制类独立承担对账职责成立）；五样本零差异复验 PASS；并存判据与退役彻底性 PASS；测试与静态判据 FAIL；规格符合性 FAIL；对抗复核确认两个 FAIL 非误报并给出 CRITICAL-2。复验证据锚定说明：期间历史被线性化重排（0beffaf0→3facab1d、b3b58c5e→be5632f5），复验中的旧 hash 引用以现行线性链对应提交为准；复验者已在现树复核删除幸存、17 用例绿、配置期绿，内容无回归。
+
+### CRITICAL-2（新发现，待用户裁决修复路线）
+UnpublishedContractCheckTest 只有违例方向用例、无通过用例，违反本册 ADDED 需求"每个检查类 MUST 至少覆盖一个通过用例与一个违例用例"的字面 MUST；tasks 5.1 在缺口下被勾选；UnpublishedContractCheck javadoc 声称"覆盖不违例方向"与测试文件自述矛盾。根因是设计执行走样：D3 设想该类输入为"角色声明映射表"的判定函数，实现时把映射判定留在了不写单测的接线类，类本体只剩文案函数。
+
+### 待修 WARNING/SUGGESTION 清单（用户指令后一批处理）
+1. ADDED 需求措辞"ProjectBuilder 构建的单元测试"与三检查类纯夹具形态不符（ProjectBuilder 实际用于 BuildSrcSmokeTest 与 ProjectsExtensionTest）——归档同步前修差量措辞或改测试形态，二选一。
+2. design D3 接线时机描述与实现不符（零发布合同按原脚本挂 afterEvaluate，非 D3 所写"依次调用"式 projectsEvaluated）——更正 D3 文本。
+3. UnpublishedContractCheck 类 javadoc 与测试 javadoc 覆盖陈述互相矛盾——统一。
+4. tasks 4.2 括注"-tester 不进任何派生集合"与实现语义（-tester 留在 moduleProjects/javaProjects，仅不落入排除谓词）矛盾——改写括注。
+5. 行号漂移与拼写：tasks 5.3/design 仍引用改造前 build.gradle:47（现 39）；ModuleCheckerPlugin javadoc"之后一行"与根脚本实际间距（L30/L39）不符；tasks 5.2 拼写 adopt-gradle-official-dac 应为 -dsl。
+6. 预登记观察账：ManagedVersionsCheck.GUARD_COORDS 与版本目录同名坐标字符串的"不复制条目表"宽读风险；需求六区块词表对纯对账插件的适用性口径。
+7. buildSrc/build/libs/buildSrc-5.7.9.jar 为二进制化前陈旧伴生归档（含旧脚本形态注册物证），构建目录产物，clean 即清，不影响源码树。
