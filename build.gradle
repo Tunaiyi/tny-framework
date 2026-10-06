@@ -55,12 +55,14 @@ configure(subprojects) {
 }
 configure(gradleProjects) {
     apply plugin: 'tny.publish'
+    apply plugin: 'tny.publish.gate'
     apply plugin: 'tny.compile-baseline'
     apply plugin: 'tny.plugin-module'
 }
 configure(javaProjects) {
     apply plugin: 'com.gradleup.nmcp'
     apply plugin: 'tny.publish'
+    apply plugin: 'tny.publish.gate'
     apply plugin: 'tny.compile-baseline'
     apply plugin: 'tny.java-module'
     apply plugin: 'tny.integration-test'

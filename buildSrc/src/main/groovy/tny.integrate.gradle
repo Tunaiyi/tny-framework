@@ -10,9 +10,7 @@ import tny.convention.GitCli
 
 def gitFlow = rootProject.extensions.getByType(GitFlow)
 def grgiter = gitFlow.grgiter
-def gitExe = (project.findProperty('gitExe') ?: 'git').toString()
-def runGit = { List args -> GitCli.run(rootDir, gitExe, args) }
-def requireGit = { List args, String failMsg -> GitCli.require(runGit(args), failMsg) }
+def git = GitCli.forProject(project)
 
 def trackedDirty = {
     def st = grgiter.status()
@@ -32,15 +30,15 @@ def num = { String branch ->
     m.find() ? (m.group(1) as int) * 1000 + (m.group(2) as int) : -1
 }
 def remoteRefHas = { String branch ->
-    runGit(['ls-remote', '--heads', remoteName, "refs/heads/${branch}"]).out.trim() != ''
+    git.run(['ls-remote', '--heads', remoteName, "refs/heads/${branch}"]).out.trim() != ''
 }
 def remoteReleaseLines = {
-    runGit(['ls-remote', '--heads', remoteName, 'refs/heads/release/*']).out.readLines()
+    git.run(['ls-remote', '--heads', remoteName, 'refs/heads/release/*']).out.readLines()
             .collect { it.split('\\s+')[1] }.findAll { it =~ /^refs\/heads\/release\/\d+\.\d+\.x$/ }
             .collect { it - 'refs/heads/' }
 }
 def remoteDevLines = {
-    runGit(['ls-remote', '--heads', remoteName, 'refs/heads/dev/*']).out.readLines()
+    git.run(['ls-remote', '--heads', remoteName, 'refs/heads/dev/*']).out.readLines()
             .collect { it.split('\\s+')[1] }.findAll { it =~ /^refs\/heads\/dev\/\d+\.\d+\.x$/ }
             .collect { it - 'refs/heads/' }
 }
@@ -48,7 +46,7 @@ def remoteDevLines = {
 // （大写字母-数字，如 BUG-101、CVE-2026-1234 取全串）；提取为空时返回空清单——
 // 修复提交必须带编号由 commit-msg 钩子与 CI 校验保证（本变更任务 6.1），此处不重复执法。
 def autoMarkers = { String targetHead, String src ->
-    def log = runGit(['log', '--no-merges', '--format=%s', "${targetHead}..${src}"]).out
+    def log = git.run(['log', '--no-merges', '--format=%s', "${targetHead}..${src}"]).out
     def found = [] as LinkedHashSet
     log.readLines().each { line ->
         (line =~ /\b[A-Z][A-Z0-9]*(?:-[0-9]+)+\b/).each { found << it[0] }
@@ -91,23 +89,23 @@ tasks.register('integrateMain') {
   前置        集成顺序检查已通过（低编号在途开发分支为零）"""
         if (preview) { logger.lifecycle('[dryRun] 未做任何变更\n' + plan); return }
         logger.lifecycle(plan)
-        requireGit(['fetch', remoteName, 'refs/heads/main:refs/remotes/' + remoteName + '/main'], '刷新 main 远端引用失败')
-        def sync = runGit(['merge', '--no-edit', "${remoteName}/main"])
+        git.require(['fetch', remoteName, 'refs/heads/main:refs/remotes/' + remoteName + '/main'], '刷新 main 远端引用失败')
+        def sync = git.run(['merge', '--no-edit', "${remoteName}/main"])
         if (sync.exit != 0) {
-            runGit(['merge', '--abort'])
+            git.run(['merge', '--abort'])
             throw new GradleException("主干同步合并发生冲突（在 ${current} 上）：已 abort 保持原状。请人工 git merge ${remoteName}/main 解决后重跑本任务")
         }
-        requireGit(['push', remoteName, "refs/heads/${current}"], '推送同步结果失败')
-        requireGit(['switch', 'main'], '切换 main 失败')
-        requireGit(['merge', '--ff-only', "${remoteName}/main"], 'main 本地头与远端不一致且无法快进对齐')
+        git.require(['push', remoteName, "refs/heads/${current}"], '推送同步结果失败')
+        git.require(['switch', 'main'], '切换 main 失败')
+        git.require(['merge', '--ff-only', "${remoteName}/main"], 'main 本地头与远端不一致且无法快进对齐')
         def msg = "integrate ${current} to main" + (rv ? ": ${rv}" : '')
-        requireGit(['merge', '--no-ff', '--no-edit', '-m', msg, current], '整体合并进 main 失败')
-        def ps = runGit(['push', remoteName, 'refs/heads/main'])
+        git.require(['merge', '--no-ff', '--no-edit', '-m', msg, current], '整体合并进 main 失败')
+        def ps = git.run(['push', remoteName, 'refs/heads/main'])
         if (ps.exit != 0) {
             throw new GradleException("推送 main 失败：${ps.err.trim()}\n本地合并已完成——远端 main 被他人推进时先 git pull --ff-only ${remoteName} main 再重跑推送")
         }
-        requireGit(['branch', '-d', current], "删除已集成分支 ${current} 失败")
-        if (remoteRefHas(current)) runGit(['push', remoteName, "--delete", current])
+        git.require(['branch', '-d', current], "删除已集成分支 ${current} 失败")
+        if (remoteRefHas(current)) git.run(['push', remoteName, "--delete", current])
         logger.lifecycle("integrateMain 完成：${current} 已集成进 main 并下线。下一步 ./gradlew releaseCut -PreleaseVersion=${rv ?: '<N.M>.0'}（在 main 上）切该系列的 release 维护分支。")
     }
 }
@@ -135,19 +133,19 @@ tasks.register('mergeUpward') {
         if (project.hasProperty('dryRun')) { logger.lifecycle('[dryRun] 未做任何变更\n' + plan); return }
         logger.lifecycle(plan)
         for (target in targets) {
-            def targetHead = runGit(['rev-parse', "--verify", '-q', target]).out.trim()
+            def targetHead = git.run(['rev-parse', "--verify", '-q', target]).out.trim()
             if (targetHead.isEmpty()) {
-                requireGit(['switch', '-c', target, "${remoteName}/${target}"], "检出目标 '${target}' 失败（本地与远端均不存在？）")
-                targetHead = runGit(['rev-parse', target]).out.trim()
+                git.require(['switch', '-c', target, "${remoteName}/${target}"], "检出目标 '${target}' 失败（本地与远端均不存在？）")
+                targetHead = git.run(['rev-parse', target]).out.trim()
             } else {
-                requireGit(['switch', target], "切换目标 '${target}' 失败")
+                git.require(['switch', target], "切换目标 '${target}' 失败")
             }
-            requireGit(['fetch', remoteName, "refs/heads/${target}:refs/remotes/${remoteName}/${target}"], '刷新目标远端引用失败')
-            def merged = runGit(['merge', '--no-edit', '-m', "merge-upward: ${source} -> ${target}", source])
+            git.require(['fetch', remoteName, "refs/heads/${target}:refs/remotes/${remoteName}/${target}"], '刷新目标远端引用失败')
+            def merged = git.run(['merge', '--no-edit', '-m', "merge-upward: ${source} -> ${target}", source])
             if (merged.exit != 0) {
-                runGit(['merge', '--abort'])
-                requireGit(['reset', '--hard', targetHead], "回退目标 '${target}' 到原头失败")
-                requireGit(['switch', source], "切回源分支 '${source}' 失败")
+                git.run(['merge', '--abort'])
+                git.require(['reset', '--hard', targetHead], "回退目标 '${target}' 到原头失败")
+                git.require(['switch', source], "切回源分支 '${source}' 失败")
                 throw new GradleException("向上合并 ${source} -> ${target} 发生冲突：已 abort 并使目标与源保持原状。" +
                         "人工处置：git switch ${target} && git merge ${source} 解决后自行执行合并结果完整性检查（见规格场景），完成后推送并重跑本任务跳过已入账部分")
             }
@@ -156,25 +154,25 @@ tasks.register('mergeUpward') {
             // e2e 第十一轮实锤：演练脚本自含标记令检索恒绿——完整性检查若不排除
             // 叙述文件会自我蒙蔽）。判定对象是"修复的承载内容在不在"，不是编号被提及过。
             def missing = markers.findAll { ref ->
-                runGit(['grep', '-c', ref, 'HEAD', '--',
+                git.run(['grep', '-c', ref, 'HEAD', '--',
                         ':(exclude)docs', ':(exclude)drill', ':(exclude)openspec']).out.readLines()
                         .collect { (it.split(':')[-1]) }.findAll { it.isInteger() }
                         .collect { it as int }.sum(0) == 0
             }
             if (!missing.isEmpty()) {
-                requireGit(['reset', '--hard', targetHead], "回退目标 '${target}' 到原头失败")
-                requireGit(['switch', source], "切回源分支 '${source}' 失败")
+                git.require(['reset', '--hard', targetHead], "回退目标 '${target}' 到原头失败")
+                git.require(['switch', source], "切回源分支 '${source}' 失败")
                 throw new GradleException("合并结果完整性检查拦截 ${source} -> ${target}：合并结果中检索不到标记 ${missing.join('、')}" +
                         '（修复内容在冲突解决中丢失）。目标已回退原头、保持未提交状态；重新解决冲突后重跑，' +
                         '或按规格例外通道登记该标记在目标结构中不存在并在新结构重做')
             }
-            def ps = runGit(['push', remoteName, "refs/heads/${target}"])
+            def ps = git.run(['push', remoteName, "refs/heads/${target}"])
             if (ps.exit != 0) {
                 throw new GradleException("推送目标 '${target}' 失败：${ps.err.trim()}\n本地合并与检查已完成——目标被他人推进时先在该目标 git pull --no-edit ${remoteName} ${target} 并入后重跑本任务")
             }
             logger.lifecycle("mergeUpward：${source} -> ${target} 完成（标记核对 ${markers.size()} 项），已推送。")
         }
-        requireGit(['switch', source], "切回源分支 '${source}' 失败")
+        git.require(['switch', source], "切回源分支 '${source}' 失败")
         logger.lifecycle("mergeUpward 全部完成：${source} 的补丁已逐级到达 ${targets.join('、')}；源分支与既有标签未移动。")
     }
 }
@@ -191,9 +189,9 @@ tasks.register('retireGuard') {
         if (!(current ==~ /release\/\d+\.\d+\.x/)) {
             throw new GradleException("retireGuard 必须在待退役的 release 维护分支上执行，当前分支 '${current}'")
         }
-        requireGit(['fetch', remoteName, "refs/heads/${current}:refs/remotes/${remoteName}/${current}"], '刷新维护分支远端引用失败')
-        runGit(['fetch', remoteName, 'refs/heads/main:refs/remotes/' + remoteName + '/main'])
-        def uncollected = runGit(['log', '--oneline', "${remoteName}/main..${remoteName}/${current}"]).out.readLines().findAll { it.trim() }
+        git.require(['fetch', remoteName, "refs/heads/${current}:refs/remotes/${remoteName}/${current}"], '刷新维护分支远端引用失败')
+        git.run(['fetch', remoteName, 'refs/heads/main:refs/remotes/' + remoteName + '/main'])
+        def uncollected = git.run(['log', '--oneline', "${remoteName}/main..${remoteName}/${current}"]).out.readLines().findAll { it.trim() }
         if (!uncollected.isEmpty()) {
             throw new GradleException("退役检查未通过：${current} 上有 ${uncollected.size()} 笔未集成提交——\n" +
                     uncollected.join('\n') +

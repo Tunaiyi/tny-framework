@@ -11,9 +11,7 @@ import tny.convention.GitCli
 
 def gitFlow = rootProject.extensions.getByType(GitFlow)
 def grgiter = gitFlow.grgiter
-def gitExe = (project.findProperty('gitExe') ?: 'git').toString()
-def runGit = { List args -> GitCli.run(rootDir, gitExe, args) }
-def requireGit = { List args, String failMsg -> GitCli.require(runGit(args), failMsg) }
+def git = GitCli.forProject(project)
 
 def resolveRemote = { String branch -> gitFlow.resolveRemoteName(branch) }
 
@@ -54,7 +52,7 @@ def assertNotLegacyOccupied = { String v ->
 // 轻量标签无 ^{} 行天然不参与计数）。
 def assertNextPatchNumber = { String rmName, String base, String v ->
     def patch = (v.split('\\.')[2] as Integer)
-    def patches = GitCli.remoteTagPatches(rootDir, gitExe, rmName, base)
+    def patches = git.remoteTagPatches(rmName, base)
     def expected = patches.isEmpty() ? 0 : (patches.max() + 1)
     if (patch != expected) {
         throw new GradleException("下一补丁号校验失败：系列 ${base} 远端已有标签最大补丁号 " +
@@ -95,9 +93,9 @@ tasks.register('releaseCut') {
 后续步骤：  git switch ${target}
             然后  ./gradlew releaseTag -PreleaseVersion=${v}   然后  ./gradlew publish"""
             if (preview) { logger.lifecycle('[dryRun] 未做任何变更\n' + plan); return }
-            requireGit(['fetch', remoteName, 'refs/heads/main:refs/remotes/' + remoteName + '/main'], '刷新 main 远端引用失败')
-            requireGit(['branch', target, "${remoteName}/main"], '切出维护分支失败')
-            requireGit(['push', remoteName, "refs/heads/${target}:refs/heads/${target}"], '推送维护分支失败')
+            git.require(['fetch', remoteName, 'refs/heads/main:refs/remotes/' + remoteName + '/main'], '刷新 main 远端引用失败')
+            git.require(['branch', target, "${remoteName}/main"], '切出维护分支失败')
+            git.require(['push', remoteName, "refs/heads/${target}:refs/heads/${target}"], '推送维护分支失败')
             logger.lifecycle("releaseCut 完成：${target} 已切自 ${remoteName}/main 并推送。git switch ${target} 后执行 ./gradlew releaseTag -PreleaseVersion=${v}，再 ./gradlew publish。")
             return
         }
@@ -117,8 +115,8 @@ tasks.register('releaseCut') {
   标签        不创建——由 releaseTag 在制品定型后创建
 后续步骤：（如有修复先完成并推送）  ./gradlew releaseTag   然后  ./gradlew publish"""
         if (preview) { logger.lifecycle('[dryRun] 未做任何变更\n' + plan); return }
-        requireGit(['switch', '-c', targetBranch, from], '切一次性发布分支失败')
-        requireGit(['push', remoteName, "refs/heads/${targetBranch}:refs/heads/${targetBranch}"], '推送一次性发布分支失败')
+        git.require(['switch', '-c', targetBranch, from], '切一次性发布分支失败')
+        git.require(['push', remoteName, "refs/heads/${targetBranch}:refs/heads/${targetBranch}"], '推送一次性发布分支失败')
         logger.lifecycle("releaseCut 完成：${targetBranch} 已从 ${from} 切出并推送。完成修复（如有）后执行 ./gradlew releaseTag -PreleaseVersion=${v}，再 ./gradlew publish。")
     }
 }
@@ -146,8 +144,8 @@ tasks.register('releaseTag') {
         def preview = project.hasProperty('dryRun')
         if (onMaintenance) {
             if (!preview) {
-                requireGit(['fetch', remoteName, "refs/heads/${current}:refs/remotes/${remoteName}/${current}"], '刷新维护分支远端引用失败')
-                def remoteHead = runGit(['ls-remote', remoteName, "refs/heads/${current}"]).out.readLines()
+                git.require(['fetch', remoteName, "refs/heads/${current}:refs/remotes/${remoteName}/${current}"], '刷新维护分支远端引用失败')
+                def remoteHead = git.run(['ls-remote', remoteName, "refs/heads/${current}"]).out.readLines()
                         .find { it.contains("refs/heads/${current}") }?.split('\\s+')?.getAt(0)
                 if (remoteHead != null && remoteHead != gitFlow.commitId) {
                     throw new GradleException('本地 HEAD 与维护分支远端头不一致（远端 ' + remoteHead?.take(10) +
@@ -156,9 +154,9 @@ tasks.register('releaseTag') {
                 assertNextPatchNumber(remoteName, base, v)
                 // 例外入账可见化（capability branch-integration-gates 例外通道）：本次发版
                 // 携带的 propagated-as 登记提交逐条打印，使"例外随版发出"对发布者与审计可见。
-                def patches = GitCli.remoteTagPatches(rootDir, gitExe, remoteName, base)
+                def patches = git.remoteTagPatches(remoteName, base)
                 if (!patches.isEmpty()) {
-                    def carried = runGit(['log', '--oneline', '--grep=propagated-as', "v${base}.${patches.max()}..HEAD"]).out
+                    def carried = git.run(['log', '--oneline', '--grep=propagated-as', "v${base}.${patches.max()}..HEAD"]).out
                             .readLines().findAll { it.trim() }
                     if (!carried.isEmpty()) {
                         logger.lifecycle("releaseTag：本次 ${v} 将随版发出 ${carried.size()} 笔例外登记提交：\n" + carried.join('\n'))
@@ -177,9 +175,9 @@ tasks.register('releaseTag') {
         if (preview) { logger.lifecycle('[dryRun] 未做任何变更\n' + plan); return }
         logger.lifecycle(plan)
         if (existing == null) {
-            requireGit(['tag', '-a', tagName, '-m', "release ${v} from ${current}"], '创建附注标签失败')
+            git.require(['tag', '-a', tagName, '-m', "release ${v} from ${current}"], '创建附注标签失败')
         }
-        requireGit(['push', remoteName, "refs/tags/${tagName}:refs/tags/${tagName}"], '推送标签失败')
+        git.require(['push', remoteName, "refs/tags/${tagName}:refs/tags/${tagName}"], '推送标签失败')
         // 话术指路的 ./gradlew publish 覆盖内网 Nexus（及本机凭据在位时的 Central 快照通道）；
         // GitHub Packages 镜像有持续集成与本机两个来源（publish-mirror-via-credential-pair 拍板）：
         // 持续集成链统一在 .github/workflows/publish.yml 单文件内（consolidate-publish-workflows
