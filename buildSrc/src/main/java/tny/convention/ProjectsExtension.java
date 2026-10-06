@@ -45,6 +45,8 @@ public class ProjectsExtension {
 
     private String pluginLegacyGroup;
 
+    private String derivedProjectVersion;
+
     public ProjectsExtension(Project root) {
         this.root = root;
     }
@@ -66,6 +68,28 @@ public class ProjectsExtension {
 
     public void setPluginLegacyGroup(String pluginLegacyGroup) {
         this.pluginLegacyGroup = pluginLegacyGroup;
+    }
+
+    /**
+     * 派生工程版本（consolidate-assembly-line 设计决策 D4 变体乙的落点）：由 ProjectsPlugin
+     * 在根工程配置期从 tny.git 创建的 gitFlow 扩展注入，消费方（tny.dependency-conventions
+     * 的版本派生）按本类型读取——Groovy 类 GitFlow 对 Java 实现类存在编译墙（buildSrc 先编译
+     * Java 后编译 Groovy，探针五实证），故弱型读取收敛到注入点一处、消费面全类型化。
+     *
+     * <p>语义逐段承接原 tny.dependency-management.gradle 尾部三行（expose-git-info-extension
+     * 按类型获取契约、redesign-devline-integration-model 设计决策 D2 回落规则，含 34fc8b11
+     * 随迁注释）：release 维护分支未注入 -PreleaseVersion 时 GitFlow.projectVersion 为 null，
+     * 注入行按 {@code ?: Project.DEFAULT_VERSION} 回落 Gradle 默认版本 "unspecified"，
+     * 编译与测试不受影响，发布任务由门禁按形态与版本双重判定拒绝；tny.git 未应用时
+     * 注入点即抛"扩展不在位"（原脚本 getByType(GitFlow) 的按类型获取契约原样保持）。
+     * 属性在根工程配置期一次性写入后不再变化。
+     */
+    public String getDerivedProjectVersion() {
+        return derivedProjectVersion;
+    }
+
+    public void setDerivedProjectVersion(String derivedProjectVersion) {
+        this.derivedProjectVersion = derivedProjectVersion;
     }
 
     /** 是否为 tny-game 构件模块（java 线与插件线的公共父集）。 */

@@ -16,6 +16,7 @@
 
 package tny.convention;
 
+import groovy.lang.GroovyObject;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 
@@ -29,7 +30,16 @@ import org.gradle.api.Project;
  *
  * <p>应用位置约定：只应用于根工程，且必须先于一切消费方（根脚本装配线行与各约定插件
  * 内按类型拉取处），与 tny.git 的 GitFlow 扩展同一模式——消费方经 getByType 按类型获取，
- * 扩展不在位即配置期报错。
+ * 扩展不在位即配置期报错。根脚本现序 tny.git 先于本插件应用。
+ *
+ * <p>派生版本注入（consolidate-assembly-line 设计决策 D4 变体乙）：GitFlow 为 Groovy 源码类，
+ * Java 实现类对其存在编译墙（buildSrc 先编译 Java 后编译 Groovy，探针五实证），全仓唯一的
+ * 弱型读取收敛于本方法一处（findByName 按名 + GroovyObject 属性协议），语义与
+ * {@code rootGitFlow.projectVersion ?: Project.DEFAULT_VERSION} 等值（含 34fc8b11 随迁的
+ * redesign D2 回落规则，出处见 ProjectsExtension#getDerivedProjectVersion javadoc）。
+ * gitFlow 缺席时本方法留空不抛（保持 tny.projects 独立可用的既有测试与复用形态），
+ * "tny.git 未先应用即报红"的消费期契约由 tny.dependency-conventions 的版本派生承担，
+ * 与原脚本 getByType(GitFlow) 的报错时机同段（子工程配置期）。
  */
 public class ProjectsPlugin implements Plugin<Project> {
 
@@ -38,5 +48,11 @@ public class ProjectsPlugin implements Plugin<Project> {
         ProjectsExtension projects = project.getExtensions().create("projects", ProjectsExtension.class, project);
         projects.setProjectGroup("com.tnydev.game");
         projects.setPluginLegacyGroup("com.tny.game");
+        Object gitFlow = project.getExtensions().findByName("gitFlow");
+        if (gitFlow != null) {
+            Object projectVersion = ((GroovyObject) gitFlow).getProperty("projectVersion");
+            projects.setDerivedProjectVersion(
+                    projectVersion != null ? (String) projectVersion : Project.DEFAULT_VERSION);
+        }
     }
 }
