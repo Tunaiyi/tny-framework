@@ -38,6 +38,12 @@ API（回退提交 976896b4）；② JGit ls-remote 对附注标签不给解引�
 备选"各插件直接各自调 GitCli"否决：查询口径（porcelain 分类、describe 二次过滤）
 必须单点拥有，否则回到四处实现的老路。
 
+实现名对照（verify 第一轮 WARNING 的处置，落地以本段为准）：方法面最终为
+`trackedDirtyPaths()`（即原设计的 statusEntries，直接返回跟踪脏项路径并内置 ?? 行过滤）、
+上游推定并入 `resolveRemoteName(branch)` 单方法（原设计的 trackingRemote 不再独立存在）、
+最近标签保留原名 `gitTag()`（原设计的 describeNearestTag；其 describe 双保险过滤注释系初版
+实测教训，保名即保上下文连续）。保留原名与本决定的核心条款"对外签名不变、不借机重构面"一致。
+
 ### D3 子进程环境钉 LC_ALL=C，解析只信数据行
 GitCli.run 的 ProcessBuilder 环境统一注入 `LC_ALL=C`（git 消息与日期格式受 locale
 影响；porcelain/rev-parse/for-each-ref 数据行不受影响，但 describe 报错文案、
@@ -60,6 +66,10 @@ HEAD 与 index——这是运营纪律，不再由构建拦截强制"。worktree
 
 ## Risks / Trade-offs
 
+- [过程战果留痕（verify 第一轮 SUGGESTION 处置）] 本变更的回归网络首次在真实代码路径上拦下
+  崩溃：remoteRefNames 对 ls-remote 输出行直取 `split[1]`，遇无空白分隔行数组越界
+  （e2e 第十四轮暴露，守卫化修复见提交 03150803）——"外部行为不变"类变更的回归价值实证，
+  详情在 apply-notes/regression.md，归档后随卷宗可考。
 - [每次配置多约 3-5 次子进程 fork（原 grgit 为进程内读 .git）] → 单次 fork 约 10ms、
   配置期一次性求值，合计 <100ms 相对 gradle 启动可忽略；真实发布链路本就走 CLI，
   未新增通道。
