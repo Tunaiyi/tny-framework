@@ -31,6 +31,12 @@
 
 - 三检查类（Java）＋接线类 ModuleCheckerPlugin（Groovy，语言例外已在类 javadoc 与设计 D1 注记：需动态读 io.spring 扩展与 Groovy 支撑类交互）。
 - 单测合计 17 用例全绿（checker 三类 4+5+2、projects 5、冒烟 1）；ManagedVersionsCheckTest 首版红过一次——夹具只供一族声明值导致其余七族误判失配，修正为全族基线＋单点扰动。
+## verify 阶段修复（2026-10-06 /opsx:verify 发现）
+
+- CRITICAL-1：提交链重做（修正首个 C1 错误归属时执行的 `git reset --mixed`）把最初的脚本文件删除一并回退，重建中间态后删除从未再次执行——module-checker 一度仍以预编译脚本形态生效（双形态并存、脚本静默优先，行为输出与预期一致故全部验证仍绿，但"同一 id 二选一"判据未达成）。已补 `git rm` 删除并复验：配置期绿、jar 描述符 `tny.module-checker.properties` 指向 `tny.convention.checker.ModuleCheckerPlugin`（二进制生效实证）。verify 后复验工作流结论回填本节末尾。
+- WARNING-1：design D1 已补接线类语言例外记录。
+- 证据有效性说明：下文"组 6"五样本零差异与破坏探针两例的实测时点为并存状态（判红承担方为脚本桥接类）；二进制独立承担同等能力的复验由修复后复跑（探针 A 复跑结果见本节末尾工作流结论）。
+
 - **双形态并存实测证据**：脚本文件与 gradlePlugin 注册条目并存时构建不报错、配置照常通过，但 jar 内描述符 `tny.module-checker.properties` 最终指向脚本桥接类 `TnyModuleCheckerPlugin`（手工注册的二进制类被静默遮蔽）。这是"同一插件 id 双形态不并存"规格判据比预想更强的实证：并存不是随机报错而是后加载者被无声忽略。
 - 破坏探针两例（D7）均按预期报红且文案与原脚本逐字一致：
   - A 组号：tny-game-net 临时 `group = 'com.violation.probe'` → `发布构件配置期对账失败…:tny-game-net 组号应为单一事实源 'com.tnydev.game'，实际 'com.violation.probe'（请删除模块内组号声明，由根构建派生）`；还原 sha256 与 HEAD 一致（ce6100cb…）。

@@ -34,6 +34,8 @@
 
 二进制实现类与检查类用 Java 书写；三个以字符串编织 POM/XML 为主的脚本（tny.central、tny.dependency-management、tny.benchmark-module）若未来迁移则保留 Groovy。理由：项目 Java 纪律（命名、javadoc、许可证头）现成可复用，类型安全收益只有在编译期才能兑现，且 Gradle 官方插件开发文档以 Java/Kotlin 为一等形态。备选 Kotlin 被排除的唯一理由是仓库没有 Kotlin 生产代码，引入新语言层不值得。**此为 recorded assumption：用户以无参数 `/opsx:propose` 采纳了我方方案的默认值，apply 前一句改口即可换形，不影响规格条文（规格对实现语言中立）。**
 
+apply 时点的已记录例外：接线类 ModuleCheckerPlugin 取 Groovy 而非 Java——它需要动态读取 io.spring.dependency-management 的托管版本扩展（该类型不在 buildSrc 编译类路径上，原脚本即以动态属性访问消费）并与 Groovy 支撑类 ModuleSetting 直接交互；三个判定检查类保持 Java。例外理由同步写在类 javadoc。
+
 ### D2 双探针先行，8.14.5 一次性沙箱，产物不入仓库
 
 探针一（脚本嵌套 apply）：在 8.14.5 沙箱仓库复刻 8.5 时代的违例形态——一个预编译脚本插件 `apply plugin:` 另一个预编译脚本插件——记录当时的 ClassLoaderScope 报错是否仍复现。判据：不报错即"8.5 缺陷已修"，则后续总装配册可以采用脚本插件间组合；仍报错则既有绕行约束在脚本形态下继续有效。**注意本批试点不需要此项结论才能推进**（试点的二进制实现类之间允许直接引用类，不走脚本 apply 通道），探针结论记入本文件供后续册引用。
