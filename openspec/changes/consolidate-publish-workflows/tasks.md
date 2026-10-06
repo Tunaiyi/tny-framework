@@ -15,6 +15,6 @@
 
 ## 3. 在线验证与交接
 
-- [ ] 3.1 经用户指示提交本变更全部改动、推送 5.7.x 并同步 main（合并生效前提，沿用 worktree 方式避开非本变更的暂存文件）。验证：四引用一致。
-- [ ] 3.2 负路径在线验证（main 合入后执行，零外发）：其一，`gh workflow run publish.yml -f branch=9.9.9.release` → 预期 route 判 release 链、checkout 在不存在分支上失败、mirror 作业跳过；其二，`gh workflow run publish.yml -f branch=5.7.x.y` → 预期 route 输出 mode=none、全作业跳过、日志含告警。两次运行号与关键日志存档 `verification/negative-path-runs.txt`。任一出现意外外发（如误进快照链）即暂停并上报。
+- [x] 3.1 经用户指示提交本变更全部改动、推送 5.7.x 并同步 main（合并生效前提，沿用 worktree 方式避开非本变更的暂存文件）。验证：四引用一致。
+- [x] 3.2 负路径在线验证（main 合入后执行，零外发）：其一，`gh workflow run publish.yml -f branch=9.9.9.release` → 预期 route 判 release 链、checkout 在不存在分支上失败、mirror 作业跳过；其二，`gh workflow run publish.yml -f branch=5.7.x.y` → 预期 route 输出 mode=none、全作业跳过、日志含告警。两次运行号与关键日志存档 `verification/negative-path-runs.txt`。任一出现意外外发（如误进快照链）即暂停并上报。
 - [x] 3.3 观察交接登记：首个 schedule 周期（合并生效后首个 UTC19:23）核对快照链与迁移前同构（线矩阵、buildNumber 推进、构件可取回）；正式版链检出兜底的正路径验证挂入既有 O2（Central 首发 dry-run 走通）一并完成——两事项在变更目录 `verification/handoff.md` 落账后本变更方可视为运行闭环（归档不等待其完成，按既有移交先例注记）。
