@@ -14,9 +14,9 @@
 
 ## 3. 探针五（GitFlow 通道）与 jmh 供给沙箱预演
 
-- [ ] 3.1 GitFlow 通道变体乙沙箱验证：最小工程复刻"tny.git 薄壳一行注入 ProjectsExtension 新属性 derivedProjectVersion＋Java 实现类按类型读取"，三判据逐条记录：编译通过、对当前 Groovy 形态的 `projectVersion`/`DEFAULT_VERSION` 回落两分支取值逐字等值、任务图零差异；证伪则按 D4 改验变体甲并记录降级来由；结论完整句子回填 design 探针结论小节
-- [ ] 3.2 jmh 供给预演：沙箱复刻 buildSrc 增 `gradlePluginPortal()`＋jmh implementation 后按裸 id 应用 `me.champeau.jmh` 成功且扩展类加载器同一；同提交移除版本号形态与携带版本号形态各跑一次（后者应复现双声明硬失败，作反向判据）；结论回填
-- [ ] 3.3 验证：design 探针小节无占位残留；`rm -rf` 沙箱目录，仓库零污染
+- [x] 3.1 GitFlow 通道变体乙沙箱验证：最小工程复刻"tny.git 薄壳一行注入 ProjectsExtension 新属性 derivedProjectVersion＋Java 实现类按类型读取"，三判据逐条记录：编译通过、对当前 Groovy 形态的 `projectVersion`/`DEFAULT_VERSION` 回落两分支取值逐字等值、任务图零差异；证伪则按 D4 改验变体甲并记录降级来由；结论完整句子回填 design 探针结论小节
+- [x] 3.2 jmh 供给预演：沙箱复刻 buildSrc 增 `gradlePluginPortal()`＋jmh implementation 后按裸 id 应用 `me.champeau.jmh` 成功且扩展类加载器同一；同提交移除版本号形态与携带版本号形态各跑一次（后者应复现双声明硬失败，作反向判据）；结论回填
+- [x] 3.3 验证：design 探针小节无占位残留；`rm -rf` 沙箱目录，仓库零污染
 
 ## 4. dependency-conventions 立口
 

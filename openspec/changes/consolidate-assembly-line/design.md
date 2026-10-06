@@ -80,6 +80,13 @@
 - codegraph `analyze_impact`（delete 口径）：`tny.dependency-management.gradle` 与 `tny.java-module.gradle` 均 direct 0／total 0／low——预编译脚本文件无跨符号调用边可析，按"无隐藏调用方"佐证读，不单独立为权威（pilot 同款口径说明）。
 - grep 权威口径（立项研究实查）：dependency-management 消费面＝根 subprojects 段一行＋ManagedVersionsCheck javadoc 指针一处＋doc-gradle 与 BOM 线的 maven-publish 隐性供给面；java-module 消费面＝根 javaProjects 段一行＋integration-test 脚本对其 java 插件的求值期依赖＋`tny.central` 的构件完整性核对面；plugin-module 消费面＝根 gradleProjects 段一行；integration-test 与 benchmark-module 消费面各＝根一行加模块 plugins 块一行。obsolete/ 目录与 settings.gradle 注释对五枚脚本 id 的引用零代码级。
 
+## 探针结论（探针五与 jmh 供给预演，2026-10-07 实测，Gradle 8.14.5，/tmp/probe5 与 /tmp/probe5-jmh 沙箱，产物不入库）
+
+- **变体乙成立（GitFlow 通道）**：沙箱复刻"Java 插件建类型化扩展 → 预编译脚本壳建 Groovy 类扩展并一行注入派生值 → Java 二进制消费方按类型读取"三件拓扑，两分支取值均与现文形态等值——有注入值分支 shell 直读与类型化读取同为该值；属性缺位分支 shell 直读为 null、类型化读取得回落值 "unspecified"（即现文 `?: Project.DEFAULT_VERSION` 语义原样）。D4 选定变体乙为实施形态。
+- **编译墙负例实证**：Java 实现类 import 同工程 Groovy 源码类 `probe.GitFlow` 即 `compileJava FAILED: 找不到符号`（buildSrc 先编译 Java 后编译 Groovy 的次序所致）——D4 前提由推断升级为实测；"变体丁（实现类放 src/main/groovy 借混合编译）"在沙箱确认机械可行后按 M1 与合并册 groovy 清零终态维持否决。
+- **沙箱特有边缘如实记录**：`extensions.create(类, 单个 null 实参)` 会把 null 实参数组按空数组处理抛 "Cannot read the array length because parameters is null"；真实 `tny.git` 为三实参形态（null 位于数组元素内合法），该边缘不迁移，但变体乙注入行 MUST 保留 `?: DEFAULT_VERSION` 回落表达式而非把 null 传入构造。
+- **jmh 供给三例齐**：仅 mavenCentral 的 buildSrc 依赖块解析 `me.champeau.jmh:jmh-gradle-plugin:0.7.3` 报 Could not find（缺 portal 负例）；补 `gradlePluginPortal()` 后二进制插件对根与子工程按裸 id 应用 `me.champeau.jmh` 均成功且扩展实例类加载器与插件同一（正例，前册探针三的 jmh 顺带记录就此由"推断供给形态"升格为"实测"）；根 plugins 块携带 `version '0.7.3' apply false` 与 buildSrc 供给并存复现与前册 dm 同款硬失败（双声明负例）——组 8.3 的同提交原子条款对 jmh 同样成立。
+
 ## Risks / Trade-offs
 
 - **[共有面 modify/delete 撞车]**：dependency-management 回落行若在 redesign 演练中需再改，本册已删脚本会成 modify/delete 冲突 → D3 已写处置条款（修复落点转 Java 类＋跨册修订登记），且该文件除回落三行外其余面在途册无改动史。
