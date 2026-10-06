@@ -51,3 +51,11 @@
 - 6.1 附带记录：基线五样本不含 BOM 自身 POM，而任务 6.2 判据需要它——已在 bom-platform 脚本尚未退役时补抓 `baseline/pom-bom-before.xml`（302 行），样件清单随之增列。
 - 过程返工两处如实入账：组 5 与组 6.1 首笔提交均因"git add 撞 git rm 已暂存的删除路径"导致 pathspec 报错、提交只含脚本删除（注册与实现类滞留），两场均当场以 soft-reset 重做为"删除＋注册＋实现"单提交（未推送，本地重写符合分支同步规则）；防呆规则确立——git rm 后不再对删除路径执行 git add。6.2 执行中又发生注册块重复添加（Edit 与脚本改写双通道叠加），gradlePlugin 命名容器后写覆盖前写而未报错、构建照绿，已删重并复验——该形态不受"同 id 两形态不并存"条文覆盖，登记为评审注意项。
 - 6.2 通过（单提交含实现类、注册行、脚本删除）：buildSrc 测试绿、根 help 绿、BOM POM 对 `baseline/pom-bom-before.xml` **逐字节一致**（302 行，constraints 条目派生零漂移）、描述符 `tny.bom-platform.properties` 指向 `tny.convention.BomPlatformPlugin`。
+
+## 组 7 接线类 Java 化与依赖声明点迁移（探针三原子条款：7.1 与 7.3 同提交）
+
+- 单提交六件：`buildSrc/build.gradle` 增 `implementation 'io.spring.gradle:dependency-management-plugin:1.1.7'`（D5 式注释登记版本单一落点与 adopt-gradle-8-14-baseline D1 沿革随迁）、`ModuleCheckerPlugin.java` 新增、`ModuleCheckerPlugin.groovy` 退役（git rm）、根 `build.gradle` 退役 dm 带版本声明行并改写"两制供给"注释（旧注记 8.5 结论的编译期适用面按 pilot design 注记边界段改写为完整句）。
+- 等价面复核：三段对账时机、configure-on-demand 已过滤、自依赖边双保险、evaluationDependsOn、`rootProject.project(path)` 弃用替代逐段对应；托管快照读取由 findByName+动态属性改 `findByType(DependencyManagementExtension.class).getManagedVersions()` 编译期类型。类 javadoc 承接原文件头全部职责与 D3 分工注记，语言例外改写为"于本册撤销"的完整沿革句；83-84 行委托注释现文指向任务 4.2 复活后的 `ModuleSetting.enableUnpublished`。
+- 过程两处失误如实入账：新类首稿 `Plugin` 导入误写 `org.gradle.api.plugins`（编译报错即改）；6.2 组内注册块曾双通道重复添加后删重（已记组 6）。均发生在提交前，未污染历史。
+- 7.4 验证：`-p buildSrc test` 绿、根 `help` 配置期对账照常静默通过；组号破坏探针（临时向 `tny-game-net` 注入 `group = 'com.violation.probe'`）报红文案逐字含"发布构件配置期对账失败"，`--stacktrace` 判红帧命中 `ModuleCheckerPlugin.java` 一处、脚本桥接帧（TnyModuleCheckerPlugin/GroovyScript）零命中——pilot CRITICAL-1 的形态盲区在本册判据下不再可能；还原后 sha256 与探针前一致（同基线值）。
+- 7.5 验证：`:tny-game-net` compile/runtime 双依赖清单、java 线与插件线双 POM 四样本对 baseline 逐字节一致（diff -q 全过）。

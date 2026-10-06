@@ -8,12 +8,17 @@ plugins {
     // 死声明清除（fix-dependency-version-governance D10，全仓复证零应用点）：
     // org.springframework.boot 插件（本工程无 bootJar 重打需求，springBootVersion 键仍由 BOM 导入句消费）与
     // com.gradle.plugin-publish 插件（Gradle Plugin Portal 发布通道从未接通，见 tny-game-doc-gradle 残迹注记）
-    // 1.1.0→1.1.7（adopt-gradle-8-14-baseline D1）：1.1.5 起修复该插件在 Gradle 8.8 以上环境的兼容假设
-    id 'io.spring.dependency-management' version '1.1.7' apply false
+    // io.spring.dependency-management 的带版本声明行已于本行位置退役（consolidate-binary-conventions
+    // 任务 7.3）：实现 jar 与版本落点移至 buildSrc/build.gradle 的 implementation 声明（探针三实测
+    // 双声明并存为硬失败，版本单一落点；1.1.0→1.1.7 沿革注记同迁该处注释）。
     id 'com.baidu.jprotobuf' version '1.2.1' apply false
 }
 
-// 第三方插件在根脚本作用域先行应用（buildSrc 作用域无法解析父构建类路径插件，实测 8.5）。
+// 第三方插件类路径供给现已分两制（consolidate-binary-conventions 探针三适用面注记的落实）：
+// com.gradleup.nmcp 与 com.baidu.jprotobuf 仍由上方 plugins 块带版本声明供给；
+// io.spring.dependency-management 改由 buildSrc implementation 依赖供给，运行期按 id 应用与编译期
+// 类型引用同时成立（旧注记"buildSrc 作用域无法解析父构建类路径插件（实测 8.5）"针对的是编译期类引用，
+// 不约束运行期按 id 应用——两条适用面此前并存易混，至此以供给点区分写清）。
 // tny.git 创建的根工程类型化扩展 gitFlow（派生分支名、项目版本等值，实现类 tny.convention.GitFlow）
 // 必须先于一切消费方应用——消费方经 getByType 按类型拉取，扩展不在位即报错；
 // git 能力经 GitCli 门面单通道（grgit/JGit 依赖由 retire-grgit-channel 摘除）。

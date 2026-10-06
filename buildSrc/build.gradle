@@ -44,6 +44,13 @@ dependencies {
     // 主仓由版本目录具名引用、buildSrc 侧以显式版本声明是本批 D5 的注释义务；升 Boot 时此处跟改。
     testImplementation platform('org.junit:junit-bom:5.10.1')
     testImplementation 'org.junit.jupiter:junit-jupiter'
+    // io.spring.dependency-management 实现 jar 由 buildSrc 依赖供给（consolidate-binary-conventions
+    // 设计决策 D2 类型化路线，探针三实测三判据通过）：tny.module-checker 的托管版本对账扩展
+    // 取编译期类型引用。版本单一落点即本行——1.1.0→1.1.7 的升级历史出自 adopt-gradle-8-14-baseline
+    // D1（1.1.5 起修复该插件在 Gradle 8.8 以上环境的兼容假设）；buildSrc 类路径独立于主构建、
+    // 版本目录访问器不及于此，与 JUnit 先例同一注释登记义务，升级时跟改。根构建脚本 MUST NOT
+    // 再对本插件带版本声明（探针三变体乙实测双声明并存为硬失败）。
+    implementation 'io.spring.gradle:dependency-management-plugin:1.1.7'
 }
 
 tasks.withType(Test).configureEach {
