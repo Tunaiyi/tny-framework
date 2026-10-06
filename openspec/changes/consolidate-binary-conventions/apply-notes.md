@@ -25,3 +25,9 @@
 - BOM 门禁半配对缺陷实测证据：`./gradlew :tny-game-bom:publish --dry-run` 在锚定 HEAD 报红，报错原文 `Task with path 'checkPublishPrerequisites' not found in project ':tny-game-bom'` 全文转存 `baseline/bom-gate-defect-before.txt`——审计阶段由静态推导得出的结论至此由运行实证。
 - 耗时改造前读数（warm 三连）：2.95 / 2.13 / 2.09 秒；首读含守护进程复用前的启动尾段，比对取后两读均值约 2.11 秒。
 - 过程记录一处如实入账：组 2 首轮抓取在默认 PATH 下全部失败（配置期 `tny.git` 调 git 报 error 86，即 pilot 卷宗登记过的本机坏 git 二进制环境问题），修正 PATH 与守护进程注册表后重抓成功；首轮失败输出未入库。
+
+## 组 3 探针三（沙箱实测摘要，完整结论见 design.md 探针结论小节）
+
+- 判据结果：dm 目标形态三判据全过（带类型编译、裸 id 子工程应用、类加载器同一）；双声明变体（根带版本 apply false 与 buildSrc 依赖并存）实测为硬失败，报错原文与 nmcp 的 maven-publish 前置、jmh 的仓库缺口均逐字入 design——D2 降级分支确认不需要启用。
+- 对任务清单的即时反哺：因双声明硬失败结论，任务 7.1（buildSrc 增依赖）与 7.3（根声明行退役）合并为同一提交执行，任务文字已同步。
+- 沙箱已删除，`git status` 除在途会话的 `tny-benchmark/results/bench-20261006-quick.json` 外零污染。

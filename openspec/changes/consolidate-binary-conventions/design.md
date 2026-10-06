@@ -85,9 +85,12 @@
 - codegraph `analyze_impact`：`ModuleSetting.groovy:31`（modify）direct 1／total 1／risk low；`ModuleCheckerPlugin.groovy:60`（modify）direct 1／total 1／risk low。Groovy 预编译脚本文件的符号边视图有限，按"无隐藏调用方"佐证读，不单独立为权威。
 - grep 权威口径：`ModuleSetting` 消费面＝三个模块的 `moduleSetting {}` 声明（`tny-benchmark/build.gradle:13`、`tny-game-integration-test/build.gradle:14`、`tny-game-net-demo/build.gradle:7`）＋ `ModuleCheckerPlugin.groovy:104` 沿边 `enabled` 查询＋ `tny.integration-test.gradle` 的应用蓝本核对段；`tny.compile-baseline`／`tny.bom-platform`／`tny.module-setting` 的按名引用＝根装配线两行＋BOM 一行＋三个模块各一行；接线类应用点唯一（`build.gradle:39`）。`rootProject.ext` 残余动态读取全仓扫描仅 `ModuleSetting.groovy:33` 一处（即 D3 修复对象）。
 
-## 探针结论（探针三，待 apply 期执行后回填）
+## 探针结论（探针三，2026-10-07 实测，Gradle 8.14.5，沙箱 /tmp/probe3-cbc，产物已删除不入库）
 
-（按 D2 三判据实测后以完整句子回填：dm 依赖形态、类加载器同一性判定、根声明行退役核验、nmcp/jmh 顺带记录；失败则记录降级形态生效。）
+- **dm 目标形态（变体 A，buildSrc 声明 implementation 依赖、根脚本零第三方声明）三判据全过**：`DependencyManagementExtension` 编译期类型引用装配成功；子工程由二进制插件按裸 id 运行时应用成功（等价 `configure(subprojects)` 的应用行在根无声明的情况下照常解析命中，`subAppliedByBareId=true`）；经类型化取回的扩展实例与插件实现类同由 buildSrc 作用域类加载器加载（`classloaderIdentity=true`，两侧加载器同为 `ClassLoaderScopeIdentifier.Id{coreAndPlugins:settings[:]:buildSrc[:](export)}`）。D2 的降级分支不需要启用，根脚本的 `io.spring.dependency-management` 带版本声明行可退役，版本单一落点移至 buildSrc 依赖声明。
+- **变体 B（根带版本 `apply false` 声明行与 buildSrc 依赖并存）为硬失败**：报错原文 `Error resolving plugin [id: 'io.spring.dependency-management', version: '1.1.7', apply: false] > The request for this plugin could not be satisfied because the plugin is already on the classpath with an unknown version, so compatibility cannot be checked`。由此把 D2 的执行约束升级为原子条款：**buildSrc 增加该 implementation 依赖与根脚本退役对应声明行必须是同一提交**，不存在可观察的双声明过渡态；任务 7.1 与 7.3 合并为一个提交执行。
+- **nmcp 顺带记录（供发布族册引用）**：all-in-one 构件 `com.gradleup.nmcp:nmcp:1.6.2` 经 buildSrc 供给后按 id 应用成功且类加载器同一；其插件在应用时强制要求 `maven-publish` 已在位（报错原文 `Nmcp: plugin 'maven-publish' must be applied`），故后续总入口内部接线次序必须保证 maven-publish（经 publications 或显式）先于 nmcp——本行与"BOM 线原行序 publish 先于 nmcp"的既有接线表条目互为印证。
+- **jmh 顺带记录（供装配线册引用）**：`me.champeau.jmh:jmh-gradle-plugin:0.7.3` 在仅 mavenCentral 的 buildSrc 仓库下解析失败（`Could not find me.champeau.jmh:jmh-gradle-plugin:0.7.3`），补 `gradlePluginPortal()` 后按 id 应用成功且类加载器同一；届时 `buildSrc/build.gradle` 的仓库块需要增补该仓库，模块 plugins 块携带版本号申请已在类路径插件的退役规则同时适用。
 
 ## Risks / Trade-offs
 

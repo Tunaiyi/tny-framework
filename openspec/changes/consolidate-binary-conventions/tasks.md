@@ -14,9 +14,9 @@
 
 ## 3. 探针三（依赖类路径类型化访问，沙箱验证，产物不入仓库）
 
-- [ ] 3.1 在 /tmp 沙箱（当前 wrapper 同版本分发）建最小工程：buildSrc 以 implementation 声明 `io.spring.gradle:dependency-management-plugin:1.1.7`，注册二进制插件在其 apply 内对子工程按 id 应用该第三方插件、经 `getByType` 取回 `DependencyManagementExtension` 并调用 `getManagedVersions()`；判据三条逐一记录：编译通过、按 id 应用成功、取回实例的类加载器与 buildSrc 判定同一
-- [ ] 3.2 对照变体与顺带记录：保留根 plugins 块带版本声明行的双声明并存变体结果（谁生效、报错形态）；同法顺带记录 `com.gradleup.nmcp` all-in-one 构件（Central 可解析、描述符齐）与 `me.champeau.jmh`（不在 Central，需 gradlePluginPortal）两枚的供给形态供后续册引用；结论以完整句子回填 design.md"探针结论"小节
-- [ ] 3.3 验证：design.md 探针小节无"待回填"占位残留、三判据逐条有实测句子；沙箱目录删除、`git status` 对仓库零污染
+- [x] 3.1 在 /tmp 沙箱（当前 wrapper 同版本分发）建最小工程：buildSrc 以 implementation 声明 `io.spring.gradle:dependency-management-plugin:1.1.7`，注册二进制插件在其 apply 内对子工程按 id 应用该第三方插件、经 `getByType` 取回 `DependencyManagementExtension` 并调用 `getManagedVersions()`；判据三条逐一记录：编译通过、按 id 应用成功、取回实例的类加载器与 buildSrc 判定同一
+- [x] 3.2 对照变体与顺带记录：保留根 plugins 块带版本声明行的双声明并存变体结果（谁生效、报错形态）；同法顺带记录 `com.gradleup.nmcp` all-in-one 构件（Central 可解析、描述符齐）与 `me.champeau.jmh`（不在 Central，需 gradlePluginPortal）两枚的供给形态供后续册引用；结论以完整句子回填 design.md"探针结论"小节
+- [x] 3.3 验证：design.md 探针小节无"待回填"占位残留、三判据逐条有实测句子；沙箱目录删除、`git status` 对仓库零污染
 
 ## 4. 零发布合同自检修复（测试先行）
 
@@ -40,7 +40,7 @@
 
 - [ ] 7.1 `buildSrc/build.gradle` 增 `implementation 'io.spring.gradle:dependency-management-plugin:1.1.7'`，版本字面量按 pilot D5 先例以注释写明与主仓版本目录及 gradle.properties 的关系（单一落点登记义务）
 - [ ] 7.2 新建 `ModuleCheckerPlugin.java` 逐段等价替换 `.groovy`（三段时机、configure-on-demand 已评估过滤、自依赖边双保险、`evaluationDependsOn` 与 `rootProject.project(d.path)` 弃用替代原样；托管快照改 `DependencyManagementExtension.getManagedVersions()` 类型化读取；类头 javadoc 承接原文件头全部职责边界与分工注记，语言例外句改写为"随本册类型化路线落地而撤销"的完整沿革）；同一提交内删除 `ModuleCheckerPlugin.groovy`
-- [ ] 7.3 根 `build.gradle` 退役 `io.spring.dependency-management` 带版本 `apply false` 行（按探针三结论），`configure(subprojects)` 应用行保留，原行位置注释改指 buildSrc 依赖声明；第 16 行旧注释"buildSrc 作用域无法解析父构建类路径插件"按运行期与编译期适用面差异改写为完整句（pilot design 注记边界段的落实）
+- [ ] 7.3 根 `build.gradle` 退役 `io.spring.dependency-management` 带版本 `apply false` 行（按探针三结论），`configure(subprojects)` 应用行保留，原行位置注释改指 buildSrc 依赖声明；第 16 行旧注释"buildSrc 作用域无法解析父构建类路径插件"按运行期与编译期适用面差异改写为完整句（pilot design 注记边界段的落实）。探针三变体 B 实证双声明并存为硬失败，本条与 7.1 的依赖声明必须落在同一提交（探针结论小节原子条款）
 - [ ] 7.4 验证：`./gradlew -p buildSrc test` 全绿；`./gradlew -q help` 配置期托管对账照常静默通过；破坏探针复跑一例（临时扰动组号事实源设值→组号对账报红、还原 sha256），堆栈判红帧落在 `ModuleCheckerPlugin.java` 且无脚本桥接帧，记录入 apply-notes
 - [ ] 7.5 验证：`tny-game-net` 双依赖清单与插件线 POM 对 baseline 零差异（`./gradlew :tny-game-net:dependencies --configuration compileClasspath` 等按抓样口径）
 
