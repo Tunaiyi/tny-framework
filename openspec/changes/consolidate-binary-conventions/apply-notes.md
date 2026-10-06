@@ -49,4 +49,5 @@
 
 - 6.1 通过（提交含实现类、注册行与脚本删除三件）：buildSrc 测试绿、根 help 绿、全量任务图对 baseline 剔噪后**零漂移行**、描述符 `tny.compile-baseline.properties` 指向 `tny.convention.CompileBaselinePlugin`。两处 API 修正随本组发生并在此如实登记：`AbstractCompile` 公开 API 无 options 访问器（javap 核实），按其在位子类型 `JavaCompile`/`GroovyCompile` 分列，行为面等值论证入类 javadoc；BOM 约束的 `constraints{ api it }` 动态分发在 Java 侧对应 `DependencyConstraintHandler.add("api", notation)`（javap 核实该接口无 api() 方法）。
 - 6.1 附带记录：基线五样本不含 BOM 自身 POM，而任务 6.2 判据需要它——已在 bom-platform 脚本尚未退役时补抓 `baseline/pom-bom-before.xml`（302 行），样件清单随之增列。
-- 6.1 过程一处返工如实入账：组 5 首笔提交因 git add pathspec 撞已删除路径而只含脚本删除（注册与实现类滞留工作树），当场以 soft-reset 重做为"删除＋注册＋实现"单提交（fd9ec4d4 废弃、当前 HEAD 为原子形态）；该事故正是本册形态断言纪律要防的同 id 分裂态，防呆有效。
+- 过程返工两处如实入账：组 5 与组 6.1 首笔提交均因"git add 撞 git rm 已暂存的删除路径"导致 pathspec 报错、提交只含脚本删除（注册与实现类滞留），两场均当场以 soft-reset 重做为"删除＋注册＋实现"单提交（未推送，本地重写符合分支同步规则）；防呆规则确立——git rm 后不再对删除路径执行 git add。6.2 执行中又发生注册块重复添加（Edit 与脚本改写双通道叠加），gradlePlugin 命名容器后写覆盖前写而未报错、构建照绿，已删重并复验——该形态不受"同 id 两形态不并存"条文覆盖，登记为评审注意项。
+- 6.2 通过（单提交含实现类、注册行、脚本删除）：buildSrc 测试绿、根 help 绿、BOM POM 对 `baseline/pom-bom-before.xml` **逐字节一致**（302 行，constraints 条目派生零漂移）、描述符 `tny.bom-platform.properties` 指向 `tny.convention.BomPlatformPlugin`。

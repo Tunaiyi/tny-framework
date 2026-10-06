@@ -26,6 +26,10 @@ gradlePlugin {
             id = 'tny.compile-baseline'
             implementationClass = 'tny.convention.CompileBaselinePlugin'
         }
+        bomPlatform {
+            id = 'tny.bom-platform'
+            implementationClass = 'tny.convention.BomPlatformPlugin'
+        }
     }
 }
 
