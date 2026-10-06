@@ -17,8 +17,11 @@ plugins {
 // 必须先于一切消费方应用——消费方经 getByType 按类型拉取，扩展不在位即报错；坐标版本见版本目录。
 apply plugin: 'org.ajoberstar.grgit'
 apply plugin: 'tny.git'
-// 发布快速通道：releaseCut / releaseTag / releaseMergeBack（语义契约见 docs/release-process.md）
+// 发布快速通道：releaseCut / releaseTag（语义契约见 docs/release-process.md；releaseMergeBack 已由
+// redesign-devline-integration-model 删除）；分支流转门禁：integrateMain / mergeUpward
+// （capability branch-integration-gates）
 apply plugin: 'tny.release'
+apply plugin: 'tny.integrate'
 
 ext {
     // 发布构件组号的单一事实源（central-publishing D2）：模块不得另行声明组号

@@ -19,3 +19,5 @@
 - [x] 3.1 经用户批准后执行本机真实首发验证：在 `5.7.x` 以用户既有 `~/.gradle/gradle.properties` 两行凭据执行 `./gradlew :tny-game-net:publishAllPublicationsToGithubPackagesRepository`，随后只读核对——`com.tnydev.game.tny-game-net` 包出现 `5.7.x-SNAPSHOT` 版本、目录级元数据含 `<snapshot>` 时间戳块、消费者凭据解析命中该构建（curl 或临时消费工程，用后删除）；对照每日定时来源不冲突（观察后续定时运行的 buildNumber 单调推进）。验证：请求与核对输出存档 `verification/local-fanout-first-run.txt`；失败即停不重跑。
 
 > 3.1 执行注记（2026-10-06）：本机扇出成功（BUILD SUCCESSFUL 48s，豁免打印照常），镜像目录级元数据 <snapshot> 推进至 20261005.175659/buildNumber 3（定时两次与本机构建一次共存单调递增，双来源设计直接得证）；按 snapshotVersions 条目取回 jar 返回 302。中途一次 404 系核对脚本把 buildNumber 误拼为 1，已在取证文件内勘正。与每日定时的交叉观察（本机扇出后首个定时周期 buildNumber 继续推进、无元数据竞态）作为运维习惯挂账，与本话题线 O 系列同批核对。
+
+> 引用注记（2026-10-06）：本文件多处提及的 `snapshot-mirror.yml` 已由 consolidate-publish-workflows 变更合并入 `publish.yml` 的 snapshot-mirror 作业，原文不改写。

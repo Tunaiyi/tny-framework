@@ -5,8 +5,8 @@
 // 边界：发布门禁（凭据属性断言与一致性核对）在 tny.publish，POM 元数据与签名在 tny.publications，
 // Central 聚合上传在 tny.central，发布快通道 git 编排在 tny.release；本插件只增仓库声明，不触碰门禁。
 // 通道语义：正式版本与开发线快照两种形态均进入镜像。镜像有两个合法来源（publish-mirror-via-
-// credential-pair 变更拍板）——持续集成（正式版走 .github/workflows/publish.yml 第三步骤，快照走
-// .github/workflows/snapshot-mirror.yml 每日定时当前开发线）与发布者本机（成对配置两个凭据属性时
+// credential-pair 变更拍板）——持续集成（.github/workflows/publish.yml 单文件三作业：正式版走 publish-release
+// 作业第三步骤，快照走 snapshot-mirror 作业每日定时当前开发线）与发布者本机（成对配置两个凭据属性时
 // ./gradlew publish 即扇出镜像）。快照的可用性经复测确立——注册表服务端自动为 Gradle 上传的
 // 快照维护版本目录级含时间戳与构建号的 unique 元数据，消费端可解析并随重发滚动到最新构建，
 // 两来源并存重发各构建时间戳文件名互异不冲突（复测记录见归档目录

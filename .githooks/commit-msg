@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# 修复类提交缺陷编号强制钩子（redesign-devline-integration-model 任务 6.1；
+# capability branch-integration-gates"合并结果完整性检查"的前置输入纪律）。
+# 规则：提交说明首行以 fix: 或 fix(范围): 开头时，必须携带缺陷编号标记
+#（形如 BUG-101、CVE-2026-1234 的大写字母-数字组合）；merge 提交与带
+# propagated-as 或 cherry picked from 尾注的例外提交由尾注自证来源，同样要求有编号。
+# 安装：git config core.hooksPath .githooks（每台机器一次，docs/release-process.md 有说明）。
+set -u
+msg_file="$1"
+first_line=$(head -n1 "$msg_file")
+full_msg=$(cat "$msg_file")
+
+case "$first_line" in
+  fix:*|"fix("*)
+    ;;
+  *)
+    exit 0
+    ;;
+esac
+
+# merge 提交（含冲突解决后的向上合并）由 mergeUpward 的完整性检查负责，钩子放行
+if printf '%s' "$full_msg" | grep -qiE '^(Merge|merge-upward:|propagate:)'; then
+  exit 0
+fi
+
+if ! printf '%s' "$first_line" | grep -qE '\b[A-Z][A-Z0-9]{1,9}-[0-9]+\b'; then
+  echo "commit-msg 校验失败：fix 类提交的首行必须携带缺陷编号（形如 BUG-101、CVE-2026-1234）。" >&2
+  echo "理由：向上合并的合并结果完整性检查以缺陷编号为检索键，无编号的修复无法被核对是否丢失。" >&2
+  echo "当前首行：$first_line" >&2
+  exit 1
+fi
+exit 0

@@ -3,11 +3,12 @@ name: build
 on:
   pull_request:
   push:
-    # 分支入口按形态通配（revise-release-branch-flow 组 4）：main 是特性开发顶点（转正后
-    # 常驻），'*.*.x' 命中全部冻结线形态（5.7.x、未来的 5.8.x/6.0.x 自动覆盖，开新线
-    # 不再需要改本文件）；容器分支（.release 结尾）与个人工位不在触发面——发布前验证由
-    # PR 通道与门禁的 check 依赖承担。
-    branches: [ main, '*.*.x' ]
+    # 分支入口按形态通配（redesign-devline-integration-model 组 5 更新）：main 常驻；
+    # 'dev/**' 命中全部开发版本分支（Actions 过滤中 * 不跨斜杠、** 跨段——GitHub 官方
+    # filter-pattern 规则，2026-10-06 查档并按活体探测复核）；'release/**' 命中维护分支
+    # （补丁合入后发布前的 CI 验证走推送触发）；'*.*.x' 保留覆盖祖父登记线（5.7.x）至
+    # 其退役；个人 feat/fix 工位不在推送触发面——它们的验证走 pull_request 通道。
+    branches: [ main, 'dev/**', 'release/**', '*.*.x' ]
   schedule:
     - cron: '37 18 * * *'   # nightly（UTC18:37 错峰）
   workflow_dispatch: {}     # 手动触发（bench-routine 首验/补跑用）
@@ -17,6 +18,60 @@ env:
   GRADLE_OPTS: -Dorg.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8
 
 jobs:
+  # 提交信息纪律校验（redesign-devline-integration-model 任务 6.1/6.4 的 CI 侧）：
+  # PR 内 fix 类提交首行必须携带缺陷编号（与 .githooks/commit-msg 同规则），
+  # 向上合并的合并结果完整性检查以该编号为检索键，编号缺失即拦下。
+  commit-lint:
+    name: Commit message discipline
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Lint fix commit subjects
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          bad=0
+          for sha in $(git rev-list "$BASE"..HEAD); do
+            subject=$(git log -1 --format=%s "$sha")
+            body=$(git log -1 --format=%b "$sha")
+            case "$subject" in
+              fix:*|"fix("*)
+                if printf '%s' "$subject$body" | grep -qiE '^(Merge|merge-upward:|propagate:)'; then continue; fi
+                if ! printf '%s' "$subject" | grep -qE '[A-Z][A-Z0-9]{1,9}-[0-9]+'; then
+                  echo "::error ::提交 $(git log -1 --format=%h "$sha") 的 fix 首行缺缺陷编号（形如 BUG-101）：$subject"
+                  bad=1
+                fi
+                ;;
+            esac
+          done
+          exit $bad
+  # 维护分支只收补丁守卫（capability branch-integration-gates）：目标为 release/** 的 PR
+  # 中任何 feat 类提交首行即拒绝——特性只进开发版本分支并随其首发到达下游。
+  release-line-patch-only:
+    name: Release lines accept patches only
+    if: github.event_name == 'pull_request' && startsWith(github.base_ref, 'release/')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Reject feat commits targeting release lines
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          bad=0
+          for sha in $(git rev-list "$BASE"..HEAD); do
+            subject=$(git log -1 --format=%s "$sha")
+            case "$subject" in
+              feat:*|"feat("*)
+                echo "::error ::提交 $(git log -1 --format=%h "$sha") 是特性提交（$subject），不得合入 release 维护分支——特性走开发版本分支并随下一系列首发"
+                bad=1 ;;
+            esac
+          done
+          exit $bad
   unit:
     name: Unit tests (no Docker)
     runs-on: ubuntu-latest
