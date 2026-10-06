@@ -27,10 +27,13 @@ def requireCleanTree = { String action, boolean preview ->
 }
 
 def remoteRefNames = { String remoteName, boolean heads, boolean tags ->
-    // ls-remote 标志映射：heads-only / tags-only 显式给参，两者都要走默认（git 默认列 heads+tags）
+    // ls-remote 标志映射：heads-only / tags-only 显式给参，两者都要走默认（git 默认列 heads+tags）。
+    // 解析守卫：行按空白切两段，不信任"必有两段"（无 tab 行曾使 [1] 越界崩溃——e2e 实锤后加固）。
     def flags = (heads && !tags) ? ['--heads'] : ((!heads && tags) ? ['--tags'] : [])
     git.run(['ls-remote'] + flags + [remoteName]).out.readLines()
-            .collect { it.split('\s+')[1] }.findAll { it }
+            .collect { def parts = it.split('\\s+')
+              parts.length > 1 ? parts[1] : null }
+            .findAll { it != null }
 }
 
 def requireReleaseVersion = { String action ->
