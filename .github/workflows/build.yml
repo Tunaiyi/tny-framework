@@ -101,6 +101,11 @@ jobs:
       - uses: gradle/actions/setup-gradle@v3
         with:
           cache-disabled: 'false'
+      # buildSrc 构建逻辑先检（gradle-build-style"二进制实现的检查逻辑必须携带单元测试"需求，
+      # pilot-binary-build-conventions D6）：检查类未过检即作业红，不再进入主构建——
+      # 快速失败语义，不设 continue-on-error。
+      - name: buildSrc tests (construction logic gate)
+        run: ./gradlew -p buildSrc test --console=plain
       - name: Unit tests
         id: ut
         continue-on-error: true
