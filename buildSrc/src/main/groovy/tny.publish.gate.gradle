@@ -1,15 +1,12 @@
 // 发布一致性门禁约定插件（consolidate-publish-gate-split 自 tny.publish 移入；语义与拒绝文案
 // 零改动，逐段 provenance 注释随段保留）。七段核对按登记顺序合流抛出：形态核对 → 仓库路由 →
 // 历史占号黑名单 → 发布标签存证 → 下一补丁号 → 依赖形态（豁免清单成文并逐条打印）。
-// 通道边界：git 能力单通道——门禁内 ls-remote、远端名推定与 GitFlow 派生值同经
-// GitCli 门面（consolidate-git-cli-channel 收编、retire-grgit-channel 统一）；
+// 通道边界（consolidate-git-queries-into-gitflow 定型）：门禁内一切远端读取经 GitFlow
+// 查询方法面（remoteRefs/remoteReleasedPatches/resolveRemoteName），本文件不出现通道与解析；
 // 结果按"分支+提交+标签"在根工程
 // 记忆化，一次构建只查一次远端；远端不可达按缺证拒绝（fail-closed）。
 // 挂接：共享仓发布任务由 tny.publish 以任务名 dependsOn 本文件的 checkPublishPrerequisites。
 import tny.convention.GitFlow
-import tny.convention.GitCli
-
-def gitCli = GitCli.forProject(project)
 
 // 发布资格由分支形态白名单决定（规格：release-versioning；形态集由 redesign-devline-integration-model 更新）：
 // 开发版本分支 dev/<主>.<次>.x 只允许 <主>.<次>.x-SNAPSHOT 快照进快照仓；release 维护分支 release/<主>.<次>.x
@@ -49,7 +46,8 @@ def validateBranchVersionShape = { problems, gitFlow, version, currentBranch, de
 }
 
 // 下一补丁号校验（规格需求一，仅 release 维护分支执行；祖父轨保持旧流程不叠加）。
-// 远端枚举走 git CLI ls-remote（与标签存证同源）；查询失败按空集走"应为 .0"的拒绝路径，fail-closed。
+// 远端枚举经 GitFlow.remoteReleasedPatches（与标签存证同源）；查询失败按空集走"应为 .0"的
+// 拒绝路径，fail-closed。
 def validateNextPatchNumber = { problems, gitFlow, version, currentBranch, maintenanceBranch ->
     if (!maintenanceBranch || !(version ==~ /\d+\.\d+\.\d+/)) {
         return
@@ -62,7 +60,7 @@ def validateNextPatchNumber = { problems, gitFlow, version, currentBranch, maint
         problems << "无法确定核对下一补丁号的远端：分支 '${currentBranch}' 没有上游且仓库远端数量不是 1"
         return
     }
-    def patches = gitCli.remoteTagPatches(rmName, base)
+    def patches = gitFlow.remoteReleasedPatches(rmName, base)
     def expected = patches.isEmpty() ? 0 : (patches.max() + 1)
     if ((version.split('\\.')[2] as Integer) != expected) {
         problems << "下一补丁号校验失败：系列 ${base} 远端已有标签最大补丁号 ${patches.isEmpty() ? '（无）' : patches.max()}，" +
@@ -101,13 +99,13 @@ def validateLegacyVersionReuse = { problems, gitFlow, currentBranch, releaseBran
 }
 
 // 发布标签前置存证校验（规格：发布标签是正式版发布的前置存证；决策 D3）。
-// 存证源就是远端（规格原文要求"远程仓库已存在"），用 git ls-remote 读取：
+// 存证源就是远端（规格原文要求"远程仓库已存在"），经 GitFlow.remoteRefs 读取：
 // 附注标签产生 "refs/tags/NAME" 与 "refs/tags/NAME^{}"（解引用到目标提交）两行，轻量标签没有 "^{}" 行。
 // 全仓发布逐模块校验会重复联网，结果按"分支+提交+标签"在根工程记忆化，一次构建只查一次远端。
 // 远端不可达时输出为空，按"标签不存在"拒绝发布，属 fail-closed，网络恢复后重试即可。
-// consolidate-git-cli-channel 等价性核对：原 providers.exec 版 runGit（非零退出不抛出、
-// 输出按空处理）与远端名推定局部闭包已删除，统一走 GitCli 门面（run 不抛、调用方只读 out，
-// 语义等价）与 GitFlow.resolveRemoteName（同一推定规则：上游前缀优先，单远端兜底）。
+// 等价性注记（consolidate-git-cli-channel 收编通道、本变更切换读面）：原 providers.exec 版
+// runGit 的非零退出当空处理的语义由 GitFlow.remoteRefs 原样保持（其底层 run 不抛、失败即空
+// 输出，fail-closed 归调用侧判定）；记忆化键、拒绝文案与判定顺序一律不动。
 def validateReleaseTagAttested = { problems, gitFlow, currentBranch, releaseBranch, version ->
     if (!releaseBranch || !(version ==~ /\d+\.\d+\.\d+/)) {
         return
@@ -126,11 +124,7 @@ def validateReleaseTagAttested = { problems, gitFlow, currentBranch, releaseBran
         if (remoteName == null) {
             findings << "无法确定用于核对发布标签 '${tagName}' 的远端：当前分支没有配置上游远端，且仓库远端数量不是 1"
         } else {
-            def refMap = gitCli.run(['ls-remote', '--tags', remoteName, "refs/tags/${tagName}*"]).out
-                    .readLines()
-                    .collect { it.split('\t') }
-                    .findAll { it.length == 2 }
-                    .collectEntries { [(it[1].trim()): it[0].trim()] }
+            def refMap = gitFlow.remoteRefs(remoteName, ['--tags', "refs/tags/${tagName}*"])
             def baseRef = refMap["refs/tags/${tagName}"]
             def peeledRef = refMap["refs/tags/${tagName}^{}"]
             if (baseRef == null) {

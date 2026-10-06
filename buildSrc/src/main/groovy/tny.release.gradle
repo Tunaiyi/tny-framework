@@ -26,16 +26,6 @@ def requireCleanTree = { String action, boolean preview ->
     }
 }
 
-def remoteRefNames = { String remoteName, boolean heads, boolean tags ->
-    // ls-remote 标志映射：heads-only / tags-only 显式给参，两者都要走默认（git 默认列 heads+tags）。
-    // 解析守卫：行按空白切两段，不信任"必有两段"（无 tab 行曾使 [1] 越界崩溃——e2e 实锤后加固）。
-    def flags = (heads && !tags) ? ['--heads'] : ((!heads && tags) ? ['--tags'] : [])
-    git.run(['ls-remote'] + flags + [remoteName]).out.readLines()
-            .collect { def parts = it.split('\\s+')
-              parts.length > 1 ? parts[1] : null }
-            .findAll { it != null }
-}
-
 def requireReleaseVersion = { String action ->
     def v = project.findProperty('releaseVersion')?.toString()
     if (v == null || v.isEmpty()) throw new GradleException("${action} 需要 -PreleaseVersion=<主>.<次>.<补丁>，例如 -PreleaseVersion=5.7.8")
@@ -50,11 +40,11 @@ def assertNotLegacyOccupied = { String v ->
 }
 
 // 下一补丁号校验（规格需求一；redesign 设计 D2）：远端该系列最大补丁标签加一必须等于目标补丁号，
-// 无标签时要求首发 .0。枚举走 git ls-remote（与标签存证同源，依赖执行期最新引用；解引用行才算数，
-// 轻量标签无 ^{} 行天然不参与计数）。
+// 无标签时要求首发 .0。枚举经 GitFlow.remoteReleasedPatches（与标签存证同源，依赖执行期最新
+// 引用；解引用行才算数，轻量标签无 ^{} 行天然不参与计数）。
 def assertNextPatchNumber = { String rmName, String base, String v ->
     def patch = (v.split('\\.')[2] as Integer)
-    def patches = git.remoteTagPatches(rmName, base)
+    def patches = gitFlow.remoteReleasedPatches(rmName, base)
     def expected = patches.isEmpty() ? 0 : (patches.max() + 1)
     if (patch != expected) {
         throw new GradleException("下一补丁号校验失败：系列 ${base} 远端已有标签最大补丁号 " +
@@ -88,7 +78,7 @@ tasks.register('releaseCut') {
             if (gitFlow.branchNames().contains(target)) throw new GradleException("本地已存在分支 '${target}'，每系列维护分支唯一")
             def remoteName = resolveRemote('main')
             if (remoteName == null) throw new GradleException('无法确定 main 的远端：main 没有上游且仓库远端数量不是 1')
-            if (remoteRefNames(remoteName, true, false).any { it == "refs/heads/${target}" }) throw new GradleException("远端已存在维护分支 '${target}'，每系列唯一")
+            if (gitFlow.remoteRefNames(remoteName, true, false).any { it == "refs/heads/${target}" }) throw new GradleException("远端已存在维护分支 '${target}'，每系列唯一")
             def plan = """releaseCut 计划（新形态切常驻维护分支）：
   维护分支    ${target}（切自 ${remoteName}/main 当前头；前提：dev/${base}.x 已完成集成到主干）
   标签        不创建——由 releaseTag 在该维护分支头创建（标签先于制品）
@@ -108,7 +98,7 @@ tasks.register('releaseCut') {
         if (gitFlow.tagNames().contains(tagName)) throw new GradleException("本地已存在标签 '${tagName}'，同号发布禁止重复建标")
         def remoteName = currentRemote
         if (remoteName == null) throw new GradleException("无法确定推送目标的远端：当前分支 '${current}' 没有上游，且仓库远端数量不是 1")
-        def remoteRefs = remoteRefNames(remoteName, true, true)
+        def remoteRefs = gitFlow.remoteRefNames(remoteName, true, true)
         if (remoteRefs.any { it.startsWith("refs/heads/${targetBranch}") }) throw new GradleException("远端 '${remoteName}' 已存在分支 '${targetBranch}'")
         if (remoteRefs.any { it.startsWith("refs/tags/${tagName}") }) throw new GradleException("远端 '${remoteName}' 已存在标签 '${tagName}'（或存在前缀撞名，请核对后处理）")
         def plan = """releaseCut 计划（祖父轨旧流程，当前分支 '${current}' 为登记维护线）：
@@ -147,8 +137,8 @@ tasks.register('releaseTag') {
         if (onMaintenance) {
             if (!preview) {
                 git.require(['fetch', remoteName, "refs/heads/${current}:refs/remotes/${remoteName}/${current}"], '刷新维护分支远端引用失败')
-                def remoteHead = git.run(['ls-remote', remoteName, "refs/heads/${current}"]).out.readLines()
-                        .find { it.contains("refs/heads/${current}") }?.split('\\s+')?.getAt(0)
+                def remoteHead = gitFlow.remoteRefs(remoteName, ['--heads', "refs/heads/${current}"])
+                        ["refs/heads/${current}"]
                 if (remoteHead != null && remoteHead != gitFlow.commitId) {
                     throw new GradleException('本地 HEAD 与维护分支远端头不一致（远端 ' + remoteHead?.take(10) +
                             ' / 本地 ' + gitFlow.commitId.take(10) + '）——先把分支头推送对齐再重跑')
@@ -156,7 +146,7 @@ tasks.register('releaseTag') {
                 assertNextPatchNumber(remoteName, base, v)
                 // 例外入账可见化（capability branch-integration-gates 例外通道）：本次发版
                 // 携带的 propagated-as 登记提交逐条打印，使"例外随版发出"对发布者与审计可见。
-                def patches = git.remoteTagPatches(remoteName, base)
+                def patches = gitFlow.remoteReleasedPatches(remoteName, base)
                 if (!patches.isEmpty()) {
                     def carried = git.run(['log', '--oneline', '--grep=propagated-as', "v${base}.${patches.max()}..HEAD"]).out
                             .readLines().findAll { it.trim() }
@@ -168,7 +158,7 @@ tasks.register('releaseTag') {
                 logger.lifecycle('[dryRun] 提示：远端头对齐与下一补丁号校验在真实执行时进行')
             }
         }
-        if (remoteRefNames(remoteName, false, true).any { it.startsWith("refs/tags/${tagName}") }) throw new GradleException("远端 '${remoteName}' 已存在标签 '${tagName}'（或存在前缀撞名，请核对后处理）")
+        if (gitFlow.remoteRefNames(remoteName, false, true).any { it.startsWith("refs/tags/${tagName}") }) throw new GradleException("远端 '${remoteName}' 已存在标签 '${tagName}'（或存在前缀撞名，请核对后处理）")
         requireCleanTree('releaseTag', preview)
         def plan = """releaseTag 计划：
   分支        ${current}（HEAD 即制品构建提交）

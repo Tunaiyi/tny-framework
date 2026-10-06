@@ -149,6 +149,39 @@ class GitFlow {
         return legacyIdentity(branch) != null
     }
 
+    // —— 远端查询方法面（consolidate-git-queries-into-gitflow D1）——
+    // remoteRefs 是全仓唯一的 ls-remote 输出解析位置：返回"引用名→提交号"映射（含附注
+    // 标签的 ^{} 解引用行）。守卫解析：按空白切两段取第 2 段为键、第 1 段为值，不足两段
+    // 的行丢弃——上一变更数组越界崩溃的教训固化于此唯一位置，调用点不再各自持有解析。
+    Map remoteRefs(String remoteName, List flagsAndPatterns = []) {
+        return cli.run(['ls-remote'] + flagsAndPatterns + [remoteName]).out.readLines()
+                .collect { def parts = it.split('\\s+')
+                  parts.length > 1 ? [(parts[1]): parts[0]] : null }
+                .findAll { it != null }
+                .collectEntries { it }
+    }
+
+    // 键集合形态（存在性与前缀撞名判定用）：heads/tags 标志映射与原调用点一致，
+    // 两者都要走默认（git ls-remote 默认列 heads+tags）。
+    List remoteRefNames(String remoteName, boolean heads, boolean tags) {
+        def flags = (heads && !tags) ? ['--heads'] : ((!heads && tags) ? ['--tags'] : [])
+        return remoteRefs(remoteName, flags).keySet().toList()
+    }
+
+    // 系列已发布补丁号集合：只认 ^{} 解引用行（轻量标签无该行，天然不参与计数）。
+    List remoteReleasedPatches(String remoteName, String base) {
+        def re = java.util.regex.Pattern.compile(
+                '^refs/tags/v' + java.util.regex.Pattern.quote(base) + '\\.(\\d+)\\^\\{\\}$')
+        return remoteRefs(remoteName, ['--tags', "refs/tags/v${base}*"]).keySet()
+                .collect { def m = re.matcher(it); m.matches() ? (m.group(1) as Integer) : null }
+                .findAll { it != null }
+    }
+
+    // 分支存在性：精确键查询（后缀匹配带来的邻近行由键全等过滤兜掉）。
+    boolean remoteBranchExists(String remoteName, String branch) {
+        return remoteRefs(remoteName, ['--heads', "refs/heads/${branch}"]).containsKey("refs/heads/${branch}")
+    }
+
     // 推送/查询目标的远端名推定：分支配了上游取上游前缀，否则仅当仓库只配置一个远端才采用；
     // 推定不出返回 null 由调用方报错。上游读取按显式分支参数化（原 grgit trackingBranch 的等价）。
     def resolveRemoteName(String branch) {

@@ -374,7 +374,9 @@ release 维护分支只追加不改写——main 每次集成到主干产生一�
 与 main，提交前执行合并结果完整性检查）。四任务均支持 `-PdryRun` 预览。旧任务
 `releaseMergeBack` 已删除，其"把发布分支独有提交带回主线"的语义由 mergeUpward 的
 整条合并取代；更早的 `releaseCutAndTag` 拆分沿革见归档变更
-`revise-release-branch-flow`。通道分界（设计 D6）不变：写与依赖执行期引用的查询走
+`revise-release-branch-flow`。通道分界（变更 consolidate-git-queries-into-gitflow 定型）：
+写动作一律经 GitCli 门面执行，一切远端引用的读取与解释一律经 GitFlow 的查询方法面
+（远端解析在 GitFlow.remoteRefs 单点拥有，插件脚本内不出现命令输出解析）；两者同落
 git CLI 单通道（`-PgitExe` 覆盖二进制；grgit/JGit 依赖已由变更 retire-grgit-channel 退场）。提交纪律：修复类提交必须携带缺陷编号
 （`.githooks/commit-msg` 钩子，安装命令 `git config core.hooksPath .githooks`，
 CI 侧同规则校验），向上合并的完整性检查以该编号为检索键。

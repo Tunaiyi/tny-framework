@@ -3,8 +3,9 @@
 // 固定顺序集成进 main，并执行开发版本分支集成顺序检查；mergeUpward 把 release 维护分支的补丁以整条分支
 // 合并方式向上合并进更更新的分支与 main，提交前执行合并结果完整性检查，任一缺陷标记在合并结果中缺失
 // 即回滚并拒绝。合并冲突一律 abort 加 reset 回目标分支原头（三方保持原状）后交人工。
-// 通道边界：git 读写统一经 GitCli 门面（retire-grgit-channel；分界沿革见该类头注），
-// -PdryRun 预览只读派生值不触任务动作。
+// 通道边界（consolidate-git-queries-into-gitflow 定型）：写动作经 GitCli 门面执行，一切
+// 远端引用读取经 GitFlow 查询方法面；动作强耦合的状态查询（rev-parse 记原头、log 提标记）
+// 属动作簿记按该变更设计 D4 留在任务内。-PdryRun 预览只读派生值不触任务动作。
 import tny.convention.GitFlow
 import tny.convention.GitCli
 
@@ -25,22 +26,21 @@ def num = { String branch ->
     def m = (branch =~ /(\d+)\.(\d+)\.x$/)
     m.find() ? (m.group(1) as int) * 1000 + (m.group(2) as int) : -1
 }
-def remoteRefHas = { String branch ->
-    git.run(['ls-remote', '--heads', remoteName, "refs/heads/${branch}"]).out.trim() != ''
-}
+// 三个远端枚举闭包派生自 GitFlow 远端查询方法面（consolidate-git-queries-into-gitflow D1）：
+// 本文件不再出现命令输出解析，只留业务判定。
+def remoteRefHas = { String branch -> gitFlow.remoteBranchExists(remoteName, branch) }
 def remoteReleaseLines = {
-    git.run(['ls-remote', '--heads', remoteName, 'refs/heads/release/*']).out.readLines()
-            .collect { it.split('\\s+')[1] }.findAll { it =~ /^refs\/heads\/release\/\d+\.\d+\.x$/ }
+    gitFlow.remoteRefNames(remoteName, true, false).findAll { it =~ /^refs\/heads\/release\/\d+\.\d+\.x$/ }
             .collect { it - 'refs/heads/' }
 }
 def remoteDevLines = {
-    git.run(['ls-remote', '--heads', remoteName, 'refs/heads/dev/*']).out.readLines()
-            .collect { it.split('\\s+')[1] }.findAll { it =~ /^refs\/heads\/dev\/\d+\.\d+\.x$/ }
+    gitFlow.remoteRefNames(remoteName, true, false).findAll { it =~ /^refs\/heads\/dev\/\d+\.\d+\.x$/ }
             .collect { it - 'refs/heads/' }
 }
 // 默认标记提取：被搬运提交（目标原头之后、源分支之内的非合并提交）说明中的缺陷编号形态
 // （大写字母-数字，如 BUG-101、CVE-2026-1234 取全串）；提取为空时返回空清单——
 // 修复提交必须带编号由 commit-msg 钩子与 CI 校验保证（本变更任务 6.1），此处不重复执法。
+// 本闭包与目标原头 rev-parse 同为动作簿记（consolidate-git-queries-into-gitflow D4），有意不入 GitFlow。
 def autoMarkers = { String targetHead, String src ->
     def log = git.run(['log', '--no-merges', '--format=%s', "${targetHead}..${src}"]).out
     def found = [] as LinkedHashSet
