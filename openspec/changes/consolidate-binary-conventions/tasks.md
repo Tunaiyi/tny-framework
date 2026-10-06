@@ -51,8 +51,8 @@
 
 ## 9. 观察账两项在册执行
 
-- [ ] 9.1 托管版本面端到端破坏探针（pilot D7 挂账承接）：临时把 `gradle.properties` 一个守卫族版本键（如 log4j 族）扰动一个补丁位，运行 `./gradlew -q help` 记录 `ManagedVersionsCheck` 报红全文（逐项列出坐标、声明值、生效值），还原并 sha256 对账；结果入 apply-notes 并标记该观察账项闭环
-- [ ] 9.2 buildSrc 耗时阈值复核（pilot Risks 第四条承接）：全部替换完成后 warm daemon `./gradlew help` 三次取数，与 2.2 改造前值对照；劣化未超 3 秒记"闭环"，超阈按"移交必须指名承接册"登记到后续合并册并在 apply-notes 写明指名
+- [x] 9.1 托管版本面端到端破坏探针（pilot D7 挂账承接）：临时把 `gradle.properties` 一个守卫族版本键（如 log4j 族）扰动一个补丁位，运行 `./gradlew -q help` 记录 `ManagedVersionsCheck` 报红全文（逐项列出坐标、声明值、生效值），还原并 sha256 对账；结果入 apply-notes 并标记该观察账项闭环
+- [x] 9.2 buildSrc 耗时阈值复核（pilot Risks 第四条承接）：全部替换完成后 warm daemon `./gradlew help` 三次取数，与 2.2 改造前值对照；劣化未超 3 秒记"闭环"，超阈按"移交必须指名承接册"登记到后续合并册并在 apply-notes 写明指名
 
 ## 10. 零差异与全量回归
 

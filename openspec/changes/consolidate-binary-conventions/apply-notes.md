@@ -65,3 +65,8 @@
 - 8.1 通过：`tny-game-bom/build.gradle` plugins 块在 `id 'tny.publish'` 后补 `id 'tny.publish.gate'`（与根装配线"publish 紧随其内、gate 紧随 publish"原行序同构，注释写明 0faf6edb 拆分遗漏来由与证据文件位置）。修复后 `:tny-game-bom:publish --dry-run` 退出 0，任务图含 `:tny-game-bom:checkPublishPrerequisites` 并挂于各共享仓发布任务之前（before/after 输出成对入库 `baseline/bom-gate-defect-before.txt` 与 `baseline/bom-gate-after-dryrun.txt`）。
 - 8.2 通过：根级 `./gradlew publish --dry-run` 退出 0（修复前该命令图构建即在 BOM 报红，pilot 时代静态推导至此实爆实测闭环），聚合边计数含 BOM 门禁节点 1 处（`baseline/root-publish-dryrun-after.txt`）。产物面两条路径逐字节零差异：`generatePomFileForMavenJavaPublication` 对 `pom-bom-before.xml` 一致；`publishToMavenLocal` 后 `~/.m2` 内 `5.7.x-SNAPSHOT` POM 与基线一致——门禁节点不产物化，本册唯一申报预期差异仅任务图面（BOM 新增 checkPublishPrerequisites 节点与其挂接边），已在基线 README 与 design D4 登记。
 - 对在途册的解锁：redesign-devline-integration-model 的祖父轨陪跑任务（下一个 5.7 补丁发版走根级 publish）此前的通路被本缺陷阻断，组 8 合入后恢复可行。
+
+## 组 9 观察账两项在册执行（pilot 挂账闭环）
+
+- 9.1 托管版本面端到端破坏探针（pilot apply-notes 第 44 行挂账承接）：临时停用 `tny.dependency-management.gradle:31` 的 log4j-bom 导入句使 Boot BOM 接管值生效，`./gradlew -q help` 配置期报红，文案逐条列出坐标、事实源声明值与实际生效值（如 `坐标 org.apache.logging.log4j:log4j-api 事实源声明 '2.22.1' 实际生效 '2.…'`，族头含次序契约指针），还原后恢复绿、文件 sha256 前后一致。判红能力端到端实爆，该观察项就此闭环——pilot 当年以"构造 BOM 漂移成本高"挂账，本册实测成本即一条导入句的临时注释。
+- 9.2 buildSrc 耗时阈值复核（pilot Risks 第四条承接）：改造后 warm `./gradlew -q help` 三连读 2.44/2.48/2.20 秒，对改造前基线 2.13/2.09 秒（首读 2.95 秒含预热尾段，同口径剔除）劣化约 0.3 秒，未达 3 秒阈值，观察项闭环、无需移交后续册。读数成对入库 `baseline/help-timing-before.txt` 与 `help-timing-after.txt`。
