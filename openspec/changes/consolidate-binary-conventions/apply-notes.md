@@ -70,3 +70,9 @@
 
 - 9.1 托管版本面端到端破坏探针（pilot apply-notes 第 44 行挂账承接）：临时停用 `tny.dependency-management.gradle:31` 的 log4j-bom 导入句使 Boot BOM 接管值生效，`./gradlew -q help` 配置期报红，文案逐条列出坐标、事实源声明值与实际生效值（如 `坐标 org.apache.logging.log4j:log4j-api 事实源声明 '2.22.1' 实际生效 '2.…'`，族头含次序契约指针），还原后恢复绿、文件 sha256 前后一致。判红能力端到端实爆，该观察项就此闭环——pilot 当年以"构造 BOM 漂移成本高"挂账，本册实测成本即一条导入句的临时注释。
 - 9.2 buildSrc 耗时阈值复核（pilot Risks 第四条承接）：改造后 warm `./gradlew -q help` 三连读 2.44/2.48/2.20 秒，对改造前基线 2.13/2.09 秒（首读 2.95 秒含预热尾段，同口径剔除）劣化约 0.3 秒，未达 3 秒阈值，观察项闭环、无需移交后续册。读数成对入库 `baseline/help-timing-before.txt` 与 `help-timing-after.txt`。
+
+## 组 10 零差异与全量回归
+
+- 10.1 终态五样本对基线比对：全量任务图差异 **1 行**——`tny-game-bom:checkPublishPrerequisites`（8.2 申报的唯一预期差异，diff 全量入库 `baseline/tasks-all-final.diff`）；`:tny-game-net` 双配置依赖清单、java 线与插件线双 POM 四样件逐字节一致。
+- 10.2 `./gradlew check --continue` 绿（179 任务 66 executed/113 up-to-date，executed 面增大源于 buildSrc 变更后下游合法重算）；`-p buildSrc test` 绿（30 用例含新增 8 个）；`:tny-game-bom:build` 绿。
+- 10.3 触碰文件按主账本 13 条需求逐条走查通过：声明式与容身之处（新实现类与脚本删除均落在扩后的三形态载体，删除与注册同提交且描述符逐一断言）、惰性形态（withType/configureEach、providers 读 encoding、无 tasks.create）、单一事实源（dm 版本落点唯一在 buildSrc 并履行注释登记，未新增坐标或版本字面量）、托管对账（行为面不变且组 9 实爆端到端报红）、Groovy 词法（触碰脚本行无分号无 spread；Java 文件按项目 Java 纪律带许可证头）、区块顺序（BOM 门禁行紧随 publish 与根行序同构；实现类配置段落对应脚本区块并注释分段）、注释来由与 provenance（原五处脚本/类头注释全量随迁入类 javadoc，dryRun 条款不适用原因登记——本册未新增不可逆编排）、长度界线（最大实现单元 `ModuleCheckerPlugin.java` 155 行，全部低于 250；根脚本 65 行、BOM 模块文件 41 行低于 80 行）、触碰即改（改动区域内未见旧违例残留）、禁点名（共享构建代码零新增工程名字面量；BOM 注释在模块自身声明面）、检查逻辑单测（ModuleSetting 四向用例入 CI check 档既有步骤）、新 ADDED 接线需求（本册无脚本嵌套 apply、无插件间引入、无第三方双声明点，三条自洽）。

@@ -56,9 +56,9 @@
 
 ## 10. 零差异与全量回归
 
-- [ ] 10.1 改造后五样本重跑并与 baseline 逐字节比对：任务图唯一差异为 8.2 申报的 BOM 门禁子图，其余四样件零差异；比对摘要与差异行清单入 apply-notes
-- [ ] 10.2 全量 `./gradlew check --continue` 绿、`./gradlew -p buildSrc test` 绿（与 CI build.yml 的 buildSrc 测试步骤同命令）；`./gradlew :tny-game-bom:build` 单模块绿
-- [ ] 10.3 触碰文件按 gradle-build-style 现文全部 13 条需求逐条走查（重点：新 ADDED 接线需求与本册各引入行的自洽、载体三形态判据、单类计量与目录页义务、provenance 注释逐段随迁、触碰即改），走查表入 apply-notes
+- [x] 10.1 改造后五样本重跑并与 baseline 逐字节比对：任务图唯一差异为 8.2 申报的 BOM 门禁子图，其余四样件零差异；比对摘要与差异行清单入 apply-notes
+- [x] 10.2 全量 `./gradlew check --continue` 绿、`./gradlew -p buildSrc test` 绿（与 CI build.yml 的 buildSrc 测试步骤同命令）；`./gradlew :tny-game-bom:build` 单模块绿
+- [x] 10.3 触碰文件按 gradle-build-style 现文全部 13 条需求逐条走查（重点：新 ADDED 接线需求与本册各引入行的自洽、载体三形态判据、单类计量与目录页义务、provenance 注释逐段随迁、触碰即改），走查表入 apply-notes
 
 ## 11. 收口
 
