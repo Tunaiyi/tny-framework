@@ -1,6 +1,11 @@
 plugins {
     id 'java-platform'
     id 'tny.publish'
+    // 门禁紧随 publish 与根装配线原行序同构（consolidate-binary-conventions 任务 8.1）：
+    // 拆分提交 0faf6edb 只给根脚本两条线补了 gate、漏了本模块自报应用——tny.publish 把全部
+    // 共享仓发布任务挂在 checkPublishPrerequisites 之后而该任务由 gate 注册，缺位时根级
+    // publish 任务图在本工程报 Task not found（报红证据见本册 baseline/bom-gate-defect-before.txt）
+    id 'tny.publish.gate'
     // nmcp 模块插件与 java 发布线同权由本模块先行应用（tny.publications 不再代施第三方插件）
     id 'com.gradleup.nmcp'
     id 'tny.publications'

@@ -59,3 +59,9 @@
 - 过程两处失误如实入账：新类首稿 `Plugin` 导入误写 `org.gradle.api.plugins`（编译报错即改）；6.2 组内注册块曾双通道重复添加后删重（已记组 6）。均发生在提交前，未污染历史。
 - 7.4 验证：`-p buildSrc test` 绿、根 `help` 配置期对账照常静默通过；组号破坏探针（临时向 `tny-game-net` 注入 `group = 'com.violation.probe'`）报红文案逐字含"发布构件配置期对账失败"，`--stacktrace` 判红帧命中 `ModuleCheckerPlugin.java` 一处、脚本桥接帧（TnyModuleCheckerPlugin/GroovyScript）零命中——pilot CRITICAL-1 的形态盲区在本册判据下不再可能；还原后 sha256 与探针前一致（同基线值）。
 - 7.5 验证：`:tny-game-net` compile/runtime 双依赖清单、java 线与插件线双 POM 四样本对 baseline 逐字节一致（diff -q 全过）。
+
+## 组 8 BOM 门禁半配对缺陷修复
+
+- 8.1 通过：`tny-game-bom/build.gradle` plugins 块在 `id 'tny.publish'` 后补 `id 'tny.publish.gate'`（与根装配线"publish 紧随其内、gate 紧随 publish"原行序同构，注释写明 0faf6edb 拆分遗漏来由与证据文件位置）。修复后 `:tny-game-bom:publish --dry-run` 退出 0，任务图含 `:tny-game-bom:checkPublishPrerequisites` 并挂于各共享仓发布任务之前（before/after 输出成对入库 `baseline/bom-gate-defect-before.txt` 与 `baseline/bom-gate-after-dryrun.txt`）。
+- 8.2 通过：根级 `./gradlew publish --dry-run` 退出 0（修复前该命令图构建即在 BOM 报红，pilot 时代静态推导至此实爆实测闭环），聚合边计数含 BOM 门禁节点 1 处（`baseline/root-publish-dryrun-after.txt`）。产物面两条路径逐字节零差异：`generatePomFileForMavenJavaPublication` 对 `pom-bom-before.xml` 一致；`publishToMavenLocal` 后 `~/.m2` 内 `5.7.x-SNAPSHOT` POM 与基线一致——门禁节点不产物化，本册唯一申报预期差异仅任务图面（BOM 新增 checkPublishPrerequisites 节点与其挂接边），已在基线 README 与 design D4 登记。
+- 对在途册的解锁：redesign-devline-integration-model 的祖父轨陪跑任务（下一个 5.7 补丁发版走根级 publish）此前的通路被本缺陷阻断，组 8 合入后恢复可行。

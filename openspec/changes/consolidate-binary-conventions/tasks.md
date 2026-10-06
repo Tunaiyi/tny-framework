@@ -46,8 +46,8 @@
 
 ## 8. BOM 门禁半配对缺陷修复
 
-- [ ] 8.1 `tny-game-bom/build.gradle` plugins 块在 `id 'tny.publish'` 行后补 `id 'tny.publish.gate'` 一行，注释写明来由（拆分提交 0faf6edb 只补根装配线两条集合之遗漏；变更册名全文登记）；验证：`./gradlew :tny-game-bom:publish --dry-run` 任务图含 `:tny-game-bom:checkPublishPrerequisites` 且挂在各发布任务依赖边上，与 baseline 的报红记录构成前后对
-- [ ] 8.2 验证：根级 `./gradlew publish --dry-run` 任务图构建通过（缺陷复现路径转绿）；`tny-game-bom` 的 POM 与 Gradle 模块元数据经 `generatePomFileForMavenJavaPublication` 与 `publishToMavenLocal` 两条路径对 baseline 逐字节零差异（门禁节点不产物化，预期零漂移）；该任务图差异登记为全册唯一申报的预期差异
+- [x] 8.1 `tny-game-bom/build.gradle` plugins 块在 `id 'tny.publish'` 行后补 `id 'tny.publish.gate'` 一行，注释写明来由（拆分提交 0faf6edb 只补根装配线两条集合之遗漏；变更册名全文登记）；验证：`./gradlew :tny-game-bom:publish --dry-run` 任务图含 `:tny-game-bom:checkPublishPrerequisites` 且挂在各发布任务依赖边上，与 baseline 的报红记录构成前后对
+- [x] 8.2 验证：根级 `./gradlew publish --dry-run` 任务图构建通过（缺陷复现路径转绿）；`tny-game-bom` 的 POM 与 Gradle 模块元数据经 `generatePomFileForMavenJavaPublication` 与 `publishToMavenLocal` 两条路径对 baseline 逐字节零差异（门禁节点不产物化，预期零漂移）；该任务图差异登记为全册唯一申报的预期差异
 
 ## 9. 观察账两项在册执行
 

@@ -1,0 +1,24 @@
+Configuration on demand is an incubating feature.
+> Task :buildSrc:extractPluginRequests UP-TO-DATE
+> Task :buildSrc:generatePluginAdapters UP-TO-DATE
+> Task :buildSrc:compileJava UP-TO-DATE
+> Task :buildSrc:compileGroovy UP-TO-DATE
+> Task :buildSrc:compileGroovyPlugins UP-TO-DATE
+> Task :buildSrc:pluginDescriptors UP-TO-DATE
+> Task :buildSrc:processResources UP-TO-DATE
+> Task :buildSrc:classes UP-TO-DATE
+> Task :buildSrc:jar UP-TO-DATE
+:tny-game-bom:check SKIPPED
+:tny-game-bom:checkPublishPrerequisites SKIPPED
+:tny-game-bom:generateMetadataFileForMavenJavaPublication SKIPPED
+:tny-game-bom:generatePomFileForMavenJavaPublication SKIPPED
+:tny-game-bom:signMavenJavaPublication SKIPPED
+:tny-game-bom:publishMavenJavaPublicationToCentralSnapshotsRepository SKIPPED
+:tny-game-bom:publishMavenJavaPublicationToGithubPackagesRepository SKIPPED
+:tny-game-bom:publishMavenJavaPublicationToMavenRepository SKIPPED
+:tny-game-bom:cleanupDirectory SKIPPED
+:tny-game-bom:publishMavenJavaPublicationToNmcpRepository SKIPPED
+:tny-game-bom:publish SKIPPED
+
+BUILD SUCCESSFUL in 1s
+8 actionable tasks: 8 up-to-date
