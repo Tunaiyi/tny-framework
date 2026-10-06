@@ -9,8 +9,8 @@
 
 ## 2. 基线快照入库
 
-- [ ] 2.1 在同一 Gradle daemon、UTF-8 locale 钉住条件下抓取改造前五样本并转存 `openspec/changes/consolidate-binary-conventions/baseline/`：全量任务图（`./gradlew tasks --all`）、`tny-game-net` compile 与 runtime 依赖清单、java 线与插件线双 POM（先运行 `generatePomFileForMavenJavaPublication` 与插件线同名任务再转存，防空文件）；验证：五样件非空且 README 记录锚定 `git rev-parse HEAD` 哈希与抓样环境（Corretto 21、无 JAVA_TOOL_OPTIONS、剔噪口径按 context 权威条目）
-- [ ] 2.2 留存缺陷证据与耗时基线：`./gradlew :tny-game-bom:publish --dry-run` 的 HEAD 报红输出全文转存 baseline（Task not found 证据对）；warm daemon 下 `./gradlew help` 连续三次耗时记录为"改造前"值；验证：两项读数入 apply-notes 组 2 小节
+- [x] 2.1 在同一 Gradle daemon、UTF-8 locale 钉住条件下抓取改造前五样本并转存 `openspec/changes/consolidate-binary-conventions/baseline/`：全量任务图（`./gradlew tasks --all`）、`tny-game-net` compile 与 runtime 依赖清单、java 线与插件线双 POM（先运行 `generatePomFileForMavenJavaPublication` 与插件线同名任务再转存，防空文件）；验证：五样件非空且 README 记录锚定 `git rev-parse HEAD` 哈希与抓样环境（Corretto 21、无 JAVA_TOOL_OPTIONS、剔噪口径按 context 权威条目）
+- [x] 2.2 留存缺陷证据与耗时基线：`./gradlew :tny-game-bom:publish --dry-run` 的 HEAD 报红输出全文转存 baseline（Task not found 证据对）；warm daemon 下 `./gradlew help` 连续三次耗时记录为"改造前"值；验证：两项读数入 apply-notes 组 2 小节
 
 ## 3. 探针三（依赖类路径类型化访问，沙箱验证，产物不入仓库）
 

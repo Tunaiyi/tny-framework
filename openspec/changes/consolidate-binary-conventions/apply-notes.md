@@ -20,4 +20,8 @@
 
 ## 组 2 基线快照
 
-（待记录：抓样环境、锚定提交、五样本行数、BOM 报红证据、耗时改造前三读。）
+- 抓样环境、锚定提交与样件清单登记于 `baseline/README.md`（锚定 4653dd6f；Corretto 21 与 UTF-8 钉住；PATH 修正坏 `/usr/local/bin/git`；独立守护进程注册表 `/tmp/tny-cbc-daemons` 作为"改造前后同一 daemon"判据的达成方式，来由已在 README 成文）。
+- 五样本改造前读数：任务图 3588 行；`:tny-game-net` compile 73 行、runtime 94 行；双 POM 167 行与 76 行（POM 与 pilot 归档记载行数一致，任务图差异来自其间在途册的合法新增）。
+- BOM 门禁半配对缺陷实测证据：`./gradlew :tny-game-bom:publish --dry-run` 在锚定 HEAD 报红，报错原文 `Task with path 'checkPublishPrerequisites' not found in project ':tny-game-bom'` 全文转存 `baseline/bom-gate-defect-before.txt`——审计阶段由静态推导得出的结论至此由运行实证。
+- 耗时改造前读数（warm 三连）：2.95 / 2.13 / 2.09 秒；首读含守护进程复用前的启动尾段，比对取后两读均值约 2.11 秒。
+- 过程记录一处如实入账：组 2 首轮抓取在默认 PATH 下全部失败（配置期 `tny.git` 调 git 报 error 86，即 pilot 卷宗登记过的本机坏 git 二进制环境问题），修正 PATH 与守护进程注册表后重抓成功；首轮失败输出未入库。
