@@ -29,10 +29,10 @@
 
 ## 5. tny.module-checker 二进制化（首个可单测样板）
 
-- [x] 5.1 新建三个纯逻辑检查类 `tny.convention.checker.GroupAlignmentCheck`、`UnpublishedContractCheck`、`ManagedVersionsCheck`（`buildSrc/src/main/java/` 下）：输入为工程描述记录（名字、组、构建文件存在性、角色声明映射）与事实值、输出问题清单字符串列表；判定文本与原脚本逐字对应；每类随附 ProjectBuilder 单测覆盖一个通过用例与一个违例用例，违例用例断言错误信息含判红对象与理由（新增需求第一场景）
-- [x] 5.2 新建 `ModuleCheckerPlugin`：`gradle.projectsEvaluated` 接线内依次调用三类并聚合抛 GradleException，工程描述记录的采集方式逐字对照原脚本（含"未评估工程跳过"分支、沿依赖边强制评估读 ModuleSetting 的零发布合同段、`getDependencyProject` 弃用替代法）；类头 javadoc 承载原脚本头注释全部职责边界与 provenance（三项对账的规格出处、adopt-gradle-official-dsl 沿革改写为完整句子），javadoc 写明单测覆盖与端到端语义的分工（design D3）
+- [x] 5.1 新建三个纯逻辑检查类 `tny.convention.checker.GroupAlignmentCheck`、`UnpublishedContractCheck`、`ManagedVersionsCheck`（`buildSrc/src/main/java/` 下）：输入为工程描述记录（名字、组、构建文件存在性、角色声明映射）与事实值、输出问题清单字符串列表；判定文本与原脚本逐字对应；每类随附可执行单测（纯判定类以事实夹具构造输入、装配面以 ProjectBuilder）覆盖一个通过用例与一个违例用例，违例用例断言错误信息含判红对象与理由（新增需求第一场景）
+- [x] 5.2 新建 `ModuleCheckerPlugin`：组号对账与托管版本面对账在 `gradle.projectsEvaluated` 回调调用检查类并聚合抛 GradleException，零发布合同逐成员工程在 `afterEvaluate` 收尾调用检查类抛首条违例（时机与原脚本一致），工程描述记录的采集方式逐字对照原脚本（含"未评估工程跳过"分支、沿依赖边强制评估读 ModuleSetting 的零发布合同段、`getDependencyProject` 弃用替代法）；类头 javadoc 承载原脚本头注释全部职责边界与 provenance（三项对账的规格出处、adopt-gradle-official-dsl 沿革改写为完整句子），javadoc 写明单测覆盖与端到端语义的分工（design D3）
 - [x] 5.3 删除 `buildSrc/src/main/groovy/tny.module-checker.gradle`；确认注册块（3.1）的 id 生效、根 `build.gradle:47` 应用行不改（ext 块删除后现文为 39 行）；四处按名注释提及（爆炸半径摘要所列）复核语义成立无需改动
-- [x] 5.4 验证：`./gradlew -p buildSrc test` 全绿；`./gradlew -q help` 配置期对账照常通过；破坏探针两例（design D7）：临时改根组号事实源设值使组号对账报红、临时给某 -integration-test 模块构建文件加 publishing 块使零发布合同报红，各自捕获报错文案后恢复原文件并用 sha256 比对确认逐字节还原
+- [x] 5.4 验证：`./gradlew -p buildSrc test` 全绿；`./gradlew -q help` 配置期对账照常通过；破坏探针两例（design D7）：临时给某发布线模块加错误组号声明使组号对账报红（改根事实源设值不会报红——派生组号随之自洽）、临时让某发布线成员加一条指向不发布模块 :tny-game-integration-test 的 implementation 依赖边使零发布合同报红（给该模块自身加 publishing 块不会报红——它按命名约定不属于 javaProjects，判红由依赖边构成），各自捕获报错文案后恢复原文件并用 sha256 比对确认逐字节还原
 
 ## 6. 零差异与全量回归
 

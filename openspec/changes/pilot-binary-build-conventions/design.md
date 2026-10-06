@@ -72,7 +72,7 @@ apply 时点的已记录例外：接线类 ModuleCheckerPlugin 取 Groovy 而非
 
 ### D7 零差异验收沿用既有口径，破坏探针复验红绿
 
-基线：改动前 `./gradlew tasks --all` 任务图、代表性模块 `dependencies` 清单、双 POM 与 `gradle-build-style` 既有"零差异"用词一致。特殊过滤：buildSrc 自身参与生命周期变化会引入 `-p buildSrc` 与插件解析行，沿用 consolidate 时的任务图前缀过滤先例处理。对账逻辑改二进制后的红绿判据以破坏探针复验：临时改根组号属性值使组号对账报红、临时给某 `-integration-test` 模块加 `publishing` 配置使零发布合同报红、两处各跑一次恢复原状（sha256 校验恢复），证明"迁移没有把判红能力迁丢"。托管版本面对账的破坏探针成本较高（需制造 BOM 版本漂移），以该检查类的 ProjectBuilder 违例用例＋主构建一次正向通过为充分证据，端到端破坏形态挂观察账。
+基线：改动前 `./gradlew tasks --all` 任务图、代表性模块 `dependencies` 清单、双 POM 与 `gradle-build-style` 既有"零差异"用词一致。特殊过滤：buildSrc 自身参与生命周期变化会引入 `-p buildSrc` 与插件解析行，沿用 consolidate 时的任务图前缀过滤先例处理。对账逻辑改二进制后的红绿判据以破坏探针复验：临时给某发布线模块加错误组号声明使组号对账报红、临时让某发布线成员加一条指向不发布模块（如 :tny-game-integration-test）的 implementation 依赖边使零发布合同报红、两处各跑一次恢复原状（shasum -a 256 校验恢复）——注意两个直觉形态不成立：改根组号事实源设值时派生组号随之自洽不报红，给 -integration-test 模块自身加 publishing 块时其不属于 javaProjects 也不报红，判红必须构造模块侧违例或依赖边，证明"迁移没有把判红能力迁丢"。托管版本面对账的破坏探针成本较高（需制造 BOM 版本漂移），以该检查类的违例用例（事实夹具形态）＋主构建一次正向通过为充分证据，端到端破坏形态挂观察账。
 
 ### D8 与两个在途变更的协调：本批文件冻结清单
 
@@ -120,7 +120,8 @@ apply 时点的已记录例外：接线类 ModuleCheckerPlugin 取 Groovy 而非
 
 ## Open Questions
 
-- 归档后判据歧义预登记（复验 SUGGESTION，入账后若被按宽读法质疑在本册修口径）：ManagedVersionsCheck 的 GUARD_COORDS 常量表与版本目录同名坐标字符串的关系属"对账探针输入"而非"依赖声明"，需求三"不得复制条目表"的适用边界需要澄清；需求六"以注释段落标题对应脚本区块名"对纯对账类插件（无仓库/依赖/任务区块）的适用解释为"未涉及的区块省略"，段落标题保留对账语义名。
+- 归档后判据歧义预登记一（入账后若被按宽读法质疑则本册修口径）：ManagedVersionsCheck 的 GUARD_COORDS 常量表与版本目录同名坐标字符串的关系属"对账探针输入"而非"依赖声明"，需求三"不得复制条目表"的适用边界需要澄清。
+- 归档后判据歧义预登记二：需求六"以注释段落标题对应脚本区块名"对纯对账类插件（无仓库/依赖/任务区块）的适用解释取"未涉及的区块省略"，段落标题保留对账语义名。
 
 - buildSrc 是否需要独立的 `settings.gradle` 与依赖锁定文件治理（Gradle 8.x 后 buildSrc 可用 build-logic 替代形态）——不影响本批任何工件，留待批次 2 的总装配册评估。
 - 后续批次（模块装配线、发布线、central 文本重排类）的迁移顺序与是否逐批引入 Spotless/Checkstyle 到 buildSrc——各批立册时再定，本批不预设。

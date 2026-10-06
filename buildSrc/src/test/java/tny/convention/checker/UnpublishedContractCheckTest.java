@@ -47,6 +47,16 @@ class UnpublishedContractCheckTest {
     }
 
     @Test
+    void multipleViolationsKeepInputOrderAndFirstIsReported() {
+        List<UnpublishedContractCheck.ProjectEdge> edges = List.of(
+                new UnpublishedContractCheck.ProjectEdge(":tny-game-a", "implementation", ":tny-unpub-first", true),
+                new UnpublishedContractCheck.ProjectEdge(":tny-game-b", "api", ":tny-unpub-second", true));
+        List<String> violations = UnpublishedContractCheck.violations(edges);
+        assertEquals(2, violations.size(), "两条违例边都须入账");
+        assertTrue(violations.get(0).contains(":tny-unpub-first"), "接线类取首条抛出——首条须按输入边序选中");
+    }
+
+    @Test
     void violationNamesBothPartiesAndDeclarationSource() {
         List<UnpublishedContractCheck.ProjectEdge> edges = List.of(
                 new UnpublishedContractCheck.ProjectEdge(":tny-game-rpc", "implementation", ":tny-benchmark", true));

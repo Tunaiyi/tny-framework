@@ -30,7 +30,7 @@
 ## 组 5 tny.module-checker 二进制化
 
 - 三检查类（Java）＋接线类 ModuleCheckerPlugin（Groovy，语言例外已在类 javadoc 与设计 D1 注记：需动态读 io.spring 扩展与 Groovy 支撑类交互）。
-- 单测合计 17 用例全绿（checker 三类 4+5+2、projects 5、冒烟 1）；ManagedVersionsCheckTest 首版红过一次——夹具只供一族声明值导致其余七族误判失配，修正为全族基线＋单点扰动。
+- 单测合计 17 用例全绿（checker 三类 5+4+2、projects 5、冒烟 1；CRITICAL-2 修复补两个通过用例后现数 19，checker 三类 5+4+4）；ManagedVersionsCheckTest 首版红过一次——夹具只供一族声明值导致其余七族误判失配，修正为全族基线＋单点扰动。
 ## verify 阶段修复（2026-10-06 /opsx:verify 发现）
 
 - CRITICAL-1：提交链重做（修正首个 C1 错误归属时执行的 `git reset --mixed`）把最初的脚本文件删除一并回退，重建中间态后删除从未再次执行——module-checker 一度仍以预编译脚本形态生效（双形态并存、脚本静默优先，行为输出与预期一致故全部验证仍绿，但"同一 id 二选一"判据未达成）。已补 `git rm` 删除并复验：配置期绿、jar 描述符 `tny.module-checker.properties` 指向 `tny.convention.checker.ModuleCheckerPlugin`（二进制生效实证）。verify 后复验工作流结论已回填至本文件末尾。
@@ -54,10 +54,10 @@
 
 判决：探针A复跑 PASS（--stacktrace 证实判红帧落在 tny/convention/checker/ModuleCheckerPlugin.groovy:77，无脚本帧——二进制类独立承担对账职责成立）；五样本零差异复验 PASS；并存判据与退役彻底性 PASS；测试与静态判据 FAIL；规格符合性 FAIL；对抗复核确认两个 FAIL 非误报并给出 CRITICAL-2。复验证据锚定说明：期间历史被线性化重排（0beffaf0→3facab1d、b3b58c5e→be5632f5），复验中的旧 hash 引用以现行线性链对应提交为准；复验者已在现树复核删除幸存、17 用例绿、配置期绿，内容无回归。
 
-### CRITICAL-2（新发现，待用户裁决修复路线）
+### CRITICAL-2（新发现→已按用户拍板路线闭环，修复提交见本文件末尾闭环注记）
 UnpublishedContractCheckTest 只有违例方向用例、无通过用例，违反本册 ADDED 需求"每个检查类 MUST 至少覆盖一个通过用例与一个违例用例"的字面 MUST；tasks 5.1 在缺口下被勾选；UnpublishedContractCheck javadoc 声称"覆盖不违例方向"与测试文件自述矛盾。根因是设计执行走样：D3 设想该类输入为"角色声明映射表"的判定函数，实现时把映射判定留在了不写单测的接线类，类本体只剩文案函数。
 
-### 待修 WARNING/SUGGESTION 清单（用户指令后一批处理）
+### 待修 WARNING/SUGGESTION 清单（→已随 CRITICAL-2 修复同批清账，逐项状态见末尾闭环注记）
 1. ADDED 需求措辞"ProjectBuilder 构建的单元测试"与三检查类纯夹具形态不符（ProjectBuilder 实际用于 BuildSrcSmokeTest 与 ProjectsExtensionTest）——归档同步前修差量措辞或改测试形态，二选一。
 2. design D3 接线时机描述与实现不符（零发布合同按原脚本挂 afterEvaluate，非 D3 所写"依次调用"式 projectsEvaluated）——更正 D3 文本。
 3. UnpublishedContractCheck 类 javadoc 与测试 javadoc 覆盖陈述互相矛盾——统一。
@@ -65,3 +65,7 @@ UnpublishedContractCheckTest 只有违例方向用例、无通过用例，违反
 5. 行号漂移与拼写：tasks 5.3/design 仍引用改造前 build.gradle:47（现 39）；ModuleCheckerPlugin javadoc"之后一行"与根脚本实际间距（L30/L39）不符；tasks 5.2 拼写 adopt-gradle-official-dac 应为 -dsl。
 6. 预登记观察账：ManagedVersionsCheck.GUARD_COORDS 与版本目录同名坐标字符串的"不复制条目表"宽读风险；需求六区块词表对纯对账插件的适用性口径。
 7. buildSrc/build/libs/buildSrc-5.7.9.jar 为二进制化前陈旧伴生归档（含旧脚本形态注册物证），构建目录产物，clean 即清，不影响源码树。
+
+### 闭环注记（最终复验后，提交号见下文 git log）
+
+最终复验工作流（五路：行为回归、源码形态、文档差量、残账、对抗）判定：功能面全部 PASS——19 用例全绿（checker 三类 5+4+4 红绿双向）、破坏探针 A/B 端到端复跑报红文案逐字且 shasum -a 256 还原吻合、脚本删除幸存、openspec validate --strict 通过；对抗者仅推翻文字账面，四处残留（tasks 5.1/5.2 措辞、5.4 与 design D7 探针形态描述失实、apply-notes 本块状态标题过时）已随下一提交清账：措辞改与差量规格/design D3 同口径，探针形态改为实证成立的"模块侧组号违例声明＋指向不发布模块的依赖边"两形态（并注明两个直觉形态为何不成立），本注记即为状态标题的落地更正。清单第 1 至 6 项闭环、第 7 项经 git ls-files 零命中判定不入库不构成账目。可选加固（双违例并存首条选取规则用例）已同批补入 UnpublishedContractCheckTest，现数 20 用例。
