@@ -1,0 +1,93 @@
+name: snapshot-mirror
+
+# 快照镜像工作流（openspec capability github-packages-mirror，变更 open-github-packages-snapshot-mirror）：
+# 开发线快照构件进入 GitHub Packages 镜像的唯一持续集成入口——定时计划每日镜像当前开发线一次
+# （选线与内网快照发布同一事实源：docs/release-process.md 线谱系登记中状态为"版本开发分支"的线），
+# 维护态与退役线、以及历史线，一律不在定时范围，确需镜像其快照时由 workflow_dispatch
+# 显式指定线名单次补跑（人工指定即授权）。首跑教训（2026-10-05 run 37336175323）：按远端分支
+# 形态动态枚举会把退役但分支未删的历史线（2.0.x 至 5.6.x，旧 wrapper 缺 jar）全部纳入矩阵，
+# 批量产生必然失败的作业——选线必须以线谱系登记为唯一依据，不得以分支存在性推断。
+# 快照不进内网仓与 Central 之外的任何自动通道，正式版镜像仍归 publish.yml 第三步骤
+# （本文件与它互不重推、互不牵连，通道独立契约同规格条文）。
+# 触发块调整只在默认分支 main 上的本文件生效（schedule 平台约束）。
+# 快照形态按 tny.publications 现行策略跳签、无 .asc 构件可被消费（复测 S1 至 S8）。
+on:
+  schedule:
+    # 每日 UTC19:23，与 build.yml nightly（UTC18:37）错峰 46 分钟，避免同段 runner 排队
+    - cron: '23 19 * * *'
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "开发线分支名（如 5.7.x）；留空则按当日口径枚举全部活跃开发线"
+        required: false
+        type: string
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  enumerate:
+    name: Pick active dev lines
+    runs-on: ubuntu-latest
+    outputs:
+      lines: ${{ steps.pick.outputs.lines }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Resolve branch matrix
+        id: pick
+        run: |
+          if [ -n "${{ inputs.branch }}" ]; then
+            # 人工补跑入口：指定线名时矩阵只含该线（人工指定即授权，含维护态线）；
+            # 线形态合法性由门禁分支白名单把关，此处不自建校验
+            echo 'lines=["${{ inputs.branch }}"]' >> "$GITHUB_OUTPUT"
+          else
+            # 定时口径：线谱系登记中状态含"版本开发分支"的那一条即当前开发线（全库唯一，
+            # 流程五开线仪式保证）；解析不到（表格异常）时输出空矩阵让本次运行干净跳过并在
+            # 日志留一行归因，不回退到分支存在性枚举——那正是首跑批量失败的口径
+            LINE=$(awk 'BEGIN{FS="|"} /^\| *`[0-9]+\.[0-9]+\.x`/ { if ($6 ~ /版本开发分支/) { if (match($2, /[0-9]+\.[0-9]+\.x/)) { print substr($2, RSTART, RLENGTH); exit } } }' docs/release-process.md)
+            if [ -n "$LINE" ]; then
+              echo "lines=[\"$LINE\"]" >> "$GITHUB_OUTPUT"
+              echo "current dev line picked from lineage registry: $LINE"
+            else
+              echo 'lines=[]' >> "$GITHUB_OUTPUT"
+              echo '::warning::线谱系登记中未找到状态为"版本开发分支"的行，本次定时运行跳过镜像作业'
+            fi
+          fi
+
+  mirror:
+    name: Mirror snapshot of ${{ matrix.line }}
+    needs: enumerate
+    if: needs.enumerate.outputs.lines != '[]'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        line: ${{ fromJson(needs.enumerate.outputs.lines) }}
+    concurrency:
+      # 同线串行防并发双写同一快照坐标（并发下目录级元数据一致性未实测），跨线互不阻塞
+      group: snapshot-mirror-${{ matrix.line }}
+      cancel-in-progress: false
+    env:
+      # 属性断言不区分目标仓库，命中共享仓谓词的发布任务在任一 Nexus 属性为空时 fail-fast，
+      # 故 NEXUS 两值必须注入；镜像凭据对以运行账户与内置令牌桥接（与发布者本机配置形态同构）；
+      # 快照跳签不注 SIGNING。
+      ORG_GRADLE_PROJECT_NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      ORG_GRADLE_PROJECT_NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+      ORG_GRADLE_PROJECT_githubPackagesUsername: ${{ github.actor }}
+      ORG_GRADLE_PROJECT_githubPackagesToken: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: refs/heads/${{ matrix.line }}
+      # 门禁经 grgit 读当前分支名，checkout 的分离 HEAD 会让分支形态核对误拒；
+      # checkout -B 兜底建立本地分支指向同一提交（不推送、不改远端）。
+      - name: Ensure branch context for the gate
+        run: git checkout -B "${{ matrix.line }}"
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v3
+      - name: Publish snapshot mirror to GitHub Packages (five-fold gate runs inside)
+        run: ./gradlew publishAllPublicationsToGithubPackagesRepository

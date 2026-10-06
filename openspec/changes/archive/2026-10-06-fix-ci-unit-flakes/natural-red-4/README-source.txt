@@ -1,0 +1,1 @@
+案卷来源：run#113（GitHub Actions 运行号 113，2026-10-05 04:48 由登记提交 8c1fe292 推送触发），unit 任务红，取证分支 ci-unit-diag 投递提交 dcc7d3f1 的 unitdiag/ 五件按尖端实际清单转存，2026-10-05 固化并逐一验非空。红主犯：tny-game-common-io 模块 ResourceLoadingRobustnessTest.sameDirectoryFilesShareOneWatchUnit，签名与定罪栏案 #1、案 #2 点名用例不同族不同模块，登记为案 #3。

@@ -1,0 +1,52 @@
+# F1 拓扑·调用方"同型歧义缺失"变体（任务 3.4 对照 A 专用装配声明）。
+# 与 it-f1-caller.yml 唯一差异：拨入转发节点的 username 由异型 game-client 改为
+# **终端同型** game-service——caller 的接入会话因此进入转发节点的 game-service 会话集，
+# FirstRpcForwarderStrategy 首跳可将其选中并转回 caller 自身（D7 同型歧义陷阱的实证载体，
+# 专供对照用例，勿用于连通主分支）。键空间约定与 codec 点名同 it-f1-caller.yml。
+# 运行期占位：it.c.net.port、it.f.rpc.port
+tny:
+  app:
+    name: t1-caller-amb
+    app-type: game
+    scope-type: game
+  net:
+    bootstrap:
+      network:
+        server:
+          name: game-client
+          bind-address: "${it.host}:${it.c.net.port}"
+          channel:
+            encoder:
+              message-body-codec: typeProtobufMessageBodyCodec
+              verifier: cRC64CodecVerifier
+              crypto: xOrCodecCrypto
+            decoder:
+              message-body-codec: typeProtobufMessageBodyCodec
+              verifier: cRC64CodecVerifier
+              crypto: xOrCodecCrypto
+      rpc:
+        client:
+          channel:
+            encoder:
+              message-body-codec: typeProtobufMessageBodyCodec
+              verifier: cRC64CodecVerifier
+              crypto: xOrCodecCrypto
+            decoder:
+              message-body-codec: typeProtobufMessageBodyCodec
+              verifier: cRC64CodecVerifier
+              crypto: xOrCodecCrypto
+    rpc:
+      cluster:
+        services:
+          - service: gateway-service
+            discovery: false
+            host: "${it.host}"
+            port: ${it.f.rpc.port}
+            username: game-service
+  data:
+    enable: false
+
+spring:
+  autoconfigure:
+    exclude:
+      - org.redisson.spring.starter.RedissonAutoConfigurationV2

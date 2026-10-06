@@ -1,0 +1,4 @@
+spring:
+  main:
+    # allow-bean-definition-overriding 已移除：bean 冲突应显式暴露而非全局兜底（fix-net-audit-findings 组 24）
+    web-application-type: none

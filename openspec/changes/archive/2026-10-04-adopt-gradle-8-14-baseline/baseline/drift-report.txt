@@ -1,0 +1,15 @@
+Files openspec/changes/adopt-gradle-8-14-baseline/baseline/before/tny-game-starter-basics-5.7.x-SNAPSHOT.module and openspec/changes/adopt-gradle-8-14-baseline/baseline/after/tny-game-starter-basics-5.7.x-SNAPSHOT.module differ
+Files openspec/changes/adopt-gradle-8-14-baseline/baseline/before/tny-game-starter-basics-5.7.x-SNAPSHOT.pom and openspec/changes/adopt-gradle-8-14-baseline/baseline/after/tny-game-starter-basics-5.7.x-SNAPSHOT.pom differ
+Files openspec/changes/adopt-gradle-8-14-baseline/baseline/before/tny-game-starter-net-netty4-5.7.x-SNAPSHOT.module and openspec/changes/adopt-gradle-8-14-baseline/baseline/after/tny-game-starter-net-netty4-5.7.x-SNAPSHOT.module differ
+
+## 差异裁决（adopt-gradle-8-14-baseline D4 申报差异，两件）
+漂移一，tny-game-starter-basics 的 POM 与 module：before 中 22 处 c3p0/HikariCP-java7 排除
+（旧插件 1.1.0 把 spring-boot-dependencies 对 quartz 的防御性排除复制到全部托管节点）在 after 消失。
+核查：quartz 2.5.0-rc1 自身 POM 中 c3p0 为 provided（不传递给消费者）、HikariCP-java7 不存在
+（新版改名 HikariCP 亦 provided）——before/after 消费者解析均不引入这两个构件，零行为损失。
+漂移二，tny-game-starter-net-netty4 的 module（POM 无漂移）：before 多处 commons-logging 排除
+（同族滥撒形态，源自 Boot BOM 对 spring 系节点的防御性排除）在 after 消失。
+核查：Spring 6.1.2 的 spring-core、spring-context、spring-jcl POM 均零 commons-logging 依赖，
+该排除在 before 即空转（无依赖可排），after 消费者解析不变，零行为损失。
+两件均属旧插件向无关托管节点复制排除的形态被 1.1.7 归一，方向为修正。本册据规格"除非明文申报"
+条款申报后判零漂移成立：12 件中 10 件逐字节等值、2 件为上述已申报的无害形态归一。

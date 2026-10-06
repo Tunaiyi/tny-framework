@@ -1,0 +1,214 @@
+/*
+ * Copyright (c) 2020 Tunaiyi
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.tny.game.common.concurrent.lock;
+
+import com.tny.game.common.concurrent.exception.*;
+
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.*;
+
+/**
+ * 读写对象锁
+ *
+ * @author KGTny
+ */
+@SuppressWarnings({"rawtypes"})
+class ObjectReadWriteLock extends AbstractTimeLimiter implements ObjectLock {
+
+    public static final long serialVersionUID = 4140777286971432255L;
+
+    /**
+     * 對象類型
+     *
+     * @uml.property name="objectClass"
+     */
+    private final Class objectClass;
+
+    /**
+     * 强引用表示
+     *
+     * @uml.property name="identity"
+     */
+    private final Comparable identity;
+
+    /**
+     * 当前线程持有的锁类型
+     *
+     * @uml.property name="lockType"
+     */
+    private final ThreadLocal<LockType> lockType;
+
+    /**
+     * 读写锁
+     *
+     * @uml.property name="lock"
+     */
+    private final ReentrantReadWriteLock lock;
+
+    /**
+     * 获取对象的表示
+     *
+     * @param object
+     * @return
+     */
+    public static Object getIdentity(Object object) {
+        return LockEntity.class.isAssignableFrom(object.getClass()) ?
+               ((LockEntity) object).getIdentity() :
+               System.identityHashCode(object);
+    }
+
+    /**
+     * 创建对象读写锁,默认是非公平锁
+     *
+     * @param object 相关联的对象
+     */
+    public ObjectReadWriteLock(LockEntity object) {
+        //600000
+        this(object, false, 600000);
+    }
+
+    /**
+     * 创建对象读写锁
+     *
+     * @param object 相关联的对象
+     * @param fair   是否是公平锁
+     */
+    public ObjectReadWriteLock(LockEntity object, boolean fair, long interval) {
+        super(interval);
+        this.lock = new ReentrantReadWriteLock();
+        this.lockType = new ThreadLocal<>();
+        this.objectClass = object.getClass();
+        this.identity = object.getIdentity();
+        this.last.set(System.currentTimeMillis() + this.interval);
+    }
+
+    public boolean beGot(LockType type) {
+        if (!update()) {
+            return false;
+        }
+        LockType wanted = type == LockType.READ ? LockType.READ : LockType.WRITE;
+        // 只升写不降读：本线程已按写锁登记的条目不因随后的读请求被覆写为读
+        //（混合批 WRITE 先登记、READ 后到——降读会纵容他线程读锁与本线程并发进入）
+        if (wanted == LockType.READ && this.lockType.get() == LockType.WRITE) {
+            return true;
+        }
+        this.lockType.set(wanted);
+        return true;
+    }
+
+
+    @Override
+    public void lock() {
+        if (!this.update()) {
+            throw new LockTimeOutException("[" + Thread.currentThread().getName() +
+                                           "] Thread does not hold the lock " + this.identity);
+        }
+        this.getCurrentLock().lock();
+    }
+
+    @Override
+    public void lockInterruptibly() throws InterruptedException {
+        if (!this.update()) {
+            throw new LockTimeOutException("[" + Thread.currentThread().getName() +
+                                           "] Thread does not hold the lock " + this.identity);
+        }
+        this.getCurrentLock().lockInterruptibly();
+    }
+
+    @Override
+    public boolean tryLock() {
+        if (!this.update()) {
+            throw new LockTimeOutException("[" + Thread.currentThread().getName() +
+                                           "] Thread does not hold the lock " + this.identity);
+        }
+        return this.getCurrentLock().tryLock();
+    }
+
+    @Override
+    public void unlock() {
+        try {
+            this.getCurrentLock().unlock();
+        } finally {
+            // 释放与持有类型配对完成；清除本线程类型登记，池线程复用不带陈旧类型
+            this.lockType.remove();
+        }
+    }
+
+    @Override
+    public boolean tryLock(long time, TimeUnit unit) throws InterruptedException {
+        if (!this.update()) {
+            throw new LockTimeOutException("[" + Thread.currentThread().getName() +
+                                           "] Thread does not hold the lock " + this.identity);
+        }
+        return this.getCurrentLock().tryLock(time, unit);
+    }
+
+    @Override
+    public Condition newCondition() {
+        throw new UnsupportedOperationException();
+    }
+
+    private Lock getCurrentLock() {
+        return this.lockType.get() == LockType.READ ? this.lock.readLock() : this.lock.writeLock();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public int compareTo(ObjectReadWriteLock otherLock) {
+        if (this.objectClass != otherLock.objectClass) {
+            if (this.objectClass.hashCode() < otherLock.objectClass.hashCode()) {
+                return -1;
+            } else if (this.objectClass.hashCode() > otherLock.objectClass.hashCode()) {
+                return 1;
+            }
+            return this.objectClass.getName().compareTo(otherLock.objectClass.getName());
+        }
+        return this.identity.compareTo(otherLock.identity);
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result
+                 + ((this.identity == null) ? 0 : this.identity.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        ObjectReadWriteLock other = (ObjectReadWriteLock) obj;
+        if (this.identity == null) {
+            if (other.identity != null) {
+                return false;
+            }
+        } else if (!this.identity.equals(other.identity)) {
+            return false;
+        }
+        return true;
+    }
+
+}

@@ -1,0 +1,7 @@
+> 发布被阻断（任务 :tny-game-net:checkPublishPrerequisites）：
+  - 当前分支 'probe/feature-nonwhitelist' 不属于可发布形态。发布仅允许在开发线形态（<主>.<次>.x，例如 5.7.x）或发布分支形态（<主>.<次>.<补丁>.release，例如 5.7.8.release）的分支上执行
+  请切换到开发线形态或发布分支形态的分支后再发布。
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.

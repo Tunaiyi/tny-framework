@@ -1,0 +1,93 @@
+/*
+ * Copyright (c) 2020 Tunaiyi
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.tny.game.basics.item;
+
+import java.util.*;
+
+/**
+ * 事物模型管理器
+ *
+ * @param <M>
+ * @author KGTny
+ */
+public interface ModelManager<M extends Model> {
+
+    Class<M> getModelClass();
+
+    /**
+     * 获取与指定ID相应的模型 <br>
+     *
+     * @param id ID
+     * @return 模型
+     */
+    M getModel(int id);
+
+    /**
+     * 获取与指定别名相应的模型 <br>
+     *
+     * @param itemAlias 别名
+     * @return 模型
+     */
+    M getModelByAlias(String itemAlias);
+
+    /**
+     * 获取与指定ID相应的模型,并检测是否为空 <br>
+     *
+     * @param id ID
+     * @return 模型
+     */
+    M getAndCheckModel(int id);
+
+    /**
+     * 获取与指定别名相应的模型,并检测是否为空 <br>
+     *
+     * @param itemAlias 别名
+     * @return 模型
+     */
+    M getAndCheckModelByAlias(String itemAlias);
+
+    /**
+     * 获取与指定ID集合相应的模型Map <br>
+     *
+     * @param idCollection ID集合
+     * @return 模型Map
+     */
+    Map<Integer, M> getModelMap(Collection<Integer> idCollection);
+
+    /**
+     * 获取与所有模型Map <br>
+     *
+     * @return 模型Map
+     */
+    Map<Integer, M> getAllModelMap();
+
+    /**
+     * 获取与指定ID集合相应的模型集合 <br>
+     *
+     * @param idCollection ID集合
+     * @return 模型集合
+     */
+    Collection<M> getModelCollection(Collection<Integer> idCollection);
+
+    /**
+     * 获取所有模型 <br>
+     *
+     * @return 所有模型
+     */
+    Collection<M> getAllModel();
+
+}

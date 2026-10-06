@@ -1,0 +1,58 @@
+// GitHub Packages 镜像通道约定插件（capability github-packages-mirror 的第三目的地声明点；
+// 规格文本见主账本 openspec/specs/github-packages-mirror/spec.md 现文）。
+// 本插件负责：为应用它的工程在 publishing.repositories 增加名为 githubPackages 的仓库声明，
+// 把同一套发布构件镜像分发到本仓库的 GitHub Packages Apache Maven 注册表。
+// 边界：发布门禁（凭据属性断言与一致性核对）在 tny.publish，POM 元数据与签名在 tny.publications，
+// Central 聚合上传在 tny.central，发布快通道 git 编排在 tny.release；本插件只增仓库声明，不触碰门禁。
+// 通道语义：正式版本与开发线快照两种形态均进入镜像。镜像有两个合法来源（publish-mirror-via-
+// credential-pair 变更拍板）——持续集成（正式版走 .github/workflows/publish.yml 第三步骤，快照走
+// .github/workflows/snapshot-mirror.yml 每日定时当前开发线）与发布者本机（成对配置两个凭据属性时
+// ./gradlew publish 即扇出镜像）。快照的可用性经复测确立——注册表服务端自动为 Gradle 上传的
+// 快照维护版本目录级含时间戳与构建号的 unique 元数据，消费端可解析并随重发滚动到最新构建，
+// 两来源并存重发各构建时间戳文件名互异不冲突（复测记录见归档目录
+// 2026-10-06-probe-github-packages-snapshot-support 的 verification/snapshot-spike.md，取证 S1 至 S8；
+// 首轮实测因漏检版本目录级元数据得出过相反结论，已由 open-github-packages-snapshot-mirror 变更
+// 按用户 2026-10-05 裁决勘误并开放快照）。快照的权威归档仍是内网快照仓与 Central 快照仓。
+plugins {
+    id 'maven-publish'
+}
+
+publishing {
+    repositories {
+        // 守卫为两个凭据属性成对判定的合取：githubPackagesUsername 与 githubPackagesToken
+        // 同时在位即声明本仓，正式版本与快照形态均在声明之列——版本形态的发布资格甄别由
+        // tny.publish 的分支形态白名单与版本形态一致性断言承担，声明守卫不参与甄别。
+        // 双属性必须成对且非空断言（空值视同不在位，与 tny.publish 四项属性断言的"空或缺失即
+        // 不在位"口径对齐）：取值与判定同源——guard 里的 getOrElse 表达式即是 credentials
+        // 使用的值，不存在"断言通过但取值为空串带伤声明"或半配置机器配置期报红的窗口
+        // （半配置事故为初版对抗验证定级的 blocker，双判加判空把两类窗口一并根除）。未成对配置的机器不声明本仓，任意分支形态下
+        // 本机 publish 的行为与镜像无关；守卫手法沿用 tny.publications 的 centralSnapshots 先例。
+        // 凭据允许两类注入位置：持续集成工作流 env（用户名取运行账户 github.actor）与发布者
+        // 本机用户级 gradle.properties；两个属性任何时候不得提交进仓库文件。正式版本发布推荐
+        // 由发布者单机或持续集成统一其一执行——本机先发过正式版的同号镜像后，持续集成镜像
+        // 步骤收到 HTTP 409 属"构件已在镜像中"的存证，判读与处置见 docs/release-process.md 阶梯。
+        def mirrorUser = providers.gradleProperty('githubPackagesUsername').getOrElse('').trim()
+        def mirrorToken = providers.gradleProperty('githubPackagesToken').getOrElse('').trim()
+        if (!mirrorUser.isEmpty() && !mirrorToken.isEmpty()) {
+            maven {
+                // 必须显式命名：tny.publications 的首个 Nexus 仓未命名，其默认名派生的任务
+                // publishMavenJavaPublicationToMavenRepository 已被硬编码写进 tny.publish 的
+                // 门禁谓词，再加一条未命名仓会与之冲突。本仓名派生的逐仓发布任务按名字规则
+                // 自动命中门禁谓词的通配条件，继承双层拦截，本插件不豁免。
+                name = 'githubPackages'
+                // URL 的属主段按官方注册表命名规则取全小写（GitHub 账户名含大写亦须折小写）；
+                // 与 POM scm 段页面地址 https://github.com/Tunaiyi/tny-framework 的大小写形态
+                // 不同属有意为之，两处用途不同。
+                url = 'https://maven.pkg.github.com/tunaiyi/tny-framework'
+                credentials {
+                    // 用户名与令牌均取自配置方提供的属性（沙箱实测该形态对内置令牌与
+                    // classic 令牌两条路、正式与快照两形态均上传成功）；
+                    // 属性键名不得含点号：Gradle 环境桥 ORG_GRADLE_PROJECT_* 拒绝含点属性名
+                    // （实测教训成文于 tny.publications.gradle 签名段注记）。
+                    username = mirrorUser
+                    password = mirrorToken
+                }
+            }
+        }
+    }
+}

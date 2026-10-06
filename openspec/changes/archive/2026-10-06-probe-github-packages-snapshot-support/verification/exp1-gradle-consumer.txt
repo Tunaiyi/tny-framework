@@ -1,0 +1,13 @@
+date: 2026-10-05T08:16:44Z 任务 3.1 Gradle 消费端解析请求序列（--debug 抓取，0.3.0-SNAPSHOT 自造布局坐标，--refresh-dependencies）
+===[请求序列：元数据→时间戳文件]===
+Executing request GET /tunaiyi/gpr-snapshot-spike/io/sandbox/snap/gpr-snap/0.3.0-SNAPSHOT/gpr-snap-0.3.0-20261005.092000-2.jar.sha1 HTTP/1.1
+Executing request GET /tunaiyi/gpr-snapshot-spike/io/sandbox/snap/gpr-snap/0.3.0-SNAPSHOT/gpr-snap-0.3.0-20261005.092000-2.module HTTP/1.1
+Executing request GET /tunaiyi/gpr-snapshot-spike/io/sandbox/snap/gpr-snap/0.3.0-SNAPSHOT/gpr-snap-0.3.0-20261005.092000-2.pom.sha1 HTTP/1.1
+Executing request GET /tunaiyi/gpr-snapshot-spike/io/sandbox/snap/gpr-snap/0.3.0-SNAPSHOT/maven-metadata.xml HTTP/1.1
+Executing request HEAD /tunaiyi/gpr-snapshot-spike/io/sandbox/snap/gpr-snap/0.3.0-SNAPSHOT/gpr-snap-0.3.0-20261005.092000-2.jar HTTP/1.1
+Executing request HEAD /tunaiyi/gpr-snapshot-spike/io/sandbox/snap/gpr-snap/0.3.0-SNAPSHOT/gpr-snap-0.3.0-20261005.092000-2.pom HTTP/1.1
+Executing request HEAD /tunaiyi/gpr-snapshot-spike/io/sandbox/snap/gpr-snap/0.3.0-SNAPSHOT/maven-metadata.xml HTTP/1.1
+===[解析结果]===
+RESOLVED: gpr-snap-0.3.0-SNAPSHOT.jar AT /Users/kgtny/.gradle/caches/modules-2/files-2.1/io.sandbox.snap/gpr-snap/0.3.0-SNAPSHOT/93205b29130112f8c75f4cbc06c8f6adcdea4f83/gpr-snap-0.3.0-SNAPSHOT.jar
+===[结论行]===
+Gradle 消费端先 HEAD/GET 目录级 maven-metadata.xml，随后解析成功命中时间戳构建（缓存路径含内容哈希）——快照镜像可解析性实证成立

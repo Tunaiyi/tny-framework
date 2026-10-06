@@ -1,0 +1,17 @@
+group "com.tny.game"
+
+apply plugin: "maven-publish"
+
+dependencies {
+
+
+    testImplementation project(":tny-game-cache-test")
+
+    api libs.spring_context_support
+    api libs.commons_beanutils
+    api libs.jedis
+    api project(":tny-game-cache")
+    api project(":tny-game-common-io")
+
+}
+

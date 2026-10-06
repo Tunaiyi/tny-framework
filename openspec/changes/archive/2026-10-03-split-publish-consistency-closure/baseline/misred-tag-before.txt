@@ -1,0 +1,9 @@
+> 发布被阻断（任务 :tny-game-net:checkPublishPrerequisites）：
+  - 发布标签 'v9.9.9' 在远端 'github' 不存在（或远端此刻不可达）：请先在发布分支 HEAD 创建同名附注标签并推送远端，再执行发布
+  请检查版本派生（tny.git）与 RELEASE_REPOSITORY_URL / SNAPSHOT_REPOSITORY_URL 配置是否与当前分支形态匹配。
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.

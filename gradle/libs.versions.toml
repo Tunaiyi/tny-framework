@@ -1,0 +1,128 @@
+# 依赖坐标与版本的具名事实源（gradle-build-style 需求三，adopt-gradle-official-dsl 起生效）。
+# 分工：本目录管第三方依赖坐标与其版本；gradle.properties 只留 BOM 级大头版本（插件声明与
+# BOM 导入句取用）及构建器参数。模块与工程脚本一律经 libs.<别名> 具名引用；约定插件经
+# dependencyNotation() 辅助把托管条目转『组:名:版本』串（tny.dependency-management 脚本内定义；
+# 早期注释所称 coord() 辅助并不存在，2026-10-03 对账修正）。别名沿用历史下划线键名以保住既有引用点零改写。
+# 边界：只收录有真实消费方的条目（八十六条死条目随 ext 表退役，裁决记录见变更 verification-notes）。
+
+[versions]
+graalvm = '23.1.1'
+groovy = '4.0.17'
+redisson = '3.25.2'
+
+[libraries]
+
+# 日志与异步队列——slf4j/log4j2 绑定族；log4j_slf4j2_impl 的来由见 add-integration-testing（集成测试告警捕获断言需真实后端）
+disruptor = { module = 'com.lmax:disruptor', version = '3.4.4' }
+log4jApi = { module = 'org.apache.logging.log4j:log4j-api' }
+log4jCore = { module = 'org.apache.logging.log4j:log4j-core' }
+log4jSlf4j2Impl = { module = 'org.apache.logging.log4j:log4j-slf4j2-impl' }
+log4jSlf4jImpl = { module = 'org.apache.logging.log4j:log4j-slf4j-impl' }
+slf4jApi = { module = 'org.slf4j:slf4j-api' }
+slf4jSimple = { module = 'org.slf4j:slf4j-simple' }
+
+# 注解与编译期校验——版本内联即事实源；checker 与 errorprone 供 API 标注
+checkerframework = { module = 'org.checkerframework:checker-qual', version = '3.42.0' }
+errorprone = { module = 'com.google.errorprone:error_prone_annotations', version = '2.24.1' }
+javaxAnnotationApi = { module = 'javax.annotation:javax.annotation-api', version = '1.3.2' }
+
+# 编解码与序列化——jackson 族版本由根 BOM（jacksonVersion）管理，声明不带版本；jprotobuf 版本内联自管
+# （protobuf-bom 只收录 com.google.protobuf 组坐标，不含 com.baidu，2026-10-03 对账修正）；
+# protobuf-java 族才由 protobuf-bom 管理；xstream 版本由根 dependencyManagement 托管
+jacksonAnnotations = { module = 'com.fasterxml.jackson.core:jackson-annotations' }
+jacksonCore = { module = 'com.fasterxml.jackson.core:jackson-core' }
+jacksonDatabind = { module = 'com.fasterxml.jackson.core:jackson-databind' }
+jacksonDataformatXml = { module = 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml' }
+jacksonDataformatYaml = { module = 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml' }
+jacksonDatatypeGuava = { module = 'com.fasterxml.jackson.datatype:jackson-datatype-guava' }
+jacksonDatatypeJava8 = { module = 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8' }
+jprotobuf = { module = 'com.baidu:jprotobuf', version = '2.4.23' }
+protobufJava3 = { module = 'com.google.protobuf:protobuf-java' }
+xstream = { module = 'com.thoughtworks.xstream:xstream', version = '1.4.21' }
+
+# GraalVM 多语言引擎——表达式引擎 expr-graaljs 族，版本统一走 [versions] graalvm
+graalvmJs = { module = 'org.graalvm.polyglot:js', version.ref = 'graalvm' }
+graalvmJsScriptengine = { module = 'org.graalvm.js:js-scriptengine', version.ref = 'graalvm' }
+graalvmPolyglot = { module = 'org.graalvm.polyglot:polyglot', version.ref = 'graalvm' }
+
+# Netty 传输族——版本全部由 netty-bom（gradle.properties nettyVersion）管理；epoll 的 linux-x86_64 分类件因 Gradle 8.5 的 TOML 语法不含 classifier 键，改在消费方 netty4 模块以 artifact 块声明（同值双写与对账守卫因此都不需要）
+nettyBuffer = { module = 'io.netty:netty-buffer' }
+nettyCodec = { module = 'io.netty:netty-codec' }
+nettyCommon = { module = 'io.netty:netty-common' }
+nettyHandler = { module = 'io.netty:netty-handler' }
+nettyResolver = { module = 'io.netty:netty-resolver' }
+nettyResolverDns = { module = 'io.netty:netty-resolver-dns' }
+nettyTransport = { module = 'io.netty:netty-transport' }
+nettyTransportNativeEpoll = { module = 'io.netty:netty-transport-native-epoll' }
+nettyTransportNativeKqueue = { module = 'io.netty:netty-transport-native-kqueue' }
+
+# Groovy 引擎——expr-groovy 引擎族，版本走 [versions] groovy
+groovy = { module = 'org.apache.groovy:groovy', version.ref = 'groovy' }
+groovyJsr223 = { module = 'org.apache.groovy:groovy-jsr223', version.ref = 'groovy' }
+
+# Apache Commons 与工具库——commons 族（除 cglib-nodep）与 guava/javassist/xstream 是根 dependencyManagement 的
+# 托管条目（dependencyNotation() 从本目录取版本）；cglib-nodep 版本事实源即本目录条目自身，由消费方直接带版本挂接
+# （2026-10-03 对账修正原"cglib 同是托管条目"失实表述）；redisson 两员共版本走 [versions] redisson
+aspectjrt = { module = 'org.aspectj:aspectjrt', version = '1.9.21' }
+caffeine = { module = 'com.github.ben-manes.caffeine:caffeine', version = '3.1.5' }
+cglibNodep = { module = 'cglib:cglib-nodep', version = '3.3.0' }
+commonsCodec = { module = 'commons-codec:commons-codec', version = '1.15' }
+commonsCollections4 = { module = 'org.apache.commons:commons-collections4', version = '4.4' }
+commonsCompress = { module = 'org.apache.commons:commons-compress', version = '1.22' }
+commonsIo = { module = 'commons-io:commons-io', version = '2.14.0' }
+commonsLang3 = { module = 'org.apache.commons:commons-lang3', version = '3.18.0' }
+commonsMath3 = { module = 'org.apache.commons:commons-math3', version = '3.6.1' }
+# 33.0.0-jre 为 jetcd-core 0.7.7 传递要求的最低满足值（fix-dependency-version-governance D3 于 2026-10-03 从 32.0.1-jre 升钉）：
+# 托管插件把带版本的直连依赖隐式转为全工程强制托管，钉值即全图 guava 唯一生效值，低于 jetcd 要求会静默压降其传递声明
+guava = { module = 'com.google.guava:guava', version = '33.0.0-jre' }
+javassist = { module = 'org.javassist:javassist', version = '3.30.2-GA' }
+jetcdCore = { module = 'io.etcd:jetcd-core', version = '0.7.7' }
+jmockJunit5 = { module = 'org.jmock:jmock-junit5', version = '2.12.0' }
+luaj = { module = 'org.luaj:luaj-jse', version = '3.0.1' }
+mvel = { module = 'org.mvel:mvel2', version = '2.5.1.Final' }
+quartzScheduler = { module = 'org.quartz-scheduler:quartz', version = '2.5.0-rc1' }
+redisson = { module = 'org.redisson:redisson', version.ref = 'redisson' }
+redissonSpringBootStarter = { module = 'org.redisson:redisson-spring-boot-starter', version.ref = 'redisson' }
+skywalkingApmAgentCore = { module = 'org.apache.skywalking:apm-agent-core', version = '8.13.0' }
+vertxGrpc = { module = 'io.vertx:vertx-grpc', version = '4.5.1' }
+xpp3 = { module = 'xpp3:xpp3', version = '1.1.4c' }
+zeroAllocationHashing = { module = 'net.openhft:zero-allocation-hashing', version = '0.16' }
+
+# 测试栈——junit/mockito/assertj/awaitility 版本由 Spring Boot BOM 接管（add-integration-testing D4），声明不带版本；testcontainers 族由 testcontainers-bom 接管
+assertj = { module = 'org.assertj:assertj-core' }
+awaitility = { module = 'org.awaitility:awaitility' }
+junitJupiter = { module = 'org.junit.jupiter:junit-jupiter' }
+junitJupiterApi = { module = 'org.junit.jupiter:junit-jupiter-api' }
+mockitoJunitJupiter = { module = 'org.mockito:mockito-junit-jupiter' }
+testcontainersJunit = { module = 'org.testcontainers:junit-jupiter' }
+testcontainersMongodb = { module = 'org.testcontainers:mongodb' }
+
+# Spring 家族——版本由 spring-boot-dependencies BOM 管理
+springBootAutoconfigure = { module = 'org.springframework.boot:spring-boot-autoconfigure' }
+springBootConfigurationProcessor = { module = 'org.springframework.boot:spring-boot-configuration-processor' }
+springBootStarter = { module = 'org.springframework.boot:spring-boot-starter' }
+springBootStarterDataMongodb = { module = 'org.springframework.boot:spring-boot-starter-data-mongodb' }
+springBootStarterLog4j2 = { module = 'org.springframework.boot:spring-boot-starter-log4j2' }
+springBootStarterTest = { module = 'org.springframework.boot:spring-boot-starter-test' }
+springContext = { module = 'org.springframework:spring-context' }
+springContextSupport = { module = 'org.springframework:spring-context-support' }
+springCore = { module = 'org.springframework:spring-core' }
+springTest = { module = 'org.springframework:spring-test' }
+
+# 工具模板与注册中心——tools_template 供 doc 插件模板件；nacos discovery 供 namnspace 装配线
+alibabaCloudStarterNacosDiscovery = { module = 'com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-discovery' }
+toolsTemplate = { module = 'com.funs.game:tools-template', version = '0.0.1-SNAPSHOT' }
+
+# bundles 分组：恒常一起挂接的坐标集合，模块侧经访问器一行挂接（trim-it-module-dependencies-block
+# 变更首用该形态，为集成测试模块回到 gradle-build-style 需求七的模块行数界线内）。
+# containerStack＝集成测试容器/全栈夹具的外部装配面：Spring Boot 全栈 starter 与 autoconfigure 的版本
+# 由 Spring Boot BOM 接管（add-integration-testing D4）；官方 spring-boot-starter-log4j2 替代手工拼装
+# （用户指定，坐标与 demo 接线一致）；log4j-core 提至 compile 因损坏帧 IT 需编程装配 appender 捕获告警
+# （specs R4"可观察"）；Testcontainers 的 JUnit 集成与 MongoDB 驱动由 testcontainers-bom 接管
+# （add-integration-testing D1 的 docker 标签隔离）。
+[bundles]
+containerStack = [
+    "springBootStarter", "springBootAutoconfigure",
+    "springBootStarterLog4j2", "testcontainersJunit",
+    "testcontainersMongodb", "log4jCore",
+]
