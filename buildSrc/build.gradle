@@ -18,6 +18,10 @@ gradlePlugin {
             id = 'tny.module-checker'
             implementationClass = 'tny.convention.checker.ModuleCheckerPlugin'
         }
+        moduleSetting {
+            id = 'tny.module-setting'
+            implementationClass = 'tny.convention.ModuleSettingPlugin'
+        }
     }
 }
 

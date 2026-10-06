@@ -38,3 +38,9 @@
 - `ModuleSetting` 转 Java 落位 `buildSrc/src/main/java/tny/convention/ModuleSetting.java`（包名与全部方法外形不变，Groovy 消费方编译通过），发布线成员判定改 `getRootProject().getExtensions().getByType(ProjectsExtension.class).javaProjects()`，无任何兜底；Groovy 原文件经 `git rm` 退役。修复后 `./gradlew -p buildSrc test` 全绿（含既有 20 用例）。
 - 端到端破坏探针：向 `tny-game-net/build.gradle` 临时注入 `tny.module-setting` 应用与 `enableUnpublished()` 声明，`:tny-game-net:help` 配置期报红，文案逐字为 `零发布合同违例：':tny-game-net' 声明 enableUnpublished()，却属于发布线 javaProjects 成员（命名后缀排除见 settings.gradle 约定注释）`；`git checkout` 还原后前后 sha256 均为 `ce6100cb5ffc…e83b4b94`（与 pilot apply-notes 组 5.4 记录的同一文件基线哈希一致，逐字节还原得证）。
 - 不误伤复验：`:tny-game-integration-test:help`、`:tny-benchmark:help`（两个既有合法声明者）与根 `help` 全绿；`ModuleCheckerPlugin.groovy` 委托注释的更正并入组 7 接线类 Java 化同提交（注释与被委托类的现文一致性随该提交达成）。
+## 组 5 tny.module-setting 同名替换
+
+- 单提交三件：`ModuleSettingPlugin.java` 新增、gradlePlugin 块注册行新增、`tny.module-setting.gradle` 退役（`git rm`）。类 javadoc 逐段承接原脚本头注释（取代 tny.demo-app/tny.unpublished 与两张登记清单的沿革、边界句），并登记载体沿革完整句。
+- 形态断言：`buildSrc/build/pluginDescriptors/tny.module-setting.properties` 的 implementation-class 指向 `tny.convention.ModuleSettingPlugin`（二进制实现类，非脚本桥接类）。
+- 兼容复验：根 `help`、`:tny-game-integration-test:help`（模块 plugins 块按 id 应用＋正文 `moduleSetting { enableUnpublished() }` 声明块零改动）绿；`./gradlew -p buildSrc test` 全绿。
+

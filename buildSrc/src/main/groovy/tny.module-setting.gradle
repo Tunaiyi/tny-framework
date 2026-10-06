@@ -1,8 +1,0 @@
-// 模块横切角色统一插件（consolidate-module-modes-plugin）：取代 tny.demo-app 与 tny.unpublished
-// 两个标记插件与两张根工程登记清单。应用本插件的工程通过 moduleSetting 扩展方法声明角色
-// （enableApp / enableUnpublished），实现类 tny.convention.ModuleSetting（就地核对模型见其类头）。
-// 边界：线成员归属（发布线/BOM/插件线等）由命名后缀判定（settings.gradle 约定注释），不在此处。
-
-import tny.convention.ModuleSetting
-
-extensions.create('moduleSetting', ModuleSetting, project)

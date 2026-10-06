@@ -27,8 +27,8 @@
 
 ## 5. tny.module-setting 薄壳同名替换
 
-- [ ] 5.1 新建 `tny.convention.setting` 无关的既有包形态——`ModuleSettingPlugin.java`（`buildSrc/src/main/java/tny/convention/`）一行创建 `moduleSetting` 扩展；同一提交内删除 `buildSrc/src/main/groovy/tny.module-setting.gradle` 并在 `buildSrc/build.gradle` gradlePlugin 块加注册行（id 不变）；类 javadoc 承接原脚本头注释（职责、取代史、边界句）；验证：`build/pluginDescriptors/tny.module-setting.properties` 的 implementationClass 指向二进制实现类，`./gradlew -q help` 绿
-- [ ] 5.2 验证：三个模块的 `moduleSetting {}` 声明块与两处 `enabled` 沿边查询零改动照常工作（`./gradlew -p buildSrc test` 绿加 `./gradlew :tny-game-integration-test:help` 配置期绿）
+- [x] 5.1 新建 `tny.convention.setting` 无关的既有包形态——`ModuleSettingPlugin.java`（`buildSrc/src/main/java/tny/convention/`）一行创建 `moduleSetting` 扩展；同一提交内删除 `buildSrc/src/main/groovy/tny.module-setting.gradle` 并在 `buildSrc/build.gradle` gradlePlugin 块加注册行（id 不变）；类 javadoc 承接原脚本头注释（职责、取代史、边界句）；验证：`build/pluginDescriptors/tny.module-setting.properties` 的 implementationClass 指向二进制实现类，`./gradlew -q help` 绿
+- [x] 5.2 验证：三个模块的 `moduleSetting {}` 声明块与两处 `enabled` 沿边查询零改动照常工作（`./gradlew -p buildSrc test` 绿加 `./gradlew :tny-game-integration-test:help` 配置期绿）
 
 ## 6. tny.compile-baseline 与 tny.bom-platform 同名替换
 
