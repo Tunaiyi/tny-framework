@@ -18,29 +18,52 @@ package tny.convention.checker;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * 零发布合同报错文案判定的单元测试（pilot-binary-build-conventions 任务 5.1）。
- * 本类只测文案判定的红方向与判定输入契约；"沿依赖边强制评估后读角色声明"的端到端语义
- * 由主构建破坏探针验证（设计决策 D3 的覆盖分工），不在单测范围。
+ * 零发布合同映射判定的单元测试（pilot-binary-build-conventions 任务 5.1；复验 CRITICAL-2
+ * 修复后覆盖红绿双向）：通过方向覆盖普通依赖边与自依赖边两种输入，违例方向断言判红对象
+ * 与理由三要素。"沿依赖边强制评估后读角色声明"的生命周期语义由接线类承担、经主构建
+ * 破坏探针验证（设计决策 D3 的覆盖分工），不在本测试范围。
  */
 class UnpublishedContractCheckTest {
 
     @Test
+    void publishedAndSelfEdgesPass() {
+        List<UnpublishedContractCheck.ProjectEdge> edges = List.of(
+                new UnpublishedContractCheck.ProjectEdge(":tny-game-rpc", "implementation", ":tny-game-common-lang", false),
+                new UnpublishedContractCheck.ProjectEdge(":tny-game-tester", "testImplementation", ":tny-game-tester", true));
+        assertTrue(UnpublishedContractCheck.violations(edges).isEmpty(),
+                "普通依赖与自依赖（即使声明位为真）都不得判红");
+    }
+
+    @Test
+    void emptyEdgeListPasses() {
+        assertTrue(UnpublishedContractCheck.violations(List.of()).isEmpty());
+    }
+
+    @Test
     void violationNamesBothPartiesAndDeclarationSource() {
-        String message = UnpublishedContractCheck.violation(":tny-game-rpc", "implementation", ":tny-benchmark");
+        List<UnpublishedContractCheck.ProjectEdge> edges = List.of(
+                new UnpublishedContractCheck.ProjectEdge(":tny-game-rpc", "implementation", ":tny-benchmark", true));
+        List<String> violations = UnpublishedContractCheck.violations(edges);
+        assertEquals(1, violations.size());
         assertEquals("零发布合同违例：:tny-game-rpc 的配置 implementation 依赖声明不发布工程 "
-                + "':tny-benchmark'（声明处：tny.module-setting enableUnpublished；见 benchmark-harness 规格）", message);
+                + "':tny-benchmark'（声明处：tny.module-setting enableUnpublished；见 benchmark-harness 规格）",
+                violations.get(0));
     }
 
     @Test
     void messageCarriesEvaluatorConfigurationAndTarget() {
         String message = UnpublishedContractCheck.violation(":a", "api", ":b");
         // 判红对象与理由的三要素缺一不可：依赖方路径、命中配置名、被依赖方路径
-        org.junit.jupiter.api.Assertions.assertAll(
-                () -> assertEquals(true, message.contains(":a")),
-                () -> assertEquals(true, message.contains("api")),
-                () -> assertEquals(true, message.contains("':b'")));
+        assertAll(
+                () -> assertTrue(message.contains(":a")),
+                () -> assertTrue(message.contains("api")),
+                () -> assertTrue(message.contains("':b'")));
     }
 }

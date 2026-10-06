@@ -43,7 +43,7 @@ import tny.convention.ProjectsExtension
  *     {@link ManagedVersionsCheck}。</li>
  * </ul>
  *
- * <p>边界：不做装配配置；组号对账须由根构建脚本在 tny.projects 应用行之后一行引入
+ * <p>边界：不做装配配置；组号对账须由根构建脚本在 tny.projects 应用行之后的小节引入
  * （成员集合与组号事实源经该扩展拉取）。单测与端到端的覆盖分工（设计决策 D3）：检查类单测
  * 覆盖判定函数的红绿两向，本接线类承载的 Gradle 生命周期语义（projectsEvaluated 时机、
  * configure-on-demand 已评估过滤、afterEvaluate 沿依赖边强制评估）由主构建配置期输出与
@@ -82,23 +82,31 @@ class ModuleCheckerPlugin implements Plugin<Project> {
         // projectsEvaluated"相比：按需配置评估下不再有"清单缺员静默漏检"盲区（合法性经探针实证：
         // afterEvaluate 窗口内 evaluationDependsOn 可用）；"声明不发布的工程不得属于发布线"的
         // 自检随声明即时执行，见 tny.convention.ModuleSetting.enableUnpublished。
+        // 分工（复验 CRITICAL-2 修复）：本段只负责生命周期——逐边解析目标、强制评估、查角色
+        // 声明位；映射判定与报错文案在 UnpublishedContractCheck.violations（红绿两向有单测）。
         projectsExt.moduleProjects().each { m ->
             m.afterEvaluate { evaluated ->
+                List<UnpublishedContractCheck.ProjectEdge> edges = []
                 evaluated.configurations.each { cfg ->
                     cfg.dependencies.withType(ProjectDependency).each { d ->
                         // getDependencyProject 已弃用（Gradle 9 移除），以工程路径解析等价替代
                         Project target = evaluated.rootProject.project(d.path)
                         if (target == evaluated) {
+                            // 自依赖边不进强制评估分支（对自身发起 evaluationDependsOn 非法）；
+                            // 判定函数内的同名自依赖跳过规则保留作双保险（D8 注记）
+                            edges << new UnpublishedContractCheck.ProjectEdge(evaluated.path, cfg.name, target.path, false)
                             return
                         }
                         if (!target.state.executed) {
                             evaluated.evaluationDependsOn(target.path)
                         }
-                        if (ModuleSetting.enabled(target, ModuleSetting.Mode.UNPUBLISHED)) {
-                            throw new GradleException(UnpublishedContractCheck.violation(
-                                    evaluated.path, cfg.name, target.path))
-                        }
+                        edges << new UnpublishedContractCheck.ProjectEdge(evaluated.path, cfg.name, target.path,
+                                ModuleSetting.enabled(target, ModuleSetting.Mode.UNPUBLISHED))
                     }
+                }
+                List<String> violations = UnpublishedContractCheck.violations(edges)
+                if (!violations.isEmpty()) {
+                    throw new GradleException(violations.get(0))
                 }
             }
         }

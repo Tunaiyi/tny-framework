@@ -54,7 +54,7 @@ apply 时点的已记录例外：接线类 ModuleCheckerPlugin 取 Groovy 而非
 
 备选是 tny.github-packages（最小、90 行、有既有端到端证据）与 tny.module-checker。取后者的理由：它是对账逻辑的集大成者，正好检验新增需求"检查逻辑必须携带单元测试"的落地形态；它的三项对账相互独立，天然给出类拆分边界；且它消费 ext 五键最全，与 D4 的收敛改造同域共振，一次改动同时验证两条机制。代价是它比 github-packages 复杂（107 行对 90 行含守卫），但试点要证明的是最难样本而非最易样本。
 
-拆分形态：`ModuleCheckerPlugin`（实现 `Plugin<Project>`，仅做时机接线——`gradle.projectsEvaluated` 回调里依次调用三个检查类并聚合问题清单抛 GradleException，行为与原脚本逐字对应）；`GroupAlignmentCheck`、`UnpublishedContractCheck`、`ManagedVersionsCheck` 三个纯逻辑类，输入为工程集合与事实值、输出为问题清单字符串列表，不持有 Gradle 生命周期对象（便于 ProjectBuilder 直接构造输入）。原 `tny.module-checker.gradle` 文件删除，`buildSrc/build.gradle` 的 gradlePlugin 块以同名 id `tny.module-checker` 注册实现类——同一 id 两形态不并存已是规格差量需求一的明文判据。零发布合同一项依赖沿依赖边强制评估被依赖方的 Gradle 语义，纯逻辑类的单测只覆盖判定函数本体（给定型的"哪些工程声明了角色"映射表断言红绿方向），强制评估时机的端到端语义仍由主构建的破坏探针承担——这一分工在检查类的 javadoc 里写明。
+拆分形态：`ModuleCheckerPlugin`（实现 `Plugin<Project>`，仅做时机接线——组号对账与托管版本面对账在 `gradle.projectsEvaluated` 回调里调用检查类并聚合问题清单抛 GradleException，零发布合同逐成员工程在 `afterEvaluate` 收尾调用检查类抛首条违例，与原脚本时机逐字一致）；`GroupAlignmentCheck`、`UnpublishedContractCheck`、`ManagedVersionsCheck` 三个纯逻辑类，输入为工程集合与事实值、输出为问题清单字符串列表，不持有 Gradle 生命周期对象（便于 ProjectBuilder 直接构造输入）。原 `tny.module-checker.gradle` 文件删除，`buildSrc/build.gradle` 的 gradlePlugin 块以同名 id `tny.module-checker` 注册实现类——同一 id 两形态不并存已是规格差量需求一的明文判据。零发布合同一项依赖沿依赖边强制评估被依赖方的 Gradle 语义，纯逻辑类的单测覆盖判定函数本体（复验 CRITICAL-2 修复后 ProjectEdge 清单输入的映射判定收回检查类，红绿方向都在；接线类只保留逐边强制评估与角色声明位采集），强制评估时机的端到端语义仍由主构建的破坏探针承担——这一分工在检查类的 javadoc 里写明。
 
 ### D4 根 ext 五键收敛为 tny.projects 类型化扩展，recorded assumption（收敛范围）
 
@@ -93,7 +93,7 @@ apply 时点的已记录例外：接线类 ModuleCheckerPlugin 取 Groovy 而非
 ### 爆炸半径检查摘要（design 规则要求的 codegraph 与 grep 双口径）
 
 - codegraph `analyze_impact`（tny.module-checker.gradle，modify 口径）：direct 0、total 0、risk low——脚本文件无跨符号调用边可析，该结果按"无隐藏调用方"读，不单独作数。
-- grep 全仓复核（权威口径）：`tny.module-checker` 的应用点唯一（根 `build.gradle:47` 一行）；四处按名提及均为注释（tny.dependency-management:27、tny.java-module:116、tny.integration-test:115、settings.gradle:84），插件 id 二进制化后不变，四处注释语义继续成立无需改动。根 ext 五键消费面见 Context 第三条清单；根 `build.gradle:52-53` 注释自述"约定插件之间不互相 apply（实测 Gradle 8.5）"即探针一的复测对象，本批不触碰该行脚本（探针在沙箱做）。
+- grep 全仓复核（权威口径）：`tny.module-checker` 的应用点唯一（根 `build.gradle:47` 一行；ext 块删除后行号前移，现文为 39 行）；四处按名提及均为注释（tny.dependency-management:27、tny.java-module:116、tny.integration-test:115、settings.gradle:84），插件 id 二进制化后不变，四处注释语义继续成立无需改动。根 ext 五键消费面见 Context 第三条清单；根 `build.gradle:52-53` 注释自述"约定插件之间不互相 apply（实测 Gradle 8.5）"即探针一的复测对象，本批不触碰该行脚本（探针在沙箱做）。
 
 ## Risks / Trade-offs
 
@@ -119,6 +119,8 @@ apply 时点的已记录例外：接线类 ModuleCheckerPlugin 取 Groovy 而非
 回滚策略：步骤 4、5 各自独立提交，`git revert` 单提交即可分别回退；脚本文件删除在 revert 后自动恢复；buildSrc 基建（步骤 3）被回退时其测试文件一并失效，无悬挂状态。生产分支上任何一步未过零差异即停止，不带病进入下一步。
 
 ## Open Questions
+
+- 归档后判据歧义预登记（复验 SUGGESTION，入账后若被按宽读法质疑在本册修口径）：ManagedVersionsCheck 的 GUARD_COORDS 常量表与版本目录同名坐标字符串的关系属"对账探针输入"而非"依赖声明"，需求三"不得复制条目表"的适用边界需要澄清；需求六"以注释段落标题对应脚本区块名"对纯对账类插件（无仓库/依赖/任务区块）的适用解释为"未涉及的区块省略"，段落标题保留对账语义名。
 
 - buildSrc 是否需要独立的 `settings.gradle` 与依赖锁定文件治理（Gradle 8.x 后 buildSrc 可用 build-logic 替代形态）——不影响本批任何工件，留待批次 2 的总装配册评估。
 - 后续批次（模块装配线、发布线、central 文本重排类）的迁移顺序与是否逐批引入 Spotless/Checkstyle 到 buildSrc——各批立册时再定，本批不预设。

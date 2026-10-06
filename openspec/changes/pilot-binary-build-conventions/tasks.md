@@ -22,7 +22,7 @@
 ## 4. tny.projects 扩展（根 ext 五键收敛）
 
 - [x] 4.1 新建 `buildSrc/src/main/java/tny/convention/ProjectsExtension.java`：projectGroup、pluginLegacyGroup 两个字符串属性与 moduleProjects()、javaProjects()、gradleProjects() 三个派生集合方法、isBom/isGradlePlugin/isIntegrationTest 三个谓词方法；派生逻辑逐字对照根 `build.gradle:25-39` 现有命名约定（含 javaProjects 排除三类），javadoc 记录"按名过滤不触发工程评估、configure-on-demand 语义与原 ext 派生等价"论断；`ProjectsPlugin.java` 创建名为 `projects` 的扩展并设组号默认值
-- [x] 4.2 新建 `ProjectsExtensionTest`：ProjectBuilder 构造带三个后缀成员的假工程集合，断言三类谓词与派生集合的红绿两向（含 -tester 不进任何派生集合的反例）；先于消费方切换提交
+- [x] 4.2 新建 `ProjectsExtensionTest`：ProjectBuilder 构造带三个后缀成员的假工程集合，断言三类谓词与派生集合的红绿两向（含 -tester 不落入任何排除类别谓词的反例——按 fix-dependency-version-governance D8 既有语义，-tester 留在 moduleProjects 与 javaProjects 两集合中）；先于消费方切换提交
 - [x] 4.3 根 `build.gradle`：删除 L25-39 ext 块，改为 `apply plugin: 'tny.projects'` 一行加原注释随迁（组号单一事实源出处注释移入 ProjectsPlugin javadoc，脚本保留指针注释）；L55、L61 `configure(gradleProjects)`/`configure(javaProjects)` 改读 `extensions.getByType(ProjectsExtension).gradleProjects()` 等（L52-53"不互 apply"注释保留原文——本批不推翻其结论，探针一只服务后续册）
 - [x] 4.4 六个消费脚本改读扩展（design D4 清单）：tny.bom-platform（parent.moduleProjects 与 endsWith 排除）、tny.java-module（rootProject.ext.moduleProjects 与 -tester 判定保持原样）、tny.dependency-management（rootProject.ext.projectGroup）、tny.central（javaProjects＋两处后缀判定）、tny.integration-test（endsWith 判定改 isIntegrationTest 谓词）、tny.module-checker 不在此列（其五键消费随 5.2 二进制化在类内直读扩展）；触碰行范围内按"触碰即改"处理违例形态
 - [x] 4.5 验证：`grep -rn "ext\.\(projectGroup\|pluginLegacy\|moduleProjects\|javaProjects\|gradleProjects\)\|parent\.moduleProjects\|\.ext\.moduleProjects" --include='*.gradle' buildSrc build.gradle` 零命中（注释行逐条豁免判断）；`./gradlew -q :tny-game-common-lang:dependencies --configuration compileClasspath` 与 4.x 前 HEAD 输出零差异（同 daemon、UTF-8 locale 钉住，按抓样口径）
@@ -30,8 +30,8 @@
 ## 5. tny.module-checker 二进制化（首个可单测样板）
 
 - [x] 5.1 新建三个纯逻辑检查类 `tny.convention.checker.GroupAlignmentCheck`、`UnpublishedContractCheck`、`ManagedVersionsCheck`（`buildSrc/src/main/java/` 下）：输入为工程描述记录（名字、组、构建文件存在性、角色声明映射）与事实值、输出问题清单字符串列表；判定文本与原脚本逐字对应；每类随附 ProjectBuilder 单测覆盖一个通过用例与一个违例用例，违例用例断言错误信息含判红对象与理由（新增需求第一场景）
-- [x] 5.2 新建 `ModuleCheckerPlugin`：`gradle.projectsEvaluated` 接线内依次调用三类并聚合抛 GradleException，工程描述记录的采集方式逐字对照原脚本（含"未评估工程跳过"分支、沿依赖边强制评估读 ModuleSetting 的零发布合同段、`getDependencyProject` 弃用替代法）；类头 javadoc 承载原脚本头注释全部职责边界与 provenance（三项对账的规格出处、adopt-gradle-official-dac 沿革改写为完整句子），javadoc 写明单测覆盖与端到端语义的分工（design D3）
-- [x] 5.3 删除 `buildSrc/src/main/groovy/tny.module-checker.gradle`；确认注册块（3.1）的 id 生效、根 `build.gradle:47` 应用行不改；四处按名注释提及（爆炸半径摘要所列）复核语义成立无需改动
+- [x] 5.2 新建 `ModuleCheckerPlugin`：`gradle.projectsEvaluated` 接线内依次调用三类并聚合抛 GradleException，工程描述记录的采集方式逐字对照原脚本（含"未评估工程跳过"分支、沿依赖边强制评估读 ModuleSetting 的零发布合同段、`getDependencyProject` 弃用替代法）；类头 javadoc 承载原脚本头注释全部职责边界与 provenance（三项对账的规格出处、adopt-gradle-official-dsl 沿革改写为完整句子），javadoc 写明单测覆盖与端到端语义的分工（design D3）
+- [x] 5.3 删除 `buildSrc/src/main/groovy/tny.module-checker.gradle`；确认注册块（3.1）的 id 生效、根 `build.gradle:47` 应用行不改（ext 块删除后现文为 39 行）；四处按名注释提及（爆炸半径摘要所列）复核语义成立无需改动
 - [x] 5.4 验证：`./gradlew -p buildSrc test` 全绿；`./gradlew -q help` 配置期对账照常通过；破坏探针两例（design D7）：临时改根组号事实源设值使组号对账报红、临时给某 -integration-test 模块构建文件加 publishing 块使零发布合同报红，各自捕获报错文案后恢复原文件并用 sha256 比对确认逐字节还原
 
 ## 6. 零差异与全量回归
