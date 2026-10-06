@@ -17,7 +17,7 @@
 - [x] 3.1 `buildSrc/build.gradle` 增加 `id 'java-gradle-plugin'`、`gradlePlugin { plugins { moduleChecker { id = 'tny.module-checker'; implementationClass = 'tny.convention.checker.ModuleCheckerPlugin' }; projects { id = 'tny.projects'; implementationClass = 'tny.convention.ProjectsPlugin' } } }` 注册块、`testImplementation platform('org.junit:junit-bom:<现值>')` 与 junit-jupiter 依赖、`tasks.withType(Test).configureEach { useJUnitPlatform() }`；JUnit BOM 版本字面量按 D5 注释说明与主仓版本目录的关系
 - [x] 3.2 新建 `buildSrc/src/test/java/tny/convention/BuildSrcSmokeTest.java`（ProjectBuilder 建一个空工程并断言 extensions 容器可用），作为基建打通锚；许可证头按项目规则
 - [x] 3.3 `.github/workflows/build.yml` check 档主构建命令前增加 `./gradlew -p buildSrc test` 步骤
-- [ ] 3.4 验证：`./gradlew -p buildSrc test` 本地绿；`git push` 后该分支 build.yml check 作业绿且日志含 buildSrc 测试步骤执行记录
+- [x] 3.4 验证：`./gradlew -p buildSrc test` 本地绿；`git push` 后该分支 build.yml check 作业绿且日志含 buildSrc 测试步骤执行记录
 
 ## 4. tny.projects 扩展（根 ext 五键收敛）
 

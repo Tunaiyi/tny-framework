@@ -18,7 +18,7 @@
 
 - `./gradlew -p buildSrc test` 本地绿（冒烟 1 用例）。gradlePlugin 注册块与 groovy-gradle-plugin 并存无冲突。
 - build.yml unit 作业在 Unit tests 前新增 "buildSrc tests (construction logic gate)" 步骤（快速失败、不设 continue-on-error）。
-- 3.4 线上半：待推送后确认 CI 作业含该步骤执行记录。
+- 3.4 线上半已完成：推送后 run 37489237092 全作业绿，unit 作业日志实证 "buildSrc tests (construction logic gate)" 步骤执行（15:38:49 起）。
 
 ## 组 4 tny.projects 收敛
 
