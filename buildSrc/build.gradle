@@ -22,6 +22,10 @@ gradlePlugin {
             id = 'tny.module-setting'
             implementationClass = 'tny.convention.ModuleSettingPlugin'
         }
+        compileBaseline {
+            id = 'tny.compile-baseline'
+            implementationClass = 'tny.convention.CompileBaselinePlugin'
+        }
     }
 }
 

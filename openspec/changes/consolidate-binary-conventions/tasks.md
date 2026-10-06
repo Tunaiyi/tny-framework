@@ -32,7 +32,7 @@
 
 ## 6. tny.compile-baseline 与 tny.bom-platform 同名替换
 
-- [ ] 6.1 `CompileBaselinePlugin.java` 等价迁移（`configurations.configureEach` 双缓存策略、`tasks.withType(AbstractCompile/Javadoc).configureEach` 经 `providers` 读 encoding 属性）；同一提交内删脚本加注册；验证：与 baseline 任务图比对零漂移、`./gradlew -q help` 绿
+- [x] 6.1 `CompileBaselinePlugin.java` 等价迁移（`configurations.configureEach` 双缓存策略、`tasks.withType(AbstractCompile/Javadoc).configureEach` 经 `providers` 读 encoding 属性）；同一提交内删脚本加注册；验证：与 baseline 任务图比对零漂移、`./gradlew -q help` 绿
 - [ ] 6.2 `BomPlatformPlugin.java` 等价迁移（经 `project.getParent()` 按类型取根扩展、constraints 派生循环与 `isIntegrationTest` 排除与按名排序逐句等价，类 javadoc 承接原头注释）；同一提交内删脚本加注册；验证：`./gradlew :tny-game-bom:generatePomFileForMavenJavaPublication` 后 POM 与 baseline 逐字节一致
 - [ ] 6.3 验证：`./gradlew -p buildSrc test` 全绿；两枚描述符形态断言逐条记录入 apply-notes
 

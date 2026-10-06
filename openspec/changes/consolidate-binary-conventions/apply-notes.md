@@ -44,3 +44,9 @@
 - 形态断言：`buildSrc/build/pluginDescriptors/tny.module-setting.properties` 的 implementation-class 指向 `tny.convention.ModuleSettingPlugin`（二进制实现类，非脚本桥接类）。
 - 兼容复验：根 `help`、`:tny-game-integration-test:help`（模块 plugins 块按 id 应用＋正文 `moduleSetting { enableUnpublished() }` 声明块零改动）绿；`./gradlew -p buildSrc test` 全绿。
 
+
+## 组 6 装配线薄替换（compile-baseline 与 bom-platform）
+
+- 6.1 通过（提交含实现类、注册行与脚本删除三件）：buildSrc 测试绿、根 help 绿、全量任务图对 baseline 剔噪后**零漂移行**、描述符 `tny.compile-baseline.properties` 指向 `tny.convention.CompileBaselinePlugin`。两处 API 修正随本组发生并在此如实登记：`AbstractCompile` 公开 API 无 options 访问器（javap 核实），按其在位子类型 `JavaCompile`/`GroovyCompile` 分列，行为面等值论证入类 javadoc；BOM 约束的 `constraints{ api it }` 动态分发在 Java 侧对应 `DependencyConstraintHandler.add("api", notation)`（javap 核实该接口无 api() 方法）。
+- 6.1 附带记录：基线五样本不含 BOM 自身 POM，而任务 6.2 判据需要它——已在 bom-platform 脚本尚未退役时补抓 `baseline/pom-bom-before.xml`（302 行），样件清单随之增列。
+- 6.1 过程一处返工如实入账：组 5 首笔提交因 git add pathspec 撞已删除路径而只含脚本删除（注册与实现类滞留工作树），当场以 soft-reset 重做为"删除＋注册＋实现"单提交（fd9ec4d4 废弃、当前 HEAD 为原子形态）；该事故正是本册形态断言纪律要防的同 id 分裂态，防呆有效。
