@@ -31,3 +31,10 @@
 - 判据结果：dm 目标形态三判据全过（带类型编译、裸 id 子工程应用、类加载器同一）；双声明变体（根带版本 apply false 与 buildSrc 依赖并存）实测为硬失败，报错原文与 nmcp 的 maven-publish 前置、jmh 的仓库缺口均逐字入 design——D2 降级分支确认不需要启用。
 - 对任务清单的即时反哺：因双声明硬失败结论，任务 7.1（buildSrc 增依赖）与 7.3（根声明行退役）合并为同一提交执行，任务文字已同步。
 - 沙箱已删除，`git status` 除在途会话的 `tny-benchmark/results/bench-20261006-quick.json` 外零污染。
+
+## 组 4 零发布合同自检修复
+
+- 测试先行得证：`ModuleSettingTest` 四用例在失效代码（Groovy 原类）上首跑，违例向 `missingProjectsExtension_failsLoudWithoutFallback` 与 `javaLineMemberDeclaresUnpublished_failsFastAtDeclaration` 精确失败（4 tests completed, 2 failed），两个接受向通过——失败位置即死守卫本体，用例不是空转。
+- `ModuleSetting` 转 Java 落位 `buildSrc/src/main/java/tny/convention/ModuleSetting.java`（包名与全部方法外形不变，Groovy 消费方编译通过），发布线成员判定改 `getRootProject().getExtensions().getByType(ProjectsExtension.class).javaProjects()`，无任何兜底；Groovy 原文件经 `git rm` 退役。修复后 `./gradlew -p buildSrc test` 全绿（含既有 20 用例）。
+- 端到端破坏探针：向 `tny-game-net/build.gradle` 临时注入 `tny.module-setting` 应用与 `enableUnpublished()` 声明，`:tny-game-net:help` 配置期报红，文案逐字为 `零发布合同违例：':tny-game-net' 声明 enableUnpublished()，却属于发布线 javaProjects 成员（命名后缀排除见 settings.gradle 约定注释）`；`git checkout` 还原后前后 sha256 均为 `ce6100cb5ffc…e83b4b94`（与 pilot apply-notes 组 5.4 记录的同一文件基线哈希一致，逐字节还原得证）。
+- 不误伤复验：`:tny-game-integration-test:help`、`:tny-benchmark:help`（两个既有合法声明者）与根 `help` 全绿；`ModuleCheckerPlugin.groovy` 委托注释的更正并入组 7 接线类 Java 化同提交（注释与被委托类的现文一致性随该提交达成）。

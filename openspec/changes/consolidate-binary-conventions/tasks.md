@@ -20,10 +20,10 @@
 
 ## 4. 零发布合同自检修复（测试先行）
 
-- [ ] 4.1 新建 `buildSrc/src/test/java/tny/convention/ModuleSettingTest.java` 三用例（ProjectBuilder 父子夹具，根先应用 tny.projects）：线内命名（如 tny-game-core）应用 module-setting 并调 `enableUnpublished()` 断言抛错且文案含工程路径与 javaProjects 字样；线外命名（-integration-test 后缀、无前缀两形态）断言不抛；根未应用 tny.projects 时断言"扩展不在位"报错；在 HEAD 现文上先跑一次并记录违例用例确实失败（证明用例打中缺陷本体）
-- [ ] 4.2 `ModuleSetting` 转 Java（包名 tny.convention 与全部方法外形不变：`enum Mode`、`has(Mode)`、`static enabled(Project, Mode)`、`void enableApp()`、`void enableUnpublished()`），`enableUnpublished` 成员判定改 `getRootProject().extensions.getByType(ProjectsExtension.class).javaProjects()`，删除任何 has 兜底；类头 javadoc 承接原 Groovy 类头全部注记并登记"自检曾随根 ext 退役静默失效"的实测教训完整句；删除 `ModuleSetting.groovy`；验证：4.1 三用例全绿、`./gradlew -p buildSrc test` 全绿
-- [ ] 4.3 端到端破坏探针：临时给 `tny-game-net/build.gradle` 加 `id 'tny.module-setting'` 应用行与 `moduleSetting { enableUnpublished() }` 声明块，运行 `./gradlew :tny-game-net:help` 记录配置期报红文案，还原并用 sha256 对账逐字节一致；探针记录入 apply-notes
-- [ ] 4.4 验证：`./gradlew -q help` 配置期对账照常通过（三个既有声明者不报红——线外语义保持）；组 4 全部提交后 `./gradlew -p buildSrc test` 绿
+- [x] 4.1 新建 `buildSrc/src/test/java/tny/convention/ModuleSettingTest.java` 三用例（ProjectBuilder 父子夹具，根先应用 tny.projects）：线内命名（如 tny-game-core）应用 module-setting 并调 `enableUnpublished()` 断言抛错且文案含工程路径与 javaProjects 字样；线外命名（-integration-test 后缀、无前缀两形态）断言不抛；根未应用 tny.projects 时断言"扩展不在位"报错；在 HEAD 现文上先跑一次并记录违例用例确实失败（证明用例打中缺陷本体）
+- [x] 4.2 `ModuleSetting` 转 Java（包名 tny.convention 与全部方法外形不变：`enum Mode`、`has(Mode)`、`static enabled(Project, Mode)`、`void enableApp()`、`void enableUnpublished()`），`enableUnpublished` 成员判定改 `getRootProject().extensions.getByType(ProjectsExtension.class).javaProjects()`，删除任何 has 兜底；类头 javadoc 承接原 Groovy 类头全部注记并登记"自检曾随根 ext 退役静默失效"的实测教训完整句；删除 `ModuleSetting.groovy`；验证：4.1 三用例全绿、`./gradlew -p buildSrc test` 全绿
+- [x] 4.3 端到端破坏探针：临时给 `tny-game-net/build.gradle` 加 `id 'tny.module-setting'` 应用行与 `moduleSetting { enableUnpublished() }` 声明块，运行 `./gradlew :tny-game-net:help` 记录配置期报红文案，还原并用 sha256 对账逐字节一致；探针记录入 apply-notes
+- [x] 4.4 验证：`./gradlew -q help` 配置期对账照常通过（三个既有声明者不报红——线外语义保持）；组 4 全部提交后 `./gradlew -p buildSrc test` 绿
 
 ## 5. tny.module-setting 薄壳同名替换
 
