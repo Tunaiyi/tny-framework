@@ -14,6 +14,10 @@ gradlePlugin {
             id = 'tny.projects'
             implementationClass = 'tny.convention.ProjectsPlugin'
         }
+        moduleChecker {
+            id = 'tny.module-checker'
+            implementationClass = 'tny.convention.checker.ModuleCheckerPlugin'
+        }
     }
 }
 
