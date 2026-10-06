@@ -62,5 +62,5 @@
 
 ## 11. 收口
 
-- [ ] 11.1 `openspec verify consolidate-binary-conventions` 无 CRITICAL；用户批准后执行归档，规格差量同步入账本
-- [ ] 11.2 归档后登记去向：9.2 若超阈其移交指名的合并册、探针三对 nmcp/jmh 的形态结论被后续册引用的出处句，写入下一册（装配线册）立项时的引用清单；验证：`openspec list --json` 本册不再出现于活动目录，主规格需求数由 12 变为 13
+- [x] 11.1 `openspec verify consolidate-binary-conventions` 无 CRITICAL；用户批准后执行归档，规格差量同步入账本
+- [x] 11.2 归档后登记去向：9.2 若超阈其移交指名的合并册、探针三对 nmcp/jmh 的形态结论被后续册引用的出处句，写入下一册（装配线册）立项时的引用清单；验证：`openspec list --json` 本册不再出现于活动目录，主规格需求数由 12 变为 13
