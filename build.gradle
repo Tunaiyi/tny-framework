@@ -1,3 +1,5 @@
+import tny.convention.ProjectsExtension
+
 plugins {
     // nmcp（Central Portal 上传器，central-publishing D3）：aggregation 挂根、模块侧经
     // tny.central 与 tny.publications 分别 apply，直接消费既有 mavenJava。
@@ -22,24 +24,14 @@ apply plugin: 'tny.git'
 apply plugin: 'tny.release'
 apply plugin: 'tny.integrate'
 
-ext {
-    // 发布构件组号的单一事实源（central-publishing D2）：模块不得另行声明组号
-    // （Central 命名空间验证与凭证迁移记录见该变更归档）。
-    projectGroup = 'com.tnydev.game'
-    // 唯一例外：插件模块组号与插件 id 同谱系（spec central-publishing"Gradle 插件构件不入 Central"）。
-    pluginLegacyGroup = 'com.tny.game'
-
-    moduleProjects = subprojects.findAll { it.name.startsWith('tny-game-') }
-    // javaProjects 按命名约定排除三类（zero-enumeration-shared-scripts：共享脚本不点名，约定权威定义见 settings.gradle 注释）：
-    // -bom 无编译构件；-gradle 走例外组号（spec central-publishing）；-integration-test 仅测试代码（add-integration-testing design D3）。
-    javaProjects = moduleProjects.findAll {
-        !it.name.endsWith('-bom') && !it.name.endsWith('-gradle') && !it.name.endsWith('-integration-test')
-    }
-    gradleProjects = moduleProjects.findAll { it.name.endsWith('-gradle') }
-}
+// 装配线成员判定与组号事实源收进类型化扩展 tny.projects（pilot-binary-build-conventions D4）：
+// 命名约定判定、组号单一事实源注释（central-publishing D2 与 add-integration-testing D3 出处）
+// 随实现迁入 tny.convention.ProjectsExtension / ProjectsPlugin 的 javadoc；约定权威定义仍在 settings.gradle 注释。
+apply plugin: 'tny.projects'
+def projectsExt = extensions.getByType(ProjectsExtension)
 
 // Central 通道：centralBundle / centralUpload（capability central-publishing）；
-// tny.central 须在 ext 声明块之后加载（聚合依赖 moduleProjects 集合）。
+// tny.central 须在 tny.projects 应用行之后加载（聚合成员判定依赖 projects 扩展在位）。
 apply plugin: 'com.gradleup.nmcp.aggregation'
 apply plugin: 'tny.central'
 
@@ -52,13 +44,13 @@ configure(subprojects) {
     apply plugin: 'io.spring.dependency-management'
     apply plugin: 'tny.dependency-management'
 }
-configure(gradleProjects) {
+configure(projectsExt.gradleProjects()) {
     apply plugin: 'tny.publish'
     apply plugin: 'tny.publish.gate'
     apply plugin: 'tny.compile-baseline'
     apply plugin: 'tny.plugin-module'
 }
-configure(javaProjects) {
+configure(projectsExt.javaProjects()) {
     apply plugin: 'com.gradleup.nmcp'
     apply plugin: 'tny.publish'
     apply plugin: 'tny.publish.gate'

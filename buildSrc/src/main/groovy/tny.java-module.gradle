@@ -1,5 +1,7 @@
+import tny.convention.ProjectsExtension
+
 // Java 发布模块线装配约定插件（adopt-gradle-official-dsl 插件化，前身为 gradle/java-module.gradle；
-// 成员：根 ext 的 javaProjects 集合）。本插件负责发布模块共有的编译、验证与构件接线配置：java/java-library 插件、
+// 成员：根工程 tny.projects 类型化扩展的 java 线成员集合）。本插件负责发布模块共有的编译、验证与构件接线配置：java/java-library 插件、
 // toolchain 钉定、javadoc 与 sources 构件通道、公共依赖、logging 绑定排他、
 // 单元/集成两级测试通道划分、IDEA 输出目录、依赖源码包批量下载任务、jar 清单四属性与 mavenJava 构件接线；
 // 编码钉定与动态依赖缓存、发布元数据、门禁等共享块与兄弟插件（tny.compile-baseline、
@@ -114,7 +116,9 @@ dependencies {
     // 谓词排除宿主工程自身（fix-dependency-version-governance D8）：tester 也属 javaProjects 装配线成员，
     // 原形态下它会把自己的工程对象挂进自身的 testImplementation 形成自依赖边（无 POM 泄漏面，属脚本卫生违例；
     // tny.module-checker 零发布合同里"依赖目标是自身即跳过"的分支恰是该形态存在的自证，保留作双保险）
-    rootProject.ext.moduleProjects.findAll { it.name.endsWith('-tester') && it != project }.each {
+    // 成员集合经根工程 tny.projects 类型化扩展拉取；-tester 检索谓词无第二消费方、按三次法则保持原样（pilot-binary-build-conventions D4）
+    def rootProjectsExt = rootProject.extensions.getByType(ProjectsExtension)
+    rootProjectsExt.moduleProjects().findAll { it.name.endsWith('-tester') && it != project }.each {
         add('testImplementation', it)
     }
 }

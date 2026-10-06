@@ -1,6 +1,9 @@
+import tny.convention.ProjectsExtension
+
 // Gradle 插件模块例外组号：插件 id com.tny.game 及其 marker 坐标谱系不随框架主组号迁移
-// （spec central-publishing"Gradle 插件构件本次不入 Central"；例外登记于 design D2）
-group = pluginLegacyGroup
+// （spec central-publishing"Gradle 插件构件本次不入 Central"；例外登记于 design D2）；
+// 事实值经根工程 tny.projects 类型化扩展拉取（pilot-binary-build-conventions D4）
+group = rootProject.extensions.getByType(ProjectsExtension).pluginLegacyGroup
 
 apply plugin: 'java-gradle-plugin'
 

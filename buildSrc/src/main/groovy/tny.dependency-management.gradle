@@ -10,6 +10,7 @@
 // 触发 ClassLoaderScope 缺失，实测 Gradle 8.5）。
 
 import tny.convention.GitFlow
+import tny.convention.ProjectsExtension
 
 plugins {
     id 'idea'
@@ -70,9 +71,10 @@ dependencyManagement {
     }
 }
 // 项目版本经根工程 gitFlow 类型化扩展拉取（tny.convention.GitFlow，expose-git-info-extension）：
-// 按类型获取，tny.git 未先加载即抛"扩展不存在"（expose-git-info-extension 设计决策 D3）；组号属根身份事实源，仍在根 ext 保留。
+// 按类型获取，tny.git 未先加载即抛"扩展不存在"（expose-git-info-extension 设计决策 D3）；组号属根身份
+// 事实源，经 tny.projects 类型化扩展拉取（pilot-binary-build-conventions D4，同一按类型获取通道）。
 def rootGitFlow = rootProject.extensions.getByType(GitFlow)
-group = rootProject.ext.projectGroup
+group = rootProject.extensions.getByType(ProjectsExtension).projectGroup
 // release 维护分支未注入 -PreleaseVersion 时派生为 null（redesign-devline-integration-model D2）：
 // 版本回落 Gradle 默认 unspecified，编译与测试不受影响，发布任务由门禁按形态与版本双重判定拒绝。
 version = rootGitFlow.projectVersion ?: Project.DEFAULT_VERSION

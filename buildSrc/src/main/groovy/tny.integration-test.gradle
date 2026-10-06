@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import tny.convention.ProjectsExtension
+
 // 两级验证通道约定插件（adopt-gradle-official-dsl 插件化，前身为 gradle/integration-test.gradle；
 // merge-demo-isolation-into-integration-test 起并含集成测试专用模块的受控隔离子进程装配）。
 // 本插件为 java 模块提供 integration source set 与命令入口任务 integrationTest；
@@ -101,7 +103,8 @@ tasks.register('integrationTest', Test) {
 // enableApp() 的应用蓝本（tny.module-setting，就地核对无登记清单），按声明序；交集为空、
 // 目标缺 jar 任务或缺 runtimeClasspath 均在该任务执行前 fail-fast 报红。
 // ---------------------------------------------------------------------------
-if (project.name.endsWith('-integration-test')) {
+// 应用面前置守卫：仅集成测试模块接线（判定经根工程 tny.projects 扩展，pilot-binary-build-conventions D4）
+if (rootProject.extensions.getByType(ProjectsExtension).isIntegrationTest(project)) {
     // 子进程隔离 classpath 属性（add-starter-net-integration-tests）：demo 应用子进程禁止复用
     // 测试 JVM 的 classpath——那会把 harness 单元表/@Unit bean 面泄进子进程 Spring 扫描，
     // 同 fork 重用时反向毒化后续 IT（DemoPlayerObjectCodecableCodec 串染事故实证）

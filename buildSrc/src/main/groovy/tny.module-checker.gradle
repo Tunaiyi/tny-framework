@@ -6,11 +6,14 @@
 // （fix-dependency-version-governance D1：大头版本族代表坐标的托管生效值必须等于事实源声明值，
 // 后导入 BOM 静默覆盖先导入者的次序漂移在配置阶段报红，规格见 gradle-build-style"托管版本面在配置期
 // 与声明事实源对账"需求）。边界：不做装配配置；
-// 组号对账须由根构建脚本在 ext 集合派生之后一行引入。
+// 组号对账须由根构建脚本在 tny.projects 应用行之后一行引入（成员集合与组号事实源经该扩展拉取）。
+import tny.convention.ProjectsExtension
+
+def projectsExt = extensions.getByType(ProjectsExtension)
 
 gradle.projectsEvaluated {
     def violations = []
-    moduleProjects.each { m ->
+    projectsExt.moduleProjects().each { m ->
         // configure-on-demand 下仅校验本次已评估的工程，未评估工程组号尚未派生、不参与对账
         if (!m.state.executed) {
             return
@@ -21,11 +24,11 @@ gradle.projectsEvaluated {
             violations << "${m.path} 属于发布装配线但其构建文件不存在（settings.gradle 引入悬空）：删除该引入行，或补齐工程的构建文件"
         }
         if (m.name.endsWith('-gradle')) {  // 例外组号按约定后缀判定（settings.gradle 注释），与插件模块线同规则
-            if (m.group.toString() != pluginLegacyGroup) {
-                violations << "${m.path}（插件模块例外）组号应为 '${pluginLegacyGroup}'，实际 '${m.group}'"
+            if (m.group.toString() != projectsExt.pluginLegacyGroup) {
+                violations << "${m.path}（插件模块例外）组号应为 '${projectsExt.pluginLegacyGroup}'，实际 '${m.group}'"
             }
-        } else if (m.group.toString() != projectGroup) {
-            violations << "${m.path} 组号应为单一事实源 '${projectGroup}'，实际 '${m.group}'（请删除模块内组号声明，由根构建派生）"
+        } else if (m.group.toString() != projectsExt.projectGroup) {
+            violations << "${m.path} 组号应为单一事实源 '${projectsExt.projectGroup}'，实际 '${m.group}'（请删除模块内组号声明，由根构建派生）"
         }
     }
     if (!violations.isEmpty()) {
@@ -39,7 +42,7 @@ gradle.projectsEvaluated {
 // 按需配置评估下不再有"清单缺员静默漏检"盲区（合法性经探针实证：afterEvaluate 窗口内
 // evaluationDependsOn 可用）；"声明不发布的工程不得属于发布线"的自检随声明即时执行，
 // 见 tny.convention.ModuleSetting.enableUnpublished。
-moduleProjects.each { m ->
+projectsExt.moduleProjects().each { m ->
     m.afterEvaluate { evaluated ->
         evaluated.configurations.each { cfg ->
             cfg.dependencies.withType(ProjectDependency).each { d ->
