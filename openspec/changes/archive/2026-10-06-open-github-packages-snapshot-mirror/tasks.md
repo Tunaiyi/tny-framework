@@ -37,3 +37,5 @@
 - [x] 6.2 任务文本注记：3.2 勾选文本保留当时"逐线执行"措辞作为历史执行记录；`docs/branch-flow-animation.html`（用户未入库新文件）第 258 行"快照镜像按分支形态动态枚举"表述已过时，提请用户知悉，不由本变更代改。
 - [x] 6.3 修订后复验：改动合入 main 后 dispatch 一次**不填线名**的运行（同时检验线谱系解析路径与单线矩阵），确认矩阵仅 `5.7.x` 一线、作业 success、快照 buildNumber 推进（第二构建）；证据并入 `verification/first-run.txt`。（执行注记 2026-10-06：run 37340434944 以 dispatch 不填线名走线谱系解析路径，conclusion=success，矩阵仅 `5.7.x` 单线，`git checkout -B` 输出 Reset branch，快照 buildNumber 由 1 推进至 2（timestamp 20261005.162420）——定时等价路径与滚动语义双实证。）
 > 注销注记（2026-10-05）：本段通道枚举核对待办已由 openspec change align-central-publishing-channel-enumeration 当日核对并落地——central-publishing 两条需求改题为多目的地表述（正式版三目的地、快照三目的地，中央与镜像职责边界句成文），本段落原文未改写。
+
+> 引用注记（2026-10-06）：本文件多处提及的 `snapshot-mirror.yml` 已由 consolidate-publish-workflows 变更合并入 `publish.yml` 的 snapshot-mirror 作业，原文不改写。

@@ -124,7 +124,7 @@ release 维护分支只追加不改写——main 每次集成到主干产生一�
   1. 确认 main 的 CI 为绿（`gh run list --branch main --limit 1` 对照）。
   2. `git switch -c dev/<主>.<次>.x github/main && git push -u github dev/<主>.<次>.x`。
   3. CI 触发与快照镜像选线随线谱系登记走；状态列措辞与工作流解析器同批改，二者不可
-     分两天改（首跑教训记在 `snapshot-mirror.yml` 注释）。
+     分两天改（首跑教训记在合并后 `publish.yml` 的 route 作业注释）。
   4. 开线记录：线谱系登记表追加一行（线名、开线提交、日期、当时上一线最新标签、状态）。
 - **验证点**：`dev/5.8.x` 首次构建派生 `5.8.x-SNAPSHOT`（坐标字符串不含 `dev/` 前缀，
   下游既有坐标声明无需任何修改）。
@@ -179,7 +179,7 @@ release 维护分支只追加不改写——main 每次集成到主干产生一�
 开新线时在下表追加一行（流程五步骤 4 规定的登记位），线名按分支全名书写
 （`dev/5.8.x`），状态列取值：`开发版本分支（在途）`、`祖父维护线（快照在维）`、
 `已退役`、`历史资产（只读）`；快照镜像选线以状态含"在途"或"快照在维"的行为唯一依据
-（`snapshot-mirror.yml` 的解析器与本表措辞同批修改，见红线教训）。5.7.x 之前的线史不追溯登记，自本表起算。
+（`publish.yml` 的 snapshot-mirror 作业解析器与本表措辞同批修改，见红线教训）。5.7.x 之前的线史不追溯登记，自本表起算。
 
 | 线 | 开线提交 | 开线日期 | 开线时上一线最新标签 | 状态 |
 |---|---|---|---|---|
@@ -251,7 +251,7 @@ release 维护分支只追加不改写——main 每次集成到主干产生一�
 1. 正式发布仓（maven-releases）禁止重复部署同一版本坐标，保证裸号正式版不可变。
 2. 快照仓（maven-snapshots）配置按天数的保留清理策略：滚动快照坐标 `N.M.x-SNAPSHOT`
    每在线上执行一次 publish 即追加一份时间戳产物且永不互相顶替（内网与 Central 通道的快照
-   发布是人工动作，口径见流程五；`snapshot-mirror.yml` 的自动定时只写 GitHub Packages 镜像
+   发布是人工动作，口径见流程五；`publish.yml` 的 snapshot-mirror 作业定时只写 GitHub Packages 镜像
    通道，不产生内网或 Central 构件），无保留策略则磁盘无界增长。
 3. GitHub Packages 镜像通道对同一版本的已存在文件拒绝覆盖上传（同名文件重复上传返回
    HTTP 409，本仓沙箱实测证实；官方条文未记载此规则），正式版本进入该通道因此是一次
@@ -285,12 +285,15 @@ release 维护分支只追加不改写——main 每次集成到主干产生一�
 勘误与裁决经过见下文"快照镜像的复测与开通裁决"条目。本通道是尽力镜像：
 权威归档仍是内网 Nexus 仓与内网快照仓，免凭据的公开分发仍是 Maven Central。
 
-- **触发形态**：有两个合法来源——持续集成：正式版镜像由 `.github/workflows/publish.yml` 的第三个步骤执行
-  （release.published 事件或指定发布分支的人工 workflow_dispatch）；快照镜像由
-  `.github/workflows/snapshot-mirror.yml` 每日定时（UTC19:23，与 build.yml 夜间作业错峰）执行
-  当前快照在维线一次——选线以本文"线谱系登记"表状态含"在途"或"快照在维"的行为唯一依据，与内网快照
-  发布同一口径；维护态、退役线与历史线不在定时范围，确需其镜像快照时用同文件
-  workflow_dispatch 显式指定线名单次补跑（人工指定即授权）；定时与枚举逻辑以 main 默认分支上的文件为准生效。
+- **触发形态**：有两个合法来源——持续集成：发布全链路统一在单文件 `.github/workflows/publish.yml`
+  （consolidate-publish-workflows 变更后的三作业结构：route 判定链路、publish-release 作业执行
+  正式版三步链、snapshot-mirror 作业执行快照镜像）——正式版镜像由 release.published 事件或
+  workflow_dispatch 填 `<X.Y.Z>.release` 触发，经 publish-release 作业第三个发布步骤执行；
+  快照镜像由 snapshot-mirror 作业每日定时（UTC19:23，与 build.yml 夜间作业错峰）执行当前
+  快照在维线一次——选线以本文"线谱系登记"表状态含"在途"或"快照在维"的行为唯一依据，与内网快照
+  发布同一口径；维护态、退役线与历史线不在定时范围，确需其镜像快照时经 workflow_dispatch
+  填线名单次补跑（人工指定即授权，非法输入由 route 判 none 空转）；定时与选线逻辑以 main
+  默认分支上的文件为准生效。
   本机来源：发布者成对配置镜像凭据后，`./gradlew publish` 即扇出镜像（含正式版与快照）。
   镜像凭据由 `githubPackagesUsername` 与 `githubPackagesToken` 两个属性构成（用户名即令牌属主
   的 GitHub 账户名），**成对在位且均非空**才声明目的地——空值或缺失一律视同未配置；两个属性
