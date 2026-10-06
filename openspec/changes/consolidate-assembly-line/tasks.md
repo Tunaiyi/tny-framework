@@ -8,9 +8,9 @@
 
 ## 2. 基线快照重抓入库
 
-- [ ] 2.1 以开工 HEAD 锚定，按 context"零差异验收基线抓样口径"（Corretto 21、UTF-8 钉住、独立守护进程注册表、PATH 修正坏 git——沿前册 baseline/README 成文口径）抓取常规七样件入 `baseline/`：全量任务图、`tny-game-net` 双配置依赖清单、三线 POM（java 线、插件线、BOM）、warm help 三连耗时；验证：README 记锚定哈希与样件行数，全部非空
-- [ ] 2.2 抓取本册新增四面样件入 `baseline/`：`tny-game-doc-gradle` 的 publishing 块与编译任务编码选项快照（`./gradlew :tny-game-doc-gradle:compileGroovy --dry-run` 加属性读取记录）、java 线与 BOM 线的 publish 任务名清单（`publish --dry-run` 行集）、`tny-benchmark` 与 `tny-game-integration-test` 的任务图样件（`tasks --all` 分模块）；验证：四样件入库且 README 增列
-- [ ] 2.3 验证：组 2 样件清单与锚定提交哈希记入 apply-notes；`git status` 除在途避让文件外对仓库零污染
+- [x] 2.1 以开工 HEAD 锚定，按 context"零差异验收基线抓样口径"（Corretto 21、UTF-8 钉住、独立守护进程注册表、PATH 修正坏 git——沿前册 baseline/README 成文口径）抓取常规七样件入 `baseline/`：全量任务图、`tny-game-net` 双配置依赖清单、三线 POM（java 线、插件线、BOM）、warm help 三连耗时；验证：README 记锚定哈希与样件行数，全部非空
+- [x] 2.2 抓取本册新增四面样件入 `baseline/`：`tny-game-doc-gradle` 的 publishing 块与编译任务编码选项快照（`./gradlew :tny-game-doc-gradle:compileGroovy --dry-run` 加属性读取记录）、java 线与 BOM 线的 publish 任务名清单（`publish --dry-run` 行集）、`tny-benchmark` 与 `tny-game-integration-test` 的任务图样件（`tasks --all` 分模块）；验证：四样件入库且 README 增列
+- [x] 2.3 验证：组 2 样件清单与锚定提交哈希记入 apply-notes；`git status` 除在途避让文件外对仓库零污染
 
 ## 3. 探针五（GitFlow 通道）与 jmh 供给沙箱预演
 

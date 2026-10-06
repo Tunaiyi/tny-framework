@@ -1,0 +1,96 @@
+Configuration on demand is an incubating feature.
+> Task :buildSrc:extractPluginRequests UP-TO-DATE
+> Task :buildSrc:generatePluginAdapters UP-TO-DATE
+> Task :buildSrc:compileJava UP-TO-DATE
+> Task :buildSrc:compileGroovy UP-TO-DATE
+> Task :buildSrc:compileGroovyPlugins UP-TO-DATE
+> Task :buildSrc:pluginDescriptors UP-TO-DATE
+> Task :buildSrc:processResources UP-TO-DATE
+> Task :buildSrc:classes UP-TO-DATE
+> Task :buildSrc:jar UP-TO-DATE
+
+> Task :tny-benchmark:tasks
+
+------------------------------------------------------------
+Tasks runnable from project ':tny-benchmark'
+------------------------------------------------------------
+
+Benchmark tasks
+---------------
+benchRoutineExport - Run routine-suite benchmarks (incl. facility probe) and archive JSON result into results/ with a date fingerprint.
+jmhList - List JMH benchmarks honoring routine-suite filters. 全量清单：-PbenchAll
+jmhListVerify
+jmhSuiteVerify - Verify every benchmark class is directory-classified (routine/devtest), suites non-empty, facility probe resolves.
+
+Build tasks
+-----------
+assemble - Assembles the outputs of this project.
+build - Assembles and tests this project.
+buildDependents - Assembles and tests this project and all projects that depend on it.
+buildNeeded - Assembles and tests this project and all projects it depends on.
+classes - Assembles main classes.
+clean - Deletes the build directory.
+jar - Assembles a jar archive containing the classes of the 'main' feature.
+jmhClasses - Assembles jmh classes.
+testClasses - Assembles test classes.
+
+Documentation tasks
+-------------------
+javadoc - Generates Javadoc API documentation for the 'main' feature.
+
+Help tasks
+----------
+artifactTransforms - Displays the Artifact Transforms that can be executed in project ':tny-benchmark'.
+buildEnvironment - Displays all buildscript dependencies declared in project ':tny-benchmark'.
+dependencies - Displays all dependencies declared in project ':tny-benchmark'.
+dependencyInsight - Displays the insight into a specific dependency in project ':tny-benchmark'.
+dependencyManagement - Displays the dependency management declared in project ':tny-benchmark'.
+help - Displays a help message.
+javaToolchains - Displays the detected java toolchains.
+outgoingVariants - Displays the outgoing variants of project ':tny-benchmark'.
+projects - Displays the sub-projects of project ':tny-benchmark'.
+properties - Displays the properties of project ':tny-benchmark'.
+resolvableConfigurations - Displays the configurations that can be resolved in project ':tny-benchmark'.
+tasks - Displays the tasks runnable from project ':tny-benchmark'.
+
+IDE tasks
+---------
+cleanIdea - Cleans IDEA project files (IML, IPR)
+idea - Generates IDEA project files (IML, IPR, IWS)
+
+Jmh tasks
+---------
+jmh
+jmhCompileGeneratedClasses
+jmhJar
+jmhRunBytecodeGenerator
+
+Publishing tasks
+----------------
+publish - Publishes all publications produced by this project.
+publishToMavenLocal - Publishes all Maven publications produced by this project to the local Maven cache.
+
+Verification tasks
+------------------
+check - Runs all checks.
+test - Runs the test suite.
+
+Other tasks
+-----------
+cleanIdeaModule
+compileJava - Compiles main Java source.
+compileJmhJava - Compiles jmh Java source.
+compileTestJava - Compiles test Java source.
+components - Displays the components produced by project ':tny-benchmark'. [deprecated]
+dependentComponents - Displays the dependent components of components in project ':tny-benchmark'. [deprecated]
+ideaModule - Generates IDEA module files (IML)
+model - Displays the configuration model of project ':tny-benchmark'. [deprecated]
+processJmhResources - Processes jmh resources.
+processResources - Processes main resources.
+processTestResources - Processes test resources.
+
+Rules
+-----
+Pattern: clean<TaskName>: Cleans the output files of a task.
+Pattern: build<ConfigurationName>: Assembles the artifacts of a configuration.
+

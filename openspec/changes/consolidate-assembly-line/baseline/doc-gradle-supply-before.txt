@@ -1,0 +1,13 @@
+## compileGroovy dry-run
+:tny-game-doc-gradle:compileJava SKIPPED
+:tny-game-doc-gradle:compileGroovy SKIPPED
+BUILD SUCCESSFUL in 1s
+## publish dry-run 任务行（仓路由快照）
+:tny-game-doc-gradle:publishClassesScanPluginPluginMarkerMavenPublicationToMavenRepository SKIPPED
+:tny-game-doc-gradle:publishPluginMavenPublicationToMavenRepository SKIPPED
+:tny-game-doc-gradle:publish SKIPPED
+## encoding 属性读取记录
+encoding: UTF-8
+group: com.tny.game
+version: 5.7.x-SNAPSHOT
+versionCatalogs: extension 'versionCatalogs'

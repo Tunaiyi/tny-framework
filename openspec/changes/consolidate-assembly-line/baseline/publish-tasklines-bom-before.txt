@@ -1,0 +1,11 @@
+:tny-game-bom:check SKIPPED
+:tny-game-bom:checkPublishPrerequisites SKIPPED
+:tny-game-bom:generateMetadataFileForMavenJavaPublication SKIPPED
+:tny-game-bom:generatePomFileForMavenJavaPublication SKIPPED
+:tny-game-bom:signMavenJavaPublication SKIPPED
+:tny-game-bom:publishMavenJavaPublicationToCentralSnapshotsRepository SKIPPED
+:tny-game-bom:publishMavenJavaPublicationToGithubPackagesRepository SKIPPED
+:tny-game-bom:publishMavenJavaPublicationToMavenRepository SKIPPED
+:tny-game-bom:cleanupDirectory SKIPPED
+:tny-game-bom:publishMavenJavaPublicationToNmcpRepository SKIPPED
+:tny-game-bom:publish SKIPPED

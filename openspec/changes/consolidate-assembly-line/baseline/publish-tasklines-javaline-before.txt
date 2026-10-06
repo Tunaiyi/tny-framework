@@ -1,0 +1,5 @@
+:tny-game-net:publishMavenJavaPublicationToCentralSnapshotsRepository SKIPPED
+:tny-game-net:publishMavenJavaPublicationToGithubPackagesRepository SKIPPED
+:tny-game-net:publishMavenJavaPublicationToMavenRepository SKIPPED
+:tny-game-net:publishMavenJavaPublicationToNmcpRepository SKIPPED
+:tny-game-net:publish SKIPPED
