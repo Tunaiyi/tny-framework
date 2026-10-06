@@ -52,6 +52,9 @@
 
 ### D4 GitFlow 类型约束解点：变体乙为主、变体甲为降级、变体丁否决，探针五先行
 
+> 实施回写（组 4.1）：变体乙的注入点从"tny.git 薄壳追加一行"调整为 `ProjectsPlugin.apply` 尾部
+> （gitFlow 缺席留空、消费端判空报红），完全不碰 tny.git 薄壳；探针五结论不受影响。
+
 变体乙：`tny.git` 薄壳在创建 gitFlow 扩展后追加一行，把派生版本值注入类型化 `ProjectsExtension`（新增 `derivedProjectVersion` 属性），dependency-conventions 与后续消费方按类型读取——完全类型化、消费面收敛进既有单一事实源扩展；代价是触碰 `tny.git.gradle` 一行（该文件在 pilot D8 冻结名单内，但在途册修复先例落点为 GitFlow/GitCli/release/integrate 而非薄壳，撞车面近似零；登记为条件性豁免并附跨册修订条款）。
 变体甲：入口按名 `getByName("gitFlow")` 后经属性协议弱型取 `projectVersion`——零触碰冻结面，但降级类型安全；仅作探针证伪后的 fallback，注释登记来由。
 变体丁（把撞墙实现类放 `src/main/groovy` 借混合编译）：沙箱实证其可编译后否决——违背十枚二进制类全在 `src/main/java` 的先例、绕过 javac 编译期检查、与合并册删除 groovy 载体终态冲突（M1 条款：旧先例适用时不另起炉灶）。

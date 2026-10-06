@@ -46,8 +46,10 @@ apply plugin: 'tny.module-checker'
 // 装配线（各插件文件头声明职责与边界）：约定插件之间不互相 apply（脚本插件嵌套应用触发
 // 类加载器服务缺失，实测 Gradle 8.5），故各线所需插件在此按依赖顺序逐一应用，幂等无副作用。
 configure(subprojects) {
-    apply plugin: 'io.spring.dependency-management'
-    apply plugin: 'tny.dependency-management'
+    // 原 io.spring.dependency-management 与 tny.dependency-management 两行并一
+    // （consolidate-assembly-line 任务 4.3）：入口内部次序逐字为 io.spring dm→idea→maven-publish→配置体，
+    // dm 的 jar 由 buildSrc implementation 供给（前册探针三形态），裸 id 运行时应用实证可行。
+    apply plugin: 'tny.dependency-conventions'
 }
 configure(projectsExt.gradleProjects()) {
     apply plugin: 'tny.publish'

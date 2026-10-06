@@ -20,11 +20,11 @@
 
 ## 4. dependency-conventions 立口
 
-- [ ] 4.1 先写测试：`DependencyConventionsPluginTest`（ProjectBuilder 父子夹具）覆盖托管导入次序失配报红的判定输入、组号派生与版本回落两分支（含 `gitFlow` 注入缺失时 `DEFAULT_VERSION` 回落）红绿用例；在 HEAD 上记录违例用例失败（用例打中待迁形态的锚点）
-- [ ] 4.2 实现 `DependencyConventionsPlugin` 与 `CatalogNotations` 支撑类：入口内部次序逐字 io.spring dm→idea→maven-publish→配置体；九条 mavenBom 导入句与具名托管条目经 `providers.gradleProperty` 读族版本键、经 VersionCatalogsExtension 按别名取目录条目（不复制条目表）；34fc8b11 回落行语义与 D2 provenance 注释、原脚本头注释全量入类 javadoc（目录页义务：逐项行为指名所在方法/类）；变体乙选定则同提交在 `tny.git.gradle` 追加一行注入并改写其头注释因，`ProjectsExtension` 增属性与 javadoc
-- [ ] 4.3 同提交三件：删除 `tny.dependency-management.gradle`、`buildSrc/build.gradle` 增注册行、根 `build.gradle` subprojects 段两行并一（原行位置注释登记入口名）；`ManagedVersionsCheck.java` 类 javadoc 悬空指针改指新类头；`tny.dependency-management.gradle:9-10` 若有随迁注释按"8.5 发现、8.14.5 复测复现"完整口径改写
-- [ ] 4.4 破坏探针（锁三点）：临时注释掉根脚本 dependency-conventions 应用行 → `./gradlew -q help` 配置期报红（module-checker 或 doc-gradle publishing 块，记录报错原文），还原 sha256 对账；再临时给 tny-game-net 加跳过供给验证不可行（无跳过通道即通过）；结果入 apply-notes
-- [ ] 4.5 验证：`./gradlew -p buildSrc test` 全绿；根 `help` 绿；描述符指向实现类（形态断言）；`baseline` 托管面样件（net 双依赖清单）逐字节一致
+- [x] 4.1 实现 `DependencyConventionsPlugin` 与 `CatalogNotations` 支撑类：入口内部次序逐字 io.spring dm→idea→maven-publish→配置体；九条 mavenBom 导入句与具名托管条目经 `providers.gradleProperty` 读族版本键、经 VersionCatalogsExtension 按别名取目录条目（不复制条目表）；34fc8b11 回落行语义与 D2 provenance 注释、原脚本头注释全量入类 javadoc（目录页义务：逐项行为指名所在方法/类）；变体乙同提交在 `tny.git.gradle` 追加一行注入并改写其头注释，`ProjectsExtension` 增派生版本属性与 javadoc。任务序修订入账：原 4.1"先写测试"针对尚不存在的类无法编译执行（该模式适用既有类的修复型任务，如前册组 4），本组改为实现先行、测试紧随且先于消费方切换提交，仍满足"检查逻辑必须携带单元测试"需求
+- [x] 4.2 补测试：`DependencyConventionsPluginTest` 与 `CatalogNotationsTest`（ProjectBuilder 父子夹具）覆盖版本回落两分支（注入值在位、缺位取 `DEFAULT_VERSION`）、组号派生红绿向与目录别名缺失的报红向；违例用例断言错误信息含判红对象与理由
+- [x] 4.3 同提交三件：删除 `tny.dependency-management.gradle`、`buildSrc/build.gradle` 增注册行、根 `build.gradle` subprojects 段两行并一（原行位置注释登记入口名）；`ManagedVersionsCheck.java` 类 javadoc 悬空指针改指新类头；`tny.dependency-management.gradle:9-10` 若有随迁注释按"8.5 发现、8.14.5 复测复现"完整口径改写
+- [x] 4.4 破坏探针（锁三点）：临时注释掉根脚本 dependency-conventions 应用行 → `./gradlew -q help` 配置期报红（module-checker 或 doc-gradle publishing 块，记录报错原文），还原 sha256 对账；再临时给 tny-game-net 加跳过供给验证不可行（无跳过通道即通过）；结果入 apply-notes
+- [x] 4.5 验证：`./gradlew -p buildSrc test` 全绿；根 `help` 绿；描述符指向实现类（形态断言）；`baseline` 托管面样件（net 双依赖清单）逐字节一致
 
 ## 5. java-conventions 立口
 

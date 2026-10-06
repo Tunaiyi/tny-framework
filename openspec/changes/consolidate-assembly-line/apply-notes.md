@@ -18,3 +18,12 @@
 - 变体乙两分支等值成立（有值分支逐字同值；缺位分支得 "unspecified" 回落即现文 `?: DEFAULT_VERSION` 语义）；编译墙负例实测（Java import Groovy 源类 compileJava 找不到符号）；变体丁按 M1 维持否决。
 - jmh 三例齐：缺 portal 解析失败、补 portal 根与子工程按 id 应用成功且类加载器同一、根带版本声明并存复现双声明硬失败——组 8.3 原子条款按此执行。
 - 过程如实入账：沙箱首跑两处环境级失败（wrapper jar 复制层级放错 gradle/ 与 gradle/wrapper/；单 null 实参的边缘形态），均定位修正后取得判据；沙箱目录留存 /tmp/probe5 与 /tmp/probe5-jmh 待批准后清理，仓库零污染（git status 仅外部在途文件）。
+
+## 组 4 dependency-conventions 立口
+
+- 4.1 实现要点与设计的一处偏离如实登记：D4 变体乙原写"tny.git 薄壳追加注入行"，实现落在 `ProjectsPlugin` 尾部注入（gitFlow 缺席时留空不抛、消费端 `applyIdentity` 判空报红）——同一探针五结论（GroovyObject 属性协议单点弱型 + DEFAULT_VERSION 回落），少碰一枚文件且完全不碰 `tny.git.gradle`（该文件在 redesign 修复面清单内），design 已按本组实况回写。
+- 4.2 测试三族全绿并核执行记录（CatalogNotationsTest 2、ProjectsPluginTest 3、DependencyConventionsPluginTest 1，均 0 failed）；`versionOf` 绿向在 ProjectBuilder 不可构造的边界随注释如实登记。
+- 4.3 吸收式原子提交四件：删除 `tny.dependency-management.gradle`、gradlePlugin 注册 `tny.dependency-conventions`、根 subprojects 段两行并一、`ManagedVersionsCheck` 类 javadoc 与报错文案两处指针改指 `DependencyConventionsPlugin.BOM_IMPORTS` 常量注释（provenance 随迁）。
+- 实施中发现并修复的机制事实（design 探针结论小节已回写）：`VersionCatalogsExtension` 于工程构建脚本评估时注册，根侧急切 apply 时刻子工程拿不到目录扩展（探针实录 `CATALOGPROBE :tny-benchmark byType?=false byName?=false` 与首炸报错）；原预编译脚本的 `libs` 走 buildSrc 编译期访问器（同一 toml 只读视图，buildSrc/settings 注释在册），二进制无该通道——托管声明段后置 `afterEvaluate`，时机等价论证（托管面首次消费在 projectsEvaluated 与解析期）写入类注释；4.5 七面样件（双依赖、三线 POM、doc-gradle 发布任务面、全量任务图）全部对基线零漂移，为该后置的等价性提供机械证明。
+- 4.4 破坏探针两例：其一，注释根上入口应用行 → `:tny-game-doc-gradle` 配置期报红（maven-publish 唯一供给点断供即炸，锁"无条件、根侧、原位"三点）；其二，注释 `apply plugin: 'tny.git'` → 根配置期在 `tny.release` 的 getByType(GitFlow) 处即报 `Extension of type 'GitFlow' does not exist`（上游先炸），`applyIdentity` 判空分支为纵深防御；两例还原均 sha256 对账一致。
+- 根脚本探针过程记录：临时探针行两进两出（换序修正一次），终态与基线逐字节还原。
