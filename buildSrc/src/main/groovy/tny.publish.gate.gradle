@@ -1,8 +1,9 @@
 // 发布一致性门禁约定插件（consolidate-publish-gate-split 自 tny.publish 移入；语义与拒绝文案
 // 零改动，逐段 provenance 注释随段保留）。七段核对按登记顺序合流抛出：形态核对 → 仓库路由 →
 // 历史占号黑名单 → 发布标签存证 → 下一补丁号 → 依赖形态（豁免清单成文并逐条打印）。
-// 通道边界：仓库状态查询走 grgit（GitFlow），依赖执行期最新引用的 ls-remote 与远端名推定的
-// 上游解析统一经 GitCli 门面（consolidate-git-cli-channel）；结果按"分支+提交+标签"在根工程
+// 通道边界：git 能力单通道——门禁内 ls-remote、远端名推定与 GitFlow 派生值同经
+// GitCli 门面（consolidate-git-cli-channel 收编、retire-grgit-channel 统一）；
+// 结果按"分支+提交+标签"在根工程
 // 记忆化，一次构建只查一次远端；远端不可达按缺证拒绝（fail-closed）。
 // 挂接：共享仓发布任务由 tny.publish 以任务名 dependsOn 本文件的 checkPublishPrerequisites。
 import tny.convention.GitFlow

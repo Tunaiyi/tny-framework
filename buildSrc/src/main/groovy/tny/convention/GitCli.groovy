@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// git CLI 通道门面（consolidate-git-cli-channel）：写侧与依赖执行期最新引用的查询统一经本类，
-// 全仓库只保留这一份"解析 -PgitExe、派生进程、取退出码与双流输出、失败即抛"的实现——
-// 此前 tny.release 与 tny.integrate 各自复制同款三行闭包模板、tny.publish 的标签存证段另用
-// providers.exec 第三实现，收编于此。通道分界沿革：分界决策出自归档变更
-// revise-release-branch-flow 的设计 D6（写走 git CLI、仓库状态查询走 grgit 即 GitFlow.grgiter），
-// 门面化由本变更完成；两个类不合并的论证见该变更 design D1——grgit 写 API 缺失事故
-// （归档 migrate-git-calls-to-grgit 与回退提交 976896b4）正是 CLI 与 grgit 分立存在的理由。
+// git 通道门面（consolidate-git-cli-channel 收编，retire-grgit-channel 后为全仓唯一 git 通道）：
+// 写侧与依赖执行期最新引用的查询统一经本类，全仓库只保留这一份"解析 -PgitExe、派生进程、
+// 取退出码与双流输出、失败即抛"的实现——此前 tny.release 与 tny.integrate 各自复制同款三行
+// 闭包模板、tny.publish 的标签存证段另用 providers.exec 第三实现，收编于此。
+// 通道沿革：归档变更 revise-release-branch-flow 的设计 D6 曾定"写走 git CLI、仓库状态查询走
+// grgit"双通道；JGit 三处实测缺陷（写 API 缺失回退 976896b4、附注标签解引用缺数、linked
+// worktree 不跟随 commondir——见归档 migrate-git-calls-to-grgit 与 upgrade-grgit-for-worktrees）
+// 在 retire-grgit-channel 中随依赖退场，GitFlow 的派生与查询亦走本门面。
 // 调用方必须查 exit（D10（二）：查询失败不得被当成空输出）。
 package tny.convention
 
@@ -43,6 +44,9 @@ class GitCli {
     // 如未来出现大输出命令需改为并发流读取。
     Map run(List args) {
         def builder = new ProcessBuilder(([exe] + args.collect { it.toString() })).directory(rootDir)
+        // 环境钉 LC_ALL=C（retire-grgit-channel D3）：git 消息与本地化日期输出受 locale
+        // 影响（本仓零差异抓样口径同源教训），porcelain/rev-parse 数据行不受影响。
+        builder.environment().put('LC_ALL', 'C')
         builder.redirectErrorStream(false)
         def proc = builder.start()
         def out = proc.inputStream.text

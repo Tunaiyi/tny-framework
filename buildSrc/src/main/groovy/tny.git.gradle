@@ -1,36 +1,21 @@
 // git 派生与版本形态（adopt-gradle-official-dsl 约定插件化，前身为 gradle/git.gradle；
 // expose-git-info-extension：导出面由根工程 ext 派生字典改为根工程类型化扩展；
 // gitinfo-self-init-and-getters：扩展名更名为 gitFlow、类名更名为 GitFlow，派生值初始化收进类构造器，
-// 本插件只负责打开仓库句柄，并经带句柄的构造调用一步完成扩展的创建与注册，
-// 唯一写入方仍是本插件的这一处构造调用）。
-// 前置约定：grgit 插件由根构建脚本先行应用（第三方插件在 buildSrc 作用域内 apply 会触发
-// 类加载器服务缺失，实测 Gradle 8.5），本插件假定 org.ajoberstar.grgit 扩展已就位。
-// 本插件负责：打开仓库句柄、以句柄为构造入参一步创建并注册根工程扩展 gitFlow
+// 本插件只负责准备通道，并经带通道的构造调用一步完成扩展的创建与注册，
+// 唯一写入方仍是本插件的这一处构造调用；retire-grgit-channel：通道从 grgit 句柄换为
+// GitCli 门面，本文件同时删除 linked-worktree 构建禁令）。
+// 本插件负责：读取祖父登记表、以 GitCli 门面为构造入参一步创建并注册根工程扩展 gitFlow
 // （派生值的求值与时序在 GitFlow 构造器内完成）；后缀常量、推导方法与自动生成 getter 的 final 属性在类内声明。
-// 边界：不做任务注册、不做发布断言（门禁在 tny.publish，快通道在 tny.release）；
-// 对 git 远端的只读查询在此，写操作一律经 tny.release 的 git CLI 通道。
+// 边界：不做任务注册、不做发布断言（门禁在 tny.publish.gate，快通道在 tny.release 与 tny.integrate）；
+// 全仓 git 读写统一经 GitCli 门面（GitFlow 的派生与查询方法内部同通道）。
+//
+// 布局边界（retire-grgit-channel D4 解除禁令）：初版经 grgit/JGit 读 .git，linked worktree 的
+// commondir 重定向不被跟随（5.13 与 6.10.1 实测证伪，证据见归档 upgrade-grgit-for-worktrees），
+// 曾以 gitdir 位置判据 fail-fast 禁建。通道全 CLI 化后该缺陷库退场，禁令存在理由消失——
+// gradle 构建对完整克隆、linked worktree、子模块布局一律开放；发布快速通道仍建议独立完整
+// 克隆执行（与并行会话争用 HEAD 与 index 属运营纪律，不再由构建拦截强制）。
+import tny.convention.GitCli
 import tny.convention.GitFlow
-
-// 环境守卫（openspec change upgrade-grgit-for-worktrees 设计 D1）：JGit 对 linked worktree
-// 解析符号引用时不跟随 commondir 重定向到公共目录（5.13 与 6.10.1 实测均如此，证据表见该册
-// design.md Context），GitFlow 构造会因此撞上具误导性的配置期 NPE；升级不解决，故 fail fast
-// 为指向明确的错误。判据取 gitdir 位置形态而非 head 判空：detached HEAD 等场景 head 仍可解析，
-// 位置判据精准归因且不误伤主仓、完整克隆与子模块（.git/modules 布局不含 /worktrees/ 段）。
-def dotGit = new File(project.getRootDir(), '.git')
-def resolvedGitDir = null
-if (dotGit.isFile()) {
-    def pointer = (dotGit.text.trim() =~ /^gitdir:[ \t]*(.+)$/)
-    if (pointer.matches()) {
-        resolvedGitDir = new File(pointer.group(1)).canonicalFile
-    }
-} else if (dotGit.isDirectory()) {
-    resolvedGitDir = dotGit.canonicalFile
-}
-if (resolvedGitDir != null && resolvedGitDir.absolutePath.replace('\\', '/').contains('/.git/worktrees/')) {
-    throw new GradleException('gradle 不能在 git linked worktree 中构建：JGit 无法解析该布局的分支引用' +
-            '（上游限制，升级 grgit/JGit 不解决；openspec change upgrade-grgit-for-worktrees）。' +
-            '发布与验证操作请改用完整克隆：git clone <仓库URL> <目录> && cd <目录>')
-}
 
 // 祖父登记表（redesign-devline-integration-model D7）：读入 分支名|身份|依据 三列，注释行与空行丢弃。
 def legacyRegistryFile = new File(project.getRootDir(), 'gradle/branch-legacy-registry.txt')
@@ -38,5 +23,5 @@ def legacyRegistry = legacyRegistryFile.exists() ? legacyRegistryFile.readLines(
         .findAll { !it.trim().isEmpty() && !it.trim().startsWith('#') }
         .collectEntries { def parts = it.split('\\|').collect { p -> p.trim() }; [(parts[0]): parts[1]] } : [:]
 
-project.extensions.create('gitFlow', GitFlow, grgit.open(currentDir: project.getRootDir()),
+project.extensions.create('gitFlow', GitFlow, GitCli.forProject(project),
         legacyRegistry, project.findProperty('releaseVersion')?.toString())

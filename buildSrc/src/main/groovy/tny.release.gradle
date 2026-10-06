@@ -5,20 +5,16 @@
 // 祖父轨（gradle/branch-legacy-registry.txt 登记线，至该系列退役）：保留旧一次性发布分支流程
 // （从登记线切 <V>.release 容器、容器上打标签），任务 releaseMergeBack 已删除，其语义由
 // tny.integrate 的 mergeUpward 取代。通道分界（D6）不变：写与依赖执行期引用的查询走 git CLI
-// （-PgitExe 覆盖），纯仓库状态查询走 grgit；-PdryRun 预览不触 CLI。
+// （-PgitExe 覆盖）——GitFlow 的派生与查询同经此门面（retire-grgit-channel）；-PdryRun 预览只读派生值与登记表，不派生子进程。
 import tny.convention.GitFlow
 import tny.convention.GitCli
 
 def gitFlow = rootProject.extensions.getByType(GitFlow)
-def grgiter = gitFlow.grgiter
 def git = GitCli.forProject(project)
 
 def resolveRemote = { String branch -> gitFlow.resolveRemoteName(branch) }
 
-def trackedDirty = {
-    def st = grgiter.status()
-    (st.staged.allChanges + st.unstaged.modified + st.unstaged.removed).toList()
-}
+def trackedDirty = { gitFlow.trackedDirtyPaths() }   // porcelain 口径：仅跟踪文件变更（GitFlow 注释有映射表）
 
 def requireCleanTree = { String action, boolean preview ->
     def dirty = trackedDirty()
@@ -31,7 +27,10 @@ def requireCleanTree = { String action, boolean preview ->
 }
 
 def remoteRefNames = { String remoteName, boolean heads, boolean tags ->
-    grgiter.lsremote(remote: remoteName, heads: heads, tags: tags).keySet().collect { it.fullName }
+    // ls-remote 标志映射：heads-only / tags-only 显式给参，两者都要走默认（git 默认列 heads+tags）
+    def flags = (heads && !tags) ? ['--heads'] : ((!heads && tags) ? ['--tags'] : [])
+    git.run(['ls-remote'] + flags + [remoteName]).out.readLines()
+            .collect { it.split('\s+')[1] }.findAll { it }
 }
 
 def requireReleaseVersion = { String action ->
@@ -83,7 +82,7 @@ tasks.register('releaseCut') {
                 throw new GradleException("在 main 上切维护分支只用于系列首发 <N.M>.0（先完成该开发分支的集成到主干）；后续补丁直接在 release/${base}.x 上执行 releaseTag；收到 '${v}'")
             }
             def target = "release/${base}.x"
-            if (grgiter.branch.list().any { it.name == target }) throw new GradleException("本地已存在分支 '${target}'，每系列维护分支唯一")
+            if (gitFlow.branchNames().contains(target)) throw new GradleException("本地已存在分支 '${target}'，每系列维护分支唯一")
             def remoteName = resolveRemote('main')
             if (remoteName == null) throw new GradleException('无法确定 main 的远端：main 没有上游且仓库远端数量不是 1')
             if (remoteRefNames(remoteName, true, false).any { it == "refs/heads/${target}" }) throw new GradleException("远端已存在维护分支 '${target}'，每系列唯一")
@@ -102,8 +101,8 @@ tasks.register('releaseCut') {
         // 祖父轨：旧一次性发布分支流程原样保留，随 5.7 系列退役整体删除
         def targetBranch = "${v}.release"
         def from = project.findProperty('releaseFrom')?.toString() ?: current
-        if (grgiter.branch.list().any { it.name == targetBranch }) throw new GradleException("本地已存在分支 '${targetBranch}'，同号发布禁止重复切支")
-        if (grgiter.tag.list().any { it.name == tagName }) throw new GradleException("本地已存在标签 '${tagName}'，同号发布禁止重复建标")
+        if (gitFlow.branchNames().contains(targetBranch)) throw new GradleException("本地已存在分支 '${targetBranch}'，同号发布禁止重复切支")
+        if (gitFlow.tagNames().contains(tagName)) throw new GradleException("本地已存在标签 '${tagName}'，同号发布禁止重复建标")
         def remoteName = currentRemote
         if (remoteName == null) throw new GradleException("无法确定推送目标的远端：当前分支 '${current}' 没有上游，且仓库远端数量不是 1")
         def remoteRefs = remoteRefNames(remoteName, true, true)
@@ -134,10 +133,10 @@ tasks.register('releaseTag') {
             throw new GradleException("releaseTag 必须在目标版本的 release 维护分支 'release/${base}.x'（新形态）或同名一次性发布分支 '${v}.release'（祖父轨）上执行，当前分支 '${current}'")
         }
         assertNotLegacyOccupied(v)
-        def existing = grgiter.tag.list().find { it.name == tagName }
+        def existing = gitFlow.tagInfo(tagName)   // null 或 [annotated: bool, commit: sha]
         // 幂等只放行"附注形态且恰指当前构建提交"；轻量标签与错标一并拒绝（D11（一）语义保留）
-        if (existing != null && (existing.tagger == null || existing.commit?.id != gitFlow.commitId)) {
-            throw new GradleException("本地标签 '${tagName}' ${existing.tagger == null ? '是轻量标签（无解引用，门禁必拒）' : '指向非当前构建提交（' + existing.commit?.id + '）'}——未推送时人工删除本地错标后重跑本任务；已推送则绝对不动，提高补丁号重发")
+        if (existing != null && (!existing.annotated || existing.commit != gitFlow.commitId)) {
+            throw new GradleException("本地标签 '${tagName}' ${!existing.annotated ? '是轻量标签（无解引用，门禁必拒）' : '指向非当前构建提交（' + existing.commit + '）'}——未推送时人工删除本地错标后重跑本任务；已推送则绝对不动，提高补丁号重发")
         }
         def remoteName = currentRemote
         if (remoteName == null) throw new GradleException("无法确定推送目标的远端：当前分支 '${current}' 没有上游，且仓库远端数量不是 1")

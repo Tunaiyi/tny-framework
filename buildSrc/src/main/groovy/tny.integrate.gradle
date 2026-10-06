@@ -3,19 +3,15 @@
 // 固定顺序集成进 main，并执行开发版本分支集成顺序检查；mergeUpward 把 release 维护分支的补丁以整条分支
 // 合并方式向上合并进更更新的分支与 main，提交前执行合并结果完整性检查，任一缺陷标记在合并结果中缺失
 // 即回滚并拒绝。合并冲突一律 abort 加 reset 回目标分支原头（三方保持原状）后交人工。
-// 通道分界（D6）不变：写与依赖执行期引用的查询走 git CLI（-PgitExe 覆盖），纯仓库状态查询走 grgit；
-// -PdryRun 预览不触 CLI。
+// 通道边界：git 读写统一经 GitCli 门面（retire-grgit-channel；分界沿革见该类头注），
+// -PdryRun 预览只读派生值不触任务动作。
 import tny.convention.GitFlow
 import tny.convention.GitCli
 
 def gitFlow = rootProject.extensions.getByType(GitFlow)
-def grgiter = gitFlow.grgiter
 def git = GitCli.forProject(project)
 
-def trackedDirty = {
-    def st = grgiter.status()
-    (st.staged.allChanges + st.unstaged.modified + st.unstaged.removed).toList()
-}
+def trackedDirty = { gitFlow.trackedDirtyPaths() }   // porcelain 口径：仅跟踪文件变更
 
 def current = gitFlow.branchName.toString()
 def remoteName = gitFlow.resolveRemoteName(current)
@@ -76,7 +72,7 @@ tasks.register('integrateMain') {
         // 集成顺序检查（规格：发布顺序等于版本顺序）：任一低编号开发版本分支仍存在
         // （本模型梯毕即删线，存在即未集成未下线），即拒绝；确需放弃的低编号线先按
         // 改号跳号程序注销（删除分支并在提交说明登记）。本地与远端并集枚举。
-        def lowerLines = (grgiter.branch.list().collect { it.name } + remoteDevLines()).toUnique()
+        def lowerLines = (gitFlow.branchNames() + remoteDevLines()).toUnique()
                 .findAll { it ==~ /dev\/\d+\.\d+\.x/ && it != current && num(it) in 0..<myNum }
         if (!lowerLines.isEmpty()) {
             throw new GradleException("开发版本分支集成顺序检查失败：低编号开发分支 ${lowerLines.join('、')} 仍存在且未完成集成到主干" +

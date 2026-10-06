@@ -99,7 +99,9 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: refs/heads/${{ needs.route.outputs.branch }}
-      # 门禁经 grgit 读当前分支名，checkout 的分离 HEAD 会让分支形态核对误拒；
+      # checkout 默认落分离 HEAD，而 `git rev-parse --abbrev-ref HEAD` 在该状态下报
+      # "HEAD"，门禁的分支形态白名单按非法形态误拒（与读取库无关，git 原生行为；
+      # retire-grgit-channel 修正历史归因——原注释误记为 grgit 所致）；
       # checkout -B 兜底建立本地分支指向同一提交（不推送、不改远端）——与快照链同构模式。
       - name: Ensure branch context for the gate
         run: git checkout -B "$RELEASE_BRANCH"

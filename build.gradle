@@ -1,5 +1,4 @@
 plugins {
-    id 'org.ajoberstar.grgit' version '4.1.1' apply false
     // nmcp（Central Portal 上传器，central-publishing D3）：aggregation 挂根、模块侧经
     // tny.central 与 tny.publications 分别 apply，直接消费既有 mavenJava。
     id 'com.gradleup.nmcp' version '1.6.2' apply false
@@ -12,10 +11,10 @@ plugins {
     id 'com.baidu.jprotobuf' version '1.2.1' apply false
 }
 
-// 第三方插件在根脚本作用域先行应用（buildSrc 作用域无法解析父构建类路径插件，实测 8.5）；
+// 第三方插件在根脚本作用域先行应用（buildSrc 作用域无法解析父构建类路径插件，实测 8.5）。
 // tny.git 创建的根工程类型化扩展 gitFlow（派生分支名、项目版本等值，实现类 tny.convention.GitFlow）
-// 必须先于一切消费方应用——消费方经 getByType 按类型拉取，扩展不在位即报错；坐标版本见版本目录。
-apply plugin: 'org.ajoberstar.grgit'
+// 必须先于一切消费方应用——消费方经 getByType 按类型拉取，扩展不在位即报错；
+// git 能力经 GitCli 门面单通道（grgit/JGit 依赖由 retire-grgit-channel 摘除）。
 apply plugin: 'tny.git'
 // 发布快速通道：releaseCut / releaseTag（语义契约见 docs/release-process.md；releaseMergeBack 已由
 // redesign-devline-integration-model 删除）；分支流转门禁：integrateMain / mergeUpward

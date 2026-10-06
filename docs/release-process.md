@@ -135,7 +135,7 @@ release 维护分支只追加不改写——main 每次集成到主干产生一�
 ## 流程六：系列首发（集成到主干到发布 5.8.0）
 
 - **触发**：开发版本分支的特性集合达到发布标准。
-- **命令序列**（gradle 任务在完整克隆执行并带 `-PgitExe=/usr/bin/git`；`-PdryRun`
+- **命令序列**（gradle 任务建议在独立完整克隆执行并带 `-PgitExe=/usr/bin/git`；`-PdryRun`
   预览不触 CLI；下文不再逐步重复标注）：
   1. 在 `dev/5.8.x` 上 `./gradlew integrateMain -PreleaseVersion=5.8.0`——顺序检查
      （低编号在途开发版本分支存在即拒绝）→ 同步合并 main → 整体合入 main 产生合并提交
@@ -375,13 +375,14 @@ release 维护分支只追加不改写——main 每次集成到主干产生一�
 `releaseMergeBack` 已删除，其"把发布分支独有提交带回主线"的语义由 mergeUpward 的
 整条合并取代；更早的 `releaseCutAndTag` 拆分沿革见归档变更
 `revise-release-branch-flow`。通道分界（设计 D6）不变：写与依赖执行期引用的查询走
-git CLI（`-PgitExe`），纯仓库状态查询走 grgit。提交纪律：修复类提交必须携带缺陷编号
+git CLI 单通道（`-PgitExe` 覆盖二进制；grgit/JGit 依赖已由变更 retire-grgit-channel 退场）。提交纪律：修复类提交必须携带缺陷编号
 （`.githooks/commit-msg` 钩子，安装命令 `git config core.hooksPath .githooks`，
 CI 侧同规则校验），向上合并的完整性检查以该编号为检索键。
 
-**发布与验证的执行环境**：发布相关 gradle 操作（三步任务、publish 及其演练验证）在
-**完整克隆**中进行，不在 git linked worktree 中进行——JGit 无法解析 linked worktree 的
-分支引用（HEAD 文件可读而符号引用不跟随 commondir 重定向；升级 grgit/JGit 已实测证伪，
-证据与复验脚本见 openspec change `upgrade-grgit-for-worktrees` 卷宗），gradle 构建在该
-布局下会直接报错拒绝。克隆自带完整 `.git`，全链路已实测可用；代价仅为磁盘占用与首次
-构建缓存，换来发布动作与共享工作区的 HEAD 争用彻底隔离。
+**发布与验证的执行环境**：gradle 构建对任意 git 布局开放——完整克隆、linked worktree、
+子模块均可（变更 retire-grgit-channel 解除旧禁令：禁令的唯一技术理由是 JGit 不解析 linked
+worktree 的 commondir 重定向，升级 6.10.1 实测证伪，证据见归档 `upgrade-grgit-for-worktrees`；
+该缺陷库已随 git 能力全量 CLI 化退场）。发布快速通道操作（integrateMain、releaseCut、
+releaseTag、mergeUpward、publish）仍**建议在独立完整克隆中执行**：这些任务会移动 HEAD 并
+写标签/分支，与并行会话共用工作区时存在 HEAD 与 index 争用——这是运营纪律而非构建拦截。
+克隆自带完整 `.git`，全链路已实测可用；代价仅为磁盘占用与首次构建缓存。
