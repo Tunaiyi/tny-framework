@@ -61,8 +61,10 @@ configure(projectsExt.javaProjects()) {
     apply plugin: 'com.gradleup.nmcp'
     apply plugin: 'tny.publish'
     apply plugin: 'tny.publish.gate'
-    apply plugin: 'tny.compile-baseline'
-    apply plugin: 'tny.java-module'
+    // 原 tny.compile-baseline 与 tny.java-module 两行并一（consolidate-assembly-line 任务 5.3）：
+    // 入口内先按类应用编译基线再装配 java 线行为，次序逐字等于原两行行序；
+    // gradleProjects 段的 tny.compile-baseline 应用行在插件线册（本册组 6）改造前保留注册 id。
+    apply plugin: 'tny.java-conventions'
     apply plugin: 'tny.integration-test'
     apply plugin: 'tny.publications'
     apply plugin: 'tny.github-packages'

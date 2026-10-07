@@ -27,3 +27,9 @@
 - 实施中发现并修复的机制事实（design 探针结论小节已回写）：`VersionCatalogsExtension` 于工程构建脚本评估时注册，根侧急切 apply 时刻子工程拿不到目录扩展（探针实录 `CATALOGPROBE :tny-benchmark byType?=false byName?=false` 与首炸报错）；原预编译脚本的 `libs` 走 buildSrc 编译期访问器（同一 toml 只读视图，buildSrc/settings 注释在册），二进制无该通道——托管声明段后置 `afterEvaluate`，时机等价论证（托管面首次消费在 projectsEvaluated 与解析期）写入类注释；4.5 七面样件（双依赖、三线 POM、doc-gradle 发布任务面、全量任务图）全部对基线零漂移，为该后置的等价性提供机械证明。
 - 4.4 破坏探针两例：其一，注释根上入口应用行 → `:tny-game-doc-gradle` 配置期报红（maven-publish 唯一供给点断供即炸，锁"无条件、根侧、原位"三点）；其二，注释 `apply plugin: 'tny.git'` → 根配置期在 `tny.release` 的 getByType(GitFlow) 处即报 `Extension of type 'GitFlow' does not exist`（上游先炸），`applyIdentity` 判空分支为纵深防御；两例还原均 sha256 对账一致。
 - 根脚本探针过程记录：临时探针行两进两出（换序修正一次），终态与基线逐字节还原。
+
+## 组 5 java-conventions 立口
+
+- 5.1-5.2（d876c9ca）：入口与五段装配类落地，两处实施期顺序判断如实登记——mavenJava 创建必须留在根配置窗口内（其后的 tny.publications 在根配置期即按名引用该发布物做 sign 挂接），公共依赖段是唯一后置到评估收尾的段（版本目录通道），均写入入口类 javadoc；`addProvider` 经 javap 钉死为 Groovy 形态 `implementation libs.x` 的 Java 落点（javadoc options 的 addBooleanOption 声明于 CoreJavadocOptions 接口，转型注释同义）。判定单测 `JavaConventionsDecisionTest` 覆盖 tester 检索三向与模块名派生两向。
+- 5.3 原子切换三件：删除 `tny.java-module.gradle`（204 行）、注册 `tny.java-conventions`、根 javaProjects 段 compile-baseline 与 java-module 两行并一（注释登记组 6 前 gradleProjects 段保留 tny.compile-baseline 注册 id 的过渡事实）。
+- 5.4 验证：buildSrc 测试绿、根 help 绿；`:tny-game-net` 双依赖清单与 java 线 POM 对基线逐字节一致；全量任务图零漂移（sourcesJar 手写注册+withSourcesJar 复用的组合形态、五测试依赖与 tester 挂接的边全部原样）；`:tny-game-net:tasks --all` 中 sourcesJar 在场计数 1（无双注册）；描述符 implementation-class 指向 JavaConventionsPlugin。
