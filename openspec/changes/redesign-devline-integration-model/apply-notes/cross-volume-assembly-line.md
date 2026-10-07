@@ -7,7 +7,7 @@
    实测通路可行（沙箱四断言齐备），但仅证明 ClassLoaderScope 通路、不证明重型脚本的装配次序
    语义等价——发布族册若选"先收行后转换"两段式，须以真实发布族脚本补端到端装配序探针，且
    同提交携带主规格"约定插件接线规则按载体定"需求过渡期条款的差量修订。完整结论与限定语见
-   `openspec/changes/archive/<装配线册归档目录>/design.md` 探针结论小节。
+   `openspec/changes/archive/2026-10-07-consolidate-assembly-line/design.md` 探针结论小节。
 2. **共有面跨册修订条款**：装配线册已把 tny.dependency-management.gradle 吸收进
    `buildSrc/src/main/java/tny/convention/DependencyConventionsPlugin.java`（含本册提交
    34fc8b11 的版本回落语义与 D2 provenance 注释逐段随迁）。本册 8.1/8.2 演练若暴露版本派生
