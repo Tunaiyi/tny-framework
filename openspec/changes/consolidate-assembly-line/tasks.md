@@ -54,9 +54,9 @@
 
 ## 9. 次序契约、防蔓延与目录页复核
 
-- [ ] 9.1 逐字序复核：三入口类 javadoc 目录页与原行序对照表逐一核对（根脚本终文十行的相对次序 == 原十四行去掉被吸收行的交错）；验证：对照表入 apply-notes
-- [ ] 9.2 防蔓延 grep：`grep -n "tny.publish\|tny.publish.gate\|tny.publications\|tny.github-packages\|tny.central" buildSrc/src/main/java/tny/convention/*Conventions*.java` 与三入口实现类逐一核查零 id 字符串引用（注释中为交代来由的完整文档名除外）；验证：grep 输出入 apply-notes
-- [ ] 9.3 形态断言总表：六枚描述符（三入口＋两同名＋compile-baseline 注销后残留检查）逐一 `implementation-class` 指向二进制实现类；`buildSrc/src/main/groovy/` 余九枚脚本清单核对（git、release、integrate、central、publish、publish.gate、publications、github-packages ＋ 无其余）
+- [x] 9.1 逐字序复核：三入口类 javadoc 目录页与原行序对照表逐一核对（根脚本终文十行的相对次序 == 原十四行去掉被吸收行的交错）；验证：对照表入 apply-notes
+- [x] 9.2 防蔓延 grep：`grep -n "tny.publish\|tny.publish.gate\|tny.publications\|tny.github-packages\|tny.central" buildSrc/src/main/java/tny/convention/*Conventions*.java` 与三入口实现类逐一核查零 id 字符串引用（注释中为交代来由的完整文档名除外）；验证：grep 输出入 apply-notes
+- [x] 9.3 形态断言总表：六枚描述符（三入口＋两同名＋compile-baseline 注销后残留检查）逐一 `implementation-class` 指向二进制实现类；`buildSrc/src/main/groovy/` 余九枚脚本清单核对（git、release、integrate、central、publish、publish.gate、publications、github-packages ＋ 无其余）
 
 ## 10. 零差异与全量回归
 

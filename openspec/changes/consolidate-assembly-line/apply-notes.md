@@ -56,3 +56,9 @@
 - API 钉版过程三处失误当场修正未入账史：mainClass 为 Property 形态、MapProperty 无 clear/replace（整图覆写用 set(Map)）、benchScope 判断次序 property 先取会炸；反射取 `jmhRunBytecodeGenerator.generatedResourcesDir` 首跑接线错位（指向当前任务而非生成任务），报错即改为 `tasks.named("jmhRunBytecodeGenerator")` 目标——原 Groovy 动态访问的运行时求值语义保留。
 - jmh 供给迁移：buildSrc 增 `gradlePluginPortal()`（jmh 不在 Central，探针实测）与 implementation 依赖（版本单一落点注释登记）；`tny-benchmark/build.gradle` 两处字面量各自归位——plugins 块去 `version '0.7.3'`，`jmhVersion = '1.37'` 改 `providers.gradleProperty('jmhVersion').get()`，gradle.properties 增键 `jmhVersion=1.37`（取用点注释齐备，值零变化）。
 - 8.4 执行面验证：选择段四形态经 /tmp init 脚本内省与原文语义一致（缺省=族竖线正则并六臂参数域、-PbenchParams 单臂覆写居末生效、-PbenchAll 全开 `.*`、-PbenchScope=quick 排除面且不带参数域）；`jmhList` 实跑成功（7 个基名条目，产物路径 `tny-benchmark/build/tmp/jmhList/jmhList.txt` 与原 temporaryDir 同位，finalizedBy 的 `jmhListVerify` 判红逻辑同步演练——空清单时显式报红文案逐字为原脚本句）；`jmhSuiteVerify` 实跑通过；`:tny-benchmark` 任务图对基线 83/83 零差异；描述符指向 `BenchmarkModulePlugin`；根配置与 buildSrc 测试（含 `BenchmarkSuiteCheckTest` 绿红两向）全绿。
+
+## 组 9 次序契约、防蔓延与目录页复核
+
+- 9.1 根装配段终文与逐字序对照：subprojects 段一行（原两行，入口内 io.spring dm→idea→maven-publish→配置体承前）；gradleProjects 段 publish、gate 保持原位加 plugin-conventions（原 compile-baseline、plugin-module 两行位）；javaProjects 段 nmcp、publish、gate 三行保持，java-conventions 占原 compile-baseline 与 java-module 两行位、integration-test 保持、publications 与 github-packages 保持——被收编行的相对交错次序全部原位复刻，目录页与行内注释逐项指名所在类。javaProjects 段一处组 6 遗留的"改造前保留注册 id"过时注释按触碰即改改写为完成时（本组提交）。
+- 9.2 防蔓延 grep：五枚入口与装配类源码中发布族/central id 的命中逐条核为 javadoc/注释的边界描述句（"本插件不做什么"点名），代码体内 `apply` 目标仅为核心插件、io.spring dm 裸 id、二进制实现类与 integration/benchmark 自身——零发布族脚本 id 应用，D8 防蔓延条款成立。
+- 9.3 形态断言总表：五枚新描述符（dependency-conventions、java-conventions、plugin-conventions、integration-test、benchmark-module）implementation-class 全指向二进制实现类；compile-baseline 描述符从产物消失（注册注销生效）；groovy 脚本余八枚（central、git、github-packages、integrate、publications、publish.gate、publish、release）与 design 预期清单一致；根脚本装配段终文十四行收为十行应用语句。
