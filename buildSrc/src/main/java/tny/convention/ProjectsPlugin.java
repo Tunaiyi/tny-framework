@@ -31,16 +31,18 @@ import org.gradle.api.Project;
  * 内按类型拉取处），与 tny.release-ops 的 GitFlow 扩展同一模式——消费方经 getByType 按
  * 类型获取，扩展不在位即配置期报错。根脚本现序 tny.release-ops 先于本插件应用。
  *
- * <p>派生版本注入（consolidate-assembly-line 设计决策 D4 变体乙，
- * convert-orchestration-to-java 任务 5.1 转正）：gitFlow 扩展在位时本方法经
+ * <p>派生版本注入（consolidate-assembly-line 变更设计决策 D4 变体乙，
+ * convert-orchestration-to-java 变更任务 5.1 转正）：gitFlow 扩展在位时本方法经
  * {@link GitVersionSource} 契约读取其 projectVersion 并写入 projects 扩展的
  * derivedProjectVersion；gitFlow 不在位时留空不抛（保持 tny.projects 独立可用的既有
- * 测试与复用形态）。装配线册时代的编译墙（buildSrc 先编译 Java 后编译 Groovy，探针五
- * 实证）已随 GitFlow 转为 Java 类消失，该册为此登记的 GroovyObject 弱型反射降级就此
- * 撤销。注入语义含 34fc8b11 随迁的 redesign D2 回落规则（取值等于
- * {@code rootGitFlow.projectVersion ?: Project.DEFAULT_VERSION}，出处见
- * ProjectsExtension#getDerivedProjectVersion javadoc）；"tny.release-ops 未先应用即
- * 报红"的消费期契约由 tny.dependency-conventions 的版本派生承担，与原脚本
+ * 测试与复用形态）。consolidate-assembly-line 变更立项时的编译墙（buildSrc 先编译
+ * Java 后编译 Groovy，该变更 design.md"探针结论"小节的探针五沙箱实验实证）已随
+ * GitFlow 转为 Java 类消失，该变更为此登记的 GroovyObject 弱型反射降级就此撤销。
+ * 注入语义含随提交 34fc8b11 迁入的 redesign-devline-integration-model 变更设计决策
+ * D2 回落规则（取值等于 {@code rootGitFlow.projectVersion ?: Project.DEFAULT_VERSION}，
+ * 出处见本包 ProjectsExtension 的 getDerivedProjectVersion javadoc）；
+ * "tny.release-ops 未先应用即报红"的消费期契约由约定插件
+ * tny.dependency-conventions 的版本派生承担，与原预编译脚本
  * getByType(GitFlow) 的报错时机同段（子工程配置期）。
  */
 public class ProjectsPlugin implements Plugin<Project> {
@@ -52,8 +54,8 @@ public class ProjectsPlugin implements Plugin<Project> {
         projects.setPluginLegacyGroup("com.tny.game");
         Object gitFlow = project.getExtensions().findByName("gitFlow");
         if (gitFlow instanceof GitVersionSource source) {
-            // 类型化注入（convert-orchestration-to-java 任务 5.1）：GitFlow 转 Java 后
-            // 经 GitVersionSource 契约读取，装配线册登记的 GroovyObject 弱型反射就此撤销。
+            // 类型化注入（convert-orchestration-to-java 变更任务 5.1）：GitFlow 转 Java 后
+            // 经 GitVersionSource 契约读取，consolidate-assembly-line 变更登记的弱型反射就此撤销。
             String projectVersion = source.getProjectVersion();
             projects.setDerivedProjectVersion(
                     projectVersion != null ? projectVersion : Project.DEFAULT_VERSION);

@@ -90,8 +90,10 @@
 
 - `/opsx:verify convert-orchestration-to-java` 报告：实现面零 CRITICAL（两条 CRITICAL 为 8.1/8.2 收口步骤自身）；两条 WARNING 与一条 SUGGESTION 全部按用户指令在归档前处置完毕（见下三条）。
 - WARNING 1 修复：`ProjectsPlugin.java` 类 javadoc 的注入说明段原样描述转正前形态（GroovyObject 弱型反射、"根脚本现序 tny.git 先于本插件应用"），已改写为契约注入现况——读取经 `GitVersionSource`、根脚本序实名 `tny.release-ops`；旧反射仅保留"就此撤销"的沿革句。编译验证绿。
-- WARNING 2 处置（任务 5.1 末句"装配线册 design D4 降级注记回写为'本册转正'"的执行落点）：归档册 `openspec/changes/archive/2026-10-07-consolidate-assembly-line/design.md` 决策 D4 所登记的 GroovyObject 弱型反射编译墙降级，其效力于本册归档时刻终结——GitFlow 已是 Java 类，注入经 GitVersionSource 契约（`ProjectsPlugin.java` 类 javadoc 与实现同文在案）。按"归档册不追改"惯例以本条登记为回写，不改已归档原文。
-- SUGGESTION 1 处置：retireGuard 缺前基线样件的实况补样义务移交 redesign 册——已作为附加条款写入其 `apply-notes/cross-volume-assembly-line.md`（与 8.2 先行合入条款同段登记），redesign 册任务组 8.1 演练执行 retireGuard 时补抓真实输出样件入库。
-- 8.2 回写执行完毕：cross-volume-assembly-line.md 追加第 4 条（编排线先行合入、修复落点
-  含界线拆出的两支撑类、retireGuard 实况补样附加条款）；发布族册 apply-notes 留档 1.2
-  前置满足的机械复核依据。本册全 16 任务闭户。
+- WARNING 2 处置（任务 5.1 末句"consolidate-assembly-line 变更的 design.md 设计决策 D4 降级注记回写为'本册转正'"的执行落点）：已归档 change 目录 `openspec/changes/archive/2026-10-07-consolidate-assembly-line/design.md` 决策 D4 所登记的 GroovyObject 弱型反射编译墙降级，其效力于 convert-orchestration-to-java 归档时刻终结——GitFlow 已是 Java 类，注入经 GitVersionSource 契约（`ProjectsPlugin.java` 类 javadoc 与实现同文在案）。按"已归档 change 目录不追改"惯例以本条登记即为回写载体，已归档 change 目录的原文不追改。
+- SUGGESTION 1 处置：retireGuard 缺前基线样件的实况补样义务移交 redesign-devline-integration-model——已作为附加条款写入其 `apply-notes/cross-volume-assembly-line.md`（与 8.2 先行合入条款同段登记），redesign-devline-integration-model 任务组 8.1 演练执行 retireGuard 时补抓真实输出样件入库。
+- 任务 8.2 回写执行完毕：redesign-devline-integration-model 的
+  `apply-notes/cross-volume-assembly-line.md` 追加第 4 条（本 change 已先行合入、git 语义
+  修复落点含按单类 250 行界线拆出的两个支撑类、retireGuard 实况补样附加条款）；
+  convert-publish-family-to-java 的 apply-notes 留档其任务 1.2 前置满足的机械复核依据。
+  本 change 全部 16 个任务至此闭户。

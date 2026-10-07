@@ -6,7 +6,7 @@
 - [ ] 1.2 确认 convert-orchestration-to-java 已归档（`GitFlow`/`GitCli` 为 Java 类：`ls buildSrc/src/main/groovy/tny/convention/` 无二者），其正则选点判例表 apply-notes 可读
 - [ ] 1.3 重读五脚本与三能力现文与本册 design 锚点事实做差比对：差异逐条记入本册 apply-notes"现文回写"小节，并修订拆类表与文案引用（以现文为准，design 不改快照句）；无差异也须记录"零差异复核"结论
 - [ ] 1.4 重抓本册新基线入 `baseline/`（Python 正则剔噪口径）：全量任务图、`publish --dry-run` 两线任务名清单、`centralUpload -PdryRun` 与 `centralBundle` 干跑输出、三线 POM 与 BOM POM、`-PgitExe` 缺席下 gate 记忆化冒烟记录、warm 耗时三连；README 锚定当前 HEAD
-- [ ] 1.5 把判例表发布族移交行（约十处）转录本册 apply-notes 并逐行标注 matches/find 选定；验证：与编排线册移交表行号 grep 交叉核对计数一致
+- [ ] 1.5 把判例表发布族移交行（tny.publish.gate.gradle 约七处、tny.central.gradle 两处、其余三脚本合计三处）转录本 change apply-notes 并逐行标注 matches/find 选定；验证：与编排线册移交表行号 grep 交叉核对计数一致
 
 ## 2. tny.publish.gate 同名 Java 化（测试先行）
 

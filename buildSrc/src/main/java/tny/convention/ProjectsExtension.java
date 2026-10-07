@@ -71,17 +71,23 @@ public class ProjectsExtension {
     }
 
     /**
-     * 派生工程版本（consolidate-assembly-line 设计决策 D4 变体乙的落点）：由 ProjectsPlugin
-     * 在根工程配置期从 tny.git 创建的 gitFlow 扩展注入，消费方（tny.dependency-conventions
-     * 的版本派生）按本类型读取——Groovy 类 GitFlow 对 Java 实现类存在编译墙（buildSrc 先编译
-     * Java 后编译 Groovy，探针五实证），故弱型读取收敛到注入点一处、消费面全类型化。
+     * 派生工程版本（consolidate-assembly-line 变更设计决策 D4 变体乙的落点）：由
+     * ProjectsPlugin 在根工程配置期从约定插件 tny.release-ops 创建的 gitFlow 扩展注入，
+     * 消费方（约定插件 tny.dependency-conventions 的版本派生）按本类型读取。原 Groovy 类
+     * GitFlow 对 Java 实现类的编译墙（buildSrc 先编译 Java 后编译 Groovy，
+     * consolidate-assembly-line 变更 design.md"探针结论"小节的探针五沙箱实验实证）已随
+     * convert-orchestration-to-java 变更将其转为 Java 类而消失；弱型读取收敛到注入点
+     * 一处、消费面全类型化的格局不变。
      *
-     * <p>语义逐段承接原 tny.dependency-management.gradle 尾部三行（expose-git-info-extension
-     * 按类型获取契约、redesign-devline-integration-model 设计决策 D2 回落规则，含 34fc8b11
-     * 随迁注释）：release 维护分支未注入 -PreleaseVersion 时 GitFlow.projectVersion 为 null，
-     * 注入行按 {@code ?: Project.DEFAULT_VERSION} 回落 Gradle 默认版本 "unspecified"，
-     * 编译与测试不受影响，发布任务由门禁按形态与版本双重判定拒绝；tny.git 未应用时
-     * 注入点即抛"扩展不在位"（原脚本 getByType(GitFlow) 的按类型获取契约原样保持）。
+     * <p>语义逐段承接原预编译脚本 tny.dependency-management.gradle 尾部三行
+     * （expose-git-info-extension 变更的按类型获取契约、
+     * redesign-devline-integration-model 变更设计决策 D2 的回落规则，含随提交 34fc8b11
+     * 迁入的注释）：release 维护分支未注入 -PreleaseVersion 时 GitFlow.projectVersion
+     * 为 null，注入行按 {@code ?: Project.DEFAULT_VERSION} 回落 Gradle 默认版本
+     * "unspecified"，编译与测试不受影响，发布任务由门禁按形态与版本双重判定拒绝；
+     * tny.release-ops 未先应用时注入点留空不抛，消费期的报红由约定插件
+     * tny.dependency-conventions 的版本派生承担（报错时机与原预编译脚本
+     * getByType(GitFlow) 扩展不在位即抛的契约同段，均在子工程配置期）。
      * 属性在根工程配置期一次性写入后不再变化。
      */
     public String getDerivedProjectVersion() {

@@ -18,13 +18,18 @@
    baseline 卷宗（bom-gate-defect-before.txt 与 bom-gate-after-dryrun.txt）——本册演练可走根级
    发布命令。
 
-4. **编排线册已先行合入并归档（由 convert-orchestration-to-java 任务 8.2 写入，登记时点
-   2026-10-07，归档编号目录 2026-10-07-convert-orchestration-to-java）**：编排三脚本与
-   GitFlow/GitCli 已 Java 化并经总入口 `tny.release-ops` 立口（根脚本三行并一）。本册
-   8.1/8.2 演练若暴露 git 语义缺陷，修复落点为
-   `buildSrc/src/main/java/tny/convention/GitFacts.java`、`GitFlow.java`（及其按主规格
-   250 行界线拆出的支撑类 `GitRemoteQueries.java`、`GitLocalRefs.java`）与总入口
-   `ReleaseOpsPlugin.java` 及其接线类目录 `tny/convention/releaseops/`，修毕请回写本文件
-   登记（与前条 DependencyConventionsPlugin 先例同型处置）。附加条款：编排线册组 7 如实
-   登记了 `retireGuard` 任务缺前基线样件（其等值现由逐字承脚本的报错文案与门禁双违例向
-   用例承载）——本册演练执行 retireGuard 时补抓一份真实输出样件入库，闭合该验证缺口。
+
+4. **convert-orchestration-to-java 已先行合入并归档（由该 change 的任务 8.2 写入，登记时点
+   2026-10-07，归档编号目录 openspec/changes/archive/2026-10-07-convert-orchestration-to-java）**：
+   tny.git、tny.release、tny.integrate 三枚预编译脚本与 GitFlow、GitCli 两个 Groovy 类已
+   转为 Java，入口插件 tny.release-ops 已设立，根 build.gradle 原三条 apply 语句合并为
+   一条。本 change（redesign-devline-integration-model）任务 8.1 与任务 8.2 的演练若暴露
+   git 语义缺陷，修复落点为 buildSrc/src/main/java/tny/convention/GitFacts.java、
+   GitFlow.java（及按 gradle-build-style 规格单类 250 行界线从 GitFlow 拆出的支撑类
+   GitRemoteQueries.java 与 GitLocalRefs.java）、入口类 ReleaseOpsPlugin.java 与目录
+   buildSrc/src/main/java/tny/convention/releaseops/ 内的接线类，修毕请回写本文件登记
+   （与第 2 条 DependencyConventionsPlugin 的先例同型处置）。附加条款：
+   convert-orchestration-to-java 的组 7 回归如实登记了 retireGuard 任务缺前基线样件，
+   其等值依据为报错文案逐字承接自原脚本，加上 IntegrationGateCheck 用例对两类退役违例
+   （存在未集成提交、线谱系登记行缺处置决定）的覆盖——本 change 的演练执行 retireGuard
+   时请补抓一份真实输出样件入库，闭合该验证缺口。

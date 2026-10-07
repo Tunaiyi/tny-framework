@@ -147,13 +147,13 @@ public class DependencyConventionsPlugin implements Plugin<Project> {
         project.setGroup(projects.getProjectGroup());
         // release 维护分支未注入 -PreleaseVersion 时 GitFlow.projectVersion 为 null（redesign-devline-integration-model D2），
         // 回落 Gradle 默认 unspecified 已在上游注入点完成（ProjectsPlugin），编译与测试不受影响，
-        // 发布任务由门禁按形态与版本双重判定拒绝。此处判空即"tny.git 未先于消费方应用"——
+        // 发布任务由门禁按形态与版本双重判定拒绝。此处判空即"tny.release-ops 未先于消费方应用"——
         // 与原脚本 getByType(GitFlow) 扩展不在位即抛的契约同段同形（expose-git-info-extension D3），
         // 报错时机同为子工程配置期。
         String derived = projects.getDerivedProjectVersion();
         if (derived == null) {
             throw new GradleException("版本派生失败：根工程 tny.projects 扩展的派生版本未注入，"
-                    + "来由是根构建脚本未先应用 tny.git（gitFlow 扩展不在位，tny.projects 应用时刻无法注入）；"
+                    + "来由是根构建脚本未先应用 tny.release-ops（gitFlow 扩展不在位，tny.projects 应用时刻无法注入）；"
                     + "原契约见 expose-git-info-extension 设计决策 D3 与 tny.convention.ProjectsExtension javadoc");
         }
         project.setVersion(derived);
