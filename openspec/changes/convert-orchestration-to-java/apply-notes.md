@@ -25,3 +25,9 @@
 | （登记）release/integrate 内 `startsWith("refs/heads/…")` 两处 | 前缀比较 | 保持 startsWith | 非正则 |
 
 发布族移交行（本册不改，交 convert-publish-family-to-java）：`tny.publish.gate.gradle` 形态段与豁免清单约七处、`tny.central.gradle` 分支守卫两处、`tny.publications.gradle` 与 `tny.publish.gradle`、`tny.github-packages.gradle` 合计三处——行号与选定随该册组 1.5 转录时现查现记。
+
+## 组 2 基线快照入库
+
+- 六样件与 README 入 `baseline/`（锚定 b410ea25，分支 5.7.x 为祖父登记维护线）：全量任务图（五编排任务与 description 全文在列）、`releaseCut -PreleaseVersion=9.9.9 -PdryRun` 祖父轨预览全文（成功路径样本）、`integrateMain/mergeUpward -PdryRun` 分支形态不合法的报错文案全文（等值判据样本各一）、`:tny-game-net` 派生 group/version（com.tnydev.game / 5.7.x-SNAPSHOT）、warm 耗时三连（2.21/2.24/1.94）。
+- 口径注记：`-q properties` 于根工程取值为 unspecified 属现状（根不在 subprojects 派生面），派生样件按子工程抓取——改造前后同判据即等值。
+- 避让清单维持：`tny-benchmark/results/bench-20261006-quick.json` 不入任何提交。

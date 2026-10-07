@@ -7,8 +7,8 @@
 
 ## 2. 基线快照入库
 
-- [ ] 2.1 按 context 零差异抓样口径（Corretto 21、UTF-8、独立守护进程注册表、PATH 修正）抓基线入 `baseline/`：全量任务图（含五任务 description 全文）、`releaseCut -PreleaseVersion=9.9.9 -PdryRun` 在当前分支的输出全文（成功计划或报错文案均照录）、`integrateMain -PdryRun` 与 `mergeUpward -PdryRun` 同法、`gitFlow` 派生值记录（经 `-q properties | grep "^version"` 与 legacyIdentity 冒烟）、warm help 耗时三连；README 锚定哈希与剔噪口径（沿装配线册 Python 正则）
-- [ ] 2.2 验证：样件非空、README 齐、`git status` 除在途避让文件（`tny-benchmark/results/bench-20261006-quick.json` 不入任何提交）零污染
+- [x] 2.1 按 context 零差异抓样口径（Corretto 21、UTF-8、独立守护进程注册表、PATH 修正）抓基线入 `baseline/`：全量任务图（含五任务 description 全文）、`releaseCut -PreleaseVersion=9.9.9 -PdryRun` 在当前分支的输出全文（成功计划或报错文案均照录）、`integrateMain -PdryRun` 与 `mergeUpward -PdryRun` 同法、`gitFlow` 派生值记录（经 `-q properties | grep "^version"` 与 legacyIdentity 冒烟）、warm help 耗时三连；README 锚定哈希与剔噪口径（沿装配线册 Python 正则）
+- [x] 2.2 验证：样件非空、README 齐、`git status` 除在途避让文件（`tny-benchmark/results/bench-20261006-quick.json` 不入任何提交）零污染
 
 ## 3. GitCli 转 Java
 

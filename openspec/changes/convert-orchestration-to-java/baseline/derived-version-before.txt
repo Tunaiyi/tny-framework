@@ -1,0 +1,2 @@
+group: com.tnydev.game
+version: 5.7.x-SNAPSHOT
