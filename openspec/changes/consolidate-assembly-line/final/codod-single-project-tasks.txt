@@ -1,0 +1,112 @@
+Configuration on demand is an incubating feature.
+> Task :buildSrc:extractPluginRequests UP-TO-DATE
+> Task :buildSrc:generatePluginAdapters UP-TO-DATE
+> Task :buildSrc:compileJava UP-TO-DATE
+> Task :buildSrc:compileGroovy UP-TO-DATE
+> Task :buildSrc:compileGroovyPlugins UP-TO-DATE
+> Task :buildSrc:pluginDescriptors UP-TO-DATE
+> Task :buildSrc:processResources UP-TO-DATE
+> Task :buildSrc:classes UP-TO-DATE
+> Task :buildSrc:jar UP-TO-DATE
+
+> Task :tny-game-net:tasks
+
+------------------------------------------------------------
+Tasks runnable from project ':tny-game-net'
+------------------------------------------------------------
+
+Build tasks
+-----------
+assemble - Assembles the outputs of this project.
+build - Assembles and tests this project.
+buildDependents - Assembles and tests this project and all projects that depend on it.
+buildNeeded - Assembles and tests this project and all projects it depends on.
+classes - Assembles main classes.
+clean - Deletes the build directory.
+integrationClasses - Assembles integration classes.
+jar - Assembles a jar archive containing the classes of the 'main' feature.
+javadocJar - Assembles a jar archive containing the main javadoc.
+testClasses - Assembles test classes.
+
+Dependency management tasks
+---------------------------
+downloadDependencySources - 下载 compile/runtime/testCompile 类路径依赖的 sources 源码包到 build/dependency-sources
+
+Documentation tasks
+-------------------
+javadoc - Generates Javadoc API documentation for the 'main' feature.
+
+Help tasks
+----------
+artifactTransforms - Displays the Artifact Transforms that can be executed in project ':tny-game-net'.
+buildEnvironment - Displays all buildscript dependencies declared in project ':tny-game-net'.
+dependencies - Displays all dependencies declared in project ':tny-game-net'.
+dependencyInsight - Displays the insight into a specific dependency in project ':tny-game-net'.
+dependencyManagement - Displays the dependency management declared in project ':tny-game-net'.
+help - Displays a help message.
+javaToolchains - Displays the detected java toolchains.
+outgoingVariants - Displays the outgoing variants of project ':tny-game-net'.
+projects - Displays the sub-projects of project ':tny-game-net'.
+properties - Displays the properties of project ':tny-game-net'.
+resolvableConfigurations - Displays the configurations that can be resolved in project ':tny-game-net'.
+tasks - Displays the tasks runnable from project ':tny-game-net'.
+
+IDE tasks
+---------
+cleanIdea - Cleans IDEA project files (IML, IPR)
+idea - Generates IDEA project files (IML, IPR, IWS)
+
+Publishing tasks
+----------------
+generateMetadataFileForMavenJavaPublication - Generates the Gradle metadata file for publication 'mavenJava'.
+generatePomFileForMavenJavaPublication - Generates the Maven POM file for publication 'mavenJava'.
+nmcpPublishAllPublicationsToCentralPortal - Publishes all the maven publications to the Central Releases repository.
+nmcpPublishAllPublicationsToCentralPortalSnapshots - （已禁用）快照 Central 分发统一走 centralSnapshots 原生仓，禁用 nmcp 双发路径
+nmcpPublishAllPublicationsToMavenLocal - Publishes all the maven publications to the ~/.m2 Maven Local repository.
+publish - Publishes all publications produced by this project.
+publishAllPublicationsToCentralSnapshotsRepository - Publishes all Maven publications produced by this project to the centralSnapshots repository.
+publishAllPublicationsToGithubPackagesRepository - Publishes all Maven publications produced by this project to the githubPackages repository.
+publishAllPublicationsToMavenRepository - Publishes all Maven publications produced by this project to the maven repository.
+publishMavenJavaPublicationToCentralSnapshotsRepository - Publishes Maven publication 'mavenJava' to Maven repository 'centralSnapshots'.
+publishMavenJavaPublicationToGithubPackagesRepository - Publishes Maven publication 'mavenJava' to Maven repository 'githubPackages'.
+publishMavenJavaPublicationToMavenLocal - Publishes Maven publication 'mavenJava' to the local Maven repository.
+publishMavenJavaPublicationToMavenRepository - Publishes Maven publication 'mavenJava' to Maven repository 'maven'.
+publishToMavenLocal - Publishes all Maven publications produced by this project to the local Maven cache.
+
+Verification tasks
+------------------
+check - Runs all checks.
+integrationTest - Integration tests (@Tag("integration"); docker cases need -PincludeDocker)
+test - Runs the test suite.
+
+Other tasks
+-----------
+checkPublishPrerequisites
+cleanIdeaModule
+cleanupDirectory
+compileIntegrationJava - Compiles integration Java source.
+compileJava - Compiles main Java source.
+compileTestJava - Compiles test Java source.
+components - Displays the components produced by project ':tny-game-net'. [deprecated]
+createProject
+dependentComponents - Displays the dependent components of components in project ':tny-game-net'. [deprecated]
+ideaModule - Generates IDEA module files (IML)
+model - Displays the configuration model of project ':tny-game-net'. [deprecated]
+nmcpCheckAllPublicationsFiles
+nmcpZipAllPublications
+processIntegrationResources - Processes integration resources.
+processResources - Processes main resources.
+processTestResources - Processes test resources.
+publishAllPublicationsToCentralPortal
+publishAllPublicationsToCentralPortalSnapshots - （已禁用）快照 Central 分发统一走 centralSnapshots 原生仓，禁用 nmcp 双发路径
+publishAllPublicationsToCentralSnapshots
+publishAllPublicationsToNmcpRepository - Publishes all Maven publications produced by this project to the nmcp repository.
+publishMavenJavaPublicationToNmcpRepository - Publishes Maven publication 'mavenJava' to Maven repository 'nmcp'.
+signMavenJavaPublication - Signs all artifacts in the 'mavenJava' publication.
+sourcesJar
+
+Rules
+-----
+Pattern: clean<TaskName>: Cleans the output files of a task.
+Pattern: build<ConfigurationName>: Assembles the artifacts of a configuration.
+

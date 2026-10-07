@@ -60,10 +60,10 @@
 
 ## 10. 零差异与全量回归
 
-- [ ] 10.1 十一样件终态比对基线：常规七件＋组 2 四面（doc-gradle publishing/编码、两线 publish 任务名清单、benchmark/integration-test 任务图）逐字节一致；预期差异仅申报的 integration-test 失败文案可达性（非样件面）
-- [ ] 10.2 configure-on-demand 单工程样件：`./gradlew :tny-game-net:tasks` 与带 `-Dorg.gradle.configureondemand=true` 场景的输出对基线一致（入口取根扩展通道在 CodOD 下的实证）
-- [ ] 10.3 全量：`./gradlew check --continue` 绿、`-p buildSrc test` 绿、`./gradlew publish --dry-run` 任务图构建绿且 BOM 门禁节点保持在场、warm help 三连耗时对改造后前值劣化不超过 3 秒阈值；结果与差异行清单入 apply-notes
-- [ ] 10.4 触碰文件按主规格 13 条需求逐条走查（重点：单类计量、目录页两跳、provenance 随迁、防蔓延、接线需求三场景自洽）；走查表入 apply-notes
+- [x] 10.1 十一样件终态比对基线：常规七件＋组 2 四面（doc-gradle publishing/编码、两线 publish 任务名清单、benchmark/integration-test 任务图）逐字节一致；预期差异仅申报的 integration-test 失败文案可达性（非样件面）
+- [x] 10.2 configure-on-demand 单工程样件：`./gradlew :tny-game-net:tasks` 与带 `-Dorg.gradle.configureondemand=true` 场景的输出对基线一致（入口取根扩展通道在 CodOD 下的实证）
+- [x] 10.3 全量：`./gradlew check --continue` 绿、`-p buildSrc test` 绿、`./gradlew publish --dry-run` 任务图构建绿且 BOM 门禁节点保持在场、warm help 三连耗时对改造后前值劣化不超过 3 秒阈值；结果与差异行清单入 apply-notes
+- [x] 10.4 触碰文件按主规格 13 条需求逐条走查（重点：单类计量、目录页两跳、provenance 随迁、防蔓延、接线需求三场景自洽）；走查表入 apply-notes
 
 ## 11. 收口
 

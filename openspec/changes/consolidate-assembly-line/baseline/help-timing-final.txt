@@ -1,0 +1,3 @@
+        2.07 real         1.07 user         0.16 sys
+        2.04 real         1.07 user         0.16 sys
+        2.04 real         1.08 user         0.15 sys
