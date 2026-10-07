@@ -1,0 +1,61 @@
+plugins {
+    id 'java'
+    // 版本号已随 buildSrc 供给迁移退役（consolidate-assembly-line 任务 8.3，双声明并存为实测硬失败）
+    id 'me.champeau.jmh'
+    // 族属清单与枚举/对账/落盘任务在 tny.benchmark-module 约定插件（注册归属与任务名不变）
+    id 'tny.benchmark-module'
+    // 横切角色统一插件（consolidate-module-modes-plugin）
+    id 'tny.module-setting'
+}
+
+// 自述：不发布设施（零发布合同就地核对消费；刻意不带 tny-game- 前缀见 settings 约定注释）
+moduleSetting {
+    enableUnpublished()
+}
+
+// 刻意不叫 tny-game-*：不落根构建 moduleProjects 装配线，零发布（openspec capability: benchmark-harness）。
+// 引用根 gradle.properties 单一事实来源；不进装配线故需自备 toolchain/编码。
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(javaVersion.toInteger())
+    }
+}
+
+tasks.withType(AbstractCompile).configureEach {
+    options.encoding = encoding
+}
+
+// 基准族清单（split-bench-suites D1 族属双承载的声明面：目录即族属，此清单登记族正则，
+// jmhSuiteVerify 双向对账钉死；行为来由注释在 tny.benchmark-module 插件）。
+benchmarkSuite {
+    routineFamily.set(['.*\\.benchmark\\.net\\.routine\\..*'])
+    devtestFamily.set(['.*\\.benchmark\\.net\\.devtest\\..*'])
+    facilityProbes.set(['.*\\.benchmark\\.net\\.devtest\\.SmokeBenchmark.*'])
+    routineAlgoArms.set(['prod_crc64_xortile', 'prod_siphash24_xortile', 'prod_crc32_xortile',
+                         'prod_siphash24_xorprod', 'prod_crc32_xorprod', 'prod_siphash24_chacha'])
+    quickRunExcludes.set(['.*\\.benchmark\\.net\\.routine\\.PipelineCryptoMatrixBenchmark.*'])
+}
+
+dependencies {
+    jmhImplementation project(':tny-game-net')
+    jmhImplementation project(':tny-game-net-netty4')
+    jmhImplementation project(':tny-game-net-test')
+    jmhImplementation libs.mockitoJunitJupiter   // 基准装配复用 mock ctx（版本由根 BOM 管理）
+}
+
+// D3 基线纪律入库（原 D2 裸 JavaExec 已废，见 openspec/changes/promote-netbench-to-tny-bench design T2）：
+// 缺省执行 = 常规族（含设施探针）+ 下列参数，可复现；全量矩阵以 -PbenchAll 显式打开（选择实现收编在 tny.benchmark-module 的 afterEvaluate，gradle-build-style 需求一）。
+jmh {
+    // 版本落点迁 gradle.properties 键 jmhVersion（同文件 toolchain 读 javaVersion 先例，
+    // 单一事实源需求；值保持 1.37 不变，Central 冻结版，插件按此自动接线 core+annprocess）
+    jmhVersion = providers.gradleProperty('jmhVersion').get()
+    fork = 2                                  // D3：-f ≥ 2
+    warmupIterations = 5
+    iterations = 10
+    warmup = '500ms'
+    timeOnIteration = '1s'
+    resultFormat = 'json'
+    resultsFile = project.layout.buildDirectory.file('reports/bench/bench-result.json').get().asFile
+    // 执行面规模选择（全量/定向/速览与 benchGc、benchFast）在 tny.benchmark-module 的 afterEvaluate（需求一：程序性不入模块文件）；
+    // benchParams 显式参数覆写的解析也在该插件 afterEvaluate，覆写优先级承前居末
+}

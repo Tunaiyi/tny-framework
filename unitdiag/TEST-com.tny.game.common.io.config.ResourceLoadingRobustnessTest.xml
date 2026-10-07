@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.tny.game.common.io.config.ResourceLoadingRobustnessTest" tests="23" skipped="0" failures="1" errors="0" timestamp="2026-10-07T12:47:14.464Z" hostname="runnervmmprz5" time="5.512">
+  <properties/>
+  <testcase name="registrationsAndRemovalsPairWithoutAccumulation()" classname="com.tny.game.common.io.config.ResourceLoadingRobustnessTest" time="0.017"/>
+  <testcase name="bareFileNameJoinsCurrentDirectoryUnit()" classname="com.tny.game.common.io.config.ResourceLoadingRobustnessTest" time="0.052"/>
+  <testcase name="childFindScopedToSubspace()" classname="com.tny.game.common.io.config.ResourceLoadingRobustnessTest" time="0.007"/>
+  <testcase name="cyclicImportFailsFastWithChain()" classname="com.tny.game.common.io.config.ResourceLoadingRobustnessTest" time="0.015"/>
+  <testcase name="absentResourceKeepsEmptyConfigBranch()" classname="com.tny.game.common.io.config.ResourceLoadingRobustnessTest" time="0.002"/>
+  <testcase name="spacedResourceContentReadable()" classname="com.tny.game.common.io.config.ResourceLoadingRobustnessTest" time="0.004"/>
+  <testcase name="importPriorityLaterDeclarationOverridesAndDedupKeepsFirst()" classname="com.tny.game.common.io.config.ResourceLoadingRobustnessTest" time="0.005"/>
+  <testcase name="spacedResourceLocatesToExistingFile()" classname="com.tny.game.common.io.config.ResourceLoadingRobustnessTest" time="0.001"/>
+  <testcase name="archivedResourceDeliversRealContent()" classname="com.tny.game.common.io.config.ResourceLoadingRobustnessTest" time="0.028"/>
+  <testcase name="missingSystemPropertiesFileFailsControlled()" classname="com.tny.game.common.io.config.ResourceLoadingRobustnessTest" time="0.003"/>
+  <testcase name="jvmNativePropertiesUntouchedAcrossReloadRounds()" classname="com.tny.game.common.io.config.ResourceLoadingRobustnessTest" time="0.727"/>
+  <testcase name="globalMonitorStopIsIdempotentAndSilencesCallbacks()" classname="com.tny.game.common.io.config.ResourceLoadingRobustnessTest" time="1.016"/>
+  <testcase name="repeatedOpenWithListenerDoesNotAddPollerThreads()" classname="com.tny.game.common.io.config.ResourceLoadingRobustnessTest" time="0.004"/>
+  <testcase name="concurrentFirstLoadPinsOneListenerAndOneReload()" classname="com.tny.game.common.io.config.ResourceLoadingRobustnessTest" time="1.008"/>
+  <testcase name="concurrentFirstLoadYieldsSingleton()" classname="com.tny.game.common.io.config.ResourceLoadingRobustnessTest" time="0.002"/>
+  <testcase name="hotReloadAppliesAddsAndChangesButKeepsDeletedKeys()" classname="com.tny.game.common.io.config.ResourceLoadingRobustnessTest" time="0.604"/>
+  <testcase name="builderOutputIsolatedFromLaterMutation()" classname="com.tny.game.common.io.config.ResourceLoadingRobustnessTest" time="0.001"/>
+  <testcase name="sameDirectoryFilesShareOneWatchUnit()" classname="com.tny.game.common.io.config.ResourceLoadingRobustnessTest" time="0.909">
+    <failure message="org.opentest4j.AssertionFailedError: A 文件变更只触发自身回调且恰一次，不随同目录文件数量放大 ==&gt; expected: &lt;2&gt; but was: &lt;3&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: A 文件变更只触发自身回调且恰一次，不随同目录文件数量放大 ==&gt; expected: &lt;2&gt; but was: &lt;3&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:150)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:563)
+	at app//com.tny.game.common.io.config.ResourceLoadingRobustnessTest.sameDirectoryFilesShareOneWatchUnit(ResourceLoadingRobustnessTest.java:333)
+	at java.base@21.0.12.1/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base@21.0.12.1/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base@21.0.12.1/java.util.ArrayList.forEach(ArrayList.java:1596)
+</failure>
+  </testcase>
+  <testcase name="childViewsKeepAbsoluteKeys()" classname="com.tny.game.common.io.config.ResourceLoadingRobustnessTest" time="0.001"/>
+  <testcase name="hotReloadTriggersSameNamespaceGuard()" classname="com.tny.game.common.io.config.ResourceLoadingRobustnessTest" time="0.554"/>
+  <testcase name="escapedPathListenerFiresWithinPollCycle()" classname="com.tny.game.common.io.config.ResourceLoadingRobustnessTest" time="0.502"/>
+  <testcase name="systemPropertiesNamespaceGuarded()" classname="com.tny.game.common.io.config.ResourceLoadingRobustnessTest" time="0.002"/>
+  <testcase name="jarResourceOpenedWithListenerWarnsAndRegistersNothing()" classname="com.tny.game.common.io.config.ResourceLoadingRobustnessTest" time="0.004"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[[Test worker] INFO configLoader - ConfigLib 读取 io-cyclic-a.properties 配置文件
+[Test worker] INFO configLoader - #ConfigLoader#打开 io-cyclic-a.properties 
+[Test worker] INFO configLoader - #ConfigLoader#打开 file:/home/runner/work/tny-framework/tny-framework/tny-game-common-io/build/resources/test/io-cyclic-a.properties 成功
+[Test worker] INFO configLoader - ConfigLib 读取 io-cyclic-b.properties 配置文件
+[Test worker] INFO configLoader - #ConfigLoader#打开 io-cyclic-b.properties 
+[Test worker] INFO configLoader - #ConfigLoader#打开 file:/home/runner/work/tny-framework/tny-framework/tny-game-common-io/build/resources/test/io-cyclic-b.properties 成功
+[Test worker] INFO configLoader - #ConfigLoader#打开 no-such-321240734953.properties 
+[Test worker] WARN configLoader - #ConfigLoader#打开 no-such-321240734953.properties 失败
+[Test worker] INFO configLoader - #ConfigLoader#打开 io spaced resource.properties 
+[Test worker] INFO configLoader - #ConfigLoader#打开 file:/home/runner/work/tny-framework/tny-framework/tny-game-common-io/build/resources/test/io%20spaced%20resource.properties 成功
+[Test worker] INFO configLoader - ConfigLib 读取 io-import-ordered-a.properties 配置文件
+[Test worker] INFO configLoader - #ConfigLoader#打开 io-import-ordered-a.properties 
+[Test worker] INFO configLoader - #ConfigLoader#打开 file:/home/runner/work/tny-framework/tny-framework/tny-game-common-io/build/resources/test/io-import-ordered-a.properties 成功
+[Test worker] INFO configLoader - ConfigLib 读取 io-import-ordered-a.properties 配置文件完成 | 耗时 3 ms
+[Test worker] INFO configLoader - ConfigLib 读取 io-import-ordered-b.properties 配置文件
+[Test worker] INFO configLoader - #ConfigLoader#打开 io-import-ordered-b.properties 
+[Test worker] INFO configLoader - #ConfigLoader#打开 file:/home/runner/work/tny-framework/tny-framework/tny-game-common-io/build/resources/test/io-import-ordered-b.properties 成功
+[Test worker] INFO configLoader - ConfigLib 读取 io-import-ordered-b.properties 配置文件完成 | 耗时 0 ms
+[Test worker] INFO configLoader - #ConfigLoader#打开 io spaced resource.properties 
+[Test worker] INFO configLoader - #ConfigLoader#打开 jarprobed-321279459839.properties 
+[Test worker] WARN configLoader - #ConfigLoader# jarprobed-321279459839.properties 位于 jar 协议资源（如 jar 内），无法作为文件定位/监听；内容读取请走 openInputStream
+[Test worker] INFO configLoader - #ConfigLoader#打开 jarprobed-321279459839.properties 
+[Test worker] WARN configLoader - #ConfigLoader# jarprobed-321279459839.properties 位于 jar 协议资源（如 jar 内），无法作为文件定位/监听；内容读取请走 openInputStream
+[Test worker] WARN configLoader - ConfigLib jarprobed-321279459839.properties 为非文件形态资源（如归档包内），热更监听不可用；按内容流读取交付
+[Test worker] INFO configLoader - #ConfigLoader#打开 jarprobed-321279459839.properties 
+[Test worker] INFO configLoader - #ConfigLoader#打开 jar:file:/tmp/cfg-probe9609268666149856415.jar!/jarprobed-321279459839.properties 成功
+[Test worker] INFO configLoader - #ConfigLoader#打开 no-such-props-file-xyz.properties 
+[Test worker] WARN configLoader - #ConfigLoader#打开 no-such-props-file-xyz.properties 失败
+[Test worker] INFO configLoader - #ConfigLoader#打开 sysnative-4acfa98eff.properties 
+[Test worker] INFO configLoader - #ConfigLoader#打开 file:/tmp/junit14730205125360679284/sysnative-4acfa98eff.properties 成功
+[FileMonitorTread-thread-1] INFO configLoader - SystemProperties#读取配置系统属性配置sysnative-4acfa98eff.properties文件......
+[FileMonitorTread-thread-1] INFO configLoader - #ConfigLoader#打开 sysnative-4acfa98eff.properties 
+[FileMonitorTread-thread-1] INFO configLoader - #ConfigLoader#打开 file:/tmp/junit14730205125360679284/sysnative-4acfa98eff.properties 成功
+[FileMonitorTread-thread-1] WARN configLoader - #SystemPropertiesLoader# 拒绝装载保护属性 user.home（JVM 关键命名空间不可被配置文件覆盖）
+[FileMonitorTread-thread-1] WARN configLoader - #SystemPropertiesLoader# 拒绝装载保护属性 java.class.path（JVM 关键命名空间不可被配置文件覆盖）
+[FileMonitorTread-thread-1] INFO configLoader - SystemProperties#读取配置系统属性配置sysnative-4acfa98eff.properties文件完成
+[FileMonitorTread-thread-1] INFO configLoader - SystemProperties#读取配置系统属性配置sysnative-4acfa98eff.properties文件......
+[FileMonitorTread-thread-1] INFO configLoader - #ConfigLoader#打开 sysnative-4acfa98eff.properties 
+[FileMonitorTread-thread-1] INFO configLoader - #ConfigLoader#打开 file:/tmp/junit14730205125360679284/sysnative-4acfa98eff.properties 成功
+[FileMonitorTread-thread-1] WARN configLoader - #SystemPropertiesLoader# 拒绝装载保护属性 user.dir（JVM 关键命名空间不可被配置文件覆盖）
+[FileMonitorTread-thread-1] WARN configLoader - #SystemPropertiesLoader# 拒绝装载保护属性 os.name（JVM 关键命名空间不可被配置文件覆盖）
+[FileMonitorTread-thread-1] INFO configLoader - SystemProperties#读取配置系统属性配置sysnative-4acfa98eff.properties文件完成
+[Test worker] INFO configLoader - #ConfigLoader#打开 io-system-guard.properties 
+[Test worker] INFO configLoader - #ConfigLoader#打开 file:/home/runner/work/tny-framework/tny-framework/tny-game-common-io/build/resources/test/io-system-guard.properties 成功
+[Test worker] INFO configLoader - #ConfigLoader#打开 io-import-main.properties 
+[Test worker] INFO configLoader - #ConfigLoader#打开 file:/home/runner/work/tny-framework/tny-framework/tny-game-common-io/build/resources/test/io-import-main.properties 成功
+[Test worker] INFO configLoader - #ConfigLoader#打开 io-cyclic-a.properties 
+[Test worker] INFO configLoader - #ConfigLoader#打开 file:/home/runner/work/tny-framework/tny-framework/tny-game-common-io/build/resources/test/io-cyclic-a.properties 成功
+[Test worker] INFO configLoader - #ConfigLoader#打开 io-cyclic-b.properties 
+[Test worker] INFO configLoader - #ConfigLoader#打开 file:/home/runner/work/tny-framework/tny-framework/tny-game-common-io/build/resources/test/io-cyclic-b.properties 成功
+[pool-1-thread-8] INFO configLoader - #ConfigLoader#打开 race-323061233176.properties 
+[pool-1-thread-1] INFO configLoader - #ConfigLoader#打开 race-323061233176.properties 
+[pool-1-thread-2] INFO configLoader - #ConfigLoader#打开 race-323061233176.properties 
+[pool-1-thread-3] INFO configLoader - #ConfigLoader#打开 race-323061233176.properties 
+[pool-1-thread-2] INFO configLoader - ConfigLib 读取 race-323061233176.properties 配置文件
+[pool-1-thread-2] INFO configLoader - #ConfigLoader#打开 race-323061233176.properties 
+[pool-1-thread-3] INFO configLoader - ConfigLib 读取 race-323061233176.properties 配置文件
+[pool-1-thread-3] INFO configLoader - #ConfigLoader#打开 race-323061233176.properties 
+[pool-1-thread-2] INFO configLoader - #ConfigLoader#打开 file:/tmp/junit18103232315250149835/race-323061233176.properties 成功
+[pool-1-thread-3] INFO configLoader - #ConfigLoader#打开 file:/tmp/junit18103232315250149835/race-323061233176.properties 成功
+[pool-1-thread-2] INFO configLoader - ConfigLib 读取 race-323061233176.properties 配置文件完成 | 耗时 0 ms
+[pool-1-thread-3] INFO configLoader - ConfigLib 读取 race-323061233176.properties 配置文件完成 | 耗时 0 ms
+[pool-1-thread-8] INFO configLoader - ConfigLib 读取 race-323061233176.properties 配置文件
+[pool-1-thread-8] INFO configLoader - #ConfigLoader#打开 race-323061233176.properties 
+[pool-1-thread-8] INFO configLoader - #ConfigLoader#打开 file:/tmp/junit18103232315250149835/race-323061233176.properties 成功
+[pool-1-thread-1] INFO configLoader - ConfigLib 读取 race-323061233176.properties 配置文件
+[pool-1-thread-1] INFO configLoader - #ConfigLoader#打开 race-323061233176.properties 
+[pool-1-thread-1] INFO configLoader - #ConfigLoader#打开 file:/tmp/junit18103232315250149835/race-323061233176.properties 成功
+[pool-1-thread-1] INFO configLoader - ConfigLib 读取 race-323061233176.properties 配置文件完成 | 耗时 1 ms
+[pool-1-thread-8] INFO configLoader - ConfigLib 读取 race-323061233176.properties 配置文件完成 | 耗时 1 ms
+[FileMonitorTread-thread-1] INFO configLoader - #ConfigLoader#打开 race-323061233176.properties 
+[FileMonitorTread-thread-1] INFO configLoader - #ConfigLoader#打开 file:/tmp/junit18103232315250149835/race-323061233176.properties 成功
+[Test worker] INFO configLoader - #ConfigLoader#打开 sysprops-4b7431a8f0.properties 
+[Test worker] INFO configLoader - #ConfigLoader#打开 file:/tmp/junit367012822852526163/sysprops-4b7431a8f0.properties 成功
+[FileMonitorTread-thread-1] INFO configLoader - SystemProperties#读取配置系统属性配置sysprops-4b7431a8f0.properties文件......
+[FileMonitorTread-thread-1] INFO configLoader - #ConfigLoader#打开 sysprops-4b7431a8f0.properties 
+[FileMonitorTread-thread-1] INFO configLoader - #ConfigLoader#打开 file:/tmp/junit367012822852526163/sysprops-4b7431a8f0.properties 成功
+[FileMonitorTread-thread-1] INFO configLoader - SystemProperties#读取配置系统属性配置sysprops-4b7431a8f0.properties文件完成
+[Test worker] INFO configLoader - #ConfigLoader#打开 sysguard-4bce956d95.properties 
+[Test worker] INFO configLoader - #ConfigLoader#打开 file:/tmp/junit12752156130810387132/sysguard-4bce956d95.properties 成功
+[FileMonitorTread-thread-1] INFO configLoader - SystemProperties#读取配置系统属性配置sysguard-4bce956d95.properties文件......
+[FileMonitorTread-thread-1] INFO configLoader - #ConfigLoader#打开 sysguard-4bce956d95.properties 
+[FileMonitorTread-thread-1] INFO configLoader - #ConfigLoader#打开 file:/tmp/junit12752156130810387132/sysguard-4bce956d95.properties 成功
+[FileMonitorTread-thread-1] WARN configLoader - #SystemPropertiesLoader# 拒绝装载保护属性 user.home（JVM 关键命名空间不可被配置文件覆盖）
+[FileMonitorTread-thread-1] INFO configLoader - SystemProperties#读取配置系统属性配置sysguard-4bce956d95.properties文件完成
+[Test worker] INFO configLoader - #ConfigLoader#打开 io spaced listener.properties 
+[Test worker] INFO configLoader - #ConfigLoader#打开 io-system-guard.properties 
+[Test worker] INFO configLoader - #ConfigLoader#打开 file:/home/runner/work/tny-framework/tny-framework/tny-game-common-io/build/resources/test/io-system-guard.properties 成功
+[Test worker] WARN configLoader - #SystemPropertiesLoader# 拒绝装载保护属性 user.home（JVM 关键命名空间不可被配置文件覆盖）
+[Test worker] WARN configLoader - #SystemPropertiesLoader# 拒绝装载保护属性 java.class.path（JVM 关键命名空间不可被配置文件覆盖）
+[Test worker] INFO configLoader - #ConfigLoader#打开 jarlisten-326646978990.properties 
+[Test worker] INFO configLoader - #ConfigLoader#打开 jar:file:/tmp/cfg-listen8314585093329109769.jar!/jarlisten-326646978990.properties 成功
+[Test worker] INFO configLoader - #ConfigLoader#打开 jarlisten-326646978990.properties 
+[Test worker] INFO configLoader - #ConfigLoader#打开 jar:file:/tmp/cfg-listen8314585093329109769.jar!/jarlisten-326646978990.properties 成功
+[Test worker] WARN configLoader - #ConfigLoader# jarlisten-326646978990.properties 为 jar 协议资源，热更监听不可用（内容读取不受影响）
+]]></system-err>
+</testsuite>

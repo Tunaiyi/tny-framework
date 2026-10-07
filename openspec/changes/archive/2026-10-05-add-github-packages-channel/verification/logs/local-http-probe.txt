@@ -1,0 +1,8 @@
+date: 2026-10-05T05:23:26Z
+0.0.1-SNAPSHOT/gpr-sandbox-0.0.1-SNAPSHOT.jar => 404
+0.0.1-SNAPSHOT/gpr-sandbox-0.0.1-SNAPSHOT.pom => 404
+0.0.1-SNAPSHOT/gpr-sandbox-0.0.1-SNAPSHOT.module => 404
+0.0.2/gpr-sandbox-0.0.2.pom => 302
+0.0.2/gpr-sandbox-0.0.2.jar => 302
+--- maven-metadata.xml ---
+<metadata><groupId>io.sandbox.probe</groupId><artifactId>gpr-sandbox</artifactId><versioning><latest>0.0.2</latest><versions><version>0.0.1-SNAPSHOT</version><version>0.0.2</version></versions><lastUpdated>20261005051937</lastUpdated></versioning></metadata>

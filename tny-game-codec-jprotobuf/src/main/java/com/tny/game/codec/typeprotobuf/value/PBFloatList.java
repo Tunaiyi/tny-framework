@@ -1,0 +1,69 @@
+/*
+ * Copyright (c) 2020 Tunaiyi
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.tny.game.codec.typeprotobuf.value;
+
+import com.baidu.bjf.remoting.protobuf.annotation.*;
+import com.google.common.primitives.Floats;
+import com.tny.game.codec.annotation.*;
+import com.tny.game.codec.protobuf.*;
+import com.tny.game.codec.typeprotobuf.*;
+import com.tny.game.codec.typeprotobuf.annotation.*;
+
+import java.util.*;
+
+/**
+ * <p>
+ *
+ * @author : kgtny
+ * @date : 2021/7/12 4:09 下午
+ */
+@ProtobufClass
+@TypeProtobuf(TypeProtobufTypeId.PB_FLOAT_LIST)
+@Codable(ProtobufMimeType.PROTOBUF)
+public class PBFloatList implements PBList<Float, float[]> {
+
+    @Packed
+    @Protobuf(order = 1)
+    private List<Float> values;
+
+    public PBFloatList() {
+    }
+
+    public PBFloatList(float... values) {
+        this.values = Floats.asList(values);
+    }
+
+    public PBFloatList(List<Float> values) {
+        this.values = values;
+    }
+
+    @Override
+    public List<Float> getValueList() {
+        return Collections.unmodifiableList(this.values);
+    }
+
+    @Override
+    public float[] getValueArray() {
+        return Floats.toArray(this.values);
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(this.values);
+    }
+
+}

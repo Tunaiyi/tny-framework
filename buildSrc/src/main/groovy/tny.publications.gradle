@@ -1,0 +1,123 @@
+// Maven 发布元数据与签名约定插件（adopt-gradle-official-dsl 插件化，前身为 gradle/publications.gradle；
+// 前置约定：com.gradleup.nmcp 模块插件由根构建脚本在 javaProjects 装配线行先行应用
+// （第三方插件不在 buildSrc 作用域解析，实测 Gradle 8.5），本插件假定其已就位；
+// per-java-module 应用，capability central-publishing 的模块侧接线）。本插件负责：
+// maven-publish/signing 声明、POM 必填元数据、Nexus/Central 快照仓路由、GPG 签名策略。
+// 边界：发布前置门禁与 Nexus 属性断言合一在 tny.publish（merge-publish-gate-into-publish），
+// Central 正式版聚合上传在 tny.central。
+
+import tny.convention.GitFlow
+
+plugins {
+    id 'maven-publish'
+    id 'signing'
+}
+
+// nmcp 模块侧插件（central-publishing D3 定案）由根构建脚本先行应用（见头部前置约定）。
+// GPG 签名（central-publishing 准入四件套之签名；design D3）：凭据走标准
+// signing.keyId / signing.secretKeyRingFile / signing.password 属性（本机或 CI secrets 注入），
+// 仓库零密钥。发布分支形态必签（正式版对 Central 与内网的共同前提）；
+// 快照在无密钥环境（如新克隆的开发机）跳过，不阻塞内网快照通道。
+
+publishing {
+
+    publications {
+        mavenJava(MavenPublication) {
+            pom {
+                // Central 必填六字段之一组：name/description。仅 BOM 设过 project.description，
+                // 其余模块以模块名为 name、补一句可辨识 description，避免 POM 缺项被 Central 驳回。
+                afterEvaluate {
+                    name = project.description ?: project.name
+                    description = project.description ?: "Tny Game Framework module ${project.name}"
+                }
+                url = 'https://github.com/Tunaiyi/tny-framework'
+                organization {
+                    name = 'Tny Game Framework'
+                }
+                // 2026-10-02 全仓许可证由 Mulan PSL v2 切换为 Apache License 2.0：源文件头注释、
+                // README、LICENSE 与 POM 许可字段四处声明自此一致。
+                licenses {
+                    license {
+                        name = 'Apache License, Version 2.0'
+                        url = 'https://www.apache.org/licenses/LICENSE-2.0'
+                        distribution = 'repo'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:git://github.com/Tunaiyi/tny-framework.git'
+                    developerConnection = 'scm:git:ssh://github.com/Tunaiyi/tny-framework.git'
+                    url = 'https://github.com/Tunaiyi/tny-framework'
+                }
+                developers {
+                    developer {
+                        id = 'yangkun'
+                        name = 'Yang Kun'
+                        email = 'yangkun311@163.com'
+                    }
+                }
+            }
+
+        }
+
+    }
+
+    repositories {
+        maven {
+            url = version.endsWith('-SNAPSHOT') ? SNAPSHOT_REPOSITORY_URL : RELEASE_REPOSITORY_URL
+            credentials {
+                username = NEXUS_USERNAME
+                password = NEXUS_PASSWORD
+            }
+        }
+        // Central 快照通道（官方 docs：快照走标准 maven-deploy，无验证、无签名要求、90 天清理；
+        // 2026-10-02 用户开启命名空间 Enable SNAPSHOTs 后接入）。仅快照版本声明本仓——
+        // 正式版若混入快照仓属事故，条件声明从根上排除；缺 Central 凭据的机器不声明该仓，
+        // 本地裸 publish 不因外发通道缺配置而失败。正式版 Central 通道仍由 nmcp 聚合承担。
+        if (version.toString().endsWith('-SNAPSHOT') && project.hasProperty('mavenCentralUsername')) {
+            maven {
+                name = 'centralSnapshots'
+                url = 'https://central.sonatype.com/repository/maven-snapshots/'
+                credentials {
+                    username = providers.gradleProperty('mavenCentralUsername').get()
+                    password = providers.gradleProperty('mavenCentralPassword').get()
+                }
+            }
+        }
+    }
+}
+
+// 签名配置（central-publishing design D3 / spec 准入完整性）：标准三属性存在即签；
+// 版本为裸三段号即必签（redesign-devline-integration-model 设计 D6：谓词从分支形态改版本形态）——
+// 裸号只可能出现在具备发布资格的构建里（release 维护分支注入 -PreleaseVersion 或祖父轨一次性发布分支），
+// 缺密钥时该构建在签名环节 fail-closed 失败，不再有"缺密钥机器未签名正式版静默入库"的敞口；
+// 快照与无版本参数的普通构建（unspecified）不签名，不阻塞内网快照通道。
+signing {
+    // 派生版本经根工程 gitFlow 类型化扩展拉取（tny.convention.GitFlow，expose-git-info-extension）。
+    def signingVersion = rootProject.extensions.getByType(GitFlow).projectVersion?.toString() ?: ''
+    required = { signingVersion ==~ /\d+\.\d+\.\d+/ }
+    // CI 桥接：无点号环境变量 SIGNING_KEY(_ID/_PASSWORD) 走内存密钥环。
+    // 属性名 signing.keyId 含点，无法经 ORG_GRADLE_PROJECT_* 注入（Gradle 环境桥不接受点号），故专用 env。
+    def memKey = providers.environmentVariable('SIGNING_KEY').orNull
+    def memId = providers.environmentVariable('SIGNING_KEY_ID').orNull
+    def memPass = providers.environmentVariable('SIGNING_PASSWORD').orNull
+    if (memKey && memId) {
+        // 常见误用防线：keyId 是指纹末 8 位十六进制而非邮箱/名称，
+        // 不校验则炸在 onlyIf 谓词的不可读堆栈里（实测教训）。
+        if (!(memId ==~ /(?i)[0-9a-f]{8}/) && !(memId ==~ /(?i)[0-9a-f]{16,40}/)) {
+            throw new GradleException("SIGNING_KEY_ID 应为指纹末 8 位十六进制（形如 502FAACD），当前值 '${memId}' 不是 keyId 形态")
+        }
+        useInMemoryPgpKeys(memId, memKey, memPass ?: '')
+    }
+    sign publishing.publications.mavenJava
+}
+
+// 快照进 Central 的唯一通道是上方 centralSnapshots 原生仓库（与 Nexus 同经 publish 分发）。
+// nmcp 自带的快照聚合任务（名字含 CentralPortal）保留禁用：两条通道同发会产生双时间戳产物竞争。
+tasks.configureEach { t ->
+    if (t.name.contains('CentralPortalSnapshots')) {
+        t.enabled = false
+        t.description = '（已禁用）快照 Central 分发统一走 centralSnapshots 原生仓，禁用 nmcp 双发路径'
+    }
+}
+
+// 发布门禁与前置校验（共享仓判定、分支/版本/仓库一致性、发布标签存证）在 tny.publish 约定插件（merge-publish-gate-into-publish 合并后双层拦截合一）

@@ -1,0 +1,19 @@
+group "com.tny.game"
+
+apply plugin: "maven-publish"
+
+dependencies {
+
+    api(libs.'zookeeper') {
+        exclude module: 'junit'
+        exclude module: 'jms'
+        exclude module: 'jmxtools'
+        exclude module: 'jmxri'
+        exclude group: 'log4j', module: 'log4j'
+        exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+    }
+    api project(":tny-game-common-lang")
+
+
+}
+

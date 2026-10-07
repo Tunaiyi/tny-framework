@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Implementation-Title: tny-game-net
+Implementation-Version: 5.7.x-SNAPSHOT
+Automatic-Module-Name: tny.game.net
+Created-By: 21.0.12.1 (Oracle Corporation)
+

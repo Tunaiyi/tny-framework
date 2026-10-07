@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.tny.game.common.io.word.LocalWordsFilterTest" tests="8" skipped="0" failures="2" errors="0" timestamp="2026-10-03T11:48:09.039Z" hostname="KGTnyMacBook-Pro.local" time="0.044">
+  <properties/>
+  <testcase name="unloadedFilterPassesThrough()" classname="com.tny.game.common.io.word.LocalWordsFilterTest" time="0.022"/>
+  <testcase name="caseInsensitiveMatching()" classname="com.tny.game.common.io.word.LocalWordsFilterTest" time="0.005"/>
+  <testcase name="reloadFailureKeepsOldTrie()" classname="com.tny.game.common.io.word.LocalWordsFilterTest" time="0.008">
+    <failure message="java.io.UncheckedIOException: java.io.IOException: 模拟文件瞬时不可读" type="java.io.UncheckedIOException">java.io.UncheckedIOException: java.io.IOException: 模拟文件瞬时不可读
+	at java.base/java.io.BufferedReader$1.hasNext(BufferedReader.java:684)
+	at java.base/java.util.Iterator.forEachRemaining(Iterator.java:132)
+	at java.base/java.util.Spliterators$IteratorSpliterator.forEachRemaining(Spliterators.java:1939)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ReduceOps$ReduceOp.evaluateSequential(ReduceOps.java:921)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.collect(ReferencePipeline.java:682)
+	at org.apache.commons.io.IOUtils.readLines(IOUtils.java:2249)
+	at org.apache.commons.io.IOUtils.readLines(IOUtils.java:2204)
+	at org.apache.commons.io.IOUtils.readLines(IOUtils.java:2230)
+	at com.tny.game.common.io.word.LocalWordsFilter.doLoad(LocalWordsFilter.java:173)
+	at com.tny.game.common.io.word.LocalWordsFilterTest.reloadFailureKeepsOldTrie(LocalWordsFilterTest.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+Caused by: java.io.IOException: 模拟文件瞬时不可读
+	at com.tny.game.common.io.word.LocalWordsFilterTest$1.read(LocalWordsFilterTest.java:100)
+	at java.base/java.io.InputStream.read(InputStream.java:287)
+	at java.base/sun.nio.cs.StreamDecoder.readBytes(StreamDecoder.java:350)
+	at java.base/sun.nio.cs.StreamDecoder.implRead(StreamDecoder.java:393)
+	at java.base/sun.nio.cs.StreamDecoder.lockedRead(StreamDecoder.java:217)
+	at java.base/sun.nio.cs.StreamDecoder.read(StreamDecoder.java:171)
+	at java.base/java.io.InputStreamReader.read(InputStreamReader.java:188)
+	at java.base/java.io.BufferedReader.fill(BufferedReader.java:160)
+	at java.base/java.io.BufferedReader.implReadLine(BufferedReader.java:370)
+	at java.base/java.io.BufferedReader.readLine(BufferedReader.java:347)
+	at java.base/java.io.BufferedReader.readLine(BufferedReader.java:436)
+	at java.base/java.io.BufferedReader$1.hasNext(BufferedReader.java:681)
+	... 15 more
+</failure>
+  </testcase>
+  <testcase name="masksMatchedChineseWords()" classname="com.tny.game.common.io.word.LocalWordsFilterTest" time="0.0"/>
+  <testcase name="blankMaskCharFallsBackToDefault()" classname="com.tny.game.common.io.word.LocalWordsFilterTest" time="0.0"/>
+  <testcase name="emptyAndCleanInput()" classname="com.tny.game.common.io.word.LocalWordsFilterTest" time="0.001"/>
+  <testcase name="crossWordBoundaryNoFalsePositive()" classname="com.tny.game.common.io.word.LocalWordsFilterTest" time="0.0"/>
+  <testcase name="firstLoadFailurePropagates()" classname="com.tny.game.common.io.word.LocalWordsFilterTest" time="0.004">
+    <failure message="org.opentest4j.AssertionFailedError: Unexpected exception type thrown, expected: &lt;java.io.IOException&gt; but was: &lt;java.io.UncheckedIOException&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: Unexpected exception type thrown, expected: &lt;java.io.IOException&gt; but was: &lt;java.io.UncheckedIOException&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at app//org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:67)
+	at app//org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
+	at app//org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3115)
+	at app//com.tny.game.common.io.word.LocalWordsFilterTest.firstLoadFailurePropagates(LocalWordsFilterTest.java:119)
+	at java.base@21.0.12.1/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base@21.0.12.1/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base@21.0.12.1/java.util.ArrayList.forEach(ArrayList.java:1596)
+Caused by: java.io.UncheckedIOException: java.io.IOException: 模拟首读失败
+	at java.base/java.io.BufferedReader$1.hasNext(BufferedReader.java:684)
+	at java.base/java.util.Iterator.forEachRemaining(Iterator.java:132)
+	at java.base/java.util.Spliterators$IteratorSpliterator.forEachRemaining(Spliterators.java:1939)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ReduceOps$ReduceOp.evaluateSequential(ReduceOps.java:921)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.collect(ReferencePipeline.java:682)
+	at org.apache.commons.io.IOUtils.readLines(IOUtils.java:2249)
+	at org.apache.commons.io.IOUtils.readLines(IOUtils.java:2204)
+	at org.apache.commons.io.IOUtils.readLines(IOUtils.java:2230)
+	at com.tny.game.common.io.word.LocalWordsFilter.doLoad(LocalWordsFilter.java:173)
+	at com.tny.game.common.io.word.LocalWordsFilterTest.lambda$firstLoadFailurePropagates$0(LocalWordsFilterTest.java:119)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:53)
+	... 6 more
+Caused by: java.io.IOException: 模拟首读失败
+	at com.tny.game.common.io.word.LocalWordsFilterTest$2.read(LocalWordsFilterTest.java:116)
+	at java.base/java.io.InputStream.read(InputStream.java:287)
+	at java.base/sun.nio.cs.StreamDecoder.readBytes(StreamDecoder.java:350)
+	at java.base/sun.nio.cs.StreamDecoder.implRead(StreamDecoder.java:393)
+	at java.base/sun.nio.cs.StreamDecoder.lockedRead(StreamDecoder.java:217)
+	at java.base/sun.nio.cs.StreamDecoder.read(StreamDecoder.java:171)
+	at java.base/java.io.InputStreamReader.read(InputStreamReader.java:188)
+	at java.base/java.io.BufferedReader.fill(BufferedReader.java:160)
+	at java.base/java.io.BufferedReader.implReadLine(BufferedReader.java:370)
+	at java.base/java.io.BufferedReader.readLine(BufferedReader.java:347)
+	at java.base/java.io.BufferedReader.readLine(BufferedReader.java:436)
+	at java.base/java.io.BufferedReader$1.hasNext(BufferedReader.java:681)
+	... 19 more
+</failure>
+  </testcase>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

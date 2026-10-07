@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TnyFramework 分支模型（目标模型）· 静态总览</title>
+<style>
+  body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#0d1117;color:#c9d1d9;margin:0;padding:26px}
+  h1{text-align:center;font-size:22px;color:#f0f6fc;margin:0 0 4px}
+  .sub{text-align:center;color:#8b949e;font-size:12.5px;margin-bottom:18px}
+  .card{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:14px;overflow-x:auto;max-width:1240px;margin:0 auto}
+  svg{display:block;min-width:1100px;width:100%}
+  .legend{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;font-size:12px;color:#8b949e;margin:16px auto 0;max-width:1240px}
+  .sw{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:4px;vertical-align:-1px}
+  .sq{display:inline-block;width:11px;height:11px;transform:rotate(45deg);margin-right:4px;vertical-align:-1px}
+</style>
+</head>
+<body>
+<h1>分支模型总览（redesign-devline-integration-model 目标模型）</h1>
+<p class="sub">四条泳道自上而下：并行的开发版本分支、main（集成主干）、release 维护分支（含其 release 标签）、祖父登记线。<br>
+依据 docs/release-process.md 与 openspec 规格 release-versioning、branch-integration-gates 绘制。</p>
+<div class="card">
+<svg viewBox="0 0 1240 660">
+  <defs>
+    <marker id="gG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0L10,5L0,10z" fill="#3fb950"/></marker>
+    <marker id="gO" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0L10,5L0,10z" fill="#f0883e"/></marker>
+    <marker id="gP" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0L10,5L0,10z" fill="#f778ba"/></marker>
+  </defs>
+  <!-- 泳道标签 -->
+  <text x="10" y="96" fill="#58a6ff" font-size="13">开发版本分支 dev/（并行）</text>
+  <text x="10" y="246" fill="#f0883e" font-size="14" font-weight="bold">main 集成主干</text>
+  <text x="10" y="406" fill="#d29922" font-size="13">release 维护分支</text>
+  <text x="10" y="586" fill="#8b949e" font-size="13">祖父登记线（过渡）</text>
+  <line x1="10" y1="240" x2="1230" y2="240" stroke="#30363d" stroke-dasharray="3 5"/>
+  <line x1="10" y1="90"  x2="1230" y2="90"  stroke="#30363d" stroke-dasharray="3 5"/>
+  <line x1="10" y1="400" x2="1230" y2="400" stroke="#30363d" stroke-dasharray="3 5"/>
+  <line x1="10" y1="580" x2="1230" y2="580" stroke="#30363d" stroke-dasharray="3 5"/>
+
+  <!-- dev/5.8.x 主线故事：开线→feat 合入→集成到主干→删除 -->
+  <circle cx="150" cy="90" r="9" fill="#58a6ff" stroke="#0d1117" stroke-width="2"/>
+  <text x="150" y="66" text-anchor="middle" fill="#f0f6fc" font-size="11">dev/5.8.x 开线</text>
+  <text x="150" y="115" text-anchor="middle" fill="#8b949e" font-size="9.5">自 main 分支头</text>
+  <line x1="159" y1="90" x2="311" y2="90" stroke="#58a6ff" stroke-width="3"/>
+  <rect x="185" y="130" width="16" height="16" rx="3" fill="none" stroke="#7ee787" stroke-width="2" transform="rotate(45 193 138)"/>
+  <text x="193" y="168" text-anchor="middle" fill="#7ee787" font-size="10.5">feat 分支</text>
+  <path d="M199,124 C 230,110 280,100 308,93" fill="none" stroke="#3fb950" stroke-width="2.2" marker-end="url(#gG)"/>
+  <text x="255" y="84" text-anchor="middle" fill="#3fb950" font-size="10">rebase-merge 合入</text>
+  <circle cx="320" cy="90" r="9" fill="#58a6ff" stroke="#0d1117" stroke-width="2"/>
+  <text x="320" y="66" text-anchor="middle" fill="#f0f6fc" font-size="11">特性入线</text>
+  <text x="320" y="115" text-anchor="middle" fill="#8b949e" font-size="9.5">线发 5.8.x-SNAPSHOT</text>
+  <line x1="329" y1="90" x2="451" y2="90" stroke="#58a6ff" stroke-width="3"/>
+  <circle cx="460" cy="90" r="9" fill="#58a6ff" stroke="#0d1117" stroke-width="2"/>
+  <text x="460" y="66" text-anchor="middle" fill="#f0f6fc" font-size="11">集成就绪</text>
+  <!-- 同步与集成到主干 -->
+  <path d="M540,228 L540,110" fill="none" stroke="#f778ba" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#gP)"/>
+  <text x="565" y="175" fill="#f778ba" font-size="10">先同步 main</text>
+  <path d="M470,100 C 500,150 520,190 528,228" fill="none" stroke="#f0883e" stroke-width="2.4" marker-end="url(#gO)"/>
+  <text x="440" y="185" fill="#f0883e" font-size="10.5">集成到主干</text>
+  <text x="440" y="200" fill="#8b949e" font-size="9.5">产生合并提交后删线</text>
+  <rect x="512" y="222" width="36" height="14" rx="3" fill="none" stroke="#ff7b72" stroke-width="1.6" stroke-dasharray="3 3"/>
+  <text x="530" y="214" text-anchor="middle" fill="#ff7b72" font-size="9.5">⛔ 线删除</text>
+
+  <!-- main 集成账本 -->
+  <circle cx="150" cy="240" r="9" fill="#f0883e" stroke="#0d1117" stroke-width="2"/>
+  <text x="150" y="266" text-anchor="middle" fill="#8b949e" font-size="9.5">历史起点</text>
+  <line x1="159" y1="240" x2="521" y2="240" stroke="#f0883e" stroke-width="3"/>
+  <rect x="521" y="231" width="18" height="18" transform="rotate(45 530 240)" fill="#ffd33d" stroke="#f0883e" stroke-width="2.5"/>
+  <text x="530" y="216" text-anchor="middle" fill="#f0f6fc" font-size="11">integrate 5.8.0</text>
+  <line x1="540" y1="240" x2="751" y2="240" stroke="#f0883e" stroke-width="3"/>
+  <line x1="770" y1="380" x2="757" y2="252" stroke="#f778ba" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#gP)"/>
+  <text x="800" y="330" fill="#f778ba" font-size="10">向上合并（含完整性检查）</text>
+  <circle cx="760" cy="240" r="9" fill="#f0883e" stroke="#0d1117" stroke-width="2"/>
+  <text x="760" y="266" text-anchor="middle" fill="#8b949e" font-size="9.5">补丁落账</text>
+  <line x1="769" y1="240" x2="1031" y2="240" stroke="#f0883e" stroke-width="3"/>
+  <rect x="1031" y="231" width="18" height="18" transform="rotate(45 1040 240)" fill="#ffd33d" stroke="#f0883e" stroke-width="2.5"/>
+  <text x="1040" y="216" text-anchor="middle" fill="#f0f6fc" font-size="11">integrate 5.9.0</text>
+  <circle cx="1160" cy="90" r="9" fill="#58a6ff" stroke="#0d1117" stroke-width="2"/>
+  <text x="1160" y="66" text-anchor="middle" fill="#f0f6fc" font-size="11">dev/5.9.x</text>
+  <text x="1160" y="115" text-anchor="middle" fill="#8b949e" font-size="9.5">在途并行</text>
+  <line x1="1050" y1="230" x2="1140" y2="100" fill="none" stroke="#f0883e" stroke-width="2.2" marker-end="url(#gO)"/>
+  <text x="1150" y="180" fill="#f0883e" font-size="10">集成到主干</text>
+
+  <!-- release/5.8.x 维护线 -->
+  <path d="M545,252 C 570,320 600,360 628,392" fill="none" stroke="#8b949e" stroke-width="1.6" stroke-dasharray="5 5" marker-end="url(#gO)"/>
+  <text x="640" y="330" fill="#8b949e" font-size="10">releaseCut 切维护分支</text>
+  <circle cx="640" cy="400" r="9" fill="#d29922" stroke="#0d1117" stroke-width="2"/>
+  <text x="640" y="376" text-anchor="middle" fill="#f0f6fc" font-size="11">release/5.8.x</text>
+  <line x1="649" y1="400" x2="751" y2="400" stroke="#d29922" stroke-width="3"/>
+  <rect x="660" y="440" width="34" height="14" rx="3" fill="#39d35322" stroke="#39d353"/>
+  <text x="677" y="451" text-anchor="middle" fill="#39d353" font-size="10" font-weight="bold">⚑ v5.8.0</text>
+  <line x1="650" y1="409" x2="670" y2="438" stroke="#8b949e" stroke-width="1.2" stroke-dasharray="3 3"/>
+  <rect x="700" y="440" width="34" height="14" rx="3" fill="#39d35322" stroke="#39d353"/>
+  <text x="717" y="451" text-anchor="middle" fill="#39d353" font-size="10" font-weight="bold">⚑ v5.8.1</text>
+  <line x1="740" y1="409" x2="755" y2="438" stroke="#8b949e" stroke-width="1.2" stroke-dasharray="3 3"/>
+  <line x1="760" y1="400" x2="901" y2="400" stroke="#d29922" stroke-width="3"/>
+  <circle cx="910" cy="400" r="9" fill="#d29922" stroke="#0d1117" stroke-width="2"/>
+  <text x="910" y="376" text-anchor="middle" fill="#f0f6fc" font-size="11">补丁滚动</text>
+  <text x="700" y="500" fill="#8b949e" font-size="10">fix 分支 rebase 合入 → releaseTag（下一补丁号校验）→ publish → 向上合并进更高系列与 main</text>
+  <rect x="1096" y="391" width="18" height="18" rx="3" fill="none" stroke="#ff7b72" stroke-width="1.8" stroke-dasharray="3 2"/>
+  <text x="1105" y="376" text-anchor="middle" fill="#ff7b72" font-size="10.5">⛔ 先合并未集成再删</text>
+
+  <!-- 祖父线 -->
+  <circle cx="150" cy="580" r="9" fill="#8b949e" stroke="#0d1117" stroke-width="2"/>
+  <text x="150" y="556" text-anchor="middle" fill="#f0f6fc" font-size="11">5.7.x</text>
+  <text x="150" y="605" text-anchor="middle" fill="#8b949e" font-size="9.5">祖父登记 快照在维</text>
+  <line x1="159" y1="580" x2="351" y2="580" stroke="#8b949e" stroke-width="2.4"/>
+  <circle cx="360" cy="580" r="9" fill="#8b949e" stroke="#0d1117" stroke-width="2"/>
+  <text x="360" y="556" text-anchor="middle" fill="#f0f6fc" font-size="10.5">旧一次性发布分支流程</text>
+  <text x="620" y="586" fill="#8b949e" font-size="10">过渡载体至 5.7 系列退役；登记于 gradle/branch-legacy-registry.txt，豁免只减不增；退役后新形态全线接管。</text>
+</svg>
+</div>
+<div class="legend">
+  <span><i class="sw" style="background:#58a6ff"></i>开发版本分支（dev/）</span>
+  <span><i class="sw" style="background:#f0883e"></i>main 集成主干</span>
+  <span><i class="sw" style="background:#d29922"></i>release 维护分支</span>
+  <span><i class="sq" style="background:#ffd33d"></i>集成合并节点</span>
+  <span><i class="sq" style="background:#39d353"></i>⚑ release 标签（附注，永不移动）</span>
+  <span><i class="sw" style="background:#8b949e"></i>祖父登记线</span>
+  <span style="color:#3fb950">▶ rebase-merge 合入</span>
+  <span style="color:#f778ba">╌ 同步与向上合并</span>
+  <span style="color:#ff7b72">⛔ 禁止与前置检查</span>
+</div>
+</body>
+</html>

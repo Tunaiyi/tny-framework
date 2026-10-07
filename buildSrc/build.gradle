@@ -1,0 +1,82 @@
+plugins {
+    id 'groovy'
+    id 'groovy-gradle-plugin'
+    // 二进制约定插件注册通道（pilot-binary-build-conventions）：与 groovy-gradle-plugin
+    // 并存；同一插件 id 的脚本文件与注册条目二选一，不得同时存在（gradle-build-style 需求一）。
+    id 'java-gradle-plugin'
+}
+
+// tny.projects 由二进制实现承载；tny.module-checker 的注册行在其脚本文件退役的同一次
+// 提交加入（先注册会撞 groovy-gradle-plugin 从脚本文件自动生成的同名 id）。
+gradlePlugin {
+    plugins {
+        projects {
+            id = 'tny.projects'
+            implementationClass = 'tny.convention.ProjectsPlugin'
+        }
+        moduleChecker {
+            id = 'tny.module-checker'
+            implementationClass = 'tny.convention.checker.ModuleCheckerPlugin'
+        }
+        moduleSetting {
+            id = 'tny.module-setting'
+            implementationClass = 'tny.convention.ModuleSettingPlugin'
+        }
+        bomPlatform {
+            id = 'tny.bom-platform'
+            implementationClass = 'tny.convention.BomPlatformPlugin'
+        }
+        dependencyConventions {
+            id = 'tny.dependency-conventions'
+            implementationClass = 'tny.convention.DependencyConventionsPlugin'
+        }
+        javaConventions {
+            id = 'tny.java-conventions'
+            implementationClass = 'tny.convention.JavaConventionsPlugin'
+        }
+        pluginConventions {
+            id = 'tny.plugin-conventions'
+            implementationClass = 'tny.convention.PluginConventionsPlugin'
+        }
+        integrationTest {
+            id = 'tny.integration-test'
+            implementationClass = 'tny.convention.integration.IntegrationTestPlugin'
+        }
+        benchmarkModule {
+            id = 'tny.benchmark-module'
+            implementationClass = 'tny.convention.benchmark.BenchmarkModulePlugin'
+        }
+    }
+}
+
+// buildSrc 的类路径独立于主构建（主 settings.gradle 的 dependencyResolutionManagement
+// 与 FAIL_ON_PROJECT_REPOS 约束不覆盖 buildSrc），仓库列表在此单独声明并与主 settings 同源镜像一致。
+repositories {
+    mavenCentral()
+    // me.champeau.jmh 不在 Central（探针三实测 Could not find），JMH 插件与清单枚举任务的
+    // 编译期类型引用经 Plugin Portal 解析（consolidate-assembly-line 任务 8.3）
+    gradlePluginPortal()
+}
+
+dependencies {
+    // JUnit BOM 版本与 Spring Boot 3.2.1 BOM 接管的 junit-jupiter 生效版本一致（5.10.1），
+    // 主仓由版本目录具名引用、buildSrc 侧以显式版本声明是本批 D5 的注释义务；升 Boot 时此处跟改。
+    testImplementation platform('org.junit:junit-bom:5.10.1')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    // io.spring.dependency-management 实现 jar 由 buildSrc 依赖供给（consolidate-binary-conventions
+    // 设计决策 D2 类型化路线，探针三实测三判据通过）：tny.module-checker 的托管版本对账扩展
+    // 取编译期类型引用。版本单一落点即本行——1.1.0→1.1.7 的升级历史出自 adopt-gradle-8-14-baseline
+    // D1（1.1.5 起修复该插件在 Gradle 8.8 以上环境的兼容假设）；buildSrc 类路径独立于主构建、
+    // 版本目录访问器不及于此，与 JUnit 先例同一注释登记义务，升级时跟改。根构建脚本 MUST NOT
+    // 再对本插件带版本声明（探针三变体乙实测双声明并存为硬失败）。
+    implementation 'io.spring.gradle:dependency-management-plugin:1.1.7'
+    // me.champeau.jmh 插件实现 jar 由 buildSrc 供给（consolidate-assembly-line 任务 8.3，
+    // 探针三预演同构）：tny.benchmark-module 的枚举与运行任务对该扩展类型取编译期引用。
+    // 版本单一落点即本行；tny-benchmark 模块 plugins 块 MUST NOT 再携带版本声明
+    // （双声明并存为探针三变体乙实测硬失败）。
+    implementation 'me.champeau.jmh:jmh-gradle-plugin:0.7.3'
+}
+
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
+}

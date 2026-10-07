@@ -1,0 +1,19 @@
+[2.1] 常规发布：零新提交合回跳过
+  SKIP-OK ahead=0
+  TRIPLE-OK 容器头==标签解引用
+[2.2] hotfix：从标签切基、双修复笔、重放上线
+  PENDING-2-OK（两笔独有提交待重放）
+  CONTAINER-IMMUTABLE-OK
+  TAG-IMMUTABLE-OK
+  CHERRY-DONE 对账（新线←老容器）清零
+  PROVENANCE-OK
+[2.2b] 幂等：本地标签已指向当前构建提交时跳过创建仅补推送（releaseTag 重跑）
+  RE-PUSH-OK 幂等补推不报错
+[2.3] 冲突回退：第一笔成功、第二笔冲突 → abort+reset 清回原线头（v1 缺口的核心用例）
+  CONFLICT-DETECTED（第二笔）
+  RESET-OK 线头清回原头（含成功的第一笔）
+[2.3b] pending 已空：手工移植完成后重跑合回报跳过
+  PENDING-EMPTY-OK 重跑将报「已全部存在于线，跳过」
+[2.4] 退出码：坏 ref 查询必败非空伪装
+  EXIT-CHECK-OK 坏引用非零退出（脚本 requireGit 会抛）
+DRILL-V2-ALL-PASS

@@ -1,0 +1,50 @@
+- id: 1
+  alias: testObject
+  desc: testObject
+  abilityMap:
+    DEFEND: |
+      toInt(73*pow(1.039,self.level))
+  behaviorPlanList:
+    - behavior: UPGRATE
+      demandList:
+        - itemAlias: testObject
+          demandType: PLAYER_LEVEL
+          expect: 4
+          fx: |
+            12>=expect
+      optionMap:
+        CD: 10
+        DEFEND_CD: 300
+      actionPlanList:
+        - action: NOMAL_UPGRADE
+          demandList:
+            - itemAlias: testObject
+              demandType: PLAYER_ONLINE
+              expect: 5
+              fx: |
+                19>=expect
+          optionMap:
+            CD: 1000
+            ATTACK_CD: 200
+          costPlan:
+            demandList:
+              - itemAlias: testObject
+                fx: |
+                  7200
+          awardPlan:
+            awardGroupList:
+              - probability: 30
+                awardList:
+                  - itemAlias: testObject
+                    fx: |
+                      7200
+              - probability: 50
+                awardList:
+                  - itemAlias: itemAlias
+                    fx: |
+                      7200
+              - probability: 100
+                awardList:
+                  - itemAlias: testObject
+                    fx: |
+                      7200

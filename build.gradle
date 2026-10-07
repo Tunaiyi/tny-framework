@@ -1,0 +1,73 @@
+import tny.convention.ProjectsExtension
+
+plugins {
+    // nmcp（Central Portal 上传器，central-publishing D3）：aggregation 挂根、模块侧经
+    // tny.central 与 tny.publications 分别 apply，直接消费既有 mavenJava。
+    id 'com.gradleup.nmcp' version '1.6.2' apply false
+    id 'com.gradleup.nmcp.aggregation' version '1.6.2' apply false
+    // 死声明清除（fix-dependency-version-governance D10，全仓复证零应用点）：
+    // org.springframework.boot 插件（本工程无 bootJar 重打需求，springBootVersion 键仍由 BOM 导入句消费）与
+    // com.gradle.plugin-publish 插件（Gradle Plugin Portal 发布通道从未接通，见 tny-game-doc-gradle 残迹注记）
+    // io.spring.dependency-management 的带版本声明行已于本行位置退役（consolidate-binary-conventions
+    // 任务 7.3）：实现 jar 与版本落点移至 buildSrc/build.gradle 的 implementation 声明（探针三实测
+    // 双声明并存为硬失败，版本单一落点；1.1.0→1.1.7 沿革注记同迁该处注释）。
+    id 'com.baidu.jprotobuf' version '1.2.1' apply false
+}
+
+// 第三方插件类路径供给现已分两制（consolidate-binary-conventions 探针三适用面注记的落实）：
+// com.gradleup.nmcp 与 com.baidu.jprotobuf 仍由上方 plugins 块带版本声明供给；
+// io.spring.dependency-management 改由 buildSrc implementation 依赖供给，运行期按 id 应用与编译期
+// 类型引用同时成立（旧注记"buildSrc 作用域无法解析父构建类路径插件（实测 8.5）"针对的是编译期类引用，
+// 不约束运行期按 id 应用——两条适用面此前并存易混，至此以供给点区分写清）。
+// tny.git 创建的根工程类型化扩展 gitFlow（派生分支名、项目版本等值，实现类 tny.convention.GitFlow）
+// 必须先于一切消费方应用——消费方经 getByType 按类型拉取，扩展不在位即报错；
+// git 能力经 GitCli 门面单通道（grgit/JGit 依赖由 retire-grgit-channel 摘除）。
+apply plugin: 'tny.git'
+// 发布快速通道：releaseCut / releaseTag（语义契约见 docs/release-process.md；releaseMergeBack 已由
+// redesign-devline-integration-model 删除）；分支流转门禁：integrateMain / mergeUpward
+// （capability branch-integration-gates）
+apply plugin: 'tny.release'
+apply plugin: 'tny.integrate'
+
+// 装配线成员判定与组号事实源收进类型化扩展 tny.projects（pilot-binary-build-conventions D4）：
+// 命名约定判定、组号单一事实源注释（central-publishing D2 与 add-integration-testing D3 出处）
+// 随实现迁入 tny.convention.ProjectsExtension / ProjectsPlugin 的 javadoc；约定权威定义仍在 settings.gradle 注释。
+apply plugin: 'tny.projects'
+def projectsExt = extensions.getByType(ProjectsExtension)
+
+// Central 通道：centralBundle / centralUpload（capability central-publishing）；
+// tny.central 须在 tny.projects 应用行之后加载（聚合成员判定依赖 projects 扩展在位）。
+apply plugin: 'com.gradleup.nmcp.aggregation'
+apply plugin: 'tny.central'
+
+// 配置阶段跨工程对账（组号单一事实源、基准模块零发布合同）：程序性校验限定约定插件（gradle-build-style 需求一）
+apply plugin: 'tny.module-checker'
+
+// 装配线（各插件文件头声明职责与边界）：约定插件之间不互相 apply（脚本插件嵌套应用触发
+// 类加载器服务缺失，实测 Gradle 8.5），故各线所需插件在此按依赖顺序逐一应用，幂等无副作用。
+configure(subprojects) {
+    // 原 io.spring.dependency-management 与 tny.dependency-management 两行并一
+    // （consolidate-assembly-line 任务 4.3）：入口内部次序逐字为 io.spring dm→idea→maven-publish→配置体，
+    // dm 的 jar 由 buildSrc implementation 供给（前册探针三形态），裸 id 运行时应用实证可行。
+    apply plugin: 'tny.dependency-conventions'
+}
+configure(projectsExt.gradleProjects()) {
+    apply plugin: 'tny.publish'
+    apply plugin: 'tny.publish.gate'
+    // 原 tny.compile-baseline 与 tny.plugin-module 两行并一（consolidate-assembly-line 任务 6.3）：
+    // 入口内先按类应用编译基线再落插件线专属行为，次序逐字等于原两行行序；
+    // tny.compile-baseline 注册 id 随两线吸收完毕在本提交注销，实现类由两入口按类复用。
+    apply plugin: 'tny.plugin-conventions'
+}
+configure(projectsExt.javaProjects()) {
+    apply plugin: 'com.gradleup.nmcp'
+    apply plugin: 'tny.publish'
+    apply plugin: 'tny.publish.gate'
+    // 原 tny.compile-baseline 与 tny.java-module 两行并一（consolidate-assembly-line 任务 5.3）：
+    // 入口内先按类应用编译基线再装配 java 线行为，次序逐字等于原两行行序；
+    // tny.compile-baseline 注册 id 已随组 6 的 gradleProjects 段改造完毕在本册注销，实现类由两入口按类复用。
+    apply plugin: 'tny.java-conventions'
+    apply plugin: 'tny.integration-test'
+    apply plugin: 'tny.publications'
+    apply plugin: 'tny.github-packages'
+}

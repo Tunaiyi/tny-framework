@@ -1,0 +1,6 @@
+com.tny.game.basics.configuration.BasicsAutoConfiguration
+com.tny.game.basics.configuration.BasicsFeatureConfiguration
+com.tny.game.basics.configuration.BasicsCapacityModuleConfiguration
+com.tny.game.basics.configuration.BasicsWarehouseModuleConfiguration
+com.tny.game.basics.configuration.BasicsTimeTaskConfiguration
+com.tny.game.basics.configuration.BasicsMongoAutoConfiguration

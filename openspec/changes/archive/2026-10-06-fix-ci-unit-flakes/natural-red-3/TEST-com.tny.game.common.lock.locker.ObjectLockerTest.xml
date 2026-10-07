@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.tny.game.common.lock.locker.ObjectLockerTest" tests="4" skipped="0" failures="1" errors="0" timestamp="2026-10-04T14:09:51.583Z" hostname="runnervm8df0l" time="0.468">
+  <properties/>
+  <testcase name="tryLock()" classname="com.tny.game.common.lock.locker.ObjectLockerTest" time="0.13"/>
+  <testcase name="lock()" classname="com.tny.game.common.lock.locker.ObjectLockerTest" time="0.099"/>
+  <testcase name="lockInterruptibly()" classname="com.tny.game.common.lock.locker.ObjectLockerTest" time="0.054">
+    <failure message="org.opentest4j.AssertionFailedError: MapObjectLocker{lockMap={locker=com.tny.game.common.concurrent.lock.locker.RentReentrantLock@4201a617[Unlocked]}} ==&gt; expected: &lt;0&gt; but was: &lt;1&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: MapObjectLocker{lockMap={locker=com.tny.game.common.concurrent.lock.locker.RentReentrantLock@4201a617[Unlocked]}} ==&gt; expected: &lt;0&gt; but was: &lt;1&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at app//org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+	at app//org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:150)
+	at app//org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:563)
+	at app//com.tny.game.common.lock.locker.ObjectLockerTest.lockInterruptibly(ObjectLockerTest.java:211)
+	at java.base@21.0.12.1/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base@21.0.12.1/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base@21.0.12.1/java.util.ArrayList.forEach(ArrayList.java:1596)
+</failure>
+  </testcase>
+  <testcase name="tryLock1()" classname="com.tny.game.common.lock.locker.ObjectLockerTest" time="0.183"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

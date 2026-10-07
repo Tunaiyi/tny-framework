@@ -1,0 +1,13 @@
+Configuration on demand is an incubating feature.
+FAILURE: Build failed with an exception.
+* What went wrong:
+Execution failed for task ':tny-game-net:checkPublishPrerequisites'.
+> Cannot convert '' to URI.
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+BUILD FAILED in 1s

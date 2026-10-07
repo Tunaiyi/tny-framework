@@ -1,0 +1,188 @@
+name: publish
+
+# 发布工作流（openspec capability central-publishing 与 github-packages-mirror；
+# consolidate-publish-workflows 变更起为单文件三作业的统一发布拓扑）：
+#
+#   route ──┬── mode=release ──→ publish-release 作业：内网 Nexus（五重门禁）
+#           │                    → Central 聚合上传（centralCheck 前置）
+#           │                    → GitHub Packages 正式版镜像（逐仓聚合任务）
+#           └── mode=snapshot ─→ snapshot-mirror 作业：矩阵逐线镜像快照到
+#                                GitHub Packages（每日定时当前在途/快照在维线）
+#
+# 三条目的地链分步独立执行、互不重推、互不牵连（通道独立契约同规格条文）；一个通道
+# 失败不回退已成功通道，重试只针对失败通道；镜像半途失败的同号处置阶梯（升号优先、
+# 删版本重发为例外，限正式版）见 docs/release-process.md 的 GitHub Packages 镜像通道一节。
+# 触发：release.published —— 标签名 v<X.Y.Z> 推导发布分支 <X.Y.Z>.release（标签先于制品）；
+#       workflow_dispatch —— 同一入口按尾缀判定：填 <X.Y.Z>.release 手动补跑正式版链，
+#       填开发线名（dev/5.8.x 或祖父轨 5.7.x）单次补跑该线快照镜像（人工指定即授权）；
+#       schedule —— 每日 UTC19:23（与 build.yml nightly 错峰 46 分钟）逐线快照镜像。
+# 定时选线以 docs/release-process.md 线谱系登记为唯一依据（状态含"在途"或"快照在维"的
+# 线），不得以远端分支存在性推断——首跑教训（2026-10-05 run 37274115577 同型）：退役线
+# 分支不删除，形态枚举会批量纳入必然失败的作业。schedule 与触发块调整只在 main 生效。
+# 快照形态按 tny.publications 现行策略跳签、无 .asc 构件可被消费（复测 S1 至 S8）；
+# 正式版必签，SIGNING 三件仅注入正式版链作业。
+on:
+  release:
+    types: [published]
+  schedule:
+    - cron: '23 19 * * *'
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "发布分支名（如 5.7.8.release）走正式版链；开发线名（如 dev/5.8.x 或 5.7.x）补跑该线快照镜像"
+        required: false
+        type: string
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  route:
+    name: Route event to release or snapshot chain
+    runs-on: ubuntu-latest
+    outputs:
+      mode: ${{ steps.pick.outputs.mode }}
+      branch: ${{ steps.pick.outputs.branch }}
+      lines: ${{ steps.pick.outputs.lines }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Resolve chain, branch and matrix
+        id: pick
+        env:
+          EVENT: ${{ github.event_name }}
+          REF: ${{ github.ref_name }}
+          INPUT: ${{ inputs.branch }}
+        run: |
+          case "$EVENT" in
+            release)
+              echo "mode=release" >> "$GITHUB_OUTPUT"
+              echo "branch=${REF#v}.release" >> "$GITHUB_OUTPUT"
+              ;;
+            workflow_dispatch)
+              if [[ "$INPUT" == *.release ]]; then
+                echo "mode=release" >> "$GITHUB_OUTPUT"
+                echo "branch=$INPUT" >> "$GITHUB_OUTPUT"
+              elif [[ "$INPUT" =~ ^(dev/)?[0-9]+\.[0-9]+\.x$ ]]; then
+                echo "mode=snapshot" >> "$GITHUB_OUTPUT"
+                echo "lines=[\"$INPUT\"]" >> "$GITHUB_OUTPUT"
+              else
+                echo "mode=none" >> "$GITHUB_OUTPUT"
+                echo "::warning::workflow_dispatch 输入既非 <X.Y.Z>.release 也非开发线形态（dev/N.M.x 或 N.M.x），本次运行不进入任何发布链"
+              fi
+              ;;
+            schedule)
+              # 定时口径与快照链历史版本逐字同源：线谱系登记表状态含"在途"或"快照在维"的行，
+              # 线名按表内原文捕获（dev/ 前缀一并保留）；解析不到即空矩阵干净跳过并留归因。
+              LINE=$(awk 'BEGIN{FS="|"} /^\| *`/ { if ($6 ~ /在途|快照在维/) { if (match($2, /`(dev\/)?[0-9]+\.[0-9]+\.x`/)) { name=substr($2, RSTART+1, RLENGTH-2); print name } } }' docs/release-process.md | sort -u)
+              if [ -n "$LINE" ]; then
+                LINES_JSON=$(printf '"%s",' $LINE | sed 's/,$//')
+                echo "mode=snapshot" >> "$GITHUB_OUTPUT"
+                echo "lines=[$LINES_JSON]" >> "$GITHUB_OUTPUT"
+                echo "snapshot lines picked from lineage registry: $LINE"
+              else
+                echo "mode=snapshot" >> "$GITHUB_OUTPUT"
+                echo 'lines=[]' >> "$GITHUB_OUTPUT"
+                echo '::warning::线谱系登记中未找到在途或快照在维的开发线，本次定时运行跳过快照镜像'
+              fi
+              ;;
+          esac
+
+  publish-release:
+    name: Publish release to Nexus, Maven Central and GitHub Packages
+    needs: route
+    if: needs.route.outputs.mode == 'release'
+    runs-on: ubuntu-latest
+    env:
+      RELEASE_BRANCH: ${{ needs.route.outputs.branch }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: refs/heads/${{ needs.route.outputs.branch }}
+      # checkout 默认落分离 HEAD，而 `git rev-parse --abbrev-ref HEAD` 在该状态下报
+      # "HEAD"，门禁的分支形态白名单按非法形态误拒（与读取库无关，git 原生行为；
+      # retire-grgit-channel 修正历史归因——原注释误记为 grgit 所致）；
+      # checkout -B 兜底建立本地分支指向同一提交（不推送、不改远端）——与快照链同构模式。
+      - name: Ensure branch context for the gate
+        run: git checkout -B "$RELEASE_BRANCH"
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - uses: gradle/actions/setup-gradle@v3
+
+      # 签名走无点号环境变量（SIGNING_KEY 为 armor 化私钥本体，不落文件）；
+      # 属性类凭据走 ORG_GRADLE_PROJECT_*。均不进命令行与日志（env 注入由 runner 脱敏）。
+      - name: Publish to Nexus (five-fold gate runs inside)
+        env:
+          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+          SIGNING_KEY_ID: ${{ secrets.SIGNING_KEY_ID }}
+          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
+          ORG_GRADLE_PROJECT_NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+          ORG_GRADLE_PROJECT_NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+        run: ./gradlew publish
+
+      - name: Upload bundle to Maven Central (centralCheck preflight inside)
+        env:
+          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+          SIGNING_KEY_ID: ${{ secrets.SIGNING_KEY_ID }}
+          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+        run: ./gradlew publishAggregationToCentralPortal
+
+      # GitHub Packages 正式版镜像（第三个目的地，包归属本仓库）：逐仓聚合任务把目的地
+      # 钉死在镜像单仓，不重推已成功通道。tny.github-packages 守卫断言镜像凭据对成对非空
+      # 在位，正式与快照两形态均可声明；本机与持续集成双来源语义见能力条文。
+      # NEXUS 两值必须一并注入：tny.publish 的属性断言不区分目标仓库，命中共享仓谓词的
+      # 发布任务在任一属性为空时 fail-fast。SIGNING 三件与上方步骤同源：发布分支形态必签。
+      # 重跑已镜像成功的正式版本时本步骤对同名文件收 HTTP 409 属"构件已在镜像中"的存证
+      # （限正式版本形态；快照重发以时间戳文件名存储不受此限），判读与处置阶梯见
+      # docs/release-process.md 的 GitHub Packages 镜像通道一节。
+      - name: Publish to GitHub Packages (release-only step)
+        env:
+          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+          SIGNING_KEY_ID: ${{ secrets.SIGNING_KEY_ID }}
+          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
+          ORG_GRADLE_PROJECT_NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+          ORG_GRADLE_PROJECT_NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+          ORG_GRADLE_PROJECT_githubPackagesUsername: ${{ github.actor }}
+          ORG_GRADLE_PROJECT_githubPackagesToken: ${{ secrets.GITHUB_TOKEN }}
+        run: ./gradlew publishAllPublicationsToGithubPackagesRepository
+
+  snapshot-mirror:
+    name: Mirror snapshot of ${{ matrix.line }}
+    needs: route
+    if: needs.route.outputs.mode == 'snapshot' && needs.route.outputs.lines != '[]'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        line: ${{ fromJson(needs.route.outputs.lines) }}
+    concurrency:
+      # 同线串行防并发双写同一快照坐标（并发下目录级元数据一致性未实测），跨线互不阻塞
+      group: snapshot-mirror-${{ matrix.line }}
+      cancel-in-progress: false
+    env:
+      # 属性断言不区分目标仓库，命中共享仓谓词的发布任务在任一 Nexus 属性为空时 fail-fast，
+      # 故 NEXUS 两值必须注入；镜像凭据对以运行账户与内置令牌桥接（与发布者本机配置形态同构）；
+      # 快照跳签不注 SIGNING。
+      ORG_GRADLE_PROJECT_NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      ORG_GRADLE_PROJECT_NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+      ORG_GRADLE_PROJECT_githubPackagesUsername: ${{ github.actor }}
+      ORG_GRADLE_PROJECT_githubPackagesToken: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: refs/heads/${{ matrix.line }}
+      - name: Ensure branch context for the gate
+        run: git checkout -B "${{ matrix.line }}"
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v3
+      - name: Publish snapshot mirror to GitHub Packages (five-fold gate runs inside)
+        run: ./gradlew publishAllPublicationsToGithubPackagesRepository

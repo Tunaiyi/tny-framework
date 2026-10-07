@@ -1,0 +1,3 @@
+com.tny.game.data.configuration.redisson.RedissonStorageAutoConfiguration
+com.tny.game.data.configuration.mongodb.MongoStorageAutoConfiguration
+com.tny.game.data.configuration.DataAutoConfiguration
