@@ -67,5 +67,5 @@
 
 ## 11. 收口
 
-- [ ] 11.1 `/opsx:verify consolidate-assembly-line` 无 CRITICAL；用户批准后执行归档，规格账本本册无差量入账（skip_specs），归档摘要注明十八枚 id 变十七枚（九二进制加八脚本）的净效果
-- [ ] 11.2 归档后登记去向：探针四结论与限定语的发布族册引用指针、跨册修订条款（redesign 若改版本回落形态的落点条款）写入 redesign 册 apply-notes 的协调小节；验证：两处文字账可检索
+- [x] 11.1 `/opsx:verify consolidate-assembly-line` 无 CRITICAL；用户批准后执行归档，规格账本本册无差量入账（skip_specs），归档摘要注明十八枚 id 变十七枚（九二进制加八脚本）的净效果
+- [x] 11.2 归档后登记去向：探针四结论与限定语的发布族册引用指针、跨册修订条款（redesign 若改版本回落形态的落点条款）写入 redesign 册 apply-notes 的协调小节；验证：两处文字账可检索

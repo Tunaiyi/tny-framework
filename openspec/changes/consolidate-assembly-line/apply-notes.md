@@ -69,3 +69,9 @@
 - 10.2 configure-on-demand 单工程样件：`--no-configure-on-demand` 与默认开启两形态下 `:tny-game-net:tasks --all` 任务名集合 57 项完全一致——入口执行期经根工程取 ProjectsExtension 的通道在单工程评估场景验证通过。
 - 10.3 全量 `check --continue` 绿（8 executed、171 up-to-date，输入未变的合法增量）；`publish --dry-run` 任务图构建绿且 BOM 门禁节点在场；warm help 三连 2.04-2.07 秒，对本册改造前 2.09-2.13 秒无劣化（微降）。
 - 10.4 触碰文件按主规格 13 条需求逐条走查通过：声明式与容身之处（新入口与装配类均在二进制载体三形态内；删除与注册逐组同提交；描述符逐枚断言）、惰性形态（新类全部 register/configureEach/withType、providers 读属性、零 tasks.create）、单一事实源（jmhVersion 归位 gradle.properties 键并注释取用点；buildSrc 两处第三方版本落点各一且注释登记关系；零手写坐标）、托管对账（行为不变且行为面样件一致，jmh 与集成排除面零漂移）、Groovy 词法（触碰脚本行为声明式引入与注释、无分号无 spread）、区块顺序（javaProjects 与 gradleProjects 段终文逐字保序，入口内段落对应脚本区块并注释分段）、注释来由（原五处脚本头全量随迁入类 javadoc，含 51 项差异定罪、串染事故、D1 覆写次序、logback 双绑定等实测教训；本册无新增不可逆编排，dryRun 条款不适用原因登记）、长度界线（走查曾对 308 行入口作"申报保留"处理——规格现文无豁免场景，该处理不当；随即拆出 BenchmarkExportConventions 与 BenchmarkSelectionConventions 两类，入口降至 196 行、D1 两段 afterEvaluate 注册次序随选择类整体搬移逐字保持；拆后复验：-PbenchParams 单臂覆写与缺省六臂内省不变、jmhList 7 条目与 jmhSuiteVerify 9 类归族实跑不变、benchmark 任务图对基线一致、buildSrc 测试全绿）、触碰即改（组 9 改写一处过时注释、根引入区注释口径随供给迁移更新）、存量对账（八枚残留脚本零改动，obsolete 目录零触碰）、禁点名（入口与装配类零工程名字面量：`-tester`、`-integration-test` 均经 ProjectsExtension 既有谓词或文档注释豁免；反射取 jmh 生成目录为运行时属性协议非点名）、检查逻辑单测（DemoIsolationCheck 与 BenchmarkSuiteCheck 各含绿红用例入 CI）、接线规则（入口零脚本 id 应用、零双声明点、按类复用 CompileBaselinePlugin 符合二进制互引条款）。
+
+## 组 11 收口
+
+- 核验（/opsx:verify 2026-10-07）结论：除收口程序两项外无实现类严重问题；规格维度按 skip_specs 声明为不适用；独立取证含 16 类界线全量（最大 217 行）、双声明点交叉核查（零命中）、模块自引行在场确认、design 回写抽核（探针四结论与组 4 注入点回写俱在）。
+- 一条 WARNING 当场修正：design 迁移计划"基线以 f6bea21a 锚定"改为实况"531e9c4b 锚定（构建面等同 f6bea21a）"。
+- 任务 11.2 落笔：跨册登记文件 `openspec/changes/redesign-devline-integration-model/apply-notes/cross-volume-assembly-line.md` 新建（探针四指针与发布族册前置、共有面跨册修订条款、8.1 通道状态三项），未改动在途册既有文件。

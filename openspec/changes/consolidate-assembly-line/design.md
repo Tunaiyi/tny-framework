@@ -101,7 +101,7 @@
 
 ## Migration Plan
 
-组 1 册门核对（D9 顺序复核、幻影哈希不入任何工件、`git log` 现查）→ 组 2 基线以 f6bea21a 锚定重抓十一项样件入库（七件常规＋doc-gradle publishing 快照＋publish 任务名清单两份＋benchmark/integration-test 任务图两份，warm 耗时前读；不引用前册样件）→ 组 3 探针五（GitFlow 通道）与 jmh 供给沙箱预演，结论回填 → 组 4 dependency-conventions 立口（删脚本/注册/根两行并一/回落随迁/ManagedVersionsCheck 指针/javadoc 口径改写，同提交）→ 组 5 java-conventions 立口 → 组 6 plugin-conventions 立口 → 组 7 integration-test 同名 Java 化 → 组 8 benchmark-module＋BenchmarkSuite＋jmh 迁移 → 组 9 次序契约与防蔓延 grep 复核＋三入口目录页核对 → 组 10 全量回归（十样件比对、CodOD 单工程样件 `./gradlew :tny-game-net:tasks`、`-p buildSrc test`、`check --continue`、`publish --dry-run`、耗时后读、13 条需求走查）→ 组 11 收口（verify、用户批准归档、探针四移交指针与跨册条款复核登记）。回滚：每组独立提交，吸收类组以"实现类＋注册行＋根行改写＋脚本删除"单提交为单位 revert。
+组 1 册门核对（D9 顺序复核、幻影哈希不入任何工件、`git log` 现查）→ 组 2 基线以 531e9c4b 锚定重抓十一项样件入库（该立项提交与 f6bea21a 的构建文件面完全相同，实况见 baseline/README 与 apply-notes 组 2）（七件常规＋doc-gradle publishing 快照＋publish 任务名清单两份＋benchmark/integration-test 任务图两份，warm 耗时前读；不引用前册样件）→ 组 3 探针五（GitFlow 通道）与 jmh 供给沙箱预演，结论回填 → 组 4 dependency-conventions 立口（删脚本/注册/根两行并一/回落随迁/ManagedVersionsCheck 指针/javadoc 口径改写，同提交）→ 组 5 java-conventions 立口 → 组 6 plugin-conventions 立口 → 组 7 integration-test 同名 Java 化 → 组 8 benchmark-module＋BenchmarkSuite＋jmh 迁移 → 组 9 次序契约与防蔓延 grep 复核＋三入口目录页核对 → 组 10 全量回归（十样件比对、CodOD 单工程样件 `./gradlew :tny-game-net:tasks`、`-p buildSrc test`、`check --continue`、`publish --dry-run`、耗时后读、13 条需求走查）→ 组 11 收口（verify、用户批准归档、探针四移交指针与跨册条款复核登记）。回滚：每组独立提交，吸收类组以"实现类＋注册行＋根行改写＋脚本删除"单提交为单位 revert。
 
 ## Open Questions
 
