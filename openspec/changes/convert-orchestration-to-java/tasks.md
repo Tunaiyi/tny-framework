@@ -12,7 +12,7 @@
 
 ## 3. GitCli 转 Java
 
-- [ ] 3.1 新建 `GitCli.java`（包 tny.convention）：`Map<String,Object> run(List)` 键 exit/out/err、`require` 抛错文案逐字、`forProject` 解析 `-PgitExe`、ProcessBuilder 与 LC_ALL=C 钉定逐句等价；原类头全部沿革注释（D6 双通道退场史、双流读取缓冲注记、调用方查 exit 纪律）入类 javadoc；同一提交 `git rm GitCli.groovy`；验证：`./gradlew -q :tny-game-bom:help` 配置期绿（gitFlow 构造即走新门面）、判红路径冒烟（临时 `-PgitExe=/bin/false` 必报"读取当前分支名失败"文案原样）
+- [x] 3.1 新建 `GitCli.java`（包 tny.convention）：`Map<String,Object> run(List)` 键 exit/out/err、`require` 抛错文案逐字、`forProject` 解析 `-PgitExe`、ProcessBuilder 与 LC_ALL=C 钉定逐句等价；原类头全部沿革注释（D6 双通道退场史、双流读取缓冲注记、调用方查 exit 纪律）入类 javadoc；同一提交 `git rm GitCli.groovy`；验证：`./gradlew -q :tny-game-bom:help` 配置期绿（gitFlow 构造即走新门面）、判红路径冒烟（`-PgitExe=/bin/false` 走坏路径报红；任务书原句"读取当前分支名失败"系笔误——构造器先跑 rev-parse --verify HEAD 探针且本机 /bin/false 不存在，实况文案为 Could not create an instance of type GitFlow 嵌套 Cannot run program，与旧 Groovy 版同型：UncheckedIOException 的 message 内嵌 cause 的 IOException 原文；本组为删除前未留负例快照的如实注记，严格前后等值以头探针正常路径与全部样件兜底）
 
 ## 4. GitFacts 与门禁判定类（测试先行）
 

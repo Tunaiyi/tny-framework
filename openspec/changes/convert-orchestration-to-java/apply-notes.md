@@ -31,3 +31,8 @@
 - 六样件与 README 入 `baseline/`（锚定 b410ea25，分支 5.7.x 为祖父登记维护线）：全量任务图（五编排任务与 description 全文在列）、`releaseCut -PreleaseVersion=9.9.9 -PdryRun` 祖父轨预览全文（成功路径样本）、`integrateMain/mergeUpward -PdryRun` 分支形态不合法的报错文案全文（等值判据样本各一）、`:tny-game-net` 派生 group/version（com.tnydev.game / 5.7.x-SNAPSHOT）、warm 耗时三连（2.21/2.24/1.94）。
 - 口径注记：`-q properties` 于根工程取值为 unspecified 属现状（根不在 subprojects 派生面），派生样件按子工程抓取——改造前后同判据即等值。
 - 避让清单维持：`tny-benchmark/results/bench-20261006-quick.json` 不入任何提交。
+
+## 组 3 GitCli 转 Java
+
+- `GitCli.java` 落地（Map 返回键 exit/out/err、`-PgitExe` 解析、LC_ALL=C、双流顺序读取、require 文案逐字，类头全部沿革注释随迁）；同一提交 `git rm GitCli.groovy`。
+- 验证：`-p buildSrc test` 全绿、根 `help` 绿、全量任务图对基线一致（Python 正则剔噪后逐行等值）；坏 gitExe 负例报红路径可达（文案实况与同型说明已改写入任务判据句）。
