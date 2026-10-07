@@ -16,8 +16,6 @@
 
 package tny.convention;
 
-import groovy.lang.GroovyObject;
-import groovy.lang.MetaClass;
 import org.gradle.api.Project;
 import org.gradle.testfixtures.ProjectBuilder;
 import org.junit.jupiter.api.Test;
@@ -34,47 +32,24 @@ import static org.junit.jupiter.api.Assertions.assertNull;
  */
 class ProjectsPluginTest {
 
-    /** Groovy 类 GitFlow 的最小属性协议替身：仅 projectVersion 一个属性。 */
-    private static final class FakeGitFlow implements GroovyObject {
-        private final Object projectVersion;
+    /** 派生版本契约的最小替身：仅 getProjectVersion 一个事实。 */
+    private static final class FakeGitFlow implements GitVersionSource {
+        private final String projectVersion;
 
-        FakeGitFlow(Object projectVersion) {
+        FakeGitFlow(String projectVersion) {
             this.projectVersion = projectVersion;
         }
 
         @Override
-        public Object getProperty(String property) {
-            if ("projectVersion".equals(property)) {
-                return projectVersion;
-            }
-            throw new IllegalArgumentException("未知属性: " + property);
-        }
-
-        @Override
-        public void setProperty(String property, Object newValue) {
-            throw new UnsupportedOperationException("替身只读");
-        }
-
-        @Override
-        public Object invokeMethod(String name, Object args) {
-            throw new UnsupportedOperationException("替身无方法调用");
-        }
-
-        @Override
-        public MetaClass getMetaClass() {
-            return null;
-        }
-
-        @Override
-        public void setMetaClass(MetaClass metaClass) {
-            // 替身不依赖元类协议
+        public String getProjectVersion() {
+            return projectVersion;
         }
     }
 
     private ProjectsExtension applyWithGitFlow(Object projectVersion) {
         Project root = ProjectBuilder.builder().withName("tny-framework").build();
         if (projectVersion != NO_GITFLOW) {
-            root.getExtensions().add("gitFlow", new FakeGitFlow(projectVersion == ABSENT ? null : projectVersion));
+            root.getExtensions().add("gitFlow", new FakeGitFlow(projectVersion == ABSENT ? null : (String) projectVersion));
         }
         new ProjectsPlugin().apply(root);
         return root.getExtensions().getByType(ProjectsExtension.class);

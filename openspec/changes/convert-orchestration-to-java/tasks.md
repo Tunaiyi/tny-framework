@@ -21,8 +21,8 @@
 
 ## 5. GitFlow 转 Java 与注入点转正
 
-- [ ] 5.1 新建 `GitFlow.java`：final 字段与全部公开方法名逐字保持（含四个兼容访问器与 gitBranchType）、`tagInfo`/`remoteRefs` 等 Map 返回形态、构造期派生委托 GitFacts、类头与字段注释全量随迁（唯一写入方契约、grgit 退场史、唯一解析点守卫教训、空仓报错文案）；同一提交 `git rm GitFlow.groovy`；`ProjectsPlugin` 注入段删 `GroovyObject` 反射改 `getByType(GitFlow.class).getProjectVersion()`（不在位留空的既有语义保持），装配线册 design D4 降级注记回写为"本册转正"；验证：`-p buildSrc test` 绿、根 `help` 绿、装配线四破坏探针中供给断供与 gitFlow 缺席两例复跑仍报红（文案对基线）
-- [ ] 5.2 验证：发布族 Groovy 消费面冒烟——`./gradlew :tny-game-bom:generatePomFileForMavenJavaPublication` 与 `:tny-game-net:generatePomFileForMavenJavaPublication` 后 POM 对装配线册终态样件（`final/pom-*-after.xml`）逐字节一致（gate/central/publications 经新 GitFlow 读取路径全走过）
+- [x] 5.1 新建 `GitFlow.java`：final 字段与全部公开方法名逐字保持（含四个兼容访问器与 gitBranchType）、`tagInfo`/`remoteRefs` 等 Map 返回形态、构造期派生委托 GitFacts、类头与字段注释全量随迁（唯一写入方契约、grgit 退场史、唯一解析点守卫教训、空仓报错文案）；同一提交 `git rm GitFlow.groovy`；`ProjectsPlugin` 注入段删 `GroovyObject` 反射改 `getByType(GitFlow.class).getProjectVersion()`（不在位留空的既有语义保持），装配线册 design D4 降级注记回写为"本册转正"；验证：`-p buildSrc test` 绿、根 `help` 绿、装配线四破坏探针中供给断供与 gitFlow 缺席两例复跑仍报红（文案对基线）
+- [x] 5.2 验证：发布族 Groovy 消费面冒烟——`./gradlew :tny-game-bom:generatePomFileForMavenJavaPublication` 与 `:tny-game-net:generatePomFileForMavenJavaPublication` 后 POM 对装配线册终态样件（`final/pom-*-after.xml`）逐字节一致（gate/central/publications 经新 GitFlow 读取路径全走过）
 
 ## 6. ReleaseOpsPlugin 立口与三脚本吸收
 

@@ -16,7 +16,6 @@
 
 package tny.convention;
 
-import groovy.lang.GroovyObject;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 
@@ -49,10 +48,12 @@ public class ProjectsPlugin implements Plugin<Project> {
         projects.setProjectGroup("com.tnydev.game");
         projects.setPluginLegacyGroup("com.tny.game");
         Object gitFlow = project.getExtensions().findByName("gitFlow");
-        if (gitFlow != null) {
-            Object projectVersion = ((GroovyObject) gitFlow).getProperty("projectVersion");
+        if (gitFlow instanceof GitVersionSource source) {
+            // 类型化注入（convert-orchestration-to-java 任务 5.1）：GitFlow 转 Java 后
+            // 经 GitVersionSource 契约读取，装配线册登记的 GroovyObject 弱型反射就此撤销。
+            String projectVersion = source.getProjectVersion();
             projects.setDerivedProjectVersion(
-                    projectVersion != null ? (String) projectVersion : Project.DEFAULT_VERSION);
+                    projectVersion != null ? projectVersion : Project.DEFAULT_VERSION);
         }
     }
 }

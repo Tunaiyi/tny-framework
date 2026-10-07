@@ -42,3 +42,9 @@
 - 任务书修正一处：原 4.1"未实现前提交并记录红状态"对全新类机械不可行（编译失败非测试红），按装配线册组 4 同型判据修正为"用例与判定类同批、红绿向指用例内两路径"，任务文字已改写。
 - `GitFacts`（14 纯函数）、`ReleaseGateCheck`（9 判定，文案逐字承 tny.release 原句）、`IntegrationGateCheck`（7 判定+两形态谓词，承 tny.integrate 原句）落地；用例 21 个（GitFacts 11、Release 8、Integration 5 中部分合并计）全绿，`seriesKey` find 语义回归钉（dev/5.7.x→5007）、`releasedPatchesFromRefs` 解引用行独占、幂等标签三态、退役双检查各违例向均入列。
 - 首跑一处红：missingMarkers 对"命中行截断"用例期望与实现保守语义（截断即缺失）不符——确认保守向正确（防检索失败被当无缺失），修用例期望并在实现 javadoc 成文。
+
+## 组 5 GitFlow 转 Java 与注入点转正
+
+- `GitFlow.java`（实现 `GitVersionSource` 契约，公开方法名与字段 getter 逐字、`tagInfo`/`remoteRefs` Map 返回保持、解析全委托 GitFacts）＋`GitVersionSource.java` 落地；`ProjectsPlugin` 注入段由 GroovyObject 反射改契约读取（装配线册 design D4 登记的编译墙降级就此回收，其原文补注留待收口统一处理）；`ProjectsPluginTest` 替身同批改实现契约（三用例语义不变）。同一提交 `git rm GitFlow.groovy`。
+- 发布族消费面冒烟：`tny.publish.gate.gradle` 等四脚本读 `gitFlow.SNAPSHOT_PACK_SUFFIX`/`RELEASE_VERSION_SUFFIX`（Groovy 实例访问 Java 静态字段合法）与 `parseBranchVersion`（方法签名保持）经配置期与两线 POM 生成路径验证——`:tny-game-net`/`:tny-game-doc-gradle` 双 POM 对装配线册终态样件逐字节一致。
+- 验证：`-p buildSrc test` 全绿（84 用例）、根 `help` 绿、派生值 group/version 与基线一致、全量任务图内容零差异（3562 行；比对剔噪口径增列 `> Task` 进度行并记 README 注记——基线抓时 buildSrc 重编译的进度残留，非任务图内容）、坏 gitExe 负例仍走构造器报红（`Could not create an instance of type tny.convention.GitFlow`）。
