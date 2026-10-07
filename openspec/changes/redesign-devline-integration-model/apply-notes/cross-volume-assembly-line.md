@@ -17,3 +17,14 @@
    tny.publish.gate 引入行），根级 `./gradlew publish` 干跑转绿的成对证据在前册
    baseline 卷宗（bom-gate-defect-before.txt 与 bom-gate-after-dryrun.txt）——本册演练可走根级
    发布命令。
+
+4. **编排线册已先行合入并归档（由 convert-orchestration-to-java 任务 8.2 写入，登记时点
+   2026-10-07，归档编号目录 2026-10-07-convert-orchestration-to-java）**：编排三脚本与
+   GitFlow/GitCli 已 Java 化并经总入口 `tny.release-ops` 立口（根脚本三行并一）。本册
+   8.1/8.2 演练若暴露 git 语义缺陷，修复落点为
+   `buildSrc/src/main/java/tny/convention/GitFacts.java`、`GitFlow.java`（及其按主规格
+   250 行界线拆出的支撑类 `GitRemoteQueries.java`、`GitLocalRefs.java`）与总入口
+   `ReleaseOpsPlugin.java` 及其接线类目录 `tny/convention/releaseops/`，修毕请回写本文件
+   登记（与前条 DependencyConventionsPlugin 先例同型处置）。附加条款：编排线册组 7 如实
+   登记了 `retireGuard` 任务缺前基线样件（其等值现由逐字承脚本的报错文案与门禁双违例向
+   用例承载）——本册演练执行 retireGuard 时补抓一份真实输出样件入库，闭合该验证缺口。
