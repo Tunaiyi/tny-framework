@@ -38,6 +38,10 @@ gradlePlugin {
             id = 'tny.plugin-conventions'
             implementationClass = 'tny.convention.PluginConventionsPlugin'
         }
+        integrationTest {
+            id = 'tny.integration-test'
+            implementationClass = 'tny.convention.integration.IntegrationTestPlugin'
+        }
     }
 }
 

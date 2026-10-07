@@ -40,3 +40,11 @@
 - 6.3 原子切换四件同提交：删除 tny.plugin-module.gradle、注册 tny.plugin-conventions、**注销 tny.compile-baseline 注册行**（两线吸收完毕，实现类保留按类复用）、根 gradleProjects 段两行并一（publish、gate 两行保持原位）。
 - 验证：buildSrc 测试绿、根 help 绿、全量任务图零漂移、插件线 POM 与 doc-gradle 发布任务面对基线逐字节一致、plugin-conventions 描述符指向实现类、compile-baseline 描述符已从产物中消失（计数 0）。
 - 防呆教训二次登记：`git rm` 已暂存的删除路径 MUST NOT 再进 `git add` 的 pathspec（组 5 提交分裂一次、组 6 前置一次，均以软回滚重做）；根治规则已写入本卷宗，组 7 起提交命令只列存在路径。
+
+## 组 7 integration-test 同名 Java 化
+
+- 7.1 三段拆分落 `tny.convention.integration` 子包：入口 `IntegrationTestPlugin`（任务注册段、docker 端点解析、门控接线）、`IntegrationSourceSetConventions`（源集与 extendsFrom 通道）、`DemoIsolationCheck`（受控隔离目标交集与三处 fail-fast 的判定纯函数）。判定类单测 `DemoIsolationCheckTest` 覆盖放行向、交集空向（含"无"清单形态与带冒号路径列表的逐字断言）、缺 jar 与缺 runtimeClasspath 各自报红向，36 用例全绿且核过执行记录。
+- 预期差异申报（design D6 预告兑现）：runtimeClasspath 存在性判定由原 `named(...)==null`（named 对缺失配置实际抛异常、设计报红分支不可达）改为 `findByName(...) != null`，原脚本设计的报红文案自此可达；文案措辞逐字保留原脚本，注释就地写明。
+- 7.2 原子切换两件同提交：删除 `tny.integration-test.gradle`（156 行）、gradlePlugin 注册 `tny.integration-test` 指向 `IntegrationTestPlugin`；id 不变故根 javaProjects 段与 `tny-game-integration-test/build.gradle:9` 的 plugins 引用零改动。
+- 7.3 验证：integrationRuntimeClasspath 531 行解析树中 logback-classic 与 log4j-to-slf4j 命中数 0（惰性排除面对后建 integration 配置照常生效，configureEach 形态保持的证据）；线外模块与全量两份任务图对基线**任务行集合零差异**（Python 正则剔噪后 72/72、3562/3562 行）；描述符指向二进制实现类。
+- 比对方法学登记：本机 `grep` 实为 ugrep，`-E` 的 `\]` 转义与空行模式行为与 GNU grep 有别，此前 shell 侧剔噪出现假性差异；任务图样件的权威剔噪改用本卷宗内 Python 正则（actionable/空白行/BUILD/Starting a Gradle/Incubating/Problems report/Deprecated Gradle/warning-mode/docs.gradle.org），后续各组沿用此口径。

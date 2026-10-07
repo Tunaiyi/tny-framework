@@ -31,7 +31,7 @@
 - [x] 5.1 先写测试：源集与清单派生、tester 宿主排除谓词、`-tester` 夹具挂接面的可单测判定段拆为纯函数类并补红绿用例（依"检查逻辑必须携带单元测试"需求）；记录先失败后实现
 - [x] 5.2 实现 `JavaConventionsPlugin` 入口与拆分类（JavaCompileConvention、JavadocSourcesConvention、ManifestJarConvention 等按 250 行单类计量拆）：sourcesJar 手写注册在前、`withSourcesJar` 命名复用在后的次序组合作为代码内注释＋断言锁定；`configurations.configureEach` 惰性排除面保持惰性形态；原脚本头注释与实测教训（51 项差异定罪记载）逐段随迁入目录页 javadoc
 - [x] 5.3 同提交三件：删除 `tny.java-module.gradle`、注册行新增（id `tny.java-conventions`）、根 `build.gradle` javaProjects 段第 61-62 行（compile-baseline 与 java-module）并为一行 `apply plugin: 'tny.java-conventions'`（gate 行之后、integration-test 行之前的槽位）；`compile-baseline` 注册行从 gradlePlugin 块移除（实现类保留）
-- [ ] 5.4 验证：`-p buildSrc test` 全绿；任务图对基线零差异；`tny-game-net` 双依赖清单与 java 线 POM 逐字节一致；编码选项与缓存策略样件一致（doc-gradle 面留组 6 一并验）；sourcesJar 组合断言（`tasks --all` 中 sourcesJar 任务属性与 assemble 挂接对基线）
+- [x] 5.4 验证：`-p buildSrc test` 全绿；任务图对基线零差异；`tny-game-net` 双依赖清单与 java 线 POM 逐字节一致；编码选项与缓存策略样件一致（doc-gradle 面留组 6 一并验）；sourcesJar 组合断言（`tasks --all` 中 sourcesJar 任务属性与 assemble 挂接对基线）
 
 ## 6. plugin-conventions 立口
 
@@ -41,9 +41,9 @@
 
 ## 7. integration-test 同名 Java 化
 
-- [ ] 7.1 先写测试：受控隔离撮合与应用蓝本核对的判定段拆为纯函数类补红绿用例；`findByName` 替代 `named` 判空后的报红文案可达路径写成用例（预期差异：原不可达文案现可达，措辞逐字对照原脚本）
-- [ ] 7.2 实现三类拆分（入口接线、源集通道 `IntegrationLaneConvention`、隔离核对判定类）；头注释随迁；同提交删 `tny.integration-test.gradle` 加注册行（id 不变）；根 javaProjects 段 integration-test 行与 `tny-game-integration-test/build.gradle:9` 的 plugins 引用零改动
-- [ ] 7.3 验证：`-p buildSrc test` 全绿；integration 系配置的 logback/log4j-to-slf4j 排除面样件对基线一致（`./gradlew :tny-game-integration-test:dependencies --configuration integrationRuntimeClasspath` 抓后比对）；integrationTest 任务面与 `tny-game-integration-test` 任务图样件零差异；描述符形态断言
+- [x] 7.1 先写测试：受控隔离撮合与应用蓝本核对的判定段拆为纯函数类补红绿用例；`findByName` 替代 `named` 判空后的报红文案可达路径写成用例（预期差异：原不可达文案现可达，措辞逐字对照原脚本）
+- [x] 7.2 实现三类拆分（入口接线、源集通道 `IntegrationLaneConvention`、隔离核对判定类）；头注释随迁；同提交删 `tny.integration-test.gradle` 加注册行（id 不变）；根 javaProjects 段 integration-test 行与 `tny-game-integration-test/build.gradle:9` 的 plugins 引用零改动
+- [x] 7.3 验证：`-p buildSrc test` 全绿；integration 系配置的 logback/log4j-to-slf4j 排除面样件对基线一致（`./gradlew :tny-game-integration-test:dependencies --configuration integrationRuntimeClasspath` 抓后比对）；integrationTest 任务面与 `tny-game-integration-test` 任务图样件零差异；描述符形态断言
 
 ## 8. benchmark-module 与 BenchmarkSuite 转 Java 及 jmh 供给迁移
 
