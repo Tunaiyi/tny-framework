@@ -37,5 +37,5 @@
 
 ## 8. 收口
 
-- [ ] 8.1 `/opsx:verify convert-orchestration-to-java` 无 CRITICAL；用户批准后归档（摘要注明编排线三脚本与两支撑类清零、id 十七收十五、根编排区三行收一行）
+- [x] 8.1 `/opsx:verify convert-orchestration-to-java` 无 CRITICAL；用户批准后归档（摘要注明编排线三脚本与两支撑类清零、id 十七收十五、根编排区三行收一行）
 - [ ] 8.2 归档后回写：`cross-volume-assembly-line.md` 追加"编排线已先行合入，8.1/8.2 演练若暴露 git 语义缺陷修复落点为 GitFacts/GitFlow.java/ReleaseOpsPlugin.java 并登记"条款；发布族册（convert-publish-family-to-java）工件内"GitFlow 类型化依赖本册"前置即告满足，其任务组 1 核对项打勾依据留档

@@ -85,3 +85,10 @@
 | 约定插件接线规则按载体定 | 通过 | tny.release-ops 仅二进制单形态（注册行唯一，无同名脚本并存）；根脚本按装配线以单行 apply 引入；无脚本插件相互应用新增 |
 
 判例表勾验：1.2 起草的表覆盖五文件全部 `==~`/`=~` 出现行——GitFacts 以 `Pattern.matcher(...).find()` 与 `matches()` 按表逐行落地（seriesKey 用 find 并有用例钉回归），发布族移交行原样保留待 convert-publish-family-to-java 转录，表与实现一致，勾验完成。
+
+## 组 8 收口
+
+- `/opsx:verify convert-orchestration-to-java` 报告：实现面零 CRITICAL（两条 CRITICAL 为 8.1/8.2 收口步骤自身）；两条 WARNING 与一条 SUGGESTION 全部按用户指令在归档前处置完毕（见下三条）。
+- WARNING 1 修复：`ProjectsPlugin.java` 类 javadoc 的注入说明段原样描述转正前形态（GroovyObject 弱型反射、"根脚本现序 tny.git 先于本插件应用"），已改写为契约注入现况——读取经 `GitVersionSource`、根脚本序实名 `tny.release-ops`；旧反射仅保留"就此撤销"的沿革句。编译验证绿。
+- WARNING 2 处置（任务 5.1 末句"装配线册 design D4 降级注记回写为'本册转正'"的执行落点）：归档册 `openspec/changes/archive/2026-10-07-consolidate-assembly-line/design.md` 决策 D4 所登记的 GroovyObject 弱型反射编译墙降级，其效力于本册归档时刻终结——GitFlow 已是 Java 类，注入经 GitVersionSource 契约（`ProjectsPlugin.java` 类 javadoc 与实现同文在案）。按"归档册不追改"惯例以本条登记为回写，不改已归档原文。
+- SUGGESTION 1 处置：retireGuard 缺前基线样件的实况补样义务移交 redesign 册——已作为附加条款写入其 `apply-notes/cross-volume-assembly-line.md`（与 8.2 先行合入条款同段登记），redesign 册任务组 8.1 演练执行 retireGuard 时补抓真实输出样件入库。
