@@ -33,3 +33,10 @@
 - 5.1-5.2（d876c9ca）：入口与五段装配类落地，两处实施期顺序判断如实登记——mavenJava 创建必须留在根配置窗口内（其后的 tny.publications 在根配置期即按名引用该发布物做 sign 挂接），公共依赖段是唯一后置到评估收尾的段（版本目录通道），均写入入口类 javadoc；`addProvider` 经 javap 钉死为 Groovy 形态 `implementation libs.x` 的 Java 落点（javadoc options 的 addBooleanOption 声明于 CoreJavadocOptions 接口，转型注释同义）。判定单测 `JavaConventionsDecisionTest` 覆盖 tester 检索三向与模块名派生两向。
 - 5.3 原子切换三件：删除 `tny.java-module.gradle`（204 行）、注册 `tny.java-conventions`、根 javaProjects 段 compile-baseline 与 java-module 两行并一（注释登记组 6 前 gradleProjects 段保留 tny.compile-baseline 注册 id 的过渡事实）。
 - 5.4 验证：buildSrc 测试绿、根 help 绿；`:tny-game-net` 双依赖清单与 java 线 POM 对基线逐字节一致；全量任务图零漂移（sourcesJar 手写注册+withSourcesJar 复用的组合形态、五测试依赖与 tester 挂接的边全部原样）；`:tny-game-net:tasks --all` 中 sourcesJar 在场计数 1（无双注册）；描述符 implementation-class 指向 JavaConventionsPlugin。
+
+## 组 6 plugin-conventions 立口
+
+- 6.1-6.2（一笔提交实现与接线判定）：入口内先按类应用 CompileBaselinePlugin 再落插件线专属行为，原行序逐字复刻；本线 sourcesJar 的 duplicatesStrategy 为 INCLUDE（与 java 线 EXCLUDE 的形同义异差异按需求一注释条款写明）；groovy 源目录经 SourceSet 公开扩展容器按名取用（与 Groovy 形态同一对象，不触内部类型）；首稿两处编译错误（SourceSet 无公开 getGroovy()、局部变量遮蔽 java.io 包名）当场以 javap 定案修复，未入任何提交。
+- 6.3 原子切换四件同提交：删除 tny.plugin-module.gradle、注册 tny.plugin-conventions、**注销 tny.compile-baseline 注册行**（两线吸收完毕，实现类保留按类复用）、根 gradleProjects 段两行并一（publish、gate 两行保持原位）。
+- 验证：buildSrc 测试绿、根 help 绿、全量任务图零漂移、插件线 POM 与 doc-gradle 发布任务面对基线逐字节一致、plugin-conventions 描述符指向实现类、compile-baseline 描述符已从产物中消失（计数 0）。
+- 防呆教训二次登记：`git rm` 已暂存的删除路径 MUST NOT 再进 `git add` 的 pathspec（组 5 提交分裂一次、组 6 前置一次，均以软回滚重做）；根治规则已写入本卷宗，组 7 起提交命令只列存在路径。

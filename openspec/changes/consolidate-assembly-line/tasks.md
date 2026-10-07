@@ -35,9 +35,9 @@
 
 ## 6. plugin-conventions 立口
 
-- [ ] 6.1 实现 `PluginConventionsPlugin`：内部先应用 CompileBaselinePlugin 语义再落插件线专属配置（原 plugin-module 脚本 40 行逐句等价＋头注释随迁）；目录页注释写明与 java-conventions 共享 CompileBaselinePlugin 的"按类复用非逐字复制"边界自证
-- [ ] 6.2 同提交三件：删除 `tny.plugin-module.gradle`、注册行新增、根 `build.gradle` gradleProjects 段 compile-baseline 与 plugin-module 两行并为一行 `apply plugin: 'tny.plugin-conventions'`（publish、gate 两行保持原位）
-- [ ] 6.3 验证：`-p buildSrc test` 全绿；`tny-game-doc-gradle` 的 publishing 块与编译编码样件、插件线 POM 对基线逐字节一致；gradleProjects 线任务图零差异
+- [x] 6.1 实现 `PluginConventionsPlugin`：内部先应用 CompileBaselinePlugin 语义再落插件线专属配置（原 plugin-module 脚本 40 行逐句等价＋头注释随迁）；目录页注释写明与 java-conventions 共享 CompileBaselinePlugin 的"按类复用非逐字复制"边界自证
+- [x] 6.2 同提交三件：删除 `tny.plugin-module.gradle`、注册行新增、根 `build.gradle` gradleProjects 段 compile-baseline 与 plugin-module 两行并为一行 `apply plugin: 'tny.plugin-conventions'`（publish、gate 两行保持原位）
+- [x] 6.3 验证：`-p buildSrc test` 全绿；`tny-game-doc-gradle` 的 publishing 块与编译编码样件、插件线 POM 对基线逐字节一致；gradleProjects 线任务图零差异
 
 ## 7. integration-test 同名 Java 化
 

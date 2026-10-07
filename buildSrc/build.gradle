@@ -22,10 +22,6 @@ gradlePlugin {
             id = 'tny.module-setting'
             implementationClass = 'tny.convention.ModuleSettingPlugin'
         }
-        compileBaseline {
-            id = 'tny.compile-baseline'
-            implementationClass = 'tny.convention.CompileBaselinePlugin'
-        }
         bomPlatform {
             id = 'tny.bom-platform'
             implementationClass = 'tny.convention.BomPlatformPlugin'
@@ -37,6 +33,10 @@ gradlePlugin {
         javaConventions {
             id = 'tny.java-conventions'
             implementationClass = 'tny.convention.JavaConventionsPlugin'
+        }
+        pluginConventions {
+            id = 'tny.plugin-conventions'
+            implementationClass = 'tny.convention.PluginConventionsPlugin'
         }
     }
 }
