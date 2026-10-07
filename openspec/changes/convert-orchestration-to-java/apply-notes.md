@@ -48,3 +48,40 @@
 - `GitFlow.java`（实现 `GitVersionSource` 契约，公开方法名与字段 getter 逐字、`tagInfo`/`remoteRefs` Map 返回保持、解析全委托 GitFacts）＋`GitVersionSource.java` 落地；`ProjectsPlugin` 注入段由 GroovyObject 反射改契约读取（装配线册 design D4 登记的编译墙降级就此回收，其原文补注留待收口统一处理）；`ProjectsPluginTest` 替身同批改实现契约（三用例语义不变）。同一提交 `git rm GitFlow.groovy`。
 - 发布族消费面冒烟：`tny.publish.gate.gradle` 等四脚本读 `gitFlow.SNAPSHOT_PACK_SUFFIX`/`RELEASE_VERSION_SUFFIX`（Groovy 实例访问 Java 静态字段合法）与 `parseBranchVersion`（方法签名保持）经配置期与两线 POM 生成路径验证——`:tny-game-net`/`:tny-game-doc-gradle` 双 POM 对装配线册终态样件逐字节一致。
 - 验证：`-p buildSrc test` 全绿（84 用例）、根 `help` 绿、派生值 group/version 与基线一致、全量任务图内容零差异（3562 行；比对剔噪口径增列 `> Task` 进度行并记 README 注记——基线抓时 buildSrc 重编译的进度残留，非任务图内容）、坏 gitExe 负例仍走构造器报红（`Could not create an instance of type tny.convention.GitFlow`）。
+
+## 组 6 ReleaseOpsPlugin 立口与三脚本吸收
+
+- `ReleaseOpsPlugin.java`（总入口，类 javadoc 载三段式目录页与 tny.git 布局边界沿革）＋`releaseops/` 三接线类（ReleaseChannelTasks、IntegrationChannelTasks、ChannelSupport）落地；五任务名、group、description、doLast 三段式与全部计划/报错文案逐字承三脚本。
+- 同提交切换五件：删除 tny.git.gradle、tny.release.gradle、tny.integrate.gradle；buildSrc/build.gradle 注销三 id 并新增 tny.release-ops 注册行；根 build.gradle 编排三行并一（原行位置注释登记行序契约）。提交 d51f8a8d。
+- 验证：根 `help` 绿；插件描述符 `tny.release-ops.properties` 指向 ReleaseOpsPlugin 且三旧描述符从产物消失（形态断言）；`tasks --all` 五编排任务名与 description 对基线零差异。
+
+## 组 7 全量回归
+
+- dryRun 等值逐条对基线：`releaseCut -PreleaseVersion=9.9.9 -PdryRun` 祖父轨计划文案逐字一致（首轮比对出现差异系当时工作树含本册未提交文件、脏树 warn 块逐一点名所致；提交后复比内容一致，终判通过）；`integrateMain -PdryRun` 与 `mergeUpward -PdryRun` 在 5.7.x 分支形态不合法的报错文案全文对基线逐字一致（非零退出照录）；`retireGuard` 无组 2 前基线样件（如实登记——其等值依据为报错文案逐字承脚本加 IntegrationGateCheck 用例双违例向覆盖）。
+- 九样件比对：本册基线四样件加装配线册归档基线三 POM、deps、两任务图样件全部一致（Python 剔噪口径同装配线册 README）。
+- `-p buildSrc test` 全绿；`check --continue` BUILD SUCCESSFUL；`publish --dry-run` 任务图绿且 BOM 门禁节点在位（计数 1）。
+- CodOD 单工程样件 `:tny-game-net:tasks` 开/关两态比对：原始 diff 仅四行差异，均为开关自身的信息行首词（"Configuration on demand is an incubating feature."与弃用告警语），任务名集合终判一致（净差异 0 行）。
+- warm 耗时三连 2.02/2.05/2.10 秒，对基线 2.21/2.24/1.94 无劣化（阈值 3 秒）。
+- 长度界线拆类修复（7.3 走查发现 GitFlow.java 286 行、IntegrationChannelTasks.java 272 行越过主规格"扫读测试与长度界线"需求的单类 250 行界线）：GitFlow 远端查询段（remoteRefs 两个重载、remoteRefNames、remoteReleasedPatches、remoteBranchExists、resolveRemoteName）整体移入新支撑类 `GitRemoteQueries.java`，本地引用查询段（trackedDirtyPaths、branchNames、tagNames、tagInfo）移入 `GitLocalRefs.java`，git 输出读行小工具上收 `GitFacts.outLines/outLinesNonBlank`；IntegrationChannelTasks 四个私有辅助（requireRemote 集成面文案、head10、listProperty、remoteBranchesMatching）移入 `ChannelSupport`。GitFlow 与 IntegrationChannelTasks 的公开/既有方法名逐字保留为委托，ReleaseOpsPlugin 目录页与两 registrars 不受影响。拆类后复验：`-p buildSrc test` 18 个测试类全绿（结果时间戳核对非缓存跳过）、`tasks --all` 全量 3551 行内容对基线逐字一致、`releaseCut dryRun` 计划段六行逐字一致。
+- 比对环境口径教训（登记）：`tasks --all` 等含发布面任务的比对命令 MUST 使用默认 `GRADLE_USER_HOME`——`~/.gradle/gradle.properties` 的 mavenCentral 凭据决定 centralSnapshots 发布任务是否创建（凭据守卫设计），隔离 user home 会整段缺 204 行 CentralSnapshots 任务，属比对环境差异而非构建差异。基线抓取即用默认口径。
+- 触碰即改两处：GitFlow.java 许可头 Apache 条款文本在迁移时误写为"or as required by applicable law or"，已改回标准"Unless required by applicable law or agreed to in writing"；ChannelSupport 中拆类残留的无引用小段 branchLines 删除。
+
+## 组 7.3 主规格 13 条需求走查表
+
+| 需求 | 本册判定 | 依据 |
+|---|---|---|
+| 工程配置写声明式语句 | 通过 | 根编排区三行并一为单条 apply 语句；程序性行为全部位于任务注册闭包 doLast 动作块与 buildSrc 二进制类 |
+| 任务注册与配置惰性形态 | 通过 | 五任务均 tasks.register(...)，配置段无 getByName 强制物化 |
+| 依赖版本与坐标单一事实源 | 不适用（未触） | 本册零依赖坐标改动 |
+| 托管版本面配置期对账 | 不适用（未触） | 同上 |
+| Groovy 语言纪律 | 通过 | 编排三脚本与 GitFlow/GitCli 两 Groovy 类删除，无新增 Groovy 文本 |
+| 区块顺序与版面组织统一 | 通过 | 根入口行留在原三行位置，行序契约注释在位（原行序由 ReleaseOpsPlugin 内部次序逐字承载） |
+| 注释解释来由与预览通道 | 通过 | ReleaseOpsPlugin 类 javadoc 目录页列全部三段行为并指名所在类；-PdryRun 覆盖四个变更型任务 |
+| 扫读测试与长度界线 | 通过（经拆类修复） | GitFlow 241、GitRemoteQueries 84、GitLocalRefs 71、GitFacts 238、IntegrationChannelTasks 238、ChannelSupport 129、ReleaseChannelTasks 227、ReleaseOpsPlugin 85、GitCli 99、ReleaseGateCheck 127、IntegrationGateCheck 118 行，全部 ≤250；根 build.gradle 71 行 ≤80；两起越线修复过程见上段 |
+| 存量违例触碰即改 | 通过 | 许可头缺陷文本与死代码 branchLines 两处违例在触碰文件内即时修正 |
+| 共享脚本禁止枚举具体工程名 | 通过 | 新增类零工程名点名；五任务名字符串经 1.2 判定属门禁挂接非点名，判例表已登记 |
+| 工具链基线升级归属成册 | 不适用（未触） | 本册零版本/工具链改动 |
+| 二进制检查逻辑携带单元测试 | 通过 | GitFacts 11 用例、ReleaseGateCheck 8、IntegrationGateCheck 5（三判定类全绿在案） |
+| 约定插件接线规则按载体定 | 通过 | tny.release-ops 仅二进制单形态（注册行唯一，无同名脚本并存）；根脚本按装配线以单行 apply 引入；无脚本插件相互应用新增 |
+
+判例表勾验：1.2 起草的表覆盖五文件全部 `==~`/`=~` 出现行——GitFacts 以 `Pattern.matcher(...).find()` 与 `matches()` 按表逐行落地（seriesKey 用 find 并有用例钉回归），发布族移交行原样保留待 convert-publish-family-to-java 转录，表与实现一致，勾验完成。

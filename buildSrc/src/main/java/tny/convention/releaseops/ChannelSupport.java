@@ -90,7 +90,40 @@ final class ChannelSupport {
         }
     }
 
-    static List<String> branchLines(GitFlow gitFlow, String remoteName) {
-        return gitFlow.branchNames();
+    /** 集成面远端推定报错文案（与发布面措辞不同，各自逐字承原脚本；任务 7.3 界线拆入本类）。 */
+    static void requireIntegrationRemote(String remoteName, String current) {
+        if (remoteName == null) {
+            throw new GradleException("无法确定远端：分支 '" + current + "' 没有上游且仓库远端数量不是 1");
+        }
+    }
+
+    /** 本地分支名到 HEAD 短号（计划文案 "本地头 xxxxxxxxxx" 口径，逐字承脚本 head10 闭包）。 */
+    static String head10(String commitId) {
+        return commitId.substring(0, Math.min(10, commitId.length()));
+    }
+
+    /** 逗号分隔项目属性到清单（未给出返回 null 表示"缺省目标"由调用方分支；逐字承脚本 listProperty）。 */
+    static List<String> listProperty(Project project, String name) {
+        Object value = project.findProperty(name);
+        if (value == null) {
+            return null;
+        }
+        List<String> items = new java.util.ArrayList<>();
+        for (String part : value.toString().split(",")) {
+            String trimmed = part.trim();
+            if (!trimmed.isEmpty()) {
+                items.add(trimmed);
+            }
+        }
+        return items.isEmpty() ? null : items;
+    }
+
+    /** 远端分支名按正则过滤并剥 refs/heads/ 前缀（逐字承脚本 remoteBranchesMatching）。 */
+    static List<String> remoteBranchesMatching(GitFlow gitFlow, String remoteName, String regex) {
+        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(regex);
+        return gitFlow.remoteRefNames(remoteName, true, false).stream()
+                .filter(ref -> pattern.matcher(ref).find())
+                .map(ref -> ref.replace("refs/heads/", ""))
+                .toList();
     }
 }

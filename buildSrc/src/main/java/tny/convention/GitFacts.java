@@ -225,4 +225,14 @@ public final class GitFacts {
                 .withZone(zone)
                 .format(Instant.ofEpochSecond(epochSeconds));
     }
+
+    /** git 命令输出按行拆分（保留行间空行，等价 Groovy String.readLines 的行拆分段）。 */
+    public static List<String> outLines(String out) {
+        return java.util.Arrays.stream(out.split("\n", -1)).toList();
+    }
+
+    /** git 命令输出按行拆分并去空行（for-each-ref、remote 等清单口径）。 */
+    public static List<String> outLinesNonBlank(String out) {
+        return outLines(out).stream().filter(line -> !line.isEmpty()).toList();
+    }
 }

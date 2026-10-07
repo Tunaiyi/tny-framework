@@ -81,7 +81,7 @@ public final class IntegrationChannelTasks {
     private static void integrateMain(Project project, GitFlow gitFlow, GitCli git, Task task,
                                       String current, String remoteName) {
         IntegrationGateCheck.requireDevBranch(current);
-        requireRemote(remoteName, current);
+        ChannelSupport.requireIntegrationRemote(remoteName, current);
         boolean preview = project.hasProperty("dryRun");
         ChannelSupport.requireCleanTree(gitFlow, "integrateMain", preview, task.getLogger());
         int myKey = GitFacts.seriesKey(current);
@@ -91,7 +91,7 @@ public final class IntegrationChannelTasks {
         // （本模型梯毕即删线，存在即未集成未下线），即拒绝；确需放弃的低编号线先按
         // 改号跳号程序注销（删除分支并在提交说明登记）。本地与远端并集枚举。
         List<String> allDevLines = new ArrayList<>(gitFlow.branchNames());
-        allDevLines.addAll(remoteBranchesMatching(gitFlow, remoteName, "^refs/heads/dev/\\d+\\.\\d+\\.x$"));
+        allDevLines.addAll(ChannelSupport.remoteBranchesMatching(gitFlow, remoteName, "^refs/heads/dev/\\d+\\.\\d+\\.x$"));
         IntegrationGateCheck.assertIntegrationOrder(allDevLines, current, myKey);
         String plan = "integrateMain 计划：\n"
                 + "  同步        先把 " + remoteName + "/main 合并进 " + current + "（冲突在本分支解决）\n"
@@ -135,20 +135,20 @@ public final class IntegrationChannelTasks {
     private static void mergeUpward(Project project, GitFlow gitFlow, GitCli git, Task task,
                                     String current, String remoteName) {
         IntegrationGateCheck.requireMaintenanceSource(current);
-        requireRemote(remoteName, current);
+        ChannelSupport.requireIntegrationRemote(remoteName, current);
         String source = current;
         int myKey = GitFacts.seriesKey(source);
-        List<String> targets = listProperty(project, "into");
+        List<String> targets = ChannelSupport.listProperty(project, "into");
         if (targets == null) {
-            targets = new ArrayList<>(remoteBranchesMatching(gitFlow, remoteName,
+            targets = new ArrayList<>(ChannelSupport.remoteBranchesMatching(gitFlow, remoteName,
                     "^refs/heads/release/\\d+\\.\\d+\\.x$")).stream()
                     .filter(line -> GitFacts.seriesKey(line) > myKey).collect(java.util.stream.Collectors.toList());
             targets = new ArrayList<>(targets);
             targets.add("main");
         }
-        List<String> explicitMarkers = listProperty(project, "markers");
+        List<String> explicitMarkers = ChannelSupport.listProperty(project, "markers");
         String plan = "mergeUpward 计划（向上合并，机制为整条分支合并）：\n"
-                + "  源分支      " + source + "（本地头 " + head10(gitFlow.getCommitId()) + "）\n"
+                + "  源分支      " + source + "（本地头 " + ChannelSupport.head10(gitFlow.getCommitId()) + "）\n"
                 + "  目标序列    " + String.join("、", targets) + "\n"
                 + "  每目标动作  merge 源分支（冲突即 abort 回原头）→ 合并结果完整性检查（提交前）→ 普通推送\n"
                 + "  检查标记    " + (explicitMarkers != null && !explicitMarkers.isEmpty()
@@ -213,7 +213,7 @@ public final class IntegrationChannelTasks {
 
     private static void retireGuard(Project project, GitFlow gitFlow, GitCli git, Task task,
                                     String current, String remoteName) {
-        requireRemote(remoteName, current);
+        ChannelSupport.requireIntegrationRemote(remoteName, current);
         IntegrationGateCheck.requireRetireCandidateBranch(current);
         git.require(List.of("fetch", remoteName, "refs/heads/" + current + ":refs/remotes/"
                 + remoteName + "/" + current), "刷新维护分支远端引用失败");
@@ -234,39 +234,5 @@ public final class IntegrationChannelTasks {
         IntegrationGateCheck.assertLineageDispositioned(current, lineageLines);
         task.getLogger().lifecycle("retireGuard 通过：" + current + " 无未集成提交且已在登记表记状态；"
                 + "可由仓库管理员删除远端分支（本地 git push " + remoteName + " --delete " + current + "）。");
-    }
-
-    /** 集成面远端推定报错文案（与发布面措辞不同，各自逐字承原脚本）。 */
-    private static void requireRemote(String remoteName, String current) {
-        if (remoteName == null) {
-            throw new GradleException("无法确定远端：分支 '" + current + "' 没有上游且仓库远端数量不是 1");
-        }
-    }
-
-    private static List<String> remoteBranchesMatching(GitFlow gitFlow, String remoteName, String regex) {
-        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(regex);
-        return gitFlow.remoteRefNames(remoteName, true, false).stream()
-                .filter(ref -> pattern.matcher(ref).find())
-                .map(ref -> ref.replace("refs/heads/", ""))
-                .toList();
-    }
-
-    private static List<String> listProperty(Project project, String name) {
-        Object value = project.findProperty(name);
-        if (value == null) {
-            return null;
-        }
-        List<String> items = new ArrayList<>();
-        for (String part : value.toString().split(",")) {
-            String trimmed = part.trim();
-            if (!trimmed.isEmpty()) {
-                items.add(trimmed);
-            }
-        }
-        return items.isEmpty() ? null : items;
-    }
-
-    private static String head10(String commitId) {
-        return commitId.substring(0, Math.min(10, commitId.length()));
     }
 }

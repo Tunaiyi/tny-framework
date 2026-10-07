@@ -26,14 +26,14 @@
 
 ## 6. ReleaseOpsPlugin 立口与三脚本吸收
 
-- [ ] 6.1 新建 `ReleaseOpsPlugin.java`（包 tny.convention）：内部次序逐字＝原根三行行序——先复刻 tny.git 职责（legacy 登记表经 GitFacts 解析、创建 gitFlow 扩展），再注册 releaseCut/releaseTag（任务名、group、description、doLast 三段式"采集→ReleaseGateCheck 判定→GitCli 动作"、dryRun 计划文案逐字），再注册 integrateMain/mergeUpward/retireGuard（同法，判定入 IntegrationGateCheck）；gitFlow 注入 `ProjectsPlugin` 依赖方向不变（git 扩展先建、projects 在根脚本先行应用既有事实沿用——入口应用时刻 tny.projects 已在位，注入行迁入入口尾部并注释登记）
-- [ ] 6.2 同提交切换五件：删除 `tny.git.gradle`、`tny.release.gradle`、`tny.integrate.gradle`，`buildSrc/build.gradle` 注销三注册行并新增 `tny.release-ops`，根 `build.gradle` 编排三行并一（原行位置注释登记行序契约与 redesign 修复面收缩声明）；验证：根 `help` 绿、描述符 `tny.release-ops.properties` 指向实现类且三旧描述符从产物消失、`tasks --all` 五任务名与 description 对基线零差异
+- [x] 6.1 新建 `ReleaseOpsPlugin.java`（包 tny.convention）：内部次序逐字＝原根三行行序——先复刻 tny.git 职责（legacy 登记表经 GitFacts 解析、创建 gitFlow 扩展），再注册 releaseCut/releaseTag（任务名、group、description、doLast 三段式"采集→ReleaseGateCheck 判定→GitCli 动作"、dryRun 计划文案逐字），再注册 integrateMain/mergeUpward/retireGuard（同法，判定入 IntegrationGateCheck）；gitFlow 注入 `ProjectsPlugin` 依赖方向不变（git 扩展先建、projects 在根脚本先行应用既有事实沿用——入口应用时刻 tny.projects 已在位，注入行迁入入口尾部并注释登记）
+- [x] 6.2 同提交切换五件：删除 `tny.git.gradle`、`tny.release.gradle`、`tny.integrate.gradle`，`buildSrc/build.gradle` 注销三注册行并新增 `tny.release-ops`，根 `build.gradle` 编排三行并一（原行位置注释登记行序契约与 redesign 修复面收缩声明）；验证：根 `help` 绿、描述符 `tny.release-ops.properties` 指向实现类且三旧描述符从产物消失、`tasks --all` 五任务名与 description 对基线零差异
 
 ## 7. 全量回归
 
-- [ ] 7.1 dryRun 等值逐条：`releaseCut -PreleaseVersion=9.9.9 -PdryRun`、`integrateMain -PdryRun`、`mergeUpward -PdryRun`、`retireGuard`（只读失败路径文案）四组输出对基线逐字比对（含非零退出的报错全文）；差异零通过，任何措辞漂移当场修文案不改判据
-- [ ] 7.2 全量：九样件（装配线册口径复用于本册基线）比对、`./gradlew -p buildSrc test` 绿、`check --continue` 绿、`publish --dry-run` 任务图绿且 BOM 门禁节点在位、CodOD 单工程样件（`:tny-game-net:tasks`）、warm 耗时三连对照基线（阈值 3 秒）
-- [ ] 7.3 触碰文件按主规格 13 条需求逐条走查（重点：判例表逐条勾验、删除与注册同提交、目录页、dryRun 预览通道保留断言、禁点名、零脚本 id 相互引入）；走查表与判例表定稿入 apply-notes
+- [x] 7.1 dryRun 等值逐条：`releaseCut -PreleaseVersion=9.9.9 -PdryRun`、`integrateMain -PdryRun`、`mergeUpward -PdryRun`、`retireGuard`（只读失败路径文案）四组输出对基线逐字比对（含非零退出的报错全文）；差异零通过，任何措辞漂移当场修文案不改判据
+- [x] 7.2 全量：九样件（装配线册口径复用于本册基线）比对、`./gradlew -p buildSrc test` 绿、`check --continue` 绿、`publish --dry-run` 任务图绿且 BOM 门禁节点在位、CodOD 单工程样件（`:tny-game-net:tasks`）、warm 耗时三连对照基线（阈值 3 秒）
+- [x] 7.3 触碰文件按主规格 13 条需求逐条走查（重点：判例表逐条勾验、删除与注册同提交、目录页、dryRun 预览通道保留断言、禁点名、零脚本 id 相互引入）；走查表与判例表定稿入 apply-notes
 
 ## 8. 收口
 

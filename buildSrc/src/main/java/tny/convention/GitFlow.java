@@ -7,7 +7,7 @@
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or as required by applicable law or agreed to in writing, software
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
@@ -59,6 +59,10 @@ public class GitFlow implements GitVersionSource {
     // 祖父条款登记（redesign-devline-integration-model D7）：分支名到身份的映射，
     // 由 tny.git 插件读 gradle/branch-legacy-registry.txt 注入；门禁按登记身份放行旧形态。
     private final Map<String, String> legacyRegistry;
+    // 本地与远端查询支撑（任务 7.3 长度界线拆出，实现见 {@link GitLocalRefs} 与
+    // {@link GitRemoteQueries}；公开方法名保持委托）。
+    private final GitLocalRefs localRefs;
+    private final GitRemoteQueries remoteQueries;
 
     // 构造时序沿用既有填充序：先分支名，其后由分支名与 HEAD 逐个派生；buildTime 取构造时刻
     // 的系统时钟而非 git 事实。commitTime 语义保持"提交时刻换算到 JVM 默认时区"：
@@ -67,6 +71,8 @@ public class GitFlow implements GitVersionSource {
     // 空仓（unborn HEAD）时 rev-parse 非零退出，报错取代初版的裸 NPE 兜底。
     public GitFlow(GitCli cli, Map<String, String> registry, String releaseVersion) {
         this.cli = cli;
+        this.localRefs = new GitLocalRefs(cli);
+        this.remoteQueries = new GitRemoteQueries(cli);
         this.legacyRegistry = registry == null ? Map.of() : Map.copyOf(registry);
         Map<String, Object> headProbe = cli.run(List.of("rev-parse", "--verify", "HEAD"));
         if ((Integer) headProbe.get("exit") != 0) {
@@ -144,9 +150,9 @@ public class GitFlow implements GitVersionSource {
         return GitFacts.branchType(gitBranchName());
     }
 
-    /** 跟踪文件脏项路径（未跟踪的 ?? 行丢弃）——脏检查口径"仅跟踪文件变更"，等价映射见 GitFacts。 */
+    // —— 本地引用查询（实现体在 {@link GitLocalRefs}，长度界线拆出——方法名与语义逐字保持为委托壳）——
     public List<String> trackedDirtyPaths() {
-        return GitFacts.porcelainTrackedPaths(readLines(cli.run(List.of("status", "--porcelain=1"))));
+        return localRefs.trackedDirtyPaths();
     }
 
     public boolean isConfigChange(String dir) {
@@ -154,30 +160,15 @@ public class GitFlow implements GitVersionSource {
     }
 
     public List<String> branchNames() {
-        return nonBlank(cli.run(List.of("for-each-ref", "--format=%(refname:lstrip=2)", "refs/heads/")));
+        return localRefs.branchNames();
     }
 
     public List<String> tagNames() {
-        return nonBlank(cli.run(List.of("for-each-ref", "--format=%(refname:lstrip=2)", "refs/tags/")));
+        return localRefs.tagNames();
     }
 
-    /**
-     * 标签形态与指向（releaseTag 幂等判定的等价替换）：不存在返回 null；
-     * 附注标签的 commit 取解引用（peel）后的提交号，轻量标签 annotated 为 false。
-     * 返回键 annotated/commit 的 Map（消费方既有属性访问形态保持）。
-     */
     public Map<String, Object> tagInfo(String tag) {
-        Map<String, Object> exists = cli.run(List.of("rev-parse", "-q", "--verify", "refs/tags/" + tag));
-        if ((Integer) exists.get("exit") != 0) {
-            return null;
-        }
-        String type = cli.run(List.of("cat-file", "-t", "refs/tags/" + tag)).get("out").toString().trim();
-        Map<String, Object> peeled = cli.run(List.of("rev-parse", "refs/tags/" + tag + "^{}"));
-        java.util.Map<String, Object> info = new java.util.LinkedHashMap<>();
-        info.put("annotated", "tag".equals(type));
-        info.put("commit", (Integer) peeled.get("exit") == 0
-                ? peeled.get("out").toString().trim() : exists.get("out").toString().trim());
-        return info;
+        return localRefs.tagInfo(tag);
     }
 
     /**
@@ -207,51 +198,30 @@ public class GitFlow implements GitVersionSource {
         return legacyIdentity(branch) != null;
     }
 
-    // —— 远端查询方法面（consolidate-git-queries-into-gitflow D1）——
-    // remoteRefs 是全仓唯一的 ls-remote 输出解析位置（守卫解析在 GitFacts，调用点不各自持有）。
+    // —— 远端查询方法面（consolidate-git-queries-into-gitflow D1；实现体在
+    // {@link GitRemoteQueries}，长度界线拆出——本处公开方法名与语义逐字保持为委托壳）——
     public Map<String, String> remoteRefs(String remoteName, List<String> flagsAndPatterns) {
-        return GitFacts.parseLsRemoteLines(readLines(
-                cli.run(concat(List.of("ls-remote"), flagsAndPatterns, List.of(remoteName)))));
+        return remoteQueries.remoteRefs(remoteName, flagsAndPatterns);
     }
 
     public Map<String, String> remoteRefs(String remoteName) {
-        return remoteRefs(remoteName, List.of());
+        return remoteQueries.remoteRefs(remoteName);
     }
 
-    /** 键集合形态（存在性与前缀撞名判定用）：heads/tags 标志映射与原调用点一致。 */
     public List<String> remoteRefNames(String remoteName, boolean heads, boolean tags) {
-        List<String> flags = (heads && !tags) ? List.of("--heads")
-                : (!heads && tags) ? List.of("--tags") : List.of();
-        return List.copyOf(remoteRefs(remoteName, flags).keySet());
+        return remoteQueries.remoteRefNames(remoteName, heads, tags);
     }
 
-    /** 系列已发布补丁号集合：只认 ^{} 解引用行（轻量标签无该行，天然不参与计数）。 */
     public List<Integer> remoteReleasedPatches(String remoteName, String base) {
-        return GitFacts.releasedPatchesFromRefs(
-                remoteRefs(remoteName, List.of("--tags", "refs/tags/v" + base + "*")).keySet(), base);
+        return remoteQueries.remoteReleasedPatches(remoteName, base);
     }
 
-    /** 分支存在性：精确键查询（后缀匹配带来的邻近行由键全等过滤兜掉）。 */
     public boolean remoteBranchExists(String remoteName, String branch) {
-        return remoteRefs(remoteName, List.of("--heads", "refs/heads/" + branch))
-                .containsKey("refs/heads/" + branch);
+        return remoteQueries.remoteBranchExists(remoteName, branch);
     }
 
-    /**
-     * 推送/查询目标的远端名推定：分支配了上游取上游前缀，否则仅当仓库只配置一个远端才采用；
-     * 推定不出返回 null 由调用方报错。上游读取按显式分支参数化（原 grgit trackingBranch 的等价）。
-     */
     public String resolveRemoteName(String branch) {
-        Map<String, Object> upstream = cli.run(
-                List.of("rev-parse", "--abbrev-ref", "--symbolic-full-name", branch + "@{upstream}"));
-        if ((Integer) upstream.get("exit") == 0) {
-            String name = upstream.get("out").toString().trim();
-            if (name.contains("/")) {
-                return name.substring(0, name.indexOf('/'));
-            }
-        }
-        List<String> remotes = nonBlank(cli.run(List.of("remote")));
-        return remotes.size() == 1 ? remotes.get(0).trim() : null;
+        return remoteQueries.resolveRemoteName(branch);
     }
 
     public boolean isReleaseVersion(String version) {
@@ -268,19 +238,4 @@ public class GitFlow implements GitVersionSource {
         return GitFacts.parseProjectVersion(version, releaseVersion);
     }
 
-    private List<String> readLines(Map<String, Object> runResult) {
-        String out = runResult.get("out").toString();
-        return java.util.Arrays.stream(out.split("\n", -1)).toList();
-    }
-
-    private List<String> nonBlank(Map<String, Object> runResult) {
-        return readLines(runResult).stream().filter(line -> !line.isEmpty()).toList();
-    }
-
-    private static List<String> concat(List<String> a, List<String> b, List<String> c) {
-        java.util.List<String> all = new java.util.ArrayList<>(a);
-        all.addAll(b);
-        all.addAll(c);
-        return all;
-    }
 }
