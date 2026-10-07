@@ -1,0 +1,85 @@
+Configuration on demand is an incubating feature.
+> Task :buildSrc:extractPluginRequests UP-TO-DATE
+> Task :buildSrc:generatePluginAdapters UP-TO-DATE
+> Task :buildSrc:compileJava UP-TO-DATE
+> Task :buildSrc:compileGroovy NO-SOURCE
+> Task :buildSrc:compileGroovyPlugins UP-TO-DATE
+> Task :buildSrc:pluginDescriptors UP-TO-DATE
+> Task :buildSrc:processResources UP-TO-DATE
+> Task :buildSrc:classes UP-TO-DATE
+> Task :buildSrc:jar UP-TO-DATE
+
+> Task :tny-game-integration-test:tasks
+
+------------------------------------------------------------
+Tasks runnable from project ':tny-game-integration-test'
+------------------------------------------------------------
+
+Build tasks
+-----------
+assemble - Assembles the outputs of this project.
+build - Assembles and tests this project.
+buildDependents - Assembles and tests this project and all projects that depend on it.
+buildNeeded - Assembles and tests this project and all projects it depends on.
+classes - Assembles main classes.
+clean - Deletes the build directory.
+integrationClasses - Assembles integration classes.
+jar - Assembles a jar archive containing the classes of the 'main' feature.
+testClasses - Assembles test classes.
+
+Documentation tasks
+-------------------
+javadoc - Generates Javadoc API documentation for the 'main' feature.
+
+Help tasks
+----------
+artifactTransforms - Displays the Artifact Transforms that can be executed in project ':tny-game-integration-test'.
+buildEnvironment - Displays all buildscript dependencies declared in project ':tny-game-integration-test'.
+dependencies - Displays all dependencies declared in project ':tny-game-integration-test'.
+dependencyInsight - Displays the insight into a specific dependency in project ':tny-game-integration-test'.
+dependencyManagement - Displays the dependency management declared in project ':tny-game-integration-test'.
+help - Displays a help message.
+javaToolchains - Displays the detected java toolchains.
+outgoingVariants - Displays the outgoing variants of project ':tny-game-integration-test'.
+projects - Displays the sub-projects of project ':tny-game-integration-test'.
+properties - Displays the properties of project ':tny-game-integration-test'.
+resolvableConfigurations - Displays the configurations that can be resolved in project ':tny-game-integration-test'.
+tasks - Displays the tasks runnable from project ':tny-game-integration-test'.
+
+IDE tasks
+---------
+cleanIdea - Cleans IDEA project files (IML, IPR)
+idea - Generates IDEA project files (IML, IPR, IWS)
+
+Publishing tasks
+----------------
+publish - Publishes all publications produced by this project.
+publishToMavenLocal - Publishes all Maven publications produced by this project to the local Maven cache.
+
+Verification tasks
+------------------
+check - Runs all checks.
+integrationTest - Integration tests (@Tag("integration"); docker cases need -PincludeDocker)
+test - Runs the test suite.
+
+Other tasks
+-----------
+cleanIdeaModule
+compileIntegrationJava - Compiles integration Java source.
+compileJava - Compiles main Java source.
+compileTestJava - Compiles test Java source.
+components - Displays the components produced by project ':tny-game-integration-test'. [deprecated]
+dependentComponents - Displays the dependent components of components in project ':tny-game-integration-test'. [deprecated]
+ideaModule - Generates IDEA module files (IML)
+model - Displays the configuration model of project ':tny-game-integration-test'. [deprecated]
+processIntegrationResources - Processes integration resources.
+processResources - Processes main resources.
+processTestResources - Processes test resources.
+
+Rules
+-----
+Pattern: clean<TaskName>: Cleans the output files of a task.
+Pattern: build<ConfigurationName>: Assembles the artifacts of a configuration.
+
+BUILD SUCCESSFUL in 1s
+8 actionable tasks: 1 executed, 7 up-to-date
