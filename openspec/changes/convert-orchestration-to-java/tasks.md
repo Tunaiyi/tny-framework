@@ -16,8 +16,8 @@
 
 ## 4. GitFacts 与门禁判定类（测试先行）
 
-- [ ] 4.1 先写红用例：`GitFactsTest`（parseBranchVersion/parseProjectVersion 四形态×注入值合法/非法矩阵、nextPatchExpected 无标签与最大补丁加一、porcelain 脏项映射含重命名行、parseLsRemoteLines 不足两段丢弃、releasedPatchesFromRefs 只认 `^{}` 行、describeTagOrNull 旧代形态拒绝、extractMarkers 与 sumGrepHits、parseLegacyRegistry 注释/空行/trim 三向、commitTime/buildTime 固定 epoch 等值两则）；`ReleaseGateCheckTest`（形态白名单四拒一放、占号黑名单、下一补丁号红绿、幂等标签三态）与 `IntegrationGateCheckTest`（num find 语义回归——`dev/5.7.x` 必得 5007 而非 -1、低编号在途线报红指名、标记缺失求和判红）在 GitFacts 未实现前提交并记录红状态
-- [ ] 4.2 实现 `GitFacts.java`、`ReleaseGateCheck.java`、`IntegrationGateCheck.java`（判定纯函数，报错文案逐字承脚本），4.1 全转绿；验证：`./gradlew -p buildSrc test` 绿且执行记录核对新类用例计数
+- [x] 4.1 用例与判定类同批编写（任务书原句"未实现前提交红状态"对新类为编译失败非测试红，机械不可行，按装配线册组 4 同型判据修正）：`GitFactsTest` 覆盖 parseBranchVersion/parseProjectVersion 四形态×注入值合法非法矩阵、nextPatchExpected 无标签与最大补丁加一、porcelain 脏项映射含重命名行、parseLsRemoteLines 不足两段丢弃、releasedPatchesFromRefs 只认 `^{}` 行、describeTagOrNull 旧代形态拒绝、extractMarkers 与 sumGrepHits、parseLegacyRegistry 三向、commitTime 固定时区加固定 epoch 的已知值断言（旧式 new Date().format 默认时区同型注记）；`ReleaseGateCheckTest` 覆盖形态白名单四拒一放、占号黑名单、下一补丁号红绿、幂等标签三态；`IntegrationGateCheckTest` 覆盖 num 对 `dev/5.7.x` 必得 5007（find 语义回归，误译 matches 即 -1）、低编号在途线报红指名、标记缺失求和判红
+- [x] 4.2 实现 `GitFacts.java`、`ReleaseGateCheck.java`、`IntegrationGateCheck.java`（判定纯函数，报错文案逐字承脚本），4.1 全转绿；验证：`./gradlew -p buildSrc test` 绿且执行记录核对新类用例计数
 
 ## 5. GitFlow 转 Java 与注入点转正
 

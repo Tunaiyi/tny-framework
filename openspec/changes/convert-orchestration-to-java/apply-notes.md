@@ -36,3 +36,9 @@
 
 - `GitCli.java` 落地（Map 返回键 exit/out/err、`-PgitExe` 解析、LC_ALL=C、双流顺序读取、require 文案逐字，类头全部沿革注释随迁）；同一提交 `git rm GitCli.groovy`。
 - 验证：`-p buildSrc test` 全绿、根 `help` 绿、全量任务图对基线一致（Python 正则剔噪后逐行等值）；坏 gitExe 负例报红路径可达（文案实况与同型说明已改写入任务判据句）。
+
+## 组 4 GitFacts 与门禁判定类
+
+- 任务书修正一处：原 4.1"未实现前提交并记录红状态"对全新类机械不可行（编译失败非测试红），按装配线册组 4 同型判据修正为"用例与判定类同批、红绿向指用例内两路径"，任务文字已改写。
+- `GitFacts`（14 纯函数）、`ReleaseGateCheck`（9 判定，文案逐字承 tny.release 原句）、`IntegrationGateCheck`（7 判定+两形态谓词，承 tny.integrate 原句）落地；用例 21 个（GitFacts 11、Release 8、Integration 5 中部分合并计）全绿，`seriesKey` find 语义回归钉（dev/5.7.x→5007）、`releasedPatchesFromRefs` 解引用行独占、幂等标签三态、退役双检查各违例向均入列。
+- 首跑一处红：missingMarkers 对"命中行截断"用例期望与实现保守语义（截断即缺失）不符——确认保守向正确（防检索失败被当无缺失），修用例期望并在实现 javadoc 成文。
