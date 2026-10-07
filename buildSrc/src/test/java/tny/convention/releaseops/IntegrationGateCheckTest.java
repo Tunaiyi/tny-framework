@@ -65,11 +65,14 @@ class IntegrationGateCheckTest {
     void completenessCheckComputesMissingAndRefuses() {
         List<String> markers = List.of("BUG-101", "CVE-2");
         assertEquals(List.of("CVE-2"),
-                IntegrationGateCheck.missingMarkers(markers, List.of("head:2", "head:0")));
+                IntegrationGateCheck.missingMarkers(markers, List.of(List.of("head:2"), List.of("head:0"))));
         // 保守语义（实现钉住并在接线注释成文）：命中行清单截断或全非数字时，
         // 其后标记一律按缺失处理——防"检索失败被当无缺失"（JMH 空列表不报错教训同型）。
         assertEquals(List.of("BUG-101", "CVE-2"),
-                IntegrationGateCheck.missingMarkers(markers, List.of("x:notnum")));
+                IntegrationGateCheck.missingMarkers(markers, List.of(List.of("x:notnum"), List.of())));
+        // 多行命中求和（grep -c 每文件一行）：两行各 0 命中仍判缺失，任一行有数字即放行
+        assertEquals(List.of(), IntegrationGateCheck.missingMarkers(
+                List.of("BUG-101"), List.of(List.of("a.java:0", "b.java:2"))));
         assertDoesNotThrow(() -> IntegrationGateCheck.assertNoMissingMarkers(
                 "release/5.7.x", "main", List.of()));
         GradleException ex = assertThrows(GradleException.class,

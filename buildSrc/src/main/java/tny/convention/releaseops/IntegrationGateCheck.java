@@ -63,10 +63,10 @@ public final class IntegrationGateCheck {
     /** 合并结果完整性检查：目标合并结果中检索不到标记即缺失（检索命中求和为输入的判定）。
      * 保守语义（与接线侧原行为同判据）：命中行清单截断或该行非数字时按缺失处理——
      * 防"检索失败被当作无缺失"（JMH 空列表不报错教训同型，e2e 第十一轮叙述路径排除由接线保证）。 */
-    public static List<String> missingMarkers(List<String> markers, List<String> hitsPerMarkerInOrder) {
+    public static List<String> missingMarkers(List<String> markers, List<List<String>> hitsPerMarkerLines) {
         java.util.List<String> missing = new java.util.ArrayList<>();
         for (int i = 0; i < markers.size(); i++) {
-            if (i >= hitsPerMarkerInOrder.size() || GitFacts.sumGrepHits(List.of(hitsPerMarkerInOrder.get(i))) == 0) {
+            if (i >= hitsPerMarkerLines.size() || GitFacts.sumGrepHits(hitsPerMarkerLines.get(i)) == 0) {
                 missing.add(markers.get(i));
             }
         }

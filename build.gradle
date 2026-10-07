@@ -19,15 +19,13 @@ plugins {
 // io.spring.dependency-management 改由 buildSrc implementation 依赖供给，运行期按 id 应用与编译期
 // 类型引用同时成立（旧注记"buildSrc 作用域无法解析父构建类路径插件（实测 8.5）"针对的是编译期类引用，
 // 不约束运行期按 id 应用——两条适用面此前并存易混，至此以供给点区分写清）。
-// tny.git 创建的根工程类型化扩展 gitFlow（派生分支名、项目版本等值，实现类 tny.convention.GitFlow）
-// 必须先于一切消费方应用——消费方经 getByType 按类型拉取，扩展不在位即报错；
-// git 能力经 GitCli 门面单通道（grgit/JGit 依赖由 retire-grgit-channel 摘除）。
-apply plugin: 'tny.git'
-// 发布快速通道：releaseCut / releaseTag（语义契约见 docs/release-process.md；releaseMergeBack 已由
-// redesign-devline-integration-model 删除）；分支流转门禁：integrateMain / mergeUpward
-// （capability branch-integration-gates）
-apply plugin: 'tny.release'
-apply plugin: 'tny.integrate'
+// 编排三行并一（convert-orchestration-to-java 任务 6）：tny.git、tny.release、tny.integrate 的
+// 行为由总入口 tny.release-ops 承载，入口内部次序逐字等于原三行行序——先建根工程类型化扩展
+// gitFlow（派生分支名与项目版本；必须先于一切消费方，tny.projects 的派生版本注入点即读它），
+// 再注册发布快速通道 releaseCut / releaseTag（语义契约见 docs/release-process.md；releaseMergeBack
+// 已由 redesign-devline-integration-model 删除）与分支流转门禁 integrateMain / mergeUpward /
+// retireGuard（capability branch-integration-gates）；git 能力经 GitCli 门面单通道。
+apply plugin: 'tny.release-ops'
 
 // 装配线成员判定与组号事实源收进类型化扩展 tny.projects（pilot-binary-build-conventions D4）：
 // 命名约定判定、组号单一事实源注释（central-publishing D2 与 add-integration-testing D3 出处）
