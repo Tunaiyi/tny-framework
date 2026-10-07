@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1791377428702,
+  "lastUpdate": 1791387825698,
   "repoUrl": "https://github.com/Tunaiyi/tny-framework",
   "entries": {
     "Benchmark": [
@@ -8346,6 +8346,108 @@ window.BENCHMARK_DATA = {
           {
             "name": "com.tny.game.benchmark.net.routine.RespondFutureBenchmark.putAndPoll ( {\"inflight\":\"10000\"} )",
             "value": 17545058.377832003,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "yangkun311@gmail.com",
+            "name": "Tunaiyi",
+            "username": "Tunaiyi"
+          },
+          "committer": {
+            "email": "yangkun311@gmail.com",
+            "name": "Tunaiyi",
+            "username": "Tunaiyi"
+          },
+          "distinct": true,
+          "id": "47147525def6385b7692a799c44d9739ea62d57f",
+          "message": "收口修复——三视角对抗复核十项发现的处置\n\n复核确认归档与回写主体事实全部在位（旧活动路径全仓零悬空引用、插件描述符\n与提交链完整、修复落点文件清单逐一存在），发现面处置如下：\n一、ProjectsPlugin 与 ProjectsExtension 的 javadoc 清除\"册\"代号与截短名\n（consolidate-assembly-line 变更实名、探针五出处写全 design.md 探针结论\n小节、redesign-devline-integration-model 设计决策 D2 写全名），ProjectsExtension\n的派生版本注释更正两处过时事实——注入来源改实名 tny.release-ops，\n\"未应用即抛\"改为与代码实况一致的\"留空不抛、报红由消费方版本派生承担\"。\n二、DependencyConventionsPlugin 判空报错文案与注释把已退役 id tny.git 改为\ntny.release-ops，报错指引与根脚本现实对齐（tests 无该文案断言，buildSrc\n测试与根 help 复验绿）。\n三、redesign 跨册文件第 4 条与发布族 change 留档段按 CLAUDE.md 文字规则\n重写：完整语句、实名指代、消除\"本册/该册\"混叠；发布族移交计数由误写的\n\"约十处\"改为照录移交行原文的分段计数（七处加两处加合计三处），其任务 1.5\n同步修正；判例表位置引述改为照录实际节名\"正则选点判例表（组 1 起草，组 7\n勾验）\"。\n四、归档 change 的 apply-notes 组 8 段今日新写文字同样清违例称谓（历史\n归档目录不追改既有记录，仅修本次写入部分）。\n根目录临时文件 convert-orchestration-to-java-tmp-do-not-use.md 删除权限\n此前已拒，仍由用户执行 rm 清理。\n\nCo-Authored-By: Claude Code <noreply@anthropic.com>",
+          "timestamp": "2026-10-07T23:35:14+08:00",
+          "tree_id": "1461d3af29e516c496f8c67e3602b4d1eeede647",
+          "url": "https://github.com/Tunaiyi/tny-framework/commit/47147525def6385b7692a799c44d9739ea62d57f"
+        },
+        "date": 1791387824438,
+        "tool": "jmh",
+        "benches": [
+          {
+            "name": "com.tny.game.benchmark.net.devtest.SmokeBenchmark.noop",
+            "value": 2108828343.5274587,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.MessageQueueBenchmark.addMessage ( {\"capacity\":\"0\"} )",
+            "value": 1285636080.2162807,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.MessageQueueBenchmark.addMessage ( {\"capacity\":\"64\"} )",
+            "value": 91091001.57631308,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.MessageQueueBenchmark.filteredRead ( {\"capacity\":\"0\"} )",
+            "value": 204089206.54278356,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.MessageQueueBenchmark.filteredRead ( {\"capacity\":\"64\"} )",
+            "value": 22789613.641144384,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.MessageQueueBenchmark.snapshotRead ( {\"capacity\":\"0\"} )",
+            "value": 203970163.53905997,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.MessageQueueBenchmark.snapshotRead ( {\"capacity\":\"64\"} )",
+            "value": 109638609.51586135,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.PacketCodecBenchmark.encodeThenDecode ( {\"verify\":\"false\"} )",
+            "value": 2477099.41058912,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.PacketCodecBenchmark.encodeThenDecode ( {\"verify\":\"true\"} )",
+            "value": 904026.097825427,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.RespondFutureBenchmark.pollMiss ( {\"inflight\":\"1000\"} )",
+            "value": 107943874.9871376,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.RespondFutureBenchmark.pollMiss ( {\"inflight\":\"10000\"} )",
+            "value": 95735153.90495056,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.RespondFutureBenchmark.putAndPoll ( {\"inflight\":\"1000\"} )",
+            "value": 15834712.674528038,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.RespondFutureBenchmark.putAndPoll ( {\"inflight\":\"10000\"} )",
+            "value": 14789816.627660075,
             "unit": "ops/s",
             "extra": "iterations: 10\nforks: 2\nthreads: 1"
           }
