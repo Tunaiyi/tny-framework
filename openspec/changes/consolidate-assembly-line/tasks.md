@@ -28,8 +28,8 @@
 
 ## 5. java-conventions 立口
 
-- [ ] 5.1 先写测试：源集与清单派生、tester 宿主排除谓词、`-tester` 夹具挂接面的可单测判定段拆为纯函数类并补红绿用例（依"检查逻辑必须携带单元测试"需求）；记录先失败后实现
-- [ ] 5.2 实现 `JavaConventionsPlugin` 入口与拆分类（JavaCompileConvention、JavadocSourcesConvention、ManifestJarConvention 等按 250 行单类计量拆）：sourcesJar 手写注册在前、`withSourcesJar` 命名复用在后的次序组合作为代码内注释＋断言锁定；`configurations.configureEach` 惰性排除面保持惰性形态；原脚本头注释与实测教训（51 项差异定罪记载）逐段随迁入目录页 javadoc
+- [x] 5.1 先写测试：源集与清单派生、tester 宿主排除谓词、`-tester` 夹具挂接面的可单测判定段拆为纯函数类并补红绿用例（依"检查逻辑必须携带单元测试"需求）；记录先失败后实现
+- [x] 5.2 实现 `JavaConventionsPlugin` 入口与拆分类（JavaCompileConvention、JavadocSourcesConvention、ManifestJarConvention 等按 250 行单类计量拆）：sourcesJar 手写注册在前、`withSourcesJar` 命名复用在后的次序组合作为代码内注释＋断言锁定；`configurations.configureEach` 惰性排除面保持惰性形态；原脚本头注释与实测教训（51 项差异定罪记载）逐段随迁入目录页 javadoc
 - [ ] 5.3 同提交三件：删除 `tny.java-module.gradle`、注册行新增（id `tny.java-conventions`）、根 `build.gradle` javaProjects 段第 61-62 行（compile-baseline 与 java-module）并为一行 `apply plugin: 'tny.java-conventions'`（gate 行之后、integration-test 行之前的槽位）；`compile-baseline` 注册行从 gradlePlugin 块移除（实现类保留）
 - [ ] 5.4 验证：`-p buildSrc test` 全绿；任务图对基线零差异；`tny-game-net` 双依赖清单与 java 线 POM 逐字节一致；编码选项与缓存策略样件一致（doc-gradle 面留组 6 一并验）；sourcesJar 组合断言（`tasks --all` 中 sourcesJar 任务属性与 assemble 挂接对基线）
 
