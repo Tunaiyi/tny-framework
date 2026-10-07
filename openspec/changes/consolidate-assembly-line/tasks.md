@@ -47,10 +47,10 @@
 
 ## 8. benchmark-module 与 BenchmarkSuite 转 Java 及 jmh 供给迁移
 
-- [ ] 8.1 先写测试：族属清单核对判定拆为纯函数类补红绿用例（jmhSuiteVerify 对账面）
-- [ ] 8.2 实现 benchmark 入口与任务组类：两段 afterEvaluate 次序（族属清单段在前、benchParams 覆写段在后）代码注释锁定；`ext.listFile` 动态属性字段化替代；任务名与 finalizedBy 边逐字不变；`BenchmarkSuite` 支撑类同册转 Java
-- [ ] 8.3 同提交原子四件：`buildSrc/build.gradle` 增 `gradlePluginPortal()` 与 jmh implementation 依赖（版本落点注释沿 dm 先例）、删除 `tny.benchmark-module.gradle` 加注册行（id 不变）、`tny-benchmark/build.gradle:3` 去 `version '0.7.3'`、`:48` 的 `jmhVersion = '1.37'` 改读 `gradle.properties` 新键 `jmhVersion=1.37`（gradle.properties 增键行含取用点注释）
-- [ ] 8.4 验证：`-p buildSrc test` 全绿；`-PbenchParams` 覆写优先级回归（带/不带参数两跑记录 jmh 任务属性）；jmhList 产物文件路径与 jmhListVerify 读回一致；`tny-benchmark` 任务图样件零差异；`-Pjmh` 相关任务 dry-run 行集对基线
+- [x] 8.1 先写测试：族属清单核对判定拆为纯函数类补红绿用例（jmhSuiteVerify 对账面）
+- [x] 8.2 实现 benchmark 入口与任务组类：两段 afterEvaluate 次序（族属清单段在前、benchParams 覆写段在后）代码注释锁定；`ext.listFile` 动态属性字段化替代；任务名与 finalizedBy 边逐字不变；`BenchmarkSuite` 支撑类同册转 Java
+- [x] 8.3 同提交原子四件：`buildSrc/build.gradle` 增 `gradlePluginPortal()` 与 jmh implementation 依赖（版本落点注释沿 dm 先例）、删除 `tny.benchmark-module.gradle` 加注册行（id 不变）、`tny-benchmark/build.gradle:3` 去 `version '0.7.3'`、`:48` 的 `jmhVersion = '1.37'` 改读 `gradle.properties` 新键 `jmhVersion=1.37`（gradle.properties 增键行含取用点注释）
+- [x] 8.4 验证：`-p buildSrc test` 全绿；`-PbenchParams` 覆写优先级回归（带/不带参数两跑记录 jmh 任务属性）；jmhList 产物文件路径与 jmhListVerify 读回一致；`tny-benchmark` 任务图样件零差异；`-Pjmh` 相关任务 dry-run 行集对基线
 
 ## 9. 次序契约、防蔓延与目录页复核
 

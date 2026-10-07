@@ -1,6 +1,7 @@
 plugins {
     id 'java'
-    id 'me.champeau.jmh' version '0.7.3'
+    // 版本号已随 buildSrc 供给迁移退役（consolidate-assembly-line 任务 8.3，双声明并存为实测硬失败）
+    id 'me.champeau.jmh'
     // 族属清单与枚举/对账/落盘任务在 tny.benchmark-module 约定插件（注册归属与任务名不变）
     id 'tny.benchmark-module'
     // 横切角色统一插件（consolidate-module-modes-plugin）
@@ -45,7 +46,9 @@ dependencies {
 // D3 基线纪律入库（原 D2 裸 JavaExec 已废，见 openspec/changes/promote-netbench-to-tny-bench design T2）：
 // 缺省执行 = 常规族（含设施探针）+ 下列参数，可复现；全量矩阵以 -PbenchAll 显式打开（选择实现收编在 tny.benchmark-module 的 afterEvaluate，gradle-build-style 需求一）。
 jmh {
-    jmhVersion = '1.37'                       // Central 冻结版；插件按此自动接线 core+annprocess
+    // 版本落点迁 gradle.properties 键 jmhVersion（同文件 toolchain 读 javaVersion 先例，
+    // 单一事实源需求；值保持 1.37 不变，Central 冻结版，插件按此自动接线 core+annprocess）
+    jmhVersion = providers.gradleProperty('jmhVersion').get()
     fork = 2                                  // D3：-f ≥ 2
     warmupIterations = 5
     iterations = 10

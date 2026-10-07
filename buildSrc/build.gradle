@@ -42,6 +42,10 @@ gradlePlugin {
             id = 'tny.integration-test'
             implementationClass = 'tny.convention.integration.IntegrationTestPlugin'
         }
+        benchmarkModule {
+            id = 'tny.benchmark-module'
+            implementationClass = 'tny.convention.benchmark.BenchmarkModulePlugin'
+        }
     }
 }
 
@@ -49,6 +53,9 @@ gradlePlugin {
 // 与 FAIL_ON_PROJECT_REPOS 约束不覆盖 buildSrc），仓库列表在此单独声明并与主 settings 同源镜像一致。
 repositories {
     mavenCentral()
+    // me.champeau.jmh 不在 Central（探针三实测 Could not find），JMH 插件与清单枚举任务的
+    // 编译期类型引用经 Plugin Portal 解析（consolidate-assembly-line 任务 8.3）
+    gradlePluginPortal()
 }
 
 dependencies {
@@ -63,6 +70,11 @@ dependencies {
     // 版本目录访问器不及于此，与 JUnit 先例同一注释登记义务，升级时跟改。根构建脚本 MUST NOT
     // 再对本插件带版本声明（探针三变体乙实测双声明并存为硬失败）。
     implementation 'io.spring.gradle:dependency-management-plugin:1.1.7'
+    // me.champeau.jmh 插件实现 jar 由 buildSrc 供给（consolidate-assembly-line 任务 8.3，
+    // 探针三预演同构）：tny.benchmark-module 的枚举与运行任务对该扩展类型取编译期引用。
+    // 版本单一落点即本行；tny-benchmark 模块 plugins 块 MUST NOT 再携带版本声明
+    // （双声明并存为探针三变体乙实测硬失败）。
+    implementation 'me.champeau.jmh:jmh-gradle-plugin:0.7.3'
 }
 
 tasks.withType(Test).configureEach {

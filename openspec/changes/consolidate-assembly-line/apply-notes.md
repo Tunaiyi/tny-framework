@@ -48,3 +48,11 @@
 - 7.2 原子切换两件同提交：删除 `tny.integration-test.gradle`（156 行）、gradlePlugin 注册 `tny.integration-test` 指向 `IntegrationTestPlugin`；id 不变故根 javaProjects 段与 `tny-game-integration-test/build.gradle:9` 的 plugins 引用零改动。
 - 7.3 验证：integrationRuntimeClasspath 531 行解析树中 logback-classic 与 log4j-to-slf4j 命中数 0（惰性排除面对后建 integration 配置照常生效，configureEach 形态保持的证据）；线外模块与全量两份任务图对基线**任务行集合零差异**（Python 正则剔噪后 72/72、3562/3562 行）；描述符指向二进制实现类。
 - 比对方法学登记：本机 `grep` 实为 ugrep，`-E` 的 `\]` 转义与空行模式行为与 GNU grep 有别，此前 shell 侧剔噪出现假性差异；任务图样件的权威剔噪改用本卷宗内 Python 正则（actionable/空白行/BUILD/Starting a Gradle/Incubating/Problems report/Deprecated Gradle/warning-mode/docs.gradle.org），后续各组沿用此口径。
+
+## 组 8 benchmark 同名 Java 化、BenchmarkSuite 转 Java 与 jmh 供给迁移
+
+- 提交编排如实登记：本组三件（8.1-8.3）合为一笔原子提交——实现类引用 jmh 公开类型要求 buildSrc 依赖先行，而 jmh 依赖入 buildSrc 与 tny-benchmark 携带版本号行的退役不可分步（探针三预演实证双声明并存为硬失败），BenchmarkSuite 的 Groovy 文件删除与同名 Java 文件入库亦不可分步（同类名双源文件编译冲突）；任务清单原"实现一笔、切换一笔"在本组被依赖拓扑强制合并，两笔拆分只在无此耦合的组成立。
+- 拆分落 `tny.convention.benchmark` 子包：入口（四任务注册与两段 afterEvaluate，D1 覆写次序逐字保持；`ext.listFile` 动态属性以 final 局部变量承载等价替代，任务名与 finalizedBy 边不变）、`BenchmarkSuiteCheck` 判定纯函数（族正则全部 Matcher.find 语义，与 Groovy 等号波浪线等值——判例表条目：两处违例用例覆盖 find 部分匹配防 matches 误用）、`BenchmarkSuite` 转 Java（managed property 抽象类两语言等价，模块 `benchmarkSuite {}` 声明块零改动）。
+- API 钉版过程三处失误当场修正未入账史：mainClass 为 Property 形态、MapProperty 无 clear/replace（整图覆写用 set(Map)）、benchScope 判断次序 property 先取会炸；反射取 `jmhRunBytecodeGenerator.generatedResourcesDir` 首跑接线错位（指向当前任务而非生成任务），报错即改为 `tasks.named("jmhRunBytecodeGenerator")` 目标——原 Groovy 动态访问的运行时求值语义保留。
+- jmh 供给迁移：buildSrc 增 `gradlePluginPortal()`（jmh 不在 Central，探针实测）与 implementation 依赖（版本单一落点注释登记）；`tny-benchmark/build.gradle` 两处字面量各自归位——plugins 块去 `version '0.7.3'`，`jmhVersion = '1.37'` 改 `providers.gradleProperty('jmhVersion').get()`，gradle.properties 增键 `jmhVersion=1.37`（取用点注释齐备，值零变化）。
+- 8.4 执行面验证：选择段四形态经 /tmp init 脚本内省与原文语义一致（缺省=族竖线正则并六臂参数域、-PbenchParams 单臂覆写居末生效、-PbenchAll 全开 `.*`、-PbenchScope=quick 排除面且不带参数域）；`jmhList` 实跑成功（7 个基名条目，产物路径 `tny-benchmark/build/tmp/jmhList/jmhList.txt` 与原 temporaryDir 同位，finalizedBy 的 `jmhListVerify` 判红逻辑同步演练——空清单时显式报红文案逐字为原脚本句）；`jmhSuiteVerify` 实跑通过；`:tny-benchmark` 任务图对基线 83/83 零差异；描述符指向 `BenchmarkModulePlugin`；根配置与 buildSrc 测试（含 `BenchmarkSuiteCheckTest` 绿红两向）全绿。
