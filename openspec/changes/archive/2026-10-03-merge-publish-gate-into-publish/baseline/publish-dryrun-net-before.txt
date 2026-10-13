@@ -1,0 +1,101 @@
+Configuration on demand is an incubating feature.
+> Task :buildSrc:extractPluginRequests UP-TO-DATE
+> Task :buildSrc:generatePluginAdapters UP-TO-DATE
+> Task :buildSrc:compileJava UP-TO-DATE
+> Task :buildSrc:compileGroovy UP-TO-DATE
+> Task :buildSrc:compileGroovyPlugins UP-TO-DATE
+> Task :buildSrc:pluginDescriptors UP-TO-DATE
+> Task :buildSrc:processResources UP-TO-DATE
+> Task :buildSrc:classes UP-TO-DATE
+> Task :buildSrc:jar UP-TO-DATE
+Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk-11.0.13.jdk/Contents/Home' (MacOS java_home). It will be re-checked in the next build. This might have performance impact if it keeps failing. Run the 'javaToolchains' task for more details.
+Invalid Java installation found at '/Library/Java/JavaVirtualMachines/jdk1.8.0_311.jdk/Contents/Home' (MacOS java_home). It will be re-checked in the next build. This might have performance impact if it keeps failing. Run the 'javaToolchains' task for more details.
+Invalid Java installation found at '/Library/Internet Plug-Ins/JavaAppletPlugin.plugin/Contents/Home' (MacOS java_home). It will be re-checked in the next build. This might have performance impact if it keeps failing. Run the 'javaToolchains' task for more details.
+:tny-game-codec:processResources SKIPPED
+:tny-game-common-lang:processResources SKIPPED
+:tny-game-common-lang:compileJava SKIPPED
+:tny-game-codec:compileJava SKIPPED
+:tny-game-codec-jprotobuf:processResources SKIPPED
+:tny-game-doc-annotation:processResources SKIPPED
+:tny-game-doc-annotation:compileJava SKIPPED
+:tny-game-loader:processResources SKIPPED
+:tny-game-scanning:processResources SKIPPED
+:tny-game-scanning:compileJava SKIPPED
+:tny-game-loader:compileJava SKIPPED
+:tny-game-codec-jprotobuf:compileJava SKIPPED
+:tny-game-common-digest:processResources SKIPPED
+:tny-game-common-reflect:processResources SKIPPED
+:tny-game-common-reflect:compileJava SKIPPED
+:tny-game-common-digest:compileJava SKIPPED
+:tny-game-common-io:processResources SKIPPED
+:tny-game-common-io:compileJava SKIPPED
+:tny-game-common-lifecycle:processResources SKIPPED
+:tny-game-common-lifecycle:compileJava SKIPPED
+:tny-game-expr:processResources SKIPPED
+:tny-game-expr:compileJava SKIPPED
+:tny-game-expr-groovy:processResources SKIPPED
+:tny-game-expr-jsr223:processResources SKIPPED
+:tny-game-expr-jsr223:compileJava SKIPPED
+:tny-game-expr-groovy:compileJava SKIPPED
+:tny-game-net:processResources SKIPPED
+:tny-game-net:compileJava SKIPPED
+:tny-game-net:classes SKIPPED
+:tny-game-net:jar SKIPPED
+:tny-game-net:javadoc SKIPPED
+:tny-game-net:javadocJar SKIPPED
+:tny-game-net:sourcesJar SKIPPED
+:tny-game-codec:classes SKIPPED
+:tny-game-codec:jar SKIPPED
+:tny-game-codec-jprotobuf:classes SKIPPED
+:tny-game-codec-jprotobuf:jar SKIPPED
+:tny-game-common-digest:classes SKIPPED
+:tny-game-common-digest:jar SKIPPED
+:tny-game-common-io:classes SKIPPED
+:tny-game-common-io:jar SKIPPED
+:tny-game-common-lang:classes SKIPPED
+:tny-game-common-lang:jar SKIPPED
+:tny-game-common-lifecycle:classes SKIPPED
+:tny-game-common-lifecycle:jar SKIPPED
+:tny-game-common-reflect:classes SKIPPED
+:tny-game-common-reflect:jar SKIPPED
+:tny-game-doc-annotation:classes SKIPPED
+:tny-game-doc-annotation:jar SKIPPED
+:tny-game-expr:classes SKIPPED
+:tny-game-expr:jar SKIPPED
+:tny-game-expr-groovy:classes SKIPPED
+:tny-game-expr-groovy:jar SKIPPED
+:tny-game-expr-jsr223:classes SKIPPED
+:tny-game-expr-jsr223:jar SKIPPED
+:tny-game-loader:classes SKIPPED
+:tny-game-loader:jar SKIPPED
+:tny-game-net-test:processResources SKIPPED
+:tny-game-net-test:compileJava SKIPPED
+:tny-game-tester:processResources SKIPPED
+:tny-game-tester:compileJava SKIPPED
+:tny-game-net:compileTestJava SKIPPED
+:tny-game-net:processTestResources SKIPPED
+:tny-game-net:testClasses SKIPPED
+:tny-game-net-test:classes SKIPPED
+:tny-game-net-test:jar SKIPPED
+:tny-game-scanning:classes SKIPPED
+:tny-game-scanning:jar SKIPPED
+:tny-game-tester:classes SKIPPED
+:tny-game-tester:jar SKIPPED
+:tny-game-net:test SKIPPED
+:tny-game-net:check SKIPPED
+:tny-game-net:checkPublishPrerequisites SKIPPED
+:tny-game-net:generateMetadataFileForMavenJavaPublication SKIPPED
+:tny-game-net:generatePomFileForMavenJavaPublication SKIPPED
+:tny-game-net:signMavenJavaPublication SKIPPED
+:tny-game-net:publishMavenJavaPublicationToCentralSnapshotsRepository SKIPPED
+:tny-game-net:publishMavenJavaPublicationToMavenRepository SKIPPED
+:tny-game-net:cleanupDirectory SKIPPED
+:tny-game-net:publishMavenJavaPublicationToNmcpRepository SKIPPED
+:tny-game-net:publish SKIPPED
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.5/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+

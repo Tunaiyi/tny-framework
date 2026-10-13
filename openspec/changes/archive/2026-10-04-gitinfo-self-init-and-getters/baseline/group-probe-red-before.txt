@@ -1,0 +1,4 @@
+* What went wrong:
+发布构件配置期对账失败（组号单一事实源与构建文件存在性）：
+- :tny-game-codec 组号应为单一事实源 'com.tnydev.game'，实际 'com.wrong.probe'（请删除模块内组号声明，由根构建派生）
+

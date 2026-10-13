@@ -1,0 +1,5 @@
+date: 2026-10-05T06:49:21Z  正式版镜像首发试点取证（任务 5.5，2026-10-05）
+run1 成功首发: 37273789188 conclusion=success — :tny-game-net:publishAllPublicationsToGithubPackagesRepository 签名并镜像 BUILD SUCCESSFUL in 2m39s
+首发只读核对: 包 com.tnydev.game.tny-game-net 出现；version id=68242196；5.7.99 的 pom/jar/javadoc/pom.asc/module 携凭据 GET 全部 302（构件与签名实际存在）
+run2 同号重传: 37274115577 conclusion=failure — Could not PUT '.../tny-game-net-5.7.99.jar'. Received status code 409 from server: Conflict（一次成型与判读路径的生产形态实证）
+试点后清理: 镜像 5.7.99 版本删除、v5.7.99 标签与 5.7.99.release 分支删除、main 脚手架 revert；第 6 组收口提交 ddae1495 经 cherry-pick 回收至 5.7.x。

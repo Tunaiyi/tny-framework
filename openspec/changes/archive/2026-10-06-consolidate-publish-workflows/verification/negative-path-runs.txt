@@ -1,0 +1,19 @@
+date: 2026-10-06T02:16:24Z 任务 3.2 负路径在线验证（main 合入 c5e5bc06 后执行，零真实外发）
+
+=== 一发 37403243935：dispatch 9.9.9.release（不存在的发布分支）===
+conclusion=failure
+Route event to release or snapshot chain => success
+Publish release to Nexus, Maven Central and GitHub Packages => failure
+Mirror snapshot of ${{ matrix.line }} => skipped
+--- route 输出与检出失败关键日志
+
+=== 二发 37403264864：dispatch 5.7.x.y（非法形态输入）===
+conclusion=success
+Route event to release or snapshot chain => success
+Mirror snapshot of ${{ matrix.line }} => skipped
+Publish release to Nexus, Maven Central and GitHub Packages => skipped
+Route event to release or snapshot chain	Run actions/checkout@v4	2026-10-06T02:15:47.7966823Z hint: to use in all of your new repositories, which will suppress this warning,
+Route event to release or snapshot chain	Resolve chain, branch and matrix	2026-10-06T02:15:49.0545052Z ^[[36;1m      echo "mode=none" >> "$GITHUB_OUTPUT"^[[0m
+Route event to release or snapshot chain	Resolve chain, branch and matrix	2026-10-06T02:15:49.0547182Z ^[[36;1m      echo "::warning::workflow_dispatch 输入既非 <X.Y.Z>.release 也非开发线形态（dev/N.M.x 或 N.M.x），本次运行不进入任何发布链"^[[0m
+
+=== 结论：非法输入 route 判 mode=none 全链空转（作业跳过、success 为无害空跑）；不存在分支名判入 release 链后检出失败终止（publish-release 红、其余作业不执行）——两条失败安全路径均零外发，未触碰任何仓库 ===

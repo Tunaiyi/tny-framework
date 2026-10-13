@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TnyFramework · 游戏服务器框架</title>
+<meta name="description" content="TnyFramework 是一个企业级的 Java 游戏服务器框架，基于 Java 21、Spring Boot 与 Netty 4，按功能层拆分为 55 个活跃模块。">
+<style>
+  :root {
+    --bg: #ffffff;
+    --fg: #1f2328;
+    --muted: #59636e;
+    --card: #f6f8fa;
+    --border: #d1d9e0;
+    --accent: #0969da;
+    --chip: #eef3f8;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0d1117;
+      --fg: #e6edf3;
+      --muted: #9198a1;
+      --card: #151b23;
+      --border: #3d444d;
+      --accent: #4493f8;
+      --chip: #1c2431;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    line-height: 1.7;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 0 20px 64px; }
+  header { padding: 56px 0 24px; border-bottom: 1px solid var(--border); margin-bottom: 32px; }
+  h1 { margin: 0 0 8px; font-size: 2rem; letter-spacing: .01em; }
+  .subtitle { margin: 0; color: var(--muted); font-size: 1.05rem; }
+  .links { margin-top: 18px; display: flex; flex-wrap: wrap; gap: 10px; }
+  .links a {
+    display: inline-block; padding: 5px 14px; border: 1px solid var(--border);
+    border-radius: 999px; text-decoration: none; color: var(--fg); font-size: .92rem;
+    background: var(--card);
+  }
+  .links a:hover { border-color: var(--accent); color: var(--accent); }
+  h2 { font-size: 1.35rem; margin: 40px 0 14px; }
+  p { margin: 10px 0; }
+  .muted { color: var(--muted); }
+  .features {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px; margin-top: 16px;
+  }
+  .features div {
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 12px 16px; font-size: .95rem;
+  }
+  .features b { display: block; margin-bottom: 2px; }
+  .layers { display: grid; gap: 12px; margin-top: 16px; }
+  .layer {
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 14px 18px;
+  }
+  .layer h3 { margin: 0 0 4px; font-size: 1.02rem; }
+  .layer p { margin: 0 0 8px; font-size: .93rem; color: var(--muted); }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chips span {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-size: .8rem; background: var(--chip); border: 1px solid var(--border);
+    border-radius: 6px; padding: 1px 8px;
+  }
+  pre {
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 14px 18px; overflow-x: auto; font-size: .88rem; line-height: 1.6;
+  }
+  code { font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace; }
+  a { color: var(--accent); }
+  footer {
+    margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--border);
+    color: var(--muted); font-size: .9rem;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>TnyFramework</h1>
+  <p class="subtitle">一个功能完善、高性能、模块化的 Java 游戏服务器框架（Java 21 · Spring Boot 3.2 · Netty 4.1）</p>
+  <nav class="links">
+    <a href="https://github.com/Tunaiyi/tny-framework">GitHub 仓库</a>
+    <a href="https://github.com/Tunaiyi/tny-framework/blob/main/README.md">完整文档（README）</a>
+    <a href="./dev/bench/">基准性能趋势</a>
+    <a href="https://github.com/Tunaiyi/tny-framework/actions">持续集成状态</a>
+    <a href="https://www.apache.org/licenses/LICENSE-2.0">许可证：Apache License 2.0</a>
+  </nav>
+</header>
+
+<section>
+  <h2>项目介绍</h2>
+  <p>TnyFramework 是一个企业级的游戏服务器框架，采用现代化的技术栈和模块化设计，为开发者提供从网络通信、数据存储、业务逻辑到分布式服务的完整解决方案。框架按功能层拆分为 55 个活跃模块，业务工程可以通过 Maven BOM 对齐版本，并只引入自己需要的 Spring Boot Starter。</p>
+  <div class="features">
+    <div><b>高性能网络通信</b>基于 Netty 4 的异步 IO，封包内置加密、校验与废字节防嗅探机制。</div>
+    <div><b>模块化设计</b>55 个活跃模块按功能分层组织，按需集成，互不牵连。</div>
+    <div><b>多实现可插拔</b>编解码、脚本引擎、数据存储都提供多种实现供选择。</div>
+    <div><b>分布式架构</b>内置基于 Etcd 的服务发现、一致性哈希分片与 RPC 调用支持。</div>
+    <div><b>可观测性</b>集成 Apache SkyWalking APM，支持分布式追踪与性能分析。</div>
+    <div><b>Spring Boot 集成</b>八个开箱即用的 Starter，覆盖网络、编解码、数据与运维能力。</div>
+  </div>
+</section>
+
+<section>
+  <h2>模块分层</h2>
+  <p class="muted">以下清单与仓库 <code>settings.gradle</code> 中参与根构建的模块一一对应；各模块的详细职责请查阅 <a href="https://github.com/Tunaiyi/tny-framework/blob/main/README.md">README 的模块说明</a>。</p>
+  <div class="layers">
+    <div class="layer">
+      <h3>基础设施层</h3>
+      <p>框架底层的通用能力：语言工具、反射、加密摘要、IO、生命周期管理、任务调度、类扫描、资源加载，以及统一约束发布版本的 BOM。</p>
+      <div class="chips"><span>tny-game-bom</span><span>tny-game-common-lang</span><span>tny-game-common-reflect</span><span>tny-game-common-digest</span><span>tny-game-common-io</span><span>tny-game-common-lifecycle</span><span>tny-game-common-scheduler</span><span>tny-game-scanning</span><span>tny-game-loader</span></div>
+    </div>
+    <div class="layer">
+      <h3>网络通信层</h3>
+      <p>消息、会话、传输与集群的核心抽象，Netty 4 实现，附带消息体编解码接入、示例工程与测试工具。</p>
+      <div class="chips"><span>tny-game-net</span><span>tny-game-net-netty4</span><span>tny-game-net-netty4-codec-jprotobuf</span><span>tny-game-net-netty4-codec-protoex</span><span>tny-game-net-demo</span><span>tny-game-net-test</span></div>
+    </div>
+    <div class="layer">
+      <h3>编解码层</h3>
+      <p>统一的 ObjectCodec 抽象，提供 JSON、JProtobuf 与 ProtoEx 多种序列化实现。</p>
+      <div class="chips"><span>tny-game-codec</span><span>tny-game-codec-jackson</span><span>tny-game-codec-jprotobuf</span><span>tny-game-codec-protoex</span><span>tny-game-protoex</span><span>tny-game-protobuf</span></div>
+    </div>
+    <div class="layer">
+      <h3>数据持久化层</h3>
+      <p>实体管理与存储访问抽象，MongoDB 与 Redisson 两种存储实现，外加各自的客户端封装。</p>
+      <div class="chips"><span>tny-game-data</span><span>tny-game-data-mongodb</span><span>tny-game-data-redisson</span><span>tny-game-mongodb</span><span>tny-game-redisson</span></div>
+    </div>
+    <div class="layer">
+      <h3>表达式引擎</h3>
+      <p>表达式计算抽象层，可接入 MVEL、Groovy、GraalJS、LuaJ 与 JSR223 五类脚本引擎。</p>
+      <div class="chips"><span>tny-game-expr</span><span>tny-game-expr-mvel</span><span>tny-game-expr-groovy</span><span>tny-game-expr-graaljs</span><span>tny-game-expr-luaj</span><span>tny-game-expr-jsr223</span></div>
+    </div>
+    <div class="layer">
+      <h3>游戏业务层</h3>
+      <p>游戏特定的业务组件：物品与升级等基础组件、Actor 并发模型、玩家行为操作日志。</p>
+      <div class="chips"><span>tny-game-basics</span><span>tny-game-actor</span><span>tny-game-oplog</span><span>tny-game-oplog-log4j</span></div>
+    </div>
+    <div class="layer">
+      <h3>分布式服务</h3>
+      <p>服务发现与命名空间（Etcd 实现）、一致性哈希与分片，以及 RPC 框架。</p>
+      <div class="chips"><span>tny-game-namnspace</span><span>tny-game-namnspace-etcd</span><span>tny-game-rpc</span></div>
+    </div>
+    <div class="layer">
+      <h3>开发工具</h3>
+      <p>协议与 DTO 文档生成器及其注解、Gradle 插件、启动引导与测试辅助工具。</p>
+      <div class="chips"><span>tny-game-doc</span><span>tny-game-doc-annotation</span><span>tny-game-doc-gradle</span><span>tny-game-boot</span><span>tny-game-boot-log4j2</span><span>tny-game-tester</span></div>
+    </div>
+    <div class="layer">
+      <h3>Spring Boot Starter</h3>
+      <p>开箱即用的自动配置模块，覆盖基础组件、编解码、数据访问、网络与服务发现、APM 监控。</p>
+      <div class="chips"><span>tny-game-starter-basics</span><span>tny-game-starter-codec</span><span>tny-game-starter-data</span><span>tny-game-starter-mongodb</span><span>tny-game-starter-redisson</span><span>tny-game-starter-namnspace</span><span>tny-game-starter-net-netty4</span><span>tny-game-starter-net-apm-skywalking</span></div>
+    </div>
+    <div class="layer">
+      <h3>验证与基准</h3>
+      <p>跨模块集成测试工程（含多应用中继部署拓扑矩阵）与 JMH 基准测试工程。</p>
+      <div class="chips"><span>tny-game-integration-test</span><span>tny-benchmark</span></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>快速开始</h2>
+  <p>构建需要 JDK 21 与 Gradle 7.0 以上版本；MongoDB、Redis、Etcd 均为可选依赖。业务工程引入方式如下：</p>
+  <pre><code>dependencies {
+    implementation platform('com.tnydev.game:tny-game-bom:&lt;版本&gt;')
+    implementation 'com.tnydev.game:tny-game-starter-net-netty4'
+    implementation 'com.tnydev.game:tny-game-starter-codec'
+    implementation 'com.tnydev.game:tny-game-starter-data'
+}</code></pre>
+  <p class="muted">配置示例与完整使用教程请查阅仓库 README。</p>
+</section>
+
+<section>
+  <h2>质量与基准</h2>
+  <p>框架采用两级验证通道：单元测试不依赖 Docker，可随时运行；集成测试分为无容器档（真实 TCP 网络链路）与容器档（Testcontainers 数据访问与 Starter 装配剧本），后者随 CI 的 PR 通道一并执行。每次框架代码合入受监控分支时，CI 会以速览规模运行 JMH 基准，夜间定时运行完整规模；全部结果汇入<a href="./dev/bench/">基准性能趋势页</a>，历史曲线用于辅助人工判断性能回归。</p>
+</section>
+
+<footer>
+  <p>本页面源码位于仓库的 <code>docs/site/</code> 目录，由 <code>pages</code> 工作流自动部署到 GitHub Pages。<br>
+  TnyFramework · 基于 Apache License 2.0 开源。</p>
+</footer>
+
+</div>
+</body>
+</html>

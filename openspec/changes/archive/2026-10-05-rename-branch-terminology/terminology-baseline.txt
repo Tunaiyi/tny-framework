@@ -1,0 +1,22 @@
+== releaseCut dryRun ==
+releaseCut 计划：
+  来源        5.7.x
+  容器分支    9.9.9.release（切自来源、检出并推送；标签创建前容器只允许快进式追加修复提交）
+  标签        不创建——标签由 releaseTag 在制品定型后创建（标签先于制品，顺序由两步固化）
+  推送远端    github
+后续步骤：（hotfix 先在容器上完成修复提交并推送）  ./gradlew releaseTag   然后  ./gradlew publish   然后  ./gradlew releaseMergeBack
+
+[Incubating] Problems report is available at: file:///Users/kgtny/Documents/lingqu/core/tny-framework/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.14.5/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 6s
+9 actionable tasks: 1 executed, 8 up-to-date
+== releaseTag dryRun 拒绝 ==
+> releaseTag 必须在目标版本的发布容器上执行（当前应为 '9.9.9.release'），当前分支 '5.7.x'——请先检出容器分支，或确认 hotfix 的容器号与版本号一致
+== releaseMergeBack dryRun 拒绝 ==
+> releaseMergeBack 必须在发布分支形态（如 5.7.8.release）上执行，当前分支 '5.7.x'

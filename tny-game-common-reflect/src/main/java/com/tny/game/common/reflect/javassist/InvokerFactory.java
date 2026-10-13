@@ -1,0 +1,271 @@
+/*
+ * Copyright (c) 2020 Tunaiyi
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.tny.game.common.reflect.javassist;
+
+import com.tny.game.common.context.*;
+import com.tny.game.common.reflect.*;
+import com.tny.game.common.type.*;
+import javassist.*;
+
+import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
+import java.text.MessageFormat;
+import java.util.concurrent.*;
+
+public class InvokerFactory {
+
+    /**
+     * 调用器池
+     */
+    final private static ConcurrentMap<Object, MethodInvoker> INVOKER_MAP = new ConcurrentHashMap<>();
+
+    final private static ConcurrentMap<Constructor<?>, ConstructInvoker> CONSTRUCTOR_MAP = new ConcurrentHashMap<>();
+
+    private static ClassPool cp = ClassPool.getDefault();
+
+    static {
+        ClassClassPath classPath = new ClassClassPath(InvokerFactory.class);
+        cp.insertClassPath(classPath);
+    }
+
+    /**
+     * @param method
+     * @return
+     */
+    public static MethodInvoker newInvoker(Method method) {
+        MethodInvoker invoker = INVOKER_MAP.get(method);
+        if (invoker != null) {
+            return invoker;
+        }
+        StringBuilder proxyClassNameBuilder = new StringBuilder();
+        Class<?> declaringClass = method.getDeclaringClass();
+        if (method.getDeclaringClass().getName().startsWith("java.util")) {
+            proxyClassNameBuilder.append(declaringClass.getName().replace("java.util", "javaproxy.util"));
+        } else {
+            proxyClassNameBuilder.append(declaringClass.getName());
+        }
+        Class<?> sourceClass = method.getDeclaringClass();
+        // 异或对参数顺序不敏感：m(String,int) 与 m(int,String) 生成同名代理类，
+        // 后建者经 Class.forName 命中前者产物后查表为空。改顺序敏感序列散列。
+        StringBuilder signature = new StringBuilder(sourceClass.getName());
+        signature.append('#').append(method.getName());
+        for (Class<?> paramClass : method.getParameterTypes()) {
+            signature.append('#').append(paramClass.getName());
+        }
+        int hash = signature.toString().hashCode();
+        proxyClassNameBuilder.append("$");
+        proxyClassNameBuilder.append(method.getName());
+        proxyClassNameBuilder.append("$");
+        proxyClassNameBuilder.append(Math.abs(hash));
+        String proxyClassName = proxyClassNameBuilder.toString();
+        StringBuilder invokeCode = new StringBuilder();
+        // forName 命中路径的映射结果：null 须在 try/catch 之外抛，避免被外层 catch 折叠成"编译异常"
+        MethodInvoker hitInvoker = null;
+        try {
+            synchronized (method.getDeclaringClass()) {
+                Class<?> proxyClass;
+                try {
+                    Class.forName(proxyClassName);
+                } catch (Throwable e) {
+                    invoker = INVOKER_MAP.get(method);
+                    if (invoker != null) {
+                        return invoker;
+                    }
+                    CtClass cc = cp.makeClass(proxyClassName);
+                    cc.addInterface(cp.get(MethodInvoker.class.getCanonicalName()));
+                    invokeCode.append("public Object invoke(Object host, Object [] args){");
+                    StringBuilder parameterCode = new StringBuilder();
+                    for (int i = 0; i < method.getParameterTypes().length; i++) {
+                        if (i > 0) {
+                            parameterCode.append(",");
+                        }
+                        Class<?> parameterType = method.getParameterTypes()[i];
+                        parameterCode.append(generateCast("args[" + i + "]",
+                                Object.class, parameterType));
+                    }
+                    if (method.getParameterTypes().length > 0) {
+                        invokeCode.append("if(args==null||args.length!=");
+                        invokeCode.append(method.getParameterTypes().length);
+                        invokeCode.append(")throw new IllegalArgumentException(\"wrong number of arguments\");");
+                    }
+                    StringBuilder executeCode = new StringBuilder();
+                    executeCode.append("((");
+                    executeCode.append(method.getDeclaringClass().getCanonicalName());
+                    executeCode.append(")");
+                    String objCode = Modifier.isStatic(method.getModifiers()) ? "" : "host";
+                    executeCode.append(objCode);
+                    executeCode.append(").");
+                    executeCode.append(method.getName());
+                    executeCode.append("(");
+                    executeCode.append(parameterCode);
+                    executeCode.append(")");
+                    if (!method.getReturnType().equals(Void.TYPE)) {
+                        invokeCode.append("return ");
+                        if (method.getReturnType().isPrimitive()) {
+                            invokeCode.append(generateCast(executeCode.toString(), method.getReturnType(), Object.class));
+                        } else {
+                            invokeCode.append(executeCode.toString());
+                        }
+                        invokeCode.append(";");
+                    } else {
+                        invokeCode.append(executeCode.toString());
+                        invokeCode.append(";return null;");
+                    }
+                    invokeCode.append("}");
+                    cc.addMethod(CtMethod.make(invokeCode.toString(), cc));
+                    proxyClass = cc.toClass(declaringClass);
+                    invoker = (MethodInvoker) proxyClass.getConstructor().newInstance();
+                    MethodInvoker oldInvoker = INVOKER_MAP.putIfAbsent(method, invoker);
+                    if (oldInvoker != null) {
+                        return oldInvoker;
+                    }
+                    return invoker;
+                }
+                hitInvoker = INVOKER_MAP.get(method);
+            }
+        } catch (Throwable e) {
+            throw new RuntimeException(MessageFormat.format("编译{0}.{1}异常 \n{2}", method.getDeclaringClass(), method, invokeCode.toString()), e);
+        }
+        if (hitInvoker == null) {
+            // 跨加载域遮蔽：派生名 Class.forName 命中但本域映射无该 method 产物（他域/他签名同名产物占用派生名），
+            // 原返回 null 生成幽灵句柄、NPE 在远离成因的消费点才爆——现显式失败并携带代理类名与 declaringClass
+            throw new IllegalStateException(MessageFormat.format(
+                    "代理类 {0} 在本类加载域已存在，但调用器映射中不存在方法条目: {1}#{2}（declaringClass={3}，疑似他域同名产物遮蔽）",
+                    proxyClassName, declaringClass.getName(), method.getName(), declaringClass.getName()));
+        }
+        return hitInvoker;
+    }
+
+    public static ConstructInvoker newConstructor(Constructor<?> constructor) {
+        ConstructInvoker invoker = CONSTRUCTOR_MAP.get(constructor);
+        if (invoker != null) {
+            return invoker;
+        }
+        Class<?> sourceClass = constructor.getDeclaringClass();
+        String proxyClassName = sourceClass.getName() + "$Constructor$" + Math.abs(constructor.hashCode());
+        StringBuilder invokeCode = new StringBuilder();
+        try {
+            synchronized (constructor) {
+                Class<?> proxyClass;
+                try {
+                    proxyClass = Class.forName(proxyClassName);
+                } catch (Throwable e) {
+                    invoker = CONSTRUCTOR_MAP.get(constructor);
+                    if (invoker != null) {
+                        return invoker;
+                    }
+                    CtClass cc = cp.makeClass(proxyClassName);
+                    cc.addInterface(cp.get(ConstructInvoker.class.getName()));
+                    invokeCode.append("public Object newInstance(Object[] args){");
+                    StringBuilder parameterCode = new StringBuilder();
+                    for (int i = 0; i < constructor.getParameterTypes().length; i++) {
+                        if (i > 0) {
+                            parameterCode.append(",");
+                        }
+                        Class<?> parameterType = constructor.getParameterTypes()[i];
+                        parameterCode.append(generateCast("args[" + i + "]", Object.class, parameterType));
+                    }
+                    if (constructor.getParameterTypes().length > 0) {
+                        invokeCode.append("if(args==null||args.length!=");
+                        invokeCode.append(constructor.getParameterTypes().length);
+                        invokeCode.append(")throw new IllegalArgumentException(\"wrong number of arguments\");");
+                    }
+                    invokeCode.append("return new ");
+                    invokeCode.append(constructor.getDeclaringClass().getCanonicalName());
+                    invokeCode.append("(");
+                    invokeCode.append(parameterCode);
+                    invokeCode.append(");");
+                    invokeCode.append("}");
+                    cc.addMethod(CtMethod.make(invokeCode.toString(), cc));
+                    proxyClass = cc.toClass(sourceClass);
+                    invoker = (ConstructInvoker) proxyClass.getConstructor().newInstance();
+                    ConstructInvoker oldInvoker = CONSTRUCTOR_MAP.putIfAbsent(constructor, invoker);
+                    if (oldInvoker != null) {
+                        return oldInvoker;
+                    }
+                    return invoker;
+                }
+                return CONSTRUCTOR_MAP.get(constructor);
+            }
+        } catch (Throwable e) {
+            throw new RuntimeException(MessageFormat.format("编译{0}.{1}异常 \n{2}", constructor.getDeclaringClass(), constructor,
+                    invokeCode.toString()),
+                    e);
+        }
+    }
+
+    public static String generateCast(String arg, Class<?> fromClass, Class<?> toClass) {
+        StringBuilder cast = new StringBuilder();
+        if (fromClass.isPrimitive() && !toClass.isPrimitive()) {
+            Class<?> wraperClass = toClass;
+            if (!isWrapper(toClass)) {
+                wraperClass = getWrapper(fromClass);
+            }
+            cast.append("(");
+            cast.append(toClass.getCanonicalName());
+            cast.append(")");
+            cast.append(wraperClass.getCanonicalName());
+            cast.append(".valueOf((");
+            cast.append(getPrimitive(wraperClass).getCanonicalName());
+            cast.append(")");
+            cast.append(arg);
+            cast.append(")");
+        } else if (!fromClass.isPrimitive() && toClass.isPrimitive()) {
+            cast.append("(");
+            cast.append(toClass.getCanonicalName());
+            cast.append(")");
+            Class<?> wraperClass = fromClass;
+            if (!isWrapper(fromClass)) {
+                wraperClass = getWrapper(toClass);
+                cast.append("((");
+                if (Number.class.isAssignableFrom(wraperClass)) {
+                    cast.append(Number.class.getCanonicalName());
+                } else {
+                    cast.append(wraperClass.getCanonicalName());
+                }
+                cast.append(")");
+                cast.append(arg);
+                cast.append(")");
+            } else {
+                cast.append(arg);
+            }
+            cast.append(".");
+            cast.append(getPrimitive(wraperClass).getCanonicalName());
+            cast.append("Value()");
+        } else {
+            cast.append("(");
+            cast.append(toClass.getCanonicalName());
+            cast.append(")");
+            cast.append(arg);
+        }
+        return cast.toString();
+    }
+
+    private static Class<?> getPrimitive(Class<?> wrapperClass) {
+        return Wrapper.getPrimitive(wrapperClass);
+    }
+
+    private static Class<?> getWrapper(Class<?> toClass) {
+        return Wrapper.getWrapper(toClass);
+    }
+
+    private static boolean isWrapper(Class<?> toClass) {
+        return Wrapper.isWrapper(toClass);
+    }
+
+
+}

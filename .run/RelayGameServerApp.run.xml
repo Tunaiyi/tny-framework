@@ -1,0 +1,16 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="RelayGameServerApp" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+    <option name="ACTIVE_PROFILES" value="relay-game-server" />
+    <module name="tny-framework.tny-game-net-demo.main" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.tny.game.demo.relay.server.RelayGameServerApp" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="com.tny.game.demo.relay.server.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

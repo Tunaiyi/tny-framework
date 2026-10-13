@@ -1,0 +1,367 @@
+# 克隆岛（重叠簇合并+去重后；最小区块 20 行）
+
+
+## M1：42 岛（跨文件 42），冗余行合计 2,653
+
+### 模块冗余行排行
+- tny-game-protobuf: 1,408
+- tny-game-common-lang: 428
+- tny-game-net: 418
+- tools: 110
+- tny-game-common-reflect: 109
+- tny-game-basics: 43
+- tny-game-common-digest: 42
+- tny-game-starter-basics: 26
+- tny-game-codec-jprotobuf: 25
+- tny-game-net-netty4: 24
+- tny-game-redisson: 20
+
+### Top 25 岛
+- [跨文件] 冗余262行 原件52行
+    - tny-game-net/src/test/java/com/tny/game/net/session/RequestResponseClosureTest.java:50-101 (52行)
+    - tny-game-net/src/test/java/com/tny/game/net/transport/TunnelEventOrderTest.java:33-84 (52行)
+    - tny-game-net/src/test/java/com/tny/game/net/session/SessionOfflineOnceTest.java:71-115 (45行)
+    - tny-game-net/src/test/java/com/tny/game/net/session/SessionResendSafetyTest.java:99-143 (45行)
+    - tny-game-net/src/test/java/com/tny/game/net/transport/TunnelUnboundRejectionTest.java:57-97 (41行)
+    - tny-game-net/src/test/java/com/tny/game/net/session/ResendFilterConsistencyTest.java:47-87 (41行)
+    - tny-game-net/src/test/java/com/tny/game/net/session/SessionBroadcastIntentTest.java:187-224 (38行)
+- [跨文件] 冗余196行 原件55行
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JsonFormat.java:1171-1225 (55行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2XmlFormat.java:998-1052 (55行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2HtmlFormat.java:359-412 (54行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JavaPropsFormat.java:1080-1115 (36行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JsonFormat.java:1443-1468 (26行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JsonFormat.java:1374-1398 (25行)
+- [跨文件] 冗余191行 原件74行
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2XmlFormat.java:1267-1340 (74行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JsonFormat.java:1574-1646 (73行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2HtmlFormat.java:626-697 (72行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JavaPropsFormat.java:1368-1413 (46行)
+- [跨文件] 冗余139行 原件65行
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2CouchDBFormat.java:32-96 (65行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JsonFormat.java:835-870 (36行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2HtmlFormat.java:84-118 (35行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2XmlFormat.java:76-110 (35行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JsonFormat.java:102-134 (33行)
+- [跨文件] 冗余128行 原件64行
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2HtmlFormat.java:558-621 (64行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JsonFormat.java:1506-1569 (64行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2XmlFormat.java:1199-1262 (64行)
+- [跨文件] 冗余114行 原件38行
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2HtmlFormat.java:450-487 (38行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JavaPropsFormat.java:1154-1191 (38行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JsonFormat.java:1272-1309 (38行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2XmlFormat.java:1090-1127 (38行)
+- [跨文件] 冗余112行 原件83行
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JavaPropsFormat.java:368-450 (83行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2XmlFormat.java:303-369 (67行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JsonFormat.java:440-484 (45行)
+- [跨文件] 冗余112行 原件83行
+    - tny-game-net/src/test/java/com/tny/game/net/command/dispatcher/RpcContextFixture.java:146-228 (83行)
+    - tools/net-bench/src/main/java/com/tny/game/bench/net/MessageQueueBenchmark.java:157-206 (50行)
+    - tools/net-bench/src/main/java/com/tny/game/bench/net/MessageQueueBenchmark.java:95-128 (34行)
+    - tny-game-net/src/main/java/com/tny/game/net/message/TickMessageHead.java:103-130 (28行)
+- [跨文件] 冗余108行 原件66行
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2XmlFormat.java:1133-1198 (66行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2HtmlFormat.java:493-557 (65行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JsonFormat.java:1328-1370 (43行)
+- [跨文件] 冗余107行 原件108行
+    - tny-game-common-lang/src/main/java/com/tny/game/common/collection/map/access/WrapperObjectMap.java:45-152 (108行)
+    - tny-game-common-lang/src/main/java/com/tny/game/common/collection/map/access/ObjectMap.java:53-159 (107行)
+- [跨文件] 冗余89行 原件46行
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JavaPropsFormat.java:976-1021 (46行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2XmlFormat.java:896-940 (45行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JsonFormat.java:1057-1100 (44行)
+- [跨文件] 冗余86行 原件33行
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JavaPropsFormat.java:187-219 (33行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JsonFormat.java:209-240 (32行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2HtmlFormat.java:188-214 (27行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2XmlFormat.java:172-198 (27行)
+- [跨文件] 冗余71行 原件71行
+    - tny-game-common-lang/src/main/java/com/tny/game/common/worker/AbstractFuture.java:221-291 (71行)
+    - tny-game-common-lang/src/main/java/com/tny/game/common/worker/FutureTask.java:273-343 (71行)
+- [跨文件] 冗余68行 原件68行
+    - tny-game-common-lang/src/main/java/com/tny/game/common/worker/AbstractFuture.java:56-123 (68行)
+    - tny-game-common-lang/src/main/java/com/tny/game/common/worker/FutureTask.java:75-142 (68行)
+- [跨文件] 冗余66行 原件38行
+    - tny-game-net/src/test/java/com/tny/game/net/session/SessionOfflineOnceTest.java:32-69 (38行)
+    - tny-game-net/src/test/java/com/tny/game/net/session/SessionResendSafetyTest.java:62-98 (37行)
+    - tny-game-net/src/test/java/com/tny/game/net/session/RequestResponseClosureTest.java:122-150 (29行)
+- [跨文件] 冗余55行 原件31行
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2XmlFormat.java:253-283 (31行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2HtmlFormat.java:274-304 (31行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JsonFormat.java:325-348 (24行)
+- [跨文件] 冗余53行 原件53行
+    - tny-game-common-lang/src/main/java/com/tny/game/common/collection/empty/EmptyImmutableList.java:53-105 (53行)
+    - tny-game-common-lang/src/main/java/com/tny/game/common/collection/empty/EmptyImmutableSet.java:52-104 (53行)
+- [跨文件] 冗余48行 原件26行
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JavaPropsFormat.java:455-480 (26行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2XmlFormat.java:386-411 (26行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JsonFormat.java:493-514 (22行)
+- [跨文件] 冗余42行 原件22行
+    - tny-game-common-digest/src/test/java/com/tny/game/common/digest/CipherAndDigestTest.java:123-144 (22行)
+    - tny-game-common-digest/src/test/java/com/tny/game/common/digest/Base62Test.java:120-140 (21行)
+    - tny-game-common-digest/src/test/java/com/tny/game/common/digest/rsa/RSAUtilsTest.java:155-175 (21行)
+- [跨文件] 冗余38行 原件38行
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JavaPropsFormat.java:675-712 (38行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2XmlFormat.java:602-639 (38行)
+- [跨文件] 冗余36行 原件36行
+    - tny-game-common-lang/src/main/java/com/tny/game/common/worker/AbstractFuture.java:174-209 (36行)
+    - tny-game-common-lang/src/main/java/com/tny/game/common/worker/FutureTask.java:226-261 (36行)
+- [跨文件] 冗余35行 原件35行
+    - tny-game-common-reflect/src/main/java/com/tny/game/common/reflect/cglib/CGlibPropertyAccessor.java:18-52 (35行)
+    - tny-game-common-reflect/src/main/java/com/tny/game/common/reflect/javassist/JSsistPropertyAccessor.java:18-52 (35行)
+- [跨文件] 冗余32行 原件32行
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JsonFormat.java:1106-1137 (32行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2XmlFormat.java:946-977 (32行)
+- [跨文件] 冗余31行 原件31行
+    - tny-game-net/src/main/java/com/tny/game/net/command/plugins/VoidCommandPlugin.java:17-47 (31行)
+    - tny-game-net/src/main/java/com/tny/game/net/command/plugins/VoidInvokeCommandPlugin.java:17-47 (31行)
+- [跨文件] 冗余31行 原件31行
+    - tny-game-net/src/test/java/com/tny/game/net/session/MockNetTunnelCloseTest.java:40-70 (31行)
+    - tny-game-net/src/test/java/com/tny/game/net/session/SessionBroadcastIntentTest.java:258-288 (31行)
+
+## M2：42 岛（跨文件 42），冗余行合计 2,653
+
+### 模块冗余行排行
+- tny-game-protobuf: 1,408
+- tny-game-common-lang: 428
+- tny-game-net: 418
+- tools: 110
+- tny-game-common-reflect: 109
+- tny-game-basics: 43
+- tny-game-common-digest: 42
+- tny-game-starter-basics: 26
+- tny-game-codec-jprotobuf: 25
+- tny-game-net-netty4: 24
+- tny-game-redisson: 20
+
+### Top 25 岛
+- [跨文件] 冗余262行 原件52行
+    - tny-game-net/src/test/java/com/tny/game/net/session/RequestResponseClosureTest.java:50-101 (52行)
+    - tny-game-net/src/test/java/com/tny/game/net/transport/TunnelEventOrderTest.java:33-84 (52行)
+    - tny-game-net/src/test/java/com/tny/game/net/session/SessionOfflineOnceTest.java:71-115 (45行)
+    - tny-game-net/src/test/java/com/tny/game/net/session/SessionResendSafetyTest.java:99-143 (45行)
+    - tny-game-net/src/test/java/com/tny/game/net/transport/TunnelUnboundRejectionTest.java:57-97 (41行)
+    - tny-game-net/src/test/java/com/tny/game/net/session/ResendFilterConsistencyTest.java:47-87 (41行)
+    - tny-game-net/src/test/java/com/tny/game/net/session/SessionBroadcastIntentTest.java:187-224 (38行)
+- [跨文件] 冗余196行 原件55行
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JsonFormat.java:1171-1225 (55行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2XmlFormat.java:998-1052 (55行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2HtmlFormat.java:359-412 (54行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JavaPropsFormat.java:1080-1115 (36行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JsonFormat.java:1443-1468 (26行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JsonFormat.java:1374-1398 (25行)
+- [跨文件] 冗余191行 原件74行
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2XmlFormat.java:1267-1340 (74行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JsonFormat.java:1574-1646 (73行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2HtmlFormat.java:626-697 (72行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JavaPropsFormat.java:1368-1413 (46行)
+- [跨文件] 冗余139行 原件65行
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2CouchDBFormat.java:32-96 (65行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JsonFormat.java:835-870 (36行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2HtmlFormat.java:84-118 (35行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2XmlFormat.java:76-110 (35行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JsonFormat.java:102-134 (33行)
+- [跨文件] 冗余128行 原件64行
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2HtmlFormat.java:558-621 (64行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JsonFormat.java:1506-1569 (64行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2XmlFormat.java:1199-1262 (64行)
+- [跨文件] 冗余114行 原件38行
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2HtmlFormat.java:450-487 (38行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JavaPropsFormat.java:1154-1191 (38行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JsonFormat.java:1272-1309 (38行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2XmlFormat.java:1090-1127 (38行)
+- [跨文件] 冗余112行 原件83行
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JavaPropsFormat.java:368-450 (83行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2XmlFormat.java:303-369 (67行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JsonFormat.java:440-484 (45行)
+- [跨文件] 冗余112行 原件83行
+    - tny-game-net/src/test/java/com/tny/game/net/command/dispatcher/RpcContextFixture.java:146-228 (83行)
+    - tools/net-bench/src/main/java/com/tny/game/bench/net/MessageQueueBenchmark.java:157-206 (50行)
+    - tools/net-bench/src/main/java/com/tny/game/bench/net/MessageQueueBenchmark.java:95-128 (34行)
+    - tny-game-net/src/main/java/com/tny/game/net/message/TickMessageHead.java:103-130 (28行)
+- [跨文件] 冗余108行 原件66行
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2XmlFormat.java:1133-1198 (66行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2HtmlFormat.java:493-557 (65行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JsonFormat.java:1328-1370 (43行)
+- [跨文件] 冗余107行 原件108行
+    - tny-game-common-lang/src/main/java/com/tny/game/common/collection/map/access/WrapperObjectMap.java:45-152 (108行)
+    - tny-game-common-lang/src/main/java/com/tny/game/common/collection/map/access/ObjectMap.java:53-159 (107行)
+- [跨文件] 冗余89行 原件46行
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JavaPropsFormat.java:976-1021 (46行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2XmlFormat.java:896-940 (45行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JsonFormat.java:1057-1100 (44行)
+- [跨文件] 冗余86行 原件33行
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JavaPropsFormat.java:187-219 (33行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JsonFormat.java:209-240 (32行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2HtmlFormat.java:188-214 (27行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2XmlFormat.java:172-198 (27行)
+- [跨文件] 冗余71行 原件71行
+    - tny-game-common-lang/src/main/java/com/tny/game/common/worker/AbstractFuture.java:221-291 (71行)
+    - tny-game-common-lang/src/main/java/com/tny/game/common/worker/FutureTask.java:273-343 (71行)
+- [跨文件] 冗余68行 原件68行
+    - tny-game-common-lang/src/main/java/com/tny/game/common/worker/AbstractFuture.java:56-123 (68行)
+    - tny-game-common-lang/src/main/java/com/tny/game/common/worker/FutureTask.java:75-142 (68行)
+- [跨文件] 冗余66行 原件38行
+    - tny-game-net/src/test/java/com/tny/game/net/session/SessionOfflineOnceTest.java:32-69 (38行)
+    - tny-game-net/src/test/java/com/tny/game/net/session/SessionResendSafetyTest.java:62-98 (37行)
+    - tny-game-net/src/test/java/com/tny/game/net/session/RequestResponseClosureTest.java:122-150 (29行)
+- [跨文件] 冗余55行 原件31行
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2XmlFormat.java:253-283 (31行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2HtmlFormat.java:274-304 (31行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JsonFormat.java:325-348 (24行)
+- [跨文件] 冗余53行 原件53行
+    - tny-game-common-lang/src/main/java/com/tny/game/common/collection/empty/EmptyImmutableList.java:53-105 (53行)
+    - tny-game-common-lang/src/main/java/com/tny/game/common/collection/empty/EmptyImmutableSet.java:52-104 (53行)
+- [跨文件] 冗余48行 原件26行
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JavaPropsFormat.java:455-480 (26行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2XmlFormat.java:386-411 (26行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JsonFormat.java:493-514 (22行)
+- [跨文件] 冗余42行 原件22行
+    - tny-game-common-digest/src/test/java/com/tny/game/common/digest/CipherAndDigestTest.java:123-144 (22行)
+    - tny-game-common-digest/src/test/java/com/tny/game/common/digest/Base62Test.java:120-140 (21行)
+    - tny-game-common-digest/src/test/java/com/tny/game/common/digest/rsa/RSAUtilsTest.java:155-175 (21行)
+- [跨文件] 冗余38行 原件38行
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JavaPropsFormat.java:675-712 (38行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2XmlFormat.java:602-639 (38行)
+- [跨文件] 冗余36行 原件36行
+    - tny-game-common-lang/src/main/java/com/tny/game/common/worker/AbstractFuture.java:174-209 (36行)
+    - tny-game-common-lang/src/main/java/com/tny/game/common/worker/FutureTask.java:226-261 (36行)
+- [跨文件] 冗余35行 原件35行
+    - tny-game-common-reflect/src/main/java/com/tny/game/common/reflect/cglib/CGlibPropertyAccessor.java:18-52 (35行)
+    - tny-game-common-reflect/src/main/java/com/tny/game/common/reflect/javassist/JSsistPropertyAccessor.java:18-52 (35行)
+- [跨文件] 冗余32行 原件32行
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JsonFormat.java:1106-1137 (32行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2XmlFormat.java:946-977 (32行)
+- [跨文件] 冗余31行 原件31行
+    - tny-game-net/src/main/java/com/tny/game/net/command/plugins/VoidCommandPlugin.java:17-47 (31行)
+    - tny-game-net/src/main/java/com/tny/game/net/command/plugins/VoidInvokeCommandPlugin.java:17-47 (31行)
+- [跨文件] 冗余31行 原件31行
+    - tny-game-net/src/test/java/com/tny/game/net/session/MockNetTunnelCloseTest.java:40-70 (31行)
+    - tny-game-net/src/test/java/com/tny/game/net/session/SessionBroadcastIntentTest.java:258-288 (31行)
+
+## M3：87 岛（跨文件 73），冗余行合计 5,646
+
+### 模块冗余行排行
+- tny-game-protobuf: 1,151
+- tny-game-starter-basics: 784
+- tny-game-common-lang: 708
+- tny-game-net: 649
+- tny-game-basics: 511
+- tny-game-common-reflect: 306
+- tny-game-net-netty4: 186
+- tny-game-starter-data: 183
+- tny-game-starter-net-netty4: 172
+- tny-game-protoex: 149
+- tny-game-oplog: 134
+- tny-game-doc: 122
+
+### Top 25 岛
+- [跨文件] 冗余770行 原件343行
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2XmlFormat.java:998-1340 (343行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2HtmlFormat.java:359-697 (339行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JsonFormat.java:1491-1646 (156行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JsonFormat.java:1244-1320 (77行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JsonFormat.java:1171-1226 (56行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JavaPropsFormat.java:1080-1133 (54行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JavaPropsFormat.java:1368-1413 (46行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JavaPropsFormat.java:1150-1191 (42行)
+- [跨文件] 冗余366行 原件59行
+    - tny-game-basics/src/main/java/com/tny/game/basics/item/Behaviors.java:12-70 (59行)
+    - tny-game-basics/src/main/java/com/tny/game/basics/mould/Features.java:12-69 (58行)
+    - tny-game-basics/src/main/java/com/tny/game/basics/item/DemandParams.java:12-66 (55行)
+    - tny-game-basics/src/main/java/com/tny/game/basics/mould/Moulds.java:12-65 (54行)
+    - tny-game-basics/src/main/java/com/tny/game/basics/item/Actions.java:12-62 (51行)
+    - tny-game-basics/src/main/java/com/tny/game/basics/item/Abilities.java:24-69 (46行)
+    - tny-game-common-scheduler/src/main/java/com/tny/game/common/scheduler/TaskReceiverTypes.java:35-74 (40行)
+    - tny-game-basics/src/main/java/com/tny/game/basics/item/ItemTypes.java:48-81 (34行)
+    - tny-game-basics/src/main/java/com/tny/game/basics/item/DemandTypes.java:43-70 (28行)
+- [跨文件] 冗余276行 原件73行
+    - tny-game-starter-basics/src/main/java/com/tny/game/basics/item/dto/StringEntryDTO.java:49-121 (73行)
+    - tny-game-starter-basics/src/main/java/com/tny/game/basics/item/dto/DoubleEntryDTO.java:53-121 (69行)
+    - tny-game-starter-basics/src/main/java/com/tny/game/basics/item/dto/FloatEntryDTO.java:53-121 (69行)
+    - tny-game-starter-basics/src/main/java/com/tny/game/basics/item/dto/IntEntryDTO.java:53-121 (69行)
+    - tny-game-starter-basics/src/main/java/com/tny/game/basics/item/dto/LongEntryDTO.java:53-121 (69行)
+- [跨文件] 冗余220行 原件44行
+    - tny-game-starter-basics/src/main/java/com/tny/game/basics/item/dto/BooleanListDTO.java:12-55 (44行)
+    - tny-game-starter-basics/src/main/java/com/tny/game/basics/item/dto/DoubleListDTO.java:12-55 (44行)
+    - tny-game-starter-basics/src/main/java/com/tny/game/basics/item/dto/FloatListDTO.java:12-55 (44行)
+    - tny-game-starter-basics/src/main/java/com/tny/game/basics/item/dto/IntListDTO.java:12-55 (44行)
+    - tny-game-starter-basics/src/main/java/com/tny/game/basics/item/dto/LongListDTO.java:12-55 (44行)
+    - tny-game-starter-basics/src/main/java/com/tny/game/basics/item/dto/StringListDTO.java:12-55 (44行)
+- [跨文件] 冗余147行 原件65行
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2XmlFormat.java:68-132 (65行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2HtmlFormat.java:84-142 (59行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2CouchDBFormat.java:21-64 (44行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JsonFormat.java:91-134 (44行)
+- [跨文件] 冗余134行 原件134行
+    - tny-game-oplog/src/main/java/com/tny/game/oplog/record/ConsumeRecord.java:12-145 (134行)
+    - tny-game-oplog/src/main/java/com/tny/game/oplog/record/ReceiveRecord.java:12-145 (134行)
+- [跨文件] 冗余127行 原件82行
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2XmlFormat.java:896-977 (82行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JsonFormat.java:1057-1137 (81行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JavaPropsFormat.java:976-1021 (46行)
+- [跨文件] 冗余121行 原件121行
+    - tny-game-common-lang/src/main/java/com/tny/game/common/worker/AbstractFuture.java:174-294 (121行)
+    - tny-game-common-lang/src/main/java/com/tny/game/common/worker/FutureTask.java:226-346 (121行)
+- [跨文件] 冗余118行 原件40行
+    - tny-game-net/src/main/java/com/tny/game/net/exception/SessionException.java:11-50 (40行)
+    - tny-game-net/src/main/java/com/tny/game/net/exception/TunnelException.java:11-50 (40行)
+    - tny-game-net/src/main/java/com/tny/game/net/relay/exception/RelayPacketHandleException.java:14-52 (39行)
+    - tny-game-net/src/main/java/com/tny/game/net/relay/link/exception/RelayException.java:14-52 (39行)
+- [跨文件] 冗余107行 原件108行
+    - tny-game-common-lang/src/main/java/com/tny/game/common/collection/map/access/WrapperObjectMap.java:45-152 (108行)
+    - tny-game-common-lang/src/main/java/com/tny/game/common/collection/map/access/ObjectMap.java:53-159 (107行)
+- [跨文件] 冗余107行 原件67行
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JavaPropsFormat.java:455-521 (67行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2XmlFormat.java:386-451 (66行)
+    - tny-game-protobuf/src/main/java/com/tny/game/protobuf/format/Protobuf2JsonFormat.java:493-533 (41行)
+- [跨文件] 冗余102行 原件51行
+    - tny-game-starter-data/src/main/java/com/tny/game/data/configuration/mongodb/MongoStorageAccessorFactoryProperties.java:12-62 (51行)
+    - tny-game-starter-data/src/main/java/com/tny/game/data/configuration/redisson/RedissonStorageAccessorFactoryProperties.java:12-62 (51行)
+    - tny-game-starter-data/src/main/java/com/tny/game/data/configuration/storage/AsyncObjectStorageFactoriesProperties.java:12-62 (51行)
+- [跨文件] 冗余89行 原件90行
+    - tny-game-common-lang/src/main/java/com/tny/game/common/collection/empty/EmptyImmutableList.java:21-110 (90行)
+    - tny-game-common-lang/src/main/java/com/tny/game/common/collection/empty/EmptyImmutableSet.java:21-109 (89行)
+- [跨文件] 冗余87行 原件87行
+    - tny-game-starter-net-netty4/src/main/java/com/tny/game/net/netty4/network/guide/SpringBootNetBootstrapProperties.java:12-98 (87行)
+    - tny-game-starter-net-netty4/src/main/java/com/tny/game/net/netty4/network/guide/SpringBootRpcBootstrapProperties.java:12-98 (87行)
+- [跨文件] 冗余79行 原件79行
+    - tny-game-net/src/main/java/com/tny/game/net/exception/NetCheckException.java:11-89 (79行)
+    - tny-game-net/src/main/java/com/tny/game/net/exception/NetException.java:11-89 (79行)
+- [跨文件] 冗余72行 原件72行
+    - tny-game-common-reflect/src/main/java/com/tny/game/common/reflect/cglib/CGlibUtils.java:12-83 (72行)
+    - tny-game-common-reflect/src/main/java/com/tny/game/common/reflect/javassist/JavassistAccessors.java:12-83 (72行)
+- [跨文件] 冗余72行 原件36行
+    - tny-game-common-lifecycle/src/main/java/com/tny/game/common/lifecycle/PostCloser.java:11-46 (36行)
+    - tny-game-common-lifecycle/src/main/java/com/tny/game/common/lifecycle/PostStarter.java:11-46 (36行)
+    - tny-game-common-lifecycle/src/main/java/com/tny/game/common/lifecycle/PrepareStarter.java:11-46 (36行)
+- [跨文件] 冗余68行 原件68行
+    - tny-game-common-lang/src/main/java/com/tny/game/common/worker/AbstractFuture.java:56-123 (68行)
+    - tny-game-common-lang/src/main/java/com/tny/game/common/worker/FutureTask.java:75-142 (68行)
+- [跨文件] 冗余67行 原件43行
+    - tny-game-net/src/main/java/com/tny/game/net/exception/RpcRejectReceiveException.java:11-53 (43行)
+    - tny-game-net/src/main/java/com/tny/game/net/exception/RpcRejectSendException.java:11-53 (43行)
+    - tny-game-net/src/main/java/com/tny/game/net/exception/TunnelConnectException.java:30-53 (24行)
+- [跨文件] 冗余66行 原件66行
+    - tny-game-common-lang/src/main/java/com/tny/game/common/concurrent/worker/AsyncWorker.java:98-163 (66行)
+    - tny-game-common-lang/src/main/java/com/tny/game/common/concurrent/worker/SerialAsyncWorker.java:46-111 (66行)
+- [同文件] 冗余66行 原件66行
+    - tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:296-361 (66行)
+    - tny-game-starter-basics/src/main/java/com/tny/game/basics/item/capacity/CapacityObjectStorer.java:530-595 (66行)
+- [跨文件] 冗余62行 原件67行
+    - tny-game-common-lang/src/main/java/com/tny/game/common/event/VoidBindEvent.java:19-85 (67行)
+    - tny-game-common-lang/src/main/java/com/tny/game/common/event/GeneralBindEvent.java:20-81 (62行)
+- [同文件] 冗余60行 原件21行
+    - tny-game-common-lang/src/main/java/com/tny/game/common/number/NumberAide.java:322-342 (21行)
+    - tny-game-common-lang/src/main/java/com/tny/game/common/number/NumberAide.java:150-169 (20行)
+    - tny-game-common-lang/src/main/java/com/tny/game/common/number/NumberAide.java:186-205 (20行)
+    - tny-game-common-lang/src/main/java/com/tny/game/common/number/NumberAide.java:222-241 (20行)
+- [同文件] 冗余59行 原件63行
+    - tny-game-net/src/main/java/com/tny/game/net/session/ContactService.java:127-189 (63行)
+    - tny-game-net/src/main/java/com/tny/game/net/session/ContactService.java:254-312 (59行)
+- [跨文件] 冗余59行 原件34行
+    - tny-game-doc/src/main/java/com/tny/game/doc/holder/DocField.java:88-121 (34行)
+    - tny-game-doc/src/main/java/com/tny/game/doc/holder/DocParam.java:35-68 (34行)
+    - tny-game-doc/src/main/java/com/tny/game/doc/holder/DocMethod.java:126-150 (25行)

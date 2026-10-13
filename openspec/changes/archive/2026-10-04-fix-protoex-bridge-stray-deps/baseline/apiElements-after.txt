@@ -1,0 +1,7 @@
+Configuration on demand is an incubating feature.
+------------------------------------------------------------
+Project ':tny-game-net-netty4-codec-protoex'
+------------------------------------------------------------
+apiElements - API elements for the 'main' feature. (n)
+No dependencies
+A web-based, searchable dependency report is available by adding the --scan option.

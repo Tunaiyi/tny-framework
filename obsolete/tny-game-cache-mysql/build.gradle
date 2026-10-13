@@ -1,0 +1,31 @@
+group "com.tny.game"
+
+apply plugin: "maven-publish"
+
+dependencies {
+
+
+    testImplementation project(":tny-game-cache-test")
+
+    api libs.spring_context_support
+    api libs.spring_jdbc
+    api libs.spring_tx
+    api libs.spring_core
+    api libs.spring_beans
+
+    api libs.commons_dbcp2
+    api libs.commons_pool2
+
+    api libs.mysql_connector
+
+    api 'com.jolbox:bonecp:0.8.0.RELEASE'
+
+    api project(":tny-game-cache")
+
+    api(libs.'jade') {
+        exclude group: 'com.tny.game', module: 'tny-game-common-lang'
+        exclude group: 'com.tny.game', module: 'tny-game-common-base'
+    }
+}
+
+

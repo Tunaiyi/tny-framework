@@ -1,0 +1,94 @@
+
+------------------------------------------------------------
+Project ':tny-game-net'
+------------------------------------------------------------
+
+runtimeClasspath - Runtime classpath of source set 'main'.
++--- com.baidu:jprotobuf:2.4.23
+|    +--- com.google.protobuf:protobuf-java:3.21.7 -> 3.22.2
+|    +--- com.google.auto.value:auto-value:1.0
+|    +--- com.baidu:jprotobuf-protoparser:1.0.1
+|    +--- org.slf4j:slf4j-api:1.7.26 -> 2.0.10
+|    \--- commons-io:commons-io:2.7 -> 2.14.0
++--- project :tny-game-expr
+|    +--- org.slf4j:slf4j-api -> 2.0.10
+|    \--- org.apache.commons:commons-lang3:3.18.0
++--- project :tny-game-common-lifecycle
+|    +--- project :tny-game-scanning
+|    |    +--- org.springframework:spring-core -> 6.1.2
+|    |    |    \--- org.springframework:spring-jcl:6.1.2
+|    |    +--- org.slf4j:slf4j-api -> 2.0.10
+|    |    \--- org.apache.commons:commons-lang3:3.18.0
+|    +--- project :tny-game-common-lang
+|    |    +--- com.google.guava:guava:33.0.0-jre
+|    |    |    +--- com.google.guava:failureaccess:1.0.2
+|    |    |    +--- com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava
+|    |    |    +--- com.google.code.findbugs:jsr305:3.0.2
+|    |    |    +--- org.checkerframework:checker-qual:3.41.0 -> 3.42.0
+|    |    |    \--- com.google.errorprone:error_prone_annotations:2.23.0 -> 2.24.1
+|    |    +--- org.apache.commons:commons-collections4:4.4
+|    |    +--- io.netty:netty-common -> 4.1.137.Final
+|    |    +--- org.slf4j:slf4j-api -> 2.0.10
+|    |    \--- org.apache.commons:commons-lang3:3.18.0
+|    +--- project :tny-game-common-reflect
+|    |    +--- project :tny-game-common-lang (*)
+|    |    +--- cglib:cglib-nodep:3.3.0
+|    |    +--- org.javassist:javassist:3.30.2-GA
+|    |    +--- org.slf4j:slf4j-api -> 2.0.10
+|    |    \--- org.apache.commons:commons-lang3:3.18.0
+|    +--- commons-codec:commons-codec:1.15
+|    +--- org.apache.commons:commons-collections4:4.4
+|    +--- com.google.guava:guava:33.0.0-jre (*)
+|    +--- org.slf4j:slf4j-api -> 2.0.10
+|    \--- org.apache.commons:commons-lang3:3.18.0
++--- project :tny-game-common-io
+|    +--- project :tny-game-common-lang (*)
+|    +--- commons-io:commons-io:2.14.0
+|    +--- commons-codec:commons-codec:1.15
+|    +--- org.slf4j:slf4j-api -> 2.0.10
+|    \--- org.apache.commons:commons-lang3:3.18.0
++--- project :tny-game-common-digest
+|    +--- project :tny-game-common-lang (*)
+|    +--- project :tny-game-common-reflect (*)
+|    +--- commons-io:commons-io:2.14.0
+|    +--- commons-codec:commons-codec:1.15
+|    +--- org.apache.commons:commons-collections4:4.4
+|    +--- com.google.guava:guava:33.0.0-jre (*)
+|    +--- org.slf4j:slf4j-api -> 2.0.10
+|    \--- org.apache.commons:commons-lang3:3.18.0
++--- project :tny-game-codec-jprotobuf
+|    +--- project :tny-game-loader
+|    |    +--- project :tny-game-scanning (*)
+|    |    +--- project :tny-game-common-lang (*)
+|    |    +--- org.springframework:spring-context -> 6.1.2
+|    |    |    +--- org.springframework:spring-aop:6.1.2
+|    |    |    |    +--- org.springframework:spring-beans:6.1.2
+|    |    |    |    |    \--- org.springframework:spring-core:6.1.2 (*)
+|    |    |    |    \--- org.springframework:spring-core:6.1.2 (*)
+|    |    |    +--- org.springframework:spring-beans:6.1.2 (*)
+|    |    |    +--- org.springframework:spring-core:6.1.2 (*)
+|    |    |    +--- org.springframework:spring-expression:6.1.2
+|    |    |    |    \--- org.springframework:spring-core:6.1.2 (*)
+|    |    |    \--- io.micrometer:micrometer-observation:1.12.1
+|    |    |         \--- io.micrometer:micrometer-commons:1.12.1
+|    |    +--- org.slf4j:slf4j-api -> 2.0.10
+|    |    \--- org.apache.commons:commons-lang3:3.18.0
+|    +--- project :tny-game-scanning (*)
+|    +--- project :tny-game-codec
+|    |    +--- project :tny-game-common-lang (*)
+|    |    +--- org.springframework:spring-core -> 6.1.2 (*)
+|    |    +--- org.apache.commons:commons-collections4:4.4
+|    |    +--- org.slf4j:slf4j-api -> 2.0.10
+|    |    \--- org.apache.commons:commons-lang3:3.18.0
+|    +--- project :tny-game-doc-annotation
+|    |    +--- org.slf4j:slf4j-api -> 2.0.10
+|    |    \--- org.apache.commons:commons-lang3:3.18.0
+|    +--- com.baidu:jprotobuf:2.4.23 (*)
+|    +--- org.slf4j:slf4j-api -> 2.0.10
+|    \--- org.apache.commons:commons-lang3:3.18.0
++--- org.slf4j:slf4j-api -> 2.0.10
+\--- org.apache.commons:commons-lang3:3.18.0
+
+(*) - Indicates repeated occurrences of a transitive dependency subtree. Gradle expands transitive dependency subtrees only once per project; repeat occurrences only display the root of the subtree, followed by this annotation.
+
+A web-based, searchable dependency report is available by adding the --scan option.

@@ -1,0 +1,17 @@
+date: 2026-10-05T21:24:07Z 任务 1.3 route 四态本地模拟（提取 publish.yml route step 的 shell 原样执行，GH 上下文以 env 注入模拟）
+--- case A: release 事件（ref_name=v5.7.9）
+mode=release
+branch=5.7.9.release
+--- case B: dispatch 填 5.7.9.release
+mode=release
+branch=5.7.9.release
+--- case C: dispatch 填 dev/5.8.x
+mode=snapshot
+lines=["dev/5.8.x"]
+--- case D: dispatch 填非法值 5.7.x.y
+::warning::workflow_dispatch 输入既非 <X.Y.Z>.release 也非开发线形态（dev/N.M.x 或 N.M.x），本次运行不进入任何发布链
+mode=none
+--- case E: schedule（真实仓库线谱系）
+snapshot lines picked from lineage registry: 5.7.x
+mode=snapshot
+lines=["5.7.x"]

@@ -1,0 +1,37 @@
+plugins {
+    // 横切角色统一插件（consolidate-module-modes-plugin）
+    id 'tny.module-setting'
+}
+
+// 自述：应用形态蓝本，可作 integrationTest 受控隔离子进程（消费方 tny.demo-isolation 沿依赖边就地核对）
+moduleSetting {
+    enableApp()
+}
+
+//        imports {
+
+dependencies {
+
+    implementation libs.log4jApi
+    implementation libs.log4jCore
+    implementation libs.log4jSlf4jImpl
+    implementation libs.disruptor
+
+    implementation libs.jprotobuf
+    implementation libs.springBootStarterLog4j2
+
+    implementation project(':tny-game-loader')
+    implementation project(':tny-game-doc')
+    implementation project(':tny-game-net-netty4-codec-jprotobuf')
+
+    implementation project(':tny-game-starter-redisson')
+    implementation project(':tny-game-data-redisson')
+
+    implementation project(':tny-game-starter-mongodb')
+    implementation project(':tny-game-data-mongodb')
+
+    implementation project(':tny-game-starter-data')
+    implementation project(':tny-game-starter-net-netty4')
+
+}
+
