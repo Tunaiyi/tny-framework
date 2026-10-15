@@ -1,0 +1,52 @@
+# 集成测试专用装配覆盖（add-starter-net-integration-tests design D2/D5）：接入侧。
+# 集群条目结构整体声明于此（yml 后加载源整段替换 demo 默认 15800 端口条目），
+# 仅中继目标端口经 --it.game.relay.port 运行时传入。
+# codec verifier/crypto 点名 legacy 单元：抗 default-to-mac-generation 演进下的构建缓存漂移
+# （Map 叶键级合并，message-body-codec/security-keys 仍继承 demo 基底 profile）。
+tny:
+  net:
+    bootstrap:
+      network:
+        server:
+          name: game-service
+          bind-address: "${it.host}:${it.gateway.network.port}"
+          channel:
+            # 透明中继消费面接线（工作流三路证实+反驳验证的根因）：decoder 的
+            # controllerRelayStrategy 只打 relay 戳，接力转发依赖接入通道装配
+            # relayMessageHandlerFactory；demo yml:29 历史死键误判致其从未被选中——
+            # 缺失时表外协议在网关本地 dispatch 回 205，永不进中继链路
+            message-handler-factory: relayMessageHandlerFactory
+            encoder:
+              verifier: cRC64CodecVerifier
+              crypto: xOrCodecCrypto
+            decoder:
+              verifier: cRC64CodecVerifier
+              crypto: xOrCodecCrypto
+      relay:
+        client:
+          channel:
+            encoder:
+              verifier: cRC64CodecVerifier
+              crypto: xOrCodecCrypto
+            decoder:
+              verifier: cRC64CodecVerifier
+              crypto: xOrCodecCrypto
+    relay:
+      clusters:
+        - service: game-service
+          # 键空间约定（缺口②教训固化）：serve-name 显式给出且=service 查询键
+          serve-name: game-service
+          discovery: false
+          connection-size: 1
+          serve-nodes:
+            - id: 1
+              # 静态节点健康显式声明（Spring 绑定走空构造，BaseServeNode 默认不生效——缺口③）
+              healthy: true
+              url: "tcp://${it.host}:${it.game.relay.port}"
+
+spring:
+  # 网关 profile 自带 tny.data.enable=false（无 redis 消费者），独立 JVM 无实体扫描污染，
+  # 排除官方 redisson starter 避免其 eager 客户端连默认 6379
+  autoconfigure:
+    exclude:
+      - org.redisson.spring.starter.RedissonAutoConfigurationV2

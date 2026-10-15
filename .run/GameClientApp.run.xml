@@ -1,0 +1,16 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="GameClientApp" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+    <option name="ACTIVE_PROFILES" value="client" />
+    <module name="tny-framework.tny-game-net-demo.main" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.tny.game.demo.net.client.GameClientApp" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="com.tny.game.demo.net.session.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

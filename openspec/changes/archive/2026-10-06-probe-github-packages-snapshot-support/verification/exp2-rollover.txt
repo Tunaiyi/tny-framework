@@ -1,0 +1,7 @@
+date: 2026-10-05T08:15:18Z 任务 4.4 自造滚动轮（20261005.092000 buildNumber=2）
+pom-2 => 200
+jar-2 => 200
+metadata-roll => 200
+<timestamp>20261005.092000
+<buildNumber>2
+=== 滚动后再解析应命中 -2 ===

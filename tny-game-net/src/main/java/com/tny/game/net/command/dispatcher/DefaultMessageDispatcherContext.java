@@ -1,0 +1,226 @@
+/*
+ * Copyright (c) 2020 Tunaiyi
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.tny.game.net.command.dispatcher;
+
+import com.tny.game.common.collection.*;
+import com.tny.game.common.concurrent.collection.*;
+import com.tny.game.common.utils.*;
+import com.tny.game.net.annotation.*;
+import com.tny.game.net.application.*;
+import com.tny.game.net.command.auth.*;
+import com.tny.game.net.command.listener.*;
+import com.tny.game.net.command.plugins.*;
+import org.slf4j.*;
+
+import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import static com.tny.game.common.utils.ObjectAide.*;
+
+/**
+ * <p>
+ *
+ * @author : kgtny
+ * @date : 2021/5/6 2:29 下午
+ */
+public class DefaultMessageDispatcherContext implements NetMessageDispatcherContext {
+
+    public static final Logger LOGGER = LoggerFactory.getLogger(DefaultMessageDispatcherContext.class);
+
+    private final NetAppContext appContext;
+
+    /**
+     * 所有协议身法验证器
+     */
+    private AuthenticationValidator defaultValidator;
+
+    /**
+     * 插件管理器
+     */
+    private final Map<Class<?>, CommandPlugin<?>> pluginMap = new CopyOnWriteMap<>();
+
+    /**
+     * 认证器列表
+     */
+    private final Map<Object, AuthenticationValidator> authenticationValidators = new CopyOnWriteMap<>();
+
+    /**
+     * 派发错误监听器
+     */
+    private final List<MessageCommandListener> commandListeners = new CopyOnWriteArrayList<>();
+
+    public DefaultMessageDispatcherContext(NetAppContext appContext) {
+        this.appContext = appContext;
+    }
+
+    @Override
+    public NetAppContext getAppContext() {
+        return this.appContext;
+    }
+
+    @Override
+    public CommandPlugin<?> getPlugin(Class<? extends CommandPlugin<?>> pluginClass) {
+        return this.pluginMap.get(pluginClass);
+    }
+
+    @Override
+    public AuthenticationValidator getValidator(Class<? extends AuthenticationValidator> validatorClass) {
+        AuthenticationValidator validator = null;
+        if (validatorClass != null) {
+            validator = as(this.authenticationValidators.get(validatorClass));
+            Asserts.checkNotNull(validator, "{} 认证器不存在", validatorClass);
+        }
+        return validator;
+    }
+
+    @Override
+    public AuthenticationValidator getValidator(Object protocol) {
+        return this.authenticationValidators.getOrDefault(protocol, this.defaultValidator);
+    }
+
+    @Override
+    public Collection<MessageCommandListener> getCommandListener() {
+        return Collections.unmodifiableCollection(this.commandListeners);
+    }
+
+    /**
+     * 添加插件列表
+     *
+     * @param plugins 插件列表
+     */
+    @Override
+    public void addControllerPlugin(Collection<? extends CommandPlugin<?>> plugins) {
+        this.pluginMap.putAll(plugins.stream()
+                .collect(CollectorsAide.toMap(CommandPlugin::getClass)));
+    }
+
+    /**
+     * 添加插件
+     *
+     * @param plugin 插件
+     */
+    @Override
+    public void addControllerPlugin(CommandPlugin<?> plugin) {
+        this.pluginMap.put(plugin.getClass(), plugin);
+    }
+
+    /**
+     * 添加身份校验器
+     *
+     * @param provider 身份校验器
+     */
+    @Override
+    public void addAuthProvider(AuthenticationValidator provider) {
+        Class<?> providerClass = provider.getClass();
+        AuthProtocol protocol = providerClass.getAnnotation(AuthProtocol.class);
+        if (protocol != null) {
+            if (protocol.all()) {
+                // 语义为"尚无全局时首个注册成功"：原 checkNotNull(getDefaultValidator().getClass())
+                // 首次注册即 NPE 且断言方向颠倒（command-execution"鉴权校验器可注册"契约）
+                Asserts.checkArgument(this.defaultValidator == null, "添加 {} 失败! 已存在全局AuthProvider {}", providerClass, this.defaultValidator);
+                this.defaultValidator = provider;
+            } else {
+                for (int value : protocol.protocol()) {
+                    putObject(this.authenticationValidators, value, provider);
+                }
+            }
+        }
+        putObject(this.authenticationValidators, provider.getClass(), provider);
+    }
+
+    /**
+     * 添加身份校验器列表
+     *
+     * @param providers 身份校验器列表
+     */
+    @Override
+    public void addAuthProvider(Collection<? extends AuthenticationValidator> providers) {
+        providers.forEach(this::addAuthProvider);
+    }
+
+    @Override
+    public void addCommandListener(final MessageCommandListener listener) {
+        this.commandListeners.add(listener);
+    }
+
+    @Override
+    public void addCommandListener(final Collection<MessageCommandListener> listeners) {
+        listeners.forEach(this::addCommandListener);
+    }
+
+    @Override
+    public void removeCommandListener(final MessageCommandListener listener) {
+        this.commandListeners.remove(listener);
+    }
+
+    @Override
+    public void clearCommandListeners() {
+        this.commandListeners.clear();
+    }
+
+    //    @Override
+    //    public void fireExecuteStart(RpcInvokeCommand command) {
+    //        for (MessageCommandListener listener : this.getCommandListener()) {
+    //            try {
+    //                listener.onExecuteStart(command);
+    //            } catch (Throwable e) {
+    //                LOGGER.error("on fireExecuteStart exception", e);
+    //            }
+    //        }
+    //    }
+    //
+    //    @Override
+    //    public void fireExecuteEnd(RpcInvokeCommand command, Throwable cause) {
+    //        for (MessageCommandListener listener : this.getCommandListener()) {
+    //            try {
+    //                listener.onExecuteEnd(command, cause);
+    //            } catch (Throwable e) {
+    //                LOGGER.error("on fireExecuteEnd exception", e);
+    //            }
+    //        }
+    //    }
+
+    @Override
+    public void fireException(RpcInvokeCommand command, Throwable cause) {
+        for (MessageCommandListener listener : this.getCommandListener()) {
+            try {
+                listener.onException(command, cause);
+            } catch (Throwable e) {
+                LOGGER.error("on fireExecuteEnd exception", e);
+            }
+        }
+    }
+
+    @Override
+    public void fireDone(RpcInvokeCommand command, Throwable cause) {
+        for (MessageCommandListener listener : this.getCommandListener()) {
+            try {
+                listener.onDone(command, cause);
+            } catch (Throwable e) {
+                LOGGER.error("on fireDone( exception", e);
+            }
+        }
+    }
+
+    private <K, V> void putObject(Map<K, V> map, K key, V value) {
+        V oldValue = map.put(key, value);
+        if (oldValue != null) {
+            Asserts.throwBy(IllegalArgumentException::new,
+                    "添加 {} 失败! key {} 存在 {} 对象", value.getClass(), key, oldValue.getClass());
+        }
+    }
+
+}

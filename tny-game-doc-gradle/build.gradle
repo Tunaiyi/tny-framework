@@ -1,0 +1,52 @@
+// Gradle 插件模块例外组号：插件 id com.tny.game 及其 marker 坐标谱系不随框架主组号迁移
+// （spec central-publishing"Gradle 插件构件本次不入 Central"；例外登记于 design D2）
+group = pluginLegacyGroup
+
+apply plugin: 'java-gradle-plugin'
+
+gradlePlugin {
+    plugins {
+        classesScanPlugin {
+            id = 'com.tny.game'
+            displayName = 'Tny Gradle Plagin'
+            description = 'Gradle Plagin For Tny Framework '
+            implementationClass = 'com.tny.game.gradle.doc.plugin.TnyGamePlugin'
+        }
+    }
+}
+// Plugin Portal 发布接入从未完成，遗留的注释配置行已随 fix-dependency-version-governance D10 清除
+// （该插件不走 Gradle Plugin Portal 的决策注记补记于 central-publishing 规格域，见本册 verification-notes）
+
+publishing {
+    repositories {
+        maven {
+            // 快照判据与 tny.publications 同源（endsWith('-SNAPSHOT')，centralize-resolution-config D5
+            // 防形态漂移：任何以 SNAPSHOT 结尾的非快照标记不应被误路由到 release 仓）
+            url = version.endsWith('-SNAPSHOT') ? SNAPSHOT_REPOSITORY_URL : RELEASE_REPOSITORY_URL
+            credentials {
+                username = NEXUS_USERNAME
+                password = NEXUS_PASSWORD
+            }
+        }
+    }
+}
+//    main {
+//        groovy.srcDirs += ["src/main/groovy"]
+
+dependencies {
+    api gradleApi()
+    api libs.toolsTemplate
+    api(project(':tny-game-doc')) {
+        exclude group: 'org.codehaus.groovy', module: 'groovy-all'
+    }
+    api project(':tny-game-doc-annotation')
+    api project(':tny-game-common-lang')
+    api project(':tny-game-scanning')
+    api libs.commonsIo
+    api libs.springCore
+    api libs.jacksonCore
+    api libs.jacksonDatabind
+    api libs.jacksonAnnotations
+
+}
+

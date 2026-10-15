@@ -1,0 +1,11 @@
+Configuration on demand is an incubating feature.
+[dryRun][warn] 跟踪文件有未提交变更，真实执行将被阻断：
+releaseCutAndTag 计划：
+  来源        5.7.x
+  发布分支    9.9.9.release（切自来源并检出）
+  附注标签    v9.9.9（指向新分支头，随分支推送——标签先于制品由顺序固化）
+  推送远端    github
+后续步骤：  ./gradlew publish   然后  ./gradlew releaseRebaseBack
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+For more on this, please refer to https://docs.gradle.org/8.14.5/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.

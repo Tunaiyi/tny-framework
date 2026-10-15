@@ -1,0 +1,59 @@
+# T3 拓扑·接入应用（game-1 角色，复用 demo RelayGatewayServerApp 形态）装配声明
+# （design D5"T3 同 T2，仅中继跳数不同"，任务 2.2 T3 级联段——审计 CRITICAL 补齐实体）。
+# 与 it-t2-access.yml 同形：dial 目标为级联首跳中继 relay-1（it.r1.server.port）。
+# 键空间与 codec 点名约定同 it-t2-relay.yml；服务身份词汇为 R 族矩阵共享（隔离靠进程组/端口）。
+# 运行期占位：it.gw.net.port、it.r1.server.port
+tny:
+  net:
+    bootstrap:
+      network:
+        server:
+          name: game-service
+          bind-address: "${it.host}:${it.gw.net.port}"
+          channel:
+            encoder:
+              message-body-codec: typeProtobufMessageBodyCodec
+              verifier: cRC64CodecVerifier
+              crypto: xOrCodecCrypto
+              security-keys:
+                - abcdefghijklmn
+                - opqrstuvwxyz
+            decoder:
+              message-body-codec: typeProtobufMessageBodyCodec
+              message-relay-strategy: controllerRelayStrategy
+              verifier: cRC64CodecVerifier
+              crypto: xOrCodecCrypto
+              security-keys:
+                - abcdefghijklmn
+                - opqrstuvwxyz
+            tunnel-factory: "relayTunnelFactory"
+            message-handler-factory: relayMessageHandlerFactory
+      relay:
+        client:
+          channel:
+            encoder:
+              message-body-codec: typeProtobufMessageBodyCodec
+              verifier: cRC64CodecVerifier
+              crypto: xOrCodecCrypto
+            decoder:
+              message-body-codec: typeProtobufMessageBodyCodec
+              verifier: cRC64CodecVerifier
+              crypto: xOrCodecCrypto
+    relay:
+      clusters:
+        - service: game-service
+          serve-name: game-service
+          discovery: false
+          connection-size: 1
+          serve-nodes:
+            - id: 1
+              healthy: true
+              url: "tcp://${it.host}:${it.r1.server.port}"
+      router:
+        fixed-message-router:
+          service: game-service
+
+spring:
+  autoconfigure:
+    exclude:
+      - org.redisson.spring.starter.RedissonAutoConfigurationV2

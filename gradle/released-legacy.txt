@@ -1,0 +1,51 @@
+#
+# Copyright (c) 2020 Tunaiyi
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+# 历史正式发布版本号黑名单（裸号形态）。
+# 以下版本号已经以 "-RELEASE" 后缀形态正式发布过，Maven 排序规则将 "RELEASE" 限定符
+# 与裸号做了等价特判，同号双形态共存会导致版本比较不可推理，因此裸号形态禁止复用
+# 本清单中的任何版本号。发布门禁（gradle/publications.gradle）在发布分支执行发布任务
+# 时校验目标版本号是否命中本清单，命中即拒绝。
+#
+# 维护规则：本清单只增不减。新的事实来源见变更 adopt-plain-ga-versioning 的
+# openspec/changes/adopt-plain-ga-versioning/reconciliation.md（2026-10-02 三方对账：
+# 制品库 maven-releases 浏览清单、git tag 账本、*.release 分支）。
+# 裸号正式发布（不带后缀）产生的版本号不需要加入本清单：裸号与裸号同名由发布仓
+# 禁止重复部署策略保护，不存在两种形态共存的乱序问题。
+
+2.0.1
+2.0.2
+2.0.2.1
+2.0.2.2
+2.0.2.3
+2.0.2.4
+2.0.3
+2.0.4
+2.1.0
+2.1.1
+2.1.2
+2.1.3
+3.0.0
+3.0.1
+3.1.0
+3.2.0
+3.2.1
+3.2.2
+3.3.0
+3.4.0
+3.4.1
+4.1.0
+5.5.0

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.tny.game.common.utils.CiCircuitProbeTest" tests="1" skipped="0" failures="1" errors="0" timestamp="2026-10-01T18:23:26" hostname="runnervm8df0l" time="0.031">
+  <properties/>
+  <testcase name="circuitProbe()" classname="com.tny.game.common.utils.CiCircuitProbeTest" time="0.031">
+    <failure message="org.opentest4j.AssertionFailedError: PROBE fix-ci-unit-flakes 2.1: 验证 unit 诊断电路投递路径" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: PROBE fix-ci-unit-flakes 2.1: 验证 unit 诊断电路投递路径
+	at app//org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:38)
+	at app//org.junit.jupiter.api.Assertions.fail(Assertions.java:138)
+	at app//com.tny.game.common.utils.CiCircuitProbeTest.circuitProbe(CiCircuitProbeTest.java:17)
+	at java.base@21.0.12.1/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base@21.0.12.1/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base@21.0.12.1/java.util.ArrayList.forEach(ArrayList.java:1596)
+</failure>
+  </testcase>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

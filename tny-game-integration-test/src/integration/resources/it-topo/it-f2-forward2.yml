@@ -1,0 +1,58 @@
+# F2 拓扑·第二跳转发应用（ForwardApp）装配声明（design D7，任务 3.3）。
+# 关键实证点：rpc.server 名必须为 game-service——第一跳的转发选择按报文的
+# to.serviceType 查会话节点集，本节点若以 gateway-service 自居则第一跳无 game-service
+# 可用会话（RPC_SERVICE_NOT_AVAILABLE，断链定位在跳一）；以 game-service 自居则报文可
+# 到达本节点，但 to 已被重写为本节点身份——本节点 tryForward 判 to==currentType 本地终止
+# （断链定位在跳二）。两分支均为"可定位失败"的合法结局（D7：两跳 to 重写语义未实证，
+# 失败即移交），连通分支待框架语义增强后自动激活。
+# 双 forwardable 修正同跳一。rpc 条目不加 serve-name（D5 终形补记）。运行期占位：it.f2.rpc.port、it.g2.rpc.port、it.redis.*
+tny:
+  data:
+    enable: false
+  app:
+    name: t2-forward2
+    app-type: gateway-service
+    scope-type: online
+  net:
+    bootstrap:
+      rpc:
+        server:
+          name: game-service
+          forwardable: true
+          bind-address: "${it.host}:${it.f2.rpc.port}"
+          channel:
+            encoder:
+              message-body-codec: typeProtobufMessageBodyCodec
+              verifier: cRC64CodecVerifier
+              crypto: xOrCodecCrypto
+            decoder:
+              message-body-codec: typeProtobufMessageBodyCodec
+              verifier: cRC64CodecVerifier
+              crypto: xOrCodecCrypto
+        client:
+          forwardable: true
+          channel:
+            encoder:
+              message-body-codec: typeProtobufMessageBodyCodec
+              verifier: cRC64CodecVerifier
+              crypto: xOrCodecCrypto
+            decoder:
+              message-body-codec: typeProtobufMessageBodyCodec
+              verifier: cRC64CodecVerifier
+              crypto: xOrCodecCrypto
+    rpc:
+      cluster:
+        services:
+          - service: game-service
+            discovery: false
+            host: "${it.host}"
+            port: ${it.g2.rpc.port}
+            username: game-client
+
+spring:
+  # 官方 redisson starter 无缝可退：统一指容器（T2 实证）
+  data:
+    redis:
+      host: "${it.redis.host}"
+      port: ${it.redis.port}
+      password: '${it.redis.password}'

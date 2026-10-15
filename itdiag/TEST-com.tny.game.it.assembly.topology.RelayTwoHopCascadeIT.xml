@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.tny.game.it.assembly.topology.RelayTwoHopCascadeIT" tests="1" skipped="0" failures="1" errors="0" timestamp="2026-10-15T21:48:05.796Z" hostname="runnervm8k3b6" time="25.215">
+  <properties/>
+  <testcase name="twoHopCascadeAssemblyVerifiableAndBreakLocalizableAtFirstRelayHop()" classname="com.tny.game.it.assembly.topology.RelayTwoHopCascadeIT" time="25.215">
+    <failure message="java.util.concurrent.CancellationException" type="java.util.concurrent.CancellationException">java.util.concurrent.CancellationException
+	at java.base/java.util.concurrent.CompletableFuture.cancel(CompletableFuture.java:2510)
+	at com.tny.game.net.transport.MessageRespondFuture.cancel(MessageRespondFuture.java:42)
+	at com.tny.game.net.transport.RespondFutureMonitor.close(RespondFutureMonitor.java:117)
+	at com.tny.game.net.transport.RespondFutureMonitor.removeHolder(RespondFutureMonitor.java:66)
+	at com.tny.game.net.session.BaseNetSession.destroyFutureHolder(BaseNetSession.java:446)
+	at com.tny.game.net.session.BaseNetSession.setClose(BaseNetSession.java:402)
+	at com.tny.game.net.session.BaseNetSession.close(BaseNetSession.java:554)
+	at com.tny.game.net.session.BaseNetSession.onUnactivated(BaseNetSession.java:409)
+	at com.tny.game.net.transport.BaseNetTunnel.notifyUnactivated(BaseNetTunnel.java:293)
+	at com.tny.game.net.transport.BaseNetTunnel.close(BaseNetTunnel.java:283)
+	at com.tny.game.net.transport.ClientTransportTunnel.onDisconnected(ClientTransportTunnel.java:54)
+	at com.tny.game.net.transport.BaseNetTunnel.disconnect(BaseNetTunnel.java:259)
+	at com.tny.game.net.netty4.network.NettyChannelMessageTransport.doClose(NettyChannelMessageTransport.java:100)
+	at com.tny.game.net.netty4.channel.NettyChannelConnection.close(NettyChannelConnection.java:78)
+	at com.tny.game.net.netty4.network.NettyClientGuide.lambda$connectAsync$0(NettyClientGuide.java:129)
+	at io.netty.util.concurrent.DefaultPromise.notifyListener0(DefaultPromise.java:604)
+	at io.netty.util.concurrent.DefaultPromise.notifyListenersNow(DefaultPromise.java:571)
+	at io.netty.util.concurrent.DefaultPromise.notifyListeners(DefaultPromise.java:506)
+	at io.netty.util.concurrent.DefaultPromise.setValue0(DefaultPromise.java:650)
+	at io.netty.util.concurrent.DefaultPromise.setSuccess0(DefaultPromise.java:639)
+	at io.netty.util.concurrent.DefaultPromise.trySuccess(DefaultPromise.java:119)
+	at io.netty.channel.DefaultChannelPromise.trySuccess(DefaultChannelPromise.java:84)
+	at io.netty.channel.AbstractChannel$CloseFuture.setClosed(AbstractChannel.java:1161)
+	at io.netty.channel.AbstractChannel$AbstractUnsafe.doClose0(AbstractChannel.java:753)
+	at io.netty.channel.AbstractChannel$AbstractUnsafe.close(AbstractChannel.java:729)
+	at io.netty.channel.AbstractChannel$AbstractUnsafe.close(AbstractChannel.java:619)
+	at io.netty.channel.epoll.AbstractEpollChannel$AbstractEpollUnsafe.shutdownInput(AbstractEpollChannel.java:522)
+	at io.netty.channel.epoll.AbstractEpollStreamChannel$EpollStreamUnsafe.epollInReady(AbstractEpollStreamChannel.java:828)
+	at io.netty.channel.epoll.EpollEventLoop.processReady(EpollEventLoop.java:501)
+	at io.netty.channel.epoll.EpollEventLoop.run(EpollEventLoop.java:399)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:1007)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+</failure>
+  </testcase>
+  <system-out><![CDATA[CMD RelayGameServerApp args=[com.tny.game.demo.relay.server.RelayGameServerApp, --spring.profiles.active=relay-game-server, --spring.config.additional-location=file:/home/runner/work/tny-framework/tny-framework/tny-game-integration-test/build/resources/integration/it-topo/it-t3-game2.yml, --it.redis.host=localhost, --it.redis.port=32782, --it.redis.password=tNbrH3NSErGd, --it.host=127.0.0.1, --it.g2.net.port=45147, --it.g2.relay.port=40947, --it.mongo.uri=mongodb://localhost:32781/it-t3]
+CMD RelayNodeApp args=[com.tny.game.it.assembly.topology.node.RelayNodeApp, --spring.profiles.active=t3-relay-two, --spring.config.additional-location=file:/home/runner/work/tny-framework/tny-framework/tny-game-integration-test/build/resources/integration/it-topo/it-t3-relay2.yml, --it.redis.host=localhost, --it.redis.port=32782, --it.redis.password=tNbrH3NSErGd, --it.host=127.0.0.1, --it.r2.server.port=46521, --it.g2.relay.port=40947, --spring.autoconfigure.exclude=org.redisson.spring.starter.RedissonAutoConfigurationV2,org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration,org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration,org.springframework.boot.autoconfigure.data.mongo.MongoRepositoriesAutoConfiguration]
+CMD RelayNodeApp args=[com.tny.game.it.assembly.topology.node.RelayNodeApp, --spring.profiles.active=t3-relay-one, --spring.config.additional-location=file:/home/runner/work/tny-framework/tny-framework/tny-game-integration-test/build/resources/integration/it-topo/it-t3-relay1.yml, --it.redis.host=localhost, --it.redis.port=32782, --it.redis.password=tNbrH3NSErGd, --it.host=127.0.0.1, --it.r1.server.port=41233, --it.r2.server.port=46521, --spring.autoconfigure.exclude=org.redisson.spring.starter.RedissonAutoConfigurationV2,org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration,org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration,org.springframework.boot.autoconfigure.data.mongo.MongoRepositoriesAutoConfiguration]
+CMD RelayGatewayServerApp args=[com.tny.game.demo.relay.gateway.RelayGatewayServerApp, --spring.profiles.active=relay-gateway-server, --spring.config.additional-location=file:/home/runner/work/tny-framework/tny-framework/tny-game-integration-test/build/resources/integration/it-topo/it-t3-access.yml, --it.host=127.0.0.1, --it.gw.net.port=46521, --it.r1.server.port=41233, --spring.autoconfigure.exclude=org.redisson.spring.starter.RedissonAutoConfigurationV2,org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration,org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration,org.springframework.boot.autoconfigure.data.mongo.MongoRepositoriesAutoConfiguration]
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

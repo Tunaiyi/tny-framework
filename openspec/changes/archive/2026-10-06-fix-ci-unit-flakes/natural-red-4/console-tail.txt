@@ -1,0 +1,532 @@
+Downloading https://services.gradle.org/distributions/gradle-8.14.5-bin.zip
+.......................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................
+Unzipping /home/runner/.gradle/wrapper/dists/gradle-8.14.5-bin/690y85m0j9nfaub7xoiayko8a/gradle-8.14.5-bin.zip to /home/runner/.gradle/wrapper/dists/gradle-8.14.5-bin/690y85m0j9nfaub7xoiayko8a
+Set executable permissions for: /home/runner/.gradle/wrapper/dists/gradle-8.14.5-bin/690y85m0j9nfaub7xoiayko8a/gradle-8.14.5/bin/gradle
+
+Welcome to Gradle 8.14.5!
+
+Here are the highlights of this release:
+ - Java 24 support
+ - GraalVM Native Image toolchain selection
+ - Enhancements to test reporting
+ - Build Authoring improvements
+
+For more details see https://docs.gradle.org/8.14.5/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+Configuration on demand is an incubating feature.
+> Task :buildSrc:extractPluginRequests
+> Task :buildSrc:generatePluginAdapters
+> Task :buildSrc:compileJava
+> Task :buildSrc:compileGroovy
+> Task :buildSrc:compileGroovyPlugins
+> Task :buildSrc:pluginDescriptors
+> Task :buildSrc:processResources
+> Task :buildSrc:classes
+> Task :buildSrc:jar
+> Task :tny-game-common-reflect:processResources NO-SOURCE
+> Task :tny-game-actor:processResources NO-SOURCE
+> Task :tny-game-scanning:processResources NO-SOURCE
+> Task :tny-game-tester:processResources NO-SOURCE
+> Task :tny-benchmark:compileJava NO-SOURCE
+> Task :tny-benchmark:processResources NO-SOURCE
+> Task :tny-benchmark:classes UP-TO-DATE
+> Task :tny-game-common-lifecycle:processResources
+> Task :tny-game-actor:processTestResources
+> Task :tny-game-common-lang:processResources
+> Task :tny-game-basics:processResources
+> Task :tny-game-common-io:processResources NO-SOURCE
+> Task :tny-benchmark:compileTestJava NO-SOURCE
+> Task :tny-game-expr-groovy:processResources NO-SOURCE
+> Task :tny-benchmark:processTestResources NO-SOURCE
+> Task :tny-benchmark:testClasses UP-TO-DATE
+> Task :tny-game-expr:processResources NO-SOURCE
+> Task :tny-benchmark:test NO-SOURCE
+> Task :tny-game-boot:processResources
+> Task :tny-game-basics:processTestResources
+> Task :tny-game-boot:processTestResources NO-SOURCE
+> Task :tny-game-boot-log4j2:processResources NO-SOURCE
+> Task :tny-game-loader:processResources
+> Task :tny-game-boot-log4j2:processTestResources NO-SOURCE
+> Task :tny-game-codec:processResources NO-SOURCE
+> Task :tny-game-expr-jsr223:processResources NO-SOURCE
+> Task :tny-game-codec:processTestResources NO-SOURCE
+> Task :tny-game-codec-jackson:processResources
+> Task :tny-game-doc-annotation:processResources NO-SOURCE
+> Task :tny-game-codec-jackson:processTestResources NO-SOURCE
+> Task :tny-game-common-digest:processResources NO-SOURCE
+> Task :tny-game-codec-jprotobuf:processResources
+> Task :tny-game-common-digest:processTestResources NO-SOURCE
+> Task :tny-game-codec-jprotobuf:processTestResources NO-SOURCE
+> Task :tny-game-common-lifecycle:processTestResources NO-SOURCE
+> Task :tny-game-common-reflect:processTestResources NO-SOURCE
+> Task :tny-game-common-scheduler:processResources
+> Task :tny-game-common-io:processTestResources
+> Task :tny-game-common-scheduler:processTestResources NO-SOURCE
+> Task :tny-game-data-mongodb:processResources NO-SOURCE
+> Task :tny-game-data:processResources
+> Task :tny-game-data:processTestResources NO-SOURCE
+> Task :tny-game-data-mongodb:processTestResources NO-SOURCE
+> Task :tny-game-data-redisson:processResources NO-SOURCE
+> Task :tny-game-mongodb:processResources
+> Task :tny-game-data-redisson:processTestResources NO-SOURCE
+> Task :tny-game-redisson:processResources
+> Task :tny-game-doc:processResources NO-SOURCE
+> Task :tny-game-expr-mvel:processResources NO-SOURCE
+> Task :tny-game-net:processResources
+> Task :tny-game-rpc:processResources
+> Task :tny-game-doc:processTestResources NO-SOURCE
+> Task :tny-game-doc-gradle:pluginDescriptors
+> Task :tny-game-expr-graaljs:processResources NO-SOURCE
+> Task :tny-game-doc-gradle:processResources
+> Task :tny-game-expr-graaljs:processTestResources NO-SOURCE
+> Task :tny-game-expr-groovy:processTestResources NO-SOURCE
+> Task :tny-game-doc-gradle:processTestResources NO-SOURCE
+> Task :tny-game-expr-jsr223:processTestResources NO-SOURCE
+> Task :tny-game-expr-mvel:processTestResources NO-SOURCE
+> Task :tny-game-expr-luaj:processResources NO-SOURCE
+> Task :tny-game-net-netty4:processResources NO-SOURCE
+> Task :tny-game-expr-luaj:processTestResources NO-SOURCE
+> Task :tny-game-protoex:processResources
+> Task :tny-game-net-netty4-codec-jprotobuf:processResources
+> Task :tny-game-net-netty4-codec-protoex:processResources NO-SOURCE
+> Task :tny-game-net-test:processResources NO-SOURCE
+> Task :tny-game-loader:processTestResources NO-SOURCE
+> Task :tny-game-integration-test:processResources NO-SOURCE
+> Task :tny-game-integration-test:processTestResources NO-SOURCE
+> Task :tny-game-mongodb:processTestResources NO-SOURCE
+> Task :tny-game-namnspace:processResources NO-SOURCE
+> Task :tny-game-namnspace-etcd:processResources NO-SOURCE
+> Task :tny-game-namnspace:processTestResources NO-SOURCE
+> Task :tny-game-namnspace-etcd:processTestResources NO-SOURCE
+> Task :tny-game-net:processTestResources NO-SOURCE
+> Task :tny-game-starter-codec:processResources
+> Task :tny-game-net-demo:processResources
+> Task :tny-game-starter-data:processResources
+> Task :tny-game-starter-mongodb:processResources
+> Task :tny-game-starter-net-netty4:processResources
+> Task :tny-game-net-demo:processTestResources NO-SOURCE
+> Task :tny-game-starter-redisson:processResources
+> Task :tny-game-net-netty4-codec-jprotobuf:processTestResources NO-SOURCE
+> Task :tny-game-net-netty4:processTestResources
+> Task :tny-game-net-netty4-codec-protoex:processTestResources NO-SOURCE
+> Task :tny-game-net-test:processTestResources NO-SOURCE
+> Task :tny-game-protobuf:processResources NO-SOURCE
+> Task :tny-game-oplog:processResources
+> Task :tny-game-oplog:processTestResources
+> Task :tny-game-oplog-log4j:processResources NO-SOURCE
+> Task :tny-game-oplog-log4j:processTestResources NO-SOURCE
+> Task :tny-game-protoex:processTestResources NO-SOURCE
+> Task :tny-game-redisson:processTestResources NO-SOURCE
+> Task :tny-game-rpc:processTestResources NO-SOURCE
+> Task :tny-game-starter-basics:processResources
+> Task :tny-game-starter-basics:processTestResources NO-SOURCE
+> Task :tny-game-starter-codec:processTestResources NO-SOURCE
+> Task :tny-game-starter-data:processTestResources
+> Task :tny-game-starter-mongodb:processTestResources NO-SOURCE
+> Task :tny-game-starter-namnspace:processResources
+> Task :tny-game-starter-namnspace:processTestResources NO-SOURCE
+> Task :tny-game-starter-net-apm-skywalking:processResources
+> Task :tny-game-starter-net-apm-skywalking:processTestResources NO-SOURCE
+> Task :tny-game-starter-net-netty4:processTestResources NO-SOURCE
+> Task :tny-game-starter-redisson:processTestResources NO-SOURCE
+> Task :tny-game-tester:processTestResources NO-SOURCE
+> Task :tny-game-expr:compileJava
+> Task :tny-game-expr:classes
+> Task :tny-game-expr:jar
+> Task :tny-game-expr:processTestResources NO-SOURCE
+> Task :tny-game-doc-annotation:compileJava
+> Task :tny-game-doc-annotation:classes
+> Task :tny-game-doc-annotation:jar
+> Task :tny-game-doc-annotation:processTestResources NO-SOURCE
+
+> Task :tny-game-scanning:compileJava
+Note: /home/runner/work/tny-framework/tny-framework/tny-game-scanning/src/main/java/com/tny/game/scanner/ClassScanner.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tny-game-scanning:classes
+> Task :tny-game-scanning:jar
+> Task :tny-game-scanning:processTestResources
+> Task :tny-game-protobuf:compileJava
+> Task :tny-game-protobuf:classes
+> Task :tny-game-protobuf:jar
+> Task :tny-game-protobuf:processTestResources NO-SOURCE
+
+> Task :tny-game-common-lang:compileJava
+Note: /home/runner/work/tny-framework/tny-framework/tny-game-common-lang/src/main/java/com/tny/game/common/url/URL.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tny-game-common-lang:classes
+> Task :tny-game-common-lang:jar
+> Task :tny-game-common-lang:processTestResources
+> Task :tny-game-codec:compileJava
+> Task :tny-game-codec:classes
+> Task :tny-game-codec:jar
+> Task :tny-game-common-io:compileJava
+> Task :tny-game-common-io:classes
+> Task :tny-game-common-io:jar
+> Task :tny-game-namnspace:compileJava
+> Task :tny-game-namnspace:classes
+> Task :tny-game-namnspace:jar
+> Task :tny-game-loader:compileJava
+> Task :tny-game-loader:classes
+> Task :tny-game-loader:jar
+> Task :tny-game-common-reflect:compileJava
+> Task :tny-game-common-reflect:classes
+> Task :tny-game-common-reflect:jar
+> Task :tny-game-common-lifecycle:compileJava
+> Task :tny-game-common-lifecycle:classes
+> Task :tny-game-common-lifecycle:jar
+> Task :tny-game-tester:compileJava
+> Task :tny-game-tester:classes
+> Task :tny-game-tester:jar
+> Task :tny-game-common-digest:compileJava
+> Task :tny-game-codec:compileTestJava NO-SOURCE
+> Task :tny-game-codec:testClasses UP-TO-DATE
+> Task :tny-game-codec:test NO-SOURCE
+> Task :tny-game-expr-jsr223:compileJava
+> Task :tny-game-actor:compileJava
+> Task :tny-game-actor:classes
+> Task :tny-game-codec-jprotobuf:compileJava
+> Task :tny-game-expr-jsr223:classes
+> Task :tny-game-expr-jsr223:jar
+> Task :tny-game-codec-jprotobuf:classes
+> Task :tny-game-codec-jprotobuf:jar
+> Task :tny-game-codec-jprotobuf:compileTestJava NO-SOURCE
+> Task :tny-game-codec-jprotobuf:testClasses UP-TO-DATE
+> Task :tny-game-codec-jprotobuf:test NO-SOURCE
+> Task :tny-game-common-digest:classes
+> Task :tny-game-common-digest:jar
+
+> Task :tny-game-codec-jackson:compileJava
+Note: /home/runner/work/tny-framework/tny-framework/tny-game-codec-jackson/src/main/java/com/tny/game/codec/jackson/mapper/ObjectMapperFactory.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tny-game-codec-jackson:classes
+
+> Task :tny-game-basics:compileJava
+Note: /home/runner/work/tny-framework/tny-framework/tny-game-basics/src/main/java/com/tny/game/basics/item/loader/jackson/JacksonModelLoader.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tny-game-codec-jackson:jar
+> Task :tny-game-codec-jackson:compileTestJava NO-SOURCE
+> Task :tny-game-codec-jackson:testClasses UP-TO-DATE
+> Task :tny-game-codec-jackson:test NO-SOURCE
+> Task :tny-game-basics:classes
+> Task :tny-game-basics:jar
+> Task :tny-game-boot:compileJava
+> Task :tny-game-boot:classes
+> Task :tny-game-boot:jar
+> Task :tny-game-boot:compileTestJava NO-SOURCE
+> Task :tny-game-boot:testClasses UP-TO-DATE
+> Task :tny-game-boot:test NO-SOURCE
+> Task :tny-game-expr-groovy:compileJava
+> Task :tny-game-actor:compileTestJava
+> Task :tny-game-common-io:compileTestJava
+> Task :tny-game-expr-groovy:classes
+> Task :tny-game-actor:testClasses
+> Task :tny-game-expr-groovy:jar
+> Task :tny-game-common-io:testClasses
+> Task :tny-game-common-digest:compileTestJava
+> Task :tny-game-common-digest:testClasses
+> Task :tny-game-boot-log4j2:compileJava
+> Task :tny-game-boot-log4j2:classes
+> Task :tny-game-boot-log4j2:compileTestJava NO-SOURCE
+> Task :tny-game-boot-log4j2:testClasses UP-TO-DATE
+> Task :tny-game-boot-log4j2:test NO-SOURCE
+
+> Task :tny-game-common-lang:compileTestJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tny-game-common-lang:testClasses
+> Task :tny-game-common-lifecycle:compileTestJava
+> Task :tny-game-common-lifecycle:testClasses
+
+> Task :tny-game-basics:compileTestJava
+Note: /home/runner/work/tny-framework/tny-framework/tny-game-basics/src/test/java/com/tny/game/basics/item/xml/YamlTest.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tny-game-basics:testClasses
+> Task :tny-game-common-lifecycle:test
+> Task :tny-game-actor:test
+> Task :tny-game-common-reflect:compileTestJava
+> Task :tny-game-common-reflect:testClasses
+> Task :tny-game-common-digest:test
+> Task :tny-game-common-scheduler:compileJava
+> Task :tny-game-common-scheduler:classes
+> Task :tny-game-common-scheduler:jar
+> Task :tny-game-common-scheduler:compileTestJava
+> Task :tny-game-common-scheduler:testClasses
+> Task :tny-game-data:compileJava
+> Task :tny-game-data:classes
+> Task :tny-game-data:jar
+> Task :tny-game-common-reflect:test
+> Task :tny-game-data:compileTestJava
+> Task :tny-game-data:testClasses
+> Task :tny-game-basics:test
+
+> Task :tny-game-common-io:test
+
+ResourceLoadingRobustnessTest > sameDirectoryFilesShareOneWatchUnit() FAILED
+    org.opentest4j.AssertionFailedError at ResourceLoadingRobustnessTest.java:333
+
+78 tests completed, 1 failed
+
+> Task :tny-game-data:test
+> Task :tny-game-common-io:test FAILED
+
+> Task :tny-game-mongodb:compileJava
+Note: /home/runner/work/tny-framework/tny-framework/tny-game-mongodb/src/main/java/com/tny/game/data/mongodb/configuration/MongodbBeanConfiguration.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tny-game-expr-mvel:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tny-game-mongodb:classes
+> Task :tny-game-mongodb:jar
+> Task :tny-game-expr-mvel:classes
+> Task :tny-game-expr-mvel:jar
+> Task :tny-game-doc-annotation:compileTestJava NO-SOURCE
+> Task :tny-game-doc-annotation:testClasses UP-TO-DATE
+> Task :tny-game-doc-annotation:test NO-SOURCE
+> Task :tny-game-expr:compileTestJava NO-SOURCE
+> Task :tny-game-expr:testClasses UP-TO-DATE
+> Task :tny-game-expr:test NO-SOURCE
+> Task :tny-game-data-mongodb:compileJava
+> Task :tny-game-data-mongodb:classes
+> Task :tny-game-data-mongodb:jar
+> Task :tny-game-data-mongodb:compileTestJava NO-SOURCE
+> Task :tny-game-data-mongodb:testClasses UP-TO-DATE
+> Task :tny-game-data-mongodb:test NO-SOURCE
+> Task :tny-game-expr-groovy:compileTestJava NO-SOURCE
+> Task :tny-game-expr-groovy:testClasses UP-TO-DATE
+> Task :tny-game-expr-groovy:test NO-SOURCE
+> Task :tny-game-expr-jsr223:compileTestJava NO-SOURCE
+> Task :tny-game-expr-jsr223:testClasses UP-TO-DATE
+> Task :tny-game-expr-jsr223:test NO-SOURCE
+
+> Task :tny-game-net:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tny-game-expr-luaj:compileJava
+> Task :tny-game-expr-luaj:classes
+> Task :tny-game-expr-luaj:compileTestJava NO-SOURCE
+> Task :tny-game-expr-luaj:testClasses UP-TO-DATE
+> Task :tny-game-expr-luaj:test NO-SOURCE
+> Task :tny-game-expr-mvel:compileTestJava NO-SOURCE
+> Task :tny-game-expr-mvel:testClasses UP-TO-DATE
+> Task :tny-game-expr-mvel:test NO-SOURCE
+> Task :tny-game-common-scheduler:test
+> Task :tny-game-loader:compileTestJava NO-SOURCE
+> Task :tny-game-loader:testClasses UP-TO-DATE
+> Task :tny-game-loader:test NO-SOURCE
+> Task :tny-game-mongodb:compileTestJava NO-SOURCE
+> Task :tny-game-mongodb:testClasses UP-TO-DATE
+> Task :tny-game-mongodb:test NO-SOURCE
+> Task :tny-game-redisson:compileJava
+> Task :tny-game-namnspace:compileTestJava
+> Task :tny-game-redisson:classes
+> Task :tny-game-redisson:jar
+> Task :tny-game-net:classes
+> Task :tny-game-net:jar
+
+> Task :tny-game-protoex:compileJava
+Note: /home/runner/work/tny-framework/tny-framework/tny-game-protoex/src/main/java/com/tny/game/protoex/field/runtime/RuntimeUnsafeFieldDescFactory.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tny-game-data-redisson:compileJava
+> Task :tny-game-data-redisson:classes
+> Task :tny-game-data-redisson:jar
+> Task :tny-game-data-redisson:compileTestJava NO-SOURCE
+> Task :tny-game-data-redisson:testClasses UP-TO-DATE
+> Task :tny-game-data-redisson:test NO-SOURCE
+> Task :tny-game-protoex:classes
+> Task :tny-game-expr-graaljs:compileJava
+> Task :tny-game-expr-graaljs:classes
+> Task :tny-game-expr-graaljs:compileTestJava NO-SOURCE
+> Task :tny-game-expr-graaljs:testClasses UP-TO-DATE
+> Task :tny-game-expr-graaljs:test NO-SOURCE
+> Task :tny-game-namnspace:testClasses
+> Task :tny-game-protoex:jar
+> Task :tny-game-net-test:compileJava
+> Task :tny-game-net-test:classes
+> Task :tny-game-net-test:jar
+> Task :tny-game-rpc:compileJava
+> Task :tny-game-namnspace:test
+> Task :tny-game-rpc:classes
+> Task :tny-game-rpc:jar
+> Task :tny-game-doc:compileJava
+> Task :tny-game-doc:classes
+> Task :tny-game-doc:jar
+> Task :tny-game-doc:compileTestJava NO-SOURCE
+> Task :tny-game-doc:testClasses UP-TO-DATE
+> Task :tny-game-doc:test NO-SOURCE
+> Task :tny-game-doc-gradle:compileJava NO-SOURCE
+
+> Task :tny-game-net:compileTestJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: Some input files use unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tny-game-common-lang:test
+> Task :tny-game-net-netty4:compileJava
+> Task :tny-game-starter-codec:compileJava
+> Task :tny-game-net-netty4-codec-jprotobuf:compileJava
+> Task :tny-game-net-netty4:classes
+> Task :tny-game-net-netty4:jar
+> Task :tny-game-net-netty4-codec-jprotobuf:classes
+> Task :tny-game-net-netty4-codec-jprotobuf:jar
+> Task :tny-game-net-netty4-codec-protoex:compileJava
+> Task :tny-game-integration-test:compileJava NO-SOURCE
+> Task :tny-game-integration-test:classes UP-TO-DATE
+> Task :tny-game-integration-test:compileTestJava NO-SOURCE
+> Task :tny-game-integration-test:testClasses UP-TO-DATE
+> Task :tny-game-net-netty4-codec-protoex:classes
+> Task :tny-game-net-netty4-codec-protoex:jar
+> Task :tny-game-integration-test:test NO-SOURCE
+> Task :tny-game-starter-mongodb:compileJava NO-SOURCE
+
+> Task :tny-game-starter-data:compileJava
+Note: /home/runner/work/tny-framework/tny-framework/tny-game-starter-data/src/main/java/com/tny/game/data/configuration/mongodb/MongoStorageAutoConfiguration.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tny-game-net:testClasses
+> Task :tny-game-namnspace-etcd:compileJava
+> Task :tny-game-namnspace-etcd:classes
+> Task :tny-game-namnspace-etcd:compileTestJava
+> Task :tny-game-namnspace-etcd:testClasses
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+
+> Task :tny-game-starter-net-netty4:compileJava
+Note: /home/runner/work/tny-framework/tny-framework/tny-game-starter-net-netty4/src/main/java/com/tny/game/net/netty4/cloud/nacos/NacosServeNodeClient.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tny-game-starter-redisson:compileJava
+> Task :tny-game-starter-codec:classes
+> Task :tny-game-starter-codec:jar
+> Task :tny-game-starter-data:classes
+> Task :tny-game-starter-data:jar
+> Task :tny-game-starter-mongodb:classes
+> Task :tny-game-starter-mongodb:jar
+> Task :tny-game-starter-redisson:classes
+> Task :tny-game-starter-redisson:jar
+> Task :tny-game-namnspace-etcd:test
+> Task :tny-game-net-netty4:compileTestJava
+> Task :tny-game-net-netty4:testClasses
+> Task :tny-game-net-netty4-codec-jprotobuf:compileTestJava
+> Task :tny-game-net-netty4-codec-jprotobuf:testClasses
+> Task :tny-game-net-demo:compileJava
+> Task :tny-game-net-demo:classes
+> Task :tny-game-net-demo:compileTestJava NO-SOURCE
+> Task :tny-game-net-demo:testClasses UP-TO-DATE
+> Task :tny-game-starter-net-netty4:classes
+> Task :tny-game-starter-net-netty4:jar
+> Task :tny-game-net-demo:test NO-SOURCE
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+> Task :tny-game-net-netty4-codec-protoex:compileTestJava
+> Task :tny-game-net-netty4-codec-protoex:testClasses
+> Task :tny-game-doc-gradle:compileGroovy
+> Task :tny-game-doc-gradle:classes
+> Task :tny-game-doc-gradle:compileTestJava NO-SOURCE
+> Task :tny-game-doc-gradle:compileTestGroovy NO-SOURCE
+> Task :tny-game-doc-gradle:pluginUnderTestMetadata
+> Task :tny-game-doc-gradle:testClasses UP-TO-DATE
+> Task :tny-game-doc-gradle:test NO-SOURCE
+> Task :tny-game-net-test:compileTestJava NO-SOURCE
+> Task :tny-game-net-test:testClasses UP-TO-DATE
+> Task :tny-game-net-test:test NO-SOURCE
+> Task :tny-game-net-netty4-codec-jprotobuf:test
+> Task :tny-game-oplog:compileJava
+> Task :tny-game-oplog:classes
+> Task :tny-game-oplog:jar
+> Task :tny-game-oplog:compileTestJava NO-SOURCE
+> Task :tny-game-oplog:testClasses
+> Task :tny-game-oplog:test NO-SOURCE
+> Task :tny-game-oplog-log4j:compileJava
+> Task :tny-game-oplog-log4j:classes
+> Task :tny-game-oplog-log4j:compileTestJava NO-SOURCE
+> Task :tny-game-oplog-log4j:testClasses UP-TO-DATE
+> Task :tny-game-oplog-log4j:test NO-SOURCE
+
+> Task :tny-game-protobuf:compileTestJava
+Note: /home/runner/work/tny-framework/tny-framework/tny-game-protobuf/src/test/java/com/tny/game/protobuf/format/test/FormatTestProtos.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tny-game-protobuf:testClasses
+> Task :tny-game-protoex:compileTestJava
+> Task :tny-game-protoex:testClasses
+> Task :tny-game-net:test
+> Task :tny-game-redisson:compileTestJava NO-SOURCE
+> Task :tny-game-redisson:testClasses UP-TO-DATE
+> Task :tny-game-redisson:test NO-SOURCE
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+> Task :tny-game-rpc:compileTestJava
+> Task :tny-game-rpc:testClasses
+> Task :tny-game-protobuf:test
+> Task :tny-game-scanning:compileTestJava NO-SOURCE
+> Task :tny-game-scanning:testClasses
+> Task :tny-game-scanning:test NO-SOURCE
+> Task :tny-game-protoex:test
+> Task :tny-game-starter-codec:compileTestJava NO-SOURCE
+> Task :tny-game-starter-codec:testClasses UP-TO-DATE
+> Task :tny-game-starter-codec:test NO-SOURCE
+> Task :tny-game-rpc:test
+> Task :tny-game-starter-mongodb:compileTestJava NO-SOURCE
+> Task :tny-game-starter-mongodb:testClasses UP-TO-DATE
+> Task :tny-game-starter-mongodb:test NO-SOURCE
+> Task :tny-game-net-netty4-codec-protoex:test
+> Task :tny-game-starter-namnspace:compileJava
+> Task :tny-game-starter-namnspace:classes
+> Task :tny-game-starter-namnspace:compileTestJava NO-SOURCE
+> Task :tny-game-starter-namnspace:testClasses UP-TO-DATE
+> Task :tny-game-starter-namnspace:test NO-SOURCE
+> Task :tny-game-net-netty4:test
+> Task :tny-game-starter-redisson:compileTestJava NO-SOURCE
+> Task :tny-game-starter-redisson:testClasses UP-TO-DATE
+> Task :tny-game-starter-redisson:test NO-SOURCE
+> Task :tny-game-tester:compileTestJava NO-SOURCE
+> Task :tny-game-tester:testClasses UP-TO-DATE
+> Task :tny-game-tester:test NO-SOURCE
+> Task :tny-game-starter-net-netty4:compileTestJava
+> Task :tny-game-starter-net-netty4:testClasses
+> Task :tny-game-starter-data:compileTestJava
+> Task :tny-game-starter-data:testClasses
+
+> Task :tny-game-starter-basics:compileJava
+Note: /home/runner/work/tny-framework/tny-framework/tny-game-starter-basics/src/main/java/com/tny/game/basics/mongodb/mapper/MongoBasicsObjectMapperCustomizer.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tny-game-starter-basics:classes
+
+> Task :tny-game-starter-net-apm-skywalking:compileJava
+Note: /home/runner/work/tny-framework/tny-framework/tny-game-starter-net-apm-skywalking/src/main/java/com/tny/game/net/netty4/apm/skywalking/SkywalkingRpcMonitorHandler.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tny-game-starter-basics:compileTestJava
+> Task :tny-game-starter-basics:testClasses
+> Task :tny-game-starter-data:test
+> Task :tny-game-starter-basics:test
+> Task :tny-game-starter-net-apm-skywalking:classes
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+> Task :tny-game-starter-net-apm-skywalking:compileTestJava
+> Task :tny-game-starter-net-apm-skywalking:testClasses
+> Task :tny-game-starter-net-apm-skywalking:test
+> Task :tny-game-starter-net-netty4:test
+
+[Incubating] Problems report is available at: file:///home/runner/work/tny-framework/tny-framework/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tny-game-common-io:test'.
+> There were failing tests. See the report at: file:///home/runner/work/tny-framework/tny-framework/tny-game-common-io/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to get full insights.
+
+BUILD FAILED in 3m 55s
+178 actionable tasks: 178 executed

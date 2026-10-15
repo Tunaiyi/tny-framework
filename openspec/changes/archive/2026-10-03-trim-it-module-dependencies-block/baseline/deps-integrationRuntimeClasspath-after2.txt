@@ -1,0 +1,532 @@
+Configuration on demand is an incubating feature.
+------------------------------------------------------------
+Project ':tny-game-integration-test'
+------------------------------------------------------------
+integrationRuntimeClasspath - Runtime classpath of source set 'integration'.
++--- project :tny-game-net
+|    +--- com.baidu:jprotobuf:2.4.23
+|    |    +--- com.google.protobuf:protobuf-java:3.21.7 -> 3.22.2
+|    |    +--- com.google.auto.value:auto-value:1.0
+|    |    +--- com.baidu:jprotobuf-protoparser:1.0.1
+|    |    +--- org.slf4j:slf4j-api:1.7.26 -> 2.0.10
+|    |    \--- commons-io:commons-io:2.7 -> 2.14.0
+|    +--- project :tny-game-expr-groovy
+|    |    +--- project :tny-game-expr-jsr223
+|    |    |    +--- project :tny-game-expr
+|    |    |    |    +--- org.slf4j:slf4j-api -> 2.0.10
+|    |    |    |    \--- org.apache.commons:commons-lang3:3.18.0
+|    |    |    +--- project :tny-game-common-lifecycle
+|    |    |    |    +--- project :tny-game-scanning
+|    |    |    |    |    +--- org.springframework:spring-core -> 6.1.2
+|    |    |    |    |    |    \--- org.springframework:spring-jcl:6.1.2
+|    |    |    |    |    +--- org.slf4j:slf4j-api -> 2.0.10
+|    |    |    |    |    \--- org.apache.commons:commons-lang3:3.18.0
+|    |    |    |    +--- project :tny-game-common-lang
+|    |    |    |    |    +--- com.google.guava:guava:31.1-jre
+|    |    |    |    |    |    +--- com.google.guava:failureaccess:1.0.1
+|    |    |    |    |    |    +--- com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava
+|    |    |    |    |    |    +--- com.google.code.findbugs:jsr305:3.0.2
+|    |    |    |    |    |    +--- org.checkerframework:checker-qual:3.12.0 -> 3.42.0
+|    |    |    |    |    |    +--- com.google.errorprone:error_prone_annotations:2.11.0 -> 2.24.1
+|    |    |    |    |    |    \--- com.google.j2objc:j2objc-annotations:1.3
+|    |    |    |    |    +--- org.apache.commons:commons-collections4:4.4
+|    |    |    |    |    +--- io.netty:netty-common -> 4.1.135.Final
+|    |    |    |    |    +--- org.slf4j:slf4j-api -> 2.0.10
+|    |    |    |    |    \--- org.apache.commons:commons-lang3:3.18.0
+|    |    |    |    +--- project :tny-game-common-reflect
+|    |    |    |    |    +--- project :tny-game-common-lang (*)
+|    |    |    |    |    +--- cglib:cglib-nodep:3.3.0
+|    |    |    |    |    +--- org.javassist:javassist:3.30.2-GA
+|    |    |    |    |    +--- org.slf4j:slf4j-api -> 2.0.10
+|    |    |    |    |    \--- org.apache.commons:commons-lang3:3.18.0
+|    |    |    |    +--- commons-codec:commons-codec:1.15
+|    |    |    |    +--- org.apache.commons:commons-collections4:4.4
+|    |    |    |    +--- com.google.guava:guava:31.1-jre (*)
+|    |    |    |    +--- org.slf4j:slf4j-api -> 2.0.10
+|    |    |    |    \--- org.apache.commons:commons-lang3:3.18.0
+|    |    |    +--- org.slf4j:slf4j-api -> 2.0.10
+|    |    |    \--- org.apache.commons:commons-lang3:3.18.0
+|    |    +--- project :tny-game-common-lang (*)
+|    |    +--- org.apache.groovy:groovy:4.0.17 -> 4.0.16
+|    |    |    \--- org.apache.groovy:groovy-bom:4.0.16
+|    |    |         +--- org.apache.groovy:groovy:4.0.16 (c)
+|    |    |         \--- org.apache.groovy:groovy-jsr223:4.0.16 (c)
+|    |    +--- org.apache.groovy:groovy-jsr223:4.0.17 -> 4.0.16
+|    |    |    +--- org.apache.groovy:groovy-bom:4.0.16 (*)
+|    |    |    \--- org.apache.groovy:groovy:4.0.16 (*)
+|    |    +--- org.slf4j:slf4j-api -> 2.0.10
+|    |    \--- org.apache.commons:commons-lang3:3.18.0
+|    +--- project :tny-game-common-io
+|    |    +--- project :tny-game-common-lang (*)
+|    |    +--- commons-io:commons-io:2.14.0
+|    |    +--- commons-codec:commons-codec:1.15
+|    |    +--- org.slf4j:slf4j-api -> 2.0.10
+|    |    \--- org.apache.commons:commons-lang3:3.18.0
+|    +--- project :tny-game-common-digest
+|    |    +--- project :tny-game-common-lang (*)
+|    |    +--- project :tny-game-common-reflect (*)
+|    |    +--- commons-io:commons-io:2.14.0
+|    |    +--- commons-codec:commons-codec:1.15
+|    |    +--- org.apache.commons:commons-collections4:4.4
+|    |    +--- com.google.guava:guava:31.1-jre (*)
+|    |    +--- org.slf4j:slf4j-api -> 2.0.10
+|    |    \--- org.apache.commons:commons-lang3:3.18.0
+|    +--- project :tny-game-codec-jprotobuf
+|    |    +--- project :tny-game-loader
+|    |    |    +--- project :tny-game-scanning (*)
+|    |    |    +--- project :tny-game-common-lang (*)
+|    |    |    +--- org.springframework:spring-context -> 6.1.2
+|    |    |    |    +--- org.springframework:spring-aop:6.1.2
+|    |    |    |    |    +--- org.springframework:spring-beans:6.1.2
+|    |    |    |    |    |    \--- org.springframework:spring-core:6.1.2 (*)
+|    |    |    |    |    \--- org.springframework:spring-core:6.1.2 (*)
+|    |    |    |    +--- org.springframework:spring-beans:6.1.2 (*)
+|    |    |    |    +--- org.springframework:spring-core:6.1.2 (*)
+|    |    |    |    +--- org.springframework:spring-expression:6.1.2
+|    |    |    |    |    \--- org.springframework:spring-core:6.1.2 (*)
+|    |    |    |    \--- io.micrometer:micrometer-observation:1.12.1
+|    |    |    |         \--- io.micrometer:micrometer-commons:1.12.1
+|    |    |    +--- org.slf4j:slf4j-api -> 2.0.10
+|    |    |    \--- org.apache.commons:commons-lang3:3.18.0
+|    |    +--- project :tny-game-scanning (*)
+|    |    +--- project :tny-game-codec
+|    |    |    +--- project :tny-game-common-lang (*)
+|    |    |    +--- org.springframework:spring-core -> 6.1.2 (*)
+|    |    |    +--- org.apache.commons:commons-collections4:4.4
+|    |    |    +--- org.slf4j:slf4j-api -> 2.0.10
+|    |    |    \--- org.apache.commons:commons-lang3:3.18.0
+|    |    +--- project :tny-game-doc-annotation
+|    |    |    +--- org.slf4j:slf4j-api -> 2.0.10
+|    |    |    \--- org.apache.commons:commons-lang3:3.18.0
+|    |    +--- com.baidu:jprotobuf:2.4.23 (*)
+|    |    +--- org.slf4j:slf4j-api -> 2.0.10
+|    |    \--- org.apache.commons:commons-lang3:3.18.0
+|    +--- org.slf4j:slf4j-api -> 2.0.10
+|    \--- org.apache.commons:commons-lang3:3.18.0
++--- project :tny-game-net-netty4
+|    +--- io.netty:netty-common -> 4.1.135.Final
+|    +--- io.netty:netty-handler -> 4.1.135.Final
+|    |    +--- io.netty:netty-common:4.1.135.Final
+|    |    +--- io.netty:netty-resolver:4.1.135.Final
+|    |    |    \--- io.netty:netty-common:4.1.135.Final
+|    |    +--- io.netty:netty-buffer:4.1.135.Final
+|    |    |    \--- io.netty:netty-common:4.1.135.Final
+|    |    +--- io.netty:netty-transport:4.1.135.Final
+|    |    |    +--- io.netty:netty-common:4.1.135.Final
+|    |    |    +--- io.netty:netty-buffer:4.1.135.Final (*)
+|    |    |    \--- io.netty:netty-resolver:4.1.135.Final (*)
+|    |    +--- io.netty:netty-transport-native-unix-common:4.1.135.Final
+|    |    |    +--- io.netty:netty-common:4.1.135.Final
+|    |    |    +--- io.netty:netty-buffer:4.1.135.Final (*)
+|    |    |    \--- io.netty:netty-transport:4.1.135.Final (*)
+|    |    \--- io.netty:netty-codec:4.1.135.Final
+|    |         +--- io.netty:netty-common:4.1.135.Final
+|    |         +--- io.netty:netty-buffer:4.1.135.Final (*)
+|    |         \--- io.netty:netty-transport:4.1.135.Final (*)
+|    +--- io.netty:netty-transport -> 4.1.135.Final (*)
+|    +--- io.netty:netty-buffer -> 4.1.135.Final (*)
+|    +--- io.netty:netty-codec -> 4.1.135.Final (*)
+|    +--- io.netty:netty-resolver -> 4.1.135.Final (*)
+|    +--- io.netty:netty-resolver-dns -> 4.1.135.Final
+|    |    +--- io.netty:netty-common:4.1.135.Final
+|    |    +--- io.netty:netty-buffer:4.1.135.Final (*)
+|    |    +--- io.netty:netty-resolver:4.1.135.Final (*)
+|    |    +--- io.netty:netty-transport:4.1.135.Final (*)
+|    |    +--- io.netty:netty-codec:4.1.135.Final (*)
+|    |    +--- io.netty:netty-codec-dns:4.1.135.Final
+|    |    |    +--- io.netty:netty-common:4.1.135.Final
+|    |    |    +--- io.netty:netty-buffer:4.1.135.Final (*)
+|    |    |    +--- io.netty:netty-transport:4.1.135.Final (*)
+|    |    |    \--- io.netty:netty-codec:4.1.135.Final (*)
+|    |    \--- io.netty:netty-handler:4.1.135.Final (*)
+|    +--- io.netty:netty-transport-native-kqueue -> 4.1.135.Final
+|    |    +--- io.netty:netty-common:4.1.135.Final
+|    |    +--- io.netty:netty-buffer:4.1.135.Final (*)
+|    |    +--- io.netty:netty-transport:4.1.135.Final (*)
+|    |    +--- io.netty:netty-transport-native-unix-common:4.1.135.Final (*)
+|    |    \--- io.netty:netty-transport-classes-kqueue:4.1.135.Final
+|    |         +--- io.netty:netty-common:4.1.135.Final
+|    |         +--- io.netty:netty-buffer:4.1.135.Final (*)
+|    |         +--- io.netty:netty-transport:4.1.135.Final (*)
+|    |         \--- io.netty:netty-transport-native-unix-common:4.1.135.Final (*)
+|    +--- io.netty:netty-transport-native-epoll -> 4.1.135.Final
+|    |    +--- io.netty:netty-common:4.1.135.Final
+|    |    +--- io.netty:netty-buffer:4.1.135.Final (*)
+|    |    +--- io.netty:netty-transport:4.1.135.Final (*)
+|    |    +--- io.netty:netty-transport-native-unix-common:4.1.135.Final (*)
+|    |    \--- io.netty:netty-transport-classes-epoll:4.1.135.Final
+|    |         +--- io.netty:netty-common:4.1.135.Final
+|    |         +--- io.netty:netty-buffer:4.1.135.Final (*)
+|    |         +--- io.netty:netty-transport:4.1.135.Final (*)
+|    |         \--- io.netty:netty-transport-native-unix-common:4.1.135.Final (*)
+|    +--- com.lmax:disruptor:3.4.4
+|    +--- com.baidu:jprotobuf:2.4.23 (*)
+|    +--- project :tny-game-net (*)
+|    +--- project :tny-game-protoex
+|    |    +--- project :tny-game-common-lang (*)
+|    |    +--- project :tny-game-common-reflect (*)
+|    |    +--- project :tny-game-common-digest (*)
+|    |    +--- project :tny-game-doc-annotation (*)
+|    |    +--- project :tny-game-scanning (*)
+|    |    +--- org.slf4j:slf4j-api -> 2.0.10
+|    |    \--- org.apache.commons:commons-lang3:3.18.0
+|    +--- project :tny-game-codec-jprotobuf (*)
+|    +--- org.slf4j:slf4j-api -> 2.0.10
+|    \--- org.apache.commons:commons-lang3:3.18.0
++--- org.slf4j:slf4j-api -> 2.0.10
++--- org.apache.commons:commons-lang3:3.18.0
++--- project :tny-game-net-test
+|    +--- project :tny-game-net (*)
+|    +--- org.junit.jupiter:junit-jupiter-api -> 5.10.1
+|    |    +--- org.junit:junit-bom:5.10.1
+|    |    |    +--- org.junit.jupiter:junit-jupiter:5.10.1 (c)
+|    |    |    +--- org.junit.jupiter:junit-jupiter-api:5.10.1 (c)
+|    |    |    +--- org.junit.jupiter:junit-jupiter-engine:5.10.1 (c)
+|    |    |    +--- org.junit.jupiter:junit-jupiter-params:5.10.1 (c)
+|    |    |    +--- org.junit.platform:junit-platform-commons:1.10.1 (c)
+|    |    |    \--- org.junit.platform:junit-platform-engine:1.10.1 (c)
+|    |    +--- org.opentest4j:opentest4j:1.3.0
+|    |    \--- org.junit.platform:junit-platform-commons:1.10.1
+|    |         \--- org.junit:junit-bom:5.10.1 (*)
+|    +--- org.mockito:mockito-junit-jupiter -> 5.7.0
+|    |    +--- org.mockito:mockito-core:5.7.0
+|    |    |    +--- net.bytebuddy:byte-buddy:1.14.9 -> 1.14.10
+|    |    |    +--- net.bytebuddy:byte-buddy-agent:1.14.9 -> 1.14.10
+|    |    |    \--- org.objenesis:objenesis:3.3
+|    |    \--- org.junit.jupiter:junit-jupiter-api:5.10.0 -> 5.10.1 (*)
+|    +--- org.slf4j:slf4j-api -> 2.0.10
+|    \--- org.apache.commons:commons-lang3:3.18.0
++--- project :tny-game-net-netty4-codec-jprotobuf
+|    +--- project :tny-game-net-netty4 (*)
+|    +--- project :tny-game-protoex (*)
+|    +--- project :tny-game-codec-jprotobuf (*)
+|    +--- com.baidu:jprotobuf:2.4.23 (*)
+|    +--- org.slf4j:slf4j-api -> 2.0.10
+|    \--- org.apache.commons:commons-lang3:3.18.0
++--- project :tny-game-net-netty4-codec-protoex
+|    +--- project :tny-game-net-netty4 (*)
+|    +--- project :tny-game-protoex (*)
+|    +--- project :tny-game-codec-jprotobuf (*)
+|    +--- com.baidu:jprotobuf:2.4.23 (*)
+|    +--- org.slf4j:slf4j-api -> 2.0.10
+|    \--- org.apache.commons:commons-lang3:3.18.0
++--- org.assertj:assertj-core -> 3.24.2
+|    \--- net.bytebuddy:byte-buddy:1.12.21 -> 1.14.10
++--- org.awaitility:awaitility -> 4.2.0
+|    \--- org.hamcrest:hamcrest:2.1 -> 2.2
++--- org.testcontainers:junit-jupiter -> 1.21.4
+|    \--- org.testcontainers:testcontainers:1.21.4
+|         +--- junit:junit:4.13.2
+|         |    \--- org.hamcrest:hamcrest-core:1.3 -> 2.2
+|         |         \--- org.hamcrest:hamcrest:2.2
+|         +--- org.slf4j:slf4j-api:1.7.36 -> 2.0.10
+|         +--- org.apache.commons:commons-compress:1.24.0 -> 1.22
+|         +--- org.rnorth.duct-tape:duct-tape:1.0.8
+|         |    \--- org.jetbrains:annotations:17.0.0
+|         +--- com.github.docker-java:docker-java-api:3.4.2
+|         |    +--- com.fasterxml.jackson.core:jackson-annotations:2.10.3 -> 2.16.1
+|         |    |    \--- com.fasterxml.jackson:jackson-bom:2.16.1
+|         |    |         +--- com.fasterxml.jackson.core:jackson-annotations:2.16.1 (c)
+|         |    |         +--- com.fasterxml.jackson.core:jackson-core:2.16.1 (c)
+|         |    |         +--- com.fasterxml.jackson.core:jackson-databind:2.16.1 (c)
+|         |    |         +--- com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.16.1 (c)
+|         |    |         +--- com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.16.1 (c)
+|         |    |         +--- com.fasterxml.jackson.datatype:jackson-datatype-guava:2.16.1 (c)
+|         |    |         +--- com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.16.1 (c)
+|         |    |         \--- com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.16.1 (c)
+|         |    \--- org.slf4j:slf4j-api:1.7.30 -> 2.0.10
+|         \--- com.github.docker-java:docker-java-transport-zerodep:3.4.2
+|              +--- com.github.docker-java:docker-java-transport:3.4.2
+|              +--- org.slf4j:slf4j-api:1.7.25 -> 2.0.10
+|              \--- net.java.dev.jna:jna:5.13.0
++--- project :tny-game-starter-net-netty4
+|    +--- project :tny-game-boot
+|    |    +--- org.springframework.boot:spring-boot-autoconfigure -> 3.2.1
+|    |    |    \--- org.springframework.boot:spring-boot:3.2.1
+|    |    |         +--- org.springframework:spring-core:6.1.2 (*)
+|    |    |         \--- org.springframework:spring-context:6.1.2 (*)
+|    |    +--- javax.annotation:javax.annotation-api:1.3.2
+|    |    +--- project :tny-game-common-lifecycle (*)
+|    |    +--- project :tny-game-loader (*)
+|    |    +--- org.slf4j:slf4j-api -> 2.0.10
+|    |    \--- org.apache.commons:commons-lang3:3.18.0
+|    +--- project :tny-game-rpc
+|    |    +--- javax.annotation:javax.annotation-api:1.3.2
+|    |    +--- project :tny-game-net (*)
+|    |    +--- project :tny-game-codec-jackson
+|    |    |    +--- project :tny-game-common-reflect (*)
+|    |    |    +--- project :tny-game-common-lifecycle (*)
+|    |    |    +--- project :tny-game-loader (*)
+|    |    |    +--- project :tny-game-scanning (*)
+|    |    |    +--- project :tny-game-codec (*)
+|    |    |    +--- com.fasterxml.jackson.core:jackson-core -> 2.16.1
+|    |    |    |    \--- com.fasterxml.jackson:jackson-bom:2.16.1 (*)
+|    |    |    +--- com.fasterxml.jackson.core:jackson-databind -> 2.16.1
+|    |    |    |    +--- com.fasterxml.jackson.core:jackson-annotations:2.16.1 (*)
+|    |    |    |    +--- com.fasterxml.jackson.core:jackson-core:2.16.1 (*)
+|    |    |    |    \--- com.fasterxml.jackson:jackson-bom:2.16.1 (*)
+|    |    |    +--- com.fasterxml.jackson.core:jackson-annotations -> 2.16.1 (*)
+|    |    |    +--- com.fasterxml.jackson.dataformat:jackson-dataformat-yaml -> 2.16.1
+|    |    |    |    +--- com.fasterxml.jackson.core:jackson-databind:2.16.1 (*)
+|    |    |    |    +--- org.yaml:snakeyaml:2.2
+|    |    |    |    +--- com.fasterxml.jackson.core:jackson-core:2.16.1 (*)
+|    |    |    |    \--- com.fasterxml.jackson:jackson-bom:2.16.1 (*)
+|    |    |    +--- com.fasterxml.jackson.dataformat:jackson-dataformat-xml -> 2.16.1
+|    |    |    |    +--- com.fasterxml.jackson.core:jackson-core:2.16.1 (*)
+|    |    |    |    +--- com.fasterxml.jackson.core:jackson-annotations:2.16.1 (*)
+|    |    |    |    +--- com.fasterxml.jackson.core:jackson-databind:2.16.1 (*)
+|    |    |    |    +--- org.codehaus.woodstox:stax2-api:4.2.1
+|    |    |    |    +--- com.fasterxml.woodstox:woodstox-core:6.5.1
+|    |    |    |    |    \--- org.codehaus.woodstox:stax2-api:4.2.1
+|    |    |    |    \--- com.fasterxml.jackson:jackson-bom:2.16.1 (*)
+|    |    |    +--- com.fasterxml.jackson.datatype:jackson-datatype-guava -> 2.16.1
+|    |    |    |    +--- com.google.guava:guava:25.1-jre -> 31.1-jre (*)
+|    |    |    |    +--- com.fasterxml.jackson.core:jackson-core:2.16.1 (*)
+|    |    |    |    +--- com.fasterxml.jackson.core:jackson-databind:2.16.1 (*)
+|    |    |    |    \--- com.fasterxml.jackson:jackson-bom:2.16.1 (*)
+|    |    |    +--- com.fasterxml.jackson.datatype:jackson-datatype-jdk8 -> 2.16.1
+|    |    |    |    +--- com.fasterxml.jackson.core:jackson-core:2.16.1 (*)
+|    |    |    |    +--- com.fasterxml.jackson.core:jackson-databind:2.16.1 (*)
+|    |    |    |    \--- com.fasterxml.jackson:jackson-bom:2.16.1 (*)
+|    |    |    +--- org.slf4j:slf4j-api -> 2.0.10
+|    |    |    \--- org.apache.commons:commons-lang3:3.18.0
+|    |    +--- org.slf4j:slf4j-api -> 2.0.10
+|    |    \--- org.apache.commons:commons-lang3:3.18.0
+|    +--- project :tny-game-net-netty4 (*)
+|    +--- org.springframework.boot:spring-boot-autoconfigure -> 3.2.1 (*)
+|    +--- project :tny-game-starter-codec
+|    |    +--- org.springframework.boot:spring-boot-autoconfigure -> 3.2.1 (*)
+|    |    +--- project :tny-game-boot (*)
+|    |    +--- org.slf4j:slf4j-api -> 2.0.10
+|    |    \--- org.apache.commons:commons-lang3:3.18.0
+|    +--- project :tny-game-net-netty4-codec-protoex (*)
+|    +--- org.slf4j:slf4j-api -> 2.0.10
+|    \--- org.apache.commons:commons-lang3:3.18.0
++--- project :tny-game-net-demo
+|    +--- org.slf4j:slf4j-api -> 2.0.10
+|    +--- org.apache.commons:commons-lang3:3.18.0
+|    +--- org.apache.logging.log4j:log4j-api -> 2.21.1
+|    +--- org.apache.logging.log4j:log4j-core -> 2.21.1
+|    |    \--- org.apache.logging.log4j:log4j-api:2.21.1
+|    +--- org.apache.logging.log4j:log4j-slf4j-impl -> 2.21.1
+|    |    +--- org.apache.logging.log4j:log4j-api:2.21.1
+|    |    +--- org.slf4j:slf4j-api:1.7.25 -> 2.0.10
+|    |    \--- org.apache.logging.log4j:log4j-core:2.21.1 (*)
+|    +--- com.lmax:disruptor:3.4.4
+|    +--- com.baidu:jprotobuf:2.4.23 (*)
+|    +--- org.springframework.boot:spring-boot-starter-log4j2 -> 3.2.1
+|    |    +--- org.apache.logging.log4j:log4j-slf4j2-impl:2.21.1
+|    |    |    +--- org.apache.logging.log4j:log4j-api:2.21.1
+|    |    |    +--- org.slf4j:slf4j-api:2.0.6 -> 2.0.10
+|    |    |    \--- org.apache.logging.log4j:log4j-core:2.21.1 (*)
+|    |    +--- org.apache.logging.log4j:log4j-core:2.21.1 (*)
+|    |    \--- org.apache.logging.log4j:log4j-jul:2.21.1
+|    |         \--- org.apache.logging.log4j:log4j-api:2.21.1
+|    +--- project :tny-game-loader (*)
+|    +--- project :tny-game-doc
+|    |    +--- project :tny-game-net (*)
+|    |    +--- com.thoughtworks.xstream:xstream:1.4.20
+|    |    |    \--- io.github.x-stream:mxparser:1.2.2
+|    |    |         \--- xmlpull:xmlpull:1.1.3.1
+|    |    +--- project :tny-game-doc-annotation (*)
+|    |    +--- project :tny-game-common-lang (*)
+|    |    +--- project :tny-game-rpc (*)
+|    |    +--- project :tny-game-scanning (*)
+|    |    +--- project :tny-game-expr-mvel
+|    |    |    +--- project :tny-game-expr (*)
+|    |    |    +--- project :tny-game-common-lifecycle (*)
+|    |    |    +--- org.mvel:mvel2:2.5.1.Final
+|    |    |    +--- org.slf4j:slf4j-api -> 2.0.10
+|    |    |    \--- org.apache.commons:commons-lang3:3.18.0
+|    |    +--- com.fasterxml.jackson.core:jackson-core -> 2.16.1 (*)
+|    |    +--- com.google.guava:guava:31.1-jre (*)
+|    |    +--- com.fasterxml.jackson.core:jackson-databind -> 2.16.1 (*)
+|    |    +--- com.fasterxml.jackson.core:jackson-annotations -> 2.16.1 (*)
+|    |    +--- org.slf4j:slf4j-api -> 2.0.10
+|    |    \--- org.apache.commons:commons-lang3:3.18.0
+|    +--- project :tny-game-net-netty4-codec-jprotobuf (*)
+|    +--- project :tny-game-starter-redisson
+|    |    +--- org.redisson:redisson-spring-boot-starter:3.25.2
+|    |    |    +--- org.springframework.boot:spring-boot-starter-actuator:3.2.0 -> 3.2.1
+|    |    |    |    +--- org.springframework.boot:spring-boot-starter:3.2.1
+|    |    |    |    |    +--- org.springframework.boot:spring-boot:3.2.1 (*)
+|    |    |    |    |    +--- org.springframework.boot:spring-boot-autoconfigure:3.2.1 (*)
+|    |    |    |    |    +--- jakarta.annotation:jakarta.annotation-api:2.1.1
+|    |    |    |    |    +--- org.springframework:spring-core:6.1.2 (*)
+|    |    |    |    |    \--- org.yaml:snakeyaml:2.2
+|    |    |    |    +--- org.springframework.boot:spring-boot-actuator-autoconfigure:3.2.1
+|    |    |    |    |    +--- com.fasterxml.jackson.core:jackson-databind:2.15.3 -> 2.16.1 (*)
+|    |    |    |    |    +--- com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.3 -> 2.16.1
+|    |    |    |    |    |    +--- com.fasterxml.jackson.core:jackson-annotations:2.16.1 (*)
+|    |    |    |    |    |    +--- com.fasterxml.jackson.core:jackson-core:2.16.1 (*)
+|    |    |    |    |    |    +--- com.fasterxml.jackson.core:jackson-databind:2.16.1 (*)
+|    |    |    |    |    |    \--- com.fasterxml.jackson:jackson-bom:2.16.1 (*)
+|    |    |    |    |    +--- org.springframework.boot:spring-boot-actuator:3.2.1
+|    |    |    |    |    |    \--- org.springframework.boot:spring-boot:3.2.1 (*)
+|    |    |    |    |    +--- org.springframework.boot:spring-boot:3.2.1 (*)
+|    |    |    |    |    \--- org.springframework.boot:spring-boot-autoconfigure:3.2.1 (*)
+|    |    |    |    +--- io.micrometer:micrometer-observation:1.12.1 (*)
+|    |    |    |    \--- io.micrometer:micrometer-jakarta9:1.12.1
+|    |    |    |         +--- io.micrometer:micrometer-core:1.12.1
+|    |    |    |         |    +--- io.micrometer:micrometer-commons:1.12.1
+|    |    |    |         |    +--- io.micrometer:micrometer-observation:1.12.1 (*)
+|    |    |    |         |    +--- org.hdrhistogram:HdrHistogram:2.1.12
+|    |    |    |         |    \--- org.latencyutils:LatencyUtils:2.0.3
+|    |    |    |         +--- io.micrometer:micrometer-commons:1.12.1
+|    |    |    |         \--- io.micrometer:micrometer-observation:1.12.1 (*)
+|    |    |    +--- org.springframework.boot:spring-boot-starter-data-redis:3.2.0 -> 3.2.1
+|    |    |    |    +--- org.springframework.boot:spring-boot-starter:3.2.1 (*)
+|    |    |    |    \--- org.springframework.data:spring-data-redis:3.2.1
+|    |    |    |         +--- org.springframework.data:spring-data-keyvalue:3.2.1
+|    |    |    |         |    +--- org.springframework.data:spring-data-commons:3.2.1
+|    |    |    |         |    |    +--- org.springframework:spring-core:6.1.2 (*)
+|    |    |    |         |    |    +--- org.springframework:spring-beans:6.1.2 (*)
+|    |    |    |         |    |    \--- org.slf4j:slf4j-api:2.0.2 -> 2.0.10
+|    |    |    |         |    +--- org.springframework:spring-context:6.1.2 (*)
+|    |    |    |         |    +--- org.springframework:spring-tx:6.1.2
+|    |    |    |         |    |    +--- org.springframework:spring-beans:6.1.2 (*)
+|    |    |    |         |    |    \--- org.springframework:spring-core:6.1.2 (*)
+|    |    |    |         |    \--- org.slf4j:slf4j-api:2.0.2 -> 2.0.10
+|    |    |    |         +--- org.springframework:spring-tx:6.1.2 (*)
+|    |    |    |         +--- org.springframework:spring-oxm:6.1.2
+|    |    |    |         |    +--- org.springframework:spring-beans:6.1.2 (*)
+|    |    |    |         |    \--- org.springframework:spring-core:6.1.2 (*)
+|    |    |    |         +--- org.springframework:spring-aop:6.1.2 (*)
+|    |    |    |         +--- org.springframework:spring-context-support:6.1.2
+|    |    |    |         |    +--- org.springframework:spring-beans:6.1.2 (*)
+|    |    |    |         |    +--- org.springframework:spring-context:6.1.2 (*)
+|    |    |    |         |    \--- org.springframework:spring-core:6.1.2 (*)
+|    |    |    |         \--- org.slf4j:slf4j-api:2.0.2 -> 2.0.10
+|    |    |    +--- org.redisson:redisson:3.25.2
+|    |    |    |    +--- io.netty:netty-common:4.1.101.Final -> 4.1.135.Final
+|    |    |    |    +--- io.netty:netty-codec:4.1.101.Final -> 4.1.135.Final (*)
+|    |    |    |    +--- io.netty:netty-buffer:4.1.101.Final -> 4.1.135.Final (*)
+|    |    |    |    +--- io.netty:netty-transport:4.1.101.Final -> 4.1.135.Final (*)
+|    |    |    |    +--- io.netty:netty-resolver:4.1.101.Final -> 4.1.135.Final (*)
+|    |    |    |    +--- io.netty:netty-resolver-dns:4.1.101.Final -> 4.1.135.Final (*)
+|    |    |    |    +--- io.netty:netty-handler:4.1.101.Final -> 4.1.135.Final (*)
+|    |    |    |    +--- javax.cache:cache-api:1.1.1
+|    |    |    |    +--- io.projectreactor:reactor-core:3.6.0 -> 3.6.1
+|    |    |    |    |    \--- org.reactivestreams:reactive-streams:1.0.4
+|    |    |    |    +--- org.reactivestreams:reactive-streams:1.0.4
+|    |    |    |    +--- io.reactivex.rxjava3:rxjava:3.1.6 -> 3.1.8
+|    |    |    |    |    \--- org.reactivestreams:reactive-streams:1.0.4
+|    |    |    |    +--- org.jboss.marshalling:jboss-marshalling:2.0.11.Final
+|    |    |    |    +--- org.jboss.marshalling:jboss-marshalling-river:2.0.11.Final
+|    |    |    |    |    \--- org.jboss.marshalling:jboss-marshalling:2.0.11.Final
+|    |    |    |    +--- com.esotericsoftware:kryo:5.5.0
+|    |    |    |    |    +--- com.esotericsoftware:reflectasm:1.11.9
+|    |    |    |    |    +--- org.objenesis:objenesis:3.3
+|    |    |    |    |    \--- com.esotericsoftware:minlog:1.3.1
+|    |    |    |    +--- org.slf4j:slf4j-api:2.0.9 -> 2.0.10
+|    |    |    |    +--- com.fasterxml.jackson.core:jackson-annotations:2.15.3 -> 2.16.1 (*)
+|    |    |    |    +--- com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.15.3 -> 2.16.1 (*)
+|    |    |    |    +--- com.fasterxml.jackson.core:jackson-core:2.15.3 -> 2.16.1 (*)
+|    |    |    |    +--- com.fasterxml.jackson.core:jackson-databind:2.15.3 -> 2.16.1 (*)
+|    |    |    |    +--- net.bytebuddy:byte-buddy:1.14.5 -> 1.14.10
+|    |    |    |    \--- org.jodd:jodd-bean:5.1.6
+|    |    |    |         \--- org.jodd:jodd-core:5.1.6
+|    |    |    \--- org.redisson:redisson-spring-data-32:3.25.2
+|    |    |         +--- org.springframework.data:spring-data-redis:3.2.0 -> 3.2.1 (*)
+|    |    |         \--- org.redisson:redisson:3.25.2 (*)
+|    |    +--- project :tny-game-boot (*)
+|    |    +--- project :tny-game-starter-codec (*)
+|    |    +--- project :tny-game-redisson
+|    |    |    +--- project :tny-game-common-io (*)
+|    |    |    +--- project :tny-game-codec-jackson (*)
+|    |    |    +--- project :tny-game-boot (*)
+|    |    |    +--- org.javassist:javassist:3.30.2-GA
+|    |    |    +--- org.redisson:redisson:3.25.2 (*)
+|    |    |    +--- org.slf4j:slf4j-api -> 2.0.10
+|    |    |    \--- org.apache.commons:commons-lang3:3.18.0
+|    |    +--- org.slf4j:slf4j-api -> 2.0.10
+|    |    \--- org.apache.commons:commons-lang3:3.18.0
+|    +--- project :tny-game-data-redisson
+|    |    +--- project :tny-game-redisson (*)
+|    |    +--- project :tny-game-data
+|    |    |    +--- project :tny-game-common-lifecycle (*)
+|    |    |    +--- com.github.ben-manes.caffeine:caffeine:3.1.5 -> 3.1.8
+|    |    |    |    +--- org.checkerframework:checker-qual:3.37.0 -> 3.42.0
+|    |    |    |    \--- com.google.errorprone:error_prone_annotations:2.21.1 -> 2.24.1
+|    |    |    +--- org.slf4j:slf4j-api -> 2.0.10
+|    |    |    \--- org.apache.commons:commons-lang3:3.18.0
+|    |    +--- org.slf4j:slf4j-api -> 2.0.10
+|    |    \--- org.apache.commons:commons-lang3:3.18.0
+|    +--- project :tny-game-starter-mongodb
+|    |    +--- project :tny-game-mongodb
+|    |    |    +--- org.springframework.boot:spring-boot-autoconfigure -> 3.2.1 (*)
+|    |    |    +--- org.springframework.boot:spring-boot-starter-data-mongodb -> 3.2.1
+|    |    |    |    +--- org.springframework.boot:spring-boot-starter:3.2.1 (*)
+|    |    |    |    +--- org.mongodb:mongodb-driver-sync:4.11.1
+|    |    |    |    |    +--- org.mongodb:bson:4.11.1
+|    |    |    |    |    \--- org.mongodb:mongodb-driver-core:4.11.1
+|    |    |    |    |         +--- org.mongodb:bson:4.11.1
+|    |    |    |    |         \--- org.mongodb:bson-record-codec:4.11.1
+|    |    |    |    |              \--- org.mongodb:bson:4.11.1
+|    |    |    |    \--- org.springframework.data:spring-data-mongodb:4.2.1
+|    |    |    |         +--- org.springframework:spring-tx:6.1.2 (*)
+|    |    |    |         +--- org.springframework:spring-context:6.1.2 (*)
+|    |    |    |         +--- org.springframework:spring-beans:6.1.2 (*)
+|    |    |    |         +--- org.springframework:spring-core:6.1.2 (*)
+|    |    |    |         +--- org.springframework:spring-expression:6.1.2 (*)
+|    |    |    |         +--- org.springframework.data:spring-data-commons:3.2.1 (*)
+|    |    |    |         +--- org.mongodb:mongodb-driver-core:4.11.1 (*)
+|    |    |    |         \--- org.slf4j:slf4j-api:2.0.2 -> 2.0.10
+|    |    |    +--- project :tny-game-boot (*)
+|    |    |    +--- project :tny-game-codec-jackson (*)
+|    |    |    +--- com.fasterxml.jackson.core:jackson-core -> 2.16.1 (*)
+|    |    |    +--- com.fasterxml.jackson.core:jackson-databind -> 2.16.1 (*)
+|    |    |    +--- com.fasterxml.jackson.core:jackson-annotations -> 2.16.1 (*)
+|    |    |    +--- com.fasterxml.jackson.datatype:jackson-datatype-jdk8 -> 2.16.1 (*)
+|    |    |    +--- org.slf4j:slf4j-api -> 2.0.10
+|    |    |    \--- org.apache.commons:commons-lang3:3.18.0
+|    |    +--- org.slf4j:slf4j-api -> 2.0.10
+|    |    \--- org.apache.commons:commons-lang3:3.18.0
+|    +--- project :tny-game-data-mongodb
+|    |    +--- project :tny-game-mongodb (*)
+|    |    +--- project :tny-game-data (*)
+|    |    +--- org.slf4j:slf4j-api -> 2.0.10
+|    |    \--- org.apache.commons:commons-lang3:3.18.0
+|    +--- project :tny-game-starter-data
+|    |    +--- org.springframework.boot:spring-boot-autoconfigure -> 3.2.1 (*)
+|    |    +--- project :tny-game-data (*)
+|    |    +--- project :tny-game-boot (*)
+|    |    +--- org.slf4j:slf4j-api -> 2.0.10
+|    |    \--- org.apache.commons:commons-lang3:3.18.0
+|    \--- project :tny-game-starter-net-netty4 (*)
++--- org.junit.jupiter:junit-jupiter -> 5.10.1
+|    +--- org.junit:junit-bom:5.10.1 (*)
+|    +--- org.junit.jupiter:junit-jupiter-api:5.10.1 (*)
+|    +--- org.junit.jupiter:junit-jupiter-params:5.10.1
+|    |    +--- org.junit:junit-bom:5.10.1 (*)
+|    |    \--- org.junit.jupiter:junit-jupiter-api:5.10.1 (*)
+|    \--- org.junit.jupiter:junit-jupiter-engine:5.10.1
+|         +--- org.junit:junit-bom:5.10.1 (*)
+|         +--- org.junit.platform:junit-platform-engine:1.10.1
+|         |    +--- org.junit:junit-bom:5.10.1 (*)
+|         |    +--- org.opentest4j:opentest4j:1.3.0
+|         |    \--- org.junit.platform:junit-platform-commons:1.10.1 (*)
+|         \--- org.junit.jupiter:junit-jupiter-api:5.10.1 (*)
++--- org.mockito:mockito-junit-jupiter -> 5.7.0 (*)
++--- project :tny-game-boot (*)
++--- project :tny-game-data (*)
++--- project :tny-game-starter-redisson (*)
++--- project :tny-game-data-redisson (*)
++--- project :tny-game-redisson (*)
++--- project :tny-game-starter-mongodb (*)
++--- project :tny-game-data-mongodb (*)
++--- project :tny-game-mongodb (*)
++--- org.springframework.boot:spring-boot-starter -> 3.2.1 (*)
++--- org.springframework.boot:spring-boot-autoconfigure -> 3.2.1 (*)
++--- org.springframework.boot:spring-boot-starter-log4j2 -> 3.2.1 (*)
++--- org.testcontainers:mongodb -> 1.21.4
+|    \--- org.testcontainers:testcontainers:1.21.4 (*)
++--- org.apache.logging.log4j:log4j-core -> 2.21.1 (*)
++--- org.apache.logging.log4j:log4j-api -> 2.21.1
+\--- org.apache.logging.log4j:log4j-slf4j2-impl -> 2.21.1 (*)
+(c) - A dependency constraint, not a dependency. The dependency affected by the constraint occurs elsewhere in the tree.
+(*) - Indicates repeated occurrences of a transitive dependency subtree. Gradle expands transitive dependency subtrees only once per project; repeat occurrences only display the root of the subtree, followed by this annotation.
+A web-based, searchable dependency report is available by adding the --scan option.
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+For more on this, please refer to https://docs.gradle.org/8.5/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
