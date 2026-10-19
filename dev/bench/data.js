@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1792358327657,
+  "lastUpdate": 1792450523481,
   "repoUrl": "https://github.com/Tunaiyi/tny-framework",
   "entries": {
     "Benchmark": [
@@ -14242,6 +14242,248 @@ window.BENCHMARK_DATA = {
           {
             "name": "com.tny.game.benchmark.net.routine.RespondFutureBenchmark.putAndPoll ( {\"inflight\":\"10000\"} )",
             "value": 14807704.979141716,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "bench-routine[bot]",
+            "email": "bench-routine@users.noreply.github.com"
+          },
+          "committer": {
+            "name": "bench-routine[bot]",
+            "email": "bench-routine@users.noreply.github.com"
+          },
+          "id": "925def8e9f5f21215aef6143b9942c1b74843ba4",
+          "message": "chore(bench): routine benchmark results [skip ci]",
+          "timestamp": "2026-10-19T22:55:19Z",
+          "url": "https://github.com/Tunaiyi/tny-framework/commit/925def8e9f5f21215aef6143b9942c1b74843ba4"
+        },
+        "date": 1792450522090,
+        "tool": "jmh",
+        "benches": [
+          {
+            "name": "com.tny.game.benchmark.net.devtest.SmokeBenchmark.noop",
+            "value": 2113766142.2209969,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.MessageQueueBenchmark.addMessage ( {\"capacity\":\"0\"} )",
+            "value": 1283290909.1867855,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.MessageQueueBenchmark.addMessage ( {\"capacity\":\"64\"} )",
+            "value": 91582223.51413406,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.MessageQueueBenchmark.filteredRead ( {\"capacity\":\"0\"} )",
+            "value": 204007142.59805536,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.MessageQueueBenchmark.filteredRead ( {\"capacity\":\"64\"} )",
+            "value": 21836387.154461898,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.MessageQueueBenchmark.snapshotRead ( {\"capacity\":\"0\"} )",
+            "value": 203600782.34333476,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.MessageQueueBenchmark.snapshotRead ( {\"capacity\":\"64\"} )",
+            "value": 111074717.02802758,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.PacketCodecBenchmark.encodeThenDecode ( {\"verify\":\"false\"} )",
+            "value": 2373031.5785531825,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.PacketCodecBenchmark.encodeThenDecode ( {\"verify\":\"true\"} )",
+            "value": 908010.5891703389,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.PipelineCryptoMatrixBenchmark.encodeThenDecode ( {\"algo\":\"prod_crc64_xortile\",\"benchKey\":\"bench-key\",\"size\":\"42\"} )",
+            "value": 715062.9971270879,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.PipelineCryptoMatrixBenchmark.encodeThenDecode ( {\"algo\":\"prod_crc64_xortile\",\"benchKey\":\"bench-key\",\"size\":\"994\"} )",
+            "value": 119356.99242794262,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.PipelineCryptoMatrixBenchmark.encodeThenDecode ( {\"algo\":\"prod_crc64_xortile\",\"benchKey\":\"0123456789abcdef\",\"size\":\"42\"} )",
+            "value": 816277.3515042113,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.PipelineCryptoMatrixBenchmark.encodeThenDecode ( {\"algo\":\"prod_crc64_xortile\",\"benchKey\":\"0123456789abcdef\",\"size\":\"994\"} )",
+            "value": 122187.40110197198,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.PipelineCryptoMatrixBenchmark.encodeThenDecode ( {\"algo\":\"prod_siphash24_xortile\",\"benchKey\":\"bench-key\",\"size\":\"42\"} )",
+            "value": 875147.1981772126,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.PipelineCryptoMatrixBenchmark.encodeThenDecode ( {\"algo\":\"prod_siphash24_xortile\",\"benchKey\":\"bench-key\",\"size\":\"994\"} )",
+            "value": 202288.59212292256,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.PipelineCryptoMatrixBenchmark.encodeThenDecode ( {\"algo\":\"prod_siphash24_xortile\",\"benchKey\":\"0123456789abcdef\",\"size\":\"42\"} )",
+            "value": 1022274.9133272611,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.PipelineCryptoMatrixBenchmark.encodeThenDecode ( {\"algo\":\"prod_siphash24_xortile\",\"benchKey\":\"0123456789abcdef\",\"size\":\"994\"} )",
+            "value": 216501.3348839734,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.PipelineCryptoMatrixBenchmark.encodeThenDecode ( {\"algo\":\"prod_crc32_xortile\",\"benchKey\":\"bench-key\",\"size\":\"42\"} )",
+            "value": 948016.7264375405,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.PipelineCryptoMatrixBenchmark.encodeThenDecode ( {\"algo\":\"prod_crc32_xortile\",\"benchKey\":\"bench-key\",\"size\":\"994\"} )",
+            "value": 306786.9541583231,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.PipelineCryptoMatrixBenchmark.encodeThenDecode ( {\"algo\":\"prod_crc32_xortile\",\"benchKey\":\"0123456789abcdef\",\"size\":\"42\"} )",
+            "value": 1151766.516142116,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.PipelineCryptoMatrixBenchmark.encodeThenDecode ( {\"algo\":\"prod_crc32_xortile\",\"benchKey\":\"0123456789abcdef\",\"size\":\"994\"} )",
+            "value": 322734.42033402284,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.PipelineCryptoMatrixBenchmark.encodeThenDecode ( {\"algo\":\"prod_siphash24_xorprod\",\"benchKey\":\"bench-key\",\"size\":\"42\"} )",
+            "value": 1012668.9677988149,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.PipelineCryptoMatrixBenchmark.encodeThenDecode ( {\"algo\":\"prod_siphash24_xorprod\",\"benchKey\":\"bench-key\",\"size\":\"994\"} )",
+            "value": 180853.56769034197,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.PipelineCryptoMatrixBenchmark.encodeThenDecode ( {\"algo\":\"prod_siphash24_xorprod\",\"benchKey\":\"0123456789abcdef\",\"size\":\"42\"} )",
+            "value": 947672.03409897,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.PipelineCryptoMatrixBenchmark.encodeThenDecode ( {\"algo\":\"prod_siphash24_xorprod\",\"benchKey\":\"0123456789abcdef\",\"size\":\"994\"} )",
+            "value": 203930.57683309453,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.PipelineCryptoMatrixBenchmark.encodeThenDecode ( {\"algo\":\"prod_crc32_xorprod\",\"benchKey\":\"bench-key\",\"size\":\"42\"} )",
+            "value": 1107201.34157574,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.PipelineCryptoMatrixBenchmark.encodeThenDecode ( {\"algo\":\"prod_crc32_xorprod\",\"benchKey\":\"bench-key\",\"size\":\"994\"} )",
+            "value": 251706.88068018464,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.PipelineCryptoMatrixBenchmark.encodeThenDecode ( {\"algo\":\"prod_crc32_xorprod\",\"benchKey\":\"0123456789abcdef\",\"size\":\"42\"} )",
+            "value": 1045683.1438443646,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.PipelineCryptoMatrixBenchmark.encodeThenDecode ( {\"algo\":\"prod_crc32_xorprod\",\"benchKey\":\"0123456789abcdef\",\"size\":\"994\"} )",
+            "value": 310218.71142114274,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.PipelineCryptoMatrixBenchmark.encodeThenDecode ( {\"algo\":\"prod_siphash24_chacha\",\"benchKey\":\"bench-key\",\"size\":\"42\"} )",
+            "value": 789583.7889511295,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.PipelineCryptoMatrixBenchmark.encodeThenDecode ( {\"algo\":\"prod_siphash24_chacha\",\"benchKey\":\"bench-key\",\"size\":\"994\"} )",
+            "value": 239203.09994201973,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.PipelineCryptoMatrixBenchmark.encodeThenDecode ( {\"algo\":\"prod_siphash24_chacha\",\"benchKey\":\"0123456789abcdef\",\"size\":\"42\"} )",
+            "value": 782889.6557844974,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.PipelineCryptoMatrixBenchmark.encodeThenDecode ( {\"algo\":\"prod_siphash24_chacha\",\"benchKey\":\"0123456789abcdef\",\"size\":\"994\"} )",
+            "value": 236912.4480985831,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.RespondFutureBenchmark.pollMiss ( {\"inflight\":\"1000\"} )",
+            "value": 108052542.00558141,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.RespondFutureBenchmark.pollMiss ( {\"inflight\":\"10000\"} )",
+            "value": 95650898.026971,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.RespondFutureBenchmark.putAndPoll ( {\"inflight\":\"1000\"} )",
+            "value": 15821506.037194725,
+            "unit": "ops/s",
+            "extra": "iterations: 10\nforks: 2\nthreads: 1"
+          },
+          {
+            "name": "com.tny.game.benchmark.net.routine.RespondFutureBenchmark.putAndPoll ( {\"inflight\":\"10000\"} )",
+            "value": 14770485.47984857,
             "unit": "ops/s",
             "extra": "iterations: 10\nforks: 2\nthreads: 1"
           }
