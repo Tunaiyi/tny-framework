@@ -1,0 +1,10 @@
+
+apply plugin: 'maven-publish'
+
+dependencies {
+    api project(':tny-game-common-lang')
+    api libs.commonsIo
+    api libs.commonsCodec
+
+}
+

@@ -1,0 +1,1 @@
+> Task ':tny-game-net:publishMavenJavaPublicationToCentralSnapshotsRepository' failed: required publishing property 'RELEASE_REPOSITORY_URL' is empty or missing.

@@ -1,0 +1,30 @@
+Configuration on demand is an incubating feature.
+------------------------------------------------------------
+Project ':tny-game-integration-test'
+------------------------------------------------------------
+integrationImplementation - Implementation only dependencies for source set 'integration'. (n)
++--- org.assertj:assertj-core (n)
++--- org.awaitility:awaitility (n)
++--- org.testcontainers:junit-jupiter (n)
++--- project tny-game-starter-net-netty4 (n)
++--- project tny-game-net-demo (n)
++--- org.junit.jupiter:junit-jupiter (n)
++--- org.mockito:mockito-junit-jupiter (n)
++--- project tny-game-boot (n)
++--- project tny-game-data (n)
++--- project tny-game-starter-redisson (n)
++--- project tny-game-data-redisson (n)
++--- project tny-game-redisson (n)
++--- project tny-game-starter-mongodb (n)
++--- project tny-game-data-mongodb (n)
++--- project tny-game-mongodb (n)
++--- org.springframework.boot:spring-boot-starter (n)
++--- org.springframework.boot:spring-boot-autoconfigure (n)
++--- org.springframework.boot:spring-boot-starter-log4j2 (n)
++--- org.testcontainers:mongodb (n)
+\--- org.apache.logging.log4j:log4j-core (n)
+(n) - A dependency or dependency configuration that cannot be resolved.
+A web-based, searchable dependency report is available by adding the --scan option.
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+For more on this, please refer to https://docs.gradle.org/8.5/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.

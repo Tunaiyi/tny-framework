@@ -1,0 +1,66 @@
+# T3 拓扑·级联第二跳独立中继（RelayNodeApp，与 relay-1 完全同形，design D5"app 形态
+# 同一、yml 参数不同"）装配声明（任务 2.2 T3 级联 relay-2 段——审计 CRITICAL 补齐实体）。
+# client 集群拨向业务应用 game-2 的中继端点（it.g2.relay.port，同 T2 中继的下游）。
+# 键空间与 codec 点名约定同 it-t2-relay.yml。
+# 运行期占位：it.r2.server.port、it.g2.relay.port、it.redis.*
+tny:
+  data:
+    enable: false
+  datasource:
+    redisson:
+      setting:
+        host: "${it.redis.host}"
+        port: ${it.redis.port}
+        password: '${it.redis.password}'
+        database: 0
+    mongodb:
+      enable: false
+  app:
+    name: t3-relay-two
+    app-type: gateway-service
+    scope-type: online
+  net:
+    bootstrap:
+      relay:
+        server:
+          name: t3-relay-two
+          bind-address: "${it.host}:${it.r2.server.port}"
+          channel:
+            encoder:
+              message-body-codec: typeProtobufMessageBodyCodec
+              verifier: cRC64CodecVerifier
+              crypto: xOrCodecCrypto
+            decoder:
+              message-body-codec: typeProtobufMessageBodyCodec
+              verifier: cRC64CodecVerifier
+              crypto: xOrCodecCrypto
+        client:
+          channel:
+            encoder:
+              message-body-codec: typeProtobufMessageBodyCodec
+              verifier: cRC64CodecVerifier
+              crypto: xOrCodecCrypto
+            decoder:
+              message-body-codec: typeProtobufMessageBodyCodec
+              verifier: cRC64CodecVerifier
+              crypto: xOrCodecCrypto
+    relay:
+      clusters:
+        - service: game-service
+          serve-name: game-service
+          discovery: false
+          connection-size: 1
+          serve-nodes:
+            - id: 1
+              healthy: true
+              url: "tcp://${it.host}:${it.g2.relay.port}"
+      router:
+        fixed-message-router:
+          service: game-service
+
+spring:
+  data:
+    redis:
+      host: "${it.redis.host}"
+      port: ${it.redis.port}
+      password: '${it.redis.password}'

@@ -1,0 +1,17 @@
+dependencies {
+
+    annotationProcessor libs.springBootConfigurationProcessor
+
+    api libs.springBootAutoconfigure
+    api libs.springBootStarterDataMongodb
+
+    api project(':tny-game-boot')
+    api project(':tny-game-codec-jackson')
+
+    api libs.jacksonCore
+    api libs.jacksonDatabind
+    api libs.jacksonAnnotations
+    api libs.jacksonDatatypeJava8
+
+}
+

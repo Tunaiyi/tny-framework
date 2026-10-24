@@ -1,0 +1,2952 @@
+[
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.bench.net.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 3,
+        "jvm" : "/Users/kgtny/Library/Java/JavaVirtualMachines/azul-25/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "25",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25+36-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 4,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "none",
+            "benchKey" : "bench-key",
+            "size" : "42"
+        },
+        "primaryMetric" : {
+            "score" : 1668786.250018861,
+            "scoreError" : 421306.638740195,
+            "scoreConfidence" : [
+                1247479.611278666,
+                2090092.8887590559
+            ],
+            "scorePercentiles" : {
+                "0.0" : 901506.997294739,
+                "50.0" : 1635712.1130298453,
+                "90.0" : 2111354.264917113,
+                "95.0" : 2122052.2649362152,
+                "99.0" : 2122052.2649362152,
+                "99.9" : 2122052.2649362152,
+                "99.99" : 2122052.2649362152,
+                "99.999" : 2122052.2649362152,
+                "99.9999" : 2122052.2649362152,
+                "100.0" : 2122052.2649362152
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    1445622.1805212074,
+                    1652317.4457942196,
+                    1604332.1978233058,
+                    901506.997294739
+                ],
+                [
+                    1869817.4715069619,
+                    2086392.2648725412,
+                    2122052.2649362152,
+                    1900854.2801443015
+                ],
+                [
+                    1778176.3067950578,
+                    1619106.780265471,
+                    1611835.938363101,
+                    1433420.8719092086
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.bench.net.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 3,
+        "jvm" : "/Users/kgtny/Library/Java/JavaVirtualMachines/azul-25/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "25",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25+36-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 4,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "none",
+            "benchKey" : "bench-key",
+            "size" : "994"
+        },
+        "primaryMetric" : {
+            "score" : 868842.6719513343,
+            "scoreError" : 551145.6161836083,
+            "scoreConfidence" : [
+                317697.05576772604,
+                1419988.2881349428
+            ],
+            "scorePercentiles" : {
+                "0.0" : 321472.6640982068,
+                "50.0" : 876247.3431205887,
+                "90.0" : 1503515.5219345675,
+                "95.0" : 1600842.4832058148,
+                "99.0" : 1600842.4832058148,
+                "99.9" : 1600842.4832058148,
+                "99.99" : 1600842.4832058148,
+                "99.999" : 1600842.4832058148,
+                "99.9999" : 1600842.4832058148,
+                "100.0" : 1600842.4832058148
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    1172355.5859581481,
+                    1242688.9589504313,
+                    1276419.2789683226,
+                    934505.8801241396
+                ],
+                [
+                    413417.04240261397,
+                    321472.6640982068,
+                    369798.2550454918,
+                    374310.70753006655
+                ],
+                [
+                    748898.456611566,
+                    1153413.944404174,
+                    817988.8061170378,
+                    1600842.4832058148
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.bench.net.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 3,
+        "jvm" : "/Users/kgtny/Library/Java/JavaVirtualMachines/azul-25/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "25",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25+36-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 4,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "none",
+            "benchKey" : "0123456789abcdef",
+            "size" : "42"
+        },
+        "primaryMetric" : {
+            "score" : 1828893.0237173445,
+            "scoreError" : 191909.67758994515,
+            "scoreConfidence" : [
+                1636983.3461273992,
+                2020802.7013072898
+            ],
+            "scorePercentiles" : {
+                "0.0" : 1618933.6380545872,
+                "50.0" : 1810180.4892866968,
+                "90.0" : 2036083.2037060782,
+                "95.0" : 2052570.1037241367,
+                "99.0" : 2052570.1037241367,
+                "99.9" : 2052570.1037241367,
+                "99.99" : 2052570.1037241367,
+                "99.999" : 2052570.1037241367,
+                "99.9999" : 2052570.1037241367,
+                "100.0" : 2052570.1037241367
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    1618933.6380545872,
+                    1760091.465754612,
+                    1908806.254628189,
+                    1725634.156688653
+                ],
+                [
+                    1644890.623430861,
+                    2052570.1037241367,
+                    1997613.770330608,
+                    1946172.6844083655
+                ],
+                [
+                    1674639.9411640053,
+                    1843429.4181035883,
+                    1776931.5604698053,
+                    1997002.6678507212
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.bench.net.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 3,
+        "jvm" : "/Users/kgtny/Library/Java/JavaVirtualMachines/azul-25/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "25",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25+36-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 4,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "none",
+            "benchKey" : "0123456789abcdef",
+            "size" : "994"
+        },
+        "primaryMetric" : {
+            "score" : 1539743.0339029385,
+            "scoreError" : 248601.06902659513,
+            "scoreConfidence" : [
+                1291141.9648763433,
+                1788344.1029295337
+            ],
+            "scorePercentiles" : {
+                "0.0" : 1149838.0701745658,
+                "50.0" : 1551355.5431555936,
+                "90.0" : 1798210.9494917446,
+                "95.0" : 1814503.7849733627,
+                "99.0" : 1814503.7849733627,
+                "99.9" : 1814503.7849733627,
+                "99.99" : 1814503.7849733627,
+                "99.999" : 1814503.7849733627,
+                "99.9999" : 1814503.7849733627,
+                "100.0" : 1814503.7849733627
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    1469182.770823408,
+                    1551715.077974796,
+                    1149838.0701745658,
+                    1550996.008336391
+                ],
+                [
+                    1361570.1877022428,
+                    1518899.8768035409,
+                    1657686.4503843635,
+                    1327527.939544603
+                ],
+                [
+                    1573120.1075002663,
+                    1741681.7992497494,
+                    1760194.3333679691,
+                    1814503.7849733627
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.bench.net.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 3,
+        "jvm" : "/Users/kgtny/Library/Java/JavaVirtualMachines/azul-25/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "25",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25+36-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 4,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "legacy",
+            "benchKey" : "bench-key",
+            "size" : "42"
+        },
+        "primaryMetric" : {
+            "score" : 956902.3655226254,
+            "scoreError" : 43574.55495901224,
+            "scoreConfidence" : [
+                913327.8105636132,
+                1000476.9204816376
+            ],
+            "scorePercentiles" : {
+                "0.0" : 899768.7103808003,
+                "50.0" : 952796.755349613,
+                "90.0" : 1004640.9874744555,
+                "95.0" : 1006444.8840042661,
+                "99.0" : 1006444.8840042661,
+                "99.9" : 1006444.8840042661,
+                "99.99" : 1006444.8840042661,
+                "99.999" : 1006444.8840042661,
+                "99.9999" : 1006444.8840042661,
+                "100.0" : 1006444.8840042661
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    946658.3754864965,
+                    1000431.8955715639,
+                    994812.266549418,
+                    951422.6726953071
+                ],
+                [
+                    954170.838003919,
+                    946228.4690588751,
+                    1006444.8840042661,
+                    978758.4116142464
+                ],
+                [
+                    913143.9367195708,
+                    899768.7103808003,
+                    925856.9085910182,
+                    965131.0175960223
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.bench.net.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 3,
+        "jvm" : "/Users/kgtny/Library/Java/JavaVirtualMachines/azul-25/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "25",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25+36-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 4,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "legacy",
+            "benchKey" : "bench-key",
+            "size" : "994"
+        },
+        "primaryMetric" : {
+            "score" : 104702.51745466898,
+            "scoreError" : 4679.609561700083,
+            "scoreConfidence" : [
+                100022.9078929689,
+                109382.12701636906
+            ],
+            "scorePercentiles" : {
+                "0.0" : 100264.59013243926,
+                "50.0" : 104689.4080405481,
+                "90.0" : 108917.2838895838,
+                "95.0" : 108949.87315878768,
+                "99.0" : 108949.87315878768,
+                "99.9" : 108949.87315878768,
+                "99.99" : 108949.87315878768,
+                "99.999" : 108949.87315878768,
+                "99.9999" : 108949.87315878768,
+                "100.0" : 108949.87315878768
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    100449.49047205936,
+                    103661.4441697469,
+                    104998.34927458891,
+                    107025.03111539698
+                ],
+                [
+                    100330.24339683316,
+                    108264.09758410101,
+                    108841.24226144142,
+                    100264.59013243926
+                ],
+                [
+                    100425.66243785502,
+                    108949.87315878768,
+                    108839.71864627079,
+                    104380.4668065073
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.bench.net.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 3,
+        "jvm" : "/Users/kgtny/Library/Java/JavaVirtualMachines/azul-25/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "25",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25+36-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 4,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "legacy",
+            "benchKey" : "0123456789abcdef",
+            "size" : "42"
+        },
+        "primaryMetric" : {
+            "score" : 938931.6970156678,
+            "scoreError" : 58376.06705725277,
+            "scoreConfidence" : [
+                880555.629958415,
+                997307.7640729205
+            ],
+            "scorePercentiles" : {
+                "0.0" : 840140.0951049313,
+                "50.0" : 936384.3175795098,
+                "90.0" : 1006865.4254783749,
+                "95.0" : 1013999.2938641973,
+                "99.0" : 1013999.2938641973,
+                "99.9" : 1013999.2938641973,
+                "99.99" : 1013999.2938641973,
+                "99.999" : 1013999.2938641973,
+                "99.9999" : 1013999.2938641973,
+                "100.0" : 1013999.2938641973
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    892469.9904493786,
+                    982138.5052995757,
+                    990219.7325781228,
+                    937849.7293064474
+                ],
+                [
+                    947467.7339884139,
+                    934918.9058525722,
+                    948657.5894438233,
+                    934382.7468795683
+                ],
+                [
+                    840140.0951049313,
+                    927500.3839869656,
+                    917435.6574340188,
+                    1013999.2938641973
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.bench.net.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 3,
+        "jvm" : "/Users/kgtny/Library/Java/JavaVirtualMachines/azul-25/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "25",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25+36-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 4,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "legacy",
+            "benchKey" : "0123456789abcdef",
+            "size" : "994"
+        },
+        "primaryMetric" : {
+            "score" : 119992.62072485976,
+            "scoreError" : 5609.466486368611,
+            "scoreConfidence" : [
+                114383.15423849116,
+                125602.08721122837
+            ],
+            "scorePercentiles" : {
+                "0.0" : 113440.24277855207,
+                "50.0" : 120063.89345729834,
+                "90.0" : 126609.64506033606,
+                "95.0" : 127559.9599238363,
+                "99.0" : 127559.9599238363,
+                "99.9" : 127559.9599238363,
+                "99.99" : 127559.9599238363,
+                "99.999" : 127559.9599238363,
+                "99.9999" : 127559.9599238363,
+                "100.0" : 127559.9599238363
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    122089.17354656642,
+                    119463.3968300321,
+                    119565.66417671482,
+                    117004.79789818263
+                ],
+                [
+                    115243.58799197321,
+                    114297.33847762582,
+                    124392.24371216881,
+                    124249.45994581758
+                ],
+                [
+                    120562.12273788186,
+                    113440.24277855207,
+                    122043.46067896545,
+                    127559.9599238363
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.bench.net.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 3,
+        "jvm" : "/Users/kgtny/Library/Java/JavaVirtualMachines/azul-25/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "25",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25+36-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 4,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "legacy_v1",
+            "benchKey" : "bench-key",
+            "size" : "42"
+        },
+        "primaryMetric" : {
+            "score" : 874845.2912070472,
+            "scoreError" : 24965.792217865568,
+            "scoreConfidence" : [
+                849879.4989891816,
+                899811.0834249128
+            ],
+            "scorePercentiles" : {
+                "0.0" : 846605.3997421562,
+                "50.0" : 873234.3236423035,
+                "90.0" : 905490.4206430503,
+                "95.0" : 905694.4450303824,
+                "99.0" : 905694.4450303824,
+                "99.9" : 905694.4450303824,
+                "99.99" : 905694.4450303824,
+                "99.999" : 905694.4450303824,
+                "99.9999" : 905694.4450303824,
+                "100.0" : 905694.4450303824
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    863990.9058324747,
+                    897611.8300865244,
+                    905014.3637392755,
+                    869579.3894320843
+                ],
+                [
+                    846605.3997421562,
+                    879512.2608360217,
+                    905694.4450303824,
+                    874662.2234666065
+                ],
+                [
+                    853722.9610523639,
+                    873399.1188296243,
+                    855281.0679820694,
+                    873069.5284549826
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.bench.net.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 3,
+        "jvm" : "/Users/kgtny/Library/Java/JavaVirtualMachines/azul-25/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "25",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25+36-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 4,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "legacy_v1",
+            "benchKey" : "bench-key",
+            "size" : "994"
+        },
+        "primaryMetric" : {
+            "score" : 105694.99843397104,
+            "scoreError" : 4935.996721178303,
+            "scoreConfidence" : [
+                100759.00171279273,
+                110630.99515514934
+            ],
+            "scorePercentiles" : {
+                "0.0" : 96630.75345093837,
+                "50.0" : 105319.39032188582,
+                "90.0" : 110145.56377895275,
+                "95.0" : 110171.19671297692,
+                "99.0" : 110171.19671297692,
+                "99.9" : 110171.19671297692,
+                "99.99" : 110171.19671297692,
+                "99.999" : 110171.19671297692,
+                "99.9999" : 110171.19671297692,
+                "100.0" : 110171.19671297692
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    110171.19671297692,
+                    104387.46592393101,
+                    102643.53228165697,
+                    103972.81422320218
+                ],
+                [
+                    105317.1812524091,
+                    106349.92906528818,
+                    109230.37697303518,
+                    110085.75359956303
+                ],
+                [
+                    105321.59939136253,
+                    96630.75345093837,
+                    109423.09737712205,
+                    104806.28095616693
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.bench.net.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 3,
+        "jvm" : "/Users/kgtny/Library/Java/JavaVirtualMachines/azul-25/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "25",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25+36-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 4,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "legacy_v1",
+            "benchKey" : "0123456789abcdef",
+            "size" : "42"
+        },
+        "primaryMetric" : {
+            "score" : 889094.5973057001,
+            "scoreError" : 38544.076290355304,
+            "scoreConfidence" : [
+                850550.5210153448,
+                927638.6735960554
+            ],
+            "scorePercentiles" : {
+                "0.0" : 848167.4501197468,
+                "50.0" : 882829.0188552684,
+                "90.0" : 939945.8101692051,
+                "95.0" : 947020.4325597802,
+                "99.0" : 947020.4325597802,
+                "99.9" : 947020.4325597802,
+                "99.99" : 947020.4325597802,
+                "99.999" : 947020.4325597802,
+                "99.9999" : 947020.4325597802,
+                "100.0" : 947020.4325597802
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    870972.6954464322,
+                    862582.0452271084,
+                    880623.2701301494,
+                    848167.4501197468
+                ],
+                [
+                    885034.7675803874,
+                    894065.8703383747,
+                    902213.3367022666,
+                    921656.4859550626
+                ],
+                [
+                    880279.3367044646,
+                    853081.1189800975,
+                    923438.3579245297,
+                    947020.4325597802
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.bench.net.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 3,
+        "jvm" : "/Users/kgtny/Library/Java/JavaVirtualMachines/azul-25/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "25",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25+36-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 4,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "legacy_v1",
+            "benchKey" : "0123456789abcdef",
+            "size" : "994"
+        },
+        "primaryMetric" : {
+            "score" : 106895.76487841837,
+            "scoreError" : 4774.898986792449,
+            "scoreConfidence" : [
+                102120.86589162592,
+                111670.66386521082
+            ],
+            "scorePercentiles" : {
+                "0.0" : 100133.41888579301,
+                "50.0" : 106820.68458139128,
+                "90.0" : 111391.0456708926,
+                "95.0" : 111471.78343514104,
+                "99.0" : 111471.78343514104,
+                "99.9" : 111471.78343514104,
+                "99.99" : 111471.78343514104,
+                "99.999" : 111471.78343514104,
+                "99.9999" : 111471.78343514104,
+                "100.0" : 111471.78343514104
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    108281.75281810276,
+                    107171.0303550089,
+                    110564.20389302024,
+                    110804.33036411981
+                ],
+                [
+                    102109.4396174709,
+                    100133.41888579301,
+                    104820.84178537877,
+                    111471.78343514104
+                ],
+                [
+                    104073.62934685667,
+                    105645.75167804188,
+                    106470.33880777365,
+                    111202.65755431294
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.bench.net.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 3,
+        "jvm" : "/Users/kgtny/Library/Java/JavaVirtualMachines/azul-25/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "25",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25+36-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 4,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "only_xor",
+            "benchKey" : "bench-key",
+            "size" : "42"
+        },
+        "primaryMetric" : {
+            "score" : 1690081.9776284348,
+            "scoreError" : 154152.67754869207,
+            "scoreConfidence" : [
+                1535929.3000797427,
+                1844234.6551771269
+            ],
+            "scorePercentiles" : {
+                "0.0" : 1428066.8096402136,
+                "50.0" : 1720298.958743814,
+                "90.0" : 1814069.0755551064,
+                "95.0" : 1817205.2936588393,
+                "99.0" : 1817205.2936588393,
+                "99.9" : 1817205.2936588393,
+                "99.99" : 1817205.2936588393,
+                "99.999" : 1817205.2936588393,
+                "99.9999" : 1817205.2936588393,
+                "100.0" : 1817205.2936588393
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    1741921.090611954,
+                    1817205.2936588393,
+                    1806751.2333130627,
+                    1627971.9425569107
+                ],
+                [
+                    1617315.8503743813,
+                    1728474.375985404,
+                    1802266.6384731645,
+                    1522163.1132719833
+                ],
+                [
+                    1709520.5958636464,
+                    1767203.2462894346,
+                    1428066.8096402136,
+                    1712123.5415022238
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.bench.net.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 3,
+        "jvm" : "/Users/kgtny/Library/Java/JavaVirtualMachines/azul-25/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "25",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25+36-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 4,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "only_xor",
+            "benchKey" : "bench-key",
+            "size" : "994"
+        },
+        "primaryMetric" : {
+            "score" : 353690.0874978979,
+            "scoreError" : 15957.104354902865,
+            "scoreConfidence" : [
+                337732.98314299504,
+                369647.1918528008
+            ],
+            "scorePercentiles" : {
+                "0.0" : 332566.2888689149,
+                "50.0" : 353243.68573255895,
+                "90.0" : 368382.0480455482,
+                "95.0" : 368778.7343087919,
+                "99.0" : 368778.7343087919,
+                "99.9" : 368778.7343087919,
+                "99.99" : 368778.7343087919,
+                "99.999" : 368778.7343087919,
+                "99.9999" : 368778.7343087919,
+                "100.0" : 368778.7343087919
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    342186.00625923194,
+                    357799.78073642886,
+                    362704.06488030334,
+                    367456.44676464616
+                ],
+                [
+                    366269.35812634946,
+                    332566.2888689149,
+                    368778.7343087919,
+                    365519.9048658143
+                ],
+                [
+                    348687.5907286891,
+                    343487.97174720984,
+                    347055.37644639495,
+                    341769.5262419997
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.bench.net.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 3,
+        "jvm" : "/Users/kgtny/Library/Java/JavaVirtualMachines/azul-25/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "25",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25+36-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 4,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "only_xor",
+            "benchKey" : "0123456789abcdef",
+            "size" : "42"
+        },
+        "primaryMetric" : {
+            "score" : 1679685.750766643,
+            "scoreError" : 144783.18914673137,
+            "scoreConfidence" : [
+                1534902.5616199118,
+                1824468.9399133744
+            ],
+            "scorePercentiles" : {
+                "0.0" : 1484762.2680894174,
+                "50.0" : 1700591.2802327597,
+                "90.0" : 1808615.0815127546,
+                "95.0" : 1810885.7170665697,
+                "99.0" : 1810885.7170665697,
+                "99.9" : 1810885.7170665697,
+                "99.99" : 1810885.7170665697,
+                "99.999" : 1810885.7170665697,
+                "99.9999" : 1810885.7170665697,
+                "100.0" : 1810885.7170665697
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    1484762.2680894174,
+                    1588302.5690328747,
+                    1557297.5161257517,
+                    1546367.7728641569
+                ],
+                [
+                    1649739.947663186,
+                    1803316.9318871857,
+                    1810885.7170665697,
+                    1779813.1097094978
+                ],
+                [
+                    1728305.1628341083,
+                    1672877.3976314112,
+                    1755517.9772635293,
+                    1779042.6390320284
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.bench.net.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 3,
+        "jvm" : "/Users/kgtny/Library/Java/JavaVirtualMachines/azul-25/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "25",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25+36-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 4,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "only_xor",
+            "benchKey" : "0123456789abcdef",
+            "size" : "994"
+        },
+        "primaryMetric" : {
+            "score" : 725434.1111203791,
+            "scoreError" : 75066.05768458682,
+            "scoreConfidence" : [
+                650368.0534357922,
+                800500.1688049659
+            ],
+            "scorePercentiles" : {
+                "0.0" : 628084.4090511088,
+                "50.0" : 736682.2225706065,
+                "90.0" : 801057.1337613799,
+                "95.0" : 801137.4191052716,
+                "99.0" : 801137.4191052716,
+                "99.9" : 801137.4191052716,
+                "99.99" : 801137.4191052716,
+                "99.999" : 801137.4191052716,
+                "99.9999" : 801137.4191052716,
+                "100.0" : 801137.4191052716
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    655658.0844360614,
+                    728362.6735415258,
+                    745001.7715996873,
+                    801137.4191052716
+                ],
+                [
+                    721230.5630797079,
+                    760074.8241235396,
+                    800869.8012922992,
+                    782506.9849903317
+                ],
+                [
+                    656861.7907858025,
+                    628084.4090511088,
+                    745287.748594211,
+                    680133.2628450021
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.bench.net.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 3,
+        "jvm" : "/Users/kgtny/Library/Java/JavaVirtualMachines/azul-25/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "25",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25+36-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 4,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "only_crc64",
+            "benchKey" : "bench-key",
+            "size" : "42"
+        },
+        "primaryMetric" : {
+            "score" : 1018681.9944133413,
+            "scoreError" : 116834.75746547886,
+            "scoreConfidence" : [
+                901847.2369478624,
+                1135516.7518788201
+            ],
+            "scorePercentiles" : {
+                "0.0" : 763803.1644289559,
+                "50.0" : 1032525.7689583381,
+                "90.0" : 1124809.346073176,
+                "95.0" : 1138006.596709887,
+                "99.0" : 1138006.596709887,
+                "99.9" : 1138006.596709887,
+                "99.99" : 1138006.596709887,
+                "99.999" : 1138006.596709887,
+                "99.9999" : 1138006.596709887,
+                "100.0" : 1138006.596709887
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    984498.2801031601,
+                    1027646.9924984138,
+                    1094015.7612541832,
+                    1020795.0368895347
+                ],
+                [
+                    763803.1644289559,
+                    1032251.3891119119,
+                    1040833.5232159825,
+                    977316.1311516443
+                ],
+                [
+                    1058213.8483446452,
+                    1054003.0604470142,
+                    1032800.1488047641,
+                    1138006.596709887
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.bench.net.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 3,
+        "jvm" : "/Users/kgtny/Library/Java/JavaVirtualMachines/azul-25/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "25",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25+36-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 4,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "only_crc64",
+            "benchKey" : "bench-key",
+            "size" : "994"
+        },
+        "primaryMetric" : {
+            "score" : 132093.4807465452,
+            "scoreError" : 16948.36169186792,
+            "scoreConfidence" : [
+                115145.11905467727,
+                149041.84243841312
+            ],
+            "scorePercentiles" : {
+                "0.0" : 91138.74397540063,
+                "50.0" : 135917.2236828639,
+                "90.0" : 139698.72677445447,
+                "95.0" : 140024.61410868983,
+                "99.0" : 140024.61410868983,
+                "99.9" : 140024.61410868983,
+                "99.99" : 140024.61410868983,
+                "99.999" : 140024.61410868983,
+                "99.9999" : 140024.61410868983,
+                "100.0" : 140024.61410868983
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    138278.73635741672,
+                    138494.74674195208,
+                    136365.1528668471,
+                    138938.32299457194
+                ],
+                [
+                    135469.2944988807,
+                    131275.7835149451,
+                    132550.63970662933,
+                    140024.61410868983
+                ],
+                [
+                    137069.05343227534,
+                    134091.0560111143,
+                    131425.62474981905,
+                    91138.74397540063
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.bench.net.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 3,
+        "jvm" : "/Users/kgtny/Library/Java/JavaVirtualMachines/azul-25/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "25",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25+36-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 4,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "only_crc64",
+            "benchKey" : "0123456789abcdef",
+            "size" : "42"
+        },
+        "primaryMetric" : {
+            "score" : 1093210.3863029685,
+            "scoreError" : 37853.43531500695,
+            "scoreConfidence" : [
+                1055356.9509879616,
+                1131063.8216179754
+            ],
+            "scorePercentiles" : {
+                "0.0" : 1041629.1637374504,
+                "50.0" : 1090285.3471449255,
+                "90.0" : 1144455.1457589406,
+                "95.0" : 1155606.4053223422,
+                "99.0" : 1155606.4053223422,
+                "99.9" : 1155606.4053223422,
+                "99.99" : 1155606.4053223422,
+                "99.999" : 1155606.4053223422,
+                "99.9999" : 1155606.4053223422,
+                "100.0" : 1155606.4053223422
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    1078440.9207120251,
+                    1109370.0743639336,
+                    1067223.0925288142,
+                    1094116.3552382065
+                ],
+                [
+                    1041629.1637374504,
+                    1076342.030835791,
+                    1074386.8821622706,
+                    1118435.5401110034
+                ],
+                [
+                    1100374.1209296181,
+                    1086454.3390516446,
+                    1116145.7106425227,
+                    1155606.4053223422
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.bench.net.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 3,
+        "jvm" : "/Users/kgtny/Library/Java/JavaVirtualMachines/azul-25/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "25",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25+36-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 4,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "only_crc64",
+            "benchKey" : "0123456789abcdef",
+            "size" : "994"
+        },
+        "primaryMetric" : {
+            "score" : 132572.66173229762,
+            "scoreError" : 5479.919586434946,
+            "scoreConfidence" : [
+                127092.74214586268,
+                138052.58131873258
+            ],
+            "scorePercentiles" : {
+                "0.0" : 126558.58376175503,
+                "50.0" : 132364.1356112635,
+                "90.0" : 138867.06415036228,
+                "95.0" : 139080.46302898208,
+                "99.0" : 139080.46302898208,
+                "99.9" : 139080.46302898208,
+                "99.99" : 139080.46302898208,
+                "99.999" : 139080.46302898208,
+                "99.9999" : 139080.46302898208,
+                "100.0" : 139080.46302898208
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    132435.99978499033,
+                    127695.14731559432,
+                    139080.46302898208,
+                    133270.00437697044
+                ],
+                [
+                    126558.58376175503,
+                    127443.55111053707,
+                    135974.32476124604,
+                    129970.88895206682
+                ],
+                [
+                    132292.27143753666,
+                    138369.13343358276,
+                    136783.1418519001,
+                    130998.43097240967
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.bench.net.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 3,
+        "jvm" : "/Users/kgtny/Library/Java/JavaVirtualMachines/azul-25/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "25",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25+36-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 4,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "prod_crc64_xortile",
+            "benchKey" : "bench-key",
+            "size" : "42"
+        },
+        "primaryMetric" : {
+            "score" : 910225.2526695002,
+            "scoreError" : 22310.448104838124,
+            "scoreConfidence" : [
+                887914.804564662,
+                932535.7007743383
+            ],
+            "scorePercentiles" : {
+                "0.0" : 890779.2809145486,
+                "50.0" : 910581.3926946147,
+                "90.0" : 940715.094066127,
+                "95.0" : 947679.1464804966,
+                "99.0" : 947679.1464804966,
+                "99.9" : 947679.1464804966,
+                "99.99" : 947679.1464804966,
+                "99.999" : 947679.1464804966,
+                "99.9999" : 947679.1464804966,
+                "100.0" : 947679.1464804966
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    922783.25273964,
+                    924465.6384325976,
+                    906149.4342708607,
+                    891029.7248232162
+                ],
+                [
+                    915013.3511183687,
+                    919101.8860143771,
+                    918289.1775479836,
+                    894243.5757613182
+                ],
+                [
+                    893700.6096689671,
+                    899467.9542616265,
+                    890779.2809145486,
+                    947679.1464804966
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.bench.net.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 3,
+        "jvm" : "/Users/kgtny/Library/Java/JavaVirtualMachines/azul-25/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "25",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25+36-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 4,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "prod_crc64_xortile",
+            "benchKey" : "bench-key",
+            "size" : "994"
+        },
+        "primaryMetric" : {
+            "score" : 117099.00709751369,
+            "scoreError" : 4387.987500084033,
+            "scoreConfidence" : [
+                112711.01959742967,
+                121486.99459759772
+            ],
+            "scorePercentiles" : {
+                "0.0" : 112855.15064757534,
+                "50.0" : 118268.57626575262,
+                "90.0" : 121839.7600841031,
+                "95.0" : 121854.56520436805,
+                "99.0" : 121854.56520436805,
+                "99.9" : 121854.56520436805,
+                "99.99" : 121854.56520436805,
+                "99.999" : 121854.56520436805,
+                "99.9999" : 121854.56520436805,
+                "100.0" : 121854.56520436805
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    118424.33284174891,
+                    112923.84549798942,
+                    112855.15064757534,
+                    119004.17637916938
+                ],
+                [
+                    121805.21480348487,
+                    118112.81968975633,
+                    114682.56690562295,
+                    119377.60330747832
+                ],
+                [
+                    113824.62560649123,
+                    121854.56520436805,
+                    119241.43306613874,
+                    113081.75122034052
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.bench.net.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 3,
+        "jvm" : "/Users/kgtny/Library/Java/JavaVirtualMachines/azul-25/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "25",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25+36-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 4,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "prod_crc64_xortile",
+            "benchKey" : "0123456789abcdef",
+            "size" : "42"
+        },
+        "primaryMetric" : {
+            "score" : 997599.4302616174,
+            "scoreError" : 163653.31951258038,
+            "scoreConfidence" : [
+                833946.110749037,
+                1161252.7497741978
+            ],
+            "scorePercentiles" : {
+                "0.0" : 606259.737809516,
+                "50.0" : 1037557.982174618,
+                "90.0" : 1066960.897782763,
+                "95.0" : 1067292.2434216733,
+                "99.0" : 1067292.2434216733,
+                "99.9" : 1067292.2434216733,
+                "99.99" : 1067292.2434216733,
+                "99.999" : 1067292.2434216733,
+                "99.9999" : 1067292.2434216733,
+                "100.0" : 1067292.2434216733
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    606259.737809516,
+                    957095.5125545596,
+                    1015541.2517677222,
+                    1066187.7579586392
+                ],
+                [
+                    1053423.6590543524,
+                    1067292.2434216733,
+                    1060559.631242286,
+                    986284.4554753676
+                ],
+                [
+                    1025717.1952509753,
+                    1030515.2449175556,
+                    1044600.7194316805,
+                    1057715.7542550827
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.bench.net.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 3,
+        "jvm" : "/Users/kgtny/Library/Java/JavaVirtualMachines/azul-25/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "25",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25+36-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 4,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "prod_crc64_xortile",
+            "benchKey" : "0123456789abcdef",
+            "size" : "994"
+        },
+        "primaryMetric" : {
+            "score" : 129413.3509463006,
+            "scoreError" : 2280.093542805645,
+            "scoreConfidence" : [
+                127133.25740349496,
+                131693.44448910624
+            ],
+            "scorePercentiles" : {
+                "0.0" : 126920.15527704493,
+                "50.0" : 129046.00945015263,
+                "90.0" : 132020.6181287374,
+                "95.0" : 132409.18631941616,
+                "99.0" : 132409.18631941616,
+                "99.9" : 132409.18631941616,
+                "99.99" : 132409.18631941616,
+                "99.999" : 132409.18631941616,
+                "99.9999" : 132409.18631941616,
+                "100.0" : 132409.18631941616
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    128481.0661252111,
+                    130932.68949584111,
+                    128963.06755034736,
+                    130946.71704190692
+                ],
+                [
+                    129128.95134995792,
+                    127490.64618394698,
+                    128957.90133175178,
+                    130586.32832564913
+                ],
+                [
+                    126920.15527704493,
+                    127029.54333738037,
+                    131113.95901715363,
+                    132409.18631941616
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.bench.net.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 3,
+        "jvm" : "/Users/kgtny/Library/Java/JavaVirtualMachines/azul-25/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "25",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25+36-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 4,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "prod_crc32_xortile",
+            "benchKey" : "bench-key",
+            "size" : "42"
+        },
+        "primaryMetric" : {
+            "score" : 1440402.53009264,
+            "scoreError" : 109162.39682379297,
+            "scoreConfidence" : [
+                1331240.1332688471,
+                1549564.926916433
+            ],
+            "scorePercentiles" : {
+                "0.0" : 1245852.7179178698,
+                "50.0" : 1448952.188811503,
+                "90.0" : 1556812.8683905017,
+                "95.0" : 1562411.1120090557,
+                "99.0" : 1562411.1120090557,
+                "99.9" : 1562411.1120090557,
+                "99.99" : 1562411.1120090557,
+                "99.999" : 1562411.1120090557,
+                "99.9999" : 1562411.1120090557,
+                "100.0" : 1562411.1120090557
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    1562411.1120090557,
+                    1543750.2999472092,
+                    1410168.7678871497,
+                    1245852.7179178698
+                ],
+                [
+                    1338683.9393523885,
+                    1445072.6157833878,
+                    1487546.6617937554,
+                    1473346.6123088703
+                ],
+                [
+                    1475111.2357553474,
+                    1430541.6040411775,
+                    1452831.7618396182,
+                    1419513.0324758526
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.bench.net.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 3,
+        "jvm" : "/Users/kgtny/Library/Java/JavaVirtualMachines/azul-25/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "25",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25+36-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 4,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "prod_crc32_xortile",
+            "benchKey" : "bench-key",
+            "size" : "994"
+        },
+        "primaryMetric" : {
+            "score" : 450552.9160199663,
+            "scoreError" : 32792.683250044574,
+            "scoreConfidence" : [
+                417760.2327699217,
+                483345.5992700109
+            ],
+            "scorePercentiles" : {
+                "0.0" : 397364.740189784,
+                "50.0" : 450119.4795234087,
+                "90.0" : 483039.2987326673,
+                "95.0" : 483082.18711762014,
+                "99.0" : 483082.18711762014,
+                "99.9" : 483082.18711762014,
+                "99.99" : 483082.18711762014,
+                "99.999" : 483082.18711762014,
+                "99.9999" : 483082.18711762014,
+                "100.0" : 483082.18711762014
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    457733.6477614804,
+                    439387.75488291314,
+                    483082.18711762014,
+                    482939.2258344439
+                ],
+                [
+                    397364.740189784,
+                    455024.9876061822,
+                    445213.9714406351,
+                    432743.57850206573
+                ],
+                [
+                    442542.5139596134,
+                    464808.5172906714,
+                    425933.9150789542,
+                    479859.9525752323
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.bench.net.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 3,
+        "jvm" : "/Users/kgtny/Library/Java/JavaVirtualMachines/azul-25/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "25",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25+36-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 4,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "prod_crc32_xortile",
+            "benchKey" : "0123456789abcdef",
+            "size" : "42"
+        },
+        "primaryMetric" : {
+            "score" : 1522516.0526340005,
+            "scoreError" : 87629.58594525233,
+            "scoreConfidence" : [
+                1434886.4666887482,
+                1610145.6385792529
+            ],
+            "scorePercentiles" : {
+                "0.0" : 1409937.008630177,
+                "50.0" : 1525696.3045021319,
+                "90.0" : 1642942.5849832618,
+                "95.0" : 1663369.5316586753,
+                "99.0" : 1663369.5316586753,
+                "99.9" : 1663369.5316586753,
+                "99.99" : 1663369.5316586753,
+                "99.999" : 1663369.5316586753,
+                "99.9999" : 1663369.5316586753,
+                "100.0" : 1663369.5316586753
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    1553757.597552689,
+                    1508169.2020240524,
+                    1595279.709407297,
+                    1549860.4175386797
+                ],
+                [
+                    1409937.008630177,
+                    1436338.2544312417,
+                    1511716.5070763538,
+                    1539676.10192791
+                ],
+                [
+                    1485115.17299116,
+                    1541038.8173020233,
+                    1475934.3110677435,
+                    1663369.5316586753
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.bench.net.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 3,
+        "jvm" : "/Users/kgtny/Library/Java/JavaVirtualMachines/azul-25/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "25",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25+36-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 4,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "prod_crc32_xortile",
+            "benchKey" : "0123456789abcdef",
+            "size" : "994"
+        },
+        "primaryMetric" : {
+            "score" : 486840.5575287281,
+            "scoreError" : 47664.83329806199,
+            "scoreConfidence" : [
+                439175.7242306661,
+                534505.3908267901
+            ],
+            "scorePercentiles" : {
+                "0.0" : 399086.33530880127,
+                "50.0" : 493683.13107972464,
+                "90.0" : 527487.1792553085,
+                "95.0" : 530874.8484857961,
+                "99.0" : 530874.8484857961,
+                "99.9" : 530874.8484857961,
+                "99.99" : 530874.8484857961,
+                "99.999" : 530874.8484857961,
+                "99.9999" : 530874.8484857961,
+                "100.0" : 530874.8484857961
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    494360.75459182716,
+                    399086.33530880127,
+                    440461.67040697276,
+                    493005.50756762206
+                ],
+                [
+                    492756.0026363778,
+                    502920.07469722134,
+                    530874.8484857961,
+                    510443.9198892396
+                ],
+                [
+                    485535.5230984893,
+                    459852.3817938379,
+                    519582.61771750386,
+                    513207.0541510476
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.bench.net.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 3,
+        "jvm" : "/Users/kgtny/Library/Java/JavaVirtualMachines/azul-25/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "25",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25+36-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 4,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "prod_crc32_xorprod",
+            "benchKey" : "bench-key",
+            "size" : "42"
+        },
+        "primaryMetric" : {
+            "score" : 1418509.1304834539,
+            "scoreError" : 124069.19017717145,
+            "scoreConfidence" : [
+                1294439.9403062824,
+                1542578.3206606254
+            ],
+            "scorePercentiles" : {
+                "0.0" : 1188362.5118623688,
+                "50.0" : 1438682.739323597,
+                "90.0" : 1539011.5330826198,
+                "95.0" : 1547252.3539352894,
+                "99.0" : 1547252.3539352894,
+                "99.9" : 1547252.3539352894,
+                "99.99" : 1547252.3539352894,
+                "99.999" : 1547252.3539352894,
+                "99.9999" : 1547252.3539352894,
+                "100.0" : 1547252.3539352894
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    1188362.5118623688,
+                    1417747.0939143605,
+                    1455205.1037747383,
+                    1463027.28206727
+                ],
+                [
+                    1427399.7328491136,
+                    1547252.3539352894,
+                    1519782.9510930572,
+                    1383175.1085239118
+                ],
+                [
+                    1425649.5433980657,
+                    1290296.7556454523,
+                    1449965.7457980805,
+                    1454245.382939739
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.bench.net.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 3,
+        "jvm" : "/Users/kgtny/Library/Java/JavaVirtualMachines/azul-25/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "25",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25+36-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 4,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "prod_crc32_xorprod",
+            "benchKey" : "bench-key",
+            "size" : "994"
+        },
+        "primaryMetric" : {
+            "score" : 315607.2069031381,
+            "scoreError" : 9307.822320845005,
+            "scoreConfidence" : [
+                306299.3845822931,
+                324915.02922398306
+            ],
+            "scorePercentiles" : {
+                "0.0" : 302925.2517639377,
+                "50.0" : 315361.18438177026,
+                "90.0" : 327337.83158790594,
+                "95.0" : 330377.38869162183,
+                "99.0" : 330377.38869162183,
+                "99.9" : 330377.38869162183,
+                "99.99" : 330377.38869162183,
+                "99.999" : 330377.38869162183,
+                "99.9999" : 330377.38869162183,
+                "100.0" : 330377.38869162183
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    314808.92325436923,
+                    320245.5316792354,
+                    314947.6284001733,
+                    330377.38869162183
+                ],
+                [
+                    303874.00536219147,
+                    314784.170567288,
+                    302925.2517639377,
+                    315774.74036336725
+                ],
+                [
+                    320048.08448008605,
+                    316580.20468307554,
+                    319527.7017940622,
+                    313392.85179824877
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.bench.net.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 3,
+        "jvm" : "/Users/kgtny/Library/Java/JavaVirtualMachines/azul-25/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "25",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25+36-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 4,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "prod_crc32_xorprod",
+            "benchKey" : "0123456789abcdef",
+            "size" : "42"
+        },
+        "primaryMetric" : {
+            "score" : 1463873.6062238887,
+            "scoreError" : 136170.21732333675,
+            "scoreConfidence" : [
+                1327703.388900552,
+                1600043.8235472254
+            ],
+            "scorePercentiles" : {
+                "0.0" : 1196909.6265640166,
+                "50.0" : 1490310.779967356,
+                "90.0" : 1574397.946743735,
+                "95.0" : 1582387.8573150516,
+                "99.0" : 1582387.8573150516,
+                "99.9" : 1582387.8573150516,
+                "99.99" : 1582387.8573150516,
+                "99.999" : 1582387.8573150516,
+                "99.9999" : 1582387.8573150516,
+                "100.0" : 1582387.8573150516
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    1402636.4651874139,
+                    1469997.979665419,
+                    1524773.8995358413,
+                    1582387.8573150516
+                ],
+                [
+                    1434605.4947284162,
+                    1555754.82207733,
+                    1510623.5802692927,
+                    1541097.9421553789
+                ],
+                [
+                    1196909.6265640166,
+                    1466801.2032383662,
+                    1520947.4158607847,
+                    1359946.988089354
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.bench.net.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 3,
+        "jvm" : "/Users/kgtny/Library/Java/JavaVirtualMachines/azul-25/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "25",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25+36-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 4,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "prod_crc32_xorprod",
+            "benchKey" : "0123456789abcdef",
+            "size" : "994"
+        },
+        "primaryMetric" : {
+            "score" : 586525.9596231098,
+            "scoreError" : 36830.20760127456,
+            "scoreConfidence" : [
+                549695.7520218352,
+                623356.1672243844
+            ],
+            "scorePercentiles" : {
+                "0.0" : 525801.9811374935,
+                "50.0" : 594783.1020655283,
+                "90.0" : 616069.5639503985,
+                "95.0" : 617222.7042433183,
+                "99.0" : 617222.7042433183,
+                "99.9" : 617222.7042433183,
+                "99.99" : 617222.7042433183,
+                "99.999" : 617222.7042433183,
+                "99.9999" : 617222.7042433183,
+                "100.0" : 617222.7042433183
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    579822.8122321365,
+                    605821.0934052562,
+                    601439.491871263,
+                    607212.7944443041
+                ],
+                [
+                    525801.9811374935,
+                    551131.2605760627,
+                    570673.9799448103,
+                    613378.903266919
+                ],
+                [
+                    564763.0009150371,
+                    617222.7042433183,
+                    612916.7811809231,
+                    588126.7122597935
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.bench.net.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 3,
+        "jvm" : "/Users/kgtny/Library/Java/JavaVirtualMachines/azul-25/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "25",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25+36-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 4,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "prod_siphash24_xortile",
+            "benchKey" : "bench-key",
+            "size" : "42"
+        },
+        "primaryMetric" : {
+            "score" : 1261393.5453868664,
+            "scoreError" : 92726.8976139358,
+            "scoreConfidence" : [
+                1168666.6477729306,
+                1354120.4430008023
+            ],
+            "scorePercentiles" : {
+                "0.0" : 1110472.4438555925,
+                "50.0" : 1281550.7342048355,
+                "90.0" : 1337511.7143064926,
+                "95.0" : 1342997.3633787727,
+                "99.0" : 1342997.3633787727,
+                "99.9" : 1342997.3633787727,
+                "99.99" : 1342997.3633787727,
+                "99.999" : 1342997.3633787727,
+                "99.9999" : 1342997.3633787727,
+                "100.0" : 1342997.3633787727
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    1110472.4438555925,
+                    1273195.4137783502,
+                    1324711.8664711723,
+                    1342997.3633787727
+                ],
+                [
+                    1242530.6335072143,
+                    1226131.6905736087,
+                    1307690.8120530897,
+                    1294792.4686740087
+                ],
+                [
+                    1138148.8088256726,
+                    1268586.100729838,
+                    1289906.0546313208,
+                    1317558.888163759
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.bench.net.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 3,
+        "jvm" : "/Users/kgtny/Library/Java/JavaVirtualMachines/azul-25/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "25",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25+36-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 4,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "prod_siphash24_xortile",
+            "benchKey" : "bench-key",
+            "size" : "994"
+        },
+        "primaryMetric" : {
+            "score" : 290221.51759907923,
+            "scoreError" : 26639.2999481272,
+            "scoreConfidence" : [
+                263582.21765095205,
+                316860.8175472064
+            ],
+            "scorePercentiles" : {
+                "0.0" : 259810.46985935763,
+                "50.0" : 288746.16016961087,
+                "90.0" : 325691.6834238724,
+                "95.0" : 331604.5221978638,
+                "99.0" : 331604.5221978638,
+                "99.9" : 331604.5221978638,
+                "99.99" : 331604.5221978638,
+                "99.999" : 331604.5221978638,
+                "99.9999" : 331604.5221978638,
+                "100.0" : 331604.5221978638
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    331604.5221978638,
+                    311895.0596178924,
+                    311609.04556805297,
+                    297643.3196138532
+                ],
+                [
+                    287311.40360592795,
+                    272243.1755297042,
+                    290180.91673329374,
+                    293896.5156275252
+                ],
+                [
+                    266128.1690133833,
+                    259810.46985935763,
+                    277849.93037080666,
+                    282485.6834512896
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.bench.net.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 3,
+        "jvm" : "/Users/kgtny/Library/Java/JavaVirtualMachines/azul-25/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "25",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25+36-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 4,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "prod_siphash24_xortile",
+            "benchKey" : "0123456789abcdef",
+            "size" : "42"
+        },
+        "primaryMetric" : {
+            "score" : 1269121.4790382527,
+            "scoreError" : 180213.43403095385,
+            "scoreConfidence" : [
+                1088908.045007299,
+                1449334.9130692065
+            ],
+            "scorePercentiles" : {
+                "0.0" : 1015965.7567480865,
+                "50.0" : 1326609.5907751364,
+                "90.0" : 1432957.6822310989,
+                "95.0" : 1441904.0958486625,
+                "99.0" : 1441904.0958486625,
+                "99.9" : 1441904.0958486625,
+                "99.99" : 1441904.0958486625,
+                "99.999" : 1441904.0958486625,
+                "99.9999" : 1441904.0958486625,
+                "100.0" : 1441904.0958486625
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    1101912.9564975994,
+                    1015965.7567480865,
+                    1050592.876037836,
+                    1332172.8399782304
+                ],
+                [
+                    1228097.8722482906,
+                    1338098.5933173362,
+                    1325180.262069327,
+                    1441904.0958486625
+                ],
+                [
+                    1284286.5993467483,
+                    1412082.7171234505,
+                    1371124.259762521,
+                    1328038.9194809454
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.bench.net.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 3,
+        "jvm" : "/Users/kgtny/Library/Java/JavaVirtualMachines/azul-25/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "25",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25+36-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 4,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "prod_siphash24_xortile",
+            "benchKey" : "0123456789abcdef",
+            "size" : "994"
+        },
+        "primaryMetric" : {
+            "score" : 348452.1199453308,
+            "scoreError" : 21458.463845883656,
+            "scoreConfidence" : [
+                326993.6560994471,
+                369910.58379121445
+            ],
+            "scorePercentiles" : {
+                "0.0" : 317359.0374655966,
+                "50.0" : 354296.3338866632,
+                "90.0" : 366288.51700068044,
+                "95.0" : 366310.55664475507,
+                "99.0" : 366310.55664475507,
+                "99.9" : 366310.55664475507,
+                "99.99" : 366310.55664475507,
+                "99.999" : 366310.55664475507,
+                "99.9999" : 366310.55664475507,
+                "100.0" : 366310.55664475507
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    317359.0374655966,
+                    327001.43991057895,
+                    360113.6581643844,
+                    360542.5686695032
+                ],
+                [
+                    343620.6703912011,
+                    331854.24999912304,
+                    363352.37296021904,
+                    356497.5265929064
+                ],
+                [
+                    352095.14118041995,
+                    336441.12620077503,
+                    366310.55664475507,
+                    366237.0911645064
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.bench.net.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 3,
+        "jvm" : "/Users/kgtny/Library/Java/JavaVirtualMachines/azul-25/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "25",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25+36-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 4,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "prod_siphash24_xorprod",
+            "benchKey" : "bench-key",
+            "size" : "42"
+        },
+        "primaryMetric" : {
+            "score" : 1352039.6973555118,
+            "scoreError" : 63626.39005888493,
+            "scoreConfidence" : [
+                1288413.307296627,
+                1415666.0874143967
+            ],
+            "scorePercentiles" : {
+                "0.0" : 1249448.757022693,
+                "50.0" : 1351083.9662771355,
+                "90.0" : 1425465.2316461706,
+                "95.0" : 1437761.590690157,
+                "99.0" : 1437761.590690157,
+                "99.9" : 1437761.590690157,
+                "99.99" : 1437761.590690157,
+                "99.999" : 1437761.590690157,
+                "99.9999" : 1437761.590690157,
+                "100.0" : 1437761.590690157
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    1296610.1976562208,
+                    1354447.779274039,
+                    1318868.2725146683,
+                    1393670.2187571756
+                ],
+                [
+                    1347720.1532802323,
+                    1383923.853183394,
+                    1396773.7272102023,
+                    1437761.590690157
+                ],
+                [
+                    1249448.757022693,
+                    1360779.3928427342,
+                    1347441.1960383456,
+                    1337031.2297962813
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.bench.net.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 3,
+        "jvm" : "/Users/kgtny/Library/Java/JavaVirtualMachines/azul-25/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "25",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25+36-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 4,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "prod_siphash24_xorprod",
+            "benchKey" : "bench-key",
+            "size" : "994"
+        },
+        "primaryMetric" : {
+            "score" : 230250.81716767512,
+            "scoreError" : 22863.42896112003,
+            "scoreConfidence" : [
+                207387.3882065551,
+                253114.24612879514
+            ],
+            "scorePercentiles" : {
+                "0.0" : 196466.9224391191,
+                "50.0" : 235620.30131878267,
+                "90.0" : 251633.6470607048,
+                "95.0" : 254700.10394748693,
+                "99.0" : 254700.10394748693,
+                "99.9" : 254700.10394748693,
+                "99.99" : 254700.10394748693,
+                "99.999" : 254700.10394748693,
+                "99.9999" : 254700.10394748693,
+                "100.0" : 254700.10394748693
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    235428.08057132128,
+                    233755.97538206843,
+                    254700.10394748693,
+                    244478.58099154642
+                ],
+                [
+                    235812.52206624404,
+                    240033.04473672478,
+                    241769.87472862325,
+                    239365.53992293173
+                ],
+                [
+                    226495.58573948074,
+                    215068.2406684611,
+                    199635.33481809302,
+                    196466.9224391191
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.bench.net.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 3,
+        "jvm" : "/Users/kgtny/Library/Java/JavaVirtualMachines/azul-25/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "25",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25+36-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 4,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "prod_siphash24_xorprod",
+            "benchKey" : "0123456789abcdef",
+            "size" : "42"
+        },
+        "primaryMetric" : {
+            "score" : 1144710.9146049942,
+            "scoreError" : 203906.67610541146,
+            "scoreConfidence" : [
+                940804.2384995827,
+                1348617.5907104057
+            ],
+            "scorePercentiles" : {
+                "0.0" : 938430.5092296466,
+                "50.0" : 1111490.7616242417,
+                "90.0" : 1371144.9213338078,
+                "95.0" : 1389394.4976326514,
+                "99.0" : 1389394.4976326514,
+                "99.9" : 1389394.4976326514,
+                "99.99" : 1389394.4976326514,
+                "99.999" : 1389394.4976326514,
+                "99.9999" : 1389394.4976326514,
+                "100.0" : 1389394.4976326514
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    1009915.5846315342,
+                    938430.5092296466,
+                    1026630.1858341735,
+                    1327174.8371351275
+                ],
+                [
+                    976073.9691584494,
+                    1028465.8880318276,
+                    1100154.3261477572,
+                    1164326.8178717636
+                ],
+                [
+                    1122827.197100726,
+                    1324574.5858497682,
+                    1389394.4976326514,
+                    1328562.5766365058
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.bench.net.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 3,
+        "jvm" : "/Users/kgtny/Library/Java/JavaVirtualMachines/azul-25/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "25",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25+36-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 4,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "prod_siphash24_xorprod",
+            "benchKey" : "0123456789abcdef",
+            "size" : "994"
+        },
+        "primaryMetric" : {
+            "score" : 382090.1611668511,
+            "scoreError" : 22351.20916993914,
+            "scoreConfidence" : [
+                359738.95199691196,
+                404441.3703367903
+            ],
+            "scorePercentiles" : {
+                "0.0" : 342002.54227139754,
+                "50.0" : 386496.91107826115,
+                "90.0" : 399362.96572871675,
+                "95.0" : 400781.12228957773,
+                "99.0" : 400781.12228957773,
+                "99.9" : 400781.12228957773,
+                "99.99" : 400781.12228957773,
+                "99.999" : 400781.12228957773,
+                "99.9999" : 400781.12228957773,
+                "100.0" : 400781.12228957773
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    380953.77716727,
+                    389177.1325860306,
+                    396053.9337533745,
+                    383816.6895704917
+                ],
+                [
+                    342002.54227139754,
+                    395046.5191273333,
+                    390998.5779650416,
+                    376479.03385616274
+                ],
+                [
+                    355862.7057071985,
+                    395013.6770502756,
+                    378896.2226580592,
+                    400781.12228957773
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.bench.net.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 3,
+        "jvm" : "/Users/kgtny/Library/Java/JavaVirtualMachines/azul-25/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "25",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25+36-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 4,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "prod_siphash24_chacha",
+            "benchKey" : "bench-key",
+            "size" : "42"
+        },
+        "primaryMetric" : {
+            "score" : 728889.8403681079,
+            "scoreError" : 131996.21666582103,
+            "scoreConfidence" : [
+                596893.6237022869,
+                860886.0570339289
+            ],
+            "scorePercentiles" : {
+                "0.0" : 577517.7693055542,
+                "50.0" : 780960.5060147066,
+                "90.0" : 847069.4554296974,
+                "95.0" : 849434.8240692012,
+                "99.0" : 849434.8240692012,
+                "99.9" : 849434.8240692012,
+                "99.99" : 849434.8240692012,
+                "99.999" : 849434.8240692012,
+                "99.9999" : 849434.8240692012,
+                "100.0" : 849434.8240692012
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    772734.1062215617,
+                    792000.5037265561,
+                    821101.0082242701,
+                    849434.8240692012
+                ],
+                [
+                    795557.7294989733,
+                    577517.7693055542,
+                    789186.9058078513,
+                    841550.2619375216
+                ],
+                [
+                    602068.1660449987,
+                    662736.3463364809,
+                    603708.7414726473,
+                    639081.7217716781
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.bench.net.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 3,
+        "jvm" : "/Users/kgtny/Library/Java/JavaVirtualMachines/azul-25/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "25",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25+36-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 4,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "prod_siphash24_chacha",
+            "benchKey" : "bench-key",
+            "size" : "994"
+        },
+        "primaryMetric" : {
+            "score" : 248443.16275973793,
+            "scoreError" : 14546.054246184363,
+            "scoreConfidence" : [
+                233897.10851355357,
+                262989.2170059223
+            ],
+            "scorePercentiles" : {
+                "0.0" : 232943.50767341562,
+                "50.0" : 248851.17834697323,
+                "90.0" : 264482.4824488315,
+                "95.0" : 264845.045767407,
+                "99.0" : 264845.045767407,
+                "99.9" : 264845.045767407,
+                "99.99" : 264845.045767407,
+                "99.999" : 264845.045767407,
+                "99.9999" : 264845.045767407,
+                "100.0" : 264845.045767407
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    245029.56420194884,
+                    258377.28859725132,
+                    232943.50767341562,
+                    249997.49006635454
+                ],
+                [
+                    259691.0987796663,
+                    235746.5853809609,
+                    249401.88114508876,
+                    263636.5013721554
+                ],
+                [
+                    236383.03844987648,
+                    264845.045767407,
+                    248300.4755488577,
+                    236965.47613387217
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.bench.net.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 3,
+        "jvm" : "/Users/kgtny/Library/Java/JavaVirtualMachines/azul-25/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "25",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25+36-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 4,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "prod_siphash24_chacha",
+            "benchKey" : "0123456789abcdef",
+            "size" : "42"
+        },
+        "primaryMetric" : {
+            "score" : 799081.0502188919,
+            "scoreError" : 62987.2501362402,
+            "scoreConfidence" : [
+                736093.8000826518,
+                862068.3003551321
+            ],
+            "scorePercentiles" : {
+                "0.0" : 700394.8863805996,
+                "50.0" : 809110.2124191656,
+                "90.0" : 862616.3268936535,
+                "95.0" : 866280.3550464851,
+                "99.0" : 866280.3550464851,
+                "99.9" : 866280.3550464851,
+                "99.99" : 866280.3550464851,
+                "99.999" : 866280.3550464851,
+                "99.9999" : 866280.3550464851,
+                "100.0" : 866280.3550464851
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    779481.6621453313,
+                    809278.5424347924,
+                    767891.5317005549,
+                    823977.8286516469
+                ],
+                [
+                    700394.8863805996,
+                    808941.8824035389,
+                    846447.0071142886,
+                    866280.3550464851
+                ],
+                [
+                    736505.2560151367,
+                    775683.9214828617,
+                    820022.8013810879,
+                    854066.9278703798
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.bench.net.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 3,
+        "jvm" : "/Users/kgtny/Library/Java/JavaVirtualMachines/azul-25/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "25",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25+36-LTS",
+        "warmupIterations" : 3,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 4,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "prod_siphash24_chacha",
+            "benchKey" : "0123456789abcdef",
+            "size" : "994"
+        },
+        "primaryMetric" : {
+            "score" : 271936.90445729083,
+            "scoreError" : 31815.47510432354,
+            "scoreConfidence" : [
+                240121.4293529673,
+                303752.37956161436
+            ],
+            "scorePercentiles" : {
+                "0.0" : 198756.0747474729,
+                "50.0" : 277322.1187047439,
+                "90.0" : 290106.19692692615,
+                "95.0" : 290412.390844472,
+                "99.0" : 290412.390844472,
+                "99.9" : 290412.390844472,
+                "99.99" : 290412.390844472,
+                "99.999" : 290412.390844472,
+                "99.9999" : 290412.390844472,
+                "100.0" : 290412.390844472
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    198756.0747474729,
+                    273867.0817014964,
+                    285995.9875318524,
+                    281160.0486672586
+                ],
+                [
+                    290412.390844472,
+                    287722.0244166061,
+                    289391.7444526525,
+                    280697.9228877257
+                ],
+                [
+                    268957.83469187847,
+                    273011.19403866265,
+                    259324.23498564985,
+                    273946.31452176213
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    }
+]
+
+

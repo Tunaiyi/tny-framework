@@ -1,0 +1,107 @@
+name: pages
+
+# 站点构成：gh-pages 分支根目录放项目首页（源码 docs/site/，本工作流部署），
+# dev/bench/ 放基准趋势页（build.yml 的 bench-routine 作业经 github-action-benchmark 推送）。
+# 两者同源于一个分支，互不覆盖：本工作流只改写 index.html 与 .nojekyll，保留分支上其他路径。
+on:
+  push:
+    branches: [ main, '5.7.x' ]
+    paths:
+      - 'docs/site/**'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write   # 推 gh-pages 分支
+  pages: write      # 查询与开通 Pages 站点（REST API）
+
+jobs:
+  publish:
+    name: Deploy site and enable GitHub Pages
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # 源文件先复制到分支切换之外的位置：下一步会把工作区切到 gh-pages，docs/ 会消失。
+      - name: Stage site source
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/site-src
+          cp docs/site/index.html /tmp/site-src/index.html
+          touch /tmp/site-src/.nojekyll
+
+      # 部署首页到 gh-pages 根目录。分支不存在时以孤儿分支创建——创建顺序必须早于
+      # 下一步的 Pages 开通（开通 API 要求 source 分支已存在，否则首次构建失败）。
+      - name: Deploy site to gh-pages
+        run: |
+          set -euo pipefail
+          if git ls-remote --exit-code --heads origin gh-pages >/dev/null 2>&1; then
+            git fetch --no-tags origin gh-pages
+            git switch -C gh-pages FETCH_HEAD
+          else
+            echo "gh-pages 分支不存在，创建孤儿分支。"
+            git switch --orphan gh-pages
+            git rm -rf --quiet . || true
+          fi
+          cp /tmp/site-src/index.html index.html
+          cp /tmp/site-src/.nojekyll .nojekyll
+          git add index.html .nojekyll
+          if git diff --cached --quiet; then
+            echo "站点文件与分支现状一致，无需提交。"
+            exit 0
+          fi
+          git -c user.name="github-actions[bot]" -c user.email="github-actions[bot]@users.noreply.github.com" \
+            commit -m "chore(pages): 部署站点首页（源自 ${GITHUB_SHA::7}）"
+          # 推送竞态防御：github-action-benchmark 可能同窗推 dev/bench 数据。
+          # 被拒则拉回远端变基再推一次（本工作流只改根目录两文件，与 dev/bench 无内容交叠，变基必净）。
+          git push origin gh-pages || {
+            git fetch --no-tags origin gh-pages
+            git rebase FETCH_HEAD
+            git push origin gh-pages
+          }
+
+      # 幂等开通 Pages：GET 探状态，未开通则 POST 创建（source=gh-pages 分支根目录）。
+      # GITHUB_TOKEN 的 pages:write 权限足够创建公开站点；若被拒（403），脚本打印人工开通
+      # 指引后判红——人工在 Settings 点一次即可，之后本作业会走"已开通"分支自行校验。
+      - name: Enable GitHub Pages (idempotent)
+        run: |
+          set -euo pipefail
+          api="https://api.github.com/repos/${GITHUB_REPOSITORY}/pages"
+          hdr=(-H "Authorization: Bearer ${GITHUB_TOKEN}" -H "Accept: application/vnd.github+json")
+          code=$(curl -s -o /tmp/pages-get.json -w '%{http_code}' "${hdr[@]}" "$api")
+          if [ "$code" = "404" ]; then
+            echo "Pages 未开通，正在通过 API 开通（source：gh-pages 分支根目录）……"
+            created=$(curl -s -o /tmp/pages-post.json -w '%{http_code}' -X POST "${hdr[@]}" \
+              -d '{"source":{"branch":"gh-pages","directory":"/"}}' "$api")
+            if [ "$created" != "201" ]; then
+              echo "开通失败（HTTP $created）。若提示需要管理员权限，请到仓库 Settings → Pages 手动选择" >&2
+              echo "Deploy from a branch：Branch=gh-pages、Directory=/root，然后重跑本工作流。" >&2
+              cat /tmp/pages-post.json >&2 || true
+              exit 1
+            fi
+            echo "Pages 开通请求已提交，首次构建约需一分钟。"
+          elif [ "$code" = "200" ]; then
+            echo "Pages 已开通，当前配置："
+            python3 -c "import json; d=json.load(open('/tmp/pages-get.json')); s=d.get('source') or {}; print('  html_url=%s branch=%s directory=%s build_type=%s' % (d.get('html_url'), s.get('branch'), s.get('directory'), d.get('build_type')))"
+          else
+            echo "查询 Pages 状态异常（HTTP $code）：" >&2
+            cat /tmp/pages-get.json >&2 || true
+            exit 1
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # 尽力验证：轮询站点地址直到返回 200（首建+CDN 生效有分钟级延迟）。
+      # 超时不判红——Pages 构建是异步的，慢几分钟属正常，红与绿以部署与开通两步为准。
+      - name: Wait for site to come online (best effort)
+        continue-on-error: true
+        run: |
+          # Pages 域名 = 仓库属主登录名（小写）.github.io/仓库名
+          url="https://${GITHUB_REPOSITORY_OWNER,,}.github.io/${GITHUB_REPOSITORY#*/}/"
+          for i in $(seq 1 30); do
+            code=$(curl -s -o /dev/null -w '%{http_code}' "$url" || true)
+            if [ "$code" = "200" ]; then echo "站点已上线：$url"; exit 0; fi
+            echo "第 $i 次探测 HTTP $code，10 秒后重试……"
+            sleep 10
+          done
+          echo "五分钟内尚未返回 200，站点可能仍在首次构建，稍后手动访问确认：$url"

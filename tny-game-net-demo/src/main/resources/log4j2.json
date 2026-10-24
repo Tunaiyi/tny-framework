@@ -1,0 +1,116 @@
+{
+  "configuration": {
+    "shutdownHook": "disable",
+    "status": "WARN",
+    "packages": "",
+    "monitorInterval": 15,
+    "properties": {
+      "property": [
+        {
+          "name": "msg_file",
+          "value": "$${bundle:log:log.path}/$${bundle:log:log.file.message}.log"
+        },
+        {
+          "name": "msg_file_zip",
+          "value": "$${bundle:log:log.path}/$${bundle:log:log.file.message}.%i.log.zip"
+        },
+        {
+          "name": "console_file",
+          "value": "$${bundle:log:log.path}/$${bundle:log:log.file.console}.log"
+        },
+        {
+          "name": "console_file_zip",
+          "value": "$${bundle:log:log.path}/$${bundle:log:log.file.console}.%i.log.zip"
+        },
+        {
+          "name": "error_file",
+          "value": "$${bundle:log:log.path}/$${bundle:log:log.file.error}.log"
+        },
+        {
+          "name": "error_file_zip",
+          "value": "$${bundle:log:log.path}/$${bundle:log:log.file.error}.%i.log.zip"
+        },
+        {
+          "name": "val_err_file",
+          "value": "$${bundle:log:log.path}/$${bundle:log:log.file.validator_error}.log"
+        },
+        {
+          "name": "val_err_file_zip",
+          "value": "$${bundle:log:log.path}/$${bundle:log:log.file.validator_error}.%i.log.zip"
+        }
+      ]
+    },
+    "ThresholdFilter": {
+      "level": "DEBUG"
+    },
+    "appenders": {
+      "Console": {
+        "name": "stdout",
+        "PatternLayout": {
+          "pattern": "%level %d{yyyy-MM-dd HH:mm:ss} [%t] [%C{1.}.%M(%L)] %c{1} - %m%n"
+        }
+      }
+    },
+    "loggers": {
+      "asyncLogger": [
+        {
+          "name": "com",
+          "includeLocation": "true",
+          "level": "INFO",
+          "additivity": "false",
+          "AppenderRef": [
+            {
+              "ref": "${bundle:log:log.debug.appender}"
+            }
+          ]
+        },
+        {
+          "name": "com.tny.game.common.runtime",
+          "includeLocation": "true",
+          "level": "DEBUG",
+          "additivity": "false",
+          "AppenderRef": [
+            {
+              "ref": "${bundle:log:log.debug.appender}"
+            }
+          ]
+        },
+        {
+          "name": "com.tny.game.net.netty4.codec.MemoryAllotCounter",
+          "includeLocation": "true",
+          "level": "DEBUG",
+          "additivity": "false",
+          "AppenderRef": [
+            {
+              "ref": "${bundle:log:log.debug.appender}"
+            }
+          ]
+        },
+        {
+          "name": "coreLogger",
+          "includeLocation": "true",
+          "level": "INFO",
+          "additivity": "false",
+          "AppenderRef": [
+            {
+              "ref": "${bundle:log:log.debug.appender}"
+            }
+          ]
+        }
+      ]
+    },
+    "asyncRoot": {
+      "includeLocation": "true",
+      "level": "DEBUG",
+      "additivity": "false",
+      "AppenderRef": [
+        {
+          "ref": "${bundle:log:log.debug.appender}"
+        },
+        {
+          "ref": "${bundle:log:log.warn.appender}"
+        }
+      ]
+    }
+  }
+}

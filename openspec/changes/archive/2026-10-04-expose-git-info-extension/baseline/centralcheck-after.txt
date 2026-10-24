@@ -1,0 +1,5 @@
+* What went wrong:
+Execution failed for task ':centralCheck'.
+> centralCheck：
+  - Central 通道仅发布分支形态可用（spec：快照构件不进入 Central）；当前分支 '5.7.x' 派生快照版本
+

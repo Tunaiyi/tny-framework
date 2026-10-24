@@ -1,0 +1,10 @@
+
+apply plugin: 'maven-publish'
+
+dependencies {
+
+    api libs.springCore
+
+
+}
+

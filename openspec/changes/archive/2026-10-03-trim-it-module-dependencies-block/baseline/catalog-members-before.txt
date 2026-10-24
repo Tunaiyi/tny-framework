@@ -1,0 +1,6 @@
+17:log4jCore = { module = 'org.apache.logging.log4j:log4j-core' }
+98:testcontainersJunit = { module = 'org.testcontainers:junit-jupiter' }
+99:testcontainersMongodb = { module = 'org.testcontainers:mongodb' }
+102:springBootAutoconfigure = { module = 'org.springframework.boot:spring-boot-autoconfigure' }
+104:springBootStarter = { module = 'org.springframework.boot:spring-boot-starter' }
+106:springBootStarterLog4j2 = { module = 'org.springframework.boot:spring-boot-starter-log4j2' }

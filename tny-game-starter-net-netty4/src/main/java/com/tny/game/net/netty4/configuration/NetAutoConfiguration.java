@@ -1,0 +1,256 @@
+/*
+ * Copyright (c) 2020 Tunaiyi
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.tny.game.net.netty4.configuration;
+
+import com.tny.game.expr.*;
+import com.tny.game.expr.groovy.*;
+import com.tny.game.net.application.*;
+import com.tny.game.net.codec.*;
+import com.tny.game.net.codec.cryptoloy.*;
+import com.tny.game.net.codec.verifier.*;
+import com.tny.game.net.command.auth.*;
+import com.tny.game.net.command.dispatcher.*;
+import com.tny.game.net.command.plugins.*;
+import com.tny.game.net.command.plugins.filter.*;
+import com.tny.game.net.command.processor.*;
+import com.tny.game.net.command.processor.forkjoin.*;
+import com.tny.game.net.message.*;
+import com.tny.game.net.message.codec.*;
+import com.tny.game.net.message.common.*;
+import com.tny.game.net.monitor.*;
+import com.tny.game.net.netty4.channel.*;
+import com.tny.game.net.netty4.configuration.application.*;
+import com.tny.game.net.netty4.configuration.channel.*;
+import com.tny.game.net.netty4.configuration.command.*;
+import com.tny.game.net.netty4.configuration.filter.*;
+import com.tny.game.net.netty4.configuration.processor.forkjoin.*;
+import com.tny.game.net.netty4.configuration.session.*;
+import com.tny.game.net.netty4.network.*;
+import com.tny.game.net.netty4.network.codec.*;
+import com.tny.game.net.netty4.network.configuration.*;
+import com.tny.game.net.rpc.*;
+import com.tny.game.net.session.*;
+import com.tny.game.net.transport.*;
+import org.springframework.boot.autoconfigure.condition.*;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.*;
+
+import java.util.List;
+
+/**
+ * Game Suite 的默认配置
+ * Created by Kun Yang on 16/1/27.
+ */
+@Configuration(proxyBeanMethods = false)
+@EnableConfigurationProperties({
+        SpringNetAppProperties.class,
+        SpringNetSessionProperties.class,
+        ReadIdlePipelineChainProperties.class,
+        SerialCommandExecutorProperties.class,})
+@Import({TextFilterAutoConfiguration.class})
+public class NetAutoConfiguration {
+
+
+    @Bean
+    @ConditionalOnMissingBean(SessionKeeperManager.class)
+    public SessionKeeperManager sessionKeeperManager(SpringNetSessionProperties configure) {
+        return new CommonSessionKeeperManager(configure.getSessionKeeper(),  configure.getSessionKeeperSettings());
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(ContactService.class)
+    @ConditionalOnBean(SessionKeeperManager.class)
+    public ContactService contactService(SessionKeeperManager sessionKeeperManager) {
+        return new ContactService(sessionKeeperManager);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public CommandExecutorFactory defaultCommandExecutorFactory() {
+        return new DefaultCommandExecutorFactory();
+    }
+
+    @Bean
+    public NettyMessageHandlerFactory defaultMessageHandlerFactory() {
+        return new DefaultMessageHandlerFactory();
+    }
+
+    @Bean
+    public MessageFactory defaultMessageFactory() {
+        return new CommonMessageFactory();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(ContactFactory.class)
+    public ContactFactory defaultContactFactory() {
+        return new DefaultContactFactory();
+    }
+
+    @Bean
+    public SessionFactory defaultSessionFactory() {
+        return new CommonSessionFactory();
+    }
+
+    @Bean
+    public SessionKeeperFactory<?> defaultSessionKeeperFactory() {
+        return new CommonSessionKeeperFactory();
+    }
+
+    @Bean
+    public NetAppContext appContext(SpringNetAppProperties configure) {
+        return new SpringNetAppContext(configure);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(ExprHolderFactory.class)
+    public ExprHolderFactory exprHolderFactory() {
+        return new GroovyExprHolderFactory();
+    }
+
+    @Bean
+    @ConditionalOnBean({SessionKeeperManager.class})
+    public ContactAuthenticateService authenticationService(SessionKeeperManager sessionKeeperManager) {
+        return new ContactAuthenticateService(sessionKeeperManager);
+    }
+
+    @Bean
+    @ConditionalOnBean({SessionKeeperManager.class, ContactAuthenticator.class, NetAppContext.class})
+    public MessageDispatcher defaultMessageDispatcher(NetAppContext appContext, ContactAuthenticator contactAuthenticator,
+            ExprHolderFactory exprHolderFactory) {
+        return new SpringBootMessageDispatcher(appContext, contactAuthenticator, exprHolderFactory);
+    }
+
+    @Bean
+    public NetIdGenerator defaultNetIdGenerator() {
+        return new AutoIncrementIdGenerator();
+    }
+
+    @Bean
+    public NetApplication netApplication(ApplicationContext applicationContext, NetAppContext appContext) {
+        return new NetApplication(applicationContext, appContext);
+    }
+
+    @Bean
+    public MessageSequenceCheckerPlugin messageSequenceCheckerPlugin() {
+        return new MessageSequenceCheckerPlugin();
+    }
+
+    @Bean
+    public ParamFilterPlugin paramFilterPlugin() {
+        return new SpringBootParamFilterPlugin();
+    }
+
+    @Bean
+    @ConditionalOnClass(ProtoExMessageBodyCodec.class)
+    public MessageBodyCodec<?> protoExMessageBodyCodec() {
+        return new ProtoExMessageBodyCodec<>();
+    }
+
+    @Bean
+    @ConditionalOnClass(TypeProtobufMessageBodyCodec.class)
+    public MessageBodyCodec<Object> typeProtobufMessageBodyCodec() {
+        return new TypeProtobufMessageBodyCodec<>();
+    }
+
+    @Bean
+    public ControllerRelayStrategy controllerRelayStrategy(MessageDispatcher dispatcher) {
+        return new ControllerRelayStrategy(dispatcher);
+    }
+
+    @Bean
+    public AllRelayStrategy allRelayStrategy() {
+        return new AllRelayStrategy();
+    }
+
+    @Bean
+    public CRC64CodecVerifier cRC64CodecVerifier() {
+        return new CRC64CodecVerifier();
+    }
+
+    @Bean
+    public XOrCodecCrypto xOrCodecCrypto() {
+        return new XOrCodecCrypto();
+    }
+
+    /** 认证代次默认件（default-to-mac-generation）：bean 名必须等于 lowerCamelName 推导的 unit 名 */
+    @Bean
+    public SipHash24CodecVerifier sipHash24CodecVerifier() {
+        return new SipHash24CodecVerifier();
+    }
+
+    @Bean
+    public XorTileCodecCrypto xorTileCodecCrypto() {
+        return new XorTileCodecCrypto();
+    }
+
+    /** 快筛代次件（add-crc32-verify-tier，仅校验侧，crypto 正交任选）：bean 名必须等于 lowerCamelName 推导的 unit 名 */
+    @Bean
+    public Crc32CodecVerifier crc32CodecVerifier() {
+        return new Crc32CodecVerifier();
+    }
+
+    /** 补既有缝隙：Noop 校验器此前无 bean 注册，显式配 "noopCodecVerifier" 的部署经 UnitLoadInitiator 不可达 */
+    @Bean
+    public NoopCodecVerifier noopCodecVerifier() {
+        return new NoopCodecVerifier();
+    }
+
+    @Bean
+    public NoneCodecCrypto noneCodecCrypto() {
+        return new NoneCodecCrypto();
+    }
+
+    @Bean
+    public ServerTunnelFactory defaultNettyTunnelFactory() {
+        return new ServerTunnelFactory();
+    }
+
+    @Bean
+    public MessageHeaderCodec defaultMessageHeaderCodec() {
+        return new DefaultMessageHeaderCodec();
+    }
+
+    @Bean
+    public NetApplicationLifecycle netApplicationLifecycle() {
+        return new NetApplicationLifecycle();
+    }
+
+    @Bean
+    public RpcForwardStrategy firstRpcForwarderStrategy() {
+        return new FirstRpcForwarderStrategy();
+    }
+
+    @Bean
+    public RpcMonitor rpcMonitor(
+            List<RpcMonitorReceiveHandler> receiveHandlers,
+            List<RpcMonitorSendHandler> sendHandlers,
+            List<RpcMonitorTransferHandler> relayHandlers,
+            List<RpcMonitorResumeExecuteHandler> resumeExecuteHandlers,
+            List<RpcMonitorSuspendExecuteHandler> suspendExecuteHandlers,
+            List<RpcMonitorBeforeInvokeHandler> beforeInvokeHandlers,
+            List<RpcMonitorAfterInvokeHandler> afterInvokeHandlers) {
+        return new RpcMonitor(receiveHandlers, sendHandlers, relayHandlers,
+                resumeExecuteHandlers, suspendExecuteHandlers,
+                beforeInvokeHandlers, afterInvokeHandlers);
+    }
+
+    @Bean
+    public ReadIdlePipelineChain<?> readIdlePipelineChain(ReadIdlePipelineChainProperties properties) {
+        return new ReadIdlePipelineChain<>().setIdleTimeout(properties.getIdleTimeout());
+    }
+
+}

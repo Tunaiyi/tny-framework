@@ -1,0 +1,168 @@
+/*
+ * Copyright (c) 2020 Tunaiyi
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.tny.game.net.message;
+
+import com.baidu.bjf.remoting.protobuf.annotation.*;
+import com.tny.game.codec.annotation.*;
+import com.tny.game.codec.typeprotobuf.*;
+import com.tny.game.codec.typeprotobuf.annotation.*;
+import com.tny.game.net.application.*;
+
+
+import static com.tny.game.common.utils.ObjectAide.*;
+
+/**
+ * Rpc消息头附件
+ * <p>
+ *
+ * @author Kun Yang
+ * @date 2022/4/28 02:37
+ **/
+
+@TypeProtobuf(MessageHeaderConstants.RPC_FORWARD_HEADER_TYPE_PROTO)
+@Codable(TypeProtobufMimeType.TYPE_PROTOBUF)
+@ProtobufClass
+public class RpcForwardHeader extends MessageHeader<RpcForwardHeader> {
+
+    /**
+     * 请求服务
+     */
+    @Protobuf(order = 2)
+    private ForwardPoint from;
+
+    /**
+     * 发送者
+     */
+    @Protobuf(order = 3)
+    private ForwardContact sender;
+
+    /**
+     * 目标服务
+     */
+    @Protobuf(order = 4)
+    private ForwardPoint to;
+
+    /**
+     * 目标接受者
+     */
+    @Protobuf(order = 5)
+    private ForwardContact receiver;
+
+    /**
+     * 请求转发者
+     */
+    @Packed
+    @Protobuf(order = 6)
+    private ForwardPoint fromForwarder;
+
+    /**
+     * 目标转发者
+     */
+    @Packed
+    @Protobuf(order = 7)
+    private ForwardPoint toForwarder;
+
+    public RpcForwardHeader() {
+    }
+
+    public ForwardPoint getFrom() {
+        return from;
+    }
+
+    public ForwardContact getSender() {
+        return sender;
+    }
+
+    public ForwardPoint getTo() {
+        return to;
+    }
+
+    public ForwardContact getReceiver() {
+        return receiver;
+    }
+
+    public ForwardPoint getFromForwarder() {
+        return fromForwarder;
+    }
+
+    public ForwardPoint getToForwarder() {
+        return toForwarder;
+    }
+
+    @Override
+    public String getKey() {
+        return MessageHeaderConstants.RPC_FORWARD_HEADER_KEY;
+    }
+
+    @Override
+    public boolean isTransitive() {
+        return false;
+    }
+
+    protected RpcForwardHeader setFrom(RpcServicer fromService) {
+        this.from = toForwardPoint(fromService);
+        return this;
+    }
+
+    protected RpcForwardHeader setSender(Contact sender) {
+        this.sender = toForwardContact(sender);
+        return this;
+    }
+
+    protected RpcForwardHeader setTo(RpcServicer toService) {
+        this.to = toForwardPoint(toService);
+        return this;
+    }
+
+    protected RpcForwardHeader setReceiver(Contact receiver) {
+        this.receiver = toForwardContact(receiver);
+        return this;
+    }
+
+    protected RpcForwardHeader setFromForwarder(RpcServicer fromService) {
+        // 原实现以字段自引用代替参数（复制粘贴），转发者信息恒 null
+        this.fromForwarder = toForwardPoint(fromService);
+        return this;
+    }
+
+    protected RpcForwardHeader setToForwarder(RpcServicer toService) {
+        this.toForwarder = toForwardPoint(toService);
+        return this;
+    }
+
+    private ForwardPoint toForwardPoint(RpcServicer rpcServer) {
+        if (rpcServer == null) {
+            return null;
+        }
+        if (rpcServer instanceof ForwardPoint) {
+            return as(rpcServer);
+        } else {
+            return new ForwardPoint(rpcServer);
+        }
+    }
+
+    private ForwardContact toForwardContact(Contact contact) {
+        if (contact == null) {
+            return null;
+        }
+        if (contact instanceof ForwardContact) {
+            return as(contact);
+        } else {
+            return new ForwardContact(contact);
+        }
+    }
+
+}
