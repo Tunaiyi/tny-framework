@@ -1,0 +1,13 @@
+
+apply plugin: 'maven-publish'
+
+dependencies {
+
+    // 桥的发布依赖面自声明所装配的协议栈（openspec capability: codec-bridge-assembly）：
+    // 此处只含 protoex 栈与 netty4 框架面；jprotobuf 核与其库系历史复制错登，已按
+    // fix-protoex-bridge-stray-deps 清除（主测代码零引用查证在案）。
+    api project(':tny-game-net-netty4')
+    api project(':tny-game-protoex')
+
+}
+

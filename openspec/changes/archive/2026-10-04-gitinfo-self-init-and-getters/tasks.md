@@ -1,0 +1,12 @@
+# Tasks
+
+## 1. 前置确认与基线自抓
+- [x] 1.1 确认 expose-git-info-extension 已在工作树落地（tny.git 呈"创建扩展后外部填充"形态、`buildSrc/src/main/groovy/tny/convention/GitInfo.groovy` 在位）。按 openspec/config.yaml context"零差异验收基线抓样口径"抓改造前样本存本册 baseline/：环境钉 Corretto 21（沿用上一册实施用的 21.0.12.1 与同一 Gradle daemon）、LANG=C.UTF-8、不注入 JAVA_TOOL_OPTIONS、`--console=plain`；涉 git CLI 的抓取两遍统一加 `-PgitExe=/usr/bin/git`（本机 PATH 首位件为 x86 专用，守护进程拉不动，属上一册登记的架构失配覆写通道）。样本为十二对判据的改造前件，取法与剔噪形态逐字沿上一册 verification-notes.md：先运行 `./gradlew :tny-game-net:jar` 记录产物文件名；先运行 `./gradlew :tny-game-net:generatePomFileForMavenJavaPublication` 转存生成的 POM 全文并取 version 字段；`releaseCutAndTag -PdryRun -PreleaseVersion=9.9.9` 输出（剔 `[dryRun][warn]` 块的 git 状态清单行，留标题行与计划正文）；`centralCheck` 取 What-went-wrong 至 Try 之间报红块；组号违例探针（临时给 tny-game-codec 加错误组号抓红、删行恢复绿）；门禁探针一 `:tny-game-net:checkPublishPrerequisites -x test`（开发线应绿，含豁免打印行）；门禁探针二三用一次性本地克隆（grgit 不识别 worktree，沿革见上一册设计决策 D4）：检出 9.9.9.release 跑门禁抓 fail-closed 红、同克隆跑 `releaseRebaseBack -PdryRun` 抓既有 split 转换缺陷红、检出 9.9.release 跑门禁抓 RELEASE_VERSION_SUFFIX 拒绝红，比对后删克隆；`tasks --all` 剔噪全文；先运行 `./gradlew publishToMavenLocal` 再抓 `~/.m2/repository/com/tny` 与 `~/.m2/repository/com/tnydev` 两棵树全文件路径排序清单。上一册 baseline/ 件不作本册锚（设计决策 D5：工作树已在他册改动之后，锚必须同环境现抓）。
+
+## 2. 类内收敛与改名
+- [x] 2.1 契约类改造并更名 `GitFlow`（文件 GitInfo.groovy 更名 GitFlow.groovy）：新增以 grgit 句柄为唯一入参的构造器——句柄收存进私有 final 字段，六个派生值按 branchName 先、branchVersion 与 projectVersion、commitId、commitTime 随其后、buildTime 以系统时钟收尾的现有时序由构造器就地求值（设计决策 D1、D3）；三个后缀常量、句柄、六个派生值全部转私有 final 字段并对外提供 getter，公开 setter 面消灭（设计决策 D2）；十个推导方法方法体逐行不变；类头与字段段注释随形态更新（构造与赋值面已收进类内，写入方仍是 tny.git 一处）。tny.git 改为一条语句：`project.extensions.create('gitFlow', GitFlow, grgit.open(currentDir: project.getRootDir()))`——开句柄内联为构造实参，一步完成创建与注册（扩展名改 gitFlow，设计决策 D6）；删除原七行外部赋值与句柄局部变量；文件头注释同步。`./gradlew projects -q` 通过；若 final 字段与 Gradle 装饰器出现不兼容红，按设计决策 D2 风险条退显式手写 getter 形态，语义等价。
+- [x] 2.2 消费五件与根 build.gradle 纯改名：`gitInfo` 句柄变量与属性访问、`GitInfo` import 与 getByType 类型、注释中的扩展名指称一律随新名走，除此之外零字节变化；全仓活代码检索旧名 `gitInfo`/`GitInfo` 零残留（openspec 册件历史引用除外）；检索 `gitFlow.<属性名> =` 赋值形态零命中（消费方只读契约，命中即停止上报，见风险条）；`./gradlew projects -q` 复绿。
+
+## 3. 零差异验收
+- [x] 3.1 十二对行为样本对 1.1 基线逐对零差异：jar 产物文件名、POM 全文、POM version 字段、releaseCutAndTag -PdryRun 计划文案、centralCheck 报红块、组号违例探针红样（恢复绿如常）、门禁开发线直跑输出、克隆 9.9.9.release 门禁红、克隆 releaseRebaseBack -PdryRun 红、克隆 9.9.release 门禁红、tasks-all 剔噪全文、publishToMavenLocal 后 m2 清单；buildTime 跨分钟差异按设计决策 D4 声明处置（该值无样件输出面，判据不受影响）。若实施窗口内工作树再现并发写入，按上一册"外科基线轮"手法回退本册八个文件重抓终版改造前样本后再比对。
+- [x] 3.2 全量：`./gradlew clean build` 绿；全部结论（含与上一册判据的差值说明、并发环境登记）记 verification-notes.md。

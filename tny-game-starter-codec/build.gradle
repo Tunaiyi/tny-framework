@@ -1,0 +1,19 @@
+
+apply plugin: 'maven-publish'
+
+dependencies {
+
+
+    annotationProcessor libs.springBootConfigurationProcessor // IDEA 使用
+
+    api libs.springBootAutoconfigure
+
+    api project(':tny-game-boot')
+
+    compileOnly project(':tny-game-codec-jprotobuf')
+    compileOnly project(':tny-game-codec-jackson')
+
+}
+
+
+

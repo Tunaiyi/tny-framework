@@ -1,0 +1,90 @@
+/*
+ * Copyright (c) 2020 Tunaiyi
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.tny.game.common.type;
+
+import com.tny.game.common.utils.*;
+
+import java.lang.reflect.*;
+
+/**
+ * Created by Kun Yang on 2017/3/29.
+ */
+public abstract class ReferenceType<T> {
+
+    private final Type type;
+
+    protected ReferenceType() {
+        Class<?> parameterizedTypeReferenceSubclass = findReferenceTypeSubclass(getClass());
+        Type type = parameterizedTypeReferenceSubclass.getGenericSuperclass();
+        Asserts.checkArgument(type instanceof ParameterizedType, "Type must be a parameterized type");
+        ParameterizedType parameterizedType = (ParameterizedType) type;
+        Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
+        Asserts.checkArgument(actualTypeArguments.length == 1, "Number of type arguments must be 1");
+        this.type = actualTypeArguments[0];
+    }
+
+    private ReferenceType(Type type) {
+        this.type = type;
+    }
+
+    public Type getType() {
+        return this.type;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return (this == other || (other instanceof ReferenceType &&
+                                  this.type.equals(((ReferenceType<?>) other).type)));
+    }
+
+    @Override
+    public int hashCode() {
+        return this.type.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "ReferenceType<" + this.type + ">";
+    }
+
+    /**
+     * Build a {@code ReferenceType} wrapping the given type.
+     *
+     * @param type a generic type (possibly obtained via reflection,
+     *             e.g. from {@link java.lang.reflect.Method#getGenericReturnType()})
+     * @return a corresponding reference which may be passed into
+     * {@code ReferenceType}-accepting methods
+     * @since 4.3.12
+     */
+    public static <T> ReferenceType<T> forType(Type type) {
+        return new ReferenceType<T>(type) {
+
+        };
+    }
+
+    private static Class<?> findReferenceTypeSubclass(Class<?> child) {
+        Class<?> parent = child.getSuperclass();
+        if (Object.class == parent) {
+            throw new IllegalStateException("Expected ReferenceType superclass");
+        } else if (ReferenceType.class == parent) {
+            return child;
+        } else {
+            return findReferenceTypeSubclass(parent);
+        }
+    }
+
+}

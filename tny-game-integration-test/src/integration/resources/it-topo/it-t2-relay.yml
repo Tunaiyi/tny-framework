@@ -1,0 +1,67 @@
+# T2 拓扑·独立中继节点（RelayNodeApp）装配声明（design D1/D5/D7，任务 1.3）
+# 键空间约定（缺口②教训固化）：每集群 serve-name 显式给出且=service 查询键。
+# 服务身份受 TestRpcServiceType 枚举约束（boot 静态注册表），跨拓扑隔离由端口/进程组承担。
+# 编解码 verifier/crypto 显式点名 legacy 单元（default-to-mac-generation 演进下新旧构建缓存均稳）。
+# 运行期占位：it.r1.server.port（本节点中继服务端监听）、it.g2.relay.port（下游 game-2 中继端点）
+tny:
+  data:
+    enable: false
+  datasource:
+    redisson:
+      setting:
+        host: "${it.redis.host}"
+        port: ${it.redis.port}
+        password: '${it.redis.password}'
+        database: 0
+    mongodb:
+      enable: false
+  app:
+    name: t2-relay-one
+    app-type: gateway-service
+    scope-type: online
+  net:
+    bootstrap:
+      relay:
+        server:
+          name: t2-relay-one
+          bind-address: "${it.host}:${it.r1.server.port}"
+          channel:
+            encoder:
+              message-body-codec: typeProtobufMessageBodyCodec
+              verifier: cRC64CodecVerifier
+              crypto: xOrCodecCrypto
+            decoder:
+              message-body-codec: typeProtobufMessageBodyCodec
+              verifier: cRC64CodecVerifier
+              crypto: xOrCodecCrypto
+        client:
+          channel:
+            encoder:
+              message-body-codec: typeProtobufMessageBodyCodec
+              verifier: cRC64CodecVerifier
+              crypto: xOrCodecCrypto
+            decoder:
+              message-body-codec: typeProtobufMessageBodyCodec
+              verifier: cRC64CodecVerifier
+              crypto: xOrCodecCrypto
+    relay:
+      clusters:
+        - service: game-service
+          serve-name: game-service
+          discovery: false
+          connection-size: 1
+          serve-nodes:
+            - id: 1
+              healthy: true
+              url: "tcp://${it.host}:${it.g2.relay.port}"
+      router:
+        fixed-message-router:
+          service: game-service
+
+spring:
+  # 官方 redisson starter 无条件 eager 建客户端——统一指向容器（与 T4 网关实证一致）
+  data:
+    redis:
+      host: "${it.redis.host}"
+      port: ${it.redis.port}
+      password: '${it.redis.password}'

@@ -1,0 +1,50 @@
+# F1 拓扑·调用方应用（CallerApp）装配声明（design D7，任务 3.1）。
+# 身份规划防同型歧义：本应用玩家接入服务名 game-client、拨出 username=game-client，
+# 转发目标集（game-service）内只有终端会话。codec 点名 legacy 单元抗代次漂移。
+# 运行期占位：it.c.net.port（玩家接入）、it.f.rpc.port（转发应用 RPC 服务端点）
+tny:
+  app:
+    name: t1-caller
+    app-type: game
+    scope-type: game
+  net:
+    bootstrap:
+      network:
+        server:
+          name: game-client
+          bind-address: "${it.host}:${it.c.net.port}"
+          channel:
+            encoder:
+              message-body-codec: typeProtobufMessageBodyCodec
+              verifier: cRC64CodecVerifier
+              crypto: xOrCodecCrypto
+            decoder:
+              message-body-codec: typeProtobufMessageBodyCodec
+              verifier: cRC64CodecVerifier
+              crypto: xOrCodecCrypto
+      rpc:
+        client:
+          channel:
+            encoder:
+              message-body-codec: typeProtobufMessageBodyCodec
+              verifier: cRC64CodecVerifier
+              crypto: xOrCodecCrypto
+            decoder:
+              message-body-codec: typeProtobufMessageBodyCodec
+              verifier: cRC64CodecVerifier
+              crypto: xOrCodecCrypto
+    rpc:
+      cluster:
+        services:
+          - service: gateway-service
+            discovery: false
+            host: "${it.host}"
+            port: ${it.f.rpc.port}
+            username: game-client
+  data:
+    enable: false
+
+spring:
+  autoconfigure:
+    exclude:
+      - org.redisson.spring.starter.RedissonAutoConfigurationV2

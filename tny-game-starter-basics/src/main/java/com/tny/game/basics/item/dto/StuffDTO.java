@@ -1,0 +1,104 @@
+/*
+ * Copyright (c) 2020 Tunaiyi
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.tny.game.basics.item.dto;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.tny.game.basics.item.*;
+import com.tny.game.basics.item.behavior.*;
+import com.tny.game.doc.annotation.*;
+import com.tny.game.protoex.annotations.*;
+
+import java.io.Serializable;
+import java.util.*;
+
+@ProtoEx(BasicsProtoIDs.STUFF_DTO)
+@DTODoc("物品DTO")
+public class StuffDTO implements Serializable {
+
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
+
+    @VarDoc("条件相关的modelId")
+    @ProtoExField(1)
+    @JsonProperty
+    private int modelId;
+
+    @VarDoc("条件相关的数量")
+    @ProtoExField(3)
+    @JsonProperty
+    private long number;
+
+    private void alterNumber(long alterNum) {
+        this.number += alterNum;
+    }
+
+    public static StuffDTO tradeItem2DTO(TradeItem<?> item) {
+        return dealedItem2DTO(item);
+    }
+
+    public static void mergeAward(Map<Integer, StuffDTO> awardMap, TradeItem<?> tradItem) {
+        if (tradItem.getNumber().longValue() >= 0) {
+            StuffDTO award = awardMap.get(tradItem.getItemModel().getId());
+            if (award == null) {
+                award = tradeItem2DTO(tradItem);
+                awardMap.put(award.modelId, award);
+            } else {
+                award.alterNumber(tradItem.getNumber().longValue());
+            }
+        }
+    }
+
+    public static void mergeAward(Map<Integer, StuffDTO> awardMap, Trade trade) {
+        if (trade.getTradeType() != TradeType.AWARD) {
+            return;
+        }
+        for (TradeItem<?> tradItem : trade.getAllTradeItems()) {
+            mergeAward(awardMap, tradItem);
+        }
+    }
+
+    public static void mergeAward(Map<Integer, StuffDTO> awardMap, Collection<TradeItem<StuffModel>> tradItems) {
+        for (TradeItem<?> tradItem : tradItems) {
+            mergeAward(awardMap, tradItem);
+        }
+    }
+
+    public static StuffDTO dealedItem2DTO(DealItem<?> dealedItem) {
+        StuffDTO dto = new StuffDTO();
+        dto.modelId = dealedItem.getItemModel().getId();
+        dto.number = dealedItem.getNumber().longValue();
+        return dto;
+    }
+
+    public static StuffDTO attr2DTO(int modelId, long number) {
+        StuffDTO dto = new StuffDTO();
+        dto.modelId = modelId;
+        dto.number = number;
+        return dto;
+    }
+
+    public int getModelId() {
+        return modelId;
+    }
+
+    public long getNumber() {
+        return number;
+    }
+
+}

@@ -1,0 +1,18 @@
+group "com.tny.game"
+
+apply plugin: "maven-publish"
+
+dependencies {
+
+
+    testImplementation project(":tny-game-cache-test")
+
+    api libs.commons_pool2
+    api libs.spring_context_support
+    api libs.memcached_java_client
+
+    api project(":tny-game-common-lifecycle")
+    api project(":tny-game-cache")
+
+}
+

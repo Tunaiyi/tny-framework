@@ -1,0 +1,6 @@
+# 祖父条款分支登记表（openspec change redesign-devline-integration-model 设计 D6/D7）
+# 每行：分支名 | 身份（maintenance=旧形态维护线，可发该系列快照并按登记获得一次性发布分支旧流程资格；
+#       read-only=仅历史资产，无任何发布资格）| 依据变更
+# 规则：豁免只减不增——新分支一律走 dev/ 与 release/ 前缀形态，本表条目随对应系列退役逐条注销。
+# 身份判定被发布门禁与 release 任务读取；本表是发布白名单"形态加登记表"双层判定的登记层。
+5.7.x | maintenance | redesign-devline-integration-model

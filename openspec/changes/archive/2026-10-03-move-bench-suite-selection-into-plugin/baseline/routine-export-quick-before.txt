@@ -1,0 +1,720 @@
+Configuration on demand is an incubating feature.
+注: /Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-protoex/src/main/java/com/tny/game/protoex/field/runtime/RuntimeUnsafeFieldDescFactory.java使用或覆盖了已过时的 API。
+注: 有关详细信息, 请使用 -Xlint:deprecation 重新编译。
+注: 某些输入文件使用或覆盖了已过时的 API。
+注: 有关详细信息, 请使用 -Xlint:deprecation 重新编译。
+# JMH version: 1.37
+# VM version: JDK 21.0.12.1, OpenJDK 64-Bit Server VM, 21.0.12.1+12-LTS
+# VM invoker: /Users/kgtny/Library/Java/JavaVirtualMachines/corretto-21.0.12.1/Contents/Home/bin/java
+# VM options: -Dfile.encoding=UTF-8 -Djava.io.tmpdir=/Users/kgtny/Documents/lingqu/core/tny-framework/tny-benchmark/build/tmp/jmh -Duser.country=CN -Duser.language=zh -Duser.variant
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 5 iterations, 500 ms each
+# Measurement: 10 iterations, 1 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Throughput, ops/time
+# Benchmark: com.tny.game.benchmark.net.devtest.SmokeBenchmark.noop
+# Run progress: 0.00% complete, ETA 00:05:25
+# Fork: 1 of 2
+# Warmup Iteration   1: 1646039592.231 ops/s
+# Warmup Iteration   2: 1648341838.439 ops/s
+# Warmup Iteration   3: 1653268392.574 ops/s
+# Warmup Iteration   4: 1652411489.051 ops/s
+# Warmup Iteration   5: 1636690664.759 ops/s
+Iteration   1: 1652577750.806 ops/s
+Iteration   2: 1659824430.940 ops/s
+Iteration   3: 1641120746.455 ops/s
+Iteration   4: 1598983091.872 ops/s
+Iteration   5: 99498264.327 ops/s
+Iteration   6: 90335937.224 ops/s
+Iteration   7: 621003982.923 ops/s
+Iteration   8: 1651880344.607 ops/s
+Iteration   9: 1539626289.852 ops/s
+Iteration  10: 1294389314.128 ops/s
+# Run progress: 3.85% complete, ETA 00:05:23
+# Fork: 2 of 2
+# Warmup Iteration   1: 1640554902.296 ops/s
+# Warmup Iteration   2: 1654687455.415 ops/s
+# Warmup Iteration   3: 1628300877.273 ops/s
+# Warmup Iteration   4: 1650966749.864 ops/s
+# Warmup Iteration   5: 1427941295.170 ops/s
+Iteration   1: 1611605860.556 ops/s
+Iteration   2: 1581951559.196 ops/s
+Iteration   3: 1647349030.354 ops/s
+Iteration   4: 1657696019.621 ops/s
+Iteration   5: 1643553614.740 ops/s
+Iteration   6: 1627673470.058 ops/s
+Iteration   7: 1327016426.420 ops/s
+Iteration   8: 1036167923.849 ops/s
+Iteration   9: 1383791705.828 ops/s
+Iteration  10: 1527319635.926 ops/s
+Result "com.tny.game.benchmark.net.devtest.SmokeBenchmark.noop":
+  1344668269.984 ±(99.9%) 433997739.441 ops/s [Average]
+  (min, avg, max) = (90335937.224, 1344668269.984, 1659824430.940), stdev = 499792442.154
+  CI (99.9%): [910670530.543, 1778666009.425] (assumes normal distribution)
+# JMH version: 1.37
+# VM version: JDK 21.0.12.1, OpenJDK 64-Bit Server VM, 21.0.12.1+12-LTS
+# VM invoker: /Users/kgtny/Library/Java/JavaVirtualMachines/corretto-21.0.12.1/Contents/Home/bin/java
+# VM options: -Dfile.encoding=UTF-8 -Djava.io.tmpdir=/Users/kgtny/Documents/lingqu/core/tny-framework/tny-benchmark/build/tmp/jmh -Duser.country=CN -Duser.language=zh -Duser.variant
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 5 iterations, 500 ms each
+# Measurement: 10 iterations, 1 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Throughput, ops/time
+# Benchmark: com.tny.game.benchmark.net.routine.MessageQueueBenchmark.addMessage
+# Parameters: (capacity = 0)
+# Run progress: 7.69% complete, ETA 00:05:08
+# Fork: 1 of 2
+# Warmup Iteration   1: 705324090.954 ops/s
+# Warmup Iteration   2: 740199230.563 ops/s
+# Warmup Iteration   3: 698456226.421 ops/s
+# Warmup Iteration   4: 712222031.139 ops/s
+# Warmup Iteration   5: 717476863.268 ops/s
+Iteration   1: 697539303.838 ops/s
+Iteration   2: 716799586.390 ops/s
+Iteration   3: 718625101.263 ops/s
+Iteration   4: 670336728.932 ops/s
+Iteration   5: 697954925.239 ops/s
+Iteration   6: 724494541.935 ops/s
+Iteration   7: 701159461.182 ops/s
+Iteration   8: 690812513.813 ops/s
+Iteration   9: 706649862.289 ops/s
+Iteration  10: 712884751.427 ops/s
+# Run progress: 11.54% complete, ETA 00:04:55
+# Fork: 2 of 2
+# Warmup Iteration   1: 751864193.679 ops/s
+# Warmup Iteration   2: 742759709.461 ops/s
+# Warmup Iteration   3: 712701388.018 ops/s
+# Warmup Iteration   4: 722860992.166 ops/s
+# Warmup Iteration   5: 723704786.004 ops/s
+Iteration   1: 718233416.691 ops/s
+Iteration   2: 719033918.613 ops/s
+Iteration   3: 725430597.851 ops/s
+Iteration   4: 713424373.298 ops/s
+Iteration   5: 700552940.701 ops/s
+Iteration   6: 707462320.708 ops/s
+Iteration   7: 724646364.209 ops/s
+Iteration   8: 725565487.056 ops/s
+Iteration   9: 713322278.731 ops/s
+Iteration  10: 683107508.583 ops/s
+Result "com.tny.game.benchmark.net.routine.MessageQueueBenchmark.addMessage":
+  708401799.137 ±(99.9%) 13070935.914 ops/s [Average]
+  (min, avg, max) = (670336728.932, 708401799.137, 725565487.056), stdev = 15052509.237
+  CI (99.9%): [695330863.224, 721472735.051] (assumes normal distribution)
+# JMH version: 1.37
+# VM version: JDK 21.0.12.1, OpenJDK 64-Bit Server VM, 21.0.12.1+12-LTS
+# VM invoker: /Users/kgtny/Library/Java/JavaVirtualMachines/corretto-21.0.12.1/Contents/Home/bin/java
+# VM options: -Dfile.encoding=UTF-8 -Djava.io.tmpdir=/Users/kgtny/Documents/lingqu/core/tny-framework/tny-benchmark/build/tmp/jmh -Duser.country=CN -Duser.language=zh -Duser.variant
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 5 iterations, 500 ms each
+# Measurement: 10 iterations, 1 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Throughput, ops/time
+# Benchmark: com.tny.game.benchmark.net.routine.MessageQueueBenchmark.addMessage
+# Parameters: (capacity = 64)
+# Run progress: 15.38% complete, ETA 00:04:42
+# Fork: 1 of 2
+# Warmup Iteration   1: 73395450.676 ops/s
+# Warmup Iteration   2: 75248724.376 ops/s
+# Warmup Iteration   3: 75441476.623 ops/s
+# Warmup Iteration   4: 74927729.480 ops/s
+# Warmup Iteration   5: 75218158.393 ops/s
+Iteration   1: 74984452.581 ops/s
+Iteration   2: 68474556.284 ops/s
+Iteration   3: 73892088.324 ops/s
+Iteration   4: 74348971.858 ops/s
+Iteration   5: 74568716.279 ops/s
+Iteration   6: 74120413.451 ops/s
+Iteration   7: 75180280.794 ops/s
+Iteration   8: 74987370.246 ops/s
+Iteration   9: 74487218.428 ops/s
+Iteration  10: 73631847.687 ops/s
+# Run progress: 19.23% complete, ETA 00:04:29
+# Fork: 2 of 2
+# Warmup Iteration   1: 73187923.612 ops/s
+# Warmup Iteration   2: 74332599.159 ops/s
+# Warmup Iteration   3: 74524461.674 ops/s
+# Warmup Iteration   4: 74265903.113 ops/s
+# Warmup Iteration   5: 73780892.106 ops/s
+Iteration   1: 74643882.468 ops/s
+Iteration   2: 74877634.808 ops/s
+Iteration   3: 75069753.817 ops/s
+Iteration   4: 75255909.917 ops/s
+Iteration   5: 74491114.214 ops/s
+Iteration   6: 75129228.917 ops/s
+Iteration   7: 74913477.598 ops/s
+Iteration   8: 73353587.335 ops/s
+Iteration   9: 66375165.138 ops/s
+Iteration  10: 71144000.111 ops/s
+Result "com.tny.game.benchmark.net.routine.MessageQueueBenchmark.addMessage":
+  73696483.513 ±(99.9%) 2049485.303 ops/s [Average]
+  (min, avg, max) = (66375165.138, 73696483.513, 75255909.917), stdev = 2360190.322
+  CI (99.9%): [71646998.210, 75745968.816] (assumes normal distribution)
+# JMH version: 1.37
+# VM version: JDK 21.0.12.1, OpenJDK 64-Bit Server VM, 21.0.12.1+12-LTS
+# VM invoker: /Users/kgtny/Library/Java/JavaVirtualMachines/corretto-21.0.12.1/Contents/Home/bin/java
+# VM options: -Dfile.encoding=UTF-8 -Djava.io.tmpdir=/Users/kgtny/Documents/lingqu/core/tny-framework/tny-benchmark/build/tmp/jmh -Duser.country=CN -Duser.language=zh -Duser.variant
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 5 iterations, 500 ms each
+# Measurement: 10 iterations, 1 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Throughput, ops/time
+# Benchmark: com.tny.game.benchmark.net.routine.MessageQueueBenchmark.filteredRead
+# Parameters: (capacity = 0)
+# Run progress: 23.08% complete, ETA 00:04:16
+# Fork: 1 of 2
+# Warmup Iteration   1: 69284385.498 ops/s
+# Warmup Iteration   2: 74911922.525 ops/s
+# Warmup Iteration   3: 73211058.016 ops/s
+# Warmup Iteration   4: 72397500.357 ops/s
+# Warmup Iteration   5: 75053216.258 ops/s
+Iteration   1: 74654289.181 ops/s
+Iteration   2: 73684370.761 ops/s
+Iteration   3: 74543006.898 ops/s
+Iteration   4: 70280798.715 ops/s
+Iteration   5: 74184458.458 ops/s
+Iteration   6: 73645390.573 ops/s
+Iteration   7: 72269275.388 ops/s
+Iteration   8: 73690946.903 ops/s
+Iteration   9: 75267925.957 ops/s
+Iteration  10: 73910042.359 ops/s
+# Run progress: 26.92% complete, ETA 00:04:03
+# Fork: 2 of 2
+# Warmup Iteration   1: 62140704.800 ops/s
+# Warmup Iteration   2: 63559499.310 ops/s
+# Warmup Iteration   3: 63853488.261 ops/s
+# Warmup Iteration   4: 62915238.401 ops/s
+# Warmup Iteration   5: 63127158.681 ops/s
+Iteration   1: 62531628.063 ops/s
+Iteration   2: 62770646.524 ops/s
+Iteration   3: 62733715.291 ops/s
+Iteration   4: 62689017.025 ops/s
+Iteration   5: 63438869.102 ops/s
+Iteration   6: 63048891.523 ops/s
+Iteration   7: 63518532.197 ops/s
+Iteration   8: 63354158.784 ops/s
+Iteration   9: 63605927.638 ops/s
+Iteration  10: 63081464.979 ops/s
+Result "com.tny.game.benchmark.net.routine.MessageQueueBenchmark.filteredRead":
+  68345167.816 ±(99.9%) 4774415.472 ops/s [Average]
+  (min, avg, max) = (62531628.063, 68345167.816, 75267925.957), stdev = 5498223.957
+  CI (99.9%): [63570752.344, 73119583.288] (assumes normal distribution)
+# JMH version: 1.37
+# VM version: JDK 21.0.12.1, OpenJDK 64-Bit Server VM, 21.0.12.1+12-LTS
+# VM invoker: /Users/kgtny/Library/Java/JavaVirtualMachines/corretto-21.0.12.1/Contents/Home/bin/java
+# VM options: -Dfile.encoding=UTF-8 -Djava.io.tmpdir=/Users/kgtny/Documents/lingqu/core/tny-framework/tny-benchmark/build/tmp/jmh -Duser.country=CN -Duser.language=zh -Duser.variant
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 5 iterations, 500 ms each
+# Measurement: 10 iterations, 1 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Throughput, ops/time
+# Benchmark: com.tny.game.benchmark.net.routine.MessageQueueBenchmark.filteredRead
+# Parameters: (capacity = 64)
+# Run progress: 30.77% complete, ETA 00:03:50
+# Fork: 1 of 2
+# Warmup Iteration   1: 21021872.283 ops/s
+# Warmup Iteration   2: 30422104.821 ops/s
+# Warmup Iteration   3: 31304475.979 ops/s
+# Warmup Iteration   4: 29380888.149 ops/s
+# Warmup Iteration   5: 31989833.938 ops/s
+Iteration   1: 32424348.140 ops/s
+Iteration   2: 32557041.640 ops/s
+Iteration   3: 31854526.174 ops/s
+Iteration   4: 30605669.796 ops/s
+Iteration   5: 32694570.882 ops/s
+Iteration   6: 31801969.486 ops/s
+Iteration   7: 32608947.185 ops/s
+Iteration   8: 29153892.562 ops/s
+Iteration   9: 32275853.131 ops/s
+Iteration  10: 31977945.904 ops/s
+# Run progress: 34.62% complete, ETA 00:03:37
+# Fork: 2 of 2
+# Warmup Iteration   1: 26506959.158 ops/s
+# Warmup Iteration   2: 31237162.969 ops/s
+# Warmup Iteration   3: 26845198.323 ops/s
+# Warmup Iteration   4: 30658618.438 ops/s
+# Warmup Iteration   5: 30580312.984 ops/s
+Iteration   1: 32525283.784 ops/s
+Iteration   2: 31698814.528 ops/s
+Iteration   3: 31524018.909 ops/s
+Iteration   4: 31977821.930 ops/s
+Iteration   5: 32187126.697 ops/s
+Iteration   6: 32242837.513 ops/s
+Iteration   7: 32314802.593 ops/s
+Iteration   8: 31816771.432 ops/s
+Iteration   9: 32130269.091 ops/s
+Iteration  10: 28052577.836 ops/s
+Result "com.tny.game.benchmark.net.routine.MessageQueueBenchmark.filteredRead":
+  31721254.461 ±(99.9%) 1023399.160 ops/s [Average]
+  (min, avg, max) = (28052577.836, 31721254.461, 32694570.882), stdev = 1178547.995
+  CI (99.9%): [30697855.300, 32744653.621] (assumes normal distribution)
+# JMH version: 1.37
+# VM version: JDK 21.0.12.1, OpenJDK 64-Bit Server VM, 21.0.12.1+12-LTS
+# VM invoker: /Users/kgtny/Library/Java/JavaVirtualMachines/corretto-21.0.12.1/Contents/Home/bin/java
+# VM options: -Dfile.encoding=UTF-8 -Djava.io.tmpdir=/Users/kgtny/Documents/lingqu/core/tny-framework/tny-benchmark/build/tmp/jmh -Duser.country=CN -Duser.language=zh -Duser.variant
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 5 iterations, 500 ms each
+# Measurement: 10 iterations, 1 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Throughput, ops/time
+# Benchmark: com.tny.game.benchmark.net.routine.MessageQueueBenchmark.snapshotRead
+# Parameters: (capacity = 0)
+# Run progress: 38.46% complete, ETA 00:03:24
+# Fork: 1 of 2
+# Warmup Iteration   1: 57371357.744 ops/s
+# Warmup Iteration   2: 63179075.710 ops/s
+# Warmup Iteration   3: 56711572.634 ops/s
+# Warmup Iteration   4: 62127740.060 ops/s
+# Warmup Iteration   5: 62712933.654 ops/s
+Iteration   1: 62197231.174 ops/s
+Iteration   2: 63141274.861 ops/s
+Iteration   3: 63232490.607 ops/s
+Iteration   4: 62983585.604 ops/s
+Iteration   5: 62745015.407 ops/s
+Iteration   6: 63561023.617 ops/s
+Iteration   7: 62757557.628 ops/s
+Iteration   8: 63339604.505 ops/s
+Iteration   9: 63554944.699 ops/s
+Iteration  10: 62273498.559 ops/s
+# Run progress: 42.31% complete, ETA 00:03:12
+# Fork: 2 of 2
+# Warmup Iteration   1: 74174483.976 ops/s
+# Warmup Iteration   2: 75374378.197 ops/s
+# Warmup Iteration   3: 75013411.921 ops/s
+# Warmup Iteration   4: 75840021.747 ops/s
+# Warmup Iteration   5: 75100250.726 ops/s
+Iteration   1: 74899499.387 ops/s
+Iteration   2: 75165756.202 ops/s
+Iteration   3: 73952173.945 ops/s
+Iteration   4: 74487321.253 ops/s
+Iteration   5: 75256709.546 ops/s
+Iteration   6: 73368014.519 ops/s
+Iteration   7: 74636651.425 ops/s
+Iteration   8: 75271921.911 ops/s
+Iteration   9: 75620186.819 ops/s
+Iteration  10: 76131414.259 ops/s
+Result "com.tny.game.benchmark.net.routine.MessageQueueBenchmark.snapshotRead":
+  68928793.796 ±(99.9%) 5330789.699 ops/s [Average]
+  (min, avg, max) = (62197231.174, 68928793.796, 76131414.259), stdev = 6138945.345
+  CI (99.9%): [63598004.097, 74259583.495] (assumes normal distribution)
+# JMH version: 1.37
+# VM version: JDK 21.0.12.1, OpenJDK 64-Bit Server VM, 21.0.12.1+12-LTS
+# VM invoker: /Users/kgtny/Library/Java/JavaVirtualMachines/corretto-21.0.12.1/Contents/Home/bin/java
+# VM options: -Dfile.encoding=UTF-8 -Djava.io.tmpdir=/Users/kgtny/Documents/lingqu/core/tny-framework/tny-benchmark/build/tmp/jmh -Duser.country=CN -Duser.language=zh -Duser.variant
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 5 iterations, 500 ms each
+# Measurement: 10 iterations, 1 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Throughput, ops/time
+# Benchmark: com.tny.game.benchmark.net.routine.MessageQueueBenchmark.snapshotRead
+# Parameters: (capacity = 64)
+# Run progress: 46.15% complete, ETA 00:02:59
+# Fork: 1 of 2
+# Warmup Iteration   1: 65873406.725 ops/s
+# Warmup Iteration   2: 72690476.770 ops/s
+# Warmup Iteration   3: 73641507.071 ops/s
+# Warmup Iteration   4: 72370073.474 ops/s
+# Warmup Iteration   5: 75341523.879 ops/s
+Iteration   1: 74629657.964 ops/s
+Iteration   2: 70386948.489 ops/s
+Iteration   3: 74166819.181 ops/s
+Iteration   4: 74701589.891 ops/s
+Iteration   5: 74649100.245 ops/s
+Iteration   6: 74835137.377 ops/s
+Iteration   7: 74843499.081 ops/s
+Iteration   8: 74702671.686 ops/s
+Iteration   9: 72856679.320 ops/s
+Iteration  10: 74245162.370 ops/s
+# Run progress: 50.00% complete, ETA 00:02:46
+# Fork: 2 of 2
+# Warmup Iteration   1: 66134367.997 ops/s
+# Warmup Iteration   2: 71232551.379 ops/s
+# Warmup Iteration   3: 74597392.777 ops/s
+# Warmup Iteration   4: 75039965.402 ops/s
+# Warmup Iteration   5: 74885715.919 ops/s
+Iteration   1: 73850754.457 ops/s
+Iteration   2: 74307759.441 ops/s
+Iteration   3: 74870914.057 ops/s
+Iteration   4: 74388788.397 ops/s
+Iteration   5: 74254535.514 ops/s
+Iteration   6: 75089865.629 ops/s
+Iteration   7: 75214060.321 ops/s
+Iteration   8: 74546377.643 ops/s
+Iteration   9: 74895901.551 ops/s
+Iteration  10: 75031127.364 ops/s
+Result "com.tny.game.benchmark.net.routine.MessageQueueBenchmark.snapshotRead":
+  74323367.499 ±(99.9%) 923466.507 ops/s [Average]
+  (min, avg, max) = (70386948.489, 74323367.499, 75214060.321), stdev = 1063465.403
+  CI (99.9%): [73399900.992, 75246834.006] (assumes normal distribution)
+# JMH version: 1.37
+# VM version: JDK 21.0.12.1, OpenJDK 64-Bit Server VM, 21.0.12.1+12-LTS
+# VM invoker: /Users/kgtny/Library/Java/JavaVirtualMachines/corretto-21.0.12.1/Contents/Home/bin/java
+# VM options: -Dfile.encoding=UTF-8 -Djava.io.tmpdir=/Users/kgtny/Documents/lingqu/core/tny-framework/tny-benchmark/build/tmp/jmh -Duser.country=CN -Duser.language=zh -Duser.variant
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 5 iterations, 500 ms each
+# Measurement: 10 iterations, 1 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Throughput, ops/time
+# Benchmark: com.tny.game.benchmark.net.routine.PacketCodecBenchmark.encodeThenDecode
+# Parameters: (verify = false)
+# Run progress: 53.85% complete, ETA 00:02:33
+# Fork: 1 of 2
+# Warmup Iteration   1: SLF4J(W): No SLF4J providers were found.
+SLF4J(W): Defaulting to no-operation (NOP) logger implementation
+SLF4J(W): See https://www.slf4j.org/codes.html#noProviders for further details.
+1740078.618 ops/s
+# Warmup Iteration   2: 2129680.600 ops/s
+# Warmup Iteration   3: 1981792.011 ops/s
+# Warmup Iteration   4: 1959506.305 ops/s
+# Warmup Iteration   5: 1985726.430 ops/s
+Iteration   1: 1992743.073 ops/s
+Iteration   2: 1989526.389 ops/s
+Iteration   3: 1974619.121 ops/s
+Iteration   4: 1993291.833 ops/s
+Iteration   5: 3002323.152 ops/s
+Iteration   6: 1830320.120 ops/s
+Iteration   7: 3024913.262 ops/s
+Iteration   8: 1972251.899 ops/s
+Iteration   9: 1969226.089 ops/s
+Iteration  10: 1975202.705 ops/s
+# Run progress: 57.69% complete, ETA 00:02:21
+# Fork: 2 of 2
+# Warmup Iteration   1: SLF4J(W): No SLF4J providers were found.
+SLF4J(W): Defaulting to no-operation (NOP) logger implementation
+SLF4J(W): See https://www.slf4j.org/codes.html#noProviders for further details.
+1681787.361 ops/s
+# Warmup Iteration   2: 2137014.980 ops/s
+# Warmup Iteration   3: 1920723.308 ops/s
+# Warmup Iteration   4: 2661139.680 ops/s
+# Warmup Iteration   5: 1868953.898 ops/s
+Iteration   1: 1882647.218 ops/s
+Iteration   2: 1874405.683 ops/s
+Iteration   3: 1893845.625 ops/s
+Iteration   4: 1896536.659 ops/s
+Iteration   5: 1876019.894 ops/s
+Iteration   6: 1885596.053 ops/s
+Iteration   7: 1883804.839 ops/s
+Iteration   8: 3059687.261 ops/s
+Iteration   9: 1893992.499 ops/s
+Iteration  10: 3026710.009 ops/s
+Result "com.tny.game.benchmark.net.routine.PacketCodecBenchmark.encodeThenDecode":
+  2144883.169 ±(99.9%) 395882.842 ops/s [Average]
+  (min, avg, max) = (1830320.120, 2144883.169, 3059687.261), stdev = 455899.270
+  CI (99.9%): [1749000.327, 2540766.011] (assumes normal distribution)
+# JMH version: 1.37
+# VM version: JDK 21.0.12.1, OpenJDK 64-Bit Server VM, 21.0.12.1+12-LTS
+# VM invoker: /Users/kgtny/Library/Java/JavaVirtualMachines/corretto-21.0.12.1/Contents/Home/bin/java
+# VM options: -Dfile.encoding=UTF-8 -Djava.io.tmpdir=/Users/kgtny/Documents/lingqu/core/tny-framework/tny-benchmark/build/tmp/jmh -Duser.country=CN -Duser.language=zh -Duser.variant
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 5 iterations, 500 ms each
+# Measurement: 10 iterations, 1 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Throughput, ops/time
+# Benchmark: com.tny.game.benchmark.net.routine.PacketCodecBenchmark.encodeThenDecode
+# Parameters: (verify = true)
+# Run progress: 61.54% complete, ETA 00:02:08
+# Fork: 1 of 2
+# Warmup Iteration   1: SLF4J(W): No SLF4J providers were found.
+SLF4J(W): Defaulting to no-operation (NOP) logger implementation
+SLF4J(W): See https://www.slf4j.org/codes.html#noProviders for further details.
+774954.667 ops/s
+# Warmup Iteration   2: 997092.964 ops/s
+# Warmup Iteration   3: 1009372.386 ops/s
+# Warmup Iteration   4: 1006084.014 ops/s
+# Warmup Iteration   5: 981414.357 ops/s
+Iteration   1: 1006488.403 ops/s
+Iteration   2: 1018509.512 ops/s
+Iteration   3: 1013156.421 ops/s
+Iteration   4: 1015448.385 ops/s
+Iteration   5: 1019808.889 ops/s
+Iteration   6: 1015995.883 ops/s
+Iteration   7: 1013093.797 ops/s
+Iteration   8: 1018673.837 ops/s
+Iteration   9: 971725.754 ops/s
+Iteration  10: 1014265.444 ops/s
+# Run progress: 65.38% complete, ETA 00:01:56
+# Fork: 2 of 2
+# Warmup Iteration   1: SLF4J(W): No SLF4J providers were found.
+SLF4J(W): Defaulting to no-operation (NOP) logger implementation
+SLF4J(W): See https://www.slf4j.org/codes.html#noProviders for further details.
+770119.012 ops/s
+# Warmup Iteration   2: 989426.670 ops/s
+# Warmup Iteration   3: 969663.272 ops/s
+# Warmup Iteration   4: 980793.308 ops/s
+# Warmup Iteration   5: 994053.918 ops/s
+Iteration   1: 1022214.237 ops/s
+Iteration   2: 1015860.040 ops/s
+Iteration   3: 1008092.801 ops/s
+Iteration   4: 1020797.356 ops/s
+Iteration   5: 1013591.374 ops/s
+Iteration   6: 1013520.764 ops/s
+Iteration   7: 1024464.542 ops/s
+Iteration   8: 1016966.318 ops/s
+Iteration   9: 1015237.159 ops/s
+Iteration  10: 1012343.998 ops/s
+Result "com.tny.game.benchmark.net.routine.PacketCodecBenchmark.encodeThenDecode":
+  1013512.746 ±(99.9%) 9338.474 ops/s [Average]
+  (min, avg, max) = (971725.754, 1013512.746, 1024464.542), stdev = 10754.200
+  CI (99.9%): [1004174.272, 1022851.220] (assumes normal distribution)
+# JMH version: 1.37
+# VM version: JDK 21.0.12.1, OpenJDK 64-Bit Server VM, 21.0.12.1+12-LTS
+# VM invoker: /Users/kgtny/Library/Java/JavaVirtualMachines/corretto-21.0.12.1/Contents/Home/bin/java
+# VM options: -Dfile.encoding=UTF-8 -Djava.io.tmpdir=/Users/kgtny/Documents/lingqu/core/tny-framework/tny-benchmark/build/tmp/jmh -Duser.country=CN -Duser.language=zh -Duser.variant
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 5 iterations, 500 ms each
+# Measurement: 10 iterations, 1 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Throughput, ops/time
+# Benchmark: com.tny.game.benchmark.net.routine.RespondFutureBenchmark.pollMiss
+# Parameters: (inflight = 1000)
+# Run progress: 69.23% complete, ETA 00:01:43
+# Fork: 1 of 2
+# Warmup Iteration   1: SLF4J(W): No SLF4J providers were found.
+SLF4J(W): Defaulting to no-operation (NOP) logger implementation
+SLF4J(W): See https://www.slf4j.org/codes.html#noProviders for further details.
+79900665.108 ops/s
+# Warmup Iteration   2: 86117256.969 ops/s
+# Warmup Iteration   3: 89271599.690 ops/s
+# Warmup Iteration   4: 88993567.739 ops/s
+# Warmup Iteration   5: 88520174.315 ops/s
+Iteration   1: 89548952.560 ops/s
+Iteration   2: 89128489.450 ops/s
+Iteration   3: 89711347.429 ops/s
+Iteration   4: 89524306.694 ops/s
+Iteration   5: 89233598.724 ops/s
+Iteration   6: 89644554.495 ops/s
+Iteration   7: 88719308.677 ops/s
+Iteration   8: 106733947.360 ops/s
+Iteration   9: 121948582.676 ops/s
+Iteration  10: 121802678.824 ops/s
+# Run progress: 73.08% complete, ETA 00:01:30
+# Fork: 2 of 2
+# Warmup Iteration   1: SLF4J(W): No SLF4J providers were found.
+SLF4J(W): Defaulting to no-operation (NOP) logger implementation
+SLF4J(W): See https://www.slf4j.org/codes.html#noProviders for further details.
+81073690.898 ops/s
+# Warmup Iteration   2: 85417543.390 ops/s
+# Warmup Iteration   3: 88924715.279 ops/s
+# Warmup Iteration   4: 89827138.834 ops/s
+# Warmup Iteration   5: 81770324.162 ops/s
+Iteration   1: 88622702.865 ops/s
+Iteration   2: 89074733.616 ops/s
+Iteration   3: 89543513.757 ops/s
+Iteration   4: 88783465.989 ops/s
+Iteration   5: 89351618.997 ops/s
+Iteration   6: 89577137.891 ops/s
+Iteration   7: 89040329.517 ops/s
+Iteration   8: 107468424.371 ops/s
+Iteration   9: 124126886.678 ops/s
+Iteration  10: 123716499.424 ops/s
+Result "com.tny.game.benchmark.net.routine.RespondFutureBenchmark.pollMiss":
+  97765054.000 ±(99.9%) 12154382.245 ops/s [Average]
+  (min, avg, max) = (88622702.865, 97765054.000, 124126886.678), stdev = 13997004.669
+  CI (99.9%): [85610671.754, 109919436.245] (assumes normal distribution)
+# JMH version: 1.37
+# VM version: JDK 21.0.12.1, OpenJDK 64-Bit Server VM, 21.0.12.1+12-LTS
+# VM invoker: /Users/kgtny/Library/Java/JavaVirtualMachines/corretto-21.0.12.1/Contents/Home/bin/java
+# VM options: -Dfile.encoding=UTF-8 -Djava.io.tmpdir=/Users/kgtny/Documents/lingqu/core/tny-framework/tny-benchmark/build/tmp/jmh -Duser.country=CN -Duser.language=zh -Duser.variant
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 5 iterations, 500 ms each
+# Measurement: 10 iterations, 1 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Throughput, ops/time
+# Benchmark: com.tny.game.benchmark.net.routine.RespondFutureBenchmark.pollMiss
+# Parameters: (inflight = 10000)
+# Run progress: 76.92% complete, ETA 00:01:17
+# Fork: 1 of 2
+# Warmup Iteration   1: SLF4J(W): No SLF4J providers were found.
+SLF4J(W): Defaulting to no-operation (NOP) logger implementation
+SLF4J(W): See https://www.slf4j.org/codes.html#noProviders for further details.
+72422837.566 ops/s
+# Warmup Iteration   2: 78169054.635 ops/s
+# Warmup Iteration   3: 82023256.136 ops/s
+# Warmup Iteration   4: 81574402.328 ops/s
+# Warmup Iteration   5: 81188748.780 ops/s
+Iteration   1: 80695664.760 ops/s
+Iteration   2: 80556433.962 ops/s
+Iteration   3: 81161245.765 ops/s
+Iteration   4: 81853679.910 ops/s
+Iteration   5: 82134999.957 ops/s
+Iteration   6: 81385434.722 ops/s
+Iteration   7: 81755686.026 ops/s
+Iteration   8: 104129478.824 ops/s
+Iteration   9: 121578170.213 ops/s
+Iteration  10: 122459532.676 ops/s
+# Run progress: 80.77% complete, ETA 00:01:04
+# Fork: 2 of 2
+# Warmup Iteration   1: SLF4J(W): No SLF4J providers were found.
+SLF4J(W): Defaulting to no-operation (NOP) logger implementation
+SLF4J(W): See https://www.slf4j.org/codes.html#noProviders for further details.
+73005452.012 ops/s
+# Warmup Iteration   2: 76360154.951 ops/s
+# Warmup Iteration   3: 79709130.459 ops/s
+# Warmup Iteration   4: 82073064.520 ops/s
+# Warmup Iteration   5: 81148542.988 ops/s
+Iteration   1: 81536612.220 ops/s
+Iteration   2: 80931485.827 ops/s
+Iteration   3: 81395080.948 ops/s
+Iteration   4: 81619425.541 ops/s
+Iteration   5: 77193544.926 ops/s
+Iteration   6: 80920113.749 ops/s
+Iteration   7: 81657848.651 ops/s
+Iteration   8: 102053460.571 ops/s
+Iteration   9: 120688512.448 ops/s
+Iteration  10: 121549158.963 ops/s
+Result "com.tny.game.benchmark.net.routine.RespondFutureBenchmark.pollMiss":
+  91362778.533 ±(99.9%) 14685479.031 ops/s [Average]
+  (min, avg, max) = (77193544.926, 91362778.533, 122459532.676), stdev = 16911819.492
+  CI (99.9%): [76677299.502, 106048257.564] (assumes normal distribution)
+# JMH version: 1.37
+# VM version: JDK 21.0.12.1, OpenJDK 64-Bit Server VM, 21.0.12.1+12-LTS
+# VM invoker: /Users/kgtny/Library/Java/JavaVirtualMachines/corretto-21.0.12.1/Contents/Home/bin/java
+# VM options: -Dfile.encoding=UTF-8 -Djava.io.tmpdir=/Users/kgtny/Documents/lingqu/core/tny-framework/tny-benchmark/build/tmp/jmh -Duser.country=CN -Duser.language=zh -Duser.variant
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 5 iterations, 500 ms each
+# Measurement: 10 iterations, 1 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Throughput, ops/time
+# Benchmark: com.tny.game.benchmark.net.routine.RespondFutureBenchmark.putAndPoll
+# Parameters: (inflight = 1000)
+# Run progress: 84.62% complete, ETA 00:00:51
+# Fork: 1 of 2
+# Warmup Iteration   1: SLF4J(W): No SLF4J providers were found.
+SLF4J(W): Defaulting to no-operation (NOP) logger implementation
+SLF4J(W): See https://www.slf4j.org/codes.html#noProviders for further details.
+15848674.873 ops/s
+# Warmup Iteration   2: 17560882.551 ops/s
+# Warmup Iteration   3: 17610261.244 ops/s
+# Warmup Iteration   4: 17902072.288 ops/s
+# Warmup Iteration   5: 17989693.580 ops/s
+Iteration   1: 17725219.798 ops/s
+Iteration   2: 17840089.166 ops/s
+Iteration   3: 17848162.779 ops/s
+Iteration   4: 17811089.575 ops/s
+Iteration   5: 17900735.689 ops/s
+Iteration   6: 17922257.692 ops/s
+Iteration   7: 17892011.998 ops/s
+Iteration   8: 18017880.025 ops/s
+Iteration   9: 18379249.396 ops/s
+Iteration  10: 18280710.316 ops/s
+# Run progress: 88.46% complete, ETA 00:00:38
+# Fork: 2 of 2
+# Warmup Iteration   1: SLF4J(W): No SLF4J providers were found.
+SLF4J(W): Defaulting to no-operation (NOP) logger implementation
+SLF4J(W): See https://www.slf4j.org/codes.html#noProviders for further details.
+15962699.333 ops/s
+# Warmup Iteration   2: 17503299.951 ops/s
+# Warmup Iteration   3: 17894584.946 ops/s
+# Warmup Iteration   4: 17866072.690 ops/s
+# Warmup Iteration   5: 17945107.263 ops/s
+Iteration   1: 17846091.001 ops/s
+Iteration   2: 17872838.851 ops/s
+Iteration   3: 17736958.837 ops/s
+Iteration   4: 17836002.607 ops/s
+Iteration   5: 17911536.035 ops/s
+Iteration   6: 17896789.663 ops/s
+Iteration   7: 17919955.727 ops/s
+Iteration   8: 18085965.032 ops/s
+Iteration   9: 17673010.868 ops/s
+Iteration  10: 18436350.294 ops/s
+Result "com.tny.game.benchmark.net.routine.RespondFutureBenchmark.putAndPoll":
+  17941645.267 ±(99.9%) 179045.106 ops/s [Average]
+  (min, avg, max) = (17673010.868, 17941645.267, 18436350.294), stdev = 206188.610
+  CI (99.9%): [17762600.162, 18120690.373] (assumes normal distribution)
+# JMH version: 1.37
+# VM version: JDK 21.0.12.1, OpenJDK 64-Bit Server VM, 21.0.12.1+12-LTS
+# VM invoker: /Users/kgtny/Library/Java/JavaVirtualMachines/corretto-21.0.12.1/Contents/Home/bin/java
+# VM options: -Dfile.encoding=UTF-8 -Djava.io.tmpdir=/Users/kgtny/Documents/lingqu/core/tny-framework/tny-benchmark/build/tmp/jmh -Duser.country=CN -Duser.language=zh -Duser.variant
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 5 iterations, 500 ms each
+# Measurement: 10 iterations, 1 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Throughput, ops/time
+# Benchmark: com.tny.game.benchmark.net.routine.RespondFutureBenchmark.putAndPoll
+# Parameters: (inflight = 10000)
+# Run progress: 92.31% complete, ETA 00:00:25
+# Fork: 1 of 2
+# Warmup Iteration   1: SLF4J(W): No SLF4J providers were found.
+SLF4J(W): Defaulting to no-operation (NOP) logger implementation
+SLF4J(W): See https://www.slf4j.org/codes.html#noProviders for further details.
+15422642.341 ops/s
+# Warmup Iteration   2: 16768997.899 ops/s
+# Warmup Iteration   3: 17488434.798 ops/s
+# Warmup Iteration   4: 17184000.210 ops/s
+# Warmup Iteration   5: 17417452.983 ops/s
+Iteration   1: 17310642.449 ops/s
+Iteration   2: 17410839.384 ops/s
+Iteration   3: 17282557.865 ops/s
+Iteration   4: 17245299.179 ops/s
+Iteration   5: 17560210.102 ops/s
+Iteration   6: 17377097.426 ops/s
+Iteration   7: 17332806.657 ops/s
+Iteration   8: 17507835.334 ops/s
+Iteration   9: 17318981.117 ops/s
+Iteration  10: 17468954.704 ops/s
+# Run progress: 96.15% complete, ETA 00:00:12
+# Fork: 2 of 2
+# Warmup Iteration   1: SLF4J(W): No SLF4J providers were found.
+SLF4J(W): Defaulting to no-operation (NOP) logger implementation
+SLF4J(W): See https://www.slf4j.org/codes.html#noProviders for further details.
+15635554.944 ops/s
+# Warmup Iteration   2: 16460709.761 ops/s
+# Warmup Iteration   3: 17099142.299 ops/s
+# Warmup Iteration   4: 17450713.770 ops/s
+# Warmup Iteration   5: 17361616.149 ops/s
+Iteration   1: 17442360.968 ops/s
+Iteration   2: 17262505.985 ops/s
+Iteration   3: 17371671.909 ops/s
+Iteration   4: 17527181.589 ops/s
+Iteration   5: 17392666.016 ops/s
+Iteration   6: 17479525.072 ops/s
+Iteration   7: 17385548.245 ops/s
+Iteration   8: 18222393.321 ops/s
+Iteration   9: 19251703.519 ops/s
+Iteration  10: 19213097.109 ops/s
+Result "com.tny.game.benchmark.net.routine.RespondFutureBenchmark.putAndPoll":
+  17618193.897 ±(99.9%) 511171.840 ops/s [Average]
+  (min, avg, max) = (17245299.179, 17618193.897, 19251703.519), stdev = 588666.251
+  CI (99.9%): [17107022.058, 18129365.737] (assumes normal distribution)
+# Run complete. Total time: 00:05:34
+REMEMBER: The numbers below are just data. To gain reusable insights, you need to follow up on
+why the numbers are the way they are. Use profilers (see -prof, -lprof), design factorial
+experiments, perform baseline and negative tests that provide experimental control, make sure
+the benchmarking environment is safe on JVM/OS/HW level, ask for reviews from the domain experts.
+Do not assume the numbers tell you what you want them to tell.
+NOTE: Current JVM experimentally supports Compiler Blackholes, and they are in use. Please exercise
+extra caution when trusting the results, look into the generated code to check the benchmark still
+works, and factor in a small probability of new VM bugs. Additionally, while comparisons between
+different JVMs are already problematic, the performance difference caused by different Blackhole
+modes can be very significant. Please make sure you use the consistent Blackhole mode for comparisons.
+Benchmark                                                (capacity)  (inflight)  (verify)   Mode  Cnt           Score           Error  Units
+c.t.g.b.n.devtest.SmokeBenchmark.noop                           N/A         N/A       N/A  thrpt   20  1344668269.984 ± 433997739.441  ops/s
+c.t.g.b.n.routine.MessageQueueBenchmark.addMessage                0         N/A       N/A  thrpt   20   708401799.137 ±  13070935.914  ops/s
+c.t.g.b.n.routine.MessageQueueBenchmark.addMessage               64         N/A       N/A  thrpt   20    73696483.513 ±   2049485.303  ops/s
+c.t.g.b.n.routine.MessageQueueBenchmark.filteredRead              0         N/A       N/A  thrpt   20    68345167.816 ±   4774415.472  ops/s
+c.t.g.b.n.routine.MessageQueueBenchmark.filteredRead             64         N/A       N/A  thrpt   20    31721254.461 ±   1023399.160  ops/s
+c.t.g.b.n.routine.MessageQueueBenchmark.snapshotRead              0         N/A       N/A  thrpt   20    68928793.796 ±   5330789.699  ops/s
+c.t.g.b.n.routine.MessageQueueBenchmark.snapshotRead             64         N/A       N/A  thrpt   20    74323367.499 ±    923466.507  ops/s
+c.t.g.b.n.routine.PacketCodecBenchmark.encodeThenDecode         N/A         N/A     false  thrpt   20     2144883.169 ±    395882.842  ops/s
+c.t.g.b.n.routine.PacketCodecBenchmark.encodeThenDecode         N/A         N/A      true  thrpt   20     1013512.746 ±      9338.474  ops/s
+c.t.g.b.n.routine.RespondFutureBenchmark.pollMiss               N/A        1000       N/A  thrpt   20    97765054.000 ±  12154382.245  ops/s
+c.t.g.b.n.routine.RespondFutureBenchmark.pollMiss               N/A       10000       N/A  thrpt   20    91362778.533 ±  14685479.031  ops/s
+c.t.g.b.n.routine.RespondFutureBenchmark.putAndPoll             N/A        1000       N/A  thrpt   20    17941645.267 ±    179045.106  ops/s
+c.t.g.b.n.routine.RespondFutureBenchmark.putAndPoll             N/A       10000       N/A  thrpt   20    17618193.897 ±    511171.840  ops/s
+Benchmark result is saved to /Users/kgtny/Documents/lingqu/core/tny-framework/tny-benchmark/build/reports/bench/bench-result.json
+benchRoutineExport: /Users/kgtny/Documents/lingqu/core/tny-framework/tny-benchmark/results/bench-20261003-quick.json
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+For more on this, please refer to https://docs.gradle.org/8.5/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.

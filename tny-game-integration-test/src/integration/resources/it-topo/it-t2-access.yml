@@ -1,0 +1,60 @@
+# T2 拓扑·接入应用（game-server-1 角色，复用 demo RelayGatewayServerApp 形态：
+# 玩家接入 + 本地登录面 + PLAYER 协议透明中继）装配声明（design D3/D5，任务 1.3）。
+# 与既有 it-relay-gateway.yml 的差异：dial 目标为独立中继（而非业务应用内嵌端点）；
+# 键空间与 codec 点名约定同 it-t2-relay.yml。
+# 运行期占位：it.gw.net.port（玩家接入监听）、it.r1.server.port（独立中继的服务端点）
+tny:
+  net:
+    bootstrap:
+      network:
+        server:
+          name: game-service
+          bind-address: "${it.host}:${it.gw.net.port}"
+          channel:
+            encoder:
+              message-body-codec: typeProtobufMessageBodyCodec
+              verifier: cRC64CodecVerifier
+              crypto: xOrCodecCrypto
+              security-keys:
+                - abcdefghijklmn
+                - opqrstuvwxyz
+            decoder:
+              message-body-codec: typeProtobufMessageBodyCodec
+              message-relay-strategy: controllerRelayStrategy
+              verifier: cRC64CodecVerifier
+              crypto: xOrCodecCrypto
+              security-keys:
+                - abcdefghijklmn
+                - opqrstuvwxyz
+            tunnel-factory: "relayTunnelFactory"
+            message-handler-factory: relayMessageHandlerFactory
+      relay:
+        client:
+          channel:
+            encoder:
+              message-body-codec: typeProtobufMessageBodyCodec
+              verifier: cRC64CodecVerifier
+              crypto: xOrCodecCrypto
+            decoder:
+              message-body-codec: typeProtobufMessageBodyCodec
+              verifier: cRC64CodecVerifier
+              crypto: xOrCodecCrypto
+    relay:
+      clusters:
+        - service: game-service
+          serve-name: game-service
+          discovery: false
+          connection-size: 1
+          serve-nodes:
+            - id: 1
+              healthy: true
+              url: "tcp://${it.host}:${it.r1.server.port}"
+      router:
+        fixed-message-router:
+          service: game-service
+
+spring:
+  # 官方 redisson starter 排除（专职接入/转发进程无 redis 消费者，与 T4 网关同款）
+  autoconfigure:
+    exclude:
+      - org.redisson.spring.starter.RedissonAutoConfigurationV2
