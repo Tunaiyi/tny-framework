@@ -1,0 +1,117 @@
+/*
+ * Copyright (c) 2020 Tunaiyi
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.tny.game.namespace.sharding;
+
+import com.google.common.collect.Range;
+
+import java.util.*;
+
+/**
+ * 分片分区范围
+ * <p>
+ *
+ * @author kgtny
+ * @date 2022/7/7 18:01
+ **/
+public class ShardingRange<N extends ShardingNode> {
+
+    private final Partition<N> partition;
+
+    private final long fromSlot;
+
+    private final long toSlot;
+
+    private final long maxSlot;
+
+    private boolean across;
+
+    private List<Range<Long>> ranges;
+
+    public ShardingRange(long fromSlot, long toSlot, long maxSlot) {
+        this(fromSlot, toSlot, null, maxSlot);
+    }
+
+    public ShardingRange(long slot, Partition<N> partition, long maxSlot) {
+        this(slot, slot, partition, maxSlot);
+    }
+
+    public ShardingRange(long fromSlot, long toSlot, Partition<N> partition, long maxSlot) {
+        this.partition = partition;
+        if (fromSlot > maxSlot) {
+            fromSlot = 0;
+        }
+        this.maxSlot = maxSlot;
+        this.fromSlot = fromSlot;
+        this.toSlot = toSlot;
+        if (fromSlot > toSlot) {
+            across = true;
+        }
+    }
+
+    public ShardingRange(Partition<N> prevPartition, Partition<N> partition, long maxSlot) {
+        this.partition = partition;
+        long fromSlot = prevPartition.getSlot() + 1;
+        if (fromSlot > maxSlot) {
+            fromSlot = 0;
+        }
+        this.maxSlot = maxSlot;
+        this.fromSlot = fromSlot;
+        this.toSlot = partition.getSlot();
+        if (fromSlot > toSlot) {
+            across = true;
+        }
+    }
+
+    public Partition<N> getPartition() {
+        return partition;
+    }
+
+    public List<Range<Long>> getRanges() {
+        if (ranges != null) {
+            return ranges;
+        }
+        if (across) {
+            return ranges = Arrays.asList(
+                    Range.closed(0L, this.toSlot),
+                    Range.closed(this.fromSlot, this.maxSlot));
+        } else {
+            return ranges = Collections.singletonList(Range.closed(fromSlot, toSlot));
+        }
+    }
+
+    public long getFromSlot() {
+        return fromSlot;
+    }
+
+    public long getToSlot() {
+        return toSlot;
+    }
+
+    public boolean isAcross() {
+        return across;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder(partition +
+                                             "{" + fromSlot +
+                                             " to " + toSlot +
+                                             '}');
+        getRanges().forEach(r -> sb.append('[').append(r.lowerEndpoint()).append('-').append(r.upperEndpoint()).append(']'));
+        return sb.toString();
+    }
+
+}

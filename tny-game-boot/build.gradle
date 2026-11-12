@@ -1,0 +1,17 @@
+
+apply plugin: 'maven-publish'
+
+dependencies {
+
+    annotationProcessor libs.springBootConfigurationProcessor
+
+    api libs.springBootAutoconfigure
+    api libs.javaxAnnotationApi
+
+    api project(':tny-game-common-lifecycle')
+    api project(':tny-game-loader')
+
+
+}
+
+

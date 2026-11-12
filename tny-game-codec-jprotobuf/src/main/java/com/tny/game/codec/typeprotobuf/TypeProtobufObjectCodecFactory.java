@@ -1,0 +1,82 @@
+/*
+ * Copyright (c) 2020 Tunaiyi
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.tny.game.codec.typeprotobuf;
+
+import com.baidu.bjf.remoting.protobuf.annotation.ProtobufClass;
+import com.google.common.collect.ImmutableList;
+import com.tny.game.codec.*;
+import com.tny.game.codec.typeprotobuf.annotation.*;
+import com.tny.game.common.collection.*;
+import com.tny.game.common.concurrent.*;
+import org.springframework.util.MimeType;
+
+import java.io.ByteArrayOutputStream;
+import java.lang.reflect.Type;
+import java.util.Collection;
+
+import static com.tny.game.common.utils.ObjectAide.*;
+
+/**
+ * <p>
+ *
+ * @author : kgtny
+ * @date : 2020/8/19 6:27 下午
+ */
+public class TypeProtobufObjectCodecFactory extends AbstractObjectCodecFactory {
+
+    private static final Collection<MimeType> DEFAULT_MIME_TYPES = ImmutableList
+            .copyOf(MimeTypeAide.asList(TypeProtobufMimeType.TYPE_PROTOBUF, TypeProtobufMimeType.TYPE_PROTOBUF_WILDCARD));
+
+    private TypeProtobufObjectCodec<?> codec;
+
+    public TypeProtobufObjectCodecFactory() {
+        this(null, null);
+    }
+
+    public TypeProtobufObjectCodecFactory(Collection<MimeType> supportMimeTypes) {
+        this(supportMimeTypes, null);
+    }
+
+    public TypeProtobufObjectCodecFactory(ThreadLocalVar<ByteArrayOutputStream> localBuffer) {
+        this(null, localBuffer);
+    }
+
+    public TypeProtobufObjectCodecFactory(Collection<MimeType> supportMimeTypes, ThreadLocalVar<ByteArrayOutputStream> localBuffer) {
+        super(CollectionAide.ifEmpty(supportMimeTypes, DEFAULT_MIME_TYPES));
+        if (localBuffer == null) {
+            this.codec = new TypeProtobufObjectCodec<>();
+        } else {
+            this.codec = new TypeProtobufObjectCodec<>(localBuffer);
+        }
+    }
+
+    @Override
+    public <T> ObjectCodec<T> createCodec(Type type) {
+        return as(this.codec);
+    }
+
+    @Override
+    public MimeType isCanCodec(Class<?> clazz) {
+        ProtobufClass protobufClass = clazz.getAnnotation(ProtobufClass.class);
+        TypeProtobuf typeProtobuf = clazz.getAnnotation(TypeProtobuf.class);
+        if (protobufClass != null && typeProtobuf != null) {
+            return TypeProtobufMimeType.TYPE_PROTOBUF_MIME_TYPE;
+        }
+        return null;
+    }
+
+}

@@ -1,0 +1,128 @@
+/*
+ * Copyright (c) 2020 Tunaiyi
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.tny.game.net.netty4.network;
+
+import com.tny.game.net.application.*;
+import io.netty.channel.*;
+import org.junit.jupiter.api.*;
+
+import java.lang.reflect.*;
+import java.util.*;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+/**
+ * 引导器生命周期（net-guide-lifecycle 规格）——资源排他层验证。
+ * <p>
+ * 策略披露：完整 Socket E2E 需 NetBootstrap.prepareStart 的全 unit 装配链（多个默认实现无 @Unit
+ * 不可注册），CI 成本高收益低；本测试钉修复根因（实例排他/可重建/isBound 真值）。
+ * <p>
+ * 连接受理端到端行为已由集成测试通道自动化钉住（add-integration-testing）：
+ * {@code :tny-game-integration-test:integrationTest} 的 {@code TcpGuideLifecycleIT}
+ * 以真实 TCP 覆盖 close 释放/同实例重启再受理，不再依赖 demo 手动验收。
+ */
+class GuideLifecycleTest {
+
+    /** 两实例的线程组互不相同；关闭其一不得使另一组进入 shutdown（当前 static 共享，应红） */
+    @Test
+    void groupsAreInstanceScopedAndIsolated() {
+        NettyServerGuide a = serverGuide();
+        NettyServerGuide b = serverGuide();
+        EventLoopGroup aParent = a.ensureParentGroup();
+        EventLoopGroup bParent = b.ensureParentGroup();
+        assertNotSame(aParent, bParent, "两 guide 应各自持有线程组（当前 static 共享，本断言应红）");
+        a.close();
+        assertFalse(bParent.isShuttingDown(), "A 的关闭不得波及 B 的线程组（当前应红）");
+        b.close();
+    }
+
+    /** 关闭释放自有组；再次获取必须重建出存活的新组（当前 static final 无法复活，应红） */
+    @Test
+    void closedGroupsAreRebuiltOnNextUse() {
+        NettyServerGuide a = serverGuide();
+        EventLoopGroup first = a.ensureParentGroup();
+        a.close();
+        assertTrue(first.isShuttingDown(), "close 应释放自有组");
+        EventLoopGroup rebuilt = a.ensureParentGroup();
+        assertNotSame(first, rebuilt, "重启必须重建组（当前返回同一 shutdown 组，本断言应红）");
+        assertFalse(rebuilt.isShuttingDown());
+        a.close();
+    }
+
+    /** isBound 真实反映通道状态：初始假；通道 open 真；通道关闭假（当前恒 false，第二断言应红） */
+    @Test
+    void isBoundReflectsRealListenState() throws Exception {
+        NettyServerGuide guide = serverGuide();
+        assertFalse(guide.isBound(), "未开启必为假");
+        Channel openChannel = mock(Channel.class);
+        when(openChannel.isOpen()).thenReturn(true);
+        putChannel(guide, openChannel);
+        assertTrue(guide.isBound(), "存在活跃监听通道必为真（当前实现恒 false，本断言应红）");
+        when(openChannel.isOpen()).thenReturn(false);
+        assertFalse(guide.isBound(), "通道关闭后必为假");
+    }
+
+    // ---------- 装配与工具 ----------
+
+    /** ④ close 必须同时销毁 bootstrap 缓存（net-guide-lifecycle"关闭后可重新开启"的结构前提；当前只清组不清构建器，应红） */
+    @Test
+    void closeInvalidatesBootstrapCache() throws Exception {
+        assertCloseInvalidatesBootstrap(serverGuide());
+    }
+
+    /** ⑤ relay server guide 同合同同样失效 */
+    @Test
+    void relayServerGuideCloseInvalidatesBootstrap() throws Exception {
+        int port = 10000 + new java.util.Random().nextInt(20000);
+        String address = "127.0.0.1:" + port;
+        com.tny.game.net.netty4.relay.NettyRelayServerBootstrapSetting relaySetting =
+                new com.tny.game.net.netty4.relay.NettyRelayServerBootstrapSetting();
+        relaySetting.setBindAddress(address);
+        relaySetting.setServeAddress(address);
+        assertCloseInvalidatesBootstrap(new com.tny.game.net.netty4.relay.NettyRelayServerGuide(
+                new DefaultNetAppContext(), relaySetting));
+    }
+
+    private static void assertCloseInvalidatesBootstrap(Object guide) throws Exception {
+        java.lang.reflect.Field bootstrapField = guide.getClass().getDeclaredField("bootstrap");
+        bootstrapField.setAccessible(true);
+        Object sentinel = new io.netty.bootstrap.ServerBootstrap();
+        bootstrapField.set(guide, sentinel);   // 预置哨兵：模拟"已开过一次"的缓存状态
+
+        guide.getClass().getMethod("close").invoke(guide);
+
+        assertNull(bootstrapField.get(guide),
+                "close 必须置空 bootstrap 缓存，否则重开时 DCL 复用绑定死组的旧构建器（当前应红）");
+    }
+
+    private static NettyServerGuide serverGuide() {
+        int port = 10000 + new Random().nextInt(20000);
+        String address = "127.0.0.1:" + port;
+        NettyNetServerBootstrapSetting setting = new NettyNetServerBootstrapSetting();
+        setting.setBindAddress(address);
+        setting.setServeAddress(address);
+        return new NettyServerGuide(new DefaultNetAppContext(), setting);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static void putChannel(NettyServerGuide guide, Channel channel) throws Exception {
+        Field field = NettyServerGuide.class.getDeclaredField("channels");
+        field.setAccessible(true);
+        ((Map<String, Channel>) field.get(guide)).put("127.0.0.1:9", channel);
+    }
+
+}

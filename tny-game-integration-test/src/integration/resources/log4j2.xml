@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  集成测试（含子进程）日志配置（add-starter-net-integration-tests）：
+  子进程经 -Dlog4j2.configurationFile 显式指向本文件（log4j2 默认发现 json 先于 xml，
+  demo 的 log4j2.json 内 bundle:log 引用在 IT classpath 解析失效→业务日志全灭）。
+  netty 消息链/认证/中继 logger 提到 WARN，剧本拒绝原因可见。
+-->
+<Configuration status="ERROR">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level [%t] %c{1.}: %msg%n%throwable"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <!-- 中继 accept/拒绝面为 INFO，必须保留取证可见性 -->
+        <Logger name="com.tny.game.net.netty4.relay" level="INFO" additivity="true"/>
+        <Logger name="com.tny.game.net" level="INFO" additivity="true"/>
+        <Logger name="netCoder" level="WARN" additivity="true"/>
+        <Logger name="com.tny.game.sysop.scripts" level="WARN" additivity="true"/>
+        <Root level="INFO">
+            <AppenderRef ref="Console"/>
+        </Root>
+    </Loggers>
+</Configuration>

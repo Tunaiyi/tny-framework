@@ -1,0 +1,68 @@
+# F1 拓扑·终端业务应用 game-2（demo RelayGameServerApp）装配声明（design D7，任务 3.1）。
+# 相对 it-t2-game2.yml：新增 bootstrap.rpc.server（name=game-service）供转发应用拨入——
+# SPEAK$SAY_FOR_RPC 终端执行面。键空间/codec 点名约定同 it-t2-game2.yml。
+# 运行期占位：it.g2.net.port、it.g2.relay.port、it.g2.rpc.port、it.redis.*、it.mongo.uri
+tny:
+  net:
+    bootstrap:
+      network:
+        server:
+          # 与 rpc.server 名错开防 bean 撞名（bean 名=bootstrap 名+类型）；玩家流量走 caller，本端口仅形态占位
+          name: game-server
+          bind-address: "${it.host}:${it.g2.net.port}"
+          channel:
+            encoder:
+              message-body-codec: typeProtobufMessageBodyCodec
+              verifier: cRC64CodecVerifier
+              crypto: xOrCodecCrypto
+              security-keys:
+                - abcdefghijklmn
+                - opqrstuvwxyz
+            decoder:
+              message-body-codec: typeProtobufMessageBodyCodec
+              verifier: cRC64CodecVerifier
+              crypto: xOrCodecCrypto
+              security-keys:
+                - abcdefghijklmn
+                - opqrstuvwxyz
+      relay:
+        server:
+          name: game-service-relay
+          bind-address: "${it.host}:${it.g2.relay.port}"
+          channel:
+            encoder:
+              message-body-codec: typeProtobufMessageBodyCodec
+              verifier: cRC64CodecVerifier
+              crypto: xOrCodecCrypto
+            decoder:
+              message-body-codec: typeProtobufMessageBodyCodec
+              verifier: cRC64CodecVerifier
+              crypto: xOrCodecCrypto
+      rpc:
+        server:
+          name: game-service
+          bind-address: "${it.host}:${it.g2.rpc.port}"
+          channel:
+            encoder:
+              message-body-codec: typeProtobufMessageBodyCodec
+              verifier: cRC64CodecVerifier
+              crypto: xOrCodecCrypto
+            decoder:
+              message-body-codec: typeProtobufMessageBodyCodec
+              verifier: cRC64CodecVerifier
+              crypto: xOrCodecCrypto
+  datasource:
+    redisson:
+      setting:
+        host: "${it.redis.host}"
+        port: ${it.redis.port}
+    mongodb:
+      setting:
+        uri: "${it.mongo.uri}"
+
+spring:
+  data:
+    redis:
+      host: "${it.redis.host}"
+      port: ${it.redis.port}
+      password: '${it.redis.password}'

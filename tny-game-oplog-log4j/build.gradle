@@ -1,0 +1,13 @@
+
+apply plugin: 'maven-publish'
+
+
+dependencies {
+
+    api libs.log4jApi
+    api libs.log4jCore
+    api project(':tny-game-oplog')
+
+
+}
+

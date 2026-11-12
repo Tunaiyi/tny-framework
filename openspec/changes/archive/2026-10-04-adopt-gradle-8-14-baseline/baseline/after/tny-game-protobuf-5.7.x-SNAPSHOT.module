@@ -1,0 +1,172 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "com.tnydev.game",
+    "module": "tny-game-protobuf",
+    "version": "5.7.x-SNAPSHOT",
+    "attributes": {
+      "org.gradle.status": "integration"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.14.5"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 21,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api"
+      },
+      "dependencies": [
+        {
+          "group": "com.google.protobuf",
+          "module": "protobuf-java",
+          "version": {
+            "requires": "3.22.2"
+          },
+          "excludes": [
+            {
+              "group": "*",
+              "module": "spring-boot-starter-logging"
+            },
+            {
+              "group": "*",
+              "module": "log4j-to-slf4j"
+            }
+          ]
+        }
+      ],
+      "files": [
+        {
+          "name": "tny-game-protobuf-5.7.x-SNAPSHOT.jar",
+          "url": "tny-game-protobuf-5.7.x-SNAPSHOT.jar",
+          "size": 64861,
+          "sha512": "89f5ab07d0fc4e531a8eb02085acfad187303839356e74f4b3c942ffcbe0cd6820da5a5dc0cdb3019bdeef3b68ffb73c7a86075b405d7b09b14e9647869c9fdb",
+          "sha256": "d8fe57f414c69ec8d6e7993749f3c312b0373ac26fca7d51f96e7595127afb83",
+          "sha1": "c1dafbce4484aaa1b66c259fdf965968a748fee1",
+          "md5": "45158e1d16578fbac9a5d21a23d64926"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 21,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "org.slf4j",
+          "module": "slf4j-api",
+          "version": {
+            "requires": "2.0.10"
+          },
+          "excludes": [
+            {
+              "group": "*",
+              "module": "spring-boot-starter-logging"
+            },
+            {
+              "group": "*",
+              "module": "log4j-to-slf4j"
+            }
+          ]
+        },
+        {
+          "group": "org.apache.commons",
+          "module": "commons-lang3",
+          "version": {
+            "requires": "3.18.0"
+          },
+          "excludes": [
+            {
+              "group": "*",
+              "module": "spring-boot-starter-logging"
+            },
+            {
+              "group": "*",
+              "module": "log4j-to-slf4j"
+            }
+          ]
+        },
+        {
+          "group": "com.google.protobuf",
+          "module": "protobuf-java",
+          "version": {
+            "requires": "3.22.2"
+          },
+          "excludes": [
+            {
+              "group": "*",
+              "module": "spring-boot-starter-logging"
+            },
+            {
+              "group": "*",
+              "module": "log4j-to-slf4j"
+            }
+          ]
+        }
+      ],
+      "files": [
+        {
+          "name": "tny-game-protobuf-5.7.x-SNAPSHOT.jar",
+          "url": "tny-game-protobuf-5.7.x-SNAPSHOT.jar",
+          "size": 64861,
+          "sha512": "89f5ab07d0fc4e531a8eb02085acfad187303839356e74f4b3c942ffcbe0cd6820da5a5dc0cdb3019bdeef3b68ffb73c7a86075b405d7b09b14e9647869c9fdb",
+          "sha256": "d8fe57f414c69ec8d6e7993749f3c312b0373ac26fca7d51f96e7595127afb83",
+          "sha1": "c1dafbce4484aaa1b66c259fdf965968a748fee1",
+          "md5": "45158e1d16578fbac9a5d21a23d64926"
+        }
+      ]
+    },
+    {
+      "name": "javadocElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "javadoc",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "tny-game-protobuf-5.7.x-SNAPSHOT-javadoc.jar",
+          "url": "tny-game-protobuf-5.7.x-SNAPSHOT-javadoc.jar",
+          "size": 137872,
+          "sha512": "2d283da6946d24b22b8cebe748e38103edad5e5b48f517ea108fa810cd48e79248883115fcb3c31723a181917c6bd55d13a17b91f61e876d77293c5b0b3f59aa",
+          "sha256": "61bf1dcdb871d3b992f1890cdc6a42f2209ca67ee92a77e5eafb140220d979e8",
+          "sha1": "24dd6a236cc5bf048a0286de96d1bbedf7983989",
+          "md5": "c7a06b02fb07bb99d7d041bd3a2940d6"
+        }
+      ]
+    },
+    {
+      "name": "sourcesElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "tny-game-protobuf-5.7.x-SNAPSHOT-sources.jar",
+          "url": "tny-game-protobuf-5.7.x-SNAPSHOT-sources.jar",
+          "size": 42443,
+          "sha512": "84d6c113ddc27dde610dc261bf9473bd1ec0c49e466755a005ded3d93397434ffcff2b3c9742bddfac0eb299a69eaada255caa32145c0402a797bd83d8ecfcfc",
+          "sha256": "d9a7ac05dc611199838138926de9ef48c3f5223267994cfd0f255fe3b1906163",
+          "sha1": "fc3d1ffad8e565df2ddac3a643232187c0bbeb7e",
+          "md5": "7e3001a0e8db534b0aa86827a4d8c157"
+        }
+      ]
+    }
+  ]
+}

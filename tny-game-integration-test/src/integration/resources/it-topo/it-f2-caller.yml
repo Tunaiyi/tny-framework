@@ -1,0 +1,51 @@
+# F2 拓扑·调用方应用（CallerApp）装配声明（design D7，任务 3.3）。
+# 键空间约定（D5）：身份词汇 gateway-service/game-service 为 F 族矩阵共享协议词汇，
+# 拓扑隔离靠进程组/端口/存储实例（mongo 库名 it-f2），与 F1 互不共进程故不串扰。
+# 身份防同型歧义（D7 硬约束）：拨出 username=game-client（异型于终端 game-service）。
+# 运行期占位：it.c.net.port（玩家接入）、it.f1.rpc.port（第一跳转发应用 RPC 服务端点）
+tny:
+  app:
+    name: t2-caller
+    app-type: game
+    scope-type: game
+  net:
+    bootstrap:
+      network:
+        server:
+          name: game-client
+          bind-address: "${it.host}:${it.c.net.port}"
+          channel:
+            encoder:
+              message-body-codec: typeProtobufMessageBodyCodec
+              verifier: cRC64CodecVerifier
+              crypto: xOrCodecCrypto
+            decoder:
+              message-body-codec: typeProtobufMessageBodyCodec
+              verifier: cRC64CodecVerifier
+              crypto: xOrCodecCrypto
+      rpc:
+        client:
+          channel:
+            encoder:
+              message-body-codec: typeProtobufMessageBodyCodec
+              verifier: cRC64CodecVerifier
+              crypto: xOrCodecCrypto
+            decoder:
+              message-body-codec: typeProtobufMessageBodyCodec
+              verifier: cRC64CodecVerifier
+              crypto: xOrCodecCrypto
+    rpc:
+      cluster:
+        services:
+          - service: gateway-service
+            discovery: false
+            host: "${it.host}"
+            port: ${it.f1.rpc.port}
+            username: game-client
+  data:
+    enable: false
+
+spring:
+  autoconfigure:
+    exclude:
+      - org.redisson.spring.starter.RedissonAutoConfigurationV2

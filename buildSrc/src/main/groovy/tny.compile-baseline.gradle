@@ -1,0 +1,23 @@
+// 编译基线共享块（adopt-gradle-official-dsl D4 的两块由 consolidate-compile-baseline-blocks 合一；
+// 前身分别为 gradle/cache-policy.gradle 与 gradle/compile-encoding.gradle）：changing 模块与动态版本
+// 一律不缓存，Java/Groovy 编译与 javadoc 一律钉 encoding 属性（gradle.properties，值 UTF-8），
+// 共同消除构建对缓存时效与 daemon 区域设置的隐式依赖。java 发布模块线与插件模块线共用同一实现。
+// 边界：仓路由由 settings.gradle 的 dependencyResolutionManagement 单点声明
+// （centralize-resolution-config；旧头注释所称 tny.repositories 插件已不存在，指称按现状修正，D3）；
+// -parameters 与 fork 等 JavaCompile 参数只属 java 发布模块线（插件模块线历史上不带，
+// 不并入本块以免行为面扩大，见 tny.java-module 内注与变更 verification-notes 的 D4 修正记录）。
+
+configurations {
+    configureEach {
+        resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+        resolutionStrategy.cacheDynamicVersionsFor 0, 'seconds'
+    }
+}
+
+tasks.withType(AbstractCompile).configureEach {
+    options.encoding = encoding
+}
+
+tasks.withType(Javadoc).configureEach {
+    options.encoding = encoding
+}

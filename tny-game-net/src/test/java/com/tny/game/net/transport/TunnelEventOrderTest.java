@@ -1,0 +1,92 @@
+/*
+ * Copyright (c) 2020 Tunaiyi
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.tny.game.net.transport;
+
+import com.tny.game.net.application.*;
+import com.tny.game.net.message.*;
+import com.tny.game.net.rpc.*;
+import com.tny.game.net.session.*;
+import org.junit.jupiter.api.*;
+
+import java.net.*;
+import java.util.*;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+/**
+ * 组 17（Wave-C）红灯基线：通道事件全序（激活→失活→关闭）且各恰一次（net-tunnel"事件全序"契约）。
+ * 修复前：客户端形态 disconnect 嵌套 close 使 close 先于 unactivated 观察、session.onUnactivated 双发。
+ */
+class TunnelEventOrderTest {
+
+    /** 复现客户端形态：onDisconnected 内再 close（原双通知/倒序触发点） */
+    private static class ClientLikeTunnel extends TestTunnelFixture {
+        ClientLikeTunnel() {
+            super(TestTunnelFixture.ActivePolicy.STATUS_OPEN, 7300, 7301);
+        }
+
+        @Override
+        protected void onDisconnected() {
+            this.close();
+        }
+    }
+
+    private final List<String> sequence = Collections.synchronizedList(new ArrayList<>());
+
+    private <T extends TestTunnelFixture> T recording(T tunnel, NetSession session) {
+        tunnel.events().activateWatch().addListener(ignored -> sequence.add("activated"));
+        tunnel.events().unactivatedWatch().addListener(ignored -> sequence.add("unactivated"));
+        tunnel.events().closeWatch().addListener(ignored -> sequence.add("closed"));
+        doAnswer(invocation -> {
+            sequence.add("sessionUnactivated");
+            return null;
+        }).when(session).onUnactivated(any(NetTunnel.class));
+        return tunnel;
+    }
+
+    @Test
+    @DisplayName("正常路径：激活→失活→关闭各一次")
+    void normalCloseSequence() {
+        NetSession session = mock(NetSession.class);
+        TestTunnelFixture tunnel = recording(new TestTunnelFixture(TestTunnelFixture.ActivePolicy.STATUS_OPEN, 7300, 7301), session);
+        assertTrue(tunnel.bind(session));
+        assertTrue(tunnel.open());
+
+        tunnel.close();
+
+        assertEquals(List.of("activated", "sessionUnactivated", "unactivated", "closed"), sequence);
+        verify(session, times(1)).onUnactivated(tunnel);
+    }
+
+    @Test
+    @DisplayName("断开链上嵌套关闭：失活不双发、关闭不倒挂失活之前")
+    void disconnectWithNestedCloseKeepsOrderAndOnce() {
+        NetSession session = mock(NetSession.class);
+        ClientLikeTunnel tunnel = recording(new ClientLikeTunnel(), session);
+        assertTrue(tunnel.bind(session));
+        assertTrue(tunnel.open());
+        sequence.clear();
+
+        tunnel.disconnect();
+        tunnel.close(); // 幂等：不得再有第二次事件
+
+        assertEquals(List.of("sessionUnactivated", "unactivated", "closed"), sequence,
+                "修复前为 [closed 先于 unactivated] 且 sessionUnactivated 双发");
+        verify(session, times(1)).onUnactivated(tunnel);
+    }
+
+}

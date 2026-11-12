@@ -1,0 +1,12 @@
+
+apply plugin: 'maven-publish'
+
+dependencies {
+
+    api libs.guava
+    api libs.commonsCollections4
+
+    api libs.nettyCommon
+
+}
+

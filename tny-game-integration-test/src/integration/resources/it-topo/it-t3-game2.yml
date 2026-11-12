@@ -1,0 +1,56 @@
+# T3 拓扑·业务应用 game-2（复用 demo RelayGameServerApp：业务控制器 + 中继服务端点，
+# 与 it-t2-game2.yml 同形——级联只增中继跳，业务侧形态不变）装配声明
+# （任务 2.2 T3 级联段——审计 CRITICAL 补齐实体）。
+# 键空间与 codec 点名约定同 it-t2-game2.yml。
+# 运行期占位：it.g2.net.port、it.g2.relay.port、it.redis.*、it.mongo.uri
+tny:
+  net:
+    bootstrap:
+      network:
+        server:
+          name: game-service
+          bind-address: "${it.host}:${it.g2.net.port}"
+          channel:
+            encoder:
+              message-body-codec: typeProtobufMessageBodyCodec
+              verifier: cRC64CodecVerifier
+              crypto: xOrCodecCrypto
+              security-keys:
+                - abcdefghijklmn
+                - opqrstuvwxyz
+            decoder:
+              message-body-codec: typeProtobufMessageBodyCodec
+              verifier: cRC64CodecVerifier
+              crypto: xOrCodecCrypto
+              security-keys:
+                - abcdefghijklmn
+                - opqrstuvwxyz
+      relay:
+        server:
+          name: game-service-relay
+          bind-address: "${it.host}:${it.g2.relay.port}"
+          channel:
+            encoder:
+              message-body-codec: typeProtobufMessageBodyCodec
+              verifier: cRC64CodecVerifier
+              crypto: xOrCodecCrypto
+            decoder:
+              message-body-codec: typeProtobufMessageBodyCodec
+              verifier: cRC64CodecVerifier
+              crypto: xOrCodecCrypto
+  datasource:
+    redisson:
+      setting:
+        host: "${it.redis.host}"
+        port: ${it.redis.port}
+    mongodb:
+      setting:
+        uri: "${it.mongo.uri}"
+
+spring:
+  data:
+    redis:
+      host: "${it.redis.host}"
+      port: ${it.redis.port}
+      # 单引号字面量：双引号样式会被 Spring 的转义规则吃掉 \t 与 \r（口令被改写）
+      password: '${it.redis.password}'

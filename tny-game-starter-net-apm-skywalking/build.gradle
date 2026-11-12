@@ -1,0 +1,15 @@
+
+apply plugin: 'maven-publish'
+
+dependencies {
+
+    annotationProcessor libs.springBootConfigurationProcessor // IDEA 使用
+
+    api project(':tny-game-net-netty4')
+
+    api libs.springBootAutoconfigure
+    compileOnly libs.skywalkingApmAgentCore
+    testImplementation libs.skywalkingApmAgentCore
+
+}
+

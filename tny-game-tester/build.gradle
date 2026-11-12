@@ -1,0 +1,11 @@
+
+apply plugin: 'maven-publish'
+
+dependencies {
+
+    api libs.mockitoJunitJupiter
+    api libs.junitJupiterApi
+    api project(':tny-game-common-lang')
+
+}
+

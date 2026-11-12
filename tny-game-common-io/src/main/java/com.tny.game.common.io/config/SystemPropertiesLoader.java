@@ -1,0 +1,117 @@
+/*
+ * Copyright (c) 2020 Tunaiyi
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.tny.game.common.io.config;
+
+import com.tny.game.common.utils.*;
+import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
+import org.slf4j.*;
+
+import java.io.*;
+import java.util.*;
+import java.util.Map.Entry;
+
+public class SystemPropertiesLoader extends FileAlterationListenerAdaptor {
+
+    private static final Logger LOG = LoggerFactory.getLogger(LogAide.LOADER);
+
+    public SystemPropertiesLoader(List<String> fileList) throws IOException {
+        for (String file : fileList)
+            roadProperties(file, true);
+    }
+
+    public SystemPropertiesLoader(String file) throws IOException {
+        roadProperties(file, true);
+    }
+
+    /** JVM 关键属性命名空间守卫：文件装载不得静默覆盖运行时根基属性 */
+    private static final String[] PROTECTED_PREFIXES = {
+            "java.", "javax.", "jdk.", "sun.", "com.sun.", "os.", "user.",
+            "file.separator", "path.separator", "line.separator"};
+
+    private static final java.util.concurrent.CopyOnWriteArrayList<String> LAST_REJECTED =
+            new java.util.concurrent.CopyOnWriteArrayList<>();
+
+    /** 最近一次装载被拒绝的保护键（可观测性：静默丢弃不可追踪） */
+    public static List<String> lastRejectedKeys() {
+        return Collections.unmodifiableList(new ArrayList<>(LAST_REJECTED));
+    }
+
+    private static void roadProperties(final String file, boolean listen)
+            throws IOException {
+        InputStream inputStream = null;
+        try {
+            if (listen) {
+                inputStream = FileIOAide.openInputStream(file,
+                        new PropertiesFileListener(file));
+            } else {
+                inputStream = FileIOAide.openInputStream(file);
+            }
+            if (inputStream == null) {
+                throw new IOException("系统属性文件不可读: " + file);
+            }
+            Properties properties = new Properties();
+            properties.load(inputStream);
+            LAST_REJECTED.clear();
+            for (Entry<Object, Object> entry : properties.entrySet()) {
+                String key = entry.getKey().toString();
+                if (isProtected(key)) {
+                    LAST_REJECTED.add(key);
+                    LOG.warn("#SystemPropertiesLoader# 拒绝装载保护属性 {}（JVM 关键命名空间不可被配置文件覆盖）", key);
+                    continue;
+                }
+                System.setProperty(key, entry.getValue().toString());
+            }
+        } finally {
+            if (inputStream != null) {
+                inputStream.close();
+            }
+        }
+    }
+
+    private static boolean isProtected(String key) {
+        for (String prefix : PROTECTED_PREFIXES) {
+            if (key.startsWith(prefix)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static class PropertiesFileListener extends
+            FileAlterationListenerAdaptor {
+
+        private String path;
+
+        public PropertiesFileListener(String path) {
+            super();
+            this.path = path;
+        }
+
+        @Override
+        public void onFileChange(File file) {
+            try {
+                LOG.info("SystemProperties#读取配置系统属性配置{}文件......", this.path);
+                roadProperties(this.path, false);
+                LOG.info("SystemProperties#读取配置系统属性配置{}文件完成", this.path);
+            } catch (IOException e) {
+                LOG.error("SystemProperties#读取配置系统属性配置{}文件异常", this.path, e);
+            }
+        }
+
+    }
+
+}

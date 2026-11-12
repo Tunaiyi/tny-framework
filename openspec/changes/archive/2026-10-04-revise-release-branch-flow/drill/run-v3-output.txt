@@ -1,0 +1,8 @@
+[W1] 标签形态判定（任务代码 grgit Tag.tagger 判据的 CLI 等价输入）
+  LIGHTWEIGHT-DETECTED：cat-file=commit → grgit tagger 为空 → releaseTag 按 D11（一）拒绝幂等放行
+  ANNOTATED-PASS：cat-file=tag → tagger 非空且解引用=HEAD → 幂等补推路径放行
+  IDEMPOTENT-GUARD：解引用恰指当前构建提交（放行条件成立）
+[W2] cherry 查询前置：失败时 HEAD 未离开容器
+  CHERRY-EXIT=128 非零（任务经 requireGit 必抛，含 stderr）
+  HEAD-UNCHANGED：查询发生在检出线之前，失败后无需任何回切（修复前此位置在检出之后）
+DRILL-V3-PASS

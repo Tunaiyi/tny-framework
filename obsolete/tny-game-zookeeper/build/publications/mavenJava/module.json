@@ -1,0 +1,171 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "com.tny.game",
+    "module": "tny-game-zookeeper",
+    "version": "5.5.x-SNAPSHOT",
+    "attributes": {
+      "org.gradle.status": "integration"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "7.4.2"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 11,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api"
+      },
+      "dependencies": [
+        {
+          "group": "org.apache.zookeeper",
+          "module": "zookeeper",
+          "version": {
+            "requires": "3.4.14"
+          },
+          "excludes": [
+            {
+              "group": "*",
+              "module": "jms"
+            },
+            {
+              "group": "org.slf4j",
+              "module": "slf4j-log4j12"
+            },
+            {
+              "group": "*",
+              "module": "junit"
+            },
+            {
+              "group": "*",
+              "module": "jmxri"
+            },
+            {
+              "group": "*",
+              "module": "jmxtools"
+            },
+            {
+              "group": "log4j",
+              "module": "log4j"
+            }
+          ]
+        },
+        {
+          "group": "com.tny.game",
+          "module": "tny-game-common-lang",
+          "version": {
+            "requires": "5.5.x-SNAPSHOT"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "tny-game-zookeeper-5.5.x-SNAPSHOT.jar",
+          "url": "tny-game-zookeeper-5.5.x-SNAPSHOT.jar",
+          "size": 33986,
+          "sha512": "67ba2b44741f43a11e0553ba93b85ee32d33d8b71dbf2d114d3c98c56c65f506a9a07d40ff03a4749bd8e059bec67251d6221ed13f37cd50fd461dd8e1c353be",
+          "sha256": "11440e7981fed51190cbb7a9820978a15c95a1349e489dc41bf11dfbc074299f",
+          "sha1": "e9ab49bf580b9e7e55b74b4ffebb6483342d4b48",
+          "md5": "d1417c13c3f57b7744bb0f0e165e5da9"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 11,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "org.slf4j",
+          "module": "slf4j-api",
+          "version": {
+            "requires": "1.7.30"
+          }
+        },
+        {
+          "group": "org.apache.zookeeper",
+          "module": "zookeeper",
+          "version": {
+            "requires": "3.4.14"
+          },
+          "excludes": [
+            {
+              "group": "*",
+              "module": "jms"
+            },
+            {
+              "group": "org.slf4j",
+              "module": "slf4j-log4j12"
+            },
+            {
+              "group": "*",
+              "module": "junit"
+            },
+            {
+              "group": "*",
+              "module": "jmxri"
+            },
+            {
+              "group": "*",
+              "module": "jmxtools"
+            },
+            {
+              "group": "log4j",
+              "module": "log4j"
+            }
+          ]
+        },
+        {
+          "group": "com.tny.game",
+          "module": "tny-game-common-lang",
+          "version": {
+            "requires": "5.5.x-SNAPSHOT"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "tny-game-zookeeper-5.5.x-SNAPSHOT.jar",
+          "url": "tny-game-zookeeper-5.5.x-SNAPSHOT.jar",
+          "size": 33986,
+          "sha512": "67ba2b44741f43a11e0553ba93b85ee32d33d8b71dbf2d114d3c98c56c65f506a9a07d40ff03a4749bd8e059bec67251d6221ed13f37cd50fd461dd8e1c353be",
+          "sha256": "11440e7981fed51190cbb7a9820978a15c95a1349e489dc41bf11dfbc074299f",
+          "sha1": "e9ab49bf580b9e7e55b74b4ffebb6483342d4b48",
+          "md5": "d1417c13c3f57b7744bb0f0e165e5da9"
+        }
+      ]
+    },
+    {
+      "name": "sourcesElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "tny-game-zookeeper-5.5.x-SNAPSHOT-sources.jar",
+          "url": "tny-game-zookeeper-5.5.x-SNAPSHOT-sources.jar",
+          "size": 19155,
+          "sha512": "1a7854385601695a20321dc1553e2976de588a6c65c4e9bf083239ef4b48ce56bc8092fd4d9a661d81fec9fd86e1513b43d9f3074a7d9c6f44b41be340be6741",
+          "sha256": "9216d4cd89c7b1d3a40cadc59b83982fd66304ddcfe7e876ea705c795f7c008d",
+          "sha1": "92b4f7f18cbaf235b9e6889a4ff26605dd75f569",
+          "md5": "88a5a59adaa09d09fe4a8a3f66b10e12"
+        }
+      ]
+    }
+  ]
+}

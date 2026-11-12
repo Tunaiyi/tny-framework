@@ -1,0 +1,12 @@
+
+apply plugin: 'maven-publish'
+
+dependencies {
+
+    api project(':tny-game-common-lang')
+    api libs.springCore
+
+    api libs.commonsCollections4
+
+}
+

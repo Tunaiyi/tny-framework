@@ -1,0 +1,46 @@
+# 集成测试专用装配覆盖（add-starter-net-integration-tests design D2）：
+# 剧本子进程以 --spring.config.additional-location=classpath:it-relay-game.yml 挂载，
+# additional-location 优先级高于 demo 的 profile yml。静态结构在此文件，
+# 运行时值（探测端口/容器地址）经 --it.* 命令行参数传入——占位符解析失败即启动期报错，
+# 天然满足 specs"装配缺陷可定位暴露"。
+tny:
+  net:
+    bootstrap:
+      network:
+        server:
+          bind-address: "${it.host}:${it.game.network.port}"
+          channel:
+            encoder:
+              verifier: cRC64CodecVerifier
+              crypto: xOrCodecCrypto
+            decoder:
+              verifier: cRC64CodecVerifier
+              crypto: xOrCodecCrypto
+      relay:
+        server:
+          bind-address: "${it.host}:${it.game.relay.port}"
+          channel:
+            encoder:
+              verifier: cRC64CodecVerifier
+              crypto: xOrCodecCrypto
+            decoder:
+              verifier: cRC64CodecVerifier
+              crypto: xOrCodecCrypto
+  datasource:
+    redisson:
+      setting:
+        host: "${it.redis.host}"
+        port: ${it.redis.port}
+    mongodb:
+      setting:
+        uri: "${it.mongo.uri}"
+
+spring:
+  # redisson-spring-boot-starter 官方自动配置独立建客户端（默认 localhost:6379），
+  # DemoPlayerTypedRedisson 依赖之——同步指向容器
+  data:
+    redis:
+      host: "${it.redis.host}"
+      port: ${it.redis.port}
+      # 单引号字面量：双引号样式会被 Spring 的转义规则吃掉 \t 与 \r（口令被改写）
+      password: '${it.redis.password}'

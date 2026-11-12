@@ -1,0 +1,49 @@
+// 发布凭据层约定插件（前身为 gradle/publish.gradle；两层拦截的沿革：merge-publish-gate-into-publish
+// 曾把凭据断言与一致性门禁合一，redesign-devline-integration-model 的通道收编使本文件逼近长度界线，
+// consolidate-publish-gate-split 把"一致性门禁"整层移入姊妹插件 tny.publish.gate——两层仍共享唯一
+// 谓词 publishesToSharedRepository（本文件定义），门禁经任务名依赖挂接，不逐字复制判定块）。
+// 本层职责："属性必在"——RELEASE/SNAPSHOT 仓地址与 Nexus 凭据四属性经 hasProperty 取值入 ext，
+// 共享仓发布任务执行前 fail-fast 断言（任一为空即以任务名与属性键报错，不打印任何凭据值），
+// 并把该任务挂到门禁任务 checkPublishPrerequisites 之后构成双层拦截。
+// 边界：分支/版本/路由/黑名单/标签存证/依赖形态一致性门禁在 tny.publish.gate；
+// 发布元数据与签名在 tny.publications，Central 准入在 tny.central，发布动作在 tny.release 与 tny.integrate。
+
+
+ext.RELEASE_REPOSITORY_URL = hasProperty('RELEASE_REPOSITORY_URL') ? RELEASE_REPOSITORY_URL : ''
+ext.SNAPSHOT_REPOSITORY_URL = hasProperty('SNAPSHOT_REPOSITORY_URL') ? SNAPSHOT_REPOSITORY_URL : ''
+ext.NEXUS_USERNAME = hasProperty('NEXUS_USERNAME') ? NEXUS_USERNAME : ''
+ext.NEXUS_PASSWORD = hasProperty('NEXUS_PASSWORD') ? NEXUS_PASSWORD : ''
+
+// 共享仓发布任务判定谓词（两件原子谓词的合流点：主体逐字承前，语义未动）：
+def publishesToSharedRepository = { candidate ->
+    String taskName = candidate.name
+    if (taskName == 'publish' || taskName == 'publishAllPublications' || taskName == 'publishMavenJavaPublicationToMavenRepository') {
+        return true
+    }
+    // 排除尾缀 ToMavenLocal 的全部本地发布任务（publishToMavenLocal 与其依赖的
+    // publishMavenJavaPublicationToMavenLocal 整条链）；原判断只排了前者，链上后者会误挂门禁，
+    // 使"本地坐标直通"的上游意图落空（7.1 端到端空跑实测暴露）。门禁只约束共享仓发布。
+    return taskName.startsWith('publish') && !taskName.endsWith('ToMavenLocal')
+}
+
+// 仅在 publish 相关任务实际执行前断言四项发布配置的存在性；任一为空即以任务名与属性键 fail-fast，不打印任何凭据值。
+def requiredPublishingProperties = [
+        RELEASE_REPOSITORY_URL: ext.RELEASE_REPOSITORY_URL,
+        SNAPSHOT_REPOSITORY_URL: ext.SNAPSHOT_REPOSITORY_URL,
+        NEXUS_USERNAME: ext.NEXUS_USERNAME,
+        NEXUS_PASSWORD: ext.NEXUS_PASSWORD,
+]
+// 属性断言与门禁依赖并入同一 matching（consolidate-publish-gate-split）：dependsOn 用
+// 任务名字符串惰性解析（merge-publish-gate-into-publish 实施修正注记之二教训），并以名称
+// 比较排除门禁任务自身防实名化早触发。
+tasks.matching { it.name != 'checkPublishPrerequisites' && publishesToSharedRepository(it) }.configureEach { task ->
+    task.dependsOn('checkPublishPrerequisites')
+    task.doFirst {
+        requiredPublishingProperties.each { key, value ->
+            if (value == null || value.toString().trim().isEmpty()) {
+                throw new IllegalStateException("Task '${task.path}' failed: required publishing property '${key}' is empty or missing.")
+            }
+        }
+    }
+}
+

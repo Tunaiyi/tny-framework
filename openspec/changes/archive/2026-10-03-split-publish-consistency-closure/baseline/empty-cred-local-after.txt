@@ -1,0 +1,21 @@
+Configuration on demand is an incubating feature.
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-net/src/main/java/com/tny/game/net/session/Session.java:98: 警告: 无效输入：'&'
+     * @param bound  是否包含 fromId & toId
+                                 ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-net/src/main/java/com/tny/game/net/codec/CodecVerifier.java:51: 警告: @param argument "time" 不是参数名称。
+     * @param time
+       ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-net/src/main/java/com/tny/game/net/session/NetSession.java:51: 警告: @param argument "tunnel" 不是参数名称。
+     * @param tunnel 指定认证
+       ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-net/src/main/java/com/tny/game/net/session/SentMessageHistory.java:58: 警告: 无效输入：'&'
+     * @param bound  是否包含 fromId & toId
+                                 ^
+/Users/kgtny/Documents/lingqu/core/tny-framework/tny-game-net/src/main/java/com/tny/game/net/session/Session.java:98: 警告: 无效输入：'&'
+     * @param bound  是否包含 fromId & toId
+                                 ^
+5 个警告
+[Incubating] Problems report is available at: file:///Users/kgtny/Documents/lingqu/core/tny-framework/build/reports/problems/problems-report.html
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+For more on this, please refer to https://docs.gradle.org/8.14.5/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.

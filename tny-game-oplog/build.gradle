@@ -1,0 +1,15 @@
+
+apply plugin: 'maven-publish'
+
+dependencies {
+
+    api project(':tny-game-basics')
+    api project(':tny-game-protobuf')
+    api libs.springContextSupport
+    api libs.jacksonCore
+    api libs.jacksonDatabind
+    api libs.jacksonAnnotations
+
+
+}
+

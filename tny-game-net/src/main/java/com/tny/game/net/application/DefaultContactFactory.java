@@ -1,0 +1,56 @@
+/*
+ * Copyright (c) 2020 Tunaiyi
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.tny.game.net.application;
+
+import com.tny.game.common.lifecycle.unit.annotation.*;
+import com.tny.game.net.message.*;
+
+import static com.tny.game.common.utils.ObjectAide.*;
+
+/**
+ * 默认Contact工厂
+ * <p>
+ *
+ * @author Kun Yang
+ * @date 2022/5/22 05:16
+ **/
+@Unit
+public class DefaultContactFactory implements ContactFactory {
+
+    @Override
+    public <M extends Contact> M createContact(ContactType type, long contactId) {
+        return as(new DefaultContact(type, contactId));
+    }
+
+    @Override
+    public <M extends Contact> M createContact(ForwardContact contact) {
+        return as(contact);
+    }
+
+    private record DefaultContact(ContactType contactType, long contactId) implements Contact {
+
+        @Override
+        public long getContactId() {
+            return contactId;
+        }
+
+        @Override
+        public ContactType getContactType() {
+            return contactType;
+        }
+    }
+
+}

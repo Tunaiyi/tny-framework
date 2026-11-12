@@ -1,0 +1,9 @@
+// 与主构建共享同一份版本目录文件（唯一事实源不变，buildSrc 与主构建各持一个只读视图）：
+// 目的——让预编译约定插件脚本内获得 libs.xxx 类型安全访问器与 IDE 补全。
+dependencyResolutionManagement {
+    versionCatalogs {
+        create('libs') {
+            from(files('../gradle/libs.versions.toml'))
+        }
+    }
+}

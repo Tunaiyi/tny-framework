@@ -1,0 +1,128 @@
+pluginManagement {
+
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+        maven { url = 'https://mirrors.cloud.tencent.com/nexus/repository/maven-public/' }
+        maven { url = 'https://maven.aliyun.com/repository/gradle-plugin' }
+        maven { url = 'https://m2.tunaiyi.com/repository/maven-public' }
+        maven { url = 'https://maven.aliyun.com/repository/jcenter' }
+        maven { url = 'https://maven.aliyun.com/repository/spring-plugin' }
+    }
+
+}
+
+// 工程依赖解析仓的唯一点（centralize-resolution-config D1）：根与全部子工程的解析仓统一在此声明，
+// FAIL_ON_PROJECT_REPOS 模式令任何工程私设 repositories 在配置期即报红，杜绝第二书写点
+// （实测修正：PREFER_SETTINGS 仅忽略并告警，不满足机器强制意图，declarative 后此变更 2.3 探针定罪）。
+// pluginManagement 块与其语义不同（jcenter/spring-plugin 等专供插件解析），两列表并存是有意为之。
+// 镜像钉选陷阱（两次首探实测）：tencent 镜像存有 xmlutil rc 版 pom 但缺 jar，
+// Gradle 一旦从镜像解析模块元数据即钉选该仓找 jar，其余仓库不再尝试——
+// nmcp 与其 xmlutil 依赖组独占路由直连 Central，其余依赖维持镜像优先。
+dependencyResolutionManagement {
+
+    repositoriesMode = RepositoriesMode.FAIL_ON_PROJECT_REPOS
+
+    repositories {
+        exclusiveContent {
+            forRepository { mavenCentral() }
+            filter {
+                includeGroup('com.gradleup.nmcp')
+                includeGroup('io.github.pdvrieze.xmlutil')
+            }
+        }
+        mavenLocal()
+        maven { url = 'https://mirrors.cloud.tencent.com/nexus/repository/maven-public/' }
+        maven { url = 'https://m2.tnydev.com/repository/maven-public/' }
+        maven { url = 'https://maven.aliyun.com/repository/public' }
+        mavenCentral()
+    }
+
+}
+
+// 命名约定（共享构建脚本成员判定的唯一依据，zero-enumeration-shared-scripts 成文；
+// 根 ext 谓词、BOM 约束、Central 聚合、组号对账、公共夹具与不发布登记均据此归类）：
+//   tny-game- 前缀           框架发布模块（装配线总谓词）
+//   -bom 后缀                平台约束模块（无编译构件，不进 java 线，进 Central 聚合）
+//   -gradle 后缀             Gradle 插件模块（例外组号 com.tny.game，不入 Central）
+//   -integration-test 后缀   集成测试专用模块（不进 java 线、不进 BOM 约束面）
+//   -tester 后缀             公共测试夹具（自动挂为全部发布模块的测试依赖）
+//   刻意不带 tny-game- 前缀  不发布设施（须应用 tny.module-setting 并声明 enableUnpublished()，受零发布合同约束）
+// 新增归入上述类别的模块：只改本文件 include 与模块自身构建文件，共享脚本零改动。
+rootProject.name = 'tny-framework'
+
+include 'tny-game-bom'
+include 'tny-game-common-lang'
+include 'tny-game-common-reflect'
+include 'tny-game-common-digest'
+include 'tny-game-common-io'
+include 'tny-game-scanning'
+include 'tny-game-loader'
+
+include 'tny-game-common-lifecycle'
+include 'tny-game-common-scheduler'
+
+include 'tny-game-expr'
+include 'tny-game-expr-mvel'
+include 'tny-game-expr-jsr223'
+include 'tny-game-expr-groovy'
+include 'tny-game-expr-graaljs'
+include 'tny-game-expr-luaj'
+
+include 'tny-game-boot'
+include 'tny-game-boot-log4j2'
+
+include 'tny-game-doc'
+include 'tny-game-doc-annotation'
+include 'tny-game-doc-gradle'
+
+include 'tny-game-codec'
+include 'tny-game-codec-jackson'
+include 'tny-game-codec-jprotobuf'
+// tny-game-codec-protoex 的引入行已删除（fix-dependency-version-governance D8）：该工程无任何被跟踪的
+// 构建文件与源码，却因 tny-game- 前缀命名谓词进入发布装配线并产出空构件；配置期构建文件存在性断言
+// （tny.module-checker）防复发。
+include 'tny-game-starter-codec'
+
+include 'tny-game-oplog'
+include 'tny-game-basics'
+include 'tny-game-starter-basics'
+
+include 'tny-game-net'
+include 'tny-game-net-demo'
+include 'tny-game-net-test'
+// 集成测试专用叶子模块：不发布、不入 BOM（add-integration-testing design D3）
+include 'tny-game-integration-test'
+
+include 'tny-game-protoex'
+include 'tny-game-protobuf'
+include 'tny-game-rpc'
+include 'tny-game-net-netty4'
+include 'tny-game-net-netty4-codec-jprotobuf'
+include 'tny-game-net-netty4-codec-protoex'
+include 'tny-game-starter-net-netty4'
+include 'tny-game-starter-net-apm-skywalking'
+
+include 'tny-game-actor'
+include 'tny-game-oplog-log4j'
+
+include 'tny-game-namnspace'
+include 'tny-game-namnspace-etcd'
+include 'tny-game-starter-namnspace'
+
+include 'tny-game-mongodb'
+include 'tny-game-starter-mongodb'
+
+include 'tny-game-redisson'
+include 'tny-game-starter-redisson'
+
+include 'tny-game-data'
+include 'tny-game-data-redisson'
+include 'tny-game-data-mongodb'
+include 'tny-game-starter-data'
+
+include 'tny-game-tester'
+
+// 基准设施：刻意不以 tny-game- 开头，不落入发布/模块装配线（optimize-net-hot-path D1）
+include 'tny-benchmark'
+

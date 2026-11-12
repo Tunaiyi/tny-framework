@@ -1,0 +1,217 @@
+/*
+ * Copyright (c) 2020 Tunaiyi
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.tny.game.common.concurrent.lock;
+
+import com.tny.game.common.concurrent.exception.*;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.*;
+
+/**
+ * 维护对象锁集合的锁
+ *
+ * @author KGTny
+ */
+public class LinkedLock implements Lock {
+
+    /**
+     * 当前的锁
+     *
+     * @uml.property name="current"
+     * @uml.associationEnd multiplicity="(1 1)"
+     */
+    private final ObjectLock current;
+
+    /**
+     * 下一个锁节点
+     *
+     * @uml.property name="next"
+     * @uml.associationEnd multiplicity="(1 1)"
+     */
+    private final LinkedLock next;
+
+    /**
+     * 根据给出的有序锁集合，创建一个锁链对象
+     *
+     * @param locks
+     * @throws IllegalArgumentException 锁对象数量为0时抛出
+     */
+    public LinkedLock(List<ObjectLock> locks) {
+        // 原条件写反（!isEmpty 才抛"Lock list is empty"），非空列表反而构造失败
+        if (locks.isEmpty()) {
+            throw new IllegalArgumentException("Lock list is empty");
+        }
+        this.current = locks.remove(0);
+        if (this.current == null) {
+            throw new NullPointerException();
+        }
+        this.next = locks.isEmpty() ? null : new LinkedLock(locks);
+    }
+
+    /**
+     * 对锁链中的多个锁对象，按顺序逐个加锁, 当某一个锁调用lock发生异常的情况下, 之前成功获取到的锁也会unlock解锁
+     *
+     * @throws LockTimeOutException 当锁调用release释放掉后调用改方法会抛出该异常
+     */
+    @Override
+    public void lock() {
+        this.current.lock();
+        try {
+            if (this.next != null) {
+                this.next.lock();
+            }
+        } catch (RuntimeException e) {
+            // javadoc 承诺失败回滚：后续锁失败必须释放已持有的 current（原实现直接重抛，锁泄漏）
+            this.current.unlock();
+            throw e;
+        }
+    }
+
+    /**
+     * 多锁链中的多个锁对象，逐个按顺序解锁
+     */
+    @Override
+    public void unlock() {
+        try {
+            if (this.next != null) {
+                this.next.unlock();
+            }
+        } finally {
+            this.current.unlock();
+        }
+    }
+
+    /**
+     * 对锁链中的多个锁对象，按顺序逐个加锁, 并且在等待锁的过程中,允许在等待的情况下被中断 当某一个锁调用lock发生异常的情况下,
+     * 之前成功获取到的锁也会unlock解锁
+     *
+     * @throws LockTimeOutException 当锁调用release释放掉后调用改方法会抛出该异常
+     * @throws InterruptedException 当等待锁的线程被中断的时候抛出
+     */
+    @Override
+    public void lockInterruptibly() throws InterruptedException {
+        try {
+            this.current.lockInterruptibly();
+        } catch (InterruptedException e) {
+            // 首锁等待被中断：无持有需回滚，但中断标志必须恢复
+            Thread.currentThread().interrupt();
+            throw e;
+        }
+        try {
+            if (this.next != null) {
+                this.next.lockInterruptibly();
+            }
+        } catch (InterruptedException e) {
+            // 回滚已持有 + 恢复中断标志（异常吞失中断状态=调用方无法感知取消）
+            this.current.unlock();
+            Thread.currentThread().interrupt();
+            throw e;
+        } catch (RuntimeException e) {
+            this.current.unlock();
+            throw e;
+        }
+    }
+
+    /**
+     * 不支持该方法
+     *
+     * @return
+     * @throws UnsupportedOperationException 调用是抛出
+     */
+    @Override
+    public Condition newCondition() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * 尝试对锁链中的多个锁对象，按顺序逐个加锁,无法获取锁则立即返回 当某一个锁调用lock发生异常或tryLock失败的情况下,
+     * 之前成功获取到的锁也会unlock解锁
+     *
+     * @return 成功获取锁 返回true 失败则 返回false
+     * @throws LockTimeOutException 当锁调用release释放掉后调用改方法会抛出该异常
+     * @throws InterruptedException 当等待锁的线程被中断的时候抛出
+     */
+    @Override
+    public boolean tryLock() {
+        if (!this.current.tryLock()) {
+            return false;
+        }
+        try {
+            if (this.next != null && !this.next.tryLock()) {
+                this.current.unlock();
+                return false;
+            }
+        } catch (RuntimeException e) {
+            this.current.unlock();
+            throw e;
+        }
+        return true;
+    }
+
+    /**
+     * 尝试在time时间内对锁链中的多个锁对象，按顺序逐个加锁, 当某一个锁调用lock发生异常或tryLock失败的情况下,
+     * 之前成功获取到的锁也会unlock解锁
+     *
+     * @param time
+     * @param unit
+     * @return
+     * @throws LockTimeOutException 当锁调用release释放掉后调用改方法会抛出该异常
+     * @throws InterruptedException 当等待锁的线程被中断的时候抛出
+     * @throws InterruptedException
+     */
+    @Override
+    public boolean tryLock(long time, TimeUnit unit)
+            throws InterruptedException {
+        long lastTime = System.currentTimeMillis() + unit.toMillis(time);
+        boolean acquired;
+        try {
+            acquired = this.current.tryLock(time, unit);
+        } catch (InterruptedException e) {
+            // 首锁限时等待被中断：恢复中断标志后显式失败上抛
+            Thread.currentThread().interrupt();
+            throw e;
+        }
+        if (!acquired) {
+            return false;
+        }
+        long remainTime = lastTime - System.currentTimeMillis();
+        try {
+            if (this.next != null && !this.next.tryLock(remainTime, TimeUnit.MILLISECONDS)) {
+                this.current.unlock();
+                return false;
+            }
+        } catch (InterruptedException e) {
+            this.current.unlock();
+            Thread.currentThread().interrupt();
+            throw e;
+        } catch (RuntimeException e) {
+            this.current.unlock();
+            throw e;
+        }
+        return true;
+    }
+
+    public int size() {
+        int size = 1;
+        if (this.next != null) {
+            size += this.next.size();
+        }
+        return size;
+    }
+
+}

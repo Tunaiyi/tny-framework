@@ -1,0 +1,13 @@
+
+apply plugin: 'maven-publish'
+
+dependencies {
+
+    api project(':tny-game-expr-jsr223')
+    api project(':tny-game-common-lang')
+
+    api libs.graalvmJs
+    api libs.graalvmPolyglot
+    api libs.graalvmJsScriptengine
+}
+

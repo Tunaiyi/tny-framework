@@ -1,0 +1,444 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "com.tnydev.game",
+    "module": "tny-game-starter-basics",
+    "version": "5.7.x-SNAPSHOT",
+    "attributes": {
+      "org.gradle.status": "integration"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.14.5"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 21,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api"
+      },
+      "dependencies": [
+        {
+          "group": "org.springframework.boot",
+          "module": "spring-boot-autoconfigure",
+          "version": {
+            "requires": "3.2.1"
+          },
+          "excludes": [
+            {
+              "group": "*",
+              "module": "spring-boot-starter-logging"
+            },
+            {
+              "group": "*",
+              "module": "log4j-to-slf4j"
+            }
+          ]
+        },
+        {
+          "group": "org.aspectj",
+          "module": "aspectjrt",
+          "version": {
+            "requires": "1.9.21"
+          },
+          "excludes": [
+            {
+              "group": "*",
+              "module": "spring-boot-starter-logging"
+            },
+            {
+              "group": "*",
+              "module": "log4j-to-slf4j"
+            }
+          ]
+        },
+        {
+          "group": "com.tnydev.game",
+          "module": "tny-game-basics",
+          "version": {
+            "requires": "5.7.x-SNAPSHOT"
+          },
+          "excludes": [
+            {
+              "group": "*",
+              "module": "spring-boot-starter-logging"
+            },
+            {
+              "group": "*",
+              "module": "log4j-to-slf4j"
+            }
+          ]
+        },
+        {
+          "group": "com.tnydev.game",
+          "module": "tny-game-doc",
+          "version": {
+            "requires": "5.7.x-SNAPSHOT"
+          },
+          "excludes": [
+            {
+              "group": "*",
+              "module": "spring-boot-starter-logging"
+            },
+            {
+              "group": "*",
+              "module": "log4j-to-slf4j"
+            }
+          ]
+        },
+        {
+          "group": "com.tnydev.game",
+          "module": "tny-game-expr-mvel",
+          "version": {
+            "requires": "5.7.x-SNAPSHOT"
+          },
+          "excludes": [
+            {
+              "group": "*",
+              "module": "spring-boot-starter-logging"
+            },
+            {
+              "group": "*",
+              "module": "log4j-to-slf4j"
+            }
+          ]
+        },
+        {
+          "group": "com.tnydev.game",
+          "module": "tny-game-protoex",
+          "version": {
+            "requires": "5.7.x-SNAPSHOT"
+          },
+          "excludes": [
+            {
+              "group": "*",
+              "module": "spring-boot-starter-logging"
+            },
+            {
+              "group": "*",
+              "module": "log4j-to-slf4j"
+            }
+          ]
+        },
+        {
+          "group": "com.tnydev.game",
+          "module": "tny-game-data",
+          "version": {
+            "requires": "5.7.x-SNAPSHOT"
+          },
+          "excludes": [
+            {
+              "group": "*",
+              "module": "spring-boot-starter-logging"
+            },
+            {
+              "group": "*",
+              "module": "log4j-to-slf4j"
+            }
+          ]
+        },
+        {
+          "group": "com.tnydev.game",
+          "module": "tny-game-codec-jprotobuf",
+          "version": {
+            "requires": "5.7.x-SNAPSHOT"
+          },
+          "excludes": [
+            {
+              "group": "*",
+              "module": "spring-boot-starter-logging"
+            },
+            {
+              "group": "*",
+              "module": "log4j-to-slf4j"
+            }
+          ]
+        },
+        {
+          "group": "com.tnydev.game",
+          "module": "tny-game-common-scheduler",
+          "version": {
+            "requires": "5.7.x-SNAPSHOT"
+          },
+          "excludes": [
+            {
+              "group": "*",
+              "module": "spring-boot-starter-logging"
+            },
+            {
+              "group": "*",
+              "module": "log4j-to-slf4j"
+            }
+          ]
+        }
+      ],
+      "files": [
+        {
+          "name": "tny-game-starter-basics-5.7.x-SNAPSHOT.jar",
+          "url": "tny-game-starter-basics-5.7.x-SNAPSHOT.jar",
+          "size": 273237,
+          "sha512": "405b87735321de917047646d4b1d36a1eb5898cc6fc9748ad93a258a89778d53d7a20637ce0a1942ae93f06946f2af38d7189a7ae865221d3d4784393d01086c",
+          "sha256": "49b48973f175b8ee862c9368a8f35a5973c74d3710ee6cc2bd0593c405c2ca10",
+          "sha1": "5234d2eeef95ce900fba1ae1461b7bb3f1e017ff",
+          "md5": "647401973339a90e5c661cffcc544340"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 21,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "org.slf4j",
+          "module": "slf4j-api",
+          "version": {
+            "requires": "2.0.10"
+          },
+          "excludes": [
+            {
+              "group": "*",
+              "module": "spring-boot-starter-logging"
+            },
+            {
+              "group": "*",
+              "module": "log4j-to-slf4j"
+            }
+          ]
+        },
+        {
+          "group": "org.apache.commons",
+          "module": "commons-lang3",
+          "version": {
+            "requires": "3.18.0"
+          },
+          "excludes": [
+            {
+              "group": "*",
+              "module": "spring-boot-starter-logging"
+            },
+            {
+              "group": "*",
+              "module": "log4j-to-slf4j"
+            }
+          ]
+        },
+        {
+          "group": "org.springframework.boot",
+          "module": "spring-boot-autoconfigure",
+          "version": {
+            "requires": "3.2.1"
+          },
+          "excludes": [
+            {
+              "group": "*",
+              "module": "spring-boot-starter-logging"
+            },
+            {
+              "group": "*",
+              "module": "log4j-to-slf4j"
+            }
+          ]
+        },
+        {
+          "group": "org.aspectj",
+          "module": "aspectjrt",
+          "version": {
+            "requires": "1.9.21"
+          },
+          "excludes": [
+            {
+              "group": "*",
+              "module": "spring-boot-starter-logging"
+            },
+            {
+              "group": "*",
+              "module": "log4j-to-slf4j"
+            }
+          ]
+        },
+        {
+          "group": "com.tnydev.game",
+          "module": "tny-game-basics",
+          "version": {
+            "requires": "5.7.x-SNAPSHOT"
+          },
+          "excludes": [
+            {
+              "group": "*",
+              "module": "spring-boot-starter-logging"
+            },
+            {
+              "group": "*",
+              "module": "log4j-to-slf4j"
+            }
+          ]
+        },
+        {
+          "group": "com.tnydev.game",
+          "module": "tny-game-doc",
+          "version": {
+            "requires": "5.7.x-SNAPSHOT"
+          },
+          "excludes": [
+            {
+              "group": "*",
+              "module": "spring-boot-starter-logging"
+            },
+            {
+              "group": "*",
+              "module": "log4j-to-slf4j"
+            }
+          ]
+        },
+        {
+          "group": "com.tnydev.game",
+          "module": "tny-game-expr-mvel",
+          "version": {
+            "requires": "5.7.x-SNAPSHOT"
+          },
+          "excludes": [
+            {
+              "group": "*",
+              "module": "spring-boot-starter-logging"
+            },
+            {
+              "group": "*",
+              "module": "log4j-to-slf4j"
+            }
+          ]
+        },
+        {
+          "group": "com.tnydev.game",
+          "module": "tny-game-protoex",
+          "version": {
+            "requires": "5.7.x-SNAPSHOT"
+          },
+          "excludes": [
+            {
+              "group": "*",
+              "module": "spring-boot-starter-logging"
+            },
+            {
+              "group": "*",
+              "module": "log4j-to-slf4j"
+            }
+          ]
+        },
+        {
+          "group": "com.tnydev.game",
+          "module": "tny-game-data",
+          "version": {
+            "requires": "5.7.x-SNAPSHOT"
+          },
+          "excludes": [
+            {
+              "group": "*",
+              "module": "spring-boot-starter-logging"
+            },
+            {
+              "group": "*",
+              "module": "log4j-to-slf4j"
+            }
+          ]
+        },
+        {
+          "group": "com.tnydev.game",
+          "module": "tny-game-codec-jprotobuf",
+          "version": {
+            "requires": "5.7.x-SNAPSHOT"
+          },
+          "excludes": [
+            {
+              "group": "*",
+              "module": "spring-boot-starter-logging"
+            },
+            {
+              "group": "*",
+              "module": "log4j-to-slf4j"
+            }
+          ]
+        },
+        {
+          "group": "com.tnydev.game",
+          "module": "tny-game-common-scheduler",
+          "version": {
+            "requires": "5.7.x-SNAPSHOT"
+          },
+          "excludes": [
+            {
+              "group": "*",
+              "module": "spring-boot-starter-logging"
+            },
+            {
+              "group": "*",
+              "module": "log4j-to-slf4j"
+            }
+          ]
+        }
+      ],
+      "files": [
+        {
+          "name": "tny-game-starter-basics-5.7.x-SNAPSHOT.jar",
+          "url": "tny-game-starter-basics-5.7.x-SNAPSHOT.jar",
+          "size": 273237,
+          "sha512": "405b87735321de917047646d4b1d36a1eb5898cc6fc9748ad93a258a89778d53d7a20637ce0a1942ae93f06946f2af38d7189a7ae865221d3d4784393d01086c",
+          "sha256": "49b48973f175b8ee862c9368a8f35a5973c74d3710ee6cc2bd0593c405c2ca10",
+          "sha1": "5234d2eeef95ce900fba1ae1461b7bb3f1e017ff",
+          "md5": "647401973339a90e5c661cffcc544340"
+        }
+      ]
+    },
+    {
+      "name": "javadocElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "javadoc",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "tny-game-starter-basics-5.7.x-SNAPSHOT-javadoc.jar",
+          "url": "tny-game-starter-basics-5.7.x-SNAPSHOT-javadoc.jar",
+          "size": 863533,
+          "sha512": "2bf6cf2bed099657c6b8f132675a52342ccaec3d86fefeadcbde357d02eefec96f668bb875bdb5d9efded652f78238bbeb050153fd8d01b685e111b12ab7e610",
+          "sha256": "56e85c4bb6efa1cf4526cb8e7e5981014b997e81bfb280bd0d4b5693a40b5ee0",
+          "sha1": "d5049e0a7340da61381d98acf8ca97363879926a",
+          "md5": "e3e9c992e49b9acad7f346b6860b1817"
+        }
+      ]
+    },
+    {
+      "name": "sourcesElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "tny-game-starter-basics-5.7.x-SNAPSHOT-sources.jar",
+          "url": "tny-game-starter-basics-5.7.x-SNAPSHOT-sources.jar",
+          "size": 209387,
+          "sha512": "fc5e916c4d461aa903994e3b567d6f5aa5ca09e10356dec80e5799bf2726fd2cd991305247c5c960a48c637baa2d64ee1ce52a6ac3a132cb73d803c233606606",
+          "sha256": "984e210e914368673d8026339e8a3a464695c7dc0409d9b8af3a297a14341eec",
+          "sha1": "e12dfa86521106c1679f7ac8e05d186946dbd320",
+          "md5": "6fd4a0b8d42cb56cd7510381d5569daf"
+        }
+      ]
+    }
+  ]
+}

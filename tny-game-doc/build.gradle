@@ -1,0 +1,23 @@
+
+apply plugin: 'maven-publish'
+
+//    main {
+//        groovy.srcDirs += ["src/main/groovy"]
+
+dependencies {
+    api project(':tny-game-net')
+    api libs.xstream
+    api project(':tny-game-doc-annotation')
+    api project(':tny-game-common-lang')
+    api project(':tny-game-rpc')
+    api project(':tny-game-scanning')
+    // mvel 引擎降为运行装配（D7）：唯一使用点是包私有类 MVELExporter（OutputType 枚举仅引用其构造，
+    // 公开签名不暴露 mvel 类型），不再经 api 进入发布 POM 的 compile 域
+    implementation project(':tny-game-expr-mvel')
+    api libs.jacksonCore
+    api libs.guava
+    api libs.jacksonDatabind
+    api libs.jacksonAnnotations
+
+}
+

@@ -1,0 +1,8 @@
+dependencies {
+
+    api project(':tny-game-common-lang')
+    api project(':tny-game-codec')
+    api libs.commonsCodec
+    api libs.zeroAllocationHashing
+}
+

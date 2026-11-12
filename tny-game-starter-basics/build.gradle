@@ -1,0 +1,25 @@
+
+apply plugin: 'maven-publish'
+
+dependencies {
+
+    annotationProcessor libs.springBootConfigurationProcessor
+
+    api libs.springBootAutoconfigure
+    api libs.aspectjrt
+
+    api project(':tny-game-basics')
+    api project(':tny-game-doc')
+    // 门面自声明引擎装配边（fix-dependency-version-governance D7 连带修正）：本模块自动配置直接 import
+    // com.tny.game.expr.mvel（BasicsAutoConfiguration:27），此前靠 doc 的 api 传递获得编译可见性，
+    // doc 收缩后按"装配者显式声明所装配之物"的形态自声明，对外暴露范围与收缩前逐配置等值
+    api project(':tny-game-expr-mvel')
+    api project(':tny-game-protoex')
+    api project(':tny-game-data')
+    api project(':tny-game-codec-jprotobuf')
+    api project(':tny-game-common-scheduler')
+
+    compileOnly project(':tny-game-data-mongodb')
+
+}
+

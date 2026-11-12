@@ -1,0 +1,31 @@
+## run 37266292344
+probe	Fresh CI upload snapshot 0.0.1-SNAPSHOT (expect 409 on same-name files)	2026-10-05T05:07:16.2158615Z PROBE-RESULT snapshot-reupload-ci=accepted
+probe	GraphQL delete via GITHUB_TOKEN then republish	2026-10-05T05:07:16.4714265Z PROBE-RESULT package-name=io.sandbox.probe.gpr-sandbox
+probe	GraphQL delete via GITHUB_TOKEN then republish	2026-10-05T05:07:16.6940169Z PROBE-RESULT rest-versions-http=200
+probe	GraphQL delete via GITHUB_TOKEN then republish	2026-10-05T05:07:16.7053099Z PROBE-RESULT delete-target-version-id=
+probe	GraphQL delete via GITHUB_TOKEN then republish	2026-10-05T05:07:16.7053924Z PROBE-RESULT delete=skipped-no-version-id
+probe	REST list packages with GITHUB_TOKEN	2026-10-05T05:07:16.4433558Z PROBE-RESULT rest-list-http=200
+## run 37266493950
+probe	Fresh CI upload snapshot 0.0.1-SNAPSHOT (expect 409 on same-name files)	2026-10-05T05:10:09.7031279Z PROBE-RESULT snapshot-reupload-ci=accepted
+probe	GraphQL delete via GITHUB_TOKEN then republish	2026-10-05T05:10:10.0499609Z PROBE-RESULT package-name=io.sandbox.probe.gpr-sandbox
+probe	GraphQL delete via GITHUB_TOKEN then republish	2026-10-05T05:10:10.3266442Z PROBE-RESULT rest-versions-http=200
+probe	GraphQL delete via GITHUB_TOKEN then republish	2026-10-05T05:10:10.3315311Z PROBE-RESULT delete-target-version-id=68237554
+probe	GraphQL delete via GITHUB_TOKEN then republish	2026-10-05T05:10:10.5468999Z PROBE-RESULT graphql-delete={"errors":[{"path":["mutation","deletePackageVersion","input","source"],"extensions":{"code":"argumentNotAccepted","name":"DeletePackageVersionInput","typeName":"InputObject","argumentName":"source"},"locations":[{"line":1,"column":67}],"message":"InputObject 'DeletePackageVersionInput' doesn't accept argument 'source'"}]}
+probe	GraphQL delete via GITHUB_TOKEN then republish	2026-10-05T05:10:47.5730038Z PROBE-RESULT republish-after-delete=accepted
+probe	REST list packages with GITHUB_TOKEN	2026-10-05T05:10:10.0182193Z PROBE-RESULT rest-list-http=200
+## run 37266549023
+probe	Fresh CI upload snapshot 0.0.1-SNAPSHOT (expect 409 on same-name files)	2026-10-05T05:10:54.8601944Z PROBE-RESULT snapshot-reupload-ci=accepted
+probe	GraphQL delete via GITHUB_TOKEN then republish	2026-10-05T05:10:55.2364947Z PROBE-RESULT package-name=io.sandbox.probe.gpr-sandbox
+probe	GraphQL delete via GITHUB_TOKEN then republish	2026-10-05T05:10:55.5722068Z PROBE-RESULT rest-versions-http=200
+probe	GraphQL delete via GITHUB_TOKEN then republish	2026-10-05T05:10:55.5751214Z PROBE-RESULT delete-target-version-id=68237554
+probe	GraphQL delete via GITHUB_TOKEN then republish	2026-10-05T05:10:55.9074254Z PROBE-RESULT graphql-delete={"data":{"deletePackageVersion":null},"errors":[{"type":"NOT_FOUND","path":["deletePackageVersion"],"locations":[{"line":1,"column":12}],"message":"Could not resolve to a node with the global id of '68237554'"}]}
+probe	GraphQL delete via GITHUB_TOKEN then republish	2026-10-05T05:11:35.9379331Z PROBE-RESULT republish-after-delete=accepted
+probe	REST list packages with GITHUB_TOKEN	2026-10-05T05:10:55.2135138Z PROBE-RESULT rest-list-http=200
+## run 37267019911
+probe	Fresh CI re-upload snapshot 0.0.1-SNAPSHOT	2026-10-05T05:17:16.6950678Z PROBE-RESULT snapshot-reupload-ci=accepted
+## run 37267153169
+probe	Fresh CI re-upload snapshot 0.0.1-SNAPSHOT	2026-10-05T05:19:00.6703586Z PROBE-RESULT snapshot-reupload-ci=accepted
+probe	GraphQL lookup, delete snapshot version via GITHUB_TOKEN, then republish	2026-10-05T05:19:01.1336978Z PROBE-RESULT graphql-lookup-pkgs=io.sandbox.probe.gpr.probe.marker,io.sandbox.probe.gpr-sandbox
+probe	GraphQL lookup, delete snapshot version via GITHUB_TOKEN, then republish	2026-10-05T05:19:01.1388659Z PROBE-RESULT delete-target-global-version=PV_lADOU8BGic4AMjKTzgQROPI
+probe	GraphQL lookup, delete snapshot version via GITHUB_TOKEN, then republish	2026-10-05T05:19:01.4978219Z PROBE-RESULT graphql-delete={"data":{"deletePackageVersion":{"clientMutationId":null}}}
+probe	GraphQL lookup, delete snapshot version via GITHUB_TOKEN, then republish	2026-10-05T05:19:38.7492424Z PROBE-RESULT republish-after-delete=accepted

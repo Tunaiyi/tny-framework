@@ -1,0 +1,19 @@
+
+* What went wrong:
+托管版本面与声明事实源对账失败（修正声明或导入次序后重试；次序契约见 tny.dependency-management 的 imports 块头注释）：
+- :tny-benchmark 的族 'log4j2Version' 失配：坐标 org.apache.logging.log4j:log4j-api 事实源声明 '2.22.1' 实际生效 '2.21.1'
+- :tny-benchmark 的族 'log4j2Version' 失配：坐标 org.apache.logging.log4j:log4j-core 事实源声明 '2.22.1' 实际生效 '2.21.1'
+- :tny-game-actor 的族 'log4j2Version' 失配：坐标 org.apache.logging.log4j:log4j-api 事实源声明 '2.22.1' 实际生效 '2.21.1'
+- :tny-game-actor 的族 'log4j2Version' 失配：坐标 org.apache.logging.log4j:log4j-core 事实源声明 '2.22.1' 实际生效 '2.21.1'
+- :tny-game-basics 的族 'log4j2Version' 失配：坐标 org.apache.logging.log4j:log4j-api 事实源声明 '2.22.1' 实际生效 '2.21.1'
+- :tny-game-basics 的族 'log4j2Version' 失配：坐标 org.apache.logging.log4j:log4j-core 事实源声明 '2.22.1' 实际生效 '2.21.1'
+- :tny-game-bom 的族 'log4j2Version' 失配：坐标 org.apache.logging.log4j:log4j-api 事实源声明 '2.22.1' 实际生效 '2.21.1'
+- :tny-game-bom 的族 'log4j2Version' 失配：坐标 org.apache.logging.log4j:log4j-core 事实源声明 '2.22.1' 实际生效 '2.21.1'
+- :tny-game-boot 的族 'log4j2Version' 失配：坐标 org.apache.logging.log4j:log4j-api 事实源声明 '2.22.1' 实际生效 '2.21.1'
+- :tny-game-boot 的族 'log4j2Version' 失配：坐标 org.apache.logging.log4j:log4j-core 事实源声明 '2.22.1' 实际生效 '2.21.1'
+- :tny-game-boot-log4j2 的族 'log4j2Version' 失配：坐标 org.apache.logging.log4j:log4j-api 事实源声明 '2.22.1' 实际生效 '2.21.1'
+- :tny-game-boot-log4j2 的族 'log4j2Version' 失配：坐标 org.apache.logging.log4j:log4j-core 事实源声明 '2.22.1' 实际生效 '2.21.1'
+- ……共 110 条，仅列前 12 条
+
+* Try:
+> Run with --stacktrace option to get the stack trace.

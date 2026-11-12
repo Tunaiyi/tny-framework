@@ -1,0 +1,79 @@
+// 行为钉桩（golden/round-trip）专用的测试消息定义：覆盖五格式类的全标量类型、
+// repeated（packed 与非 packed）、嵌套消息、group、extension（普通与 MessageSet 特判分支）、
+// unknown fields 与 CouchDB _id/_rev 映射面。protoc 生成的 Java 类随测试源码一起入库（不参与构建插件）。
+syntax = "proto2";
+
+package tny.protobuf.test;
+
+option java_package = "com.tny.game.protobuf.format.test";
+option java_outer_classname = "FormatTestProtos";
+
+enum Color {
+  RED = 1;
+  GREEN = 2;
+  BLUE = 7;
+}
+
+message Nested {
+  optional string name = 1;
+  optional int32 count = 2;
+}
+
+message AllTypes {
+  optional int32 opt_int32 = 1;
+  optional int64 opt_int64 = 2;
+  optional uint32 opt_uint32 = 3;
+  optional uint64 opt_uint64 = 4;
+  optional sint32 opt_sint32 = 5;
+  optional sint64 opt_sint64 = 6;
+  optional fixed32 opt_fixed32 = 7;
+  optional fixed64 opt_fixed64 = 8;
+  optional sfixed32 opt_sfixed32 = 9;
+  optional sfixed64 opt_sfixed64 = 10;
+  optional float opt_float = 11;
+  optional double opt_double = 12;
+  optional bool opt_bool = 13;
+  optional string opt_string = 14;
+  optional bytes opt_bytes = 15;
+  optional Color opt_enum = 16;
+  optional Nested opt_nested = 17;
+
+  optional group OptGroup = 18 {
+    optional string inner = 1;
+  }
+
+  repeated int32 rep_int32 = 21;
+  repeated int32 rep_packed = 22 [packed = true];
+  repeated string rep_string = 23;
+  repeated Nested rep_nested = 24;
+  repeated Color rep_enum = 25;
+
+  extensions 100 to 200;
+}
+
+// 普通 extension（extensionScope != messageType 的常规分支）
+extend AllTypes {
+  optional string ext_string = 100;
+  optional int32 ext_int = 101;
+}
+
+// MessageSet 特判分支（message_set_wire_format + optional message + extensionScope == messageType）
+message TestMessageSet {
+  option message_set_wire_format = true;
+  extensions 4 to max;
+}
+
+message MsgSetExt {
+  optional int32 m = 1;
+
+  extend TestMessageSet {
+    optional MsgSetExt msg_set_ext = 1000;
+  }
+}
+
+// CouchDB _id/_rev 映射专用
+message Doc {
+  optional string id = 1;
+  optional string rev = 2;
+  optional int64 version = 3;
+}

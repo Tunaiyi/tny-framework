@@ -1,0 +1,12 @@
+
+apply plugin: 'maven-publish'
+
+dependencies {
+
+    api project(':tny-game-expr')
+    api project(':tny-game-common-lifecycle')
+    api libs.mvel
+
+
+}
+

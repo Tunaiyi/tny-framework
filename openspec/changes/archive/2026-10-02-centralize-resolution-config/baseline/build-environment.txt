@@ -1,0 +1,119 @@
+Configuration on demand is an incubating feature.
+> Task :buildSrc:extractPluginRequests UP-TO-DATE
+> Task :buildSrc:generatePluginAdapters UP-TO-DATE
+> Task :buildSrc:compileJava UP-TO-DATE
+> Task :buildSrc:compileGroovy UP-TO-DATE
+> Task :buildSrc:compileGroovyPlugins UP-TO-DATE
+> Task :buildSrc:pluginDescriptors UP-TO-DATE
+> Task :buildSrc:processResources UP-TO-DATE
+> Task :buildSrc:classes UP-TO-DATE
+> Task :buildSrc:jar UP-TO-DATE
+
+> Task :tny-game-net:buildEnvironment
+
+------------------------------------------------------------
+Project ':tny-game-net'
+------------------------------------------------------------
+
+classpath
+No dependencies
+
+A web-based, searchable dependency report is available by adding the --scan option.
+
+> Task :buildEnvironment
+
+------------------------------------------------------------
+Root project 'tny-framework'
+------------------------------------------------------------
+
+classpath
++--- org.ajoberstar.grgit:org.ajoberstar.grgit.gradle.plugin:4.1.1
+|    \--- org.ajoberstar.grgit:grgit-gradle:4.1.1
+|         \--- org.ajoberstar.grgit:grgit-core:4.1.1
+|              \--- org.eclipse.jgit:org.eclipse.jgit:5.13.0.202109080827-r
+|                   +--- com.googlecode.javaewah:JavaEWAH:1.1.12
+|                   \--- org.slf4j:slf4j-api:1.7.30 -> 1.7.36
++--- com.gradleup.nmcp:com.gradleup.nmcp.gradle.plugin:1.6.2
+|    \--- com.gradleup.nmcp:nmcp:1.6.2
+|         +--- com.gradleup.gratatouille:gratatouille-runtime:0.2.3
+|         |    \--- org.jetbrains.kotlin:kotlin-stdlib:2.0.0 -> 2.2.0
+|         |         \--- org.jetbrains:annotations:13.0
+|         +--- org.jetbrains.kotlin:kotlin-stdlib:2.2.0 (*)
+|         \--- org.jetbrains.kotlin:kotlin-stdlib:2.1.0 -> 2.2.0 (*)
++--- com.gradleup.nmcp.aggregation:com.gradleup.nmcp.aggregation.gradle.plugin:1.6.2
+|    \--- com.gradleup.nmcp:nmcp:1.6.2 (*)
++--- org.springframework.boot:org.springframework.boot.gradle.plugin:3.2.1
+|    \--- org.springframework.boot:spring-boot-gradle-plugin:3.2.1
+|         +--- org.springframework.boot:spring-boot-buildpack-platform:3.2.1
+|         |    +--- com.fasterxml.jackson.core:jackson-databind:2.14.2
+|         |    |    +--- com.fasterxml.jackson.core:jackson-annotations:2.14.2
+|         |    |    |    \--- com.fasterxml.jackson:jackson-bom:2.14.2
+|         |    |    |         +--- com.fasterxml.jackson.core:jackson-annotations:2.14.2 (c)
+|         |    |    |         +--- com.fasterxml.jackson.core:jackson-core:2.14.2 (c)
+|         |    |    |         +--- com.fasterxml.jackson.core:jackson-databind:2.14.2 (c)
+|         |    |    |         \--- com.fasterxml.jackson.module:jackson-module-parameter-names:2.14.2 (c)
+|         |    |    +--- com.fasterxml.jackson.core:jackson-core:2.14.2
+|         |    |    |    \--- com.fasterxml.jackson:jackson-bom:2.14.2 (*)
+|         |    |    \--- com.fasterxml.jackson:jackson-bom:2.14.2 (*)
+|         |    +--- com.fasterxml.jackson.module:jackson-module-parameter-names:2.14.2
+|         |    |    +--- com.fasterxml.jackson.core:jackson-core:2.14.2 (*)
+|         |    |    +--- com.fasterxml.jackson.core:jackson-databind:2.14.2 (*)
+|         |    |    \--- com.fasterxml.jackson:jackson-bom:2.14.2 (*)
+|         |    +--- net.java.dev.jna:jna-platform:5.13.0
+|         |    |    \--- net.java.dev.jna:jna:5.13.0
+|         |    +--- org.apache.commons:commons-compress:1.23.0
+|         |    +--- org.apache.httpcomponents.client5:httpclient5:5.2.3
+|         |    |    +--- org.apache.httpcomponents.core5:httpcore5:5.2.4
+|         |    |    +--- org.apache.httpcomponents.core5:httpcore5-h2:5.2.4
+|         |    |    |    \--- org.apache.httpcomponents.core5:httpcore5:5.2.4
+|         |    |    \--- org.slf4j:slf4j-api:1.7.36
+|         |    +--- org.springframework:spring-core:6.0.10
+|         |    |    \--- org.springframework:spring-jcl:6.0.10
+|         |    \--- org.tomlj:tomlj:1.0.0
+|         |         +--- org.antlr:antlr4-runtime:4.7.2
+|         |         \--- com.google.code.findbugs:jsr305:3.0.2
+|         +--- org.springframework.boot:spring-boot-loader-tools:3.2.1
+|         |    +--- org.apache.commons:commons-compress:1.23.0
+|         |    \--- org.springframework:spring-core:6.0.10 (*)
+|         +--- io.spring.gradle:dependency-management-plugin:1.1.4
+|         +--- org.apache.commons:commons-compress:1.23.0
+|         \--- org.springframework:spring-core:6.0.10 (*)
++--- io.spring.dependency-management:io.spring.dependency-management.gradle.plugin:1.1.0
+|    \--- io.spring.gradle:dependency-management-plugin:1.1.0 -> 1.1.4
++--- com.baidu.jprotobuf:com.baidu.jprotobuf.gradle.plugin:1.2.1
+|    \--- gradle.plugin.com.baidu.jprotobuf:jprotobuf-precompile-plugin-gradle:1.2.1
+|         +--- com.baidu:jprotobuf:2.4.7
+|         |    +--- com.google.protobuf:protobuf-java:3.12.1
+|         |    +--- com.google.auto.value:auto-value:1.0-rc2
+|         |    |    +--- com.google.auto:auto-common:0.3
+|         |    |    |    \--- com.google.guava:guava:18.0
+|         |    |    +--- com.google.auto.service:auto-service:1.0-rc2
+|         |    |    |    +--- com.google.auto:auto-common:0.3 (*)
+|         |    |    |    \--- com.google.guava:guava:18.0
+|         |    |    +--- com.google.guava:guava:17.0 -> 18.0
+|         |    |    +--- org.ow2.asm:asm:4.1
+|         |    |    \--- org.apache.velocity:velocity:1.7
+|         |    |         +--- commons-collections:commons-collections:3.2.1
+|         |    |         \--- commons-lang:commons-lang:2.4
+|         |    +--- com.baidu:jprotobuf-protoparser:1.0.1
+|         |    +--- org.slf4j:slf4j-api:1.7.2 -> 1.7.36
+|         |    \--- commons-io:commons-io:2.6
+|         +--- org.jodd:jodd-core:3.5.2
+|         \--- commons-io:commons-io:1.4 -> 2.6
+\--- com.gradle.plugin-publish:com.gradle.plugin-publish.gradle.plugin:0.16.0
+     \--- com.gradle.publish:plugin-publish-plugin:0.16.0
+          \--- org.apache.maven:maven-model:3.6.3
+
+(c) - A dependency constraint, not a dependency. The dependency affected by the constraint occurs elsewhere in the tree.
+(*) - Indicates repeated occurrences of a transitive dependency subtree. Gradle expands transitive dependency subtrees only once per project; repeat occurrences only display the root of the subtree, followed by this annotation.
+
+A web-based, searchable dependency report is available by adding the --scan option.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.5/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 770ms
+10 actionable tasks: 2 executed, 8 up-to-date

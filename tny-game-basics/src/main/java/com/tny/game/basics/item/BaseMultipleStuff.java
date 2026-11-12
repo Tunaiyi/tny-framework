@@ -1,0 +1,83 @@
+/*
+ * Copyright (c) 2020 Tunaiyi
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.tny.game.basics.item;
+
+import com.tny.game.basics.item.behavior.*;
+import com.tny.game.common.context.*;
+
+public abstract class BaseMultipleStuff<SM extends MultipleStuffModel, N extends Number> extends BaseItem<SM> implements MultipleStuff<SM, N> {
+
+    protected BaseMultipleStuff() {
+    }
+
+    protected BaseMultipleStuff(long playerId, SM model) {
+        super(playerId, model);
+    }
+
+    @Override
+    public boolean isNumberLimit() {
+        return this.model.isNumberLimit();
+    }
+
+    @Override
+    public boolean tryEnough(long costNum) {
+        return !AlterType.CHECK.overLowerLimit(this, costNum);
+    }
+
+    protected boolean isLack(N costNum, AlterType alterType) {
+        return alterType.overLowerLimit(this, costNum);
+    }
+
+    protected boolean isExcess(N receiveNum, AlterType alterType) {
+        return alterType.overLowerLimit(this, receiveNum);
+    }
+
+    protected abstract void deduct(Action action, TradeItem<SM> tradeItem, Attributes attributes);
+
+    protected abstract void reward(Action action, TradeItem<SM> tradeItem, Attributes attributes);
+
+    protected abstract void setNumber(N number);
+
+    protected AlterType getRewardAlterType(TradeItem<SM> item) {
+        return item.getAlertType();
+    }
+
+    protected AlterType getDeductAlterType(TradeItem<SM> item) {
+        return item.getAlertType();
+    }
+
+    /**
+     * 执行扣除
+     *
+     * @param alter
+     * @param oldNumber
+     * @param current
+     * @param action
+     */
+    protected abstract void postDeduct(N alter, N oldNumber, N current, Action action, Attributes attributes);
+
+    /**
+     * 执行增加
+     *
+     * @param alter
+     * @param oldNumber
+     * @param current
+     * @param action
+     */
+    protected abstract void postReward(N alter, N oldNumber, N current, Action action, Attributes attributes);
+
+}

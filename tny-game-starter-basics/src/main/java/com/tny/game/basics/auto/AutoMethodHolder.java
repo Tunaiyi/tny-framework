@@ -1,0 +1,61 @@
+/*
+ * Copyright (c) 2020 Tunaiyi
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.tny.game.basics.auto;
+
+import com.tny.game.common.concurrent.collection.*;
+
+import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.function.Function;
+
+/**
+ * Created by Kun Yang on 16/1/28.
+ */
+public class AutoMethodHolder<M extends AutoMethod<?, ?, ?, ?>> {
+
+    private final Map<Method, M> METHOD_MAP = new CopyOnWriteMap<>();
+
+    private Function<Method, M> creator;
+
+    public AutoMethodHolder(Function<Method, M> creator) {
+        this.creator = creator;
+    }
+
+    public AutoMethodHolder() {
+    }
+
+    public M getInstance(Method method) {
+        return getInstance(method, this.creator);
+    }
+
+    public M getInstance(Method method, Function<Method, M> creator) {
+        M autoMethod = this.METHOD_MAP.get(method);
+        if (autoMethod != null) {
+            return autoMethod;
+        }
+        synchronized (method) {
+            autoMethod = this.METHOD_MAP.get(method);
+            if (autoMethod != null) {
+                return autoMethod;
+            }
+            autoMethod = creator.apply(method);
+            this.METHOD_MAP.put(method, autoMethod);
+            return autoMethod;
+        }
+    }
+
+}

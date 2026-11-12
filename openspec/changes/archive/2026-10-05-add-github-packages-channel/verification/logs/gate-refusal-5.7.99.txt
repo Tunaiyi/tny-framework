@@ -1,0 +1,17 @@
+取证说明（2026-10-05 单密钥形态重存）：临时分支 5.7.99.release + ORG_GRADLE_PROJECT_GITHUB_PACKAGES_KEY=dummy 真实执行逐仓镜像任务；git 子进程需本机逃生口 -PgitExe=/usr/bin/git（首次尝试 daemon 环境启动 git 失败亦为拒绝，fail-closed）。预期与实测：checkPublishPrerequisites 因远端无附注标签 v5.7.99 而阻断，发布动作未执行，零真实外发。
+---
+
+* What went wrong:
+Execution failed for task ':tny-game-net:checkPublishPrerequisites'.
+> 发布被阻断（任务 :tny-game-net:checkPublishPrerequisites）：
+  - 发布标签 'v5.7.99' 在远端 'github' 不存在（或远端此刻不可达）：请先在发布分支 HEAD 创建同名附注标签并推送远端，再执行发布
+  请检查版本派生（tny.git）与 RELEASE_REPOSITORY_URL / SNAPSHOT_REPOSITORY_URL 配置是否与当前分支形态匹配。
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 16s
+48 actionable tasks: 2 executed, 46 up-to-date

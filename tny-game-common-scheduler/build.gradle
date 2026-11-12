@@ -1,0 +1,13 @@
+
+apply plugin: 'maven-publish'
+
+dependencies {
+
+
+    api project(':tny-game-common-lifecycle')
+    api project(':tny-game-common-io')
+    api libs.quartzScheduler
+
+
+}
+
