@@ -1,0 +1,2861 @@
+[
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.benchmark.net.devtest.SmokeBenchmark.noop",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java",
+        "jvmArgs" : [
+            "-Dfile.encoding=UTF-8",
+            "-Djava.io.tmpdir=/home/runner/work/tny-framework/tny-framework/tny-benchmark/build/tmp/jmh",
+            "-Duser.country",
+            "-Duser.language=en",
+            "-Duser.variant"
+        ],
+        "jdkVersion" : "21.0.13",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21.0.13+9-LTS",
+        "warmupIterations" : 5,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 10,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 4.1835589080666466E9,
+            "scoreError" : 6.061736915499713E7,
+            "scoreConfidence" : [
+                4.122941538911649E9,
+                4.244176277221644E9
+            ],
+            "scorePercentiles" : {
+                "0.0" : 4.0757705933172956E9,
+                "50.0" : 4.1981391328445253E9,
+                "90.0" : 4.2668305131597233E9,
+                "95.0" : 4.2763109185343924E9,
+                "99.0" : 4.2768068853715224E9,
+                "99.9" : 4.2768068853715224E9,
+                "99.99" : 4.2768068853715224E9,
+                "99.999" : 4.2768068853715224E9,
+                "99.9999" : 4.2768068853715224E9,
+                "100.0" : 4.2768068853715224E9
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    4.1638050189732685E9,
+                    4.2573542177288604E9,
+                    4.266317193936958E9,
+                    4.2072530241764293E9,
+                    4.1066528592536387E9,
+                    4.1024202861889462E9,
+                    4.2668875486289196E9,
+                    4.1940639931496334E9,
+                    4.115870534496651E9,
+                    4.214700922519513E9
+                ],
+                [
+                    4.263590507990893E9,
+                    4.231158117345445E9,
+                    4.2768068853715224E9,
+                    4.0757705933172956E9,
+                    4.2349004461923084E9,
+                    4.1165570255606637E9,
+                    4.2019461620556417E9,
+                    4.077843827926543E9,
+                    4.194332103633409E9,
+                    4.102946892886387E9
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.benchmark.net.routine.MessageQueueBenchmark.addMessage",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java",
+        "jvmArgs" : [
+            "-Dfile.encoding=UTF-8",
+            "-Djava.io.tmpdir=/home/runner/work/tny-framework/tny-framework/tny-benchmark/build/tmp/jmh",
+            "-Duser.country",
+            "-Duser.language=en",
+            "-Duser.variant"
+        ],
+        "jdkVersion" : "21.0.13",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21.0.13+9-LTS",
+        "warmupIterations" : 5,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 10,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "capacity" : "0"
+        },
+        "primaryMetric" : {
+            "score" : 2.815620351520792E9,
+            "scoreError" : 5.5689084186915375E7,
+            "scoreConfidence" : [
+                2.7599312673338766E9,
+                2.8713094357077074E9
+            ],
+            "scorePercentiles" : {
+                "0.0" : 2.6772704631529555E9,
+                "50.0" : 2.828466038100855E9,
+                "90.0" : 2.899694861131607E9,
+                "95.0" : 2.920040784433222E9,
+                "99.0" : 2.92092128365049E9,
+                "99.9" : 2.92092128365049E9,
+                "99.99" : 2.92092128365049E9,
+                "99.999" : 2.92092128365049E9,
+                "99.9999" : 2.92092128365049E9,
+                "100.0" : 2.92092128365049E9
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    2.852235612891319E9,
+                    2.866853944480431E9,
+                    2.8582262520340657E9,
+                    2.867146917569931E9,
+                    2.8379283537463703E9,
+                    2.92092128365049E9,
+                    2.859299442152994E9,
+                    2.9033112993051267E9,
+                    2.830397551802886E9,
+                    2.8529727393603473E9
+                ],
+                [
+                    2.710028361241516E9,
+                    2.8265345243988233E9,
+                    2.786882417517019E9,
+                    2.789428771690504E9,
+                    2.811841544336054E9,
+                    2.798856705347488E9,
+                    2.709682484798599E9,
+                    2.790060302051994E9,
+                    2.6772704631529555E9,
+                    2.762528058886935E9
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.benchmark.net.routine.MessageQueueBenchmark.addMessage",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java",
+        "jvmArgs" : [
+            "-Dfile.encoding=UTF-8",
+            "-Djava.io.tmpdir=/home/runner/work/tny-framework/tny-framework/tny-benchmark/build/tmp/jmh",
+            "-Duser.country",
+            "-Duser.language=en",
+            "-Duser.variant"
+        ],
+        "jdkVersion" : "21.0.13",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21.0.13+9-LTS",
+        "warmupIterations" : 5,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 10,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "capacity" : "64"
+        },
+        "primaryMetric" : {
+            "score" : 8.328679326966217E7,
+            "scoreError" : 785308.0531400683,
+            "scoreConfidence" : [
+                8.25014852165221E7,
+                8.407210132280225E7
+            ],
+            "scorePercentiles" : {
+                "0.0" : 8.139440808724844E7,
+                "50.0" : 8.31945578063148E7,
+                "90.0" : 8.465540922513334E7,
+                "95.0" : 8.472799255768894E7,
+                "99.0" : 8.473071144726302E7,
+                "99.9" : 8.473071144726302E7,
+                "99.99" : 8.473071144726302E7,
+                "99.999" : 8.473071144726302E7,
+                "99.9999" : 8.473071144726302E7,
+                "100.0" : 8.473071144726302E7
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    8.406740493059337E7,
+                    8.4467089349301E7,
+                    8.387305622256356E7,
+                    8.217577755627733E7,
+                    8.433249536014222E7,
+                    8.467633365578139E7,
+                    8.473071144726302E7,
+                    8.139440808724844E7,
+                    8.347486343690345E7,
+                    8.399363531674391E7
+                ],
+                [
+                    8.273023274501428E7,
+                    8.26531008278308E7,
+                    8.318411472342987E7,
+                    8.32050008891997E7,
+                    8.288166318882672E7,
+                    8.281592353028272E7,
+                    8.228427715521769E7,
+                    8.298890221675347E7,
+                    8.256315481329018E7,
+                    8.324371994058043E7
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.benchmark.net.routine.MessageQueueBenchmark.filteredRead",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java",
+        "jvmArgs" : [
+            "-Dfile.encoding=UTF-8",
+            "-Djava.io.tmpdir=/home/runner/work/tny-framework/tny-framework/tny-benchmark/build/tmp/jmh",
+            "-Duser.country",
+            "-Duser.language=en",
+            "-Duser.variant"
+        ],
+        "jdkVersion" : "21.0.13",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21.0.13+9-LTS",
+        "warmupIterations" : 5,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 10,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "capacity" : "0"
+        },
+        "primaryMetric" : {
+            "score" : 1.0382789036443567E8,
+            "scoreError" : 980819.5400071605,
+            "scoreConfidence" : [
+                1.0284707082442851E8,
+                1.0480870990444283E8
+            ],
+            "scorePercentiles" : {
+                "0.0" : 1.0098008613296878E8,
+                "50.0" : 1.0421473834018351E8,
+                "90.0" : 1.048606221655247E8,
+                "95.0" : 1.0504070999659947E8,
+                "99.0" : 1.0505009863135476E8,
+                "99.9" : 1.0505009863135476E8,
+                "99.99" : 1.0505009863135476E8,
+                "99.999" : 1.0505009863135476E8,
+                "99.9999" : 1.0505009863135476E8,
+                "100.0" : 1.0505009863135476E8
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    1.0418834330808368E8,
+                    1.0273961148681001E8,
+                    1.0486232593624872E8,
+                    1.0366458115124512E8,
+                    1.0505009863135476E8,
+                    1.0484528822900853E8,
+                    1.0254405162564805E8,
+                    1.0397247583093548E8,
+                    1.0154164080854197E8,
+                    1.0456786405989377E8
+                ],
+                [
+                    1.0457060559904882E8,
+                    1.0342391956483723E8,
+                    1.0398652216353866E8,
+                    1.0445428236680743E8,
+                    1.0309984455470031E8,
+                    1.0436894199878536E8,
+                    1.0098008613296878E8,
+                    1.0472426642737556E8,
+                    1.0424113337228334E8,
+                    1.0473192404059803E8
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.benchmark.net.routine.MessageQueueBenchmark.filteredRead",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java",
+        "jvmArgs" : [
+            "-Dfile.encoding=UTF-8",
+            "-Djava.io.tmpdir=/home/runner/work/tny-framework/tny-framework/tny-benchmark/build/tmp/jmh",
+            "-Duser.country",
+            "-Duser.language=en",
+            "-Duser.variant"
+        ],
+        "jdkVersion" : "21.0.13",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21.0.13+9-LTS",
+        "warmupIterations" : 5,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 10,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "capacity" : "64"
+        },
+        "primaryMetric" : {
+            "score" : 3.3472598077435106E7,
+            "scoreError" : 609343.2261159802,
+            "scoreConfidence" : [
+                3.2863254851319127E7,
+                3.4081941303551085E7
+            ],
+            "scorePercentiles" : {
+                "0.0" : 3.1468140298206937E7,
+                "50.0" : 3.3700801753947824E7,
+                "90.0" : 3.414375349584427E7,
+                "95.0" : 3.4206132025046565E7,
+                "99.0" : 3.4208957688126504E7,
+                "99.9" : 3.4208957688126504E7,
+                "99.99" : 3.4208957688126504E7,
+                "99.999" : 3.4208957688126504E7,
+                "99.9999" : 3.4208957688126504E7,
+                "100.0" : 3.4208957688126504E7
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    3.393707022104796E7,
+                    3.3284515387106985E7,
+                    3.390920074403803E7,
+                    3.222963767459642E7,
+                    3.4152444426527776E7,
+                    3.4208957688126504E7,
+                    3.4065535119692706E7,
+                    3.3970864205188185E7,
+                    3.3202663107145596E7,
+                    3.1468140298206937E7
+                ],
+                [
+                    3.3105102136668775E7,
+                    3.2735897326317985E7,
+                    3.399560733203306E7,
+                    3.366547926798307E7,
+                    3.3452373893945623E7,
+                    3.380224619194826E7,
+                    3.3642736125093155E7,
+                    3.2955574313005187E7,
+                    3.393179185011728E7,
+                    3.3736124239912584E7
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.benchmark.net.routine.MessageQueueBenchmark.snapshotRead",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java",
+        "jvmArgs" : [
+            "-Dfile.encoding=UTF-8",
+            "-Djava.io.tmpdir=/home/runner/work/tny-framework/tny-framework/tny-benchmark/build/tmp/jmh",
+            "-Duser.country",
+            "-Duser.language=en",
+            "-Duser.variant"
+        ],
+        "jdkVersion" : "21.0.13",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21.0.13+9-LTS",
+        "warmupIterations" : 5,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 10,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "capacity" : "0"
+        },
+        "primaryMetric" : {
+            "score" : 1.0347119618412927E8,
+            "scoreError" : 812125.4021978399,
+            "scoreConfidence" : [
+                1.0265907078193143E8,
+                1.042833215863271E8
+            ],
+            "scorePercentiles" : {
+                "0.0" : 1.0150332150166549E8,
+                "50.0" : 1.0358611112771133E8,
+                "90.0" : 1.0457351886314337E8,
+                "95.0" : 1.0461005925369927E8,
+                "99.0" : 1.0461124416387086E8,
+                "99.9" : 1.0461124416387086E8,
+                "99.99" : 1.0461124416387086E8,
+                "99.999" : 1.0461124416387086E8,
+                "99.9999" : 1.0461124416387086E8,
+                "100.0" : 1.0461124416387086E8
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    1.0421963587043633E8,
+                    1.0188270952688047E8,
+                    1.0150332150166549E8,
+                    1.0458754596043928E8,
+                    1.039445745466073E8,
+                    1.0432175660623683E8,
+                    1.0436853287139222E8,
+                    1.041946692930795E8,
+                    1.0209135842421536E8,
+                    1.0282781926343396E8
+                ],
+                [
+                    1.0354284625630827E8,
+                    1.0240224896062307E8,
+                    1.0357076423254338E8,
+                    1.0360145802287929E8,
+                    1.0338963194770005E8,
+                    1.0461124416387086E8,
+                    1.0363674652126889E8,
+                    1.044472749874801E8,
+                    1.0340636504396696E8,
+                    1.0287341968155792E8
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.benchmark.net.routine.MessageQueueBenchmark.snapshotRead",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java",
+        "jvmArgs" : [
+            "-Dfile.encoding=UTF-8",
+            "-Djava.io.tmpdir=/home/runner/work/tny-framework/tny-framework/tny-benchmark/build/tmp/jmh",
+            "-Duser.country",
+            "-Duser.language=en",
+            "-Duser.variant"
+        ],
+        "jdkVersion" : "21.0.13",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21.0.13+9-LTS",
+        "warmupIterations" : 5,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 10,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "capacity" : "64"
+        },
+        "primaryMetric" : {
+            "score" : 6.2116458108945906E7,
+            "scoreError" : 958491.2941985804,
+            "scoreConfidence" : [
+                6.1157966814747326E7,
+                6.3074949403144486E7
+            ],
+            "scorePercentiles" : {
+                "0.0" : 6.045474199087279E7,
+                "50.0" : 6.210028906764379E7,
+                "90.0" : 6.371718172334443E7,
+                "95.0" : 6.3750915564717345E7,
+                "99.0" : 6.375170746775543E7,
+                "99.9" : 6.375170746775543E7,
+                "99.99" : 6.375170746775543E7,
+                "99.999" : 6.375170746775543E7,
+                "99.9999" : 6.375170746775543E7,
+                "100.0" : 6.375170746775543E7
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    6.045474199087279E7,
+                    6.168931032545508E7,
+                    6.249303665860464E7,
+                    6.1123271695662215E7,
+                    6.076078440361567E7,
+                    6.256186978924585E7,
+                    6.316731644993218E7,
+                    6.193170669485055E7,
+                    6.218720668995132E7,
+                    6.300438118989875E7
+                ],
+                [
+                    6.3548992570501156E7,
+                    6.331818890440637E7,
+                    6.277240861246375E7,
+                    6.139445156037288E7,
+                    6.055964004502245E7,
+                    6.068848061411819E7,
+                    6.201337144533625E7,
+                    6.375170746775543E7,
+                    6.373586940699368E7,
+                    6.11724256638591E7
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.benchmark.net.routine.PacketCodecBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java",
+        "jvmArgs" : [
+            "-Dfile.encoding=UTF-8",
+            "-Djava.io.tmpdir=/home/runner/work/tny-framework/tny-framework/tny-benchmark/build/tmp/jmh",
+            "-Duser.country",
+            "-Duser.language=en",
+            "-Duser.variant"
+        ],
+        "jdkVersion" : "21.0.13",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21.0.13+9-LTS",
+        "warmupIterations" : 5,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 10,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "verify" : "false"
+        },
+        "primaryMetric" : {
+            "score" : 2621854.166537359,
+            "scoreError" : 23924.45042983407,
+            "scoreConfidence" : [
+                2597929.716107525,
+                2645778.616967193
+            ],
+            "scorePercentiles" : {
+                "0.0" : 2576853.877482147,
+                "50.0" : 2621228.9865027564,
+                "90.0" : 2666269.8922670106,
+                "95.0" : 2668856.3473786064,
+                "99.0" : 2668969.7700976734,
+                "99.9" : 2668969.7700976734,
+                "99.99" : 2668969.7700976734,
+                "99.999" : 2668969.7700976734,
+                "99.9999" : 2668969.7700976734,
+                "100.0" : 2668969.7700976734
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    2662387.081223065,
+                    2638122.9905563863,
+                    2652794.973675542,
+                    2666701.315716338,
+                    2607881.684168896,
+                    2585224.311431303,
+                    2591215.2907398366,
+                    2608635.8727859026,
+                    2576910.5684254495,
+                    2632363.891635091
+                ],
+                [
+                    2613882.8909398513,
+                    2618880.765486471,
+                    2610662.1740960027,
+                    2623577.207519042,
+                    2625476.9065671624,
+                    2576853.877482147,
+                    2614758.622633272,
+                    2624065.326409745,
+                    2637717.809158013,
+                    2668969.7700976734
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.benchmark.net.routine.PacketCodecBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java",
+        "jvmArgs" : [
+            "-Dfile.encoding=UTF-8",
+            "-Djava.io.tmpdir=/home/runner/work/tny-framework/tny-framework/tny-benchmark/build/tmp/jmh",
+            "-Duser.country",
+            "-Duser.language=en",
+            "-Duser.variant"
+        ],
+        "jdkVersion" : "21.0.13",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21.0.13+9-LTS",
+        "warmupIterations" : 5,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 10,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "verify" : "true"
+        },
+        "primaryMetric" : {
+            "score" : 1234914.9254852792,
+            "scoreError" : 15078.519100671365,
+            "scoreConfidence" : [
+                1219836.4063846078,
+                1249993.4445859506
+            ],
+            "scorePercentiles" : {
+                "0.0" : 1186349.2468723692,
+                "50.0" : 1235398.1920646294,
+                "90.0" : 1257137.3761733442,
+                "95.0" : 1257898.9323721398,
+                "99.0" : 1257938.6186262039,
+                "99.9" : 1257938.6186262039,
+                "99.99" : 1257938.6186262039,
+                "99.999" : 1257938.6186262039,
+                "99.9999" : 1257938.6186262039,
+                "100.0" : 1257938.6186262039
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    1186349.2468723692,
+                    1250928.4595942812,
+                    1257069.719829134,
+                    1257144.893544923,
+                    1247980.84593084,
+                    1240691.5302165598,
+                    1217499.1279412815,
+                    1245338.7498377354,
+                    1257938.6186262039,
+                    1248405.1205839175
+                ],
+                [
+                    1230551.9905328874,
+                    1226112.0092903029,
+                    1218031.4452270293,
+                    1218747.2627384495,
+                    1226019.698145937,
+                    1236020.3419568657,
+                    1232936.3299021688,
+                    1234776.0421723928,
+                    1227168.2737295907,
+                    1238588.8030327149
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.benchmark.net.routine.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java",
+        "jvmArgs" : [
+            "-Dfile.encoding=UTF-8",
+            "-Djava.io.tmpdir=/home/runner/work/tny-framework/tny-framework/tny-benchmark/build/tmp/jmh",
+            "-Duser.country",
+            "-Duser.language=en",
+            "-Duser.variant"
+        ],
+        "jdkVersion" : "21.0.13",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21.0.13+9-LTS",
+        "warmupIterations" : 5,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 10,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "prod_crc64_xortile",
+            "benchKey" : "bench-key",
+            "size" : "42"
+        },
+        "primaryMetric" : {
+            "score" : 965660.7488261113,
+            "scoreError" : 8637.298028642474,
+            "scoreConfidence" : [
+                957023.4507974689,
+                974298.0468547537
+            ],
+            "scorePercentiles" : {
+                "0.0" : 941423.1464777988,
+                "50.0" : 968727.608414918,
+                "90.0" : 978232.2395065799,
+                "95.0" : 978795.2795304245,
+                "99.0" : 978823.8394457863,
+                "99.9" : 978823.8394457863,
+                "99.99" : 978823.8394457863,
+                "99.999" : 978823.8394457863,
+                "99.9999" : 978823.8394457863,
+                "100.0" : 978823.8394457863
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    954827.2954407021,
+                    969371.059702857,
+                    975850.3451235177,
+                    968374.7479859015,
+                    959164.592357083,
+                    941423.1464777988,
+                    959797.875268998,
+                    956825.2755427925,
+                    963179.7570779508,
+                    971111.8135144636
+                ],
+                [
+                    978823.8394457863,
+                    969453.701493663,
+                    969080.4688439344,
+                    951150.619254423,
+                    958080.399448957,
+                    966567.8563553968,
+                    978252.641138551,
+                    972650.8764677664,
+                    971180.0407628368,
+                    978048.6248188409
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.benchmark.net.routine.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java",
+        "jvmArgs" : [
+            "-Dfile.encoding=UTF-8",
+            "-Djava.io.tmpdir=/home/runner/work/tny-framework/tny-framework/tny-benchmark/build/tmp/jmh",
+            "-Duser.country",
+            "-Duser.language=en",
+            "-Duser.variant"
+        ],
+        "jdkVersion" : "21.0.13",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21.0.13+9-LTS",
+        "warmupIterations" : 5,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 10,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "prod_crc64_xortile",
+            "benchKey" : "bench-key",
+            "size" : "994"
+        },
+        "primaryMetric" : {
+            "score" : 72382.12831108541,
+            "scoreError" : 6286.554647925575,
+            "scoreConfidence" : [
+                66095.57366315984,
+                78668.68295901098
+            ],
+            "scorePercentiles" : {
+                "0.0" : 61427.34798604128,
+                "50.0" : 72810.44236359466,
+                "90.0" : 80136.12363365846,
+                "95.0" : 80242.76810253113,
+                "99.0" : 80245.17715706874,
+                "99.9" : 80245.17715706874,
+                "99.99" : 80245.17715706874,
+                "99.999" : 80245.17715706874,
+                "99.9999" : 80245.17715706874,
+                "100.0" : 80245.17715706874
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    66427.22516283767,
+                    64725.52263939783,
+                    65116.3543713974,
+                    65423.414158242944,
+                    65290.962290796226,
+                    67528.60565408836,
+                    66720.67658609521,
+                    66146.4114176487,
+                    65439.994802315254,
+                    61427.34798604128
+                ],
+                [
+                    78990.47222885181,
+                    78092.27907310097,
+                    79588.2717397343,
+                    78983.11589491068,
+                    79441.63167544188,
+                    79122.31049672958,
+                    79402.80213931564,
+                    80196.9960663167,
+                    80245.17715706874,
+                    79332.99468137677
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.benchmark.net.routine.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java",
+        "jvmArgs" : [
+            "-Dfile.encoding=UTF-8",
+            "-Djava.io.tmpdir=/home/runner/work/tny-framework/tny-framework/tny-benchmark/build/tmp/jmh",
+            "-Duser.country",
+            "-Duser.language=en",
+            "-Duser.variant"
+        ],
+        "jdkVersion" : "21.0.13",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21.0.13+9-LTS",
+        "warmupIterations" : 5,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 10,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "prod_crc64_xortile",
+            "benchKey" : "0123456789abcdef",
+            "size" : "42"
+        },
+        "primaryMetric" : {
+            "score" : 1080327.4008731514,
+            "scoreError" : 21013.965450664335,
+            "scoreConfidence" : [
+                1059313.435422487,
+                1101341.3663238157
+            ],
+            "scorePercentiles" : {
+                "0.0" : 1005453.9855692049,
+                "50.0" : 1087706.7905053538,
+                "90.0" : 1095614.6104928346,
+                "95.0" : 1096220.5583244185,
+                "99.0" : 1096245.4561243907,
+                "99.9" : 1096245.4561243907,
+                "99.99" : 1096245.4561243907,
+                "99.999" : 1096245.4561243907,
+                "99.9999" : 1096245.4561243907,
+                "100.0" : 1096245.4561243907
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    1093344.3472640018,
+                    1072192.6767883156,
+                    1089180.5483317703,
+                    1090288.3214560223,
+                    1092153.9262111902,
+                    1091356.9463704715,
+                    1096245.4561243907,
+                    1086952.7080939019,
+                    1094418.6038038235,
+                    1095747.500124947
+                ],
+                [
+                    1085389.9633963427,
+                    1089611.6451943126,
+                    1088460.8729168056,
+                    1086789.976753624,
+                    1077068.4817865088,
+                    1084631.3107544472,
+                    1018447.7111184166,
+                    1005453.9855692049,
+                    1083614.6921587724,
+                    1085198.3432457647
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.benchmark.net.routine.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java",
+        "jvmArgs" : [
+            "-Dfile.encoding=UTF-8",
+            "-Djava.io.tmpdir=/home/runner/work/tny-framework/tny-framework/tny-benchmark/build/tmp/jmh",
+            "-Duser.country",
+            "-Duser.language=en",
+            "-Duser.variant"
+        ],
+        "jdkVersion" : "21.0.13",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21.0.13+9-LTS",
+        "warmupIterations" : 5,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 10,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "prod_crc64_xortile",
+            "benchKey" : "0123456789abcdef",
+            "size" : "994"
+        },
+        "primaryMetric" : {
+            "score" : 81176.8205477648,
+            "scoreError" : 1247.589716434226,
+            "scoreConfidence" : [
+                79929.23083133057,
+                82424.41026419903
+            ],
+            "scorePercentiles" : {
+                "0.0" : 75996.58850648277,
+                "50.0" : 81401.41975537635,
+                "90.0" : 82491.25447517005,
+                "95.0" : 82597.40189800541,
+                "99.0" : 82600.53228234545,
+                "99.9" : 82600.53228234545,
+                "99.99" : 82600.53228234545,
+                "99.999" : 82600.53228234545,
+                "99.9999" : 82600.53228234545,
+                "100.0" : 82600.53228234545
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    81218.32701842819,
+                    79913.02279596939,
+                    81096.88892098622,
+                    81406.82577491466,
+                    81956.63404296961,
+                    82600.53228234545,
+                    82071.22339179886,
+                    82537.92459554462,
+                    82042.76657887815,
+                    79612.37534149547
+                ],
+                [
+                    81657.69471726898,
+                    80845.67616884458,
+                    80798.04770047449,
+                    81359.3530130686,
+                    82064.92776109124,
+                    81317.87345110896,
+                    81954.0988792012,
+                    81396.01373583803,
+                    75996.58850648277,
+                    81689.61627858676
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.benchmark.net.routine.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java",
+        "jvmArgs" : [
+            "-Dfile.encoding=UTF-8",
+            "-Djava.io.tmpdir=/home/runner/work/tny-framework/tny-framework/tny-benchmark/build/tmp/jmh",
+            "-Duser.country",
+            "-Duser.language=en",
+            "-Duser.variant"
+        ],
+        "jdkVersion" : "21.0.13",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21.0.13+9-LTS",
+        "warmupIterations" : 5,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 10,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "prod_siphash24_xortile",
+            "benchKey" : "bench-key",
+            "size" : "42"
+        },
+        "primaryMetric" : {
+            "score" : 1158154.5275601936,
+            "scoreError" : 19595.130190851534,
+            "scoreConfidence" : [
+                1138559.397369342,
+                1177749.6577510452
+            ],
+            "scorePercentiles" : {
+                "0.0" : 1130105.5202259128,
+                "50.0" : 1149833.536119189,
+                "90.0" : 1185087.968253445,
+                "95.0" : 1186013.0232938398,
+                "99.0" : 1186056.379401434,
+                "99.9" : 1186056.379401434,
+                "99.99" : 1186056.379401434,
+                "99.999" : 1186056.379401434,
+                "99.9999" : 1186056.379401434,
+                "100.0" : 1186056.379401434
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    1185189.2572495495,
+                    1156409.2507840698,
+                    1184176.3672885052,
+                    1181344.525059776,
+                    1179395.1835343947,
+                    1186056.379401434,
+                    1182097.4212651157,
+                    1181756.315935143,
+                    1179625.0193666199,
+                    1176356.0354798576
+                ],
+                [
+                    1136246.1060188063,
+                    1130105.5202259128,
+                    1136946.7373762813,
+                    1136950.821095175,
+                    1138808.2338127228,
+                    1140799.3665700394,
+                    1134012.363694637,
+                    1134150.7669440254,
+                    1143257.8214543085,
+                    1139407.0586474957
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.benchmark.net.routine.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java",
+        "jvmArgs" : [
+            "-Dfile.encoding=UTF-8",
+            "-Djava.io.tmpdir=/home/runner/work/tny-framework/tny-framework/tny-benchmark/build/tmp/jmh",
+            "-Duser.country",
+            "-Duser.language=en",
+            "-Duser.variant"
+        ],
+        "jdkVersion" : "21.0.13",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21.0.13+9-LTS",
+        "warmupIterations" : 5,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 10,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "prod_siphash24_xortile",
+            "benchKey" : "bench-key",
+            "size" : "994"
+        },
+        "primaryMetric" : {
+            "score" : 349467.2513214659,
+            "scoreError" : 4716.377432101208,
+            "scoreConfidence" : [
+                344750.87388936465,
+                354183.6287535671
+            ],
+            "scorePercentiles" : {
+                "0.0" : 335740.3072725481,
+                "50.0" : 350151.5956741791,
+                "90.0" : 355755.7869254924,
+                "95.0" : 359021.9423036913,
+                "99.0" : 359190.3475689152,
+                "99.9" : 359190.3475689152,
+                "99.99" : 359190.3475689152,
+                "99.999" : 359190.3475689152,
+                "99.9999" : 359190.3475689152,
+                "100.0" : 359190.3475689152
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    340809.264091091,
+                    350315.1407478243,
+                    349202.9545622936,
+                    345262.3373762219,
+                    349988.0506005339,
+                    344476.1529941179,
+                    349570.5003884759,
+                    348257.8342449768,
+                    347664.1242101752,
+                    344435.8512398266
+                ],
+                [
+                    350717.60756810446,
+                    352448.2477399373,
+                    352970.1854224486,
+                    350997.19659386977,
+                    355157.6888749994,
+                    351783.68147846917,
+                    355822.24226443603,
+                    335740.3072725481,
+                    354535.31119005353,
+                    359190.3475689152
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.benchmark.net.routine.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java",
+        "jvmArgs" : [
+            "-Dfile.encoding=UTF-8",
+            "-Djava.io.tmpdir=/home/runner/work/tny-framework/tny-framework/tny-benchmark/build/tmp/jmh",
+            "-Duser.country",
+            "-Duser.language=en",
+            "-Duser.variant"
+        ],
+        "jdkVersion" : "21.0.13",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21.0.13+9-LTS",
+        "warmupIterations" : 5,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 10,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "prod_siphash24_xortile",
+            "benchKey" : "0123456789abcdef",
+            "size" : "42"
+        },
+        "primaryMetric" : {
+            "score" : 1343136.5013413527,
+            "scoreError" : 32957.526910508546,
+            "scoreConfidence" : [
+                1310178.9744308442,
+                1376094.0282518612
+            ],
+            "scorePercentiles" : {
+                "0.0" : 1287730.4669866888,
+                "50.0" : 1326039.494218863,
+                "90.0" : 1390323.1926355925,
+                "95.0" : 1393785.8055872086,
+                "99.0" : 1393938.9298698078,
+                "99.9" : 1393938.9298698078,
+                "99.99" : 1393938.9298698078,
+                "99.999" : 1393938.9298698078,
+                "99.9999" : 1393938.9298698078,
+                "100.0" : 1393938.9298698078
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    1303822.540511768,
+                    1323078.0530232373,
+                    1301961.1910437085,
+                    1316599.4959032878,
+                    1320995.017030287,
+                    1287730.4669866888,
+                    1305736.6998738553,
+                    1307863.6586959385,
+                    1315867.7773076994,
+                    1329000.935414489
+                ],
+                [
+                    1371955.1595878054,
+                    1384317.2894678481,
+                    1382614.2493415838,
+                    1384089.678801991,
+                    1382138.0143703974,
+                    1385343.9283955006,
+                    1393938.9298698078,
+                    1390876.444217825,
+                    1368101.8515119036,
+                    1306698.6454714313
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.benchmark.net.routine.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java",
+        "jvmArgs" : [
+            "-Dfile.encoding=UTF-8",
+            "-Djava.io.tmpdir=/home/runner/work/tny-framework/tny-framework/tny-benchmark/build/tmp/jmh",
+            "-Duser.country",
+            "-Duser.language=en",
+            "-Duser.variant"
+        ],
+        "jdkVersion" : "21.0.13",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21.0.13+9-LTS",
+        "warmupIterations" : 5,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 10,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "prod_siphash24_xortile",
+            "benchKey" : "0123456789abcdef",
+            "size" : "994"
+        },
+        "primaryMetric" : {
+            "score" : 360736.5966809109,
+            "scoreError" : 7144.284172023343,
+            "scoreConfidence" : [
+                353592.31250888755,
+                367880.88085293426
+            ],
+            "scorePercentiles" : {
+                "0.0" : 347611.3352275482,
+                "50.0" : 359020.94532035664,
+                "90.0" : 371865.26647183025,
+                "95.0" : 373773.8674703667,
+                "99.0" : 373866.93464166555,
+                "99.9" : 373866.93464166555,
+                "99.99" : 373866.93464166555,
+                "99.999" : 373866.93464166555,
+                "99.9999" : 373866.93464166555,
+                "100.0" : 373866.93464166555
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    353014.13922393357,
+                    354817.0343700769,
+                    354851.47167516424,
+                    354499.0565677698,
+                    373866.93464166555,
+                    369346.6931583453,
+                    368586.4212652019,
+                    347611.3352275482,
+                    370602.34377710195,
+                    372005.59121568897
+                ],
+                [
+                    351041.12746327504,
+                    354811.54410132463,
+                    351776.63950648386,
+                    354882.11994832876,
+                    368092.5850140893,
+                    363159.77069238457,
+                    365831.8336727858,
+                    354768.9028607548,
+                    366264.2860896899,
+                    364902.1031466057
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.benchmark.net.routine.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java",
+        "jvmArgs" : [
+            "-Dfile.encoding=UTF-8",
+            "-Djava.io.tmpdir=/home/runner/work/tny-framework/tny-framework/tny-benchmark/build/tmp/jmh",
+            "-Duser.country",
+            "-Duser.language=en",
+            "-Duser.variant"
+        ],
+        "jdkVersion" : "21.0.13",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21.0.13+9-LTS",
+        "warmupIterations" : 5,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 10,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "prod_crc32_xortile",
+            "benchKey" : "bench-key",
+            "size" : "42"
+        },
+        "primaryMetric" : {
+            "score" : 1363688.3440141776,
+            "scoreError" : 17069.479303879496,
+            "scoreConfidence" : [
+                1346618.8647102981,
+                1380757.823318057
+            ],
+            "scorePercentiles" : {
+                "0.0" : 1289684.6286841915,
+                "50.0" : 1371111.502718817,
+                "90.0" : 1377227.0384369593,
+                "95.0" : 1377794.0457321424,
+                "99.0" : 1377810.185835882,
+                "99.9" : 1377810.185835882,
+                "99.99" : 1377810.185835882,
+                "99.999" : 1377810.185835882,
+                "99.9999" : 1377810.185835882,
+                "100.0" : 1377810.185835882
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    1373412.64466932,
+                    1364072.021111225,
+                    1373761.8465480565,
+                    1372857.2781339164,
+                    1370029.464367333,
+                    1377487.383761088,
+                    1374224.235825466,
+                    1374883.9305198004,
+                    1366074.347528979,
+                    1363052.4548768457
+                ],
+                [
+                    1377810.185835882,
+                    1366718.6923600496,
+                    1373981.6418266767,
+                    1359365.59416487,
+                    1289684.6286841915,
+                    1372193.541070301,
+                    1374446.2616199749,
+                    1346309.2735599945,
+                    1350957.2896446835,
+                    1352444.1641748955
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.benchmark.net.routine.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java",
+        "jvmArgs" : [
+            "-Dfile.encoding=UTF-8",
+            "-Djava.io.tmpdir=/home/runner/work/tny-framework/tny-framework/tny-benchmark/build/tmp/jmh",
+            "-Duser.country",
+            "-Duser.language=en",
+            "-Duser.variant"
+        ],
+        "jdkVersion" : "21.0.13",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21.0.13+9-LTS",
+        "warmupIterations" : 5,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 10,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "prod_crc32_xortile",
+            "benchKey" : "bench-key",
+            "size" : "994"
+        },
+        "primaryMetric" : {
+            "score" : 487346.8582466799,
+            "scoreError" : 4791.02743077888,
+            "scoreConfidence" : [
+                482555.830815901,
+                492137.8856774588
+            ],
+            "scorePercentiles" : {
+                "0.0" : 477344.5630749631,
+                "50.0" : 489239.22353406565,
+                "90.0" : 493739.29072098614,
+                "95.0" : 493858.0903336744,
+                "99.0" : 493860.8165711566,
+                "99.9" : 493860.8165711566,
+                "99.99" : 493860.8165711566,
+                "99.999" : 493860.8165711566,
+                "99.9999" : 493860.8165711566,
+                "100.0" : 493860.8165711566
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    486495.1888402771,
+                    482443.216391936,
+                    480528.0334862795,
+                    489406.99773497507,
+                    490325.86424914224,
+                    477344.5630749631,
+                    489147.3503729959,
+                    481741.1852851095,
+                    488525.4555979266,
+                    491706.3746021944
+                ],
+                [
+                    493098.92422796285,
+                    493136.28081624827,
+                    479105.3439271757,
+                    493860.8165711566,
+                    489331.09669513546,
+                    493806.29182151257,
+                    491349.14248902653,
+                    492511.1710181554,
+                    483279.45531867933,
+                    479794.41241274483
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.benchmark.net.routine.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java",
+        "jvmArgs" : [
+            "-Dfile.encoding=UTF-8",
+            "-Djava.io.tmpdir=/home/runner/work/tny-framework/tny-framework/tny-benchmark/build/tmp/jmh",
+            "-Duser.country",
+            "-Duser.language=en",
+            "-Duser.variant"
+        ],
+        "jdkVersion" : "21.0.13",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21.0.13+9-LTS",
+        "warmupIterations" : 5,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 10,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "prod_crc32_xortile",
+            "benchKey" : "0123456789abcdef",
+            "size" : "42"
+        },
+        "primaryMetric" : {
+            "score" : 1589590.4731956036,
+            "scoreError" : 17520.76279377162,
+            "scoreConfidence" : [
+                1572069.710401832,
+                1607111.2359893753
+            ],
+            "scorePercentiles" : {
+                "0.0" : 1510286.0013395974,
+                "50.0" : 1596085.2720832156,
+                "90.0" : 1602897.9049775605,
+                "95.0" : 1605264.7488582467,
+                "99.0" : 1605385.8580971272,
+                "99.9" : 1605385.8580971272,
+                "99.99" : 1605385.8580971272,
+                "99.999" : 1605385.8580971272,
+                "99.9999" : 1605385.8580971272,
+                "100.0" : 1605385.8580971272
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    1510286.0013395974,
+                    1592104.754913052,
+                    1588425.948463039,
+                    1584466.8531951972,
+                    1597743.1383108287,
+                    1580892.9692244686,
+                    1586128.2222843303,
+                    1580891.7461404386,
+                    1582238.7410655317,
+                    1595594.2668556906
+                ],
+                [
+                    1602305.9898999385,
+                    1597910.7036286192,
+                    1599557.9390140742,
+                    1598045.0973426832,
+                    1599500.6807583915,
+                    1602963.6733195186,
+                    1590517.1366212517,
+                    1596576.2773107407,
+                    1600273.4661275535,
+                    1605385.8580971272
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.benchmark.net.routine.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java",
+        "jvmArgs" : [
+            "-Dfile.encoding=UTF-8",
+            "-Djava.io.tmpdir=/home/runner/work/tny-framework/tny-framework/tny-benchmark/build/tmp/jmh",
+            "-Duser.country",
+            "-Duser.language=en",
+            "-Duser.variant"
+        ],
+        "jdkVersion" : "21.0.13",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21.0.13+9-LTS",
+        "warmupIterations" : 5,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 10,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "prod_crc32_xortile",
+            "benchKey" : "0123456789abcdef",
+            "size" : "994"
+        },
+        "primaryMetric" : {
+            "score" : 499015.2273141425,
+            "scoreError" : 14146.867770582321,
+            "scoreConfidence" : [
+                484868.3595435602,
+                513162.09508472483
+            ],
+            "scorePercentiles" : {
+                "0.0" : 463227.4927036455,
+                "50.0" : 499917.630032592,
+                "90.0" : 516948.6001489889,
+                "95.0" : 521398.40376730374,
+                "99.0" : 521626.67493830394,
+                "99.9" : 521626.67493830394,
+                "99.99" : 521626.67493830394,
+                "99.999" : 521626.67493830394,
+                "99.9999" : 521626.67493830394,
+                "100.0" : 521626.67493830394
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    485323.161310972,
+                    487167.75802762323,
+                    481569.3807241441,
+                    489129.04785382946,
+                    491888.51772068866,
+                    488055.309295521,
+                    481663.0674835356,
+                    463227.4927036455,
+                    487519.24428133987,
+                    488190.9315536181
+                ],
+                [
+                    507946.7423444954,
+                    508037.64556693955,
+                    521626.67493830394,
+                    517061.2515183003,
+                    515784.3005201178,
+                    513299.548097125,
+                    513480.23239734815,
+                    509441.2447907206,
+                    513958.2573293993,
+                    515934.73782518593
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.benchmark.net.routine.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java",
+        "jvmArgs" : [
+            "-Dfile.encoding=UTF-8",
+            "-Djava.io.tmpdir=/home/runner/work/tny-framework/tny-framework/tny-benchmark/build/tmp/jmh",
+            "-Duser.country",
+            "-Duser.language=en",
+            "-Duser.variant"
+        ],
+        "jdkVersion" : "21.0.13",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21.0.13+9-LTS",
+        "warmupIterations" : 5,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 10,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "prod_siphash24_xorprod",
+            "benchKey" : "bench-key",
+            "size" : "42"
+        },
+        "primaryMetric" : {
+            "score" : 1353258.703968592,
+            "scoreError" : 29443.74551827355,
+            "scoreConfidence" : [
+                1323814.9584503185,
+                1382702.4494868654
+            ],
+            "scorePercentiles" : {
+                "0.0" : 1269828.2289218693,
+                "50.0" : 1353051.451109319,
+                "90.0" : 1385937.7828358395,
+                "95.0" : 1389143.7163340754,
+                "99.0" : 1389309.538791168,
+                "99.9" : 1389309.538791168,
+                "99.99" : 1389309.538791168,
+                "99.999" : 1389309.538791168,
+                "99.9999" : 1389309.538791168,
+                "100.0" : 1389309.538791168
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    1303392.5961301448,
+                    1380008.626021294,
+                    1384697.0478564824,
+                    1377765.7544809063,
+                    1269828.2289218693,
+                    1340978.4867248945,
+                    1288170.8097522617,
+                    1341058.0533470353,
+                    1383283.956253007,
+                    1389309.538791168
+                ],
+                [
+                    1357114.1261242891,
+                    1350324.3672724299,
+                    1351274.4858411762,
+                    1337062.7245853872,
+                    1354828.416377462,
+                    1350171.034432688,
+                    1350564.7014755819,
+                    1383908.0138199024,
+                    1385440.0215145424,
+                    1385993.089649317
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.benchmark.net.routine.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java",
+        "jvmArgs" : [
+            "-Dfile.encoding=UTF-8",
+            "-Djava.io.tmpdir=/home/runner/work/tny-framework/tny-framework/tny-benchmark/build/tmp/jmh",
+            "-Duser.country",
+            "-Duser.language=en",
+            "-Duser.variant"
+        ],
+        "jdkVersion" : "21.0.13",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21.0.13+9-LTS",
+        "warmupIterations" : 5,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 10,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "prod_siphash24_xorprod",
+            "benchKey" : "bench-key",
+            "size" : "994"
+        },
+        "primaryMetric" : {
+            "score" : 313764.56887539977,
+            "scoreError" : 3006.3876020127323,
+            "scoreConfidence" : [
+                310758.18127338705,
+                316770.9564774125
+            ],
+            "scorePercentiles" : {
+                "0.0" : 306489.8987847723,
+                "50.0" : 314941.06451981806,
+                "90.0" : 317914.2881540827,
+                "95.0" : 318731.71596525336,
+                "99.0" : 318774.3782574289,
+                "99.9" : 318774.3782574289,
+                "99.99" : 318774.3782574289,
+                "99.999" : 318774.3782574289,
+                "99.9999" : 318774.3782574289,
+                "100.0" : 318774.3782574289
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    316050.39976691984,
+                    311599.2194513344,
+                    315421.94215663336,
+                    318774.3782574289,
+                    308862.6079718419,
+                    315801.113971959,
+                    306489.8987847723,
+                    310684.97536080127,
+                    312309.3513909129,
+                    309446.7012279042
+                ],
+                [
+                    317277.50351008016,
+                    316359.8646894063,
+                    314857.608361253,
+                    315024.5206783831,
+                    313918.7050810971,
+                    317921.13241391815,
+                    315165.54936608294,
+                    317852.6898155641,
+                    309625.1292624797,
+                    311848.0859892219
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.benchmark.net.routine.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java",
+        "jvmArgs" : [
+            "-Dfile.encoding=UTF-8",
+            "-Djava.io.tmpdir=/home/runner/work/tny-framework/tny-framework/tny-benchmark/build/tmp/jmh",
+            "-Duser.country",
+            "-Duser.language=en",
+            "-Duser.variant"
+        ],
+        "jdkVersion" : "21.0.13",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21.0.13+9-LTS",
+        "warmupIterations" : 5,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 10,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "prod_siphash24_xorprod",
+            "benchKey" : "0123456789abcdef",
+            "size" : "42"
+        },
+        "primaryMetric" : {
+            "score" : 1280370.3857529506,
+            "scoreError" : 27896.316203449198,
+            "scoreConfidence" : [
+                1252474.0695495014,
+                1308266.7019563997
+            ],
+            "scorePercentiles" : {
+                "0.0" : 1185360.016987108,
+                "50.0" : 1290596.8871797943,
+                "90.0" : 1307778.1810051517,
+                "95.0" : 1308021.935736017,
+                "99.0" : 1308027.7731009063,
+                "99.9" : 1308027.7731009063,
+                "99.99" : 1308027.7731009063,
+                "99.999" : 1308027.7731009063,
+                "99.9999" : 1308027.7731009063,
+                "100.0" : 1308027.7731009063
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    1285284.0559842745,
+                    1307911.0258031222,
+                    1308027.7731009063,
+                    1304598.2027983367,
+                    1306582.5778234163,
+                    1296646.7052399197,
+                    1295376.827857879,
+                    1287924.108510452,
+                    1305476.6769716002,
+                    1285167.2155482962
+                ],
+                [
+                    1280897.3116745548,
+                    1283153.906033592,
+                    1185360.016987108,
+                    1213938.4709862594,
+                    1297369.6040825834,
+                    1293269.6658491362,
+                    1293711.229444488,
+                    1251831.446969622,
+                    1267325.335535741,
+                    1257555.5578577209
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.benchmark.net.routine.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java",
+        "jvmArgs" : [
+            "-Dfile.encoding=UTF-8",
+            "-Djava.io.tmpdir=/home/runner/work/tny-framework/tny-framework/tny-benchmark/build/tmp/jmh",
+            "-Duser.country",
+            "-Duser.language=en",
+            "-Duser.variant"
+        ],
+        "jdkVersion" : "21.0.13",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21.0.13+9-LTS",
+        "warmupIterations" : 5,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 10,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "prod_siphash24_xorprod",
+            "benchKey" : "0123456789abcdef",
+            "size" : "994"
+        },
+        "primaryMetric" : {
+            "score" : 352998.54606064607,
+            "scoreError" : 7629.434171335314,
+            "scoreConfidence" : [
+                345369.11188931076,
+                360627.9802319814
+            ],
+            "scorePercentiles" : {
+                "0.0" : 340899.26719815825,
+                "50.0" : 350388.73623324384,
+                "90.0" : 366145.1415053062,
+                "95.0" : 366631.4373852023,
+                "99.0" : 366656.2186997123,
+                "99.9" : 366656.2186997123,
+                "99.99" : 366656.2186997123,
+                "99.999" : 366656.2186997123,
+                "99.9999" : 366656.2186997123,
+                "100.0" : 366656.2186997123
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    343682.7726119092,
+                    344398.7388881655,
+                    344788.20270533883,
+                    340899.26719815825,
+                    352075.34980413783,
+                    350103.9372782314,
+                    349422.9928144377,
+                    350673.53518825636,
+                    350813.2218357294,
+                    348286.939468739
+                ],
+                [
+                    343567.89085371804,
+                    351500.89466210455,
+                    348496.4400149075,
+                    349663.6238018756,
+                    366656.2186997123,
+                    362338.4981107649,
+                    364788.0090698625,
+                    366160.5924095132,
+                    366006.08336744306,
+                    365647.71242991625
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.benchmark.net.routine.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java",
+        "jvmArgs" : [
+            "-Dfile.encoding=UTF-8",
+            "-Djava.io.tmpdir=/home/runner/work/tny-framework/tny-framework/tny-benchmark/build/tmp/jmh",
+            "-Duser.country",
+            "-Duser.language=en",
+            "-Duser.variant"
+        ],
+        "jdkVersion" : "21.0.13",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21.0.13+9-LTS",
+        "warmupIterations" : 5,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 10,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "prod_crc32_xorprod",
+            "benchKey" : "bench-key",
+            "size" : "42"
+        },
+        "primaryMetric" : {
+            "score" : 1667084.736151058,
+            "scoreError" : 32472.00184065232,
+            "scoreConfidence" : [
+                1634612.7343104056,
+                1699556.7379917104
+            ],
+            "scorePercentiles" : {
+                "0.0" : 1571001.173662944,
+                "50.0" : 1671042.9818424312,
+                "90.0" : 1702408.5640988515,
+                "95.0" : 1721417.923814557,
+                "99.0" : 1722416.9820944846,
+                "99.9" : 1722416.9820944846,
+                "99.99" : 1722416.9820944846,
+                "99.999" : 1722416.9820944846,
+                "99.9999" : 1722416.9820944846,
+                "100.0" : 1722416.9820944846
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    1695159.09261076,
+                    1699753.8931587809,
+                    1702163.2925251138,
+                    1722416.9820944846,
+                    1702435.8164959336,
+                    1593132.7030346936,
+                    1698309.5085258214,
+                    1686656.9428094008,
+                    1683250.7467270505,
+                    1689275.7466496152
+                ],
+                [
+                    1571001.173662944,
+                    1666115.800820415,
+                    1657613.3100566478,
+                    1657499.2185249494,
+                    1643475.2967155455,
+                    1635457.9326305918,
+                    1675970.1628644478,
+                    1657900.7637765892,
+                    1653390.9699009233,
+                    1650715.3694364498
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.benchmark.net.routine.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java",
+        "jvmArgs" : [
+            "-Dfile.encoding=UTF-8",
+            "-Djava.io.tmpdir=/home/runner/work/tny-framework/tny-framework/tny-benchmark/build/tmp/jmh",
+            "-Duser.country",
+            "-Duser.language=en",
+            "-Duser.variant"
+        ],
+        "jdkVersion" : "21.0.13",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21.0.13+9-LTS",
+        "warmupIterations" : 5,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 10,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "prod_crc32_xorprod",
+            "benchKey" : "bench-key",
+            "size" : "994"
+        },
+        "primaryMetric" : {
+            "score" : 441306.23954963527,
+            "scoreError" : 7456.946807069588,
+            "scoreConfidence" : [
+                433849.2927425657,
+                448763.18635670486
+            ],
+            "scorePercentiles" : {
+                "0.0" : 408925.46627211,
+                "50.0" : 441683.02661537426,
+                "90.0" : 448548.7407565786,
+                "95.0" : 452076.60557340423,
+                "99.0" : 452260.07042009325,
+                "99.9" : 452260.07042009325,
+                "99.99" : 452260.07042009325,
+                "99.999" : 452260.07042009325,
+                "99.9999" : 452260.07042009325,
+                "100.0" : 452260.07042009325
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    452260.07042009325,
+                    447308.6120943028,
+                    440559.2878927387,
+                    439573.15138089017,
+                    442232.34616902994,
+                    442253.7196118097,
+                    439252.9241906642,
+                    441366.56432805816,
+                    440631.4351570693,
+                    438311.2503267025
+                ],
+                [
+                    448590.77348631306,
+                    448170.44618896855,
+                    408925.46627211,
+                    445140.2818062125,
+                    447838.3597587362,
+                    443203.1264020076,
+                    440231.14810930204,
+                    437486.1682313882,
+                    440790.17026361724,
+                    441999.4889026904
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.benchmark.net.routine.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java",
+        "jvmArgs" : [
+            "-Dfile.encoding=UTF-8",
+            "-Djava.io.tmpdir=/home/runner/work/tny-framework/tny-framework/tny-benchmark/build/tmp/jmh",
+            "-Duser.country",
+            "-Duser.language=en",
+            "-Duser.variant"
+        ],
+        "jdkVersion" : "21.0.13",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21.0.13+9-LTS",
+        "warmupIterations" : 5,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 10,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "prod_crc32_xorprod",
+            "benchKey" : "0123456789abcdef",
+            "size" : "42"
+        },
+        "primaryMetric" : {
+            "score" : 1539965.7215556605,
+            "scoreError" : 36997.545021806014,
+            "scoreConfidence" : [
+                1502968.1765338546,
+                1576963.2665774664
+            ],
+            "scorePercentiles" : {
+                "0.0" : 1397190.913499886,
+                "50.0" : 1545303.9529098542,
+                "90.0" : 1577537.4620992392,
+                "95.0" : 1579991.3187744704,
+                "99.0" : 1580116.9743269258,
+                "99.9" : 1580116.9743269258,
+                "99.99" : 1580116.9743269258,
+                "99.999" : 1580116.9743269258,
+                "99.9999" : 1580116.9743269258,
+                "100.0" : 1580116.9743269258
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    1577603.8632778174,
+                    1572250.5097594964,
+                    1555579.015104693,
+                    1570578.8399978676,
+                    1569198.7785856624,
+                    1575212.8615332034,
+                    1549796.9073485427,
+                    1564669.9908185732,
+                    1580116.9743269258,
+                    1576939.8514920364
+                ],
+                [
+                    1528102.9681540618,
+                    1524637.1663209202,
+                    1535909.0942368852,
+                    1540810.9984711655,
+                    1536013.289240442,
+                    1525559.2723119517,
+                    1485207.8971745195,
+                    1397190.913499886,
+                    1519308.315876071,
+                    1514626.9235824922
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.benchmark.net.routine.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java",
+        "jvmArgs" : [
+            "-Dfile.encoding=UTF-8",
+            "-Djava.io.tmpdir=/home/runner/work/tny-framework/tny-framework/tny-benchmark/build/tmp/jmh",
+            "-Duser.country",
+            "-Duser.language=en",
+            "-Duser.variant"
+        ],
+        "jdkVersion" : "21.0.13",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21.0.13+9-LTS",
+        "warmupIterations" : 5,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 10,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "prod_crc32_xorprod",
+            "benchKey" : "0123456789abcdef",
+            "size" : "994"
+        },
+        "primaryMetric" : {
+            "score" : 506567.6966243202,
+            "scoreError" : 13517.67657086576,
+            "scoreConfidence" : [
+                493050.02005345444,
+                520085.3731951859
+            ],
+            "scorePercentiles" : {
+                "0.0" : 483912.3532101774,
+                "50.0" : 498418.15438303223,
+                "90.0" : 526476.7801025313,
+                "95.0" : 528943.5908403916,
+                "99.0" : 529072.2437805687,
+                "99.9" : 529072.2437805687,
+                "99.99" : 529072.2437805687,
+                "99.999" : 529072.2437805687,
+                "99.9999" : 529072.2437805687,
+                "100.0" : 529072.2437805687
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    508215.04096328095,
+                    497106.1637210849,
+                    524335.1061971035,
+                    516685.04752267594,
+                    526499.184977026,
+                    529072.2437805687,
+                    526275.1362320796,
+                    518237.02307206334,
+                    524946.5519027832,
+                    525972.3306304299
+                ],
+                [
+                    487397.82482171105,
+                    483912.3532101774,
+                    489707.0906674073,
+                    495634.9787611249,
+                    498502.15434126114,
+                    498334.1544248034,
+                    494698.65446531435,
+                    494290.2404766018,
+                    497895.24541886995,
+                    493637.4069000345
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.benchmark.net.routine.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java",
+        "jvmArgs" : [
+            "-Dfile.encoding=UTF-8",
+            "-Djava.io.tmpdir=/home/runner/work/tny-framework/tny-framework/tny-benchmark/build/tmp/jmh",
+            "-Duser.country",
+            "-Duser.language=en",
+            "-Duser.variant"
+        ],
+        "jdkVersion" : "21.0.13",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21.0.13+9-LTS",
+        "warmupIterations" : 5,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 10,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "prod_siphash24_chacha",
+            "benchKey" : "bench-key",
+            "size" : "42"
+        },
+        "primaryMetric" : {
+            "score" : 997743.6841112233,
+            "scoreError" : 16174.738703443267,
+            "scoreConfidence" : [
+                981568.94540778,
+                1013918.4228146666
+            ],
+            "scorePercentiles" : {
+                "0.0" : 976167.6185354657,
+                "50.0" : 988064.781716446,
+                "90.0" : 1023449.2199061088,
+                "95.0" : 1024286.5000966684,
+                "99.0" : 1024325.0379952423,
+                "99.9" : 1024325.0379952423,
+                "99.99" : 1024325.0379952423,
+                "99.999" : 1024325.0379952423,
+                "99.9999" : 1024325.0379952423,
+                "100.0" : 1024325.0379952423
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    976167.6185354657,
+                    976802.9738652928,
+                    985294.033877594,
+                    983791.2222001125,
+                    978630.5330198605,
+                    983448.6316812213,
+                    980822.8442974593,
+                    989966.4910305728,
+                    985095.4428665725,
+                    986163.0724023193
+                ],
+                [
+                    1015897.0589799338,
+                    1023554.2800237633,
+                    1021569.5077899706,
+                    1015737.3329771621,
+                    1019934.5398064831,
+                    1008213.1559895333,
+                    1022503.6788472178,
+                    1024325.0379952423,
+                    997064.0017948064,
+                    979892.2242438821
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.benchmark.net.routine.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java",
+        "jvmArgs" : [
+            "-Dfile.encoding=UTF-8",
+            "-Djava.io.tmpdir=/home/runner/work/tny-framework/tny-framework/tny-benchmark/build/tmp/jmh",
+            "-Duser.country",
+            "-Duser.language=en",
+            "-Duser.variant"
+        ],
+        "jdkVersion" : "21.0.13",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21.0.13+9-LTS",
+        "warmupIterations" : 5,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 10,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "prod_siphash24_chacha",
+            "benchKey" : "bench-key",
+            "size" : "994"
+        },
+        "primaryMetric" : {
+            "score" : 441569.89618745603,
+            "scoreError" : 5071.248046073775,
+            "scoreConfidence" : [
+                436498.64814138226,
+                446641.1442335298
+            ],
+            "scorePercentiles" : {
+                "0.0" : 430795.2282146449,
+                "50.0" : 441707.36921327666,
+                "90.0" : 449023.22209838225,
+                "95.0" : 453457.8611082027,
+                "99.0" : 453687.1868751433,
+                "99.9" : 453687.1868751433,
+                "99.99" : 453687.1868751433,
+                "99.999" : 453687.1868751433,
+                "99.9999" : 453687.1868751433,
+                "100.0" : 453687.1868751433
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    440549.86391069315,
+                    440064.15867288085,
+                    430795.2282146449,
+                    446873.0675945673,
+                    442401.0284017381,
+                    438675.9850536701,
+                    442036.39126625936,
+                    442411.54917114886,
+                    443514.0979746084,
+                    447193.2143593088
+                ],
+                [
+                    448326.1771568387,
+                    453687.1868751433,
+                    432419.13520881784,
+                    441378.3471602939,
+                    444074.104502233,
+                    440772.19427325524,
+                    437757.7146804618,
+                    436396.4181639635,
+                    449100.67153633153,
+                    432971.3895722623
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.benchmark.net.routine.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java",
+        "jvmArgs" : [
+            "-Dfile.encoding=UTF-8",
+            "-Djava.io.tmpdir=/home/runner/work/tny-framework/tny-framework/tny-benchmark/build/tmp/jmh",
+            "-Duser.country",
+            "-Duser.language=en",
+            "-Duser.variant"
+        ],
+        "jdkVersion" : "21.0.13",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21.0.13+9-LTS",
+        "warmupIterations" : 5,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 10,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "prod_siphash24_chacha",
+            "benchKey" : "0123456789abcdef",
+            "size" : "42"
+        },
+        "primaryMetric" : {
+            "score" : 982441.1030933376,
+            "scoreError" : 19234.447839490545,
+            "scoreConfidence" : [
+                963206.6552538471,
+                1001675.5509328281
+            ],
+            "scorePercentiles" : {
+                "0.0" : 915430.659748314,
+                "50.0" : 990128.1583097752,
+                "90.0" : 999370.5198061418,
+                "95.0" : 1003866.8800548558,
+                "99.0" : 1004098.6130859973,
+                "99.9" : 1004098.6130859973,
+                "99.99" : 1004098.6130859973,
+                "99.999" : 1004098.6130859973,
+                "99.9999" : 1004098.6130859973,
+                "100.0" : 1004098.6130859973
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    965279.85083124,
+                    981843.0722368365,
+                    997729.6137718536,
+                    990177.312295539,
+                    993121.4111525111,
+                    990946.9918528801,
+                    976257.216678225,
+                    987581.8856073366,
+                    933477.1735597879,
+                    990079.0043240114
+                ],
+                [
+                    981012.3522062401,
+                    974711.8370356271,
+                    999463.9524631681,
+                    991122.9775506759,
+                    997840.5993917173,
+                    1004098.6130859973,
+                    993827.5225763049,
+                    998529.6258929059,
+                    986290.3896055814,
+                    915430.659748314
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.benchmark.net.routine.PipelineCryptoMatrixBenchmark.encodeThenDecode",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java",
+        "jvmArgs" : [
+            "-Dfile.encoding=UTF-8",
+            "-Djava.io.tmpdir=/home/runner/work/tny-framework/tny-framework/tny-benchmark/build/tmp/jmh",
+            "-Duser.country",
+            "-Duser.language=en",
+            "-Duser.variant"
+        ],
+        "jdkVersion" : "21.0.13",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21.0.13+9-LTS",
+        "warmupIterations" : 5,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 10,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "algo" : "prod_siphash24_chacha",
+            "benchKey" : "0123456789abcdef",
+            "size" : "994"
+        },
+        "primaryMetric" : {
+            "score" : 442099.3494998723,
+            "scoreError" : 7989.517855318763,
+            "scoreConfidence" : [
+                434109.8316445535,
+                450088.8673551911
+            ],
+            "scorePercentiles" : {
+                "0.0" : 424948.95364483417,
+                "50.0" : 444995.0675816763,
+                "90.0" : 452890.65753870225,
+                "95.0" : 454086.2713639776,
+                "99.0" : 454141.0734537301,
+                "99.9" : 454141.0734537301,
+                "99.99" : 454141.0734537301,
+                "99.999" : 454141.0734537301,
+                "99.9999" : 454141.0734537301,
+                "100.0" : 454141.0734537301
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    435985.239936272,
+                    440262.9450591647,
+                    435845.1415585998,
+                    447786.72872598836,
+                    446621.35227499384,
+                    443368.7828883587,
+                    424948.95364483417,
+                    448060.85661341465,
+                    435106.0767425676,
+                    439445.1397607214
+                ],
+                [
+                    426658.9771329016,
+                    432303.9742417801,
+                    428885.12928263494,
+                    454141.0734537301,
+                    451501.2904589085,
+                    448727.67689641943,
+                    450776.2972166074,
+                    453045.0316586793,
+                    450777.62484734354,
+                    447738.6976035277
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.benchmark.net.routine.RespondFutureBenchmark.pollMiss",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java",
+        "jvmArgs" : [
+            "-Dfile.encoding=UTF-8",
+            "-Djava.io.tmpdir=/home/runner/work/tny-framework/tny-framework/tny-benchmark/build/tmp/jmh",
+            "-Duser.country",
+            "-Duser.language=en",
+            "-Duser.variant"
+        ],
+        "jdkVersion" : "21.0.13",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21.0.13+9-LTS",
+        "warmupIterations" : 5,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 10,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "inflight" : "1000"
+        },
+        "primaryMetric" : {
+            "score" : 8.478545103799471E7,
+            "scoreError" : 3781965.699338186,
+            "scoreConfidence" : [
+                8.100348533865653E7,
+                8.85674167373329E7
+            ],
+            "scorePercentiles" : {
+                "0.0" : 6.767566025986525E7,
+                "50.0" : 8.543551876744086E7,
+                "90.0" : 8.897689024117734E7,
+                "95.0" : 9.006083212249719E7,
+                "99.0" : 9.010343436913218E7,
+                "99.9" : 9.010343436913218E7,
+                "99.99" : 9.010343436913218E7,
+                "99.999" : 9.010343436913218E7,
+                "99.9999" : 9.010343436913218E7,
+                "100.0" : 9.010343436913218E7
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    9.010343436913218E7,
+                    8.581453568860494E7,
+                    8.473377461524965E7,
+                    6.767566025986525E7,
+                    8.382596388216583E7,
+                    8.550073919649053E7,
+                    8.650639748388225E7,
+                    8.630166475710304E7,
+                    8.622169653623988E7,
+                    8.525018064773874E7
+                ],
+                [
+                    8.925138943643233E7,
+                    8.464190553551017E7,
+                    8.525063882211788E7,
+                    8.537029833839118E7,
+                    8.565118419891028E7,
+                    8.619725051467992E7,
+                    8.41981284609834E7,
+                    8.257909589987756E7,
+                    8.570632799598803E7,
+                    8.492875412053108E7
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.benchmark.net.routine.RespondFutureBenchmark.pollMiss",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java",
+        "jvmArgs" : [
+            "-Dfile.encoding=UTF-8",
+            "-Djava.io.tmpdir=/home/runner/work/tny-framework/tny-framework/tny-benchmark/build/tmp/jmh",
+            "-Duser.country",
+            "-Duser.language=en",
+            "-Duser.variant"
+        ],
+        "jdkVersion" : "21.0.13",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21.0.13+9-LTS",
+        "warmupIterations" : 5,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 10,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "inflight" : "10000"
+        },
+        "primaryMetric" : {
+            "score" : 7.56017143193547E7,
+            "scoreError" : 7745286.1736828545,
+            "scoreConfidence" : [
+                6.785642814567184E7,
+                8.334700049303755E7
+            ],
+            "scorePercentiles" : {
+                "0.0" : 4.3818306099100545E7,
+                "50.0" : 7.861123390733308E7,
+                "90.0" : 7.995018347565645E7,
+                "95.0" : 8.005949332248692E7,
+                "99.0" : 8.006414267188305E7,
+                "99.9" : 8.006414267188305E7,
+                "99.99" : 8.006414267188305E7,
+                "99.999" : 8.006414267188305E7,
+                "99.9999" : 8.006414267188305E7,
+                "100.0" : 8.006414267188305E7
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    7.910870900692749E7,
+                    7.783606887553415E7,
+                    5.7982608628652774E7,
+                    4.3818306099100545E7,
+                    7.896302847616401E7,
+                    7.810225773903951E7,
+                    7.497060685271358E7,
+                    7.297749543425553E7,
+                    7.750239966636012E7,
+                    7.919804734053928E7
+                ],
+                [
+                    7.97614336009182E7,
+                    7.906321052973421E7,
+                    7.781033089908719E7,
+                    7.825943933850215E7,
+                    7.825686892914504E7,
+                    7.969398740830778E7,
+                    7.99711556839607E7,
+                    7.90225651051138E7,
+                    7.967162410115492E7,
+                    8.006414267188305E7
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.benchmark.net.routine.RespondFutureBenchmark.putAndPoll",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java",
+        "jvmArgs" : [
+            "-Dfile.encoding=UTF-8",
+            "-Djava.io.tmpdir=/home/runner/work/tny-framework/tny-framework/tny-benchmark/build/tmp/jmh",
+            "-Duser.country",
+            "-Duser.language=en",
+            "-Duser.variant"
+        ],
+        "jdkVersion" : "21.0.13",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21.0.13+9-LTS",
+        "warmupIterations" : 5,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 10,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "inflight" : "1000"
+        },
+        "primaryMetric" : {
+            "score" : 1.3631641679272732E7,
+            "scoreError" : 294010.1581877275,
+            "scoreConfidence" : [
+                1.3337631521085003E7,
+                1.392565183746046E7
+            ],
+            "scorePercentiles" : {
+                "0.0" : 1.2764017935636645E7,
+                "50.0" : 1.3782662414148398E7,
+                "90.0" : 1.3875296740343656E7,
+                "95.0" : 1.3885807103541883E7,
+                "99.0" : 1.3886265242732024E7,
+                "99.9" : 1.3886265242732024E7,
+                "99.99" : 1.3886265242732024E7,
+                "99.999" : 1.3886265242732024E7,
+                "99.9999" : 1.3886265242732024E7,
+                "100.0" : 1.3886265242732024E7
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    1.385904527307367E7,
+                    1.3886265242732024E7,
+                    1.3821821398616979E7,
+                    1.3675766264817448E7,
+                    1.29716992711087E7,
+                    1.3817396652336182E7,
+                    1.3796637772819895E7,
+                    1.3742578745086737E7,
+                    1.387710245892921E7,
+                    1.379049719209515E7
+                ],
+                [
+                    1.3842002938088113E7,
+                    1.3763056150066206E7,
+                    1.307963764446495E7,
+                    1.373057604562614E7,
+                    1.3806975567766912E7,
+                    1.3787353501555074E7,
+                    1.2764017935636645E7,
+                    1.368070653247408E7,
+                    1.3161725671418844E7,
+                    1.3777971326741723E7
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.tny.game.benchmark.net.routine.RespondFutureBenchmark.putAndPoll",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/usr/lib/jvm/temurin-21-jdk-amd64/bin/java",
+        "jvmArgs" : [
+            "-Dfile.encoding=UTF-8",
+            "-Djava.io.tmpdir=/home/runner/work/tny-framework/tny-framework/tny-benchmark/build/tmp/jmh",
+            "-Duser.country",
+            "-Duser.language=en",
+            "-Duser.variant"
+        ],
+        "jdkVersion" : "21.0.13",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21.0.13+9-LTS",
+        "warmupIterations" : 5,
+        "warmupTime" : "500 ms",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 10,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "inflight" : "10000"
+        },
+        "primaryMetric" : {
+            "score" : 1.302759091075829E7,
+            "scoreError" : 246539.15071566688,
+            "scoreConfidence" : [
+                1.2781051760042623E7,
+                1.3274130061473958E7
+            ],
+            "scorePercentiles" : {
+                "0.0" : 1.2082498823943095E7,
+                "50.0" : 1.3131646834983762E7,
+                "90.0" : 1.3202607111933734E7,
+                "95.0" : 1.3230558185255164E7,
+                "99.0" : 1.3231920998406595E7,
+                "99.9" : 1.3231920998406595E7,
+                "99.99" : 1.3231920998406595E7,
+                "99.999" : 1.3231920998406595E7,
+                "99.9999" : 1.3231920998406595E7,
+                "100.0" : 1.3231920998406595E7
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    1.3163776176243369E7,
+                    1.2824046158591544E7,
+                    1.299819145167204E7,
+                    1.3175164401021002E7,
+                    1.3038161308716796E7,
+                    1.3231920998406595E7,
+                    1.317239503736014E7,
+                    1.3181915109928042E7,
+                    1.314474804499206E7,
+                    1.3029322695240114E7
+                ],
+                [
+                    1.2082498823943095E7,
+                    1.3024329458194673E7,
+                    1.3089001186785001E7,
+                    1.2445042891085876E7,
+                    1.3177350355966073E7,
+                    1.31840885009354E7,
+                    1.3092709489798468E7,
+                    1.3118545624975463E7,
+                    1.317394576593204E7,
+                    1.3204664735377993E7
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    }
+]
+
+
